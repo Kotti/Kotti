@@ -21,12 +21,16 @@ Create a child object in the DB and access it with the browser
    >>> "Child One" in browser.contents
    True
 
-Change the title in the edit screen
------------------------------------
+Try out the edit screen
+-----------------------
 
   >>> browser.getLink("Edit").click()
   >>> browser.getControl("Title").value = "First Child"
   >>> browser.getControl("save").click()
+  >>> "Your changes have been saved" in browser.contents
+  True
+  >>> browser.getControl("Title").value
+  'First Child'
   >>> browser.getLink("View").click()
   >>> "First Child" in browser.contents
   True
@@ -38,6 +42,8 @@ And now force a validation error:
   >>> browser.getControl("save").click()
   >>> "There was a problem" in browser.contents
   True
+  >>> browser.getControl("Title").value
+  ''
   >>> browser.getLink("View").click()
   >>> "First Child" in browser.contents
   True

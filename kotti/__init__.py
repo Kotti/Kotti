@@ -1,7 +1,8 @@
 from sqlalchemy import engine_from_config
-from pyramid.config import Configurator
 #from pyramid.authentication import AuthTktAuthenticationPolicy
 #from pyramid.authorization import ACLAuthorizationPolicy
+from pyramid.config import Configurator
+from pyramid.session import UnencryptedCookieSessionFactoryConfig
 
 from kotti.resources import appmaker
 from kotti.resources import Node
@@ -20,19 +21,22 @@ def main(global_config, **settings):
     for key in configuration:
         if key in settings:
             configuration[key] = settings.pop(key)
+    secret = settings.pop("kotti.secret")
 
     engine = engine_from_config(settings, 'sqlalchemy.')
     get_root = appmaker(engine)
 
     # XXX These two want to be configurable:
-#    authentication_policy = AuthTktAuthenticationPolicy(settings.pop('secret'))
+#    authentication_policy = AuthTktAuthenticationPolicy(secret)
 #    authorization_policy = ACLAuthorizationPolicy()
+    session_factory = UnencryptedCookieSessionFactoryConfig(secret)
 
     config = Configurator(
         settings=settings,
         root_factory=get_root,
 #        authentication_policy=authentication_policy,
 #        authorization_policy=authorization_policy,
+        session_factory=session_factory,
         )
 
     config.add_static_view('static-deform', 'deform:static')

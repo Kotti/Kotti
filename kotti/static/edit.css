@@ -1,0 +1,54 @@
+.message {
+    background: #bbb;
+    padding: 0.5em 1em;
+    margin: 0.5em auto;
+    max-width: 25em;
+    text-align: center;
+    font-weight: bold;
+}
+
+.message.success {
+    background-color: #b5cc7a;
+}
+
+.message.info {
+    background-color: #edc06b;
+}
+
+.message.error {
+    background-color: #ff614e;
+}
+
+/* Override deform styles */
+
+#header {
+    background-color: #edc06b;
+}
+
+h1 {
+    background-color: transparent;
+}
+
+.errorLi {
+    display: none;
+}
+
+form fieldset {
+    border-width: 0;
+}
+
+form li.error {
+    background-color: #ff614e !important;
+}
+
+form li.error label.desc {
+    color: black !important;
+}
+
+form span.req {
+    color: black !important;
+}
+
+form p.error {
+    color: black !important;
+}

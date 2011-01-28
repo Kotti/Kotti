@@ -7,6 +7,7 @@ lib/
 *.pyc
 *.pt.py
 .coverage
+coverage-*
 mechanize-*
 pytz-*
 wsgi_intercept-*

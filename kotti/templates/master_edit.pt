@@ -6,21 +6,18 @@
 
   <head metal:use-macro="api['snippets.head']">
     <metal tal:omit-tag="" metal:fill-slot="head">
-      <link rel="stylesheet" href="/static-deform/css/form.css" type="text/css" />
-      <link rel="stylesheet" href="/static-deform/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="${request.static_url('deform:static/css/form.css')}" type="text/css" />
+      <link rel="stylesheet" href="${request.static_url('deform:static/css/theme.css')}" type="text/css" />
+      <link rel="stylesheet" href="${request.static_url('kotti:static/edit.css')}" type="text/css" />
       <!-- JavaScript -->
-      <script type="text/javascript"
-              src="/static-deform/scripts/jquery-1.4.2.min.js"></script>
-      <script type="text/javascript"
-              src="/static-deform/tinymce/jscripts/tiny_mce/tiny_mce.js"></script>
-      <script type="text/javascript"
-              src="/static-deform/scripts/deform.js"></script>    
-      <script type="text/javascript"
-              src="/static-kotti/script.js"></script>    
+      <script type="text/javascript" src="${request.static_url('deform:static/scripts/jquery-1.4.2.min.js')}"></script>
+      <script type="text/javascript" src="${request.static_url('deform:static/tinymce/jscripts/tiny_mce/tiny_mce.js')}"></script>
+      <script type="text/javascript" src="${request.static_url('deform:static/scripts/deform.js')}"></script>    
+      <script type="text/javascript" src="${request.static_url('kotti:static/script.js')}"></script>
     </metal>
   </head>
 
-  <body id="edit-view">
+  <body class="edit-view">
     <div id="edit-box" class="vertical-text round-corners-top">
         <a href="${api.url()}">View</a>
     </div>

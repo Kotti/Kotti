@@ -7,7 +7,7 @@
   <head metal:use-macro="api['snippets.head']">
   </head>
 
-  <body id="view-view">
+  <body class="view-view">
     <div id="edit-box" class="vertical-text round-corners-top"
          tal:condition="api.has_permission('edit')">
       <a href="${api.url()}edit">Edit</a>

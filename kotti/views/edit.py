@@ -1,3 +1,4 @@
+from pyramid.httpexceptions import HTTPFound
 import colander
 from deform import Form
 from deform import ValidationFailure
@@ -32,6 +33,8 @@ def document_edit(context, request):
         try:
             appstruct = form.validate(controls)
         except ValidationFailure, e:
+            request.session.flash(u"There was a problem with your submission.\n"
+                                  u"Errors have been highlighted below.", 'error')
             rendered_form = e.render()
 
     if appstruct:
@@ -39,6 +42,8 @@ def document_edit(context, request):
             setattr(context, key, value)
         if u'mime_type' not in appstruct:
             context.mime_type = u'text/html'
+        request.session.flash(u"Your changes have been saved.", 'success')
+        return HTTPFound(location=request.url)
 
     if rendered_form is None:
         rendered_form = form.render(context.__dict__)

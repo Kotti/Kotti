@@ -2,6 +2,8 @@
 
     function dirty_forms() {
         function forms() { return $("form").not("[class~=dirty-ignore]"); }
+        
+        forms().submit(function() { $(window).unbind('beforeunload'); });
         var initial = forms().serialize();
         $(window).bind('beforeunload', function() {
             if (tinyMCE)

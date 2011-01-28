@@ -207,13 +207,14 @@ def includeme(config):
 def setUpFunctional(global_config=None, **settings):
     import wsgi_intercept.zope_testbrowser
 
-    conf = {
+    configuration = {
         'sqlalchemy.url': 'sqlite://',
         'kotti.includes': 'kotti.tests kotti.views.view kotti.views.edit',
+        'kotti.secret': 'secret',
         }
 
     host, port = BASE_URL.split(':')[-2:]
-    app = lambda: main({}, **conf)
+    app = lambda: main({}, **configuration)
     wsgi_intercept.add_wsgi_intercept(host[2:], int(port), app)
 
     return dict(Browser=wsgi_intercept.zope_testbrowser.WSGI_Browser)
