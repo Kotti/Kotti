@@ -15,11 +15,17 @@ leverage these libraries as much as possible, thus:
   home.
 
 Kotti aims to use few abstractions, yet it aims to be somewhat
-extensible.  You can extend Kotti with new content types and views
+extensible.
+
+You can extend Kotti with new content types and views
 from your own Python packages.  If all that you want is replace
 templates and styles, then it's sufficient to hook up your static
 files in the configuration, i.e. without writing a single line of
 Python.
+
+For storage, Kotti uses any relational database for which there is
+`support in SQLAlchemy`_.  There's no storage abstraction apart from
+that.
 
 At this moment, Kotti is **unstable software**.  You're on your own if
 you want to use it.  We're going to break the API and the SQLAlchemy
@@ -30,22 +36,21 @@ path.
 CMS Features (at this point mostly goals)
 =========================================
 
-- Access control lists for fine-grained security (like Plone_)
+- Access control lists for fine-grained security
 
-- Separation of public skin and editor interface (unlike Plone_)
+- Separation of public skin and editor interface
 
 - Support for instance-level views; documents may have different views
-  based on context (like Plone_)
+  based on context
 
-- Easily extend with your own look & feel without writing a single
-  line of Python (unlike Plone_)
+- Easily extend with your own look & feel; no Python required
 
 - Easily extend with new content types and views
 
 Implementation notes
 ====================
 
-Take a look at `this blog post`_ for implementation details.
+Take a look at `this blog post`_ for more implementation details.
 
 Thanks
 ======
@@ -54,6 +59,6 @@ Kotti is proudly sponsored by the `University of Coimbra`_.
 
 .. _Pyramid: http://docs.pylonsproject.org/projects/pyramid/dev/
 .. _SQLAlchemy: http://www.sqlalchemy.org/
-.. _Plone: http://plone.org/
+.. _support in SQLAlchemy: http://www.sqlalchemy.org/docs/core/engines.html#supported-databases
 .. _this blog post: http://danielnouri.org/notes/2010/01/25/16-hours-into-a-new-cms-with-pyramid/
 .. _University of Coimbra: http://uc.pt/
