@@ -1,0 +1,43 @@
+Kotti browser tests
+==================
+
+Setup
+-----
+
+   >>> from kotti import tests
+   >>> from kotti.resources import Node, Document, DBSession
+
+   >>> tools = tests.setUpFunctional()
+   >>> browser = tools['Browser']()
+   >>> browser.open(tests.BASE_URL)
+   >>> session = DBSession()
+   >>> root = session.query(Node).get(1)
+
+Create a child object in the DB and access it with the browser
+--------------------------------------------------------------
+
+   >>> root['child1'] = Document(title=u"Child One")
+   >>> browser.open(tests.BASE_URL + '/child1')
+   >>> "Child One" in browser.contents
+   True
+
+Change the title in the edit screen
+-----------------------------------
+
+  >>> browser.getLink("Edit").click()
+  >>> browser.getControl("Title").value = "First Child"
+  >>> browser.getControl("save").click()
+  >>> browser.getLink("View").click()
+  >>> "First Child" in browser.contents
+  True
+
+And now force a validation error:
+
+  >>> browser.getLink("Edit").click()
+  >>> browser.getControl("Title").value = ""
+  >>> browser.getControl("save").click()
+  >>> "There was a problem" in browser.contents
+  True
+  >>> browser.getLink("View").click()
+  >>> "First Child" in browser.contents
+  True

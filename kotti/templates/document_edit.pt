@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xml:lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      metal:use-macro="api['master_edit.main']">
+
+  <span metal:fill-slot="edit-box">
+    <a href="${api.url()}">View</a>
+  </span>
+
+  <div metal:fill-slot="content">
+    <h1>Editing ${context.title}</h1>
+    <form tal:replace="structure form">
+    </form>
+  </div>
+
+</html>

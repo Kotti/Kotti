@@ -1,0 +1,13 @@
+Kotti.db
+Kotti.egg-info/
+bin/
+dist/
+include/
+lib/
+*.pyc
+*.pt.py
+.coverage
+mechanize-*
+pytz-*
+wsgi_intercept-*
+zope.testbrowser-*

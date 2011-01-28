@@ -1,0 +1,16 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xml:lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal">
+  <head metal:define-macro="head">
+	<title metal:define-slot="page-title">${context.title} - ${api.root.title}</title>
+	<meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/>
+	<meta name="description" content="${context.description}" />
+	<link rel="shortcut icon" href="${request.static_url('kotti:static/favicon.ico')}" />
+	<link rel="stylesheet" href="${request.static_url('kotti:static/style.css')}" type="text/css" media="screen" charset="utf-8" />
+	<link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Neuton|Nobile:regular,i,b,bi&amp;subset=latin" type="text/css" media="screen" charset="utf-8" />
+    <span tal:omit-tag="" metal:define-slot="head"></span>
+  </head>
+
+  <body>
+  </body>
+</html>

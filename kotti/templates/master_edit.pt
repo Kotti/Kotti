@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xml:lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      metal:define-macro="main">
+
+  <head metal:use-macro="api['snippets.head']">
+    <metal tal:omit-tag="" metal:fill-slot="head">
+      <link rel="stylesheet" href="/static-deform/css/form.css" type="text/css" />
+      <link rel="stylesheet" href="/static-deform/css/theme.css" type="text/css" />
+      <!-- JavaScript -->
+      <script type="text/javascript"
+              src="/static-deform/scripts/jquery-1.4.2.min.js"></script>
+      <script type="text/javascript"
+              src="/static-deform/tinymce/jscripts/tiny_mce/tiny_mce.js"></script>
+      <script type="text/javascript"
+              src="/static-deform/scripts/deform.js"></script>    
+      <script type="text/javascript"
+              src="/static-kotti/script.js"></script>    
+    </metal>
+  </head>
+
+  <body id="edit-view">
+    <div id="edit-box" class="vertical-text round-corners-top">
+        <a href="${api.url()}">View</a>
+    </div>
+    <div id="header">
+      <div class="tabs1">
+        <ul>
+          <li><a href="#edit" class="selected">Edit</a></li>
+          <li tal:condition="api.has_permission('add')">
+            <a href="#add">Contents</a>
+          </li>
+          <li tal:condition="api.has_permission('manage')">
+            <a href="#manage">Share</a>
+          </li>
+        </ul>
+      </div>
+      <div class="clear"></div>
+    </div>
+    <div id="content">
+      <div metal:define-slot="content">
+        <h1>${context.title}</h1>
+        <dl>
+          <dt>Name</dt>
+          <dd>${context.name}</dd>
+        </dl>
+      </div>
+    </div>
+  </body>
+</html>

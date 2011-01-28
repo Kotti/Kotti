@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xml:lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      metal:define-macro="main">
+
+  <head metal:use-macro="api['snippets.head']">
+  </head>
+
+  <body id="view-view">
+    <div id="edit-box" class="vertical-text round-corners-top"
+         tal:condition="api.has_permission('edit')">
+      <a href="${api.url()}edit">Edit</a>
+    </div>
+
+    <!-- Header -->
+    <div id="header">
+      <div id="navigation-site" class="tabs1">
+        <h2 class="hidden">Site navigation</h2>
+        <ul>
+          <li><a href="${api.url(api.root)}" class="${api.root == context and 'selected'}">Home</a></li>
+          <li tal:repeat="item api.list_children(api.root)">
+            <a href="${api.url(item)}" class="${api.inside(context, item) and 'selected'}">${item.title}</a>
+          </li>
+        </ul>
+      </div>
+      <div id="navigation-local">
+        <ul tal:define="children api.list_children(go_up=True)">
+          <li tal:condition="context not in children">
+            <a href="${api.url()}">${context.title}</a>
+          </li>
+          <li tal:repeat="item children">
+            <a href="${api.url(item)}">${item.title}</a>
+          </li>
+        </ul>
+      </div>
+      <div class="clear"></div>
+    </div>
+
+    <!-- Content -->
+    <div id="content">
+      <div metal:define-slot="content">
+      </div>
+    </div>
+  </body>
+</html>
