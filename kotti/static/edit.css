@@ -1,8 +1,11 @@
+#header {
+    background-color: #edc06b;
+}
+
 .message {
-    background: #bbb;
+    background-color: #bbb;
     padding: 0.5em 1em;
-    margin: 0.5em auto;
-    max-width: 25em;
+    margin: 0.5em 2em 1em;
     text-align: center;
     font-weight: bold;
 }
@@ -19,36 +22,46 @@
     background-color: #ff614e;
 }
 
-/* Override deform styles */
+/* Form styles */
 
-#header {
-    background-color: #edc06b;
+div.form {
+    width: 30em;
 }
 
-h1 {
-    background-color: transparent;
+form ul {
+    margin: 0;
+    padding: 0;
+    list-style-stype: none;
+}
+
+form li {
+	display: block;
+    margin: 1em;
+}
+
+form li.error {
+    padding: 1em;
+}
+
+form label.desc {
+    display: block;
+    margin: 0 0 0.5em 0;
+    font-weight: bold;
+}
+
+form fieldset {
+    background-color:  #eee;
+}
+
+.inline{
+	margin: 0px;
+	padding: 0px;
 }
 
 .errorLi {
     display: none;
 }
 
-form fieldset {
-    border-width: 0;
-}
-
 form li.error {
-    background-color: #ff614e !important;
-}
-
-form li.error label.desc {
-    color: black !important;
-}
-
-form span.req {
-    color: black !important;
-}
-
-form p.error {
-    color: black !important;
+    background-color: #ff614e;
 }

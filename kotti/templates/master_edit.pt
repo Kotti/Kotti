@@ -6,8 +6,6 @@
 
   <head metal:use-macro="api['snippets.head']">
     <metal tal:omit-tag="" metal:fill-slot="head">
-      <link rel="stylesheet" href="${request.static_url('deform:static/css/form.css')}" type="text/css" />
-      <link rel="stylesheet" href="${request.static_url('deform:static/css/theme.css')}" type="text/css" />
       <link rel="stylesheet" href="${request.static_url('kotti:static/edit.css')}" type="text/css" />
       <!-- JavaScript -->
       <script type="text/javascript" src="${request.static_url('deform:static/scripts/jquery-1.4.2.min.js')}"></script>
