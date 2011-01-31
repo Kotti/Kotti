@@ -38,10 +38,10 @@
     </div>
     <div id="content">
       <div metal:define-slot="content">
-        <h1>${context.title}</h1>
+        <h1>${api.context.title}</h1>
         <dl>
           <dt>Name</dt>
-          <dd>${context.name}</dd>
+          <dd>${api.context.name}</dd>
         </dl>
       </div>
     </div>

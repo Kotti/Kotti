@@ -5,7 +5,7 @@
       metal:use-macro="api['master_edit.main']">
 
   <div metal:fill-slot="content">
-    <h1>Editing <em>${context.title}</em></h1>
+    <h1>Editing <em>${api.context.title}</em></h1>
 
     <div class="form">
       <div metal:use-macro="api['snippets.messages']">

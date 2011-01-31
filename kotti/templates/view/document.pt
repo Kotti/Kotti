@@ -4,11 +4,11 @@
       xmlns:tal="http://xml.zope.org/namespaces/tal"
       metal:use-macro="api['master_view.main']">
   <div metal:fill-slot="content" class="document-view">
-    <h1>${context.title}</h1>
+    <h1>${api.context.title}</h1>
     <p class="description">
-      ${context.description}
+      ${api.context.description}
     </p>
-    <div class="body" tal:content="structure context.body">
+    <div class="body" tal:content="structure api.context.body">
     </div>
   </div>
 </html>

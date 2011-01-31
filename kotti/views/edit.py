@@ -29,7 +29,7 @@ class DocumentSchema(NodeSchema):
         )
 
 class FormView(object):
-    renderer = '../templates/node_edit.pt'
+    renderer = '../templates/edit/node.pt'
     add = None
     post_key = 'save'
     edit_success_msg = u"Your changes have been saved."
@@ -51,11 +51,11 @@ class FormView(object):
         if is_response(result):
             return result
         else:
-            value = {'context': context,
-                     'form': result,
-                     'api': TemplateAPI(context, request)}
             return render_to_response(
-                self.renderer, value, request=request)
+                self.renderer,
+                {'form': result, 'api': TemplateAPI(context, request)},
+                request=request,
+                )
 
     def _handle_form(self, context, request):
         if self.post_key in request.POST:
@@ -96,10 +96,13 @@ def node_add(context, request):
     """
     all_types = configuration['kotti.available_types']
 
+    # 'possible_parents' is a list of dicts with 'node' and 'factories',
+    # where 'node' is the context to add to and 'factories' is the list
+    # of factories that can be applied in the contetx:
     possible_parents = []
     parent = context
     while parent is not None:
-        possible_parents.append({'node': parent, 'addable': []})
+        possible_parents.append({'node': parent, 'factories': []})
         parent = parent.__parent__
 
     for entry in possible_parents:
@@ -107,17 +110,37 @@ def node_add(context, request):
         for factory in all_types:
             if parent_info.name in factory.type_info.addable_to:
                 # XXX Check for permission for factory.type_info.add_view
-                entry['addable'].append(factory)
+                entry['factories'].append(factory)
 
-    possible_parents = filter(lambda e: e['addable'], possible_parents)
+    possible_parents = filter(lambda e: e['factories'], possible_parents)
 
-    if len(possible_parents) == 1 and len(possible_parents[0]['addable']) == 1:
+    _possible_types = {}
+    for entry in possible_parents:
+        for factory in entry['factories']:
+            name = factory.type_info.name
+            pt = _possible_types.get(name, {'factory': factory, 'nodes': []})
+            pt['nodes'].append(entry['node'])
+            _possible_types[name] = pt
+
+    possible_types = []
+    for t in all_types:
+        entry = _possible_types.get(t.type_info.name)
+        if entry:
+            possible_types.append(entry)
+
+    if len(possible_parents) == 1 and len(possible_parents[0]['factories']) == 1:
         # Redirect to the add form straight away if there's only one
         # choice of parents and addable types:
         parent = possible_parents[0]
-        add_view = parent['addable'][0].type_info.add_view
+        add_view = parent['factories'][0].type_info.add_view
         location = resource_url(parent['node'], request, add_view)
         return HTTPFound(location=location)
+
+    return {
+        'api': TemplateAPI(context, request),
+        'possible_parents': possible_parents,
+        'possible_types': possible_types,
+        }
 
 def document_edit(context, request):
     form = Form(DocumentSchema(), buttons=('save',))
@@ -139,6 +162,7 @@ def includeme(config):
         node_add,
         name='add',
         permission='add',
+        renderer='../templates/edit/add.pt',
         )
 
     config.add_view(

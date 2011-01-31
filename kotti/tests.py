@@ -6,9 +6,12 @@ from pyramid.config import DEFAULT_RENDERERS
 from pyramid import security
 from pyramid import testing
 
+from kotti import configuration
 from kotti.views.view import node_view
+from kotti.views.edit import node_add
 from kotti.resources import DBSession
 from kotti.resources import Node
+from kotti.resources import Document
 from kotti.resources import initialize_sql
 from kotti.security import ACE
 from kotti import main
@@ -145,7 +148,76 @@ class TestNodeView(UnitTestBase):
         root = session.query(Node).get(1)
         request = testing.DummyRequest()
         info = node_view(root, request)
-        self.assertEqual(info['context'], root)
+        self.assertEqual(info['api'].context, root)
+
+class TestNodeEdit(UnitTestBase):
+    def _make_node_addable(self):
+        # Allow Nodes to be added to documents:
+        self.save_node_type_info = Node.type_info.copy()
+        Node.type_info.addable_to = [u'Document']
+        Node.type_info.add_view = u'document_add'
+        configuration['kotti.available_types'].append(Node)
+
+    def _make_node_addable_cleanup(self):
+        configuration['kotti.available_types'].pop()
+        Node.type_info = self.save_node_type_info
+
+    def test_single_choice(self):
+        # The view should redirect straight:
+        session = DBSession()
+        root = session.query(Node).get(1)
+        request = testing.DummyRequest()
+        
+        response = node_add(root, request)
+        self.assertEqual(response.status, '302 Found')
+        self.assertEqual(response.location, 'http://example.com/document_add')
+
+    def test_multiple_types(self):
+        # Test a scenario where we may add multiple types to a folder:
+        session = DBSession()
+        root = session.query(Node).get(1)
+        request = testing.DummyRequest()
+
+        self._make_node_addable()
+
+        # We should be able to add both Nodes and documents now:
+        info = node_add(root, request)
+        (possible_parent,) = info['possible_parents']
+        self.assertEqual(possible_parent['factories'], [Document, Node])
+
+        document_info, node_info = info['possible_types']
+        self.assertEqual(document_info['factory'], Document)
+        self.assertEqual(node_info['factory'], Node)
+        self.assertEqual(document_info['nodes'], [root])
+        self.assertEqual(node_info['nodes'], [root])
+
+        self._make_node_addable_cleanup()
+
+    def test_multiple_parents_and_types(self):
+        # A scenario where we can add multiple types to multiple folders:
+        session = DBSession()
+        root = session.query(Node).get(1)
+        request = testing.DummyRequest()
+
+        self._make_node_addable()
+
+        # We should be able to add both to the child and to the parent:
+        child = root['child'] = Document(title=u"Child")
+        info = node_add(child, request)
+        child_parent, root_parent = info['possible_parents']
+        self.assertEqual(child_parent['node'], child)
+        self.assertEqual(root_parent['node'], root)
+        self.assertEqual(child_parent['factories'], [Document, Node])
+        self.assertEqual(root_parent['factories'], [Document, Node])
+
+        document_info, node_info = info['possible_types']
+        self.assertEqual(document_info['factory'], Document)
+        self.assertEqual(node_info['factory'], Node)
+        self.assertEqual(document_info['nodes'], [child, root])
+        self.assertEqual(node_info['nodes'], [child, root])
+
+        self._make_node_addable_cleanup()
+        
 
 class TestTemplateAPI(UnitTestBase):
     def _make(self, context=None, id=1):

@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xml:lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      metal:use-macro="api['master_edit.main']">
+
+  <div metal:fill-slot="content">
+    <h1>Add item</h1>
+
+    <div class="form">
+      <div metal:use-macro="api['snippets.messages']">
+      </div>
+      <form method="post">
+      </form>
+
+      <div>Hello, world!</div>
+    </div>
+  </div>
+
+</html>

@@ -18,16 +18,16 @@
       <div id="navigation-site" class="tabs1">
         <h2 class="hidden">Site navigation</h2>
         <ul>
-          <li><a href="${api.url(api.root)}" class="${api.root == context and 'selected'}">Home</a></li>
+          <li><a href="${api.url(api.root)}" class="${api.root == api.context and 'selected'}">Home</a></li>
           <li tal:repeat="item api.list_children(api.root)">
-            <a href="${api.url(item)}" class="${api.inside(context, item) and 'selected'}">${item.title}</a>
+            <a href="${api.url(item)}" class="${api.inside(api.context, item) and 'selected'}">${item.title}</a>
           </li>
         </ul>
       </div>
       <div id="navigation-local">
         <ul tal:define="children api.list_children(go_up=True)">
-          <li tal:condition="context not in children">
-            <a href="${api.url()}">${context.title}</a>
+          <li tal:condition="api.context not in children">
+            <a href="${api.url()}">${api.context.title}</a>
           </li>
           <li tal:repeat="item children">
             <a href="${api.url(item)}">${item.title}</a>

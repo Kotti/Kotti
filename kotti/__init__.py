@@ -34,8 +34,8 @@ class Configuration(dict):
 # All of these can be set by passing them in the Paste Deploy settings:
 configuration = Configuration({
     'kotti.templates.snippets': 'kotti:templates/snippets.pt',
-    'kotti.templates.master_view': 'kotti:templates/master_view.pt',
-    'kotti.templates.master_edit': 'kotti:templates/master_edit.pt',
+    'kotti.templates.master_view': 'kotti:templates/view/master.pt',
+    'kotti.templates.master_edit': 'kotti:templates/edit/master.pt',
     'kotti.includes': 'kotti.views.view kotti.views.edit',
     'kotti.available_types': 'kotti.resources.Document',
     })
