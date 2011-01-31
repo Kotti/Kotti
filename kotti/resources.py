@@ -56,9 +56,22 @@ class Container(object, DictMixin):
             keys.append(item.name)
         return keys
 
+class TypeInfo(object):
+    def __init__(self, **kwargs):
+        self.__dict__.update(kwargs)
+
+    def copy(self, **kwargs):
+        d = self.__dict__.copy()
+        d.update(kwargs)
+        return TypeInfo(**d)
+
 class Node(Container, ACL):
-    aces = () # access control entries
-    
+    type_info = TypeInfo(
+        name=u'Node',
+        add_view=None,
+        add_permission='add',
+        )
+
     def __init__(self, name=None, parent=None, default_view=None,
                  title=u"", description=u"", language=None,
                  owner=None, creation_date=None, modification_date=None):
@@ -88,6 +101,12 @@ class Node(Container, ACL):
         return self.parent
 
 class Document(Node):
+    type_info = Node.type_info.copy(
+        name=u'Document',
+        add_view=u'document_add',
+        addable_to=[u'Document'],
+        )
+
     def __init__(self, body=u"", mime_type='text/html', **kwargs):
         super(Document, self).__init__(**kwargs)
         self.body = body

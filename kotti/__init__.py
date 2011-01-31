@@ -3,17 +3,42 @@ from sqlalchemy import engine_from_config
 #from pyramid.authorization import ACLAuthorizationPolicy
 from pyramid.config import Configurator
 from pyramid.session import UnencryptedCookieSessionFactoryConfig
+from pyramid.util import DottedNameResolver
 
 from kotti.resources import appmaker
 from kotti.resources import Node
 
+class Configuration(dict):
+    """A dict that can resolve dotted names to Python objects the
+    first time they're accessed.
+    """
+    dotted_names = set((
+        'kotti.includes',
+        'kotti.available_types',
+        ))
+
+    def __getitem__(self, key):
+        value = super(Configuration, self).__getitem__(key)
+        if key in self.dotted_names and isinstance(value, basestring):
+            values = []
+            for dottedname in value.split():
+                try:
+                    values.append(DottedNameResolver(None).resolve(dottedname))
+                except ImportError:
+                    raise ValueError("Could not resolve %r." % dottedname)
+            super(Configuration, self).__setitem__(key, values)
+            return values
+        else:
+            return value
+
 # All of these can be set by passing them in the Paste Deploy settings:
-configuration = {
+configuration = Configuration({
     'kotti.templates.snippets': 'kotti:templates/snippets.pt',
     'kotti.templates.master_view': 'kotti:templates/master_view.pt',
     'kotti.templates.master_edit': 'kotti:templates/master_edit.pt',
     'kotti.includes': 'kotti.views.view kotti.views.edit',
-    }
+    'kotti.available_types': 'kotti.resources.Document',
+    })
 
 def main(global_config, **settings):
     """ This function returns a WSGI application.
@@ -44,8 +69,7 @@ def main(global_config, **settings):
     config.add_view('kotti.views.node_default_view', context=Node)
 
     # Include modules listed in 'includeme' configuration:
-    modules = [m.strip() for m in configuration['kotti.includes'].split()]
-    for module in modules:
+    for module in configuration['kotti.includes']:
         config.include(module)
 
     return config.make_wsgi_app()

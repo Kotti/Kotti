@@ -13,16 +13,21 @@ Setup
    >>> session = DBSession()
    >>> root = session.query(Node).get(1)
 
-Create a child object in the DB and access it with the browser
---------------------------------------------------------------
+Add a document
+--------------
 
-   >>> root['child1'] = Document(title=u"Child One")
-   >>> browser.open(tests.BASE_URL + '/child1')
-   >>> "Child One" in browser.contents
-   True
+  >>> browser.open(tests.BASE_URL)
+  >>> browser.getLink("Edit").click()
+  >>> browser.getLink("Add").click()
+  >>> browser.getControl("Title").value = "Child One"
+  >>> browser.getControl("save").click()
+  >>> "Successfully added item" in browser.contents
+  True
+  >>> browser.url == tests.BASE_URL + '/Child%20One/edit'
+  True
 
-Try out the edit screen
------------------------
+Editing an object
+-----------------
 
   >>> browser.getLink("Edit").click()
   >>> browser.getControl("Title").value = "First Child"
