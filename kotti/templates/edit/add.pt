@@ -10,10 +10,41 @@
     <div class="form">
       <div metal:use-macro="api['snippets.messages']">
       </div>
-      <form method="post">
-      </form>
+      <form action="./add" method="post">
+        <div id="what-to-add">
+          <h2>What do you want to add?</h2>
+          <ul>
+            <li tal:repeat="type possible_types">
+              <span tal:define="type_name type['factory'].type_info.name"
+                    tal:omit-tag="">
+                <input type="radio" name="what" value="${type_name}"
+                       checked="${type == possible_types[0] and 'checked' or None}"
+                       id="what-to-add-${type_name}" />
+                <label for="what-to-add-${type_name}">
+                  ${type_name}
+                </label>
+              </span>
+            </li>
+          </ul>
+        </div>
+        <div id="where-to-add">
+          <h2>Where do you want to add it to?</h2>
+          <ul>
+            <li tal:repeat="parent possible_parents">
+              <input type="radio" name="where" value="${parent['node'].id}"
+                     checked="${parent == possible_parents[0] and 'checked' or None}"
+                     id="where-to-add-${parent['node'].id}" />
+              <label for="where-to-add-${parent['node'].id}">
+                Inside <em>${parent['node'].title}</em>
+              </label>
+            </li>
+          </ul>
+        </div>
 
-      <div>Hello, world!</div>
+        <div>
+          <input type="submit" value="Continue" />
+        </div>
+      </form>
     </div>
   </div>
 

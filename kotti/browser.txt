@@ -52,3 +52,25 @@ And now force a validation error:
   >>> browser.getLink("View").click()
   >>> "First Child" in browser.contents
   True
+
+Add two more documents, at different levels
+-------------------------------------------
+
+  >>> browser.getLink("Edit").click()
+  >>> browser.getLink("Add").click()
+  >>> browser.getControl("Inside My Site").click()
+  >>> browser.getControl("Continue").click()
+  >>> browser.getControl("Title").value = "Second Child"
+  >>> browser.getControl("save").click()
+  >>> "Successfully added item" in browser.contents
+  True
+  >>> browser.url == tests.BASE_URL + '/Second%20Child/edit'
+  True
+
+  >>> browser.getLink("Add").click()
+  >>> browser.getControl("Inside Second Child").selected = True
+  >>> browser.getControl("Continue").click()
+  >>> browser.getControl("Title").value = "Grandchild"
+  >>> browser.getControl("save").click()
+  >>> browser.url == tests.BASE_URL + '/Second%20Child/Grandchild/edit'
+  True

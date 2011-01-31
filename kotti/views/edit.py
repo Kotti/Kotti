@@ -1,5 +1,4 @@
 from pyramid.view import is_response
-from pyramid.view import render_view_to_response
 from pyramid.renderers import render_to_response
 from pyramid.url import resource_url
 from pyramid.httpexceptions import HTTPFound
@@ -10,7 +9,9 @@ from deform.widget import RichTextWidget
 from deform.widget import TextAreaWidget
 
 from kotti import configuration
+from kotti.resources import DBSession
 from kotti.resources import Document
+from kotti.resources import Node
 from kotti.views import TemplateAPI
 
 class NodeSchema(colander.MappingSchema):
@@ -95,6 +96,14 @@ def node_add(context, request):
     information.
     """
     all_types = configuration['kotti.available_types']
+    
+    if request.POST:
+        what, where = request.POST['what'], request.POST['where']
+        session = DBSession()
+        what = [t for t in all_types if t.type_info.name == what][0]
+        where = session.query(Node).get(int(where))
+        location = resource_url(where, request, what.type_info.add_view)
+        return HTTPFound(location=location)
 
     # 'possible_parents' is a list of dicts with 'node' and 'factories',
     # where 'node' is the context to add to and 'factories' is the list

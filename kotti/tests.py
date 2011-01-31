@@ -217,7 +217,6 @@ class TestNodeEdit(UnitTestBase):
         self.assertEqual(node_info['nodes'], [child, root])
 
         self._make_node_addable_cleanup()
-        
 
 class TestTemplateAPI(UnitTestBase):
     def _make(self, context=None, id=1):
