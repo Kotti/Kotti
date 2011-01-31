@@ -19,7 +19,7 @@ def node_default_view(context, request):
     """
     view_name = context.default_view or u'view'
     response = render_view_to_response(context, request, name=view_name)
-    if response is None:
+    if response is None: # pragma: no coverage
         raise NotFound()
     return response
 

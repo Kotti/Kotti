@@ -58,7 +58,7 @@ Add two more documents, at different levels
 
   >>> browser.getLink("Edit").click()
   >>> browser.getLink("Add").click()
-  >>> browser.getControl("Inside My Site").click()
+  >>> browser.getControl("Add to My Site").click()
   >>> browser.getControl("Continue").click()
   >>> browser.getControl("Title").value = "Second Child"
   >>> browser.getControl("save").click()
@@ -68,7 +68,7 @@ Add two more documents, at different levels
   True
 
   >>> browser.getLink("Add").click()
-  >>> browser.getControl("Inside Second Child").selected = True
+  >>> browser.getControl("Add to Second Child").selected = True
   >>> browser.getControl("Continue").click()
   >>> browser.getControl("Title").value = "Grandchild"
   >>> browser.getControl("save").click()

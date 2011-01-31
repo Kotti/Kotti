@@ -44,7 +44,7 @@ class FormView(object):
         for key, value in kwargs.items():
             if key in self.__class__.__dict__:
                 setattr(self, key, value)
-            else:
+            else: # pragma: no coverage
                 raise TypeError("Unknown argument %r" % key)
 
     def __call__(self, context, request):

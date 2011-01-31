@@ -24,7 +24,7 @@ class Configuration(dict):
             for dottedname in value.split():
                 try:
                     values.append(DottedNameResolver(None).resolve(dottedname))
-                except ImportError:
+                except ImportError: # pragma: no coverage
                     raise ValueError("Could not resolve %r." % dottedname)
             super(Configuration, self).__setitem__(key, values)
             return values
