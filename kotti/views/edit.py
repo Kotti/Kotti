@@ -89,13 +89,35 @@ class FormView(object):
         return title
 
 def node_add(context, request):
-    return render_view_to_response(context, request, 'document_add')
-    possible_types = []
-    parent_info = context.type_info
-    for t in configuration['kotti.available_types']:
-        child_info = t.type_info
-        if parent_info.name in child_info.addable_to:
-            possible_types.append(t)
+    """This view's responsibility is to present the user with a form
+    where they can choose between locations to add to, and types of
+    nodes to add, and redirect to the actual add form based on this
+    information.
+    """
+    all_types = configuration['kotti.available_types']
+
+    possible_parents = []
+    parent = context
+    while parent is not None:
+        possible_parents.append({'node': parent, 'addable': []})
+        parent = parent.__parent__
+
+    for entry in possible_parents:
+        parent_info = entry['node'].type_info
+        for factory in all_types:
+            if parent_info.name in factory.type_info.addable_to:
+                # XXX Check for permission for factory.type_info.add_view
+                entry['addable'].append(factory)
+
+    possible_parents = filter(lambda e: e['addable'], possible_parents)
+
+    if len(possible_parents) == 1 and len(possible_parents[0]['addable']) == 1:
+        # Redirect to the add form straight away if there's only one
+        # choice of parents and addable types:
+        parent = possible_parents[0]
+        add_view = parent['addable'][0].type_info.add_view
+        location = resource_url(parent['node'], request, add_view)
+        return HTTPFound(location=location)
 
 def document_edit(context, request):
     form = Form(DocumentSchema(), buttons=('save',))
@@ -122,5 +144,5 @@ def includeme(config):
     config.add_view(
         document_add,
         name=Document.type_info.add_view,
-        permission=Document.type_info.add_permission,
+        permission='add',
         )

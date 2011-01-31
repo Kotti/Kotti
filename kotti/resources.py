@@ -69,7 +69,6 @@ class Node(Container, ACL):
     type_info = TypeInfo(
         name=u'Node',
         add_view=None,
-        add_permission='add',
         )
 
     def __init__(self, name=None, parent=None, default_view=None,
