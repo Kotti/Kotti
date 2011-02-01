@@ -82,3 +82,9 @@ def _configure_base_views(config):
         permission='add',
         renderer='templates/edit/add.pt',
         )
+    config.add_view(
+        'kotti.views.edit.move_node',
+        name='move',
+        permission='edit',
+        renderer='templates/edit/move.pt',
+        )

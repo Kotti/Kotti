@@ -134,6 +134,11 @@ def add_node(context, request):
         'possible_types': possible_types,
         }
 
+def move_node(context, request):
+    return {
+        'api': TemplateAPIEdit(context, request),
+        }
+
 def edit_document(context, request):
     form = Form(DocumentSchema(), buttons=('save',))
     return FormView(form)(context, request)

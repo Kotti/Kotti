@@ -74,3 +74,16 @@ Add two more documents, at different levels
   >>> browser.getControl("save").click()
   >>> browser.url == tests.BASE_URL + '/Second%20Child/Grandchild/edit'
   True
+
+  >>> browser.getLink("View").click()
+  >>> "Grandchild" in browser.contents
+  True
+  >>> browser.url == tests.BASE_URL + '/Second%20Child/Grandchild/'
+  True
+
+Move a document
+---------------
+
+  >>> browser.getLink("Edit").click()
+  >>> browser.getLink("Move").click()
+
