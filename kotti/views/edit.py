@@ -116,8 +116,16 @@ def node_add(context, request):
         location = resource_url(parent['node'], request, add_view)
         return HTTPFound(location=location)
 
+    # Swap first and second possible parents if there's no content in
+    # 'possible_parents[0]' yet.  This makes the parent then the
+    # default choice in the form:
+    api = TemplateAPI(context, request)
+    if not api.list_children() and len(possible_parents) > 1:
+        possible_parents[0], possible_parents[1] = (
+            possible_parents[1], possible_parents[0])
+
     return {
-        'api': TemplateAPI(context, request),
+        'api': api,
         'possible_parents': possible_parents,
         'possible_types': possible_types,
         }

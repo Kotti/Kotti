@@ -21,6 +21,7 @@ from sqlalchemy import PickleType
 from sqlalchemy import String
 from sqlalchemy import Unicode
 from sqlalchemy import UnicodeText
+from pyramid.traversal import resource_path
 
 from kotti.security import ACE, ACL
 
@@ -81,6 +82,7 @@ class Node(Container, ACL):
         addable_to=[],
         )
 
+    id = None
     def __init__(self, name=None, parent=None, default_view=None,
                  title=u"", description=u"", language=None,
                  owner=None, creation_date=None, modification_date=None):
@@ -108,6 +110,10 @@ class Node(Container, ACL):
     @property
     def __parent__(self):
         return self.parent
+
+    def __repr__(self): # pragma: no cover
+        return '<%s %s at %s>' % (
+            self.__class__.__name__, self.id, resource_path(self))
 
 class Document(Node):
     type_info = Node.type_info.copy(
