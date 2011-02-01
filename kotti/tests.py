@@ -334,6 +334,16 @@ class TestTemplateAPI(UnitTestBase):
                  'url': 'http://example.com/edit'},
                 ])
 
+    def test_breadcrumbs(self):
+        root = self._make().root
+        a, aa, ab, ac, aca, acb = self._create_nodes(root)
+        api = self._make(acb)
+        breadcrumbs = api.breadcrumbs
+        self.assertEqual(
+            [item['node'] for item in breadcrumbs],
+            [root, a, ac, acb]
+            )
+
 ## Functional tests
 
 def includeme(config):

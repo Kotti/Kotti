@@ -45,7 +45,11 @@ class TemplateAPI(object):
 
     @reify
     def root(self):
-        return list(lineage(self.context))[-1]
+        return self.lineage[-1]
+
+    @reify
+    def lineage(self):
+        return list(lineage(self.context))
 
     def has_permission(self, permission, context=None):
         if context is None:
@@ -69,12 +73,31 @@ class TemplateAPI(object):
 class TemplateAPIEdit(TemplateAPI):
     @reify
     def page_title(self):
-        return u'%s - %s' % (self.request.view_name.title(), self.root.title)
+        return u'%s - %s' % (
+            self.request.view_name.replace('_', ' ').title(), self.root.title)
 
     @reify
     def first_heading(self):
         return u'<h1>Edit <em>%s</em></h1>' % self.context.title
-    
+
+    @reify
+    def breadcrumbs(self):
+        links = []
+        for item in tuple(reversed(self.lineage)):
+            view_name = self.request.view_name
+            if not view_execution_permitted(item, self.request, view_name):
+                view_name = u'edit' # XXX testme
+            if not view_execution_permitted(item, self.request, view_name):
+                view_name = u'' # XXX testme
+            url = resource_url(item, self.request, view_name)
+            links.append(dict(
+                url=url,
+                name=item.title,
+                is_edit_link=view_name != '',
+                node=item,
+                ))
+        return links
+
     def edit_links(self):
         links = []
         for name in self.context.type_info.edit_views:

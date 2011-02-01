@@ -33,6 +33,19 @@
       <div class="clear"></div>
     </div>
     <div id="content">
+      <div class="breadcrumbs">
+        <span tal:repeat="link api.breadcrumbs">
+          <a href="${link.url}"
+             class="${not link.is_edit_link and 'no-edit-link'}"
+             tal:define="is_context link.node == api.context"
+             tal:omit-tag="is_context">
+            <em tal:omit-tag="not is_context">
+              ${link.name}
+            </em>
+          </a>
+          &rarr;
+        </span>
+      </div>
       <div metal:define-slot="content">
         <h1>${api.context.title}</h1>
         <dl>
