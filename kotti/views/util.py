@@ -78,7 +78,7 @@ class TemplateAPIEdit(TemplateAPI):
         links = []
         for name in self.context.type_info.edit_views:
             if not view_execution_permitted(self.context, self.request, name):
-                continue
+                continue # XXX testme
             url = resource_url(self.context, self.request, name)
             links.append(dict(
                 url=url,

@@ -325,7 +325,6 @@ class TestTemplateAPI(UnitTestBase):
         # Edit links are controlled through
         # 'root.type_info.edit_views' and the permissions that guard
         # these:
-        # (XXX Test that view permissions were respected)
         root = api.root
         root.type_info = root.type_info.copy(edit_views=['edit'])
 

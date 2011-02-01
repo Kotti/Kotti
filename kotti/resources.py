@@ -22,6 +22,7 @@ from sqlalchemy import String
 from sqlalchemy import Unicode
 from sqlalchemy import UnicodeText
 from pyramid.traversal import resource_path
+from pyramid.security import view_execution_permitted
 
 from kotti.security import ACE, ACL
 
@@ -72,8 +73,10 @@ class TypeInfo(object):
         """Return True if the type described in 'self' may be added to
         'context'.
         """
-        # XXX Check for permission for self.add_view
-        return context.type_info.name in self.addable_to
+        if view_execution_permitted(context, request, self.add_view):
+            return context.type_info.name in self.addable_to
+        else:
+            return False # XXX testme
 
 class Node(Container, ACL):
     type_info = TypeInfo(
