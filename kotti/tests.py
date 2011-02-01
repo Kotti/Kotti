@@ -298,6 +298,35 @@ class TestTemplateAPI(UnitTestBase):
         self.assertEquals(self._make().root, root)
         self.assertEquals(self._make(acb).root, root)
 
+    def test_edit_links(self):
+        api = self._make()
+        self.assertEqual(
+            api.edit_links(), [
+                {'name': 'edit', 'selected': False,
+                 'url': 'http://example.com/edit'},
+                {'name': 'add', 'selected': False,
+                 'url': 'http://example.com/add'},
+                {'name': 'move', 'selected': False,
+                 'url': 'http://example.com/move'},
+                {'name': 'share', 'selected': False,
+                 'url': 'http://example.com/share'},
+                {'name': 'browse', 'selected': False,
+                 'url': 'http://example.com/browse'}
+                ])
+
+        # Edit links are controlled through
+        # 'root.type_info.edit_views' and the permissions that guard
+        # these:
+        # (XXX Test that view permissions were respected)
+        root = api.root
+        root.type_info = root.type_info.copy(edit_views=['edit'])
+
+        self.assertEqual(
+            api.edit_links(), [
+                {'name': 'edit', 'selected': False,
+                 'url': 'http://example.com/edit'},
+                ])
+
 ## Functional tests
 
 def includeme(config):

@@ -80,6 +80,7 @@ class Node(Container, ACL):
         name=u'Node',
         add_view=None,
         addable_to=[],
+        edit_views=['edit', 'add', 'move', 'share', 'browse'],
         )
 
     id = None

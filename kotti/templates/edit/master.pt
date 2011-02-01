@@ -22,15 +22,11 @@
     <div id="header">
       <div class="tabs1">
         <ul>
-          <li><a href="./edit" class="selected">Edit</a></li>
-          <li tal:condition="api.has_permission('add')">
-            <a href="./add">Add</a>
-          </li>
-          <li>
-            <a href="./contents">Browser</a>
-          </li>
-          <li tal:condition="api.has_permission('manage')">
-            <a href="./share">Share</a>
+          <li tal:repeat="link api.edit_links()">
+            <a href="${link['url']}"
+               class="${link['selected'] and 'selected' or None}">
+              ${link['name'].title()}
+            </a>
           </li>
         </ul>
       </div>

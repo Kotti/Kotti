@@ -3,6 +3,7 @@ from pyramid.location import inside
 from pyramid.location import lineage
 from pyramid.renderers import get_renderer
 from pyramid.security import has_permission
+from pyramid.security import view_execution_permitted
 from pyramid.url import resource_url
 
 from kotti import configuration
@@ -60,6 +61,18 @@ class TemplateAPI(object):
 
     inside = staticmethod(inside)
 
+    def edit_links(self):
+        links = []
+        for name in self.context.type_info.edit_views:
+            if not view_execution_permitted(self.context, self.request, name):
+                continue
+            url = resource_url(self.context, self.request, name)
+            links.append(dict(
+                url=url,
+                name=name,
+                selected=self.request.url.startswith(url),
+                ))
+        return links
 
 def addable_types(context, request):
     all_types = configuration['kotti.available_types']
