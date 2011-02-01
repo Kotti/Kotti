@@ -120,8 +120,13 @@ class TemplateAPIEdit(TemplateAPI):
         if info:
             id, action = info
             item = DBSession().query(Node).get(id)
-            if item.type_info.addable(self.context, self.request):
-                return item
+            if not item.type_info.addable(self.context, self.request):
+                return
+            if action == 'cut' and self.inside(self.context, item):
+                return
+            if self.context == item:
+                return
+            return item
 
 def addable_types(context, request):
     all_types = configuration['kotti.available_types']

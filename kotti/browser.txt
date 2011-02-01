@@ -192,3 +192,19 @@ And finally cut and paste a tree:
   Traceback (most recent call last):
   HTTPError: HTTP Error 404: Not Found
   >>> browser.open(tests.BASE_URL + '/child-one/second-child/second-child')
+
+Note how we can't cut and paste an item into itself:
+
+  >>> browser.open(tests.BASE_URL + '/child-one/')
+  >>> browser.getLink("Edit").click()
+  >>> browser.getLink("Move").click()
+  >>> browser.getControl(name="cut").click()
+  >>> browser.getControl(name="paste")
+  Traceback (most recent call last):
+  LookupError: name 'paste'
+  >>> browser.open(tests.BASE_URL + '/child-one/second-child/')
+  >>> browser.getLink("Edit").click()
+  >>> browser.getLink("Move").click()
+  >>> browser.getControl(name="paste")
+  Traceback (most recent call last):
+  LookupError: name 'paste'

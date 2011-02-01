@@ -23,7 +23,7 @@
             </button>
             <button type="submit" name="paste" value="${paste_item.id}"
                     tal:define="paste_item api.get_paste_item()"
-                    tal:condition="paste_item is not None and paste_item is not context">
+                    tal:condition="paste_item is not None">
               Paste ${paste_item.title} into ${context.title}
             </button>
           </li>
