@@ -51,9 +51,11 @@
           <input type="hidden" name="what"
                  value="${possible_parents[0]['node'].id}" />
         </div>
-        <div>
-          <input type="submit" value="Continue" />
-        </div>
+        <ul>
+          <li>
+            <input type="submit" value="Continue" />
+          </li>
+        </ul>
       </form>
     </div>
   </div>
