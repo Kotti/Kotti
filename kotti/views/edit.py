@@ -1,3 +1,5 @@
+import string
+
 from pyramid.exceptions import Forbidden
 from pyramid.httpexceptions import HTTPFound
 from pyramid.renderers import render_to_response
@@ -95,7 +97,9 @@ class FormView(object):
     render = __call__
 
     def _title_to_name(self, title):
-        return title
+        name = u''.join(ch if ch in string.letters + string.digits else u'-'
+                        for ch in title)
+        return name.lower()
 
 def add_node(context, request):
     """This view's responsibility is to present the user with a form
@@ -144,10 +148,12 @@ def move_node(context, request):
     if 'copy' in P:
         request.session['kotti.paste'] = (context.id, 'copy')
         request.session.flash(u'%s copied.' % context.title, 'success')
+        return HTTPFound(location=request.url)
 
     if 'cut' in P:
         request.session['kotti.paste'] = (context.id, 'cut')
         request.session.flash(u'%s cut.' % context.title, 'success')
+        return HTTPFound(location=request.url)
 
     if 'paste' in P:
         id, action = request.session['kotti.paste']
@@ -162,6 +168,7 @@ def move_node(context, request):
             copy = item.copy()
             context.children.append(copy)
         request.session.flash(u'%s pasted.' % item.title, 'success')
+        return HTTPFound(location=request.url)
 
     if 'order-up' in P or 'order-down' in P:
         up, down = P.get('order-up'), P.get('order-down')
