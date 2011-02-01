@@ -45,18 +45,15 @@ class Container(object, DictMixin):
 
     def __setitem__(self, key, node):
         node.name = unicode(key)
-        node.parent = self
-        DBSession().add(node)
+        self.children.append(node)
 
     def __delitem__(self, key):
-        node = self.__getitem__(unicode(key))
-        DBSession.delete(node)
+        node = self[unicode(key)]
+        self.children.remove(node)
+        DBSession().delete(node)
 
     def keys(self):
-        keys = []
-        for item in DBSession.query(Node.name).filter(Node.parent==self).all():
-            keys.append(item.name)
-        return keys
+        return [child.name for child in self.children]
 
 class TypeInfo(object):
     addable_to = ()
