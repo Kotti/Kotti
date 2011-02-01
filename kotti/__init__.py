@@ -64,12 +64,21 @@ def main(global_config, **settings):
         session_factory=session_factory,
         )
 
-    config.add_static_view('static-deform', 'deform:static')
-    config.add_static_view('static-kotti', 'kotti:static')
-    config.add_view('kotti.views.view.view_node_default', context=Node)
+    _configure_base_views(config)
 
     # Include modules listed in 'includeme' configuration:
     for module in configuration['kotti.includes']:
         config.include(module)
 
     return config.make_wsgi_app()
+
+def _configure_base_views(config):
+    config.add_static_view('static-deform', 'deform:static')
+    config.add_static_view('static-kotti', 'kotti:static')
+    config.add_view('kotti.views.view.view_node_default', context=Node)
+    config.add_view(
+        'kotti.views.edit.add_node',
+        name='add',
+        permission='add',
+        renderer='templates/edit/add.pt',
+        )

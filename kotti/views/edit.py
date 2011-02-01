@@ -154,13 +154,6 @@ def includeme(config):
         )
 
     config.add_view(
-        add_node,
-        name='add',
-        permission='add',
-        renderer='../templates/edit/add.pt',
-        )
-
-    config.add_view(
         add_document,
         name=Document.type_info.add_view,
         permission='add',
