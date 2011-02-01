@@ -116,6 +116,9 @@ class Node(Container, ACL):
         return '<%s %s at %s>' % (
             self.__class__.__name__, self.id, resource_path(self))
 
+    def __eq__(self, other):
+        return self.id == other.id
+
 class Document(Node):
     type_info = Node.type_info.copy(
         name=u'Document',

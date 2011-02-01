@@ -14,7 +14,7 @@
       <form action="./move" method="post">
         <h2>Delete</h2>
         <ul>
-          <li>          
+          <li>
             Are you sure you want to delete <em>${api.context.title}</em>?
             <br/>
             <input id="delete-checkbox" type="checkbox"
@@ -25,6 +25,35 @@
             <button type="submit" name="delete" value="delete" class="submit">
               Delete
             </button>
+          </li>
+        </ul>
+      </form>
+
+      <form action="./move" method="post"
+            tal:define="children api.list_children()"
+            tal:condition="len(children) &gt; 1">
+        <h2>Order contained items</h2>
+        <ul>
+          <li>
+            <ul>
+              <li tal:repeat="item children">
+                <button type="submit" name="order-up" value="${item.id}"
+                        title="Move ${item.title} up"
+                        id="order-up-${item.id}"
+                        disabled="${item.position==0 and 'disabled'}">
+                  ↑
+                </button>
+                <button type="submit" name="order-down" value="${item.id}"
+                        title="Move ${item.title} down"
+                        id="order-down-${item.id}"
+                        disabled="${item.position+1 == len(children) and 'disabled'}">
+                  ↓
+                </button>
+                <label for="order-down-${item.id}">
+                  ${item.title}
+                </label>
+              </li>
+            </ul>
           </li>
         </ul>
       </form>

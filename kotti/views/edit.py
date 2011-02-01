@@ -136,9 +136,11 @@ def add_node(context, request):
         }
 
 def move_node(context, request):
-    if 'delete' in request.POST and 'delete-confirm' in request.POST:
+    P = request.POST
+    session = DBSession()
+    
+    if 'delete' in P and 'delete-confirm' in P:
         parent = context.__parent__
-        session = DBSession()
         session.delete(context)
         elements = []
         if view_execution_permitted(parent, request, 'edit'):
@@ -146,6 +148,20 @@ def move_node(context, request):
         location = resource_url(parent, request, *elements)
         request.session.flash(u'%s deleted.' % context.title, 'success')
         return HTTPFound(location=location)
+
+    if 'order-up' in P or 'order-down' in P:
+        up, down = P.get('order-up'), P.get('order-down')
+        id = int(down or up)
+        if up is not None:
+            mod = -1
+        else:
+            mod = +1
+
+        child = session.query(Node).get(id)
+        index = context.children.index(child)
+        context.children.pop(index)
+        context.children.insert(index+mod, child)
+        request.session.flash(u'%s reordered.' % child.title, 'success')
 
     return {
         'api': TemplateAPIEdit(context, request),

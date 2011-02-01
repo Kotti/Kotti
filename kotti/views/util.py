@@ -52,12 +52,13 @@ class TemplateAPI(object):
             context = self.context
         return has_permission(permission, context, self.request)
 
-    def list_children(self, context=None, go_up=False, secure=True):
+    def list_children(self, context=None, go_up=False, permission='view'):
         if context is None:
             context = self.context
         children = []
         for child in context.values():
-            if not secure or has_permission('view', child, self.request):
+            if (not permission or
+                has_permission(permission, child, self.request)):
                 children.append(child)
         if go_up and not children and context.__parent__ is not None:
             return self.list_children(context.__parent__)
