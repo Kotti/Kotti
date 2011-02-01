@@ -145,3 +145,15 @@ Copy and paste
   >>> browser.getControl(name="paste").click()
   >>> "Second Child pasted" in browser.contents
   True
+
+We can paste twice since we copied:
+
+  >>> browser.getControl(name="paste").click()
+  >>> "Second Child pasted" in browser.contents
+  True
+  >>> browser.open(tests.BASE_URL + '/second-child/')
+  >>> "Second Child" in browser.contents
+  True
+  >>> browser.open(tests.BASE_URL + '/second-child-1/')
+  >>> "Second Child" in browser.contents
+  True

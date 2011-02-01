@@ -1,3 +1,5 @@
+import string
+
 from pyramid.decorator import reify
 from pyramid.location import inside
 from pyramid.location import lineage
@@ -157,3 +159,21 @@ def addable_types(context, request):
             possible_types.append(entry)
 
     return possible_parents, possible_types
+
+def title_to_name(title):
+    name = u''.join(
+        ch if ch in string.letters + string.digits else u'-' for ch in title)
+    return name.lower()
+
+def disambiguate_name(name):
+    parts = name.split(u'-')
+    if len(parts) > 1:
+        try:
+            index = int(parts[-1])
+        except ValueError:
+            parts.append(u'1')
+        else:
+            parts[-1] = unicode(index+1)
+    else:
+        parts.append(u'1')
+    return u'-'.join(parts)

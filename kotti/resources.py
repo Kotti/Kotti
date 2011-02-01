@@ -120,11 +120,13 @@ class Node(Container, ACL):
     def __eq__(self, other):
         return self.id == other.id
 
-    def copy(self):
+    def copy(self, **kwargs):
         copy = self.__class__()
         for prop in object_mapper(self).iterate_properties:
             if prop.key not in ('id', 'parent'):
                 setattr(copy, prop.key, getattr(self, prop.key))
+        for key, value in kwargs.items():
+            setattr(copy, key, value)
         return copy
 
 class Document(Node):

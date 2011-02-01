@@ -1,5 +1,3 @@
-import string
-
 from pyramid.exceptions import Forbidden
 from pyramid.httpexceptions import HTTPFound
 from pyramid.renderers import render_to_response
@@ -19,6 +17,8 @@ from kotti.resources import Node
 from kotti.resources import Document
 from kotti.views.util import TemplateAPIEdit
 from kotti.views.util import addable_types
+from kotti.views.util import title_to_name
+from kotti.views.util import disambiguate_name
 
 class NodeSchema(colander.MappingSchema):
     title = colander.SchemaNode(colander.String())
@@ -84,7 +84,9 @@ class FormView(object):
                     location = resource_url(context, request, self.success_path)
                     return HTTPFound(location=location)
                 else: # add
-                    name = self._title_to_name(appstruct['title'])
+                    name = title_to_name(appstruct['title'])
+                    while name in context.keys():
+                        name = disambiguate_name(name)
                     item = context[name] = self.add(**appstruct)
                     request.session.flash(self.add_success_msg, 'success')
                     location = resource_url(item, request, self.success_path)
@@ -95,11 +97,6 @@ class FormView(object):
             else:
                 return self.form.render()
     render = __call__
-
-    def _title_to_name(self, title):
-        name = u''.join(ch if ch in string.letters + string.digits else u'-'
-                        for ch in title)
-        return name.lower()
 
 def add_node(context, request):
     """This view's responsibility is to present the user with a form
@@ -166,6 +163,10 @@ def move_node(context, request):
             del request.session['kotti.paste']
         elif action == 'copy':
             copy = item.copy()
+            name = copy.name
+            while name in context.keys():
+                name = disambiguate_name(name)
+            copy.name = name
             context.children.append(copy)
         request.session.flash(u'%s pasted.' % item.title, 'success')
         return HTTPFound(location=request.url)
