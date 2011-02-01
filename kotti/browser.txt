@@ -175,3 +175,20 @@ site:
   True
   >>> browser.open(tests.BASE_URL + '/second-child/my-site/')
   >>> browser.open(tests.BASE_URL + '/second-child/my-site/second-child/')
+
+And finally cut and paste a tree:
+
+  >>> browser.open(tests.BASE_URL + '/second-child/')
+  >>> browser.getLink("Edit").click()
+  >>> browser.getLink("Move").click()
+  >>> browser.getControl(name="cut").click()
+  >>> browser.open(tests.BASE_URL + '/child-one/second-child/')
+  >>> browser.getLink("Edit").click()
+  >>> browser.getLink("Move").click()
+  >>> browser.getControl(name="paste").click()
+  >>> "Second Child pasted" in browser.contents
+  True
+  >>> browser.open(tests.BASE_URL + '/second-child/')
+  Traceback (most recent call last):
+  HTTPError: HTTP Error 404: Not Found
+  >>> browser.open(tests.BASE_URL + '/child-one/second-child/second-child')
