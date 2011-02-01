@@ -13,7 +13,7 @@
 
   <body>
     <div metal:define-macro="messages">
-      <div tal:repeat="queue ('success', 'info', 'error')">
+      <div tal:repeat="queue ('success', 'info', 'error', '')">
         <div class="message ${queue} round-corners"
              tal:define="messages request.session.pop_flash(queue)"
              tal:repeat="message messages">

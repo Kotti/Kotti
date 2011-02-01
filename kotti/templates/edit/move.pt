@@ -12,18 +12,19 @@
       </div>
 
       <form action="./move" method="post">
-        <h2>Delete</h2>
+        <h2>Copy and Paste</h2>
         <ul>
           <li>
-            Are you sure you want to delete <em>${api.context.title}</em>?
-            <br/>
-            <input id="delete-checkbox" type="checkbox"
-                   name="delete-confirm" value="Yes" />
-            <label for="delete-checkbox">Yes</label>
-          </li>
-          <li>
-            <button type="submit" name="delete" value="delete" class="submit">
-              Delete
+            <button type="submit" name="copy" value="${context.id}">
+              Copy ${context.title}
+            </button>
+            <button type="submit" name="cut" value="${context.id}">
+              Cut ${context.title}
+            </button>
+            <button type="submit" name="paste" value="${paste_item.id}"
+                    tal:define="paste_item api.get_paste_item()"
+                    tal:condition="paste_item is not None and paste_item is not context">
+              Paste ${paste_item.title} into ${context.title}
             </button>
           </li>
         </ul>
@@ -54,6 +55,24 @@
                 </label>
               </li>
             </ul>
+          </li>
+        </ul>
+      </form>
+
+      <form action="./move" method="post">
+        <h2>Delete</h2>
+        <ul>
+          <li>
+            Are you sure you want to delete <em>${api.context.title}</em>?
+            <br/>
+            <input id="delete-checkbox" type="checkbox"
+                   name="delete-confirm" value="Yes" />
+            <label for="delete-checkbox">Yes</label>
+          </li>
+          <li>
+            <button type="submit" name="delete" value="delete" class="submit">
+              Delete
+            </button>
           </li>
         </ul>
       </form>

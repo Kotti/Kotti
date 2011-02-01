@@ -7,6 +7,8 @@ from pyramid.security import view_execution_permitted
 from pyramid.url import resource_url
 
 from kotti import configuration
+from kotti.resources import DBSession
+from kotti.resources import Node
 
 class TemplateAPI(object):
     """This implements the 'api' object that's passed to all
@@ -110,6 +112,14 @@ class TemplateAPIEdit(TemplateAPI):
                 selected=self.request.url.startswith(url),
                 ))
         return links
+
+    def get_paste_item(self):
+        info = self.request.session.get('kotti.paste')
+        if info:
+            id, action = info
+            item = DBSession().query(Node).get(id)
+            if item.type_info.addable(self.context, self.request):
+                return item
 
 def addable_types(context, request):
     all_types = configuration['kotti.available_types']

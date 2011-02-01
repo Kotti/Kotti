@@ -5,6 +5,7 @@ import transaction
 from zope.sqlalchemy import ZopeTransactionExtension
 from sqlalchemy.orm import backref
 from sqlalchemy.orm import mapper
+from sqlalchemy.orm import object_mapper
 from sqlalchemy.orm import relation
 from sqlalchemy.orm import scoped_session
 from sqlalchemy.orm import sessionmaker
@@ -118,6 +119,13 @@ class Node(Container, ACL):
 
     def __eq__(self, other):
         return self.id == other.id
+
+    def copy(self):
+        copy = self.__class__()
+        for prop in object_mapper(self).iterate_properties:
+            if prop.key not in ('id', 'parent'):
+                setattr(copy, prop.key, getattr(self, prop.key))
+        return copy
 
 class Document(Node):
     type_info = Node.type_info.copy(

@@ -1,8 +1,10 @@
-from pyramid.view import is_response
+from pyramid.exceptions import Forbidden
+from pyramid.httpexceptions import HTTPFound
 from pyramid.renderers import render_to_response
+from pyramid.security import has_permission
 from pyramid.security import view_execution_permitted
 from pyramid.url import resource_url
-from pyramid.httpexceptions import HTTPFound
+from pyramid.view import is_response
 import colander
 from deform import Form
 from deform import ValidationFailure
@@ -139,20 +141,32 @@ def move_node(context, request):
     P = request.POST
     session = DBSession()
     
-    if 'delete' in P and 'delete-confirm' in P:
-        parent = context.__parent__
-        session.delete(context)
-        elements = []
-        if view_execution_permitted(parent, request, 'edit'):
-            elements.append('edit')
-        location = resource_url(parent, request, *elements)
-        request.session.flash(u'%s deleted.' % context.title, 'success')
-        return HTTPFound(location=location)
+    if 'copy' in P:
+        request.session['kotti.paste'] = (context.id, 'copy')
+        request.session.flash(u'%s copied.' % context.title, 'success')
+
+    if 'cut' in P:
+        request.session['kotti.paste'] = (context.id, 'cut')
+        request.session.flash(u'%s cut.' % context.title, 'success')
+
+    if 'paste' in P:
+        id, action = request.session['kotti.paste']
+        item = session.query(Node).get(id)
+        if action == 'cut':
+            if not has_permission('edit', item, request):
+                raise Forbidden() # XXX testme
+            item.__parent__.children.remove(item)
+            context.children.append(item)
+            del request.session['kotti.paste']
+        elif action == 'copy':
+            copy = item.copy()
+            context.children.append(copy)
+        request.session.flash(u'%s pasted.' % item.title, 'success')
 
     if 'order-up' in P or 'order-down' in P:
         up, down = P.get('order-up'), P.get('order-down')
         id = int(down or up)
-        if up is not None:
+        if up is not None: # pragma: no cover
             mod = -1
         else:
             mod = +1
@@ -162,6 +176,17 @@ def move_node(context, request):
         context.children.pop(index)
         context.children.insert(index+mod, child)
         request.session.flash(u'%s reordered.' % child.title, 'success')
+
+    if 'delete' in P and 'delete-confirm' in P:
+        parent = context.__parent__
+        parent.children.remove(context)
+
+        elements = []
+        if view_execution_permitted(parent, request, 'edit'):
+            elements.append('edit')
+        location = resource_url(parent, request, *elements)
+        request.session.flash(u'%s deleted.' % context.title, 'success')
+        return HTTPFound(location=location)
 
     return {
         'api': TemplateAPIEdit(context, request),
