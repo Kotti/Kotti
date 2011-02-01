@@ -4,7 +4,7 @@ from pyramid.view import render_view_to_response
 from kotti.resources import Document
 from kotti.views.util import TemplateAPI
 
-def node_default_view(context, request):
+def view_node_default(context, request):
     """This view is always registered as the default view for any Node.
 
     Its job is to delegate to a view of which the name may be defined
@@ -18,12 +18,12 @@ def node_default_view(context, request):
         raise NotFound()
     return response
 
-def node_view(context, request):
+def view_node(context, request):
     return {'api': TemplateAPI(context, request)}
 
 def includeme(config):
     config.add_view(
-        node_view,
+        view_node,
         context=Document,
         name='view',
         permission='view',

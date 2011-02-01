@@ -119,7 +119,7 @@ class Node(Container, ACL):
 class Document(Node):
     type_info = Node.type_info.copy(
         name=u'Document',
-        add_view=u'document_add',
+        add_view=u'add_document',
         addable_to=[u'Document'],
         )
 

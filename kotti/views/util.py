@@ -34,6 +34,10 @@ class TemplateAPI(object):
                 template).implementation()
         return template.macros[macro_name]
 
+    @reify
+    def page_title(self):
+        return u'%s - %s' % (self.context.title, self.root.title)
+
     def url(self, context=None, *args, **kwargs):
         if context is None:
             context = self.context
@@ -61,6 +65,15 @@ class TemplateAPI(object):
 
     inside = staticmethod(inside)
 
+class TemplateAPIEdit(TemplateAPI):
+    @reify
+    def page_title(self):
+        return u'%s - %s' % (self.request.view_name, self.root.title)
+
+    @reify
+    def first_heading(self):
+        return u'<h1>Edit <em>%s</em></h1>' % self.context.title
+    
     def edit_links(self):
         links = []
         for name in self.context.type_info.edit_views:

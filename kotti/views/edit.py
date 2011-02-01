@@ -12,7 +12,7 @@ from kotti import configuration
 from kotti.resources import DBSession
 from kotti.resources import Node
 from kotti.resources import Document
-from kotti.views.util import TemplateAPI
+from kotti.views.util import TemplateAPIEdit
 from kotti.views.util import addable_types
 
 class NodeSchema(colander.MappingSchema):
@@ -40,8 +40,9 @@ class FormView(object):
                  u"Errors have been highlighted below.")
     success_path = 'edit'
 
-    def __init__(self, form, **kwargs):
+    def __init__(self, form, api=None, **kwargs):
         self.form = form
+        self.api = api
         for key, value in kwargs.items():
             if key in self.__class__.__dict__:
                 setattr(self, key, value)
@@ -49,13 +50,16 @@ class FormView(object):
                 raise TypeError("Unknown argument %r" % key)
 
     def __call__(self, context, request):
+        if self.api is None:
+            self.api = TemplateAPIEdit(context, request)
+
         result = self._handle_form(context, request)
         if is_response(result):
             return result
         else:
             return render_to_response(
                 self.renderer,
-                {'form': result, 'api': TemplateAPI(context, request)},
+                {'form': result, 'api': self.api},
                 request=request,
                 )
 
@@ -90,7 +94,7 @@ class FormView(object):
     def _title_to_name(self, title):
         return title
 
-def node_add(context, request):
+def add_node(context, request):
     """This view's responsibility is to present the user with a form
     where they can choose between locations to add to, and types of
     nodes to add, and redirect to the actual add form based on this
@@ -119,7 +123,7 @@ def node_add(context, request):
     # Swap first and second possible parents if there's no content in
     # 'possible_parents[0]' yet.  This makes the parent then the
     # default choice in the form:
-    api = TemplateAPI(context, request)
+    api = TemplateAPIEdit(context, request)
     if not api.list_children() and len(possible_parents) > 1:
         possible_parents[0], possible_parents[1] = (
             possible_parents[1], possible_parents[0])
@@ -130,31 +134,34 @@ def node_add(context, request):
         'possible_types': possible_types,
         }
 
-def document_edit(context, request):
+def edit_document(context, request):
     form = Form(DocumentSchema(), buttons=('save',))
     return FormView(form)(context, request)
 
-def document_add(context, request):
+def add_document(context, request):
+    api = TemplateAPIEdit(
+        context, request,
+        first_heading=u'<h1>Add document to <em>%s</em></h1>' % context.title)
     form = Form(DocumentSchema(), buttons=('save',))
-    return FormView(form, add=Document)(context, request)
+    return FormView(form, add=Document, api=api)(context, request)
 
 def includeme(config):
     config.add_view(
-        document_edit,
+        edit_document,
         context=Document,
         name='edit',
         permission='edit',
         )
 
     config.add_view(
-        node_add,
+        add_node,
         name='add',
         permission='add',
         renderer='../templates/edit/add.pt',
         )
 
     config.add_view(
-        document_add,
+        add_document,
         name=Document.type_info.add_view,
         permission='add',
         )

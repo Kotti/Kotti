@@ -143,11 +143,11 @@ class TestNode(UnitTestBase):
 
 class TestNodeView(UnitTestBase):
     def test_it(self):
-        from kotti.views.view import node_view
+        from kotti.views.view import view_node
         session = DBSession()
         root = session.query(Node).get(1)
         request = testing.DummyRequest()
-        info = node_view(root, request)
+        info = view_node(root, request)
         self.assertEqual(info['api'].context, root)
 
 @contextmanager
@@ -155,7 +155,7 @@ def nodes_addable():
     # Allow Nodes to be added to documents:
     save_node_type_info = Node.type_info.copy()
     Node.type_info.addable_to = [u'Document']
-    Node.type_info.add_view = u'document_add'
+    Node.type_info.add_view = u'add_document'
     configuration['kotti.available_types'].append(Node)
     try:
         yield
@@ -208,7 +208,7 @@ class TestAddableTypes(UnitTestBase):
 
 class TestNodeEdit(UnitTestBase):
     def test_single_choice(self):
-        from kotti.views.edit import node_add
+        from kotti.views.edit import add_node
 
         # The view should redirect straight to the add form if there's
         # only one choice of parent and type:
@@ -216,13 +216,13 @@ class TestNodeEdit(UnitTestBase):
         root = session.query(Node).get(1)
         request = testing.DummyRequest()
         
-        response = node_add(root, request)
+        response = add_node(root, request)
         self.assertEqual(response.status, '302 Found')
-        self.assertEqual(response.location, 'http://example.com/document_add')
+        self.assertEqual(response.location, 'http://example.com/add_document')
 
     def test_order_of_addable_parents(self):
-        from kotti.views.edit import node_add
-        # The 'node_add' view sorts the 'possible_parents' returned by
+        from kotti.views.edit import add_node
+        # The 'add_node' view sorts the 'possible_parents' returned by
         # 'addable_types' so that the parent comes first if the
         # context we're looking at does not have any children yet.
 
@@ -234,28 +234,28 @@ class TestNodeEdit(UnitTestBase):
             # The child Document does not contain any other Nodes, so it's
             # second in the 'possible_parents' list returned by 'node_add':
             child = root['child'] = Document(title=u"Child")
-            info = node_add(child, request)
+            info = add_node(child, request)
             first_parent, second_parent = info['possible_parents']
             self.assertEqual(first_parent['node'], root)
             self.assertEqual(second_parent['node'], child)
 
             # Now we add a grandchild and see that this behaviour changes:
             child['grandchild'] = Document(title=u"Grandchild")
-            info = node_add(child, request)
+            info = add_node(child, request)
             first_parent, second_parent = info['possible_parents']
             self.assertEqual(first_parent['node'], child)
             self.assertEqual(second_parent['node'], root)
 
 class TestTemplateAPI(UnitTestBase):
     def _make(self, context=None, id=1):
-        from kotti.views.util import TemplateAPI
+        from kotti.views.util import TemplateAPIEdit
 
         if context is None:
             session = DBSession()
             context = session.query(Node).get(id)
 
         request = testing.DummyRequest()
-        return TemplateAPI(context, request)
+        return TemplateAPIEdit(context, request)
 
     def _create_nodes(self, root):
         # root -> a --> aa
@@ -272,6 +272,14 @@ class TestTemplateAPI(UnitTestBase):
         aca = ac['aca'] = Node()
         acb = ac['acb'] = Node()
         return a, aa, ab, ac, aca, acb
+
+    def test_page_title(self):
+        from kotti.views.util import TemplateAPI
+        edit_api = self._make()
+        view_api = TemplateAPI(edit_api.context, edit_api.request)
+        view_api.root.title = u"Hello, world!"
+        self.assertEqual(edit_api.page_title, u" - Hello, world!")
+        self.assertEqual(view_api.page_title, u"Hello, world! - Hello, world!")
 
     def test_list_children(self):
         api = self._make() # the default context is root

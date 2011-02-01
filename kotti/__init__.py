@@ -66,7 +66,7 @@ def main(global_config, **settings):
 
     config.add_static_view('static-deform', 'deform:static')
     config.add_static_view('static-kotti', 'kotti:static')
-    config.add_view('kotti.views.view.node_default_view', context=Node)
+    config.add_view('kotti.views.view.view_node_default', context=Node)
 
     # Include modules listed in 'includeme' configuration:
     for module in configuration['kotti.includes']:
