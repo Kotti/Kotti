@@ -123,10 +123,13 @@ class Node(Container, ACL):
     def copy(self, **kwargs):
         copy = self.__class__()
         for prop in object_mapper(self).iterate_properties:
-            if prop.key not in ('id', 'parent'):
+            if prop.key not in ('id', 'parent', 'children'):
                 setattr(copy, prop.key, getattr(self, prop.key))
         for key, value in kwargs.items():
             setattr(copy, key, value)
+        children = list(self.children)
+        for child in children:
+            copy.children.append(child.copy())
         return copy
 
 class Document(Node):

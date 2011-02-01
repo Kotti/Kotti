@@ -164,6 +164,8 @@ def move_node(context, request):
         elif action == 'copy':
             copy = item.copy()
             name = copy.name
+            if not name: # for root
+                name = title_to_name(copy.title)
             while name in context.keys():
                 name = disambiguate_name(name)
             copy.name = name

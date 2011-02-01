@@ -157,3 +157,21 @@ We can paste twice since we copied:
   >>> browser.open(tests.BASE_URL + '/second-child-1/')
   >>> "Second Child" in browser.contents
   True
+
+We can also copy and paste items that contain children, like the whole
+site:
+
+  >>> browser.open(tests.BASE_URL)
+  >>> browser.getLink("Edit").click()
+  >>> browser.getLink("Move").click()
+  >>> browser.getControl(name="copy").click()
+  >>> "My Site copied" in browser.contents
+  True
+  >>> browser.open(tests.BASE_URL + '/second-child/')
+  >>> browser.getLink("Edit").click()
+  >>> browser.getLink("Move").click()
+  >>> browser.getControl(name="paste").click()
+  >>> "My Site pasted" in browser.contents
+  True
+  >>> browser.open(tests.BASE_URL + '/second-child/my-site/')
+  >>> browser.open(tests.BASE_URL + '/second-child/my-site/second-child/')
