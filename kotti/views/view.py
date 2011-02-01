@@ -1,5 +1,22 @@
+from pyramid.exceptions import NotFound
+from pyramid.view import render_view_to_response
+
 from kotti.resources import Document
-from kotti.views import TemplateAPI
+from kotti.views.util import TemplateAPI
+
+def node_default_view(context, request):
+    """This view is always registered as the default view for any Node.
+
+    Its job is to delegate to a view of which the name may be defined
+    per instance.  If a instance level view is not defined for
+    'context' (in 'context.defaultview'), we will fall back to a view
+    with the name 'view'.
+    """
+    view_name = context.default_view or u'view'
+    response = render_view_to_response(context, request, name=view_name)
+    if response is None: # pragma: no coverage
+        raise NotFound()
+    return response
 
 def node_view(context, request):
     return {'api': TemplateAPI(context, request)}

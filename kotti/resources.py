@@ -57,6 +57,8 @@ class Container(object, DictMixin):
         return keys
 
 class TypeInfo(object):
+    addable_to = ()
+
     def __init__(self, **kwargs):
         self.__dict__.update(kwargs)
 
@@ -65,10 +67,18 @@ class TypeInfo(object):
         d.update(kwargs)
         return TypeInfo(**d)
 
+    def addable(self, context, request):
+        """Return True if the type described in 'self' may be added to
+        'context'.
+        """
+        # XXX Check for permission for self.add_view
+        return context.type_info.name in self.addable_to
+
 class Node(Container, ACL):
     type_info = TypeInfo(
         name=u'Node',
         add_view=None,
+        addable_to=[],
         )
 
     def __init__(self, name=None, parent=None, default_view=None,

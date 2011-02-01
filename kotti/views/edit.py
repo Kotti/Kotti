@@ -10,9 +10,10 @@ from deform.widget import TextAreaWidget
 
 from kotti import configuration
 from kotti.resources import DBSession
-from kotti.resources import Document
 from kotti.resources import Node
-from kotti.views import TemplateAPI
+from kotti.resources import Document
+from kotti.views.util import TemplateAPI
+from kotti.views.util import addable_types
 
 class NodeSchema(colander.MappingSchema):
     title = colander.SchemaNode(colander.String())
@@ -102,41 +103,11 @@ def node_add(context, request):
         session = DBSession()
         what = [t for t in all_types if t.type_info.name == what][0]
         where = session.query(Node).get(int(where))
-        location = resource_url(where, request, what.type_info.add_view)
+        location = resource_url(
+            where, request, what.type_info.add_view)
         return HTTPFound(location=location)
 
-    # 'possible_parents' is a list of dicts with 'node' and 'factories',
-    # where 'node' is the context to add to and 'factories' is the list
-    # of factories that can be applied in the contetx:
-    possible_parents = []
-    parent = context
-    while parent is not None:
-        possible_parents.append({'node': parent, 'factories': []})
-        parent = parent.__parent__
-
-    for entry in possible_parents:
-        parent_info = entry['node'].type_info
-        for factory in all_types:
-            if parent_info.name in factory.type_info.addable_to:
-                # XXX Check for permission for factory.type_info.add_view
-                entry['factories'].append(factory)
-
-    possible_parents = filter(lambda e: e['factories'], possible_parents)
-
-    _possible_types = {}
-    for entry in possible_parents:
-        for factory in entry['factories']:
-            name = factory.type_info.name
-            pt = _possible_types.get(name, {'factory': factory, 'nodes': []})
-            pt['nodes'].append(entry['node'])
-            _possible_types[name] = pt
-
-    possible_types = []
-    for t in all_types:
-        entry = _possible_types.get(t.type_info.name)
-        if entry:
-            possible_types.append(entry)
-
+    possible_parents, possible_types = addable_types(context, request)
     if len(possible_parents) == 1 and len(possible_parents[0]['factories']) == 1:
         # Redirect to the add form straight away if there's only one
         # choice of parents and addable types:

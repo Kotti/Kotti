@@ -180,7 +180,7 @@ class TestNodeEdit(UnitTestBase):
 
         self._make_node_addable()
 
-        # We should be able to add both Nodes and documents now:
+        # We should be able to add both Nodes and Documents now:
         info = node_add(root, request)
         (possible_parent,) = info['possible_parents']
         self.assertEqual(possible_parent['factories'], [Document, Node])
@@ -220,7 +220,7 @@ class TestNodeEdit(UnitTestBase):
 
 class TestTemplateAPI(UnitTestBase):
     def _make(self, context=None, id=1):
-        from kotti.views import TemplateAPI
+        from kotti.views.util import TemplateAPI
 
         if context is None:
             session = DBSession()
