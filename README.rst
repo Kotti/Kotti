@@ -2,6 +2,8 @@
 Kotti
 =====
 
+.. contents::
+
 What is it?
 ===========
 
@@ -52,6 +54,23 @@ Implementation notes
 
 Take a look at `this blog post`_ for more implementation details.
 
+Installation
+============
+
+It's recommended to install Kotti inside a virtualenv_.
+
+Change into the directory of your Kotti download and issue::
+
+  $ python setup.py install
+
+To run Kotti with the included development profile then run::
+
+  $ paster serve development.ini
+
+To run all tests::
+
+  $ python setup.py nosetests
+
 Thanks
 ======
 
@@ -61,4 +80,5 @@ Kotti is proudly sponsored by the `University of Coimbra`_.
 .. _SQLAlchemy: http://www.sqlalchemy.org/
 .. _support in SQLAlchemy: http://www.sqlalchemy.org/docs/core/engines.html#supported-databases
 .. _this blog post: http://danielnouri.org/notes/2010/01/25/16-hours-into-a-new-cms-with-pyramid/
+.. _virtualenv: http://pypi.python.org/pypi/virtualenv
 .. _University of Coimbra: http://uc.pt/
