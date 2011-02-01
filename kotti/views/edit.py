@@ -1,5 +1,6 @@
 from pyramid.view import is_response
 from pyramid.renderers import render_to_response
+from pyramid.security import view_execution_permitted
 from pyramid.url import resource_url
 from pyramid.httpexceptions import HTTPFound
 import colander
@@ -135,6 +136,17 @@ def add_node(context, request):
         }
 
 def move_node(context, request):
+    if 'delete' in request.POST and 'delete-confirm' in request.POST:
+        parent = context.__parent__
+        session = DBSession()
+        session.delete(context)
+        elements = []
+        if view_execution_permitted(parent, request, 'edit'):
+            elements.append('edit')
+        location = resource_url(parent, request, *elements)
+        request.session.flash(u'%s deleted.' % context.title, 'success')
+        return HTTPFound(location=location)
+
     return {
         'api': TemplateAPIEdit(context, request),
         }

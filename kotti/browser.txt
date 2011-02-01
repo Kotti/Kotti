@@ -81,9 +81,14 @@ Add two more documents, at different levels
   >>> browser.url == tests.BASE_URL + '/Second%20Child/Grandchild/'
   True
 
-Move a document
----------------
+Delete a document
+-----------------
 
   >>> browser.getLink("Edit").click()
   >>> browser.getLink("Move").click()
-
+  >>> browser.getControl(name="delete-confirm").displayValue = ['Yes']
+  >>> browser.getControl("delete").click()
+  >>> "Grandchild deleted." in browser.contents
+  True
+  >>> browser.url == tests.BASE_URL + '/Second%20Child/edit'
+  True

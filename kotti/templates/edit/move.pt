@@ -10,8 +10,25 @@
     <div class="form">
       <div metal:use-macro="api['snippets.messages']">
       </div>
-      <form action="./bla" method="post">
+
+      <form action="./move" method="post">
+        <h2>Delete</h2>
+        <ul>
+          <li>          
+            Are you sure you want to delete <em>${api.context.title}</em>?
+            <br/>
+            <input id="delete-checkbox" type="checkbox"
+                   name="delete-confirm" value="Yes" />
+            <label for="delete-checkbox">Yes</label>
+          </li>
+          <li>
+            <button type="submit" name="delete" value="delete" class="submit">
+              Delete
+            </button>
+          </li>
+        </ul>
       </form>
+
     </div>
   </div>
 

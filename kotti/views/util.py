@@ -68,7 +68,7 @@ class TemplateAPI(object):
 class TemplateAPIEdit(TemplateAPI):
     @reify
     def page_title(self):
-        return u'%s - %s' % (self.request.view_name, self.root.title)
+        return u'%s - %s' % (self.request.view_name.title(), self.root.title)
 
     @reify
     def first_heading(self):

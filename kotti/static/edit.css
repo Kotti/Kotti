@@ -25,7 +25,7 @@
 /* Form styles */
 
 div.form {
-    width: 30em;
+    width: 35em;
 }
 
 form ul {
@@ -36,7 +36,7 @@ form ul {
 
 form li {
 	display: block;
-    margin: 1em;
+    padding: 1em;
 }
 
 form li.error {
@@ -49,13 +49,26 @@ form label.desc {
     font-weight: bold;
 }
 
-form fieldset {
+form {
+    padding: 1em;
+    margin: 1em 1em 2em;
     background-color:  #eee;
+    border: 1px solid #aaa;
+}
+
+form h2 {
+    margin-top: 0;
+}
+
+form fieldset {
+    margin: 0;
+    padding: 0;
+    border-width: 0;
 }
 
 .inline{
-	margin: 0px;
-	padding: 0px;
+	margin: 0;
+	padding: 0;
 }
 
 .errorLi {
