@@ -30,10 +30,21 @@
         });
     }
 
+    function collapse() {
+        $("form.collapse").each(function() {
+            $(this).children("ul").hide();
+            $(this).click(function() {
+                $(this).children("ul").show("fast");
+                $(this).unbind("click");
+            });
+        });
+    }
+
     $(document).ready(function() {
         deform.load();
         dirty_forms();
         dropdowns();
+        collapse();
     });
 
 

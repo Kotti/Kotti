@@ -40,6 +40,7 @@
 .breadcrumbs .dropdown a {
     display: block;
     padding: 0.2em 1em;
+    color: black;
 }
 
 .breadcrumbs .dropdown a:hover {
