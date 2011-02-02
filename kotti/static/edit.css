@@ -2,6 +2,56 @@
     background-color: #edc06b;
 }
 
+/* Breadcrumbs */
+
+.breadcrumbs a {
+    text-decoration: none;
+    color: #333;
+}
+
+.breadcrumbs a:visited {
+    color: #333;
+}
+
+.breadcrumbs .handle {
+    font-weight: bold;
+}
+
+.breadcrumbs .dropdown {
+    display: none;
+    position: absolute;
+    margin-top: 0.2em;
+    background-color: #eee;
+    border: 1px solid #aaa;
+    z-index: 1;
+}
+
+.breadcrumbs .dropdown ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.breadcrumbs .dropdown h4 {
+    margin: 0 0.5em 0 0.5em;
+    padding: 0.2em;
+}
+
+.breadcrumbs .dropdown a {
+    display: block;
+    padding: 0.2em 1em;
+}
+
+.breadcrumbs .dropdown a:hover {
+    background-color: white;
+}
+
+.breadcrumbs .dropdown.open {
+    display: block;
+}
+
+/* Messages */
+
 .message {
     background-color: #bbb;
     padding: 0.5em 1em;

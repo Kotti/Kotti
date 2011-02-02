@@ -292,12 +292,12 @@ class TestTemplateAPI(UnitTestBase):
         self.assertEquals(api.list_children(a), [aa, ab, ac])
         self.assertEquals(api.list_children(aca), [])
 
-        # We can set 'go_up' to True to go up in the hierachy if
-        # there's no children.  Only the third case gets a different
-        # result:
-        self.assertEquals(api.list_children(root, go_up=True), [a])
-        self.assertEquals(api.list_children(a, go_up=True), [aa, ab, ac])
-        self.assertEquals(api.list_children(aca, go_up=True), [aca, acb])
+        # The 'list_children_go_up' function works slightly different:
+        # it returns the parent's children if the context doesn't have
+        # any.  Only the third case is gonna be different:
+        self.assertEquals(api.list_children_go_up(root), [a])
+        self.assertEquals(api.list_children_go_up(a), [aa, ab, ac])
+        self.assertEquals(api.list_children_go_up(aca), [aca, acb])
 
     def test_root(self):
         api = self._make()
@@ -309,7 +309,7 @@ class TestTemplateAPI(UnitTestBase):
     def test_edit_links(self):
         api = self._make()
         self.assertEqual(
-            api.edit_links(), [
+            api.edit_links, [
                 {'name': 'edit', 'selected': False,
                  'url': 'http://example.com/edit'},
                 {'name': 'add', 'selected': False,
@@ -328,11 +328,30 @@ class TestTemplateAPI(UnitTestBase):
         root = api.root
         root.type_info = root.type_info.copy(edit_views=['edit'])
 
+        api = self._make()
         self.assertEqual(
-            api.edit_links(), [
+            api.edit_links, [
                 {'name': 'edit', 'selected': False,
                  'url': 'http://example.com/edit'},
                 ])
+
+    def test_context_links(self):
+        # 'context_links' returns a two-tuple of the form (siblings,
+        # children), where the URLs point to edit pages:
+        root = self._make().root
+        a, aa, ab, ac, aca, acb = self._create_nodes(root)
+        api = self._make(ac)
+        siblings, children = api.context_links
+
+        # Note how siblings don't include self (ac)
+        self.assertEqual(
+            [item['node'] for item in siblings],
+            [aa, ab]
+            )
+        self.assertEqual(
+            [item['node'] for item in children],
+            [aca, acb]
+            )
 
     def test_breadcrumbs(self):
         root = self._make().root
@@ -343,6 +362,16 @@ class TestTemplateAPI(UnitTestBase):
             [item['node'] for item in breadcrumbs],
             [root, a, ac, acb]
             )
+
+class TestUtil(UnitTestBase):
+    def test_title_to_name(self):
+        from kotti.views.util import title_to_name
+        self.assertEqual(title_to_name(u'Foo Bar'), u'foo-bar')
+
+    def test_disambiguate_name(self):
+        from kotti.views.util import disambiguate_name
+        self.assertEqual(disambiguate_name(u'foo'), u'foo-1')
+        self.assertEqual(disambiguate_name(u'foo-3'), u'foo-4')
 
 ## Functional tests
 

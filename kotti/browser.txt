@@ -101,9 +101,7 @@ Reorder documents
 Delete a document
 -----------------
 
-  >>> browser.open(tests.BASE_URL + '/second-child/grandchild/')
-  >>> browser.getLink("Edit").click()
-  >>> browser.getLink("Move").click()
+  >>> browser.open(tests.BASE_URL + '/second-child/grandchild/move')
   >>> browser.getControl(name="delete-confirm").displayValue = ['Yes']
   >>> browser.getControl("delete").click()
   >>> "Grandchild deleted" in browser.contents
@@ -114,16 +112,12 @@ Delete a document
 Copy and paste
 --------------
 
-  >>> browser.open(tests.BASE_URL + '/second-child/')
-  >>> browser.getLink("Edit").click()
-  >>> browser.getLink("Move").click()
+  >>> browser.open(tests.BASE_URL + '/second-child/move')
   >>> browser.getControl(name="cut").click()
   >>> "Second Child cut" in browser.contents
   True
 
-  >>> browser.open(tests.BASE_URL + '/child-one/')
-  >>> browser.getLink("Edit").click()
-  >>> browser.getLink("Move").click()
+  >>> browser.open(tests.BASE_URL + '/child-one/move')
   >>> browser.getControl(name="paste").click()
   >>> "Second Child pasted" in browser.contents
   True
@@ -133,15 +127,11 @@ Copy and paste
   Traceback (most recent call last):
   HTTPError: HTTP Error 404: Not Found
 
-  >>> browser.open(tests.BASE_URL + '/child-one/second-child/')
-  >>> browser.getLink("Edit").click()
-  >>> browser.getLink("Move").click()
+  >>> browser.open(tests.BASE_URL + '/child-one/second-child/move')
   >>> browser.getControl(name="copy").click()
   >>> "Second Child copied" in browser.contents
   True
-  >>> browser.open(tests.BASE_URL)
-  >>> browser.getLink("Edit").click()
-  >>> browser.getLink("Move").click()
+  >>> browser.open(tests.BASE_URL + '/move')
   >>> browser.getControl(name="paste").click()
   >>> "Second Child pasted" in browser.contents
   True
@@ -161,15 +151,11 @@ We can paste twice since we copied:
 We can also copy and paste items that contain children, like the whole
 site:
 
-  >>> browser.open(tests.BASE_URL)
-  >>> browser.getLink("Edit").click()
-  >>> browser.getLink("Move").click()
+  >>> browser.open(tests.BASE_URL + '/move')
   >>> browser.getControl(name="copy").click()
   >>> "My Site copied" in browser.contents
   True
-  >>> browser.open(tests.BASE_URL + '/second-child/')
-  >>> browser.getLink("Edit").click()
-  >>> browser.getLink("Move").click()
+  >>> browser.open(tests.BASE_URL + '/second-child/move')
   >>> browser.getControl(name="paste").click()
   >>> "My Site pasted" in browser.contents
   True
@@ -178,13 +164,9 @@ site:
 
 And finally cut and paste a tree:
 
-  >>> browser.open(tests.BASE_URL + '/second-child/')
-  >>> browser.getLink("Edit").click()
-  >>> browser.getLink("Move").click()
+  >>> browser.open(tests.BASE_URL + '/second-child/move')
   >>> browser.getControl(name="cut").click()
-  >>> browser.open(tests.BASE_URL + '/child-one/second-child/')
-  >>> browser.getLink("Edit").click()
-  >>> browser.getLink("Move").click()
+  >>> browser.open(tests.BASE_URL + '/child-one/second-child/move')
   >>> browser.getControl(name="paste").click()
   >>> "Second Child pasted" in browser.contents
   True
@@ -195,16 +177,28 @@ And finally cut and paste a tree:
 
 Note how we can't cut and paste an item into itself:
 
-  >>> browser.open(tests.BASE_URL + '/child-one/')
-  >>> browser.getLink("Edit").click()
-  >>> browser.getLink("Move").click()
+  >>> browser.open(tests.BASE_URL + '/child-one/move')
   >>> browser.getControl(name="cut").click()
   >>> browser.getControl(name="paste")
   Traceback (most recent call last):
   LookupError: name 'paste'
-  >>> browser.open(tests.BASE_URL + '/child-one/second-child/')
-  >>> browser.getLink("Edit").click()
-  >>> browser.getLink("Move").click()
+  >>> browser.open(tests.BASE_URL + '/child-one/second-child/move')
   >>> browser.getControl(name="paste")
   Traceback (most recent call last):
   LookupError: name 'paste'
+
+Whether we can paste or not also depends on the 'type_info.addable'
+property:
+
+  >>> browser.open(tests.BASE_URL + '/child-one/move')
+  >>> browser.getControl(name="copy").click()
+  >>> browser.open(tests.BASE_URL + '/child-one/second-child/move')
+  >>> browser.getControl(name="paste")
+  <SubmitControl name='paste' type='submitbutton'>
+  >>> save_addable = Document.type_info.addable_to
+  >>> Document.type_info.addable_to = ()
+  >>> browser.reload()
+  >>> browser.getControl(name="paste")
+  Traceback (most recent call last):
+  LookupError: name 'paste'
+  >>> Document.type_info.addable_to = save_addable

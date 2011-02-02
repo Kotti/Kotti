@@ -25,7 +25,7 @@
         </ul>
       </div>
       <div id="navigation-local">
-        <ul tal:define="children api.list_children(go_up=True)">
+        <ul tal:define="children api.list_children_go_up()">
           <li tal:condition="api.context not in children">
             <a href="${api.url()}">${api.context.title}</a>
           </li>

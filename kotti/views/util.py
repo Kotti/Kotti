@@ -60,7 +60,7 @@ class TemplateAPI(object):
             context = self.context
         return has_permission(permission, context, self.request)
 
-    def list_children(self, context=None, go_up=False, permission='view'):
+    def list_children(self, context=None, permission='view'):
         if context is None:
             context = self.context
         children = []
@@ -68,8 +68,14 @@ class TemplateAPI(object):
             if (not permission or
                 has_permission(permission, child, self.request)):
                 children.append(child)
-        if go_up and not children and context.__parent__ is not None:
-            return self.list_children(context.__parent__)
+        return children
+
+    def list_children_go_up(self, context=None, permission='view'):
+        if context is None:
+            context = self.context
+        children = self.list_children(context, permission)
+        if not children and context.__parent__ is not None:
+            children = self.list_children(context.__parent__)
         return children
 
     inside = staticmethod(inside)
@@ -84,24 +90,43 @@ class TemplateAPIEdit(TemplateAPI):
     def first_heading(self):
         return u'<h1>Edit <em>%s</em></h1>' % self.context.title
 
-    @reify
-    def breadcrumbs(self):
+    def _find_edit_view(self, item):
+        view_name = self.request.view_name
+        if not view_execution_permitted(item, self.request, view_name):
+            view_name = u'edit' # XXX testme
+        if not view_execution_permitted(item, self.request, view_name):
+            view_name = u'' # XXX testme
+        return view_name
+
+    def _make_links(self, items):
         links = []
-        for item in tuple(reversed(self.lineage)):
-            view_name = self.request.view_name
-            if not view_execution_permitted(item, self.request, view_name):
-                view_name = u'edit' # XXX testme
-            if not view_execution_permitted(item, self.request, view_name):
-                view_name = u'' # XXX testme
+        for item in items:
+            view_name = self._find_edit_view(item)
             url = resource_url(item, self.request, view_name)
             links.append(dict(
                 url=url,
                 name=item.title,
                 is_edit_link=view_name != '',
                 node=item,
+                is_context=item == self.context,
                 ))
         return links
 
+    @reify
+    def breadcrumbs(self):
+        return self._make_links(tuple(reversed(self.lineage)))
+
+    @reify
+    def context_links(self):
+        siblings = []
+        if self.context.__parent__ is not None:
+            siblings = self._make_links(
+                self.list_children(self.context.__parent__))
+            siblings = filter(lambda l: not l['is_context'], siblings)
+        children = self._make_links(self.list_children(self.context))
+        return siblings, children
+
+    @reify
     def edit_links(self):
         links = []
         for name in self.context.type_info.edit_views:
@@ -166,9 +191,10 @@ def addable_types(context, request):
     return possible_parents, possible_types
 
 def title_to_name(title):
-    name = u''.join(
-        ch if ch in string.letters + string.digits else u'-' for ch in title)
-    return name.lower()
+    okay = string.letters + string.digits + '-'
+    name = u'-'.join(title.lower().split())
+    name = u''.join(ch for ch in name if ch in okay)
+    return name
 
 def disambiguate_name(name):
     parts = name.split(u'-')

@@ -22,7 +22,7 @@
     <div id="header">
       <div class="tabs1">
         <ul>
-          <li tal:repeat="link api.edit_links()">
+          <li tal:repeat="link api.edit_links">
             <a href="${link['url']}"
                class="${link['selected'] and 'selected' or None}">
               ${link['name'].title()}
@@ -34,17 +34,34 @@
     </div>
     <div id="content">
       <div class="breadcrumbs">
-        <span tal:repeat="link api.breadcrumbs">
-          <a href="${link.url}"
-             class="${not link.is_edit_link and 'no-edit-link'}"
-             tal:define="is_context link.node == api.context"
-             tal:omit-tag="is_context">
-            <em tal:omit-tag="not is_context">
+        <div tal:repeat="link api.breadcrumbs" tal:omit-tag="">
+          <a href="${link.is_context and '#bread-dropdown' or link.url}"
+             class="${not link.is_edit_link and 'no-edit-link' or ''} ${link.is_context and 'is-context dropdown-trigger' or ''}">
+            <em tal:omit-tag="not link.is_context">
               ${link.name}
             </em>
+            <span tal:content="not link.is_context and '&rarr;' or default">
+              ↓              
+            </span>
           </a>
-          &rarr;
-        </span>
+          <div id="bread-dropdown" class="dropdown"
+               tal:condition="link.is_context">
+            <ul tal:define="(siblings, children) api.context_links">
+              <talcondition tal:condition="children" tal:omit-tag="">
+                <li><h4>Items in <em>${api.context.title}</em></h4></li>
+                <li tal:repeat="link children">
+                  <a href="${link.url}" class="${not link.is_edit_link and 'no-edit-link'}">${link.name}</a>
+                </li>
+              </talcondition>
+              <talcondition tal:condition="siblings" tal:omit-tag="">
+                <li><h4>Items in <em>${api.context.__parent__.title}</em></h4></li>
+                <li tal:repeat="link siblings">
+                  <a href="${link.url}" class="${not link.is_edit_link and 'no-edit-link'}">${link.name}</a>
+                </li>
+              </talcondition>
+            </ul>
+          </div>
+        </div>
       </div>
       <div metal:define-slot="content">
         <h1>${api.context.title}</h1>
