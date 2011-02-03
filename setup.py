@@ -21,7 +21,7 @@ if sys.version_info[:3] < (2,5,0):
     requires.append('pysqlite')
 
 setup(name='Kotti',
-      version='0.1a2',
+      version='0.1a3',
       description="A user-friendly web content management system (WCMS).  Written in Python, based on Pyramid and SQLAlchemy.",
       long_description=README + '\n\n' +  CHANGES,
       classifiers=[
