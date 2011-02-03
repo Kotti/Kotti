@@ -24,7 +24,11 @@ class TemplateAPI(object):
         master_view=configuration['kotti.templates.master_view'],
         master_edit=configuration['kotti.templates.master_edit'],
         )
-    
+
+    base_css = configuration['kotti.templates.base_css']
+    view_css = configuration['kotti.templates.view_css']
+    edit_css = configuration['kotti.templates.edit_css']
+
     def __init__(self, context, request, **kwargs):
         self.context, self.request = context, request
         self.__dict__.update(kwargs)

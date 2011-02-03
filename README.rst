@@ -87,6 +87,16 @@ The default configuration for these two variables is::
 
 You may override these to provide your own master templates.
 
+*kotti.templates.base_css*, *kotti.templates.view_css*, and *kotti.templates.edit_css*
+--------------------------------------------------------------------------------------
+
+These variables define the CSS files used by the default master
+templates.  The defaults are::
+
+  kotti.templates.base_css = kotti:static/base.css
+  kotti.templates.view_css': kotti:static/view.css
+  kotti.templates.edit_css': 'kotti:static/edit.css
+
 *kotti.includes*
 ----------------
 
@@ -145,6 +155,7 @@ example of a Kotti content type implementation::
       Column('body', UnicodeText()),
       Column('mime_type', String(30)),
   )
+  mapper(Document, documents, inherits=Node, polymorphic_identity='document')
 
 ACL security
 ------------
@@ -161,6 +172,12 @@ looks like this::
 
 This ACL is then inherited throughout the site.
 
+Issue tracker and development
+=============================
+
+Kotti is `developed on Github`_.  The `issue tracker`_ also lives
+there.
+
 Under the hood
 ==============
 
@@ -176,10 +193,10 @@ much as possible, thus:
 Kotti aims to use few abstractions, yet it aims to be somewhat
 extensible.
 
-You can extend Kotti with new content types and views
-from your own Python packages.  If all that you want is replace
-templates and styles, then it's sufficient to hook up your static
-files in the configuration.
+You can extend Kotti with new content types and views from your own
+Python packages.  If all that you want is replace templates and
+stylesheets, then it's sufficient to hook up plain old files in the
+configuration.
 
 For storage, Kotti uses any relational database for which there is
 `support in SQLAlchemy`_.  There's no storage abstraction apart from
@@ -200,6 +217,8 @@ Kotti is proud to be sponsored by the `University of Coimbra`_.
 .. _pyramid.authentication.AuthTktAuthenticationPolicy: http://docs.pylonsproject.org/projects/pyramid/dev/api/authentication.html
 .. _pyramid.authorization.ACLAuthorizationPolicy: http://docs.pylonsproject.org/projects/pyramid/dev/api/authorization.html
 .. _pyramid.session.UnencryptedCookieSessionFactoryConfig: http://docs.pylonsproject.org/projects/pyramid/dev/api/session.html
+.. _developed on Github: https://github.com/dnouri/Kotti
+.. _issue tracker: https://github.com/dnouri/Kotti/issues
 .. _Python: http://www.python.org/
 .. _Pyramid: http://docs.pylonsproject.org/projects/pyramid/dev/
 .. _SQLAlchemy: http://www.sqlalchemy.org/

@@ -47,6 +47,9 @@ configuration = Configuration(
     {
         'kotti.templates.master_view': 'kotti:templates/view/master.pt',
         'kotti.templates.master_edit': 'kotti:templates/edit/master.pt',
+        'kotti.templates.base_css': 'kotti:static/base.css',
+        'kotti.templates.view_css': 'kotti:static/view.css',
+        'kotti.templates.edit_css': 'kotti:static/edit.css',
         'kotti.includes': 'kotti.views.view kotti.views.edit',
         'kotti.available_types': 'kotti.resources.Document',
         'kotti.authentication_policy_factory': 'kotti.authtkt_factory',
