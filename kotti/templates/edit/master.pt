@@ -33,20 +33,24 @@
       <div class="clear"></div>
     </div>
     <div id="content">
-      <div class="breadcrumbs">
+      <div class="breadcrumbs" tal:define="(siblings, children) api.context_links">
+        <span class="you-are-here">You are here:</span>
         <div tal:repeat="link api.breadcrumbs" tal:omit-tag="">
           <a href="${link.is_context and '#bread-dropdown' or link.url}"
-             class="${not link.is_edit_link and 'no-edit-link' or ''} ${link.is_context and 'is-context dropdown-trigger' or ''}">
+             class="${not link.is_edit_link and 'no-edit-link' or ''} ${link.is_context and 'is-context dropdown-trigger' or ''}"
+             tal:define="no_nav not (siblings or children)"
+             tal:omit-tag="link.is_context and no_nav">
             <em tal:omit-tag="not link.is_context">
               ${link.name}
             </em>
-            <span tal:content="not link.is_context and '&rarr;' or default">
-              ↓              
+            <span tal:content="not link.is_context and '&rarr;' or default"
+                  tal:condition="not link.is_context or (link.is_context and not no_nav)">
+              ↓
             </span>
           </a>
           <div id="bread-dropdown" class="dropdown"
-               tal:condition="link.is_context">
-            <ul tal:define="(siblings, children) api.context_links">
+               tal:condition="link.is_context and siblings or children">
+            <ul>
               <talcondition tal:condition="children" tal:omit-tag="">
                 <li><h4>Items in <em>${api.context.title}</em></h4></li>
                 <li tal:repeat="link children">

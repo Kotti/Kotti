@@ -4,6 +4,14 @@
 
 /* Breadcrumbs */
 
+.breadcrumbs {
+    color: #333;
+}
+
+.breadcrumbs .you-are-here {
+    margin-right: 0.8em;
+}
+
 .breadcrumbs a {
     text-decoration: none;
     color: #333;
@@ -13,6 +21,12 @@
     color: #333;
 }
 
+.breadcrumbs .dropdown-trigger {
+    background-color:  #eee;
+    border: 1px solid #aaa;
+    padding: 0.1em 0.5em;
+}
+
 .breadcrumbs .handle {
     font-weight: bold;
 }
@@ -20,10 +34,13 @@
 .breadcrumbs .dropdown {
     display: none;
     position: absolute;
-    margin-top: 0.2em;
-    background-color: #eee;
-    border: 1px solid #aaa;
     z-index: 1;
+    border: 1px solid #aaa;
+    background-color: #eee;
+
+	opacity: .95;
+	filter: alpha(opacity=95);
+	-ms-filter:"progid:DXImageTransform.Microsoft.Alpha(Opacity=95)";
 }
 
 .breadcrumbs .dropdown ul {
