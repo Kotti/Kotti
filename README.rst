@@ -32,8 +32,8 @@ out and give us feedback, but don't use it in production yet.  We're
 likely to make fundamental changes to both Kotti's API and its
 database structure in weeks to come.
 
-Installation
-============
+Installation using virtualenv
+=============================
 
 It's recommended to install Kotti inside a virtualenv_.
 
@@ -48,6 +48,24 @@ To run Kotti with the included development profile then type::
 To run all tests::
 
   $ python setup.py nosetests
+
+
+Installation using buildout
+===========================
+
+Alternatively, you can use the provided buildout_ configuration like so::
+
+  $ python bootstrap.py
+  $ bin/buildout
+
+To run Kotti with the included development profile then type::
+
+  $ bin/paster serve development.ini
+
+To run all tests::
+
+  $ bin/test
+
 
 Configuring Kotti
 =================
@@ -213,6 +231,7 @@ Kotti is proud to be sponsored by the `University of Coimbra`_.
 .. _web content management system: http://en.wikipedia.org/wiki/Web_content_management_system
 .. _Access control lists: http://en.wikipedia.org/wiki/Access_control_list
 .. _virtualenv: http://pypi.python.org/pypi/virtualenv
+.. _buildout: http://pypi.python.org/pypi/zc.buildout
 .. _Paste Deploy: http://pythonpaste.org/deploy/
 .. _pyramid.authentication.AuthTktAuthenticationPolicy: http://docs.pylonsproject.org/projects/pyramid/dev/api/authentication.html
 .. _pyramid.authorization.ACLAuthorizationPolicy: http://docs.pylonsproject.org/projects/pyramid/dev/api/authorization.html
