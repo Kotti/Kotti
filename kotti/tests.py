@@ -318,8 +318,6 @@ class TestTemplateAPI(UnitTestBase):
                  'url': 'http://example.com/move'},
                 {'name': 'share', 'selected': False,
                  'url': 'http://example.com/share'},
-                {'name': 'browse', 'selected': False,
-                 'url': 'http://example.com/browse'}
                 ])
 
         # Edit links are controlled through
