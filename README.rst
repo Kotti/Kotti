@@ -94,8 +94,8 @@ These variables define the CSS files used by the default master
 templates.  The defaults are::
 
   kotti.templates.base_css = kotti:static/base.css
-  kotti.templates.view_css': kotti:static/view.css
-  kotti.templates.edit_css': 'kotti:static/edit.css
+  kotti.templates.view_css = kotti:static/view.css
+  kotti.templates.edit_css = kotti:static/edit.css
 
 *kotti.includes*
 ----------------
