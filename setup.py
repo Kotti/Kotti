@@ -21,19 +21,21 @@ if sys.version_info[:3] < (2,5,0):
     requires.append('pysqlite')
 
 setup(name='Kotti',
-      version='0.0',
-      description='Kotti',
+      version='0.1a1',
+      description="A user-friendly web content management system (WCMS).  Written in Python, based on Pyramid and SQLAlchemy.",
       long_description=README + '\n\n' +  CHANGES,
       classifiers=[
+        "Development Status :: 3 - Alpha",
         "Programming Language :: Python",
         "Framework :: Pylons",
         "Topic :: Internet :: WWW/HTTP",
+        "Topic :: Internet :: WWW/HTTP :: Dynamic Content",
         "Topic :: Internet :: WWW/HTTP :: WSGI :: Application",
         ],
-      author='',
-      author_email='',
-      url='',
-      keywords='web pylons pyramid',
+      author='Daniel Nouri',
+      author_email='daniel.nouri@gmail.com',
+      url='https://github.com/dnouri/Kotti',
+      keywords='web pylons pyramid cms wcms',
       packages=find_packages(),
       include_package_data=True,
       zip_safe=False,
@@ -47,4 +49,3 @@ setup(name='Kotti',
       """,
       paster_plugins=['pyramid'],
       )
-

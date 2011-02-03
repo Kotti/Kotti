@@ -40,6 +40,7 @@ class ACL(object):
 
     def _default_acl(self):
         # ACEs that will be put on top, no matter what
+        # XXX Not sure this is a good idea.
         return [
             (security.Allow, 'group:managers', security.ALL_PERMISSIONS),
             ]
