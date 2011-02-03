@@ -1,3 +1,5 @@
+/** Put here CSS that should apply to EDIT SCREENS ONLY. **/
+
 #header {
     background-color: #edc06b;
 }
@@ -6,10 +8,11 @@
 
 .breadcrumbs {
     color: #333;
+    padding-bottom: 1em;
 }
 
 .breadcrumbs .you-are-here {
-    margin-right: 0.8em;
+    margin-right: 0.5em;
 }
 
 .breadcrumbs a {
@@ -25,10 +28,7 @@
     background-color:  #eee;
     border: 1px solid #aaa;
     padding: 0.1em 0.5em;
-}
-
-.breadcrumbs .handle {
-    font-weight: bold;
+    z-index: 5;
 }
 
 .breadcrumbs .dropdown {
@@ -62,10 +62,6 @@
 
 .breadcrumbs .dropdown a:hover {
     background-color: white;
-}
-
-.breadcrumbs .dropdown.open {
-    display: block;
 }
 
 /* Messages */
@@ -119,7 +115,7 @@ form label.desc {
 
 form {
     padding: 1em;
-    margin: 1em 1em 2em;
+    margin: 1em 1em 2em 0;
     background-color:  #eee;
     border: 1px solid #aaa;
 }

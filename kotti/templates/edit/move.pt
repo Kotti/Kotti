@@ -8,7 +8,7 @@
     <h1>Move <em>${api.context.title}</em></h1>
 
     <div class="form">
-      <div metal:use-macro="api['snippets.messages']">
+      <div metal:use-macro="api['master_edit.messages']">
       </div>
 
       <form action="./move" method="post" class="collapse">

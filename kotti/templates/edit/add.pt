@@ -8,7 +8,7 @@
     <h1>Add item</h1>
 
     <div class="form">
-      <div metal:use-macro="api['snippets.messages']">
+      <div metal:use-macro="api['master_edit.messages']">
       </div>
       <form action="./add" method="post">
         <div id="what-to-add" tal:condition="len(possible_types) &gt; 1">

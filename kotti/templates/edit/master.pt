@@ -1,18 +1,21 @@
-<!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
       xml:lang="en"
       xmlns:tal="http://xml.zope.org/namespaces/tal"
       metal:define-macro="main">
 
-  <head metal:use-macro="api['snippets.head']">
-    <metal tal:omit-tag="" metal:fill-slot="head">
-      <link rel="stylesheet" href="${request.static_url('kotti:static/edit.css')}" type="text/css" />
-      <!-- JavaScript -->
-      <script type="text/javascript" src="${request.static_url('deform:static/scripts/jquery-1.4.2.min.js')}"></script>
-      <script type="text/javascript" src="${request.static_url('deform:static/tinymce/jscripts/tiny_mce/tiny_mce.js')}"></script>
-      <script type="text/javascript" src="${request.static_url('deform:static/scripts/deform.js')}"></script>    
-      <script type="text/javascript" src="${request.static_url('kotti:static/script.js')}"></script>
-    </metal>
+  <head>
+	<title metal:define-slot="page-title">${api.page_title}</title>
+	<meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/>
+	<meta name="description" content="${api.context.description}" />
+	<link rel="shortcut icon" href="${request.static_url('kotti:static/favicon.ico')}" />
+	<link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Neuton|Nobile:regular,i,b,bi&amp;subset=latin" type="text/css" media="screen" charset="utf-8" />
+	<link rel="stylesheet" href="${request.static_url('kotti:static/base.css')}" type="text/css" media="screen" charset="utf-8" />
+    <link rel="stylesheet" href="${request.static_url('kotti:static/edit.css')}" type="text/css" />
+    <script type="text/javascript" src="${request.static_url('deform:static/scripts/jquery-1.4.2.min.js')}"></script>
+    <script type="text/javascript" src="${request.static_url('deform:static/tinymce/jscripts/tiny_mce/tiny_mce.js')}"></script>
+    <script type="text/javascript" src="${request.static_url('deform:static/scripts/deform.js')}"></script>    
+    <script type="text/javascript" src="${request.static_url('kotti:static/script.js')}"></script>
+    <more tal:omit-tag="" metal:define-slot="head"></more>
   </head>
 
   <body class="edit-view">
@@ -33,40 +36,9 @@
       <div class="clear"></div>
     </div>
     <div id="content">
-      <div class="breadcrumbs" tal:define="(siblings, children) api.context_links">
-        <span class="you-are-here">You are here:</span>
-        <div tal:repeat="link api.breadcrumbs" tal:omit-tag="">
-          <a href="${link.is_context and '#bread-dropdown' or link.url}"
-             class="${not link.is_edit_link and 'no-edit-link' or ''} ${link.is_context and 'is-context dropdown-trigger' or ''}"
-             tal:define="no_nav not (siblings or children)"
-             tal:omit-tag="link.is_context and no_nav">
-            <em tal:omit-tag="not link.is_context">
-              ${link.name}
-            </em>
-            <span tal:content="not link.is_context and '&rarr;' or default"
-                  tal:condition="not link.is_context or (link.is_context and not no_nav)">
-              ↓
-            </span>
-          </a>
-          <div id="bread-dropdown" class="dropdown"
-               tal:condition="link.is_context and siblings or children">
-            <ul>
-              <talcondition tal:condition="children" tal:omit-tag="">
-                <li><h4>Items in <em>${api.context.title}</em></h4></li>
-                <li tal:repeat="link children">
-                  <a href="${link.url}" class="${not link.is_edit_link and 'no-edit-link'}">${link.name}</a>
-                </li>
-              </talcondition>
-              <talcondition tal:condition="siblings" tal:omit-tag="">
-                <li><h4>Items in <em>${api.context.__parent__.title}</em></h4></li>
-                <li tal:repeat="link siblings">
-                  <a href="${link.url}" class="${not link.is_edit_link and 'no-edit-link'}">${link.name}</a>
-                </li>
-              </talcondition>
-            </ul>
-          </div>
-        </div>
+      <div metal:use-macro="api['master_edit.breadcrumbs']">
       </div>
+
       <div metal:define-slot="content">
         <h1>${api.context.title}</h1>
         <dl>
@@ -74,6 +46,64 @@
           <dd>${api.context.name}</dd>
         </dl>
       </div>
+
     </div>
+  </body>
+</html>
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xml:lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      metal:define-macro="snippets">
+  <body>
+
+    <div metal:define-macro="messages">
+      <div tal:repeat="queue ('success', 'info', 'error', '')">
+        <div class="message ${queue} round-corners"
+             tal:define="messages request.session.pop_flash(queue)"
+             tal:repeat="message messages">
+          <span tal:omit-tag="" tal:repeat="line message.splitlines()">
+            ${line}
+            <br/>
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <div metal:define-macro="breadcrumbs" class="breadcrumbs" tal:define="(siblings, children) api.context_links">
+      <span class="you-are-here">You are here:</span>
+      <div tal:repeat="link api.breadcrumbs" tal:omit-tag="">
+        <a href="${link.is_context and '#bread-dropdown' or link.url}"
+           class="${not link.is_edit_link and 'no-edit-link' or ''} ${link.is_context and 'is-context dropdown-trigger' or ''}"
+           tal:define="no_nav not (siblings or children)"
+           tal:omit-tag="link.is_context and no_nav">
+          <em tal:omit-tag="not link.is_context">
+            ${link.name}
+          </em>
+          <span tal:content="not link.is_context and '&rarr;' or default"
+                tal:condition="not link.is_context or (link.is_context and not no_nav)">
+            ↓
+          </span>
+        </a>
+        <div id="bread-dropdown" class="dropdown"
+             tal:condition="link.is_context and siblings or children">
+          <ul>
+            <talcondition tal:condition="children" tal:omit-tag="">
+              <li><h4>Items in <em>${api.context.title}</em></h4></li>
+              <li tal:repeat="link children">
+                <a href="${link.url}" class="${not link.is_edit_link and 'no-edit-link'}">${link.name}</a>
+              </li>
+            </talcondition>
+            <talcondition tal:condition="siblings" tal:omit-tag="">
+              <li><h4>Items in <em>${api.context.__parent__.title}</em></h4></li>
+              <li tal:repeat="link siblings">
+                <a href="${link.url}" class="${not link.is_edit_link and 'no-edit-link'}">${link.name}</a>
+              </li>
+            </talcondition>
+          </ul>
+        </div>
+      </div>
+    </div>
+
   </body>
 </html>

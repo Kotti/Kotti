@@ -18,15 +18,13 @@
     function dropdowns() {
         $(".dropdown-trigger").click(function () {
             var target = $($(this).attr("href"));
+            // move the dropdown to the correct position
             target.css("left", $(this).position().left);
-
-            if (!target.hasClass("open")) {
-                $("body").click(function() {
-                    target.removeClass("open");
-                    $(this).unbind("click");
-                });
-            }
-            target.toggleClass("open");
+            $("body").click(function() {
+                target.hide();
+                $(this).unbind("click");
+            });
+            target.toggle();
             return false;
         });
     }

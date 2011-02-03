@@ -1,0 +1,114 @@
+/** Put here CSS that should apply to BOTH VIEW AND EDIT SCREENS. **/
+
+html, body {
+    font: 16px/24px "Nobile", "Lucida Grande", Lucida, Verdana, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+#edit-box {
+    position: fixed;
+    padding: 0.2em 0.5em;
+    top: 3.5em;
+    left: 0;
+    background-color: #333;
+    color: #fff;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+#edit-box a {
+    text-decoration: none;
+    color: #fff;
+}
+
+#header {
+    background-color: #eee;
+    padding-top: 2em;
+    padding-left: 4em;
+}
+
+.tabs1 ul {
+	list-style: none;
+	padding: 0;
+	margin: 0;
+	float: left;
+	width: 100%;
+}
+
+.tabs1 li {
+	float: left;
+	margin: 0 1em 0 0;
+}
+
+.tabs1 a {
+	text-decoration: none;
+	display: block;
+	width: 6em;
+	padding: 0 0.5em;
+	font-weight: bold;
+	color: #333;
+	border-bottom: 0.5em solid #ccc;
+}
+
+.tabs1 a:hover, .tabs1 a.selected {
+	color: #000;
+	border-color: #555;
+}
+
+#navigation-local {
+    display: none;
+}
+
+#content {
+    margin: 2em;
+    margin-left: 4em;
+}
+
+#content .description {
+    font-weight: bold;
+}
+
+/* Generic styles */
+
+.hidden {
+    display: none;
+}
+
+.clear {
+    clear: both;
+}
+
+.vertical-text {
+    -moz-transform:rotate(-270deg); 
+    -moz-transform-origin: bottom left;
+    -webkit-transform: rotate(-270deg);
+    -webkit-transform-origin: bottom left;
+    -o-transform: rotate(-270deg);
+    -o-transform-origin:  bottom left;
+    filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=1);
+}
+
+.round-corners-top {
+    -webkit-border-top-left-radius: 10px;
+    -webkit-border-top-right-radius: 10px;
+    -moz-border-radius-topleft: 10px;
+    -moz-border-radius-topright: 10px;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+}
+
+.round-corners {
+    -webkit-border-bottom-left-radius: 7px;
+    -webkit-border-bottom-right-radius: 7px;
+    -webkit-border-top-left-radius: 7px;
+    -webkit-border-top-right-radius: 7px;
+    -moz-border-radius-bottomleft: 7px;
+    -moz-border-radius-bottomright: 7px;
+    -moz-border-radius-topleft: 7px;
+    -moz-border-radius-topright: 7px;
+    border-bottom-left-radius: 7px;
+    border-bottom-right-radius: 7px;
+    border-top-left-radius: 7px;
+    border-top-right-radius: 7px;
+}

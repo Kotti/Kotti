@@ -7,7 +7,7 @@
   <div metal:fill-slot="content">
     <h1 tal:replace="structure api.first_heading"></h1>
     <div class="form">
-      <div metal:use-macro="api['snippets.messages']">
+      <div metal:use-macro="api['master_edit.messages']">
       </div>
       <form tal:replace="structure form">
       </form>

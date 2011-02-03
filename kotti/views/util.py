@@ -17,11 +17,10 @@ class TemplateAPI(object):
     templates.
 
     Use dict-access as a shortcut to retrieve template macros from
-    templates.  ``api['snippets.head']`` will return the 'head' macro
-    from the 'snippets' template.
+    templates.  ``api['master_edit.messages']`` will return the
+    'messages' macro from the 'master_edit' template.
     """
     macro_templates = dict(
-        snippets=configuration['kotti.templates.snippets'],
         master_view=configuration['kotti.templates.master_view'],
         master_edit=configuration['kotti.templates.master_edit'],
         )

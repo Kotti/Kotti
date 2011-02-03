@@ -1,10 +1,17 @@
-<!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
       xml:lang="en"
       xmlns:tal="http://xml.zope.org/namespaces/tal"
       metal:define-macro="main">
 
-  <head metal:use-macro="api['snippets.head']">
+  <head>
+	<title metal:define-slot="page-title">${api.page_title}</title>
+	<meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/>
+	<meta name="description" content="${api.context.description}" />
+	<link rel="shortcut icon" href="${request.static_url('kotti:static/favicon.ico')}" />
+	<link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Neuton|Nobile:regular,i,b,bi&amp;subset=latin" type="text/css" media="screen" charset="utf-8" />
+	<link rel="stylesheet" href="${request.static_url('kotti:static/base.css')}" type="text/css" media="screen" charset="utf-8" />
+	<link rel="stylesheet" href="${request.static_url('kotti:static/view.css')}" type="text/css" media="screen" charset="utf-8" />
+    <more tal:omit-tag="" metal:define-slot="head"></more>
   </head>
 
   <body class="view-view">
