@@ -375,15 +375,13 @@ class TestUtil(UnitTestBase):
 
 ## Functional tests
 
-def includeme(config):
-    config.testing_securitypolicy()
-
 def setUpFunctional(global_config=None, **settings):
     import wsgi_intercept.zope_testbrowser
 
     configuration = {
         'sqlalchemy.url': 'sqlite://',
-        'kotti.includes': 'kotti.tests kotti.views.view kotti.views.edit',
+        'kotti.authentication_policy_factory': 'kotti.none_factory',
+        'kotti.authorization_policy_factory': 'kotti.none_factory',
         'kotti.secret': 'secret',
         }
 
