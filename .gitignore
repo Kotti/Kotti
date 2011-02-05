@@ -1,12 +1,15 @@
 Kotti.db
 Kotti.egg-info/
 bin/
+develop-eggs/
 dist/
+eggs/
 include/
 lib/
 *.pyc
 *.pt.py
 .coverage
+.installed.cfg
 coverage-*
 mechanize-*
 pytz-*

@@ -14,7 +14,9 @@ requires = [
     'zope.sqlalchemy',
     'deform',
     'WebError',
-    'nose',
+    
+    # These should be in tests_require, but buildout doesn't read that:
+    'nose', 'coverage', 'wsgi_intercept', 'zope.testbrowser',
     ]
 
 if sys.version_info[:3] < (2,5,0):
@@ -40,8 +42,6 @@ setup(name='Kotti',
       include_package_data=True,
       zip_safe=False,
       install_requires = requires,
-      tests_require = requires + [
-          'coverage', 'wsgi_intercept', 'zope.testbrowser'],
       test_suite="kotti",
       entry_points = """\
       [paste.app_factory]
