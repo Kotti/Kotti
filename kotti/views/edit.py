@@ -1,3 +1,4 @@
+from pkg_resources import resource_filename
 from pyramid.exceptions import Forbidden
 from pyramid.httpexceptions import HTTPFound
 from pyramid.renderers import render_to_response
@@ -19,6 +20,11 @@ from kotti.views.util import TemplateAPIEdit
 from kotti.views.util import addable_types
 from kotti.views.util import title_to_name
 from kotti.views.util import disambiguate_name
+
+deform_templates = resource_filename('deform', 'templates')
+kotti_templates = resource_filename('kotti', 'templates/edit/widgets')
+search_path = (kotti_templates, deform_templates)
+Form.set_zpt_renderer(search_path)
 
 class NodeSchema(colander.MappingSchema):
     title = colander.SchemaNode(colander.String())
