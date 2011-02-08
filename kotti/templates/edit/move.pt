@@ -53,12 +53,12 @@
         <h2>Rename</h2>
         <ul>
           <li>
-            <label for="move-new-name" class="desc">New name</label><br/>
+            <label for="move-new-name" class="desc">New name</label>
             <input type="text" name="name" id="move-new-name"
                    value="${context.name}" />
           </li>
           <li>
-            <label for="move-new-title" class="desc">New title</label><br/>
+            <label for="move-new-title" class="desc">New title</label>
             <input type="text" name="title" id="move-new-title"
                    value="${context.title}" />
           </li>
