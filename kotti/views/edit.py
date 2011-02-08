@@ -212,14 +212,14 @@ def move_node(context, request):
         }
 
 def edit_document(context, request):
-    form = Form(DocumentSchema(), buttons=('save',))
+    form = Form(DocumentSchema(), buttons=('save', 'cancel'))
     return FormView(form)(context, request)
 
 def add_document(context, request):
     api = TemplateAPIEdit(
         context, request,
         first_heading=u'<h1>Add document to <em>%s</em></h1>' % context.title)
-    form = Form(DocumentSchema(), buttons=('save',))
+    form = Form(DocumentSchema(), buttons=('save', 'cancel'))
     return FormView(form, add=Document, api=api)(context, request)
 
 def includeme(config):
