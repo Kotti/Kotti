@@ -35,7 +35,7 @@
         <div id="where-to-add" tal:condition="len(possible_parents) &gt; 1">
           <h2>Which folder do you want to add to?</h2>
           <ul>
-            <li tal:repeat="parent possible_parents">
+            <li tal:repeat="parent possible_parents[:2]">
               <input type="radio" name="where" value="${parent['node'].id}"
                      checked="${parent == possible_parents[0] and 'checked' or None}"
                      id="where-to-add-${parent['node'].id}" />
