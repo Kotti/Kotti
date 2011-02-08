@@ -32,10 +32,13 @@
     function collapse() {
         $("form.collapse").each(function() {
             $(this).children("ul").hide();
-            $(this).click(function() {
+            function show() {
                 $(this).children("ul").show("fast");
                 $(this).unbind("click");
-            });
+                $(this).unbind("hover");
+            };
+            $(this).click(show);
+            $(this).hover(show);
         });
     }
 
