@@ -202,3 +202,29 @@ property:
   Traceback (most recent call last):
   LookupError: name 'paste'
   >>> Document.type_info.addable_to = save_addable
+
+We can rename an item:
+
+  >>> browser.open(tests.BASE_URL + '/child-one/second-child/move')
+  >>> browser.getControl("New name").value
+  'second-child'
+  >>> browser.getControl("New title").value
+  'Second Child'
+  >>> browser.getControl("New name").value = "third-child"
+  >>> browser.getControl("New title").value = "My Third Child"
+  >>> browser.getControl(name="rename").click()
+  >>> "Item renamed" in browser.contents
+  True
+  >>> browser.url == tests.BASE_URL + '/child-one/third-child/move'
+  True
+  >>> browser.getLink("View").click()
+  >>> "My Third Child" in browser.contents
+  True
+
+We cannot rename the root:
+
+  >>> browser.open(tests.BASE_URL + '/move')
+  >>> browser.getControl("New name")
+  Traceback (most recent call last):
+  LookupError: label 'New name'
+

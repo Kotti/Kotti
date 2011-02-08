@@ -198,6 +198,15 @@ def move_node(context, request):
         request.session.flash(u'%s deleted.' % context.title, 'success')
         return HTTPFound(location=location)
 
+    if 'rename' in P:
+        name = P['name']
+        title = P['title']
+        context.name = name
+        context.title = title
+        request.session.flash(u'Item renamed', 'success')
+        location = resource_url(context, request, 'move')        
+        return HTTPFound(location=location)
+
     return {
         'api': TemplateAPIEdit(context, request),
         }

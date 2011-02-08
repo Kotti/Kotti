@@ -49,6 +49,28 @@
       </form>
 
       <form action="./move" method="post" class="collapse"
+            tal:condition="context != api.root">
+        <h2>Rename</h2>
+        <ul>
+          <li>
+            <label for="move-new-name" class="desc">New name</label><br/>
+            <input type="text" name="name" id="move-new-name"
+                   value="${context.name}" />
+          </li>
+          <li>
+            <label for="move-new-title" class="desc">New title</label><br/>
+            <input type="text" name="title" id="move-new-title"
+                   value="${context.title}" />
+          </li>
+          <li>
+            <button type="submit" name="rename" value="rename" class="submit">
+              Rename
+            </button>
+          </li>
+        </ul>
+      </form>
+
+      <form action="./move" method="post" class="collapse"
             tal:define="children api.list_children()"
             tal:condition="len(children) &gt; 1">
         <h2>Order contained items</h2>
