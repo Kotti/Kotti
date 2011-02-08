@@ -12,6 +12,7 @@ lib/
 .installed.cfg
 coverage-*
 mechanize-*
+nose-*
 pytz-*
 wsgi_intercept-*
 zope.testbrowser-*
