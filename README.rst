@@ -225,7 +225,8 @@ Read `this blog post`_ for more implementation details.
 Thanks
 ======
 
-Kotti is proud to be sponsored by the `University of Coimbra`_.
+Kotti thanks the `University of Coimbra`_ for their involvement and
+support.
 
 
 .. _web content management system: http://en.wikipedia.org/wiki/Web_content_management_system
