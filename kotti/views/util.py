@@ -34,7 +34,11 @@ class TemplateAPI(object):
         self.__dict__.update(kwargs)
 
     def __getitem__(self, dottedname):
-        template_name, macro_name = dottedname.split('.')
+        try:
+            template_name, macro_name = dottedname.split('.')
+        except ValueError: # Chameleon will try dict access after attr access
+            raise KeyError(dottedname)
+        
         template = self.macro_templates[template_name]
         if isinstance(template, basestring):
             template = self.macro_templates[template_name] = get_renderer(

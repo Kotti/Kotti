@@ -5,9 +5,6 @@ from pyramid.config import Configurator
 from pyramid.session import UnencryptedCookieSessionFactoryConfig
 from pyramid.util import DottedNameResolver
 
-from kotti.resources import appmaker
-from kotti.resources import Node
-
 class Configuration(dict):
     """A dict that can resolve dotted names to Python objects the
     first time they're accessed.
@@ -50,7 +47,7 @@ configuration = Configuration(
         'kotti.templates.base_css': 'kotti:static/base.css',
         'kotti.templates.view_css': 'kotti:static/view.css',
         'kotti.templates.edit_css': 'kotti:static/edit.css',
-        'kotti.includes': 'kotti.views.view kotti.views.edit',
+        'kotti.includes': 'kotti.views.view kotti.views.edit kotti.events',
         'kotti.available_types': 'kotti.resources.Document',
         'kotti.authentication_policy_factory': 'kotti.authtkt_factory',
         'kotti.authorization_policy_factory': 'kotti.acl_factory',
@@ -75,6 +72,7 @@ def main(global_config, **settings):
     secret1 = settings.pop("kotti.secret")
     secret2 = settings.pop("kotti.secret2", secret1)
 
+    from kotti.resources import appmaker
     engine = engine_from_config(settings, 'sqlalchemy.')
     get_root = appmaker(engine)
 
@@ -101,6 +99,8 @@ def main(global_config, **settings):
     return config.make_wsgi_app()
 
 def _configure_base_views(config):
+    from kotti.resources import Node
+
     config.add_static_view('static-deform', 'deform:static')
     config.add_static_view('static-kotti', 'kotti:static')
     config.add_view('kotti.views.view.view_node_default', context=Node)

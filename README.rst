@@ -120,7 +120,7 @@ templates.  The defaults are::
 
 The default configuration here is::
 
-  kotti.includes = kotti.views.view kotti.views.edit
+  kotti.includes = kotti.views.view kotti.views.edit kotti.events
 
 These point to modules that contain an ``includeme`` function.  An
 ``includeme`` function that registers an edit view for an ``Event``

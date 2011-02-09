@@ -3,28 +3,28 @@ from datetime import datetime
 
 import transaction
 from zope.sqlalchemy import ZopeTransactionExtension
+from sqlalchemy.orm import scoped_session
+from sqlalchemy.orm import sessionmaker
 from sqlalchemy.orm import backref
 from sqlalchemy.orm import mapper
 from sqlalchemy.orm import object_mapper
 from sqlalchemy.orm import relation
-from sqlalchemy.orm import scoped_session
-from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.orderinglist import ordering_list
 from sqlalchemy.orm.exc import NoResultFound
-from sqlalchemy import MetaData
 from sqlalchemy import Table
 from sqlalchemy import Column
 from sqlalchemy import UniqueConstraint
 from sqlalchemy import ForeignKey
 from sqlalchemy import DateTime
 from sqlalchemy import Integer
-from sqlalchemy import PickleType
 from sqlalchemy import String
 from sqlalchemy import Unicode
 from sqlalchemy import UnicodeText
+from sqlalchemy import MetaData
 from pyramid.traversal import resource_path
 from pyramid.security import view_execution_permitted
 
+from kotti.util import JsonType
 from kotti.security import ACE, ACL
 
 metadata = MetaData()
@@ -94,14 +94,8 @@ class Node(Container, ACL):
         self.title = title
         self.description = description
         self.language = language
-
         self.owner = owner
-        now = datetime.now()
-        if creation_date is None:
-            creation_date = now
-        if modification_date is None:
-            modification_date = now
-        self.creation_date = creation_date
+        self.creation_date = creation_date # set through events if missing
         self.modification_date = modification_date
 
     # Provide location-awareness through __name__ and __parent__
@@ -118,7 +112,7 @@ class Node(Container, ACL):
             self.__class__.__name__, self.id, resource_path(self))
 
     def __eq__(self, other):
-        return self.id == other.id
+        return isinstance(other, Node) and self.id == other.id
 
     def copy(self, **kwargs):
         copy = self.__class__()
@@ -151,7 +145,7 @@ aces = Table('aces', metadata,
 
     Column('action', String(50), nullable=False),
     Column('principal', String(50), nullable=False),
-    Column('permissions', PickleType(), nullable=False),
+    Column('permissions', JsonType(), nullable=False),
 )
 
 nodes = Table('nodes', metadata,
@@ -205,6 +199,7 @@ mapper(
             ),
         },
     )
+
 mapper(Document, documents, inherits=Node, polymorphic_identity='document')
 
 def default_get_root(request):

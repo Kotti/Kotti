@@ -10,7 +10,7 @@ CHANGES = open(os.path.join(here, 'CHANGES.txt')).read()
 install_requires = [
     'pyramid',
     'repoze.tm2>=1.0b1', # default_commit_veto
-    'sqlalchemy',
+    'sqlalchemy>=0.7b1dev',
     'zope.sqlalchemy',
     'deform',
     'WebError',
@@ -42,6 +42,7 @@ setup(name='Kotti',
       packages=find_packages(),
       include_package_data=True,
       zip_safe=False,
+      dependency_links=['http://danielnouri.org/tmp/SQLAlchemy-0.7b1dev.tar.gz'],
       setup_requires=['nose'],
       install_requires=install_requires,
       tests_require=tests_require,

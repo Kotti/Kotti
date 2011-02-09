@@ -53,8 +53,8 @@ class TestNode(UnitTestBase):
         self.assertEquals(
             root.__acl__, [
                 ('Allow', 'group:managers', security.ALL_PERMISSIONS),
-                ('Allow', 'system.Authenticated', ('view',)),
-                ('Allow', 'group:editors', ('add', 'edit')),
+                ('Allow', 'system.Authenticated', [u'view']),
+                ('Allow', 'group:editors', [u'add', u'edit']),
             ])
 
         # Note how the last ACE is class-defined, that is, users in
@@ -140,6 +140,24 @@ class TestNode(UnitTestBase):
         del root[u'child2']
         self.assertEquals(
             session.query(Node).filter(Node.name == u'subchild').count(), 0)
+
+class TestEvents(UnitTestBase):
+    def setUp(self):
+        super(TestEvents, self).setUp()
+        self.config.include('kotti.events')
+
+    def test_dates(self):
+        session = DBSession()
+        root = session.query(Node).get(1)
+        child = root[u'child'] = Node()
+        session.flush()
+
+        self.assertNotEqual(child.creation_date, None)
+        self.assertEqual(child.creation_date, child.modification_date)
+
+        child.title = u"Here"
+        session.flush()
+        self.assert_(child.creation_date < child.modification_date)
 
 class TestNodeView(UnitTestBase):
     def test_it(self):
