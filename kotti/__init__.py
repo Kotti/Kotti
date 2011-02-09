@@ -47,6 +47,7 @@ configuration = Configuration(
         'kotti.templates.base_css': 'kotti:static/base.css',
         'kotti.templates.view_css': 'kotti:static/view.css',
         'kotti.templates.edit_css': 'kotti:static/edit.css',
+        'kotti.configurators': '',
         'kotti.includes': 'kotti.views.view kotti.views.edit kotti.events',
         'kotti.available_types': 'kotti.resources.Document',
         'kotti.authentication_policy_factory': 'kotti.authtkt_factory',
@@ -54,6 +55,7 @@ configuration = Configuration(
         'kotti.session_factory': 'kotti.cookie_session_factory',
     },
     dotted_names=set([
+        'kotti.configurators',
         'kotti.includes',
         'kotti.available_types',
         'kotti.authentication_policy_factory',
@@ -68,6 +70,10 @@ def main(global_config, **settings):
     for key in configuration:
         if key in settings:
             configuration[key] = settings.pop(key)
+
+    # Allow extending packages to change 'configuration' w/ Python:
+    for func in configuration['kotti.configurators']:
+        func(configuration) # XXX testme
 
     secret1 = settings.pop("kotti.secret")
     secret2 = settings.pop("kotti.secret2", secret1)
