@@ -195,10 +195,11 @@ example.  Its ``__groups__`` variable is set to ``{'admin':
 the ``group:admins`` group throughout the site.
 
 You are advised not to alter the ACL through the ``__acl__`` attribute
-directly.  Instead, to give ``bob`` editing rights on ``report1``, do::
+directly.  Instead, to give ``bob`` editing rights by using the
+``kotti.security.set_groups`` API::
 
-  from kotti.security import add_to_group
-  add_to_group('bob', 'group:editors')
+  from kotti.security import set_groups
+  set_groups(bobsfolder, 'bob', ['group:editors'])
 
 **Kotti currently lacks a user interface for user management.**
 
