@@ -175,20 +175,32 @@ example of a Kotti content type implementation::
   )
   mapper(Document, documents, inherits=Node, polymorphic_identity='document')
 
-ACL security
-------------
+Authentication and Authorization
+================================
 
-**ACL security is currently a work in progress**
+**Authentication** in Kotti is pluggable.
 
-Kotti is currently lacking a user interface to conrol ACLs of
-individual items.  The default root object is created with an ACL that
+**Auhorization** in Kotti is controlled through the use of `inherited
+access control lists`_.  By default, the root object has an ACL that
 looks like this::
 
-  ('Allow', 'group:managers', ALL_PERMISSIONS)
+  ('Allow', 'group:admins', ALL_PERMISSIONS)
   ('Allow', 'system.Authenticated', ('view',))
   ('Allow', 'group:editors', ('add', 'edit'))
 
-This ACL is then inherited throughout the site.
+Principals are assigned to groups through the ``__groups__`` special
+variable on ``Nodes``.  Again, the default root object serves as an
+example.  Its ``__groups__`` variable is set to ``{'admin':
+['group:admins']}``.  Thus, the ``admin`` principal becomes part of
+the ``group:admins`` group throughout the site.
+
+You are advised not to alter the ACL through the ``__acl__`` attribute
+directly.  Instead, to give ``bob`` editing rights on ``report1``, do::
+
+  from kotti.security import add_to_group
+  add_to_group('bob', 'group:editors')
+
+**Kotti currently lacks a user interface for user management.**
 
 Issue tracker and development
 =============================
@@ -237,6 +249,7 @@ support.
 .. _pyramid.authentication.AuthTktAuthenticationPolicy: http://docs.pylonsproject.org/projects/pyramid/dev/api/authentication.html
 .. _pyramid.authorization.ACLAuthorizationPolicy: http://docs.pylonsproject.org/projects/pyramid/dev/api/authorization.html
 .. _pyramid.session.UnencryptedCookieSessionFactoryConfig: http://docs.pylonsproject.org/projects/pyramid/dev/api/session.html
+.. _inherited access control lists: http://www.pylonsproject.org/projects/pyramid/dev/narr/security.html#acl-inheritance-and-location-awareness
 .. _developed on Github: https://github.com/dnouri/Kotti
 .. _issue tracker: https://github.com/dnouri/Kotti/issues
 .. _Python: http://www.python.org/

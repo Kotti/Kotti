@@ -1,3 +1,4 @@
+from pyramid.location import lineage
 from pyramid.security import Allow
 from pyramid.security import ALL_PERMISSIONS
 
@@ -44,5 +45,33 @@ class ACL(object):
         # ACEs that will be put on top, no matter what
         # XXX Not sure this is a good idea.
         return [
-            (Allow, 'group:managers', ALL_PERMISSIONS),
+            (Allow, 'group:admins', ALL_PERMISSIONS),
             ]
+
+def list_groups_raw(context, userid):
+    groups = getattr(context, '__groups__', None)
+    if groups is not None:
+        return groups.get(userid, set())
+    else:
+        return set()
+
+def list_groups(context, userid, _seen=None):
+    if _seen is None:
+        _seen = set()
+    groups = set()
+    for item in lineage(context):
+        groups.update(list_groups_raw(item, userid))
+
+    # Groups may be nested:
+    new_groups = groups - _seen
+    for groupid in new_groups:
+        _seen.add(groupid)
+        groups.update(list_groups(context, groupid, _seen))
+    return list(groups)
+
+def set_groups(context, userid, groups_to_set):
+    groups = getattr(context, '__groups__', None)
+    if groups is None:
+        groups = {}
+    groups[userid] = list(groups_to_set)
+    context.__groups__ = groups

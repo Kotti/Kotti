@@ -4,7 +4,7 @@ import unittest
 import transaction
 from sqlalchemy.exc import IntegrityError
 from pyramid.config import DEFAULT_RENDERERS
-from pyramid import security
+from pyramid.security import ALL_PERMISSIONS
 from pyramid import testing
 
 from kotti import configuration
@@ -12,6 +12,9 @@ from kotti.resources import DBSession
 from kotti.resources import Node
 from kotti.resources import Document
 from kotti.resources import initialize_sql
+from kotti.security import list_groups
+from kotti.security import list_groups_raw
+from kotti.security import set_groups
 from kotti import main
 
 BASE_URL = 'http://localhost:6543'
@@ -51,13 +54,13 @@ class TestNode(UnitTestBase):
         # The root object has a persistent ACL set:
         self.assertEquals(
             root.__acl__, [
-                ('Allow', 'group:managers', security.ALL_PERMISSIONS),
+                ('Allow', 'group:admins', ALL_PERMISSIONS),
                 ('Allow', 'system.Authenticated', ['view']),
                 ('Allow', 'group:editors', ['add', 'edit']),
             ])
 
         # Note how the last ACE is class-defined, that is, users in
-        # the 'managers' group will have all permissions, always.
+        # the 'admin' group will have all permissions, always.
         # This is to prevent lock-out.
         self.assertEquals(root.__acl__[:-2], root._default_acl())
 
@@ -73,20 +76,20 @@ class TestNode(UnitTestBase):
         root.__acl__ = [['Allow', 'system.Authenticated', ['edit']]]
         self.assertEquals(
             root.__acl__, [
-                ('Allow', 'group:managers', security.ALL_PERMISSIONS),
+                ('Allow', 'group:admins', ALL_PERMISSIONS),
                 ('Allow', 'system.Authenticated', ['edit']),
                 ])
 
         root.__acl__ = [
             ('Allow', 'system.Authenticated', ['view']),
-            ('Deny', 'system.Authenticated', security.ALL_PERMISSIONS),
+            ('Deny', 'system.Authenticated', ALL_PERMISSIONS),
             ]
         
         self.assertEquals(
             root.__acl__, [
-                ('Allow', 'group:managers', security.ALL_PERMISSIONS),
+                ('Allow', 'group:admins', ALL_PERMISSIONS),
                 ('Allow', 'system.Authenticated', ['view']),
-                ('Deny', 'system.Authenticated', security.ALL_PERMISSIONS),
+                ('Deny', 'system.Authenticated', ALL_PERMISSIONS),
                 ])
 
         # We can reorder the ACL:
@@ -94,8 +97,8 @@ class TestNode(UnitTestBase):
         root.__acl__ = [second, first]
         self.assertEquals(
             root.__acl__, [
-                ('Allow', 'group:managers', security.ALL_PERMISSIONS),
-                ('Deny', 'system.Authenticated', security.ALL_PERMISSIONS),
+                ('Allow', 'group:admins', ALL_PERMISSIONS),
+                ('Deny', 'system.Authenticated', ALL_PERMISSIONS),
                 ('Allow', 'system.Authenticated', ['view']),
                 ])
         session.flush() # try serialization
@@ -137,6 +140,98 @@ class TestNode(UnitTestBase):
         del root[u'child2']
         self.assertEquals(
             session.query(Node).filter(Node.name == u'subchild').count(), 0)
+
+class TestGroups(UnitTestBase):
+    def test_root_default(self):
+        session = DBSession()
+        root = session.query(Node).get(1)
+        self.assertEqual(list_groups(root, 'admin'), ['group:admins'])
+        self.assertEqual(list_groups_raw(root, 'admin'), ['group:admins'])
+
+    def test_empty(self):
+        session = DBSession()
+        root = session.query(Node).get(1)
+        self.assertEqual(list_groups(root, 'bob'), [])
+
+    def test_simple(self):
+        session = DBSession()
+        root = session.query(Node).get(1)
+        set_groups(root, 'bob', ['group:editors'])
+        self.assertEqual(
+            list_groups(root, 'bob'), ['group:editors'])
+        self.assertEqual(
+            list_groups_raw(root, 'bob'), ['group:editors'])
+
+    def test_inherit(self):
+        session = DBSession()
+        root = session.query(Node).get(1)
+        child = root[u'child'] = Node()
+        session.flush()
+
+        self.assertEqual(list_groups(child, 'bob'), [])
+        set_groups(root, 'bob', ['group:editors'])
+        self.assertEqual(list_groups(child, 'bob'), ['group:editors'])
+
+        # Groups from the child are added:
+        set_groups(child, 'bob', ['group:somegroup'])
+        self.assertEqual(
+            set(list_groups(child, 'bob')),
+            set(['group:somegroup', 'group:editors'])
+            )
+
+        # We can ask to list only those groups that are defined locally:
+        self.assertEqual(
+            list_groups_raw(child, 'bob'), ['group:somegroup'])
+
+    def test_nested_groups(self):
+        session = DBSession()
+        root = session.query(Node).get(1)
+        child = root[u'child'] = Node()
+        grandchild = child[u'grandchild'] = Node()
+        session.flush()
+
+        # Bob is a global member of bobsgroup:
+        set_groups(root, 'bob', ['group:bobsgroup'])
+
+        # bobsgroup is part of the editors group in the context of grandchild:
+        set_groups(grandchild, 'group:bobsgroup', ['group:editors'])
+
+        # Assert that bob thus is part of editors in the context of grandchild:
+        self.assertEqual(
+            set(list_groups(grandchild, 'bob')),
+            set(['group:bobsgroup', 'group:editors']),
+            )
+        # Of course in the context of root he's still in bobsgroup only:
+        self.assertEqual(
+            list_groups(root, 'bob'), ['group:bobsgroup'])
+
+        # Groups can be arbitrarily nested:
+        set_groups(child, 'group:editors', ['group:franksgroup'])
+        set_groups(grandchild, 'group:franksgroup', ['group:admin'])
+
+        all_groups = set(
+            ['group:admin', 'group:bobsgroup', 'group:editors',
+             'group:franksgroup']
+            )
+        self.assertEqual(set(list_groups(grandchild, 'bob')), all_groups)
+        self.assertEqual(list_groups(child, 'bob'), ['group:bobsgroup'])
+
+        set_groups(grandchild, 'group:franksgroup', [])
+        set_groups(root, 'group:franksgroup', ['group:admin'])
+        self.assertEqual(set(list_groups(grandchild, 'bob')), all_groups)
+
+        # We break the loop
+        set_groups(root, 'group:franksgroup', [])
+        self.assertEqual(
+            set(list_groups(grandchild, 'bob')),
+            set(['group:bobsgroup', 'group:editors', 'group:franksgroup'])
+            )
+
+        # Circular groups are not a problem:
+        set_groups(root, 'group:franksgroup', ['group:admin', 'group:editors'])
+        set_groups(grandchild, 'group:admin', ['group:bobsgroup'])
+
+        self.assertEqual(set(list_groups(grandchild, 'bob')), all_groups)
 
 class TestEvents(UnitTestBase):
     def setUp(self):

@@ -143,6 +143,7 @@ nodes = Table('nodes', metadata,
     Column('name', Unicode(50), nullable=False),
     Column('type', String(30), nullable=False),
     Column('_acl', JsonType()),
+    Column('__groups__', JsonType()),
     Column('default_view', String(50)),
     Column('position', Integer),
 
@@ -194,6 +195,10 @@ def populate():
             ['Allow', 'system.Authenticated', ('view',)],
             ['Allow', 'group:editors', ('add', 'edit')],
             ]
+        root.__groups__ = {
+            'admin': ['group:admins'],
+            }
+
         session.add(root)
         session.flush()
         transaction.commit()
