@@ -12,7 +12,6 @@ from kotti.resources import DBSession
 from kotti.resources import Node
 from kotti.resources import Document
 from kotti.resources import initialize_sql
-from kotti.security import ACE
 from kotti import main
 
 BASE_URL = 'http://localhost:6543'
@@ -53,8 +52,8 @@ class TestNode(UnitTestBase):
         self.assertEquals(
             root.__acl__, [
                 ('Allow', 'group:managers', security.ALL_PERMISSIONS),
-                ('Allow', 'system.Authenticated', [u'view']),
-                ('Allow', 'group:editors', [u'add', u'edit']),
+                ('Allow', 'system.Authenticated', ['view']),
+                ('Allow', 'group:editors', ['add', 'edit']),
             ])
 
         # Note how the last ACE is class-defined, that is, users in
@@ -66,43 +65,41 @@ class TestNode(UnitTestBase):
         session = DBSession()
         root = session.query(Node).get(1)
 
-        # The __acl__ attribute of Nodes allows ACEs to be retrieved
-        # and set:
+        # The __acl__ attribute of Nodes allows access to the mapped
+        # '_acl' property:
         del root.__acl__
         self.assertRaises(AttributeError, root._get_acl)
 
-        # When setting the ACL, we can also pass 3-tuples instead of
-        # instances of ACE:
-        root.__acl__ = [('Allow', 'system.Authenticated', ('edit',))]
+        root.__acl__ = [['Allow', 'system.Authenticated', ['edit']]]
         self.assertEquals(
             root.__acl__, [
                 ('Allow', 'group:managers', security.ALL_PERMISSIONS),
-                ('Allow', 'system.Authenticated', ('edit',))
+                ('Allow', 'system.Authenticated', ['edit']),
                 ])
 
         root.__acl__ = [
-            ACE('Allow', 'system.Authenticated', ('view',)),
-            ACE('Deny', 'system.Authenticated', ('view',)),
+            ('Allow', 'system.Authenticated', ['view']),
+            ('Deny', 'system.Authenticated', security.ALL_PERMISSIONS),
             ]
         
         self.assertEquals(
             root.__acl__, [
                 ('Allow', 'group:managers', security.ALL_PERMISSIONS),
-                ('Allow', 'system.Authenticated', ('view',)),
-                ('Deny', 'system.Authenticated', ('view',)),
+                ('Allow', 'system.Authenticated', ['view']),
+                ('Deny', 'system.Authenticated', security.ALL_PERMISSIONS),
                 ])
 
         # We can reorder the ACL:
-        first, second = root.aces
+        first, second = root.__acl__[1:]
         root.__acl__ = [second, first]
         self.assertEquals(
             root.__acl__, [
                 ('Allow', 'group:managers', security.ALL_PERMISSIONS),
-                ('Deny', 'system.Authenticated', ('view',)),
-                ('Allow', 'system.Authenticated', ('view',)),
+                ('Deny', 'system.Authenticated', security.ALL_PERMISSIONS),
+                ('Allow', 'system.Authenticated', ['view']),
                 ])
-        self.assertEquals(root.aces, [second, first])
-        self.assertEquals((first.position, second.position), (1, 0))
+        session.flush() # try serialization
+        self.assertEquals(root.__acl__[1:], [second, first])
 
         root._del_acl()
         self.assertRaises(AttributeError, root._del_acl)

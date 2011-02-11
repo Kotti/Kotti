@@ -1,5 +1,4 @@
 from UserDict import DictMixin
-from datetime import datetime
 
 import transaction
 from zope.sqlalchemy import ZopeTransactionExtension
@@ -25,7 +24,7 @@ from pyramid.traversal import resource_path
 from pyramid.security import view_execution_permitted
 
 from kotti.util import JsonType
-from kotti.security import ACE, ACL
+from kotti.security import ACL
 
 metadata = MetaData()
 DBSession = scoped_session(sessionmaker(extension=ZopeTransactionExtension()))
@@ -138,21 +137,12 @@ class Document(Node):
         self.body = body
         self.mime_type = mime_type
 
-aces = Table('aces', metadata,
-    Column('id', Integer, primary_key=True),
-    Column('node_id', Integer, ForeignKey('nodes.id'), nullable=False),
-    Column('position', Integer),
-
-    Column('action', String(50), nullable=False),
-    Column('principal', String(50), nullable=False),
-    Column('permissions', JsonType(), nullable=False),
-)
-
 nodes = Table('nodes', metadata,
     Column('id', Integer, primary_key=True),
     Column('parent_id', ForeignKey('nodes.id')),
     Column('name', Unicode(50), nullable=False),
     Column('type', String(30), nullable=False),
+    Column('_acl', JsonType()),
     Column('default_view', String(50)),
     Column('position', Integer),
 
@@ -173,11 +163,6 @@ documents = Table('documents', metadata,
 )
 
 mapper(
-    ACE,
-    aces,
-    )
-
-mapper(
     Node,
     nodes,
     polymorphic_on=nodes.c.type,
@@ -190,12 +175,6 @@ mapper(
             order_by=[nodes.c.position],
             backref=backref('parent', remote_side=[nodes.c.id]),
             cascade='all',
-            ),
-        'aces': relation(
-            ACE,
-            collection_class=ordering_list('position'),
-            backref=backref('node'),
-            cascade='all, delete, delete-orphan',
             ),
         },
     )
@@ -212,8 +191,8 @@ def populate():
     if objs == 0:
         root = Document(name=u"", parent=None, title=u"My Site")
         root.__acl__ = [
-            ACE('Allow', 'system.Authenticated', ('view',)),
-            ACE('Allow', 'group:editors', ('add', 'edit')),
+            ['Allow', 'system.Authenticated', ('view',)],
+            ['Allow', 'group:editors', ('add', 'edit')],
             ]
         session.add(root)
         session.flush()
