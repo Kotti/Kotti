@@ -60,7 +60,7 @@ class TestNode(UnitTestBase):
             ])
 
         # Note how the last ACE is class-defined, that is, users in
-        # the 'admin' group will have all permissions, always.
+        # the 'admins' group will have all permissions, always.
         # This is to prevent lock-out.
         self.assertEquals(root.__acl__[:-2], root._default_acl())
 
@@ -207,17 +207,17 @@ class TestGroups(UnitTestBase):
 
         # Groups can be arbitrarily nested:
         set_groups(child, 'group:editors', ['group:franksgroup'])
-        set_groups(grandchild, 'group:franksgroup', ['group:admin'])
+        set_groups(grandchild, 'group:franksgroup', ['group:admins'])
 
         all_groups = set(
-            ['group:admin', 'group:bobsgroup', 'group:editors',
+            ['group:admins', 'group:bobsgroup', 'group:editors',
              'group:franksgroup']
             )
         self.assertEqual(set(list_groups(grandchild, 'bob')), all_groups)
         self.assertEqual(list_groups(child, 'bob'), ['group:bobsgroup'])
 
         set_groups(grandchild, 'group:franksgroup', [])
-        set_groups(root, 'group:franksgroup', ['group:admin'])
+        set_groups(root, 'group:franksgroup', ['group:admins'])
         self.assertEqual(set(list_groups(grandchild, 'bob')), all_groups)
 
         # We break the loop
@@ -228,7 +228,7 @@ class TestGroups(UnitTestBase):
             )
 
         # Circular groups are not a problem:
-        set_groups(root, 'group:franksgroup', ['group:admin', 'group:editors'])
+        set_groups(root, 'group:franksgroup', ['group:admins', 'group:editors'])
         set_groups(grandchild, 'group:admin', ['group:bobsgroup'])
 
         self.assertEqual(set(list_groups(grandchild, 'bob')), all_groups)
