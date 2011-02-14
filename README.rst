@@ -207,7 +207,8 @@ Issue tracker and development
 =============================
 
 Kotti is `developed on Github`_.  The `issue tracker`_ also lives
-there.
+there.  You can also find us on IRC: join the ``#kotti`` channel on
+irc.freenode.net.
 
 Under the hood
 ==============
