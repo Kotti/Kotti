@@ -1,3 +1,5 @@
+from kotti.security import list_groups_callback
+
 from sqlalchemy import engine_from_config
 from pyramid.authentication import AuthTktAuthenticationPolicy
 from pyramid.authorization import ACLAuthorizationPolicy
@@ -28,6 +30,7 @@ class Configuration(dict):
             return value
 
 def authtkt_factory(**kwargs):
+    kwargs.setdefault('callback', list_groups_callback)
     return AuthTktAuthenticationPolicy(**kwargs)
 
 def acl_factory(**kwargs):

@@ -3,6 +3,7 @@ import unittest
 
 import transaction
 from sqlalchemy.exc import IntegrityError
+from pyramid.authentication import CallbackAuthenticationPolicy
 from pyramid.config import DEFAULT_RENDERERS
 from pyramid.security import ALL_PERMISSIONS
 from pyramid import testing
@@ -15,6 +16,7 @@ from kotti.resources import initialize_sql
 from kotti.security import list_groups
 from kotti.security import list_groups_raw
 from kotti.security import set_groups
+from kotti.security import list_groups_callback
 from kotti import main
 
 BASE_URL = 'http://localhost:6543'
@@ -233,6 +235,30 @@ class TestGroups(UnitTestBase):
 
         self.assertEqual(set(list_groups('bob', grandchild)), all_groups)
 
+    def test_works_with_auth(self):
+        session = DBSession()
+        root = session.query(Node).get(1)
+        child = root[u'child'] = Node()
+        session.flush()
+
+        request = testing.DummyRequest()
+        auth = CallbackAuthenticationPolicy()
+        auth.unauthenticated_userid = lambda *args: 'bob'
+        auth.callback = list_groups_callback
+
+        request.context = root
+        self.assertEqual( # a sanity test
+            auth.effective_principals(request),
+            ['system.Everyone', 'system.Authenticated', 'bob']
+            )
+
+        set_groups('bob', root, ['group:bobsgroup'])
+        request.context = child
+        self.assertEqual(
+            auth.effective_principals(request),
+            ['system.Everyone', 'system.Authenticated',
+             'bob', 'group:bobsgroup']
+            )
 
 class TestEvents(UnitTestBase):
     def setUp(self):

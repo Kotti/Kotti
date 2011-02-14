@@ -75,3 +75,6 @@ def set_groups(userid, context, groups_to_set):
         groups = {}
     groups[userid] = list(groups_to_set)
     context.__groups__ = groups
+
+def list_groups_callback(userid, request):
+    return list_groups(userid, request.context)
