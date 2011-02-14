@@ -145,8 +145,8 @@ class TestGroups(UnitTestBase):
     def test_root_default(self):
         session = DBSession()
         root = session.query(Node).get(1)
-        self.assertEqual(list_groups(root, 'admin'), ['group:admins'])
-        self.assertEqual(list_groups_raw(root, 'admin'), ['group:admins'])
+        self.assertEqual(list_groups('admin', root), ['group:admins'])
+        self.assertEqual(list_groups_raw('admin', root), ['group:admins'])
 
     def test_empty(self):
         session = DBSession()
@@ -156,11 +156,11 @@ class TestGroups(UnitTestBase):
     def test_simple(self):
         session = DBSession()
         root = session.query(Node).get(1)
-        set_groups(root, 'bob', ['group:editors'])
+        set_groups('bob', root, ['group:editors'])
         self.assertEqual(
-            list_groups(root, 'bob'), ['group:editors'])
+            list_groups('bob', root), ['group:editors'])
         self.assertEqual(
-            list_groups_raw(root, 'bob'), ['group:editors'])
+            list_groups_raw('bob', root), ['group:editors'])
 
     def test_inherit(self):
         session = DBSession()
@@ -168,20 +168,20 @@ class TestGroups(UnitTestBase):
         child = root[u'child'] = Node()
         session.flush()
 
-        self.assertEqual(list_groups(child, 'bob'), [])
-        set_groups(root, 'bob', ['group:editors'])
-        self.assertEqual(list_groups(child, 'bob'), ['group:editors'])
+        self.assertEqual(list_groups('bob', child), [])
+        set_groups('bob', root, ['group:editors'])
+        self.assertEqual(list_groups('bob', child), ['group:editors'])
 
         # Groups from the child are added:
-        set_groups(child, 'bob', ['group:somegroup'])
+        set_groups('bob', child, ['group:somegroup'])
         self.assertEqual(
-            set(list_groups(child, 'bob')),
+            set(list_groups('bob', child)),
             set(['group:somegroup', 'group:editors'])
             )
 
         # We can ask to list only those groups that are defined locally:
         self.assertEqual(
-            list_groups_raw(child, 'bob'), ['group:somegroup'])
+            list_groups_raw('bob', child), ['group:somegroup'])
 
     def test_nested_groups(self):
         session = DBSession()
@@ -191,47 +191,48 @@ class TestGroups(UnitTestBase):
         session.flush()
 
         # Bob is a global member of bobsgroup:
-        set_groups(root, 'bob', ['group:bobsgroup'])
+        set_groups('bob', root, ['group:bobsgroup'])
 
         # bobsgroup is part of the editors group in the context of grandchild:
-        set_groups(grandchild, 'group:bobsgroup', ['group:editors'])
+        set_groups('group:bobsgroup', grandchild, ['group:editors'])
 
         # Assert that bob thus is part of editors in the context of grandchild:
         self.assertEqual(
-            set(list_groups(grandchild, 'bob')),
+            set(list_groups('bob', grandchild)),
             set(['group:bobsgroup', 'group:editors']),
             )
         # Of course in the context of root he's still in bobsgroup only:
         self.assertEqual(
-            list_groups(root, 'bob'), ['group:bobsgroup'])
+            list_groups('bob', root), ['group:bobsgroup'])
 
         # Groups can be arbitrarily nested:
-        set_groups(child, 'group:editors', ['group:franksgroup'])
-        set_groups(grandchild, 'group:franksgroup', ['group:admins'])
+        set_groups('group:editors', child, ['group:franksgroup'])
+        set_groups('group:franksgroup', grandchild, ['group:admins'])
 
         all_groups = set(
             ['group:admins', 'group:bobsgroup', 'group:editors',
              'group:franksgroup']
             )
-        self.assertEqual(set(list_groups(grandchild, 'bob')), all_groups)
-        self.assertEqual(list_groups(child, 'bob'), ['group:bobsgroup'])
+        self.assertEqual(set(list_groups('bob', grandchild)), all_groups)
+        self.assertEqual(list_groups('bob', child), ['group:bobsgroup'])
 
-        set_groups(grandchild, 'group:franksgroup', [])
-        set_groups(root, 'group:franksgroup', ['group:admins'])
-        self.assertEqual(set(list_groups(grandchild, 'bob')), all_groups)
+        set_groups('group:franksgroup', grandchild, [])
+        set_groups('group:franksgroup', root, ['group:admins'])
+        self.assertEqual(set(list_groups('bob', grandchild)), all_groups)
 
         # We break the loop
-        set_groups(root, 'group:franksgroup', [])
+        set_groups('group:franksgroup', root, [])
         self.assertEqual(
-            set(list_groups(grandchild, 'bob')),
+            set(list_groups('bob', grandchild)),
             set(['group:bobsgroup', 'group:editors', 'group:franksgroup'])
             )
 
         # Circular groups are not a problem:
-        set_groups(root, 'group:franksgroup', ['group:admins', 'group:editors'])
-        set_groups(grandchild, 'group:admin', ['group:bobsgroup'])
+        set_groups('group:franksgroup', root, ['group:admins', 'group:editors'])
+        set_groups('group:admin', grandchild, ['group:bobsgroup'])
 
-        self.assertEqual(set(list_groups(grandchild, 'bob')), all_groups)
+        self.assertEqual(set(list_groups('bob', grandchild)), all_groups)
+
 
 class TestEvents(UnitTestBase):
     def setUp(self):
