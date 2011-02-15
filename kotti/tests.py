@@ -61,12 +61,13 @@ class TestNode(UnitTestBase):
                 ('Allow', 'group:admins', ALL_PERMISSIONS),
                 ('Allow', 'system.Authenticated', ['view']),
                 ('Allow', 'group:editors', ['add', 'edit']),
+                ('Allow', 'group:managers', ['manage']),
             ])
 
         # Note how the last ACE is class-defined, that is, users in
         # the 'admins' group will have all permissions, always.
         # This is to prevent lock-out.
-        self.assertEquals(root.__acl__[:-2], root._default_acl())
+        self.assertEquals(root.__acl__[:1], root._default_acl())
 
     def test_set_and_get_acl(self):
         session = DBSession()

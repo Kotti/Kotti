@@ -175,10 +175,11 @@ users_table = Table('users', metadata,
 
 mapper(User, users_table)
 
+# Note how roles are really groups too.  The only special thing
+# about them is that they're defined by Kotti and appear in the
+# user interface in the sharing tab.
 ROLES = [
-    # Note how roles are really groups too.  The only special thing
-    # about them is that they're defined by Kotti and appear in the
-    # user interface in the sharing tab.
     User(u'group:editors', u'Editors'),
+    User(u'group:managers', u'Managers'),
     User(u'group:admins', u'Administrators'),
     ]
