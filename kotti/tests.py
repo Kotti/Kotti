@@ -18,6 +18,7 @@ from kotti.security import list_groups_raw
 from kotti.security import set_groups
 from kotti.security import list_groups_callback
 from kotti.security import get_users
+from kotti.security import is_group
 from kotti import main
 
 BASE_URL = 'http://localhost:6543'
@@ -312,6 +313,7 @@ class TestUser(UnitTestBase):
         users = get_users()
         users['bob'] = dict(
             id=u'bob', title=u'Bob Dabolina', groups=[u'group:bobsgroup'])
+        return users['bob']
     
     def _assert_is_bob(self, bob):
         self.assertEqual(bob.id, u'bob')
@@ -365,6 +367,12 @@ class TestUser(UnitTestBase):
             set(list_groups('bob', child)),
             set(['group:bobsgroup', 'group:editors', 'group:foogroup'])
             )
+
+    def test_is_group(self):
+        bob = self._make_bob()
+        self.assertEqual(is_group(bob), False)
+        bob.id = u'group:bobsgroup'
+        self.assertEqual(is_group(bob), True)
 
 class TestEvents(UnitTestBase):
     def setUp(self):

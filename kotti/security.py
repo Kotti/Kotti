@@ -16,17 +16,16 @@ from kotti.resources import DBSession
 from kotti.resources import metadata
 from kotti.util import JsonType
 
-ALL_PERMISSIONS_SERIALIZED = '__ALL_PERMISSIONS__'
-
 class ACL(object):
     """Manages access to ``self._acl`` which is a JSON- serialized
     representation of ``self.__acl__``.
     """
+    ALL_PERMISSIONS_SERIALIZED = '__ALL_PERMISSIONS__'
 
     @staticmethod
     def _deserialize_ace(ace):
         ace = list(ace)
-        if ace[2] == ALL_PERMISSIONS_SERIALIZED:
+        if ace[2] == ACL.ALL_PERMISSIONS_SERIALIZED:
             ace[2] = ALL_PERMISSIONS
         return tuple(ace)
 
@@ -34,7 +33,7 @@ class ACL(object):
     def _serialize_ace(ace):
         ace = list(ace)
         if ace[2] == ALL_PERMISSIONS:
-            ace[2] = ALL_PERMISSIONS_SERIALIZED
+            ace[2] = ACL.ALL_PERMISSIONS_SERIALIZED
         return ace
 
     def _get_acl(self):
@@ -106,6 +105,9 @@ def list_groups_callback(userid, request):
 def get_users():
     return configuration['kotti.users'][0]
 
+def is_group(user):
+    return user.id.startswith('group:')
+
 class Users(DictMixin):
     """Kotti's default user database.
 
@@ -161,9 +163,6 @@ class User(object):
         self.title = title
         self.groups = groups
         self.creation_date = datetime.now()
-
-    def is_group(self):
-        return self.id.startswith('group:')
 
 users = Users()
 
