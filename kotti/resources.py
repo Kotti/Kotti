@@ -1,3 +1,4 @@
+from datetime import datetime
 from UserDict import DictMixin
 
 import transaction
@@ -151,8 +152,9 @@ nodes = Table('nodes', metadata,
     Column('description', UnicodeText()),
     Column('language', Unicode(10)),
     Column('owner', Unicode(100)),
-    Column('creation_date', DateTime()),
-    Column('modification_date', DateTime()),
+    Column('creation_date', DateTime(), default=datetime.now),
+    Column('modification_date', DateTime(),
+           default=datetime.now, onupdate=datetime.now),
 
     UniqueConstraint('parent_id', 'name'),
 )

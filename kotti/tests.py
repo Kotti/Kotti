@@ -5,6 +5,7 @@ import transaction
 from sqlalchemy.exc import IntegrityError
 from pyramid.authentication import CallbackAuthenticationPolicy
 from pyramid.config import DEFAULT_RENDERERS
+from pyramid.registry import Registry
 from pyramid.security import ALL_PERMISSIONS
 from pyramid import testing
 
@@ -30,10 +31,10 @@ def _initTestingDB():
     session = initialize_sql(create_engine('sqlite://'))
     return session
 
-def setUp():
+def setUp(**kwargs):
     tearDown()
     _initTestingDB()
-    config = testing.setUp()
+    config = testing.setUp(**kwargs)
     for name, renderer in DEFAULT_RENDERERS:
         config.add_renderer(name, renderer)
     transaction.begin()
@@ -44,8 +45,8 @@ def tearDown():
     testing.tearDown()
 
 class UnitTestBase(unittest.TestCase):
-    def setUp(self):
-        self.config = setUp()
+    def setUp(self, **kwargs):
+        self.config = setUp(**kwargs)
 
     def tearDown(self):
         tearDown()
@@ -377,21 +378,22 @@ class TestUser(UnitTestBase):
 
 class TestEvents(UnitTestBase):
     def setUp(self):
-        super(TestEvents, self).setUp()
+        # We're jumping through some hoops to allow the event handlers
+        # to be able to do 'pyramid.threadlocal.get_current_request'
+        # and 'authenticated_userid'.
+        registry = Registry('testing')
+        request = testing.DummyRequest()
+        request.registry = registry
+        super(TestEvents, self).setUp(registry=registry, request=request)
         self.config.include('kotti.events')
 
-    def test_dates(self):
+    def test_owner(self):
         session = DBSession()
+        self.config.testing_securitypolicy(userid=u'bob')
         root = session.query(Node).get(1)
         child = root[u'child'] = Node()
         session.flush()
-
-        self.assertNotEqual(child.creation_date, None)
-        self.assertEqual(child.creation_date, child.modification_date)
-
-        child.title = u"Here"
-        session.flush()
-        self.assert_(child.creation_date < child.modification_date)
+        self.assertEqual(child.owner, u'bob')
 
 class TestNodeView(UnitTestBase):
     def test_it(self):
