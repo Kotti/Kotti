@@ -17,6 +17,7 @@ from kotti.security import list_groups
 from kotti.security import list_groups_raw
 from kotti.security import set_groups
 from kotti.security import list_groups_callback
+from kotti.security import get_users
 from kotti import main
 
 BASE_URL = 'http://localhost:6543'
@@ -258,6 +259,65 @@ class TestGroups(UnitTestBase):
             auth.effective_principals(request),
             ['system.Everyone', 'system.Authenticated',
              'bob', 'group:bobsgroup']
+            )
+
+class TestUser(UnitTestBase):
+    def _make_bob(self):
+        users = get_users()
+        users['bob'] = dict(
+            id=u'bob', title=u'Bob Dabolina', groups=[u'group:bobsgroup'])
+    
+    def _assert_is_bob(self, bob):
+        self.assertEqual(bob.id, u'bob')
+        self.assertEqual(bob.title, u'Bob Dabolina')
+        self.assertEqual(bob.groups, [u'group:bobsgroup'])
+
+    def test_users_empty(self):
+        users = get_users()
+        self.assertRaises(KeyError, users.__getitem__, u'bob')
+        self.assertRaises(KeyError, users.__delitem__, u'bob')
+        self.assertEqual(len(list(users.keys())), 0)
+        self.assertEqual(len(list(users.query())), 0)
+
+    def test_users_add_and_remove(self):
+        self._make_bob()
+        users = get_users()
+        self._assert_is_bob(users[u'bob'])
+        self.assertEqual(list(users.keys()), [u'bob'])
+
+        del users['bob']
+        self.assertRaises(KeyError, users.__getitem__, u'bob')
+        self.assertRaises(KeyError, users.__delitem__, u'bob')
+
+    def test_users_query(self):
+        users = get_users()
+        self.assertEqual(list(users.query(title=u"%Bob%")), [])
+        self._make_bob()
+        [bob] = list(users.query(id=u"bob"))
+        self._assert_is_bob(bob)
+        [bob] = list(users.query(title=u"%Bob%"))
+        self._assert_is_bob(bob)
+
+    def test_groups_from_users(self):
+        self._make_bob()
+
+        session = DBSession()
+        root = session.query(Node).get(1)
+        child = root[u'child'] = Node()
+        session.flush()
+
+        self.assertEqual(list_groups('bob', root), ['group:bobsgroup'])
+
+        set_groups('group:bobsgroup', root, ['group:editors'])
+        set_groups('group:editors', child, ['group:foogroup'])
+
+        self.assertEqual(
+            set(list_groups('bob', root)),
+            set(['group:bobsgroup', 'group:editors'])
+            )
+        self.assertEqual(
+            set(list_groups('bob', child)),
+            set(['group:bobsgroup', 'group:editors', 'group:foogroup'])
             )
 
 class TestEvents(UnitTestBase):

@@ -1,5 +1,3 @@
-from kotti.security import list_groups_callback
-
 from sqlalchemy import engine_from_config
 from pyramid.authentication import AuthTktAuthenticationPolicy
 from pyramid.authorization import ACLAuthorizationPolicy
@@ -29,7 +27,11 @@ class Configuration(dict):
         else:
             return value
 
+    def __getattr__(self, key):
+        return self[key]
+
 def authtkt_factory(**kwargs):
+    from kotti.security import list_groups_callback
     kwargs.setdefault('callback', list_groups_callback)
     return AuthTktAuthenticationPolicy(**kwargs)
 
@@ -56,6 +58,7 @@ configuration = Configuration(
         'kotti.authentication_policy_factory': 'kotti.authtkt_factory',
         'kotti.authorization_policy_factory': 'kotti.acl_factory',
         'kotti.session_factory': 'kotti.cookie_session_factory',
+        'kotti.users': 'kotti.security.users',
     },
     dotted_names=set([
         'kotti.configurators',
@@ -64,6 +67,7 @@ configuration = Configuration(
         'kotti.authentication_policy_factory',
         'kotti.authorization_policy_factory',
         'kotti.session_factory',
+        'kotti.users',
         ]),
     )
 

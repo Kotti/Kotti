@@ -23,11 +23,11 @@ from sqlalchemy import MetaData
 from pyramid.traversal import resource_path
 from pyramid.security import view_execution_permitted
 
-from kotti.util import JsonType
-from kotti.security import ACL
-
 metadata = MetaData()
 DBSession = scoped_session(sessionmaker(extension=ZopeTransactionExtension()))
+
+from kotti.util import JsonType
+from kotti.security import ACL
 
 class Container(object, DictMixin):
     """Containers form the API of a Node that's used for subitem

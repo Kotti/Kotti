@@ -1,6 +1,20 @@
+from datetime import datetime
+from UserDict import DictMixin
+
+from sqlalchemy import Table
+from sqlalchemy import Column
+from sqlalchemy import Unicode
+from sqlalchemy import DateTime
+from sqlalchemy.orm import mapper
+from sqlalchemy.orm.exc import NoResultFound
 from pyramid.location import lineage
 from pyramid.security import Allow
 from pyramid.security import ALL_PERMISSIONS
+
+from kotti import configuration
+from kotti.resources import DBSession
+from kotti.resources import metadata
+from kotti.util import JsonType
 
 ALL_PERMISSIONS_SERIALIZED = '__ALL_PERMISSIONS__'
 
@@ -56,9 +70,13 @@ def list_groups_raw(userid, context):
         return set()
 
 def list_groups(userid, context, _seen=None):
-    if _seen is None:
-        _seen = set()
     groups = set()
+    if _seen is None:
+        user = get_users().get(userid)
+        if user is not None:
+            groups.update(user.groups)
+        _seen = set()
+
     for item in lineage(context):
         groups.update(list_groups_raw(userid, item))
 
@@ -78,3 +96,70 @@ def set_groups(userid, context, groups_to_set):
 
 def list_groups_callback(userid, request):
     return list_groups(userid, request.context)
+
+def get_users():
+    return configuration['kotti.users'][0]
+
+class Users(DictMixin):
+    """Kotti's default user database.
+
+    Promises dict-like access to user profiles, and a 'query' method
+    for finding users.
+
+    This is a default implementation that may be replaced by using the
+    'kotti.users' configuration variable.
+    """
+    def __getitem__(self, key):
+        key = unicode(key)
+        session = DBSession()
+        try:
+            return session.query(User).filter(User.id==key).one()
+        except NoResultFound:
+            raise KeyError(key)
+
+    def __setitem__(self, key, user):
+        key = unicode(key)
+        session = DBSession()
+        if isinstance(user, dict):
+            profile = User(**user)
+        session.add(profile)
+
+    def __delitem__(self, key):
+        key = unicode(key)
+        session = DBSession()
+        try:
+            user = session.query(User).filter(User.id==key).one()
+            session.delete(user)
+        except NoResultFound:
+            raise KeyError(key)
+
+    def keys(self):
+        session = DBSession()
+        for (userid,) in session.query(User.id):
+            yield userid
+
+    def query(self, **kwargs):
+        session = DBSession()
+        query = session.query(User)
+        for key, value in kwargs.items():
+            attr = getattr(User, key)
+            query = query.filter(attr.like(value))
+        return query
+
+class User(object):
+    def __init__(self, id, title=None, groups=()):
+        self.id = id
+        self.title = title
+        self.groups = groups
+        self.creation_date = datetime.now()
+
+users = Users()
+
+users_table = Table('users', metadata,
+    Column('id', Unicode(100), primary_key=True),
+    Column('title', Unicode(100)),
+    Column('groups', JsonType(), nullable=False),
+    Column('creation_date', DateTime(), nullable=False),
+)
+
+mapper(User, users_table)
