@@ -16,7 +16,7 @@ from kotti.resources import DBSession
 from kotti.resources import metadata
 from kotti.util import JsonType
 
-class ACL(object):
+class PersistentACL(object):
     """Manages access to ``self._acl`` which is a JSON- serialized
     representation of ``self.__acl__``.
     """
@@ -25,7 +25,7 @@ class ACL(object):
     @staticmethod
     def _deserialize_ace(ace):
         ace = list(ace)
-        if ace[2] == ACL.ALL_PERMISSIONS_SERIALIZED:
+        if ace[2] == PersistentACL.ALL_PERMISSIONS_SERIALIZED:
             ace[2] = ALL_PERMISSIONS
         return tuple(ace)
 
@@ -33,7 +33,7 @@ class ACL(object):
     def _serialize_ace(ace):
         ace = list(ace)
         if ace[2] == ALL_PERMISSIONS:
-            ace[2] = ACL.ALL_PERMISSIONS_SERIALIZED
+            ace[2] = PersistentACL.ALL_PERMISSIONS_SERIALIZED
         return ace
 
     def _get_acl(self):

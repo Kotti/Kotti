@@ -27,7 +27,7 @@ metadata = MetaData()
 DBSession = scoped_session(sessionmaker(extension=ZopeTransactionExtension()))
 
 from kotti.util import JsonType
-from kotti.security import ACL
+from kotti.security import PersistentACL
 
 class Container(object, DictMixin):
     """Containers form the API of a Node that's used for subitem
@@ -75,7 +75,7 @@ class TypeInfo(object):
         else:
             return False # XXX testme
 
-class Node(Container, ACL):
+class Node(Container, PersistentACL):
     type_info = TypeInfo(
         name=u'Node',
         add_view=None,
