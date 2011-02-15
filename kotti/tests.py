@@ -259,13 +259,53 @@ class TestGroups(UnitTestBase):
             ['system.Everyone', 'system.Authenticated', 'bob']
             )
 
+        # Define that bob belongs to bobsgroup on the root level:
         set_groups('bob', root, ['group:bobsgroup'])
         request.context = child
         self.assertEqual(
-            auth.effective_principals(request),
-            ['system.Everyone', 'system.Authenticated',
-             'bob', 'group:bobsgroup']
+            set(auth.effective_principals(request)), set([
+                'system.Everyone', 'system.Authenticated',
+                'bob', 'group:bobsgroup'
+                ])
             )
+
+        # define that bob belongs to franksgroup in the user db:
+        get_users()[u'bob'].groups = [u'group:franksgroup']
+        set_groups('group:franksgroup', child, ['group:anothergroup'])
+        self.assertEqual(
+            set(auth.effective_principals(request)), set([
+                'system.Everyone', 'system.Authenticated',
+                'bob', 'group:bobsgroup', 'group:franksgroup',
+                'group:anothergroup',
+                ])
+            )
+
+        # And lastly test that circular group defintions are not a
+        # problem here either:
+        get_users()[u'group:franksgroup'] = dict(
+            id=u'group:franksgroup',
+            title=u"Frank's group",
+            groups=[u'group:funnygroup', u'group:bobsgroup'],
+            )
+        self.assertEqual(
+            set(auth.effective_principals(request)), set([
+                'system.Everyone', 'system.Authenticated',
+                'bob', 'group:bobsgroup', 'group:franksgroup',
+                'group:anothergroup', 'group:funnygroup',
+                ])
+            )
+
+    def test_list_groups_callback_with_groups(self):
+        # Although group definitions are also in the user database,
+        # we're not allowed to authenticate with a group id:
+        get_users()[u'bob'] = dict(id=u'bob')
+        get_users()[u'group:bobsgroup'] = dict(id=u'group:bobsgroup')
+        
+        request = testing.DummyRequest()
+        self.assertEqual(
+            list_groups_callback(u'bob', request), [])
+        self.assertEqual(
+            list_groups_callback(u'group:bobsgroup', request), None)
 
 class TestUser(UnitTestBase):
     def _make_bob(self):

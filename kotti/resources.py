@@ -188,15 +188,15 @@ def default_get_root(request):
 
 def populate():
     session = DBSession()
-    objs = session.query(Node).count()
-    if objs == 0:
+    count = session.query(Node).count()
+    if count == 0:
         root = Document(name=u"", parent=None, title=u"My Site")
         root.__acl__ = [
             ['Allow', 'system.Authenticated', ('view',)],
             ['Allow', 'group:editors', ('add', 'edit')],
             ]
         root.__groups__ = {
-            'admin': ['group:admins'],
+            u'admin': [u'group:admins'],
             }
 
         session.add(root)

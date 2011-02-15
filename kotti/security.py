@@ -72,11 +72,14 @@ def list_groups_raw(userid, context):
 def list_groups(userid, context, _seen=None):
     groups = set()
     if _seen is None:
-        user = get_users().get(userid)
-        if user is not None:
-            groups.update(user.groups)
         _seen = set()
 
+    # Add groups from user db:
+    user = get_users().get(userid)
+    if user is not None:
+        groups.update(user.groups)
+
+    # Add local groups:
     for item in lineage(context):
         groups.update(list_groups_raw(userid, item))
 
@@ -95,6 +98,8 @@ def set_groups(userid, context, groups_to_set):
     context.__groups__ = groups
 
 def list_groups_callback(userid, request):
+    if userid.startswith('group:'):
+        return None
     if userid in get_users():
         return list_groups(userid, request.context)
 
@@ -134,10 +139,13 @@ class Users(DictMixin):
         except NoResultFound:
             raise KeyError(key)
 
-    def keys(self):
+    def iterkeys(self):
         session = DBSession()
         for (userid,) in session.query(User.id):
             yield userid
+
+    def keys(self):
+        return list(self.iterkeys())
 
     def query(self, **kwargs):
         session = DBSession()
@@ -154,6 +162,9 @@ class User(object):
         self.groups = groups
         self.creation_date = datetime.now()
 
+    def is_group(self):
+        return self.id.startswith('group:')
+
 users = Users()
 
 users_table = Table('users', metadata,
@@ -164,3 +175,11 @@ users_table = Table('users', metadata,
 )
 
 mapper(User, users_table)
+
+ROLES = [
+    # Note how roles are really groups too.  The only special thing
+    # about them is that they're defined by Kotti and appear in the
+    # user interface in the sharing tab.
+    User(u'group:editors', u'Editors'),
+    User(u'group:admins', u'Administrators'),
+    ]
