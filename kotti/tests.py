@@ -248,7 +248,13 @@ class TestGroups(UnitTestBase):
         auth.callback = list_groups_callback
 
         request.context = root
-        self.assertEqual( # a sanity test
+        self.assertEqual( # user doesn't exist yet
+            auth.effective_principals(request),
+            ['system.Everyone']
+            )
+
+        get_users()[u'bob'] = dict(id=u'bob')
+        self.assertEqual(
             auth.effective_principals(request),
             ['system.Everyone', 'system.Authenticated', 'bob']
             )
