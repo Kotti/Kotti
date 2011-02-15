@@ -1,12 +1,14 @@
 import string
 
 from pyramid.decorator import reify
+from pyramid.httpexceptions import HTTPFound
 from pyramid.location import inside
 from pyramid.location import lineage
 from pyramid.renderers import get_renderer
 from pyramid.security import has_permission
 from pyramid.security import view_execution_permitted
 from pyramid.url import resource_url
+from deform import ValidationFailure
 
 from kotti import configuration
 from kotti.resources import DBSession
@@ -215,3 +217,49 @@ def disambiguate_name(name):
     else:
         parts.append(u'1')
     return u'-'.join(parts)
+
+class FormController(object):
+    add = None
+    post_key = 'save'
+    edit_success_msg = u"Your changes have been saved."
+    add_success_msg = u"Successfully added item."
+    error_msg = (u"There was a problem with your submission.\n"
+                 u"Errors have been highlighted below.")
+    success_path = 'edit'
+
+    def __init__(self, form, **kwargs):
+        self.form = form
+        for key, value in kwargs.items():
+            if key in self.__class__.__dict__:
+                setattr(self, key, value)
+            else: # pragma: no coverage
+                raise TypeError("Unknown argument %r" % key)
+
+    def __call__(self, context, request):
+        if self.post_key in request.POST:
+            controls = request.POST.items()
+            try:
+                appstruct = self.form.validate(controls)
+            except ValidationFailure, e:
+                request.session.flash(self.error_msg, 'error')
+                return e.render()
+            else:
+                if self.add is None: # edit
+                    for key, value in appstruct.items():
+                        setattr(context, key, value)
+                    request.session.flash(self.edit_success_msg, 'success')
+                    location = resource_url(context, request, self.success_path)
+                    return HTTPFound(location=location)
+                else: # add
+                    name = title_to_name(appstruct['title'])
+                    while name in context.keys():
+                        name = disambiguate_name(name)
+                    item = context[name] = self.add(**appstruct)
+                    request.session.flash(self.add_success_msg, 'success')
+                    location = resource_url(item, request, self.success_path)
+                    return HTTPFound(location=location)
+        else: # no post means less action
+            if self.add is None:
+                return self.form.render(context.__dict__)
+            else:
+                return self.form.render()

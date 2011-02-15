@@ -1,14 +1,12 @@
 from pkg_resources import resource_filename
 from pyramid.exceptions import Forbidden
 from pyramid.httpexceptions import HTTPFound
-from pyramid.renderers import render_to_response
 from pyramid.security import has_permission
 from pyramid.security import view_execution_permitted
 from pyramid.url import resource_url
 from pyramid.view import is_response
 import colander
 from deform import Form
-from deform import ValidationFailure
 from deform.widget import RichTextWidget
 from deform.widget import TextAreaWidget
 
@@ -20,6 +18,7 @@ from kotti.views.util import TemplateAPIEdit
 from kotti.views.util import addable_types
 from kotti.views.util import title_to_name
 from kotti.views.util import disambiguate_name
+from kotti.views.util import FormController
 
 deform_templates = resource_filename('deform', 'templates')
 kotti_templates = resource_filename('kotti', 'templates/edit/widgets')
@@ -40,69 +39,6 @@ class DocumentSchema(NodeSchema):
         widget=RichTextWidget(theme='advanced'),
         missing=u"",
         )
-
-class FormView(object):
-    renderer = '../templates/edit/node.pt'
-    add = None
-    post_key = 'save'
-    edit_success_msg = u"Your changes have been saved."
-    add_success_msg = u"Successfully added item."
-    error_msg = (u"There was a problem with your submission.\n"
-                 u"Errors have been highlighted below.")
-    success_path = 'edit'
-
-    def __init__(self, form, api=None, **kwargs):
-        self.form = form
-        self.api = api
-        for key, value in kwargs.items():
-            if key in self.__class__.__dict__:
-                setattr(self, key, value)
-            else: # pragma: no coverage
-                raise TypeError("Unknown argument %r" % key)
-
-    def __call__(self, context, request):
-        if self.api is None:
-            self.api = TemplateAPIEdit(context, request)
-
-        result = self._handle_form(context, request)
-        if is_response(result):
-            return result
-        else:
-            return render_to_response(
-                self.renderer,
-                {'form': result, 'api': self.api},
-                request=request,
-                )
-
-    def _handle_form(self, context, request):
-        if self.post_key in request.POST:
-            controls = request.POST.items()
-            try:
-                appstruct = self.form.validate(controls)
-            except ValidationFailure, e:
-                request.session.flash(self.error_msg, 'error')
-                return e.render()
-            else:
-                if self.add is None: # edit
-                    for key, value in appstruct.items():
-                        setattr(context, key, value)
-                    request.session.flash(self.edit_success_msg, 'success')
-                    location = resource_url(context, request, self.success_path)
-                    return HTTPFound(location=location)
-                else: # add
-                    name = title_to_name(appstruct['title'])
-                    while name in context.keys():
-                        name = disambiguate_name(name)
-                    item = context[name] = self.add(**appstruct)
-                    request.session.flash(self.add_success_msg, 'success')
-                    location = resource_url(item, request, self.success_path)
-                    return HTTPFound(location=location)
-        else: # no post means less action
-            if self.add is None:
-                return self.form.render(context.__dict__)
-            else:
-                return self.form.render()
-    render = __call__
 
 def add_node(context, request):
     """This view's responsibility is to present the user with a form
@@ -145,6 +81,9 @@ def add_node(context, request):
         }
 
 def move_node(context, request):
+    """This view allows copying, cutting, pasting, deleting of
+    'context' and reordering of children of 'context'.
+    """
     P = request.POST
     session = DBSession()
     
@@ -219,14 +158,26 @@ def move_node(context, request):
 
 def edit_document(context, request):
     form = Form(DocumentSchema(), buttons=('save', 'cancel'))
-    return FormView(form)(context, request)
+    rendered = FormController(form)(context, request)
+    if is_response(rendered):
+        return rendered
+    return {
+        'api': TemplateAPIEdit(context, request),
+        'form': rendered,
+        }
 
 def add_document(context, request):
     api = TemplateAPIEdit(
         context, request,
         first_heading=u'<h1>Add document to <em>%s</em></h1>' % context.title)
     form = Form(DocumentSchema(), buttons=('save', 'cancel'))
-    return FormView(form, add=Document, api=api)(context, request)
+    rendered = FormController(form, add=Document)(context, request)
+    if is_response(rendered):
+        return rendered
+    return {
+        'api': api,
+        'form': rendered,
+        }
 
 def includeme(config):
     config.add_view(
@@ -234,10 +185,12 @@ def includeme(config):
         context=Document,
         name='edit',
         permission='edit',
+        renderer='../templates/edit/node.pt',
         )
 
     config.add_view(
         add_document,
         name=Document.type_info.add_view,
         permission='add',
+        renderer='../templates/edit/node.pt',
         )
