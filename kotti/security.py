@@ -122,6 +122,9 @@ class Principal(object):
         self.groups = groups
         self.creation_date = datetime.now()
 
+    def __repr__(self): # pragma: no cover
+        return '<Principal %r>' % self.id
+
 class Principals(DictMixin):
     """Kotti's default principal database.
 
@@ -146,8 +149,8 @@ class Principals(DictMixin):
         key = unicode(key)
         session = DBSession()
         if isinstance(principal, dict):
-            profile = self.factory(**principal)
-        session.add(profile)
+            principal = self.factory(**principal)
+        session.add(principal)
 
     def __delitem__(self, key):
         key = unicode(key)
@@ -172,10 +175,10 @@ class Principals(DictMixin):
             return []
         session = DBSession()
         query = session.query(self.factory)
-        query.filter(or_(
-            self.factory.id == term,
-            self.factory.title == term,
-            self.factory.email == term,
+        query = query.filter(or_(
+            self.factory.id.like(term),
+            self.factory.title.like(term),
+            self.factory.email.like(term),
             ))
         return query
 
@@ -199,8 +202,8 @@ mapper(Principal, principals_table, order_by=principals_table.c.id)
 # Note how roles are really groups too.  The only special thing
 # about them is that they're defined by Kotti and appear in the
 # user interface in the sharing tab.
-ROLES = [
-    Principal(u'group:admins', title=u'Administrators'),
-    Principal(u'group:managers', title=u'Managers'),
-    Principal(u'group:editors', title=u'Editors'),
-    ]
+ROLES = {
+    u'group:admins': Principal(u'group:admins', title=u'Administrators'),
+    u'group:managers': Principal(u'group:managers', title=u'Managers'),
+    u'group:editors': Principal(u'group:editors', title=u'Editors'),
+    }

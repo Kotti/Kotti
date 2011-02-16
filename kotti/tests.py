@@ -20,6 +20,7 @@ from kotti.security import set_groups
 from kotti.security import list_groups_callback
 from kotti.security import get_principals
 from kotti.security import is_user
+from kotti.security import Principal
 from kotti import main
 
 BASE_URL = 'http://localhost:6543'
@@ -326,14 +327,13 @@ class TestUser(UnitTestBase):
         users = get_principals()
         self.assertRaises(KeyError, users.__getitem__, u'bob')
         self.assertRaises(KeyError, users.__delitem__, u'bob')
-        self.assertEqual(len(list(users.keys())), 0)
-        self.assertEqual(len(list(users.search(u""))), 0)
+        self.assertEqual(users.keys(), [u'admin'])
 
     def test_users_add_and_remove(self):
         self._make_bob()
         users = get_principals()
         self._assert_is_bob(users[u'bob'])
-        self.assertEqual(list(users.keys()), [u'bob'])
+        self.assertEqual(set(users.keys()), set([u'admin', u'bob']))
 
         del users['bob']
         self.assertRaises(KeyError, users.__getitem__, u'bob')
@@ -524,6 +524,42 @@ class TestNodeShare(UnitTestBase):
         request = testing.DummyRequest()
         self.assertEqual(share_node(root, request)['roles'], ROLES)
 
+    def test_local_groups(self):
+        # 'share_node' returns a list of existing local groups
+        from kotti.views.edit import share_node
+        from kotti.security import ROLES
+        session = DBSession()
+        root = session.query(Node).get(1)
+        child = root['child'] = Document(title=u"Child")
+        request = testing.DummyRequest()
+
+        # The root has a local group assignment that maps 'admin' to
+        # the 'group:admins' group.
+        groups = share_node(root, request)['local_groups']
+        self.assertEqual(len(groups), 1)
+        admins = groups[0]
+        self.assertEqual(admins[0], ROLES[u'group:admins'])
+        self.assertEqual(admins[1], [get_principals()[u'admin']])
+
+        # The child of 'root' doesn't have any local groups assigned:
+        groups = share_node(child, request)['local_groups']
+        self.assertEqual(len(groups), 0)
+
+        # We add some roles to the child:
+        from kotti.security import set_groups
+        set_groups('group:bobsgroup', child, [u'group:editors'])
+        groups = share_node(child, request)['local_groups']
+        self.assertEqual(len(groups), 0)
+
+        # 'group:bobsgroup' need to exist in the database for it to
+        # show up here:
+        bobsgroup = Principal(u'group:bobsgroup')
+        get_principals()[u'group:bobsgroup'] = bobsgroup
+        groups = share_node(child, request)['local_groups']
+        self.assertEqual(len(groups), 1)
+        editors = groups[0]
+        self.assertEqual(editors[0], ROLES[u'group:editors'])
+        self.assertEqual(editors[1], [bobsgroup])
 
 class TestTemplateAPI(UnitTestBase):
     def _make(self, context=None, id=1):

@@ -27,9 +27,11 @@ from pyramid.security import view_execution_permitted
 metadata = MetaData()
 DBSession = scoped_session(sessionmaker(extension=ZopeTransactionExtension()))
 
+from kotti import configuration
 from kotti.util import JsonType
 from kotti.security import PersistentACL
 from kotti.security import get_principals
+from kotti.security import Principal
 
 class Container(object, DictMixin):
     """Containers form the API of a Node that's used for subitem
@@ -203,8 +205,17 @@ def populate():
             u'admin': [u'group:admins'],
             }
         session.add(root)
-        session.flush()
-        transaction.commit()
+
+    principals = get_principals()
+    if u'admin' not in principals:
+        principals[u'admin'] = Principal(
+            u'admin',
+            password=configuration.get('secret'),
+            title=u"Administrator",
+            )
+
+    session.flush()
+    transaction.commit()
 
 _session = []
 def initialize_sql(engine):
