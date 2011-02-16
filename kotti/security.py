@@ -1,4 +1,5 @@
 from datetime import datetime
+import hashlib
 from UserDict import DictMixin
 
 from sqlalchemy import Table
@@ -112,8 +113,11 @@ def is_user(principal):
     return not principal.startswith('group:')
 
 class Principal(object):
-    def __init__(self, id, title=u"", groups=()):
+    def __init__(self, id, password=None, title=u"", groups=()):
         self.id = id
+        if password is not None:
+            password = get_principals().hash_password(password)
+        self.password = password
         self.title = title
         self.groups = groups
         self.creation_date = datetime.now()
@@ -121,8 +125,8 @@ class Principal(object):
 class Principals(DictMixin):
     """Kotti's default principal database.
 
-    Promises dict-like access to user profiles, and a 'search' method
-    for finding users.
+    Promises dict-like access to user profiles, a 'search' method for
+    finding users, and a 'hash_password' method for hashing passwords.
 
     This is a default implementation that may be replaced by using the
     'kotti.principals' configuration variable.
@@ -175,10 +179,15 @@ class Principals(DictMixin):
             ))
         return query
 
+    def hash_password(self, password):
+        salt = configuration['kotti.secret']
+        return hashlib.sha224(salt + password).hexdigest()
+
 principals = Principals()
 
 principals_table = Table('principals', metadata,
     Column('id', Unicode(100), primary_key=True),
+    Column('password', Unicode(100)),
     Column('title', Unicode(100), nullable=False),
     Column('email', Unicode(100)),
     Column('groups', JsonType(), nullable=False),
@@ -191,7 +200,7 @@ mapper(Principal, principals_table, order_by=principals_table.c.id)
 # about them is that they're defined by Kotti and appear in the
 # user interface in the sharing tab.
 ROLES = [
-    Principal(u'group:editors', u'Editors'),
-    Principal(u'group:managers', u'Managers'),
-    Principal(u'group:admins', u'Administrators'),
+    Principal(u'group:admins', title=u'Administrators'),
+    Principal(u'group:managers', title=u'Managers'),
+    Principal(u'group:editors', title=u'Editors'),
     ]

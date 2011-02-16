@@ -29,6 +29,7 @@ DBSession = scoped_session(sessionmaker(extension=ZopeTransactionExtension()))
 
 from kotti.util import JsonType
 from kotti.security import PersistentACL
+from kotti.security import get_principals
 
 class Container(object, DictMixin):
     """Containers form the API of a Node that's used for subitem
@@ -190,8 +191,8 @@ def default_get_root(request):
 
 def populate():
     session = DBSession()
-    count = session.query(Node).count()
-    if count == 0:
+    nodecount = session.query(Node).count()
+    if nodecount == 0:
         root = Document(name=u"", parent=None, title=u"My Site")
         root.__acl__ = [
             ['Allow', 'system.Authenticated', ['view']],
@@ -201,7 +202,6 @@ def populate():
         root.__groups__ = {
             u'admin': [u'group:admins'],
             }
-
         session.add(root)
         session.flush()
         transaction.commit()

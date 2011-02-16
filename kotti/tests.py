@@ -377,6 +377,18 @@ class TestUser(UnitTestBase):
         bob.id = u'group:bobsgroup'
         self.assertEqual(is_user(bob), False)
 
+    def test_hash_password(self):
+        password = u"secret"
+        hash_password = get_principals().hash_password
+
+        # For 'hash_password' to work, we need to set a secret:
+        configuration['kotti.secret'] = 'there is no secret'
+        hashed = hash_password(password)
+        self.assertEqual(hashed, hash_password(password))
+        configuration['kotti.secret'] = 'different'
+        self.assertNotEqual(hashed, hash_password(password))        
+        configuration.pop('kotti.secret')
+
 class TestEvents(UnitTestBase):
     def setUp(self):
         # We're jumping through some hoops to allow the event handlers
@@ -503,14 +515,15 @@ class TestNodeEdit(UnitTestBase):
 
 class TestNodeShare(UnitTestBase):
     def test_roles(self):
-        # The 'share_node' view will pass to the template the list of
-        # available roles as defined in 'kotti.security.ROLES'
+        # The 'share_node' view will return a list of available roles
+        # as defined in 'kotti.security.ROLES'
         from kotti.views.edit import share_node
         from kotti.security import ROLES
         session = DBSession()
         root = session.query(Node).get(1)
         request = testing.DummyRequest()
         self.assertEqual(share_node(root, request)['roles'], ROLES)
+
 
 class TestTemplateAPI(UnitTestBase):
     def _make(self, context=None, id=1):
