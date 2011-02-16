@@ -501,6 +501,17 @@ class TestNodeEdit(UnitTestBase):
             self.assertEqual(first_parent['node'], child)
             self.assertEqual(second_parent['node'], root)
 
+class TestNodeShare(UnitTestBase):
+    def test_roles(self):
+        # The 'share_node' view will pass to the template the list of
+        # available roles as defined in 'kotti.security.ROLES'
+        from kotti.views.edit import share_node
+        from kotti.security import ROLES
+        session = DBSession()
+        root = session.query(Node).get(1)
+        request = testing.DummyRequest()
+        self.assertEqual(share_node(root, request)['roles'], ROLES)
+
 class TestTemplateAPI(UnitTestBase):
     def _make(self, context=None, id=1):
         from kotti.views.util import TemplateAPIEdit

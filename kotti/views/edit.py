@@ -14,6 +14,7 @@ from kotti import configuration
 from kotti.resources import DBSession
 from kotti.resources import Node
 from kotti.resources import Document
+from kotti.security import ROLES
 from kotti.views.util import TemplateAPIEdit
 from kotti.views.util import addable_types
 from kotti.views.util import title_to_name
@@ -154,6 +155,13 @@ def move_node(context, request):
 
     return {
         'api': TemplateAPIEdit(context, request),
+        }
+
+def share_node(context, request):
+    return {
+        'api': TemplateAPIEdit(context, request),
+        'form': u'foo',
+        'roles': ROLES,
         }
 
 def edit_document(context, request):

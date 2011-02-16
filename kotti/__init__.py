@@ -58,7 +58,7 @@ configuration = Configuration(
         'kotti.authentication_policy_factory': 'kotti.authtkt_factory',
         'kotti.authorization_policy_factory': 'kotti.acl_factory',
         'kotti.session_factory': 'kotti.cookie_session_factory',
-        'kotti.users': 'kotti.security.users',
+        'kotti.principals': 'kotti.security.principals',
     },
     dotted_names=set([
         'kotti.configurators',
@@ -67,7 +67,7 @@ configuration = Configuration(
         'kotti.authentication_policy_factory',
         'kotti.authorization_policy_factory',
         'kotti.session_factory',
-        'kotti.users',
+        'kotti.principals',
         ]),
     )
 
@@ -128,4 +128,10 @@ def _configure_base_views(config):
         name='move',
         permission='edit',
         renderer='templates/edit/move.pt',
+        )
+    config.add_view(
+        'kotti.views.edit.share_node',
+        name='share',
+        permission='manage',
+        renderer='templates/edit/share.pt',
         )

@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xml:lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      metal:use-macro="api['master_edit.main']">
+
+  <div metal:fill-slot="content">
+    <h1>Share <em>${api.context.title}</em></h1>
+
+    <div class="form">
+      <div metal:use-macro="api['master_edit.messages']">
+      </div>
+
+      <form tal:replace="structure form">
+      </form>
+
+    </div>
+  </div>
+
+</html>
