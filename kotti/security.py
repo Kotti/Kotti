@@ -5,6 +5,7 @@ from sqlalchemy import Table
 from sqlalchemy import Column
 from sqlalchemy import Unicode
 from sqlalchemy import DateTime
+from sqlalchemy.sql.expression import or_
 from sqlalchemy.orm import mapper
 from sqlalchemy.orm.exc import NoResultFound
 from pyramid.location import lineage
@@ -61,26 +62,26 @@ class PersistentACL(object):
             (Allow, 'group:admins', ALL_PERMISSIONS),
             ]
 
-def list_groups_raw(userid, context):
+def list_groups_raw(id, context):
     groups = getattr(context, '__groups__', None)
     if groups is not None:
-        return groups.get(userid, set())
+        return groups.get(id, set())
     else:
         return set()
 
-def list_groups(userid, context, _seen=None):
+def list_groups(id, context, _seen=None):
     groups = set()
     if _seen is None:
         _seen = set()
 
-    # Add groups from user db:
-    user = get_users().get(userid)
-    if user is not None:
-        groups.update(user.groups)
+    # Add groups from principal db:
+    principal = get_principals().get(id)
+    if principal is not None:
+        groups.update(principal.groups)
 
     # Add local groups:
     for item in lineage(context):
-        groups.update(list_groups_raw(userid, item))
+        groups.update(list_groups_raw(id, item))
 
     # Groups may be nested:
     new_groups = groups - _seen
@@ -89,97 +90,108 @@ def list_groups(userid, context, _seen=None):
         groups.update(list_groups(groupid, context, _seen))
     return list(groups)
 
-def set_groups(userid, context, groups_to_set):
+def set_groups(id, context, groups_to_set):
     groups = getattr(context, '__groups__', None)
     if groups is None:
         groups = {}
-    groups[userid] = list(groups_to_set)
+    groups[id] = list(groups_to_set)
     context.__groups__ = groups
 
-def list_groups_callback(userid, request):
-    if userid.startswith('group:'):
+def list_groups_callback(id, request):
+    if not is_user(id):
         return None
-    if userid in get_users():
-        return list_groups(userid, request.context)
+    if id in get_principals():
+        return list_groups(id, request.context)
 
-def get_users():
-    return configuration['kotti.users'][0]
+def get_principals():
+    return configuration['kotti.principals'][0]
 
-def is_group(user):
-    return user.id.startswith('group:')
+def is_user(principal):
+    if not isinstance(principal, basestring):
+        principal = principal.id
+    return not principal.startswith('group:')
 
-class Users(DictMixin):
-    """Kotti's default user database.
+class Principal(object):
+    def __init__(self, id, title=u"", groups=()):
+        self.id = id
+        self.title = title
+        self.groups = groups
+        self.creation_date = datetime.now()
 
-    Promises dict-like access to user profiles, and a 'query' method
+class Principals(DictMixin):
+    """Kotti's default principal database.
+
+    Promises dict-like access to user profiles, and a 'search' method
     for finding users.
 
     This is a default implementation that may be replaced by using the
-    'kotti.users' configuration variable.
+    'kotti.principals' configuration variable.
     """
+    factory = Principal
+
     def __getitem__(self, key):
         key = unicode(key)
         session = DBSession()
         try:
-            return session.query(User).filter(User.id==key).one()
+            return session.query(
+                self.factory).filter(self.factory.id==key).one()
         except NoResultFound:
             raise KeyError(key)
 
-    def __setitem__(self, key, user):
+    def __setitem__(self, key, principal):
         key = unicode(key)
         session = DBSession()
-        if isinstance(user, dict):
-            profile = User(**user)
+        if isinstance(principal, dict):
+            profile = self.factory(**principal)
         session.add(profile)
 
     def __delitem__(self, key):
         key = unicode(key)
         session = DBSession()
         try:
-            user = session.query(User).filter(User.id==key).one()
-            session.delete(user)
+            principal = session.query(
+                self.factory).filter(self.factory.id==key).one()
+            session.delete(principal)
         except NoResultFound:
             raise KeyError(key)
 
     def iterkeys(self):
         session = DBSession()
-        for (userid,) in session.query(User.id):
-            yield userid
+        for (principal,) in session.query(self.factory.id):
+            yield principal
 
     def keys(self):
         return list(self.iterkeys())
 
-    def query(self, **kwargs):
+    def search(self, term):
+        if not term:
+            return []
         session = DBSession()
-        query = session.query(User)
-        for key, value in kwargs.items():
-            attr = getattr(User, key)
-            query = query.filter(attr.like(value))
+        query = session.query(self.factory)
+        query.filter(or_(
+            self.factory.id == term,
+            self.factory.title == term,
+            self.factory.email == term,
+            ))
         return query
 
-class User(object):
-    def __init__(self, id, title=None, groups=()):
-        self.id = id
-        self.title = title
-        self.groups = groups
-        self.creation_date = datetime.now()
+principals = Principals()
 
-users = Users()
-
-users_table = Table('users', metadata,
+principals_table = Table('principals', metadata,
     Column('id', Unicode(100), primary_key=True),
-    Column('title', Unicode(100)),
+    Column('title', Unicode(100), nullable=False),
+    Column('email', Unicode(100)),
     Column('groups', JsonType(), nullable=False),
     Column('creation_date', DateTime(), nullable=False),
 )
 
-mapper(User, users_table)
+mapper(Principal, principals_table, order_by=principals_table.c.id)
 
 # Note how roles are really groups too.  The only special thing
 # about them is that they're defined by Kotti and appear in the
 # user interface in the sharing tab.
 ROLES = [
-    User(u'group:editors', u'Editors'),
-    User(u'group:managers', u'Managers'),
-    User(u'group:admins', u'Administrators'),
+    Principal(u'group:editors', u'Editors'),
+    Principal(u'group:managers', u'Managers'),
+    Principal(u'group:admins', u'Administrators'),
     ]

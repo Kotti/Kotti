@@ -95,15 +95,15 @@ The ``kotti.session_factory`` configuration variable allows the
 overriding of the default session factory, which is
 `pyramid.session.UnencryptedCookieSessionFactoryConfig`_.
 
-*kotti.users*
--------------
+*kotti.principals*
+------------------
 
 Kotti comes with a default user database implementation in
-``kotti.security.users``.  You can use the ``kotti.users``
+``kotti.security.principals``.  You can use the ``kotti.principals``
 configuration variable to override the implementation used.  The
 default looks like this::
 
-  kotti.users = kotti.security.users
+  kotti.principals = kotti.security.principals
 
 *kotti.templates.master_view* and *kotti.templates.master_edit*
 ---------------------------------------------------------------

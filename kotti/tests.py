@@ -18,8 +18,8 @@ from kotti.security import list_groups
 from kotti.security import list_groups_raw
 from kotti.security import set_groups
 from kotti.security import list_groups_callback
-from kotti.security import get_users
-from kotti.security import is_group
+from kotti.security import get_principals
+from kotti.security import is_user
 from kotti import main
 
 BASE_URL = 'http://localhost:6543'
@@ -256,7 +256,7 @@ class TestGroups(UnitTestBase):
             ['system.Everyone']
             )
 
-        get_users()[u'bob'] = dict(id=u'bob')
+        get_principals()[u'bob'] = dict(id=u'bob')
         self.assertEqual(
             auth.effective_principals(request),
             ['system.Everyone', 'system.Authenticated', 'bob']
@@ -273,7 +273,7 @@ class TestGroups(UnitTestBase):
             )
 
         # define that bob belongs to franksgroup in the user db:
-        get_users()[u'bob'].groups = [u'group:franksgroup']
+        get_principals()[u'bob'].groups = [u'group:franksgroup']
         set_groups('group:franksgroup', child, ['group:anothergroup'])
         self.assertEqual(
             set(auth.effective_principals(request)), set([
@@ -285,7 +285,7 @@ class TestGroups(UnitTestBase):
 
         # And lastly test that circular group defintions are not a
         # problem here either:
-        get_users()[u'group:franksgroup'] = dict(
+        get_principals()[u'group:franksgroup'] = dict(
             id=u'group:franksgroup',
             title=u"Frank's group",
             groups=[u'group:funnygroup', u'group:bobsgroup'],
@@ -301,8 +301,8 @@ class TestGroups(UnitTestBase):
     def test_list_groups_callback_with_groups(self):
         # Although group definitions are also in the user database,
         # we're not allowed to authenticate with a group id:
-        get_users()[u'bob'] = dict(id=u'bob')
-        get_users()[u'group:bobsgroup'] = dict(id=u'group:bobsgroup')
+        get_principals()[u'bob'] = dict(id=u'bob')
+        get_principals()[u'group:bobsgroup'] = dict(id=u'group:bobsgroup')
         
         request = testing.DummyRequest()
         self.assertEqual(
@@ -312,7 +312,7 @@ class TestGroups(UnitTestBase):
 
 class TestUser(UnitTestBase):
     def _make_bob(self):
-        users = get_users()
+        users = get_principals()
         users['bob'] = dict(
             id=u'bob', title=u'Bob Dabolina', groups=[u'group:bobsgroup'])
         return users['bob']
@@ -323,15 +323,15 @@ class TestUser(UnitTestBase):
         self.assertEqual(bob.groups, [u'group:bobsgroup'])
 
     def test_users_empty(self):
-        users = get_users()
+        users = get_principals()
         self.assertRaises(KeyError, users.__getitem__, u'bob')
         self.assertRaises(KeyError, users.__delitem__, u'bob')
         self.assertEqual(len(list(users.keys())), 0)
-        self.assertEqual(len(list(users.query())), 0)
+        self.assertEqual(len(list(users.search(u""))), 0)
 
     def test_users_add_and_remove(self):
         self._make_bob()
-        users = get_users()
+        users = get_principals()
         self._assert_is_bob(users[u'bob'])
         self.assertEqual(list(users.keys()), [u'bob'])
 
@@ -340,13 +340,14 @@ class TestUser(UnitTestBase):
         self.assertRaises(KeyError, users.__delitem__, u'bob')
 
     def test_users_query(self):
-        users = get_users()
-        self.assertEqual(list(users.query(title=u"%Bob%")), [])
+        users = get_principals()
+        self.assertEqual(list(users.search(u"%Bob%")), [])
         self._make_bob()
-        [bob] = list(users.query(id=u"bob"))
+        [bob] = list(users.search(u"bob"))
         self._assert_is_bob(bob)
-        [bob] = list(users.query(title=u"%Bob%"))
+        [bob] = list(users.search(u"%Bob%"))
         self._assert_is_bob(bob)
+        self.assertEqual(list(users.search(u"")), [])
 
     def test_groups_from_users(self):
         self._make_bob()
@@ -370,11 +371,11 @@ class TestUser(UnitTestBase):
             set(['group:bobsgroup', 'group:editors', 'group:foogroup'])
             )
 
-    def test_is_group(self):
+    def test_is_user(self):
         bob = self._make_bob()
-        self.assertEqual(is_group(bob), False)
+        self.assertEqual(is_user(bob), True)
         bob.id = u'group:bobsgroup'
-        self.assertEqual(is_group(bob), True)
+        self.assertEqual(is_user(bob), False)
 
 class TestEvents(UnitTestBase):
     def setUp(self):
