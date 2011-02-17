@@ -32,6 +32,18 @@ out and give us feedback, but don't use it in production yet.  We're
 likely to make fundamental changes to both Kotti's API and its
 database structure in weeks to come.
 
+Issue tracker and development
+=============================
+
+Kotti is `developed on Github`_.  The `issue tracker`_ also lives
+there.
+
+Kotti's mailing list for both users and developers is at
+http://groups.google.com/group/kotti
+
+You can also find us on IRC: join the ``#kotti`` channel on
+irc.freenode.net.
+
 Installation using virtualenv
 =============================
 
@@ -231,13 +243,6 @@ directly.  Instead, to give ``bob`` editing rights by using the
 
 **Kotti currently lacks a user interface for user management.**
 
-Issue tracker and development
-=============================
-
-Kotti is `developed on Github`_.  The `issue tracker`_ also lives
-there.  You can also find us on IRC: join the ``#kotti`` channel on
-irc.freenode.net.
-
 Under the hood
 ==============
 
@@ -273,6 +278,8 @@ support.
 
 .. _web content management system: http://en.wikipedia.org/wiki/Web_content_management_system
 .. _Access control lists: http://en.wikipedia.org/wiki/Access_control_list
+.. _developed on Github: https://github.com/dnouri/Kotti
+.. _issue tracker: https://github.com/dnouri/Kotti/issues
 .. _virtualenv: http://pypi.python.org/pypi/virtualenv
 .. _buildout: http://pypi.python.org/pypi/zc.buildout
 .. _Paste Deploy: http://pythonpaste.org/deploy/
@@ -280,8 +287,6 @@ support.
 .. _pyramid.authorization.ACLAuthorizationPolicy: http://docs.pylonsproject.org/projects/pyramid/dev/api/authorization.html
 .. _pyramid.session.UnencryptedCookieSessionFactoryConfig: http://docs.pylonsproject.org/projects/pyramid/dev/api/session.html
 .. _inherited access control lists: http://www.pylonsproject.org/projects/pyramid/dev/narr/security.html#acl-inheritance-and-location-awareness
-.. _developed on Github: https://github.com/dnouri/Kotti
-.. _issue tracker: https://github.com/dnouri/Kotti/issues
 .. _Python: http://www.python.org/
 .. _Pyramid: http://docs.pylonsproject.org/projects/pyramid/dev/
 .. _SQLAlchemy: http://www.sqlalchemy.org/
