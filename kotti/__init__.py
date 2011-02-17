@@ -18,10 +18,7 @@ class Configuration(dict):
         if key in self.dotted_names and isinstance(value, basestring):
             values = []
             for dottedname in value.split():
-                try:
-                    values.append(DottedNameResolver(None).resolve(dottedname))
-                except ImportError: # pragma: no coverage
-                    raise ValueError("Could not resolve %r." % dottedname)
+                values.append(DottedNameResolver(None).resolve(dottedname))
             super(Configuration, self).__setitem__(key, values)
             return values
         else:
@@ -53,7 +50,7 @@ configuration = Configuration(
         'kotti.templates.view_css': 'kotti:static/view.css',
         'kotti.templates.edit_css': 'kotti:static/edit.css',
         'kotti.configurators': '',
-        'kotti.includes': 'kotti.views.view kotti.views.edit kotti.events',
+        'kotti.includes': 'kotti.events kotti.views.view kotti.views.edit kotti.views.login',
         'kotti.available_types': 'kotti.resources.Document',
         'kotti.authentication_policy_factory': 'kotti.authtkt_factory',
         'kotti.authorization_policy_factory': 'kotti.acl_factory',
@@ -82,8 +79,10 @@ def main(global_config, **settings):
     for func in configuration['kotti.configurators']:
         func(configuration) # XXX testme
 
-    secret1 = settings.pop("kotti.secret")
-    secret2 = settings.pop("kotti.secret2", secret1)
+    secret1 = settings['kotti.secret']
+    secret2 = settings.get('kotti.secret2', secret1)
+    configuration.secret = secret1
+    configuration.secret2 = secret2    
 
     from kotti.resources import appmaker
     engine = engine_from_config(settings, 'sqlalchemy.')

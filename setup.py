@@ -12,6 +12,7 @@ install_requires = [
     'repoze.tm2>=1.0b1', # default_commit_veto
     'sqlalchemy>=0.7b1dev',
     'zope.sqlalchemy',
+    'formencode',
     'deform',
     'WebError',
     ]

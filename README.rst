@@ -76,17 +76,32 @@ Kotti includes two `Paste Deploy`_ configuration files in
 *kotti.authentication_policy_factory* and *kotti.authorization_policy_factory*
 ------------------------------------------------------------------------------
 
-The ``development.ini`` configuration disables security by setting two
-configuration variables in the ``[app:Kotti]`` part::
+You can override the authentication and authorization policy that
+Kotti uses.  By default, Kotti uses these factories::
 
-  kotti.authentication_policy_factory = kotti.none_factory
-  kotti.authorization_policy_factory = kotti.none_factory
+  kotti.authentication_policy_factory = kotti.authtkt_factory
+  kotti.authorization_policy_factory = kotti.acl_factory
 
-The ``production.ini`` does not set these configuration variables,
-which results in the default authentication and authorization policy
-factories to be used, which use
+These settings correspond to
 `pyramid.authentication.AuthTktAuthenticationPolicy`_ and
-`pyramid.authorization.ACLAuthorizationPolicy`_ respectively.
+`pyramid.authorization.ACLAuthorizationPolicy`_ being used.
+
+*kotti.secret*
+--------------
+
+``kotti.secret`` and ``kotti.secret2`` (optional) are used as salts
+for various hashing functions.  Also, ``kotti.secret`` is the password
+of the default admin user.  (Which you should change immediately.)
+
+An example::
+
+  kotti.secret = myhiddensecret
+  kotti.secret2 = myothersecret
+
+To log in as admin, you would log in as ``admin`` with the password
+``myhiddensecret``.  ``kotti.secret`` is used as a salt to the
+passwords in the default user database.  Changing it will result in
+the user database's passwords becoming invalid.
 
 *kotti.session_factory*
 -----------------------
@@ -130,7 +145,8 @@ templates.  The defaults are::
 
 The default configuration here is::
 
-  kotti.includes = kotti.views.view kotti.views.edit kotti.events
+  kotti.includes =
+    kotti.events kotti.views.view kotti.views.edit kotti.views.login
 
 These point to modules that contain an ``includeme`` function.  An
 ``includeme`` function that registers an edit view for an ``Event``

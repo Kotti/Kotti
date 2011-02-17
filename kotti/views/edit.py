@@ -136,13 +136,12 @@ def move_node(context, request):
 
     if 'delete' in P and 'delete-confirm' in P:
         parent = context.__parent__
-        parent.children.remove(context)
-
-        elements = []
+        redirect_elements = []
         if view_execution_permitted(parent, request, 'edit'):
-            elements.append('edit')
-        location = resource_url(parent, request, *elements)
+            redirect_elements.append('edit')
+        location = resource_url(parent, request, *redirect_elements)
         request.session.flash(u'%s deleted.' % context.title, 'success')
+        parent.children.remove(context)
         return HTTPFound(location=location)
 
     if 'rename' in P:

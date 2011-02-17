@@ -5,6 +5,7 @@ from pyramid.httpexceptions import HTTPFound
 from pyramid.location import inside
 from pyramid.location import lineage
 from pyramid.renderers import get_renderer
+from pyramid.security import authenticated_userid
 from pyramid.security import has_permission
 from pyramid.security import view_execution_permitted
 from pyramid.url import resource_url
@@ -13,6 +14,7 @@ from deform import ValidationFailure
 from kotti import configuration
 from kotti.resources import DBSession
 from kotti.resources import Node
+from kotti.security import get_principals
 
 class TemplateAPI(object):
     """This implements the 'api' object that's passed to all
@@ -64,6 +66,11 @@ class TemplateAPI(object):
     def lineage(self):
         return list(lineage(self.context))
 
+    @reify
+    def user(self):
+        userid = authenticated_userid(self.request)
+        return get_principals().get(userid)
+    
     def has_permission(self, permission, context=None):
         if context is None:
             context = self.context

@@ -19,7 +19,8 @@
   </head>
 
   <body class="edit-view">
-    <div id="edit-box" class="vertical-text round-corners-top">
+    <div id="edit-box" class="vertical-text round-corners-top"
+         tal:condition="api.has_permission('view')">
         <a href="${api.url()}">View</a>
     </div>
     <div id="header">
@@ -30,6 +31,9 @@
                class="${link['selected'] and 'selected' or None}">
               ${link['name'].title()}
             </a>
+          </li>
+          <li tal:condition="api.user">
+            <a href="${request.application_url}/logout?came_from=${request.url}">Logout</a>
           </li>
         </ul>
       </div>

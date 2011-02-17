@@ -314,14 +314,19 @@ class TestGroups(UnitTestBase):
 class TestUser(UnitTestBase):
     def _make_bob(self):
         users = get_principals()
-        users['bob'] = dict(
+        users[u'bob'] = dict(
             id=u'bob', title=u'Bob Dabolina', groups=[u'group:bobsgroup'])
-        return users['bob']
+        return users[u'bob']
     
     def _assert_is_bob(self, bob):
         self.assertEqual(bob.id, u'bob')
         self.assertEqual(bob.title, u'Bob Dabolina')
         self.assertEqual(bob.groups, [u'group:bobsgroup'])
+
+    def test_default_admin(self):
+        admin = get_principals()[u'admin']
+        hashed = get_principals().hash_password(u'secret')
+        self.assertEqual(admin.password, hashed)
 
     def test_users_empty(self):
         users = get_principals()
@@ -382,12 +387,12 @@ class TestUser(UnitTestBase):
         hash_password = get_principals().hash_password
 
         # For 'hash_password' to work, we need to set a secret:
-        configuration['kotti.secret'] = 'there is no secret'
+        configuration.secret = 'there is no secret'
         hashed = hash_password(password)
         self.assertEqual(hashed, hash_password(password))
-        configuration['kotti.secret'] = 'different'
+        configuration.secret = 'different'
         self.assertNotEqual(hashed, hash_password(password))        
-        configuration.pop('kotti.secret')
+        del configuration.secret
 
 class TestEvents(UnitTestBase):
     def setUp(self):
@@ -693,8 +698,6 @@ def setUpFunctional(global_config=None, **settings):
 
     configuration = {
         'sqlalchemy.url': 'sqlite://',
-        'kotti.authentication_policy_factory': 'kotti.none_factory',
-        'kotti.authorization_policy_factory': 'kotti.none_factory',
         'kotti.secret': 'secret',
         }
 

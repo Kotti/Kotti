@@ -100,9 +100,15 @@ def set_groups(id, context, groups_to_set):
 
 def list_groups_callback(id, request):
     if not is_user(id):
-        return None
+        return None # Disallow logging in with groups
     if id in get_principals():
-        return list_groups(id, request.context)
+        context = getattr(request, 'context', None)
+        if context is None:
+            # XXX This stems from an issue with SA events; they don't
+            # have request.context available:
+            from kotti.resources import get_root
+            context = get_root(request)
+        return list_groups(id, context)
 
 def get_principals():
     return configuration['kotti.principals'][0]
@@ -183,8 +189,8 @@ class Principals(DictMixin):
         return query
 
     def hash_password(self, password):
-        salt = configuration['kotti.secret']
-        return hashlib.sha224(salt + password).hexdigest()
+        salt = configuration.secret
+        return unicode(hashlib.sha224(salt + password).hexdigest())
 
 principals = Principals()
 
@@ -192,7 +198,7 @@ principals_table = Table('principals', metadata,
     Column('id', Unicode(100), primary_key=True),
     Column('password', Unicode(100)),
     Column('title', Unicode(100), nullable=False),
-    Column('email', Unicode(100)),
+    Column('email', Unicode(100), unique=True),
     Column('groups', JsonType(), nullable=False),
     Column('creation_date', DateTime(), nullable=False),
 )

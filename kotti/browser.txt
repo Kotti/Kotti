@@ -13,6 +13,46 @@ Setup
    >>> session = DBSession()
    >>> root = session.query(Node).get(1)
 
+Login
+-----
+
+Editing is locked down to authenticated users:
+
+  >>> browser.open(tests.BASE_URL + '/edit')
+  >>> "Log in" in browser.contents
+  True
+  >>> browser.getControl("Username or email").value = "admin"
+  >>> browser.getControl("Password").value = "secret"
+  >>> browser.getControl(name="submitted").click()
+  >>> "Welcome, Administrator" in browser.contents
+  True
+  >>> browser.url == tests.BASE_URL + '/edit'
+  True
+
+Logging out redirects us to the URL we came from and presents us with
+the login form:
+
+  >>> browser.getLink("Logout").click()
+  >>> "You have been logged out" in browser.contents
+  True
+
+Log in again, this time force an error:
+
+  >>> browser.getControl("Username or email").value = "admin"
+  >>> browser.getControl("Password").value = "funny"
+  >>> browser.getControl(name="submitted").click()
+  >>> "Welcome, Adminstrator" in browser.contents
+  False
+  >>> "Login failed" in browser.contents
+  True
+  >>> browser.getControl("Username or email").value = "admin"
+  >>> browser.getControl("Password").value = "secret"
+  >>> browser.getControl(name="submitted").click()
+  >>> "Welcome, Administrator" in browser.contents
+  True
+  >>> browser.url == tests.BASE_URL + '/edit'
+  True
+
 Add a document
 --------------
 

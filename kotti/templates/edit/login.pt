@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xml:lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      metal:use-macro="api['master_edit.main']">
+
+  <div metal:fill-slot="content" class="document-view">
+    <h1>Login</h1>
+
+    <div class="form">
+      <div metal:use-macro="api['master_edit.messages']">
+      </div>
+
+      <form action="${url}" method="post">
+        <input type="hidden" name="came_from" value="${came_from}"/>
+        <ul>
+          <li>
+            <label for="form-login">Username or email</label><br/>
+            <input type="text" name="login" id="form-login"
+                   value="${login}"/>
+          </li>
+          <li>
+            <label for="form-password">Password</label><br/>
+            <input type="password" name="password" id="form-password"
+                   value="${password}"/>
+          </li>
+          <li>
+            <button type="submit" name="submitted" class="submit">
+              Log in
+            </button>
+          </li>
+        </ul>
+      </form>
+    </div>
+
+  </div>
+</html>

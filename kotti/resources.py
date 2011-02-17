@@ -31,7 +31,6 @@ from kotti import configuration
 from kotti.util import JsonType
 from kotti.security import PersistentACL
 from kotti.security import get_principals
-from kotti.security import Principal
 
 class Container(object, DictMixin):
     """Containers form the API of a Node that's used for subitem
@@ -187,7 +186,7 @@ mapper(
 
 mapper(Document, documents, inherits=Node, polymorphic_identity='document')
 
-def default_get_root(request):
+def get_root(request):
     session = DBSession()
     return session.query(Node).filter(Node.parent_id==None).first()
 
@@ -208,11 +207,11 @@ def populate():
 
     principals = get_principals()
     if u'admin' not in principals:
-        principals[u'admin'] = Principal(
-            u'admin',
-            password=configuration.get('secret'),
-            title=u"Administrator",
-            )
+        principals[u'admin'] = {
+            'id': u'admin',
+            'password': configuration.secret,
+            'title': u"Administrator",
+            }
 
     session.flush()
     transaction.commit()
@@ -231,4 +230,4 @@ def initialize_sql(engine):
 
 def appmaker(engine):
     initialize_sql(engine)
-    return default_get_root
+    return get_root
