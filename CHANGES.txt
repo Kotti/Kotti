@@ -1,4 +1,21 @@
-0.1
----
+History
+=======
 
-- Initial version
+0.1a4
+-----
+
+- Added login form.
+
+  With the development profile in ``development.ini``, log in with
+  user 'admin' and password 'qwerty'.  User management and sharing tab
+  is a TODO.
+
+- Add a default user database implementation in
+  ``kotti.security.Principals``.
+  
+  Override with ``kotti.principals`` configuration setting.
+
+- Add inheritbale, nested groups support.
+  
+  Groups are stored in ``Node.__groups__``.  The API is
+  ``kotti.security.list_groups`` and ``kotti.security.set_groups``.

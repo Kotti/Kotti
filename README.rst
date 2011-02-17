@@ -95,13 +95,15 @@ of the default admin user.  (Which you should change immediately.)
 
 An example::
 
-  kotti.secret = myhiddensecret
-  kotti.secret2 = myothersecret
+  kotti.secret = qwerty
+  kotti.secret2 = asdfgh
 
-To log in as admin, you would log in as ``admin`` with the password
-``myhiddensecret``.  ``kotti.secret`` is used as a salt to the
-passwords in the default user database.  Changing it will result in
-the user database's passwords becoming invalid.
+With these settings, to log in as admin, you would log in as ``admin``
+with the password ``qwerty``.
+
+``kotti.secret`` is used as a salt to the passwords in the default
+user database.  Changing it will result in the user database's
+passwords becoming invalid.
 
 *kotti.session_factory*
 -----------------------
