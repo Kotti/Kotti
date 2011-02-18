@@ -60,7 +60,7 @@ class PersistentACL(object):
         # ACEs that will be put on top, no matter what
         # XXX Not sure this is a good idea.
         return [
-            (Allow, 'group:admins', ALL_PERMISSIONS),
+            (Allow, 'role:admin', ALL_PERMISSIONS),
             ]
 
 def list_groups_raw(id, context):
@@ -116,7 +116,7 @@ def get_principals():
 def is_user(principal):
     if not isinstance(principal, basestring):
         principal = principal.id
-    return not principal.startswith('group:')
+    return not (principal.startswith('group:') or principal.startswith('role:'))
 
 class Principal(object):
     def __init__(self, id, password=None, title=u"", groups=()):
@@ -205,11 +205,10 @@ principals_table = Table('principals', metadata,
 
 mapper(Principal, principals_table, order_by=principals_table.c.id)
 
-# Note how roles are really groups too.  The only special thing
-# about them is that they're defined by Kotti and appear in the
-# user interface in the sharing tab.
+# These roles are different to groups in that they will appear more
+# frequently in the user interface.
 ROLES = {
-    u'group:admins': Principal(u'group:admins', title=u'Administrators'),
-    u'group:managers': Principal(u'group:managers', title=u'Managers'),
-    u'group:editors': Principal(u'group:editors', title=u'Editors'),
+    u'role:admin': Principal(u'role:admin', title=u'Administrators'),
+    u'role:manager': Principal(u'role:manager', title=u'Managers'),
+    u'role:editor': Principal(u'role:editor', title=u'Editors'),
     }

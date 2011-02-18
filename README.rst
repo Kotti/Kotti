@@ -252,56 +252,69 @@ And this is how you'd hook it up in the ``pasteserve.ini``::
 Authentication and Authorization
 ================================
 
-**Authentication** in Kotti is pluggable.
+**We're currently working on a user interface for user management.**
 
-**Auhorization** in Kotti is controlled through the use of `inherited
-access control lists`_.  By default, the root object has an ACL that
-looks like this::
+**Authentication** in Kotti is pluggable.  See
+``kotti.authn_policy_factory``.
 
-  ('Allow', 'group:admins', ALL_PERMISSIONS)
+ACL
+---
+
+Auhorization in Kotti can be configured through
+``kotti.authz_policy_factory``.  The default implementation uses
+`inherited access control lists`_.  The default install of Kotti has a
+root object with this ACL::
+
+  ('Allow', 'role:admin', ALL_PERMISSIONS)
   ('Allow', 'system.Authenticated', ('view',))
-  ('Allow', 'group:editors', ('add', 'edit'))
+  ('Allow', 'role:editor', ('add', 'edit'))
+  ('Allow', 'role:manager', ('manage', 'edit'))
 
-Principals are assigned to groups through the ``__groups__`` special
-variable on ``Nodes``.  Again, the default root object serves as an
-example.  Its ``__groups__`` variable is set to ``{'admin':
-['group:admins']}``.  Thus, the ``admin`` principal becomes part of
-the ``group:admins`` group throughout the site.
+That is, the site is locked down to authenticated users.  You can set
+the ACL through the ``Node.__acl__`` property to your liking.  To open
+your site so that everyone can ``view``, do::
 
-You are advised not to alter the ACL through the ``__acl__`` attribute
-directly.  Instead, to give ``bob`` editing rights by using the
-``kotti.security.set_groups`` API::
+  from kotti.resources import get_root
+  root = get_root(request)
+  root.__acl__ = [('Allow', 'system.Everyone'), ['view']]
+
+Roles and groups
+----------------
+
+The default install of Kotti maps the ``role:admin`` role to the
+``admin`` user.  The effect of which is that the ``admin`` user gains
+``ALL_PERMISSIONS`` throughout the site.
+
+Principals can be assigned to roles or groups by use of the
+``kotti.security.set_groups`` function, which needs to be passed a
+context to work with::
 
   from kotti.security import set_groups
-  set_groups(bobsfolder, 'bob', ['group:editors'])
+  set_groups(bobsfolder, 'bob', ['role:manager'])
 
-**Kotti currently lacks a user interface for user management.**
+To list roles and groups of a principal, use
+``kotti.security.list_groups``.  Although you're more likely to be
+using `Pyramid's security API`_ in your code.
 
 Under the hood
 ==============
 
-Kotti is written in Python_ and based on the two excellent libraries
-Pyramid_ and SQLAlchemy_.  Kotti tries to leverage these libraries as
-much as possible, thus:
+Kotti is written in Python_ and builds upon on the two excellent
+libraries Pyramid_ and SQLAlchemy_.  Kotti tries to leverage these
+libraries as much as possible, thus:
 
-- minimizing the amount of code written,
+- minimizing the amount of code and extra concepts, and
 
-- and allowing users familiar with these libraries to feel right at
-  home.
+- allowing users familiar with Pyramid and SQLAlchemy to feel right at
+  home since Kotti's API is mostly that of Pyramid and SQLAlchemy.
 
-Kotti aims to use few abstractions, yet it aims to be somewhat
-extensible.
+For storage, you can configure Kotti to use any relational database
+for which there is `support in SQLAlchemy`_.  There's no storage
+abstraction apart from that.
 
-You can extend Kotti with new content types and views from your own
-Python packages.  If all that you want is replace templates and
-stylesheets, then it's sufficient to hook up plain old files in the
-configuration.
-
-For storage, Kotti uses any relational database for which there is
-`support in SQLAlchemy`_.  There's no storage abstraction apart from
-that.
-
-Read `this blog post`_ for more implementation details.
+Have a question?  Join our mailing list at
+http://groups.google.com/group/kotti or read `this blog post`_ for
+more implementation details.
 
 Thanks
 ======
@@ -321,6 +334,7 @@ support.
 .. _pyramid.authorization.ACLAuthorizationPolicy: http://docs.pylonsproject.org/projects/pyramid/dev/api/authorization.html
 .. _pyramid.session.UnencryptedCookieSessionFactoryConfig: http://docs.pylonsproject.org/projects/pyramid/dev/api/session.html
 .. _inherited access control lists: http://www.pylonsproject.org/projects/pyramid/dev/narr/security.html#acl-inheritance-and-location-awareness
+.. _Pyramid's security API: http://docs.pylonsproject.org/projects/pyramid/dev/api/security.html
 .. _Python: http://www.python.org/
 .. _Pyramid: http://docs.pylonsproject.org/projects/pyramid/dev/
 .. _SQLAlchemy: http://www.sqlalchemy.org/

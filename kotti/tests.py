@@ -60,10 +60,10 @@ class TestNode(UnitTestBase):
         # The root object has a persistent ACL set:
         self.assertEquals(
             root.__acl__, [
-                ('Allow', 'group:admins', ALL_PERMISSIONS),
+                ('Allow', 'role:admin', ALL_PERMISSIONS),
                 ('Allow', 'system.Authenticated', ['view']),
-                ('Allow', 'group:editors', ['add', 'edit']),
-                ('Allow', 'group:managers', ['manage']),
+                ('Allow', 'role:editor', ['add', 'edit']),
+                ('Allow', 'role:manager', ['manage', 'edit']),
             ])
 
         # Note how the last ACE is class-defined, that is, users in
@@ -83,7 +83,7 @@ class TestNode(UnitTestBase):
         root.__acl__ = [['Allow', 'system.Authenticated', ['edit']]]
         self.assertEquals(
             root.__acl__, [
-                ('Allow', 'group:admins', ALL_PERMISSIONS),
+                ('Allow', 'role:admin', ALL_PERMISSIONS),
                 ('Allow', 'system.Authenticated', ['edit']),
                 ])
 
@@ -94,7 +94,7 @@ class TestNode(UnitTestBase):
         
         self.assertEquals(
             root.__acl__, [
-                ('Allow', 'group:admins', ALL_PERMISSIONS),
+                ('Allow', 'role:admin', ALL_PERMISSIONS),
                 ('Allow', 'system.Authenticated', ['view']),
                 ('Deny', 'system.Authenticated', ALL_PERMISSIONS),
                 ])
@@ -104,7 +104,7 @@ class TestNode(UnitTestBase):
         root.__acl__ = [second, first]
         self.assertEquals(
             root.__acl__, [
-                ('Allow', 'group:admins', ALL_PERMISSIONS),
+                ('Allow', 'role:admin', ALL_PERMISSIONS),
                 ('Deny', 'system.Authenticated', ALL_PERMISSIONS),
                 ('Allow', 'system.Authenticated', ['view']),
                 ])
@@ -152,8 +152,8 @@ class TestGroups(UnitTestBase):
     def test_root_default(self):
         session = DBSession()
         root = session.query(Node).get(1)
-        self.assertEqual(list_groups('admin', root), ['group:admins'])
-        self.assertEqual(list_groups_raw('admin', root), ['group:admins'])
+        self.assertEqual(list_groups('admin', root), ['role:admin'])
+        self.assertEqual(list_groups_raw('admin', root), ['role:admin'])
 
     def test_empty(self):
         session = DBSession()
@@ -163,11 +163,11 @@ class TestGroups(UnitTestBase):
     def test_simple(self):
         session = DBSession()
         root = session.query(Node).get(1)
-        set_groups('bob', root, ['group:editors'])
+        set_groups('bob', root, ['role:editor'])
         self.assertEqual(
-            list_groups('bob', root), ['group:editors'])
+            list_groups('bob', root), ['role:editor'])
         self.assertEqual(
-            list_groups_raw('bob', root), ['group:editors'])
+            list_groups_raw('bob', root), ['role:editor'])
 
     def test_inherit(self):
         session = DBSession()
@@ -176,14 +176,14 @@ class TestGroups(UnitTestBase):
         session.flush()
 
         self.assertEqual(list_groups('bob', child), [])
-        set_groups('bob', root, ['group:editors'])
-        self.assertEqual(list_groups('bob', child), ['group:editors'])
+        set_groups('bob', root, ['role:editor'])
+        self.assertEqual(list_groups('bob', child), ['role:editor'])
 
         # Groups from the child are added:
         set_groups('bob', child, ['group:somegroup'])
         self.assertEqual(
             set(list_groups('bob', child)),
-            set(['group:somegroup', 'group:editors'])
+            set(['group:somegroup', 'role:editor'])
             )
 
         # We can ask to list only those groups that are defined locally:
@@ -201,42 +201,42 @@ class TestGroups(UnitTestBase):
         set_groups('bob', root, ['group:bobsgroup'])
 
         # bobsgroup is part of the editors group in the context of grandchild:
-        set_groups('group:bobsgroup', grandchild, ['group:editors'])
+        set_groups('group:bobsgroup', grandchild, ['role:editor'])
 
         # Assert that bob thus is part of editors in the context of grandchild:
         self.assertEqual(
             set(list_groups('bob', grandchild)),
-            set(['group:bobsgroup', 'group:editors']),
+            set(['group:bobsgroup', 'role:editor']),
             )
         # Of course in the context of root he's still in bobsgroup only:
         self.assertEqual(
             list_groups('bob', root), ['group:bobsgroup'])
 
         # Groups can be arbitrarily nested:
-        set_groups('group:editors', child, ['group:franksgroup'])
-        set_groups('group:franksgroup', grandchild, ['group:admins'])
+        set_groups('role:editor', child, ['group:franksgroup'])
+        set_groups('group:franksgroup', grandchild, ['role:admin'])
 
         all_groups = set(
-            ['group:admins', 'group:bobsgroup', 'group:editors',
+            ['role:admin', 'group:bobsgroup', 'role:editor',
              'group:franksgroup']
             )
         self.assertEqual(set(list_groups('bob', grandchild)), all_groups)
         self.assertEqual(list_groups('bob', child), ['group:bobsgroup'])
 
         set_groups('group:franksgroup', grandchild, [])
-        set_groups('group:franksgroup', root, ['group:admins'])
+        set_groups('group:franksgroup', root, ['role:admin'])
         self.assertEqual(set(list_groups('bob', grandchild)), all_groups)
 
         # We break the loop
         set_groups('group:franksgroup', root, [])
         self.assertEqual(
             set(list_groups('bob', grandchild)),
-            set(['group:bobsgroup', 'group:editors', 'group:franksgroup'])
+            set(['group:bobsgroup', 'role:editor', 'group:franksgroup'])
             )
 
         # Circular groups are not a problem:
-        set_groups('group:franksgroup', root, ['group:admins', 'group:editors'])
-        set_groups('group:admin', grandchild, ['group:bobsgroup'])
+        set_groups('group:franksgroup', root, ['role:admin', 'role:editor'])
+        set_groups('role:admin', grandchild, ['group:bobsgroup'])
 
         self.assertEqual(set(list_groups('bob', grandchild)), all_groups)
 
@@ -364,16 +364,16 @@ class TestUser(UnitTestBase):
 
         self.assertEqual(list_groups('bob', root), ['group:bobsgroup'])
 
-        set_groups('group:bobsgroup', root, ['group:editors'])
-        set_groups('group:editors', child, ['group:foogroup'])
+        set_groups('group:bobsgroup', root, ['role:editor'])
+        set_groups('role:editor', child, ['group:foogroup'])
 
         self.assertEqual(
             set(list_groups('bob', root)),
-            set(['group:bobsgroup', 'group:editors'])
+            set(['group:bobsgroup', 'role:editor'])
             )
         self.assertEqual(
             set(list_groups('bob', child)),
-            set(['group:bobsgroup', 'group:editors', 'group:foogroup'])
+            set(['group:bobsgroup', 'role:editor', 'group:foogroup'])
             )
 
     def test_is_user(self):
@@ -539,11 +539,11 @@ class TestNodeShare(UnitTestBase):
         request = testing.DummyRequest()
 
         # The root has a local group assignment that maps 'admin' to
-        # the 'group:admins' group.
+        # the 'role:admin' group.
         groups = share_node(root, request)['local_groups']
         self.assertEqual(len(groups), 1)
         admins = groups[0]
-        self.assertEqual(admins[0], ROLES[u'group:admins'])
+        self.assertEqual(admins[0], ROLES[u'role:admin'])
         self.assertEqual(admins[1], [get_principals()[u'admin']])
 
         # The child of 'root' doesn't have any local groups assigned:
@@ -552,7 +552,7 @@ class TestNodeShare(UnitTestBase):
 
         # We add some roles to the child:
         from kotti.security import set_groups
-        set_groups('group:bobsgroup', child, [u'group:editors'])
+        set_groups('group:bobsgroup', child, [u'role:editor'])
         groups = share_node(child, request)['local_groups']
         self.assertEqual(len(groups), 0)
 
@@ -563,7 +563,7 @@ class TestNodeShare(UnitTestBase):
         groups = share_node(child, request)['local_groups']
         self.assertEqual(len(groups), 1)
         editors = groups[0]
-        self.assertEqual(editors[0], ROLES[u'group:editors'])
+        self.assertEqual(editors[0], ROLES[u'role:editor'])
         self.assertEqual(editors[1], [bobsgroup])
 
 class TestTemplateAPI(UnitTestBase):
