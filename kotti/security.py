@@ -117,6 +117,36 @@ def list_groups_callback(id, request):
             context = get_root(request)
         return list_groups(id, context)
 
+def roles_to_principals(context, roles_to_principals=None):
+    """Since ``context.__groups__`` maps principals to roles, we use
+    this helper function to turn the mapping around.
+
+    We return a list of tuples of the form ``(role, principals)``.
+    """
+    groups = all_groups_raw(context)
+    if groups is None:
+        return {}
+
+    principals = get_principals()
+    if roles_to_principals is None:
+        roles_to_principals = {}
+
+    for principal_id, groups in groups.items():
+        try:
+            principal = principals[principal_id]
+        except KeyError:
+            # We couldn't find that principal in the user
+            # database, so we'll ignore it:
+            continue
+        for group_id in groups:
+            if group_id not in roles_to_principals:
+                roles_to_principals[group_id] = []
+            role_principals = roles_to_principals[group_id]
+            if principal not in role_principals:
+                role_principals.append(principal)
+
+    return roles_to_principals
+
 def get_principals():
     return configuration['kotti.principals'][0]
 
