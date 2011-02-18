@@ -14,8 +14,6 @@ from kotti import configuration
 from kotti.resources import DBSession
 from kotti.resources import Node
 from kotti.resources import Document
-from kotti.security import ROLES
-from kotti.security import get_principals
 from kotti.views.util import TemplateAPIEdit
 from kotti.views.util import addable_types
 from kotti.views.util import title_to_name
@@ -155,34 +153,6 @@ def move_node(context, request):
 
     return {
         'api': TemplateAPIEdit(context, request),
-        }
-
-def share_node(context, request):
-    principals = get_principals()
-    groups = getattr(context, '__groups__')
-    roles_to_principals = {}
-    if groups is not None:
-        for principal_id, groups in groups.items():
-            try:
-                principal = principals[principal_id]
-            except KeyError:
-                # We couldn't find that principal in the user
-                # database, so we'll ignore it:
-                continue
-            for group_id in groups:
-                if group_id not in roles_to_principals:
-                    roles_to_principals[group_id] = []
-                roles_to_principals[group_id].append(principal)
-
-    local_groups = []
-    for role_id, principals in roles_to_principals.items():
-        local_groups.append((ROLES[role_id], principals))
-
-    return {
-        'api': TemplateAPIEdit(context, request),
-        'form': u'foo',
-        'roles': ROLES,
-        'local_groups': local_groups,
         }
 
 def edit_document(context, request):

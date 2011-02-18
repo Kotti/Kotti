@@ -50,10 +50,10 @@ configuration = Configuration(
         'kotti.templates.view_css': 'kotti:static/view.css',
         'kotti.templates.edit_css': 'kotti:static/edit.css',
         'kotti.configurators': '',
-        'kotti.includes': 'kotti.events kotti.views.view kotti.views.edit kotti.views.login',
+        'kotti.includes': 'kotti.events kotti.views.view kotti.views.edit kotti.views.login kotti.views.manage',
         'kotti.available_types': 'kotti.resources.Document',
-        'kotti.authentication_policy_factory': 'kotti.authtkt_factory',
-        'kotti.authorization_policy_factory': 'kotti.acl_factory',
+        'kotti.authn_policy_factory': 'kotti.authtkt_factory',
+        'kotti.authz_policy_factory': 'kotti.acl_factory',
         'kotti.session_factory': 'kotti.cookie_session_factory',
         'kotti.principals': 'kotti.security.principals',
     },
@@ -61,8 +61,8 @@ configuration = Configuration(
         'kotti.configurators',
         'kotti.includes',
         'kotti.available_types',
-        'kotti.authentication_policy_factory',
-        'kotti.authorization_policy_factory',
+        'kotti.authn_policy_factory',
+        'kotti.authz_policy_factory',
         'kotti.session_factory',
         'kotti.principals',
         ]),
@@ -89,9 +89,9 @@ def main(global_config, **settings):
     get_root = appmaker(engine)
 
     authentication_policy = configuration[
-        'kotti.authentication_policy_factory'][0](secret=secret1)
+        'kotti.authn_policy_factory'][0](secret=secret1)
     authorization_policy = configuration[
-        'kotti.authorization_policy_factory'][0]()
+        'kotti.authz_policy_factory'][0]()
     session_factory = configuration['kotti.session_factory'][0](secret=secret2)
 
     config = Configurator(
@@ -127,10 +127,4 @@ def _configure_base_views(config):
         name='move',
         permission='edit',
         renderer='templates/edit/move.pt',
-        )
-    config.add_view(
-        'kotti.views.edit.share_node',
-        name='share',
-        permission='manage',
-        renderer='templates/edit/share.pt',
         )

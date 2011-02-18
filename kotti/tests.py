@@ -522,7 +522,7 @@ class TestNodeShare(UnitTestBase):
     def test_roles(self):
         # The 'share_node' view will return a list of available roles
         # as defined in 'kotti.security.ROLES'
-        from kotti.views.edit import share_node
+        from kotti.views.manage import share_node
         from kotti.security import ROLES
         session = DBSession()
         root = session.query(Node).get(1)
@@ -531,7 +531,7 @@ class TestNodeShare(UnitTestBase):
 
     def test_local_groups(self):
         # 'share_node' returns a list of existing local groups
-        from kotti.views.edit import share_node
+        from kotti.views.manage import share_node
         from kotti.security import ROLES
         session = DBSession()
         root = session.query(Node).get(1)

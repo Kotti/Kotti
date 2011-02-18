@@ -85,14 +85,14 @@ Configuring Kotti
 Kotti includes two `Paste Deploy`_ configuration files in
 ``production.ini`` and ``development.ini``.
 
-*kotti.authentication_policy_factory* and *kotti.authorization_policy_factory*
-------------------------------------------------------------------------------
+*kotti.authn_policy_factory* and *kotti.authz_policy_factory*
+-------------------------------------------------------------
 
 You can override the authentication and authorization policy that
 Kotti uses.  By default, Kotti uses these factories::
 
-  kotti.authentication_policy_factory = kotti.authtkt_factory
-  kotti.authorization_policy_factory = kotti.acl_factory
+  kotti.authn_policy_factory = kotti.authtkt_factory
+  kotti.authz_policy_factory = kotti.acl_factory
 
 These settings correspond to
 `pyramid.authentication.AuthTktAuthenticationPolicy`_ and
@@ -160,7 +160,7 @@ templates.  The defaults are::
 The default configuration here is::
 
   kotti.includes =
-    kotti.events kotti.views.view kotti.views.edit kotti.views.login
+    kotti.events kotti.views.view kotti.views.edit kotti.views.login kotti.views.manage
 
 These point to modules that contain an ``includeme`` function.  An
 ``includeme`` function that registers an edit view for an ``Event``
@@ -177,6 +177,21 @@ resource might look like this::
 Examples of views and their registrations are in Kotti itself.  Take a
 look at ``kotti.views.view`` and ``kotti.views.edit``.  XXX Need
 example extension package.
+
+Changing the ``kotti.includes`` configuration allows you to register
+your own views or event handlers instead of Kotti's defaults.  As an
+example, consider a scenario where you want to implement your own
+management views.  This could be because you're using a user database
+implementation that is very different to Kotti's own.  Your
+configuration would look something like this::
+
+  kotti.includes =
+    kotti.events kotti.views.view kotti.views.edit kotti.views.login mypackage.manage
+  kotti.principals = mypackage.manage.principals
+
+Note that it's also possible to set these options directly from your
+Python package by use of the `kotti.configurators`_ configuration
+variable.
 
 *kotti.available_types*
 -----------------------
@@ -214,6 +229,25 @@ example of a Kotti content type implementation::
       Column('mime_type', String(30)),
   )
   mapper(Document, documents, inherits=Node, polymorphic_identity='document')
+
+*kotti.configurators*
+---------------------
+
+Requiring users of your package to set all the configuration variables
+by hand in ``pasteserve.ini`` is not ideal.  That's why Kotti includes
+a configuration variable through which extending packages can set all
+other configuration options through Python.  Here's an example of a
+function that configures Kotti::
+
+  # in mypackage/__init__.py
+  def kotti_configure(config):
+      config['kotti.includes'] += ' mypackage.views'
+      config['kotti.principals'] = 'mypackage.security.principals'
+      config['kotti.authn_policy_factory'] = 'mypackage.security.authn_factory'
+
+And this is how you'd hook it up in the ``pasteserve.ini``::
+  
+  kotti.configurators = mypackage.kotti_configure
 
 Authentication and Authorization
 ================================
