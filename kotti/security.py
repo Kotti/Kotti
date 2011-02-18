@@ -72,7 +72,7 @@ def list_groups_raw(id, context):
     else:
         return set()
 
-def list_groups(id, context, _seen=None):
+def list_groups(id, context, _seen=None, inherit=True):
     groups = set()
     if _seen is None:
         _seen = set()
@@ -86,11 +86,13 @@ def list_groups(id, context, _seen=None):
     for item in lineage(context):
         groups.update(list_groups_raw(id, item))
 
-    # Groups may be nested:
-    new_groups = groups - _seen
-    for groupid in new_groups:
-        _seen.add(groupid)
-        groups.update(list_groups(groupid, context, _seen))
+    
+    if inherit: # groups may be nested
+        new_groups = groups - _seen
+        for groupid in new_groups:
+            _seen.add(groupid)
+            groups.update(list_groups(groupid, context, _seen, inherit))
+
     return list(groups)
 
 def set_groups_raw(context, groups):

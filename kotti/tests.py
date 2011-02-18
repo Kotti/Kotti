@@ -529,8 +529,9 @@ class TestNodeShare(UnitTestBase):
         request = testing.DummyRequest()
         self.assertEqual(share_node(root, request)['all_roles'], ROLES)
 
-    def test_local_roles(self):
-        # 'share_node' returns a list of existing local roles
+    def test_local_and_inherited_roles(self):
+        # 'share_node' returns a list of existing local roles and a
+        # list of inherited roles
         from kotti.views.manage import share_node
         from kotti.security import ROLES
         session = DBSession()
@@ -540,31 +541,50 @@ class TestNodeShare(UnitTestBase):
 
         # The root has a local role assignment that maps 'admin' to
         # the 'role:admin' group.
-        roles = share_node(root, request)['local_roles']
-        self.assertEqual(len(roles), 1)
-        self.assertEqual(roles, [
+        local_roles = share_node(root, request)['local_roles']
+        self.assertEqual(len(local_roles), 1)
+        admins = local_roles[0]
+        self.assertEqual(local_roles, [
             (ROLES['role:admin'], [get_principals()[u'admin']]),
             ])
+        # inherited_roles = share_node(root, request)['inherited_roles']
+        # self.assertEqual(len(inherited_roles), 0)
 
-        # The 'child' of 'root' doesn't have any local roles assigned:
-        roles = share_node(child, request)['local_roles']
-        self.assertEqual(len(roles), 0)
+        # The 'child' of 'root' doesn't have any local roles assigned.
+        # It has inherited roles, however:
+        # local_roles = share_node(child, request)['local_roles']
+        # self.assertEqual(len(local_roles), 0)
+        # inherited_roles = share_node(child, request)['inherited_roles']
+        # self.assertEqual(len(inherited_roles), 1)
+        # self.assertEqual(inherited_roles, [
+        #     (ROLES['role:admin'], [get_principals()[u'admin']]),
+        #     ])
 
         # We add 'group:bobsgroup' to the 'role:editor' role in child:
         from kotti.security import set_groups
         set_groups('group:bobsgroup', child, [u'role:editor'])
-        roles = share_node(child, request)['local_roles']
-        self.assertEqual(len(roles), 0) # see below
+        local_roles = share_node(child, request)['local_roles']
+        self.assertEqual(len(local_roles), 0) # see below
 
         # 'group:bobsgroup' needs to exist in the database for it to
         # show up here:
         bobsgroup = Principal(u'group:bobsgroup')
         get_principals()[u'group:bobsgroup'] = bobsgroup
-        roles = share_node(child, request)['local_roles']
-        self.assertEqual(len(roles), 1)
-        editors = roles[0]
+        local_roles = share_node(child, request)['local_roles']
+        self.assertEqual(len(local_roles), 1)
+        editors = local_roles[0]
         self.assertEqual(editors[0], ROLES[u'role:editor'])
         self.assertEqual(editors[1], [bobsgroup])
+
+        # inherited_roles = share_node(child, request)['inherited_roles']
+        # self.assertEqual(len(inherited_roles), 1)
+
+        # A grandchild inherits both roles from 'root' and 'child'
+        grandchild = child['grandchild'] = Document(title=u"Grandchild")
+        # inherited_roles = share_node(grandchild, request)['inherited_roles']
+        # self.assertEqual(len(inherited_roles), 2)
+        # self.assertEqual(inherited_roles[0], editors)
+        # self.assertEqual(inherited_roles[1], admins)
 
 class TestTemplateAPI(UnitTestBase):
     def _make(self, context=None, id=1):

@@ -3,25 +3,35 @@ from kotti.security import all_groups_raw
 from kotti.security import get_principals
 from kotti.views.util import TemplateAPIEdit
 
-def share_node(context, request):
-    principals = get_principals()
+def _roles_to_principals(context, roles_to_principals=None):
     groups = all_groups_raw(context)
-    roles_to_principals = {}
-    if groups is not None:
-        for principal_id, groups in groups.items():
-            try:
-                principal = principals[principal_id]
-            except KeyError:
-                # We couldn't find that principal in the user
-                # database, so we'll ignore it:
-                continue
-            for group_id in groups:
-                if group_id not in roles_to_principals:
-                    roles_to_principals[group_id] = []
-                roles_to_principals[group_id].append(principal)
+    if groups is None:
+        return {}
 
+    principals = get_principals()
+    if roles_to_principals is None:
+        roles_to_principals = {}
+
+    for principal_id, groups in groups.items():
+        try:
+            principal = principals[principal_id]
+        except KeyError:
+            # We couldn't find that principal in the user
+            # database, so we'll ignore it:
+            continue
+        for group_id in groups:
+            if group_id not in roles_to_principals:
+                roles_to_principals[group_id] = []
+            principals = roles_to_principals[group_id]
+            if principal not in principals:
+                principals.append(principal)
+
+    return roles_to_principals
+
+def share_node(context, request):
+    local_roles_to_principals = _roles_to_principals(context)
     local_roles = []
-    for role_id, principals in roles_to_principals.items():
+    for role_id, principals in local_roles_to_principals.items():
         local_roles.append((ROLES[role_id], principals))
 
     return {
