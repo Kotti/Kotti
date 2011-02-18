@@ -58,13 +58,15 @@ class PersistentACL(object):
 
     def _default_acl(self):
         # ACEs that will be put on top, no matter what
-        # XXX Not sure this is a good idea.
         return [
             (Allow, 'role:admin', ALL_PERMISSIONS),
             ]
 
+def all_groups_raw(context):
+    return getattr(context, '__groups__', None)
+
 def list_groups_raw(id, context):
-    groups = getattr(context, '__groups__', None)
+    groups = all_groups_raw(context)
     if groups is not None:
         return groups.get(id, set())
     else:
@@ -91,12 +93,15 @@ def list_groups(id, context, _seen=None):
         groups.update(list_groups(groupid, context, _seen))
     return list(groups)
 
+def set_groups_raw(context, groups):
+    context.__groups__ = groups
+
 def set_groups(id, context, groups_to_set):
-    groups = getattr(context, '__groups__', None)
+    groups = all_groups_raw(context)
     if groups is None:
         groups = {}
     groups[id] = list(groups_to_set)
-    context.__groups__ = groups
+    set_groups_raw(context, groups)
 
 def list_groups_callback(id, request):
     if not is_user(id):

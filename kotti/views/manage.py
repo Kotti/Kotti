@@ -1,10 +1,11 @@
 from kotti.security import ROLES
+from kotti.security import all_groups_raw
 from kotti.security import get_principals
 from kotti.views.util import TemplateAPIEdit
 
 def share_node(context, request):
     principals = get_principals()
-    groups = getattr(context, '__groups__')
+    groups = all_groups_raw(context)
     roles_to_principals = {}
     if groups is not None:
         for principal_id, groups in groups.items():
