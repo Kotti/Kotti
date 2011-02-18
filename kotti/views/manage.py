@@ -20,15 +20,15 @@ def share_node(context, request):
                     roles_to_principals[group_id] = []
                 roles_to_principals[group_id].append(principal)
 
-    local_groups = []
+    local_roles = []
     for role_id, principals in roles_to_principals.items():
-        local_groups.append((ROLES[role_id], principals))
+        local_roles.append((ROLES[role_id], principals))
 
     return {
         'api': TemplateAPIEdit(context, request),
         'form': u'foo',
-        'roles': ROLES,
-        'local_groups': local_groups,
+        'all_roles': ROLES,
+        'local_roles': local_roles,
         }
 
 def includeme(config):

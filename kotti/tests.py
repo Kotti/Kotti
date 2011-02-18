@@ -527,10 +527,10 @@ class TestNodeShare(UnitTestBase):
         session = DBSession()
         root = session.query(Node).get(1)
         request = testing.DummyRequest()
-        self.assertEqual(share_node(root, request)['roles'], ROLES)
+        self.assertEqual(share_node(root, request)['all_roles'], ROLES)
 
-    def test_local_groups(self):
-        # 'share_node' returns a list of existing local groups
+    def test_local_roles(self):
+        # 'share_node' returns a list of existing local roles
         from kotti.views.manage import share_node
         from kotti.security import ROLES
         session = DBSession()
@@ -538,31 +538,31 @@ class TestNodeShare(UnitTestBase):
         child = root['child'] = Document(title=u"Child")
         request = testing.DummyRequest()
 
-        # The root has a local group assignment that maps 'admin' to
+        # The root has a local role assignment that maps 'admin' to
         # the 'role:admin' group.
-        groups = share_node(root, request)['local_groups']
-        self.assertEqual(len(groups), 1)
-        admins = groups[0]
-        self.assertEqual(admins[0], ROLES[u'role:admin'])
-        self.assertEqual(admins[1], [get_principals()[u'admin']])
+        roles = share_node(root, request)['local_roles']
+        self.assertEqual(len(roles), 1)
+        self.assertEqual(roles, [
+            (ROLES['role:admin'], [get_principals()[u'admin']]),
+            ])
 
-        # The child of 'root' doesn't have any local groups assigned:
-        groups = share_node(child, request)['local_groups']
-        self.assertEqual(len(groups), 0)
+        # The 'child' of 'root' doesn't have any local roles assigned:
+        roles = share_node(child, request)['local_roles']
+        self.assertEqual(len(roles), 0)
 
-        # We add some roles to the child:
+        # We add 'group:bobsgroup' to the 'role:editor' role in child:
         from kotti.security import set_groups
         set_groups('group:bobsgroup', child, [u'role:editor'])
-        groups = share_node(child, request)['local_groups']
-        self.assertEqual(len(groups), 0)
+        roles = share_node(child, request)['local_roles']
+        self.assertEqual(len(roles), 0) # see below
 
-        # 'group:bobsgroup' need to exist in the database for it to
+        # 'group:bobsgroup' needs to exist in the database for it to
         # show up here:
         bobsgroup = Principal(u'group:bobsgroup')
         get_principals()[u'group:bobsgroup'] = bobsgroup
-        groups = share_node(child, request)['local_groups']
-        self.assertEqual(len(groups), 1)
-        editors = groups[0]
+        roles = share_node(child, request)['local_roles']
+        self.assertEqual(len(roles), 1)
+        editors = roles[0]
         self.assertEqual(editors[0], ROLES[u'role:editor'])
         self.assertEqual(editors[1], [bobsgroup])
 
