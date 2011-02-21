@@ -80,7 +80,7 @@ def list_groups_ext(id, context, _seen=None, _inherited=None):
     recursing = _inherited is not None
     _inherited = _inherited or set()
     if _seen is None:
-        _seen = set()
+        _seen = set([id])
 
     # Add groups from principal db:
     principal = get_principals().get(id)
@@ -91,14 +91,14 @@ def list_groups_ext(id, context, _seen=None, _inherited=None):
     # Add local groups:
     items = lineage(context)
     for idx, item in enumerate(items):
-        group_ids = list_groups_raw(id, item)
+        group_ids = [i for i in list_groups_raw(id, item) if i not in _seen]
         groups.update(group_ids)
         if recursing or idx != 0:
             _inherited.update(group_ids)
     
     new_groups = groups - _seen
+    _seen.update(new_groups)
     for group_id in new_groups:
-        _seen.add(group_id)
         g, i = list_groups_ext(
             group_id, context, _seen=_seen, _inherited=_inherited)
         groups.update(g)
@@ -153,36 +153,6 @@ def map_principals_with_local_roles(context):
                 principal_id, context)
             value.append((principal, (all, inherited)))
     return sorted(value, key=lambda t: t[0].id)
-
-def roles_to_principals(context, roles_to_principals=None):
-    """Since ``context.__groups__`` maps principals to roles, we use
-    this helper function to turn the mapping around.
-
-    We return a list of tuples of the form ``(role, principals)``.
-    """
-    groups = all_groups_raw(context)
-    if groups is None:
-        return {}
-
-    principals = get_principals()
-    if roles_to_principals is None:
-        roles_to_principals = {}
-
-    for principal_id, groups in groups.items():
-        try:
-            principal = principals[principal_id]
-        except KeyError:
-            # We couldn't find that principal in the user
-            # database, so we'll ignore it:
-            continue
-        for group_id in groups:
-            if group_id not in roles_to_principals:
-                roles_to_principals[group_id] = []
-            role_principals = roles_to_principals[group_id]
-            if principal not in role_principals:
-                role_principals.append(principal)
-
-    return roles_to_principals
 
 def get_principals():
     return configuration['kotti.principals'][0]
