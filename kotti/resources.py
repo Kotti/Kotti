@@ -201,7 +201,6 @@ def populate():
             ['Allow', 'role:editor', ['add', 'edit']],
             ['Allow', 'role:manager', ['manage', 'edit']],
             ]
-        set_groups('admin', root, ['role:admin'])
         session.add(root)
 
     principals = get_principals()
@@ -210,6 +209,7 @@ def populate():
             'id': u'admin',
             'password': configuration.secret,
             'title': u"Administrator",
+            'groups': [u'role:admin'],
             }
 
     session.flush()

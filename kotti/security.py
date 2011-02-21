@@ -72,8 +72,13 @@ def list_groups_raw(id, context):
     else:
         return set()
 
-def list_groups(id, context, _seen=None, inherit=True):
+def list_groups(id, context):
+    return list_groups_ext(id, context)[0]
+
+def list_groups_ext(id, context, _seen=None, _inherited=None):
     groups = set()
+    recursing = _inherited is not None
+    _inherited = _inherited or set()
     if _seen is None:
         _seen = set()
 
@@ -81,19 +86,25 @@ def list_groups(id, context, _seen=None, inherit=True):
     principal = get_principals().get(id)
     if principal is not None:
         groups.update(principal.groups)
+        _inherited.update(principal.groups)
 
     # Add local groups:
-    for item in lineage(context):
-        groups.update(list_groups_raw(id, item))
-
+    items = lineage(context)
+    for idx, item in enumerate(items):
+        group_ids = list_groups_raw(id, item)
+        groups.update(group_ids)
+        if recursing or idx != 0:
+            _inherited.update(group_ids)
     
-    if inherit: # groups may be nested
-        new_groups = groups - _seen
-        for groupid in new_groups:
-            _seen.add(groupid)
-            groups.update(list_groups(groupid, context, _seen, inherit))
+    new_groups = groups - _seen
+    for group_id in new_groups:
+        _seen.add(group_id)
+        g, i = list_groups_ext(
+            group_id, context, _seen=_seen, _inherited=_inherited)
+        groups.update(g)
+        _inherited.update(i)
 
-    return list(groups)
+    return list(groups), list(_inherited)
 
 def set_groups_raw(context, groups):
     context.__groups__ = groups
@@ -116,6 +127,18 @@ def list_groups_callback(id, request):
             from kotti.resources import get_root
             context = get_root(request)
         return list_groups(id, context)
+
+def principals_with_local_roles(context):
+    """Return a list of principal ids that have local roles (inherited
+    or not) in the context.
+    """
+    principals = set()
+    for item in lineage(context):
+        agr = all_groups_raw(item)
+        if agr is not None:
+            ap = [p for p in agr.keys() if not p.startswith('role:')]
+            principals.update(ap)
+    return list(principals)
 
 def roles_to_principals(context, roles_to_principals=None):
     """Since ``context.__groups__`` maps principals to roles, we use

@@ -15,9 +15,11 @@ from kotti.resources import Node
 from kotti.resources import Document
 from kotti.resources import initialize_sql
 from kotti.security import list_groups
+from kotti.security import list_groups_ext
 from kotti.security import list_groups_raw
 from kotti.security import set_groups
 from kotti.security import list_groups_callback
+from kotti.security import principals_with_local_roles
 from kotti.security import get_principals
 from kotti.security import is_user
 from kotti.security import Principal
@@ -148,12 +150,12 @@ class TestNode(UnitTestBase):
         self.assertEquals(
             session.query(Node).filter(Node.name == u'subchild').count(), 0)
 
-class TestGroups(UnitTestBase):
+class TestSecurity(UnitTestBase):
     def test_root_default(self):
         session = DBSession()
         root = session.query(Node).get(1)
         self.assertEqual(list_groups('admin', root), ['role:admin'])
-        self.assertEqual(list_groups_raw('admin', root), ['role:admin'])
+        self.assertEqual(list_groups_raw('admin', root), set([]))
 
     def test_empty(self):
         session = DBSession()
@@ -197,48 +199,81 @@ class TestGroups(UnitTestBase):
         grandchild = child[u'grandchild'] = Node()
         session.flush()
 
-        # Bob is a global member of bobsgroup:
+        # root:
+        #   bob               -> group:bobsgroup
+        #   frank             -> group:franksgroup
+        #   group:franksgroup -> role:editor
+        # child:
+        #   group:bobsgroup   -> group:franksgroup
+        # grandchild:
+        #   group:franksgroup -> role:manager
+        #   group:franksgroup -> group:bobsgroup
+
+        # bob and frank are a site-wide members of their respective groups:
         set_groups('bob', root, ['group:bobsgroup'])
+        set_groups('frank', root, ['group:franksgroup'])
 
-        # bobsgroup is part of the editors group in the context of grandchild:
-        set_groups('group:bobsgroup', grandchild, ['role:editor'])
+        # franksgroup has a site-wide editor role:
+        set_groups('group:franksgroup', root, ['role:editor'])
 
-        # Assert that bob thus is part of editors in the context of grandchild:
+        # bobsgroup is part of franksgroup on the child level:
+        set_groups('group:bobsgroup', child, ['group:franksgroup'])
+
+        # franksgroup has the manager role on the grandchild.
+        # and finally, to test recursion, we make franksgroup part of
+        # bobsgroup on the grandchild level:
+        set_groups('group:franksgroup', grandchild,
+                   ['role:manager', 'group:bobsgroup'])
+
+        # Check bob's groups on every level:
+        self.assertEqual(list_groups('bob', root), ['group:bobsgroup'])
+        self.assertEqual(
+            set(list_groups('bob', child)),
+            set(['group:bobsgroup', 'group:franksgroup', 'role:editor'])
+            )
         self.assertEqual(
             set(list_groups('bob', grandchild)),
-            set(['group:bobsgroup', 'role:editor']),
+            set(['group:bobsgroup', 'group:franksgroup', 'role:editor',
+                 'role:manager'])
             )
-        # Of course in the context of root he's still in bobsgroup only:
+
+        # Check group:franksgroup groups on every level:
         self.assertEqual(
-            list_groups('bob', root), ['group:bobsgroup'])
-
-        # Groups can be arbitrarily nested:
-        set_groups('role:editor', child, ['group:franksgroup'])
-        set_groups('group:franksgroup', grandchild, ['role:admin'])
-
-        all_groups = set(
-            ['role:admin', 'group:bobsgroup', 'role:editor',
-             'group:franksgroup']
+            set(list_groups('frank', root)),
+            set(['group:franksgroup', 'role:editor'])
             )
-        self.assertEqual(set(list_groups('bob', grandchild)), all_groups)
-        self.assertEqual(list_groups('bob', child), ['group:bobsgroup'])
-
-        set_groups('group:franksgroup', grandchild, [])
-        set_groups('group:franksgroup', root, ['role:admin'])
-        self.assertEqual(set(list_groups('bob', grandchild)), all_groups)
-
-        # We break the loop
-        set_groups('group:franksgroup', root, [])
         self.assertEqual(
-            set(list_groups('bob', grandchild)),
-            set(['group:bobsgroup', 'role:editor', 'group:franksgroup'])
+            set(list_groups('frank', child)),
+            set(['group:franksgroup', 'role:editor'])
+            )
+        self.assertEqual(
+            set(list_groups('frank', grandchild)),
+            set(['group:franksgroup', 'role:editor', 'role:manager',
+                 'group:bobsgroup'])
             )
 
-        # Circular groups are not a problem:
-        set_groups('group:franksgroup', root, ['role:admin', 'role:editor'])
-        set_groups('role:admin', grandchild, ['group:bobsgroup'])
+        # Sometimes it's useful to know which of the groups were
+        # inherited, that's what 'list_groups_ext' is for:
+        groups, inherited = list_groups_ext('bob', root)
+        self.assertEqual(groups, ['group:bobsgroup'])
+        self.assertEqual(inherited, [])
 
-        self.assertEqual(set(list_groups('bob', grandchild)), all_groups)
+        groups, inherited = list_groups_ext('bob', child)
+        self.assertEqual(
+            set(groups),
+            set(['group:bobsgroup', 'group:franksgroup', 'role:editor'])
+            )
+        self.assertEqual(
+            set(inherited),
+            set(['group:bobsgroup', 'group:franksgroup', 'role:editor'])
+            )
+
+        groups, inherited = list_groups_ext('group:bobsgroup', child)
+        self.assertEqual(
+            set(groups),
+            set(['group:franksgroup', 'role:editor'])
+            )
+        self.assertEqual(inherited, ['role:editor'])
 
     def test_works_with_auth(self):
         session = DBSession()
@@ -311,6 +346,28 @@ class TestGroups(UnitTestBase):
         self.assertEqual(
             list_groups_callback(u'group:bobsgroup', request), None)
 
+    def test_principals_with_local_roles(self):
+        session = DBSession()
+        root = session.query(Node).get(1)
+        child = root[u'child'] = Node()
+        session.flush()
+
+        self.assertEqual(principals_with_local_roles(root), [])
+        self.assertEqual(principals_with_local_roles(child), [])
+
+        set_groups('group:bobsgroup', child, ['role:editor'])
+        set_groups('bob', root, ['group:bobsgroup'])
+        set_groups('group:franksgroup', root, ['role:editor'])
+
+        self.assertEqual(
+            set(principals_with_local_roles(child)),
+            set(['bob', 'group:bobsgroup', 'group:franksgroup'])
+            )
+        self.assertEqual(
+            set(principals_with_local_roles(root)),
+            set(['bob', 'group:franksgroup'])
+            )
+
 class TestUser(UnitTestBase):
     def _make_bob(self):
         users = get_principals()
@@ -327,6 +384,7 @@ class TestUser(UnitTestBase):
         admin = get_principals()[u'admin']
         hashed = get_principals().hash_password(u'secret')
         self.assertEqual(admin.password, hashed)
+        self.assertEqual(admin.groups, [u'role:admin'])
 
     def test_users_empty(self):
         users = get_principals()
@@ -540,8 +598,15 @@ class TestNodeShare(UnitTestBase):
         request = testing.DummyRequest()
         P = get_principals()
 
-        # The root has a local role assignment that maps 'admin' to
-        # the 'role:admin' role:
+        # By default, the root has no local role assignments:
+        local_roles = share_node(root, request)['local_roles']
+        inherited_roles = share_node(root, request)['inherited_roles']
+        self.assertEqual(len(local_roles), 0)
+        self.assertEqual(len(inherited_roles), 0)
+
+        # We add 'role:admin' to the local roles of 'admin' in root:
+        from kotti.security import set_groups
+        set_groups('admin', root, [u'role:admin'])
         local_roles = share_node(root, request)['local_roles']
         self.assertEqual(len(local_roles), 1)
         admins = local_roles[0]
@@ -562,7 +627,6 @@ class TestNodeShare(UnitTestBase):
             ])
 
         # We add 'group:bobsgroup' to the 'role:editor' role in child:
-        from kotti.security import set_groups
         set_groups('group:bobsgroup', child, [u'role:editor'])
         local_roles = share_node(child, request)['local_roles']
         self.assertEqual(len(local_roles), 0) # see below
