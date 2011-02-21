@@ -20,6 +20,7 @@ from kotti.security import list_groups_raw
 from kotti.security import set_groups
 from kotti.security import list_groups_callback
 from kotti.security import principals_with_local_roles
+from kotti.security import map_principals_with_local_roles
 from kotti.security import get_principals
 from kotti.security import is_user
 from kotti.security import Principal
@@ -354,6 +355,8 @@ class TestSecurity(UnitTestBase):
 
         self.assertEqual(principals_with_local_roles(root), [])
         self.assertEqual(principals_with_local_roles(child), [])
+        self.assertEqual(map_principals_with_local_roles(root), [])
+        self.assertEqual(map_principals_with_local_roles(child), [])
 
         set_groups('group:bobsgroup', child, ['role:editor'])
         set_groups('bob', root, ['group:bobsgroup'])
@@ -367,6 +370,36 @@ class TestSecurity(UnitTestBase):
             set(principals_with_local_roles(root)),
             set(['bob', 'group:franksgroup'])
             )
+
+    def test_map_principals_with_local_roles(self):
+        self.test_principals_with_local_roles()
+        session = DBSession()
+        root = session.query(Node).get(1)
+        child = root[u'child']
+        P = get_principals()
+
+        # No users are defined in P, thus we get the empty list:
+        self.assertEqual(map_principals_with_local_roles(root), [])
+
+        P['bob'] = {'id': u'bob'}
+        P['group:bobsgroup'] = {'id': u'group:bobsgroup'}
+
+        value = map_principals_with_local_roles(root)
+        self.assertEqual(len(value), 1)
+        bob, (bob_all, bob_inherited) = value[0]
+        self.assertEqual(bob_all, ['group:bobsgroup'])
+        self.assertEqual(bob_inherited, [])
+
+        value = map_principals_with_local_roles(child)
+        self.assertEqual(len(value), 2)
+        bob, (bob_all, bob_inherited) = value[0]
+        bobsgroup, (bobsgroup_all, bobsgroup_inherited) = value[1]
+        self.assertEqual(set(bob_all),
+                         set(['group:bobsgroup', 'role:editor']))
+        self.assertEqual(set(bob_inherited),
+                         set(['group:bobsgroup', 'role:editor']))
+        self.assertEqual(bobsgroup_all, ['role:editor'])
+        self.assertEqual(bobsgroup_inherited, [])
 
 class TestUser(UnitTestBase):
     def _make_bob(self):

@@ -140,6 +140,20 @@ def principals_with_local_roles(context):
             principals.update(ap)
     return list(principals)
 
+def map_principals_with_local_roles(context):
+    principals = get_principals()
+    value = []
+    for principal_id in principals_with_local_roles(context):
+        try:
+            principal = principals[principal_id]
+        except KeyError:
+            continue
+        else:
+            all, inherited = list_groups_ext(
+                principal_id, context)
+            value.append((principal, (all, inherited)))
+    return sorted(value, key=lambda t: t[0].id)
+
 def roles_to_principals(context, roles_to_principals=None):
     """Since ``context.__groups__`` maps principals to roles, we use
     this helper function to turn the mapping around.
