@@ -38,13 +38,14 @@
                      name="role::${entry[0].id}::${role.id}"
                      checked="${role.id in entry[1][0]}"
                      disabled="${role.id in entry[1][1]}" />
+              <input type="hidden"
+                     name="orig-role::${entry[0].id}::${role.id}"
+                     value="${role.id in entry[1][0]}" />
             </td>
           </tr>
         </table>
         <ul>
           <li>
-            <input type="hidden" name="all-principals"
-                   value="${all_principals}" />
             <button type="submit" name="apply">
               Apply Changes
             </button>

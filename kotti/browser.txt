@@ -318,6 +318,13 @@ again:
   True
   >>> ctrl(name="role::group:bobsgroup::role:manager").value = False
   >>> ctrl(name="apply").click()
+  >>> "Your changes have been applied" in browser.contents
+  True
+  >>> ctrl(name="role::group:bobsgroup::role:manager").value
+  False
+  >>> ctrl(name="apply").click()
+  >>> "Your changes have been applied" in browser.contents
+  False
   >>> ctrl(name="role::group:bobsgroup::role:editor").value
   True
   >>> ctrl(name="role::group:bobsgroup::role:manager").value

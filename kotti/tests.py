@@ -751,7 +751,6 @@ class TestNodeShare(UnitTestBase):
         self.add_some_principals()
 
         request.params['apply'] = u''
-        request.params['all-principals'] = u'bob'
         share_node(root, request)
         self.assertEqual(request.session.pop_flash('info'),
                          [u'No changes made.'])
@@ -759,6 +758,9 @@ class TestNodeShare(UnitTestBase):
 
         request.params['role::bob::role:manager'] = u'1'
         request.params['role::bob::role:editor'] = u'1'
+        request.params['orig-role::bob::role:manager'] = u''
+        request.params['orig-role::bob::role:editor'] = u''
+
         share_node(root, request)
         self.assertEqual(request.session.pop_flash('success'),
                          [u'Your changes have been applied.'])

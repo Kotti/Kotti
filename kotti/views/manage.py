@@ -15,17 +15,26 @@ def share_node(context, request):
 
     if 'apply' in request.params:
         changed = False
-        for principal_id in request.params['all-principals'].split(','):
-            role_ids = set()
-            for role in all_roles:
-                checked = request.params.get(
-                    'role::%s::%s' % (principal_id, role.id))
-                if checked:
-                    role_ids.add(role.id)
-            orig_role_ids = list_groups_raw(principal_id, context)
+        p_to_r = {}
+        for name in request.params:
+            if name.startswith('orig-role::'):
+                token, principal_id, role_id = name.split('::')
+                new_value = bool(request.params.get(
+                    'role::%s::%s' % (principal_id, role_id)))
+                if principal_id not in p_to_r:
+                    p_to_r[principal_id] = set()
+                if new_value:
+                    p_to_r[principal_id].add(role_id)
+
+        for principal_id, role_ids in p_to_r.items():
+            orig_group_ids = set(r for r in list_groups_raw(principal_id, context))
+            orig_role_ids = [r for r in orig_group_ids if r.startswith('role:')]
+            orig_role_ids = set(orig_role_ids)
             if role_ids != orig_role_ids:
                 changed = True
-                set_groups(principal_id, context, role_ids)
+                new_group_ids = orig_group_ids - orig_role_ids | role_ids
+                set_groups(principal_id, context, new_group_ids)
+
         if changed:
             flash(u'Your changes have been applied.', 'success')
         else:
@@ -52,12 +61,10 @@ def share_node(context, request):
             flash(u'No users or groups found.', 'error')
 
     entries = existing + entries
-    all_principals = u','.join(e[0].id for e in entries)
-    
+
     return {
         'api': TemplateAPIEdit(context, request),
         'entries': entries,
-        'all_principals': all_principals,
         'all_roles': all_roles,
         'principals_to_roles': map_principals_with_local_roles(context),
         }
