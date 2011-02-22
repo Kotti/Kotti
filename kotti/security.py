@@ -113,6 +113,8 @@ def set_groups(id, context, groups_to_set):
     groups = all_groups_raw(context)
     if groups is None:
         groups = {}
+    else:
+        groups = dict(groups)
     if groups_to_set:
         groups[id] = list(groups_to_set)
     else:
