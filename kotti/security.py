@@ -113,7 +113,10 @@ def set_groups(id, context, groups_to_set):
     groups = all_groups_raw(context)
     if groups is None:
         groups = {}
-    groups[id] = list(groups_to_set)
+    if groups_to_set:
+        groups[id] = list(groups_to_set)
+    else:
+        groups.pop(id, None)
     set_groups_raw(context, groups)
 
 def list_groups_callback(id, request):
