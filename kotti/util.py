@@ -1,15 +1,19 @@
 import json
 
-from sqlalchemy import types
+from sqlalchemy.types import TypeDecorator, VARCHAR
 
-class JsonType(types.TypeDecorator):
-    impl = types.Unicode
+class JsonType(TypeDecorator):
+    """http://www.sqlalchemy.org/docs/core/types.html#marshal-json-strings
+    """
+    impl = VARCHAR
 
-    def process_bind_param(self, value, engine):
-        return unicode(json.dumps(value))
+    def process_bind_param(self, value, dialect):
+        if value is not None:
+            value = json.dumps(value)
 
-    def process_result_value(self, value, engine):
-        return json.loads(value)
+        return value
 
-    def copy(self):
-        return JsonType(self.impl.length)
+    def process_result_value(self, value, dialect):
+        if value is not None:
+            value = json.loads(value)
+        return value
