@@ -23,7 +23,6 @@ from kotti.security import principals_with_local_roles
 from kotti.security import map_principals_with_local_roles
 from kotti.security import get_principals
 from kotti.security import is_user
-from kotti.security import Principal
 from kotti import main
 
 BASE_URL = 'http://localhost:6543'
@@ -37,6 +36,7 @@ def _initTestingDB():
 
 def setUp(**kwargs):
     tearDown()
+    configuration.secret = 'secret'
     _initTestingDB()
     config = testing.setUp(**kwargs)
     for name, renderer in DEFAULT_RENDERERS:
@@ -625,6 +625,16 @@ class TestNodeEdit(UnitTestBase):
             self.assertEqual(second_parent['node'], root)
 
 class TestNodeShare(UnitTestBase):
+    @staticmethod
+    def add_some_principals():
+        P = get_principals()
+        P[u'bob'] = {'id': u'bob', 'title': u"Bob"}
+        P[u'frank'] = {'id': u'frank', 'title': u"Frank"}
+        P[u'group:bobsgroup'] = {
+            'id': u'group:bobsgroup', 'title': u"Bob's Group"}
+        P[u'group:franksgroup'] = {
+            'id': u'group:franksgroup', 'title': u"Frank's Group"}
+
     def test_roles(self):
         # The 'share_node' view will return a list of available roles
         # as defined in 'kotti.security.ROLES'
@@ -653,11 +663,7 @@ class TestNodeShare(UnitTestBase):
         ptr = share_node(root, request)['principals_to_roles']
         self.assertEqual(len(ptr), 0)
 
-        P['bob'] = {'id': u'bob'}
-        P['frank'] = {'id': u'frank'}
-        P['group:bobsgroup'] = {'id': u'group:bobsgroup'}
-        P['group:franksgroup'] = {'id': u'group:franksgroup'}
-
+        self.add_some_principals()
         # For root:
         ptr = share_node(root, request)['principals_to_roles']
         self.assertEqual(len(ptr), 3)
@@ -687,6 +693,51 @@ class TestNodeShare(UnitTestBase):
             set(franksgroup[1][1]),
             set(['role:editor'])
             )
+
+    def test_search(self):
+        from kotti.views.manage import share_node
+        session = DBSession()
+        root = session.query(Node).get(1)
+        request = testing.DummyRequest()
+        P = get_principals()
+        self.add_some_principals()
+
+        # Search for "Bob", which will return both the user and the
+        # group, both of which have no roles:
+        request.params['query'] = u'Bob'
+        entries = share_node(root, request)['entries']
+        self.assertEqual(len(entries), 2)
+        self.assertEqual(entries[0][0], P['bob'])
+        self.assertEqual(entries[0][1], ([], []))
+        self.assertEqual(entries[1][0], P['group:bobsgroup'])
+        self.assertEqual(entries[1][1], ([], []))
+
+        # We make Bob an Editor in this context, and Bob's Group
+        # becomes global Manager:
+        set_groups(u'bob', root, [u'role:editor'])
+        P[u'group:bobsgroup'].groups = [u'role:manager']
+        entries = share_node(root, request)['entries']
+        self.assertEqual(len(entries), 2)
+        self.assertEqual(entries[0][0], P['bob'])
+        self.assertEqual(entries[0][1], ([u'role:editor'], []))
+        self.assertEqual(entries[1][0], P['group:bobsgroup'])
+        self.assertEqual(entries[1][1], ([u'role:manager'], [u'role:manager']))
+
+        # A search that doesn't return any items will still include
+        # entries with existing local roles:
+        request.params['query'] = u'Weeee'
+        entries = share_node(root, request)['entries']
+        self.assertEqual(len(entries), 1)
+        self.assertEqual(entries[0][0], P[u'bob'])
+        self.assertEqual(entries[0][1], ([u'role:editor'], []))
+
+        # It does not, however, include entries that have local group
+        # assignments only:
+        set_groups(u'frank', root, [u'group:franksgroup'])
+        request.params['query'] = u'Weeee'
+        entries = share_node(root, request)['entries']
+        self.assertEqual(len(entries), 1)
+        self.assertEqual(entries[0][0], P['bob'])
 
 class TestTemplateAPI(UnitTestBase):
     def _make(self, context=None, id=1):

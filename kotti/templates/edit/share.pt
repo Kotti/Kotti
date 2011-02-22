@@ -11,7 +11,19 @@
       <div metal:use-macro="api['master_edit.messages']">
       </div>
 
-      <form tal:replace="structure form">
+      <form action="./share">
+        <h2>Assign roles</h2>
+        <ul>
+          <li>
+            <label for="search-query">User name</label>
+            <input type="text" name="query" id="search-query" />
+          </li>
+          <li>
+            <button type="submit" name="search">
+              Search
+            </button>
+          </li>
+        </ul>
       </form>
 
     </div>

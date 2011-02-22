@@ -31,7 +31,6 @@ from kotti import configuration
 from kotti.util import JsonType
 from kotti.security import PersistentACL
 from kotti.security import get_principals
-from kotti.security import set_groups
 
 class Container(object, DictMixin):
     """Containers form the API of a Node that's used for subitem

@@ -223,6 +223,7 @@ class Principals(DictMixin):
     def search(self, term):
         if not term:
             return []
+        term = u'%' + term + u'%'
         session = DBSession()
         query = session.query(self.factory)
         query = query.filter(or_(

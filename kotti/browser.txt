@@ -268,3 +268,23 @@ We cannot rename the root:
   Traceback (most recent call last):
   LookupError: label 'New name'
 
+Share
+-----
+
+XXX Add a user called 'Bob' and a group called 'bobsgroup'
+
+  >>> from kotti.security import get_principals
+  >>> get_principals()[u'bob'] = {
+  ...     'id': u"bob",
+  ...     'title': u"Bob Dabolina",
+  ... }
+  >>> get_principals()[u'group:bobsgroup'] = {
+  ...     'id': u"group:bobsgroup",
+  ...     'title': u"Bob's Group",
+  ... }
+
+The Share tab allows us to assign users and groups to roles:
+
+  >>> browser.open(tests.BASE_URL)
+  >>> browser.getLink("Edit").click()
+  >>> browser.getLink("Share").click()
