@@ -323,7 +323,7 @@ again:
   >>> ctrl(name="role::group:bobsgroup::role:manager").value
   False
 
-Bob should now have an inherited Manager role, because he's part of
+Bob should now have an inherited Editor role, because he's part of
 Bob's Group:
 
   >>> ctrl(name="query").value = "Bob Dabolina"
@@ -334,3 +334,16 @@ Bob's Group:
   False
   >>> ctrl(name="role::bob::role:editor").disabled
   True
+
+We take away Editors again:
+
+  >>> ctrl(name="role::group:bobsgroup::role:editor").value = False
+  >>> ctrl(name="apply").click()
+  >>> "Your changes have been applied" in browser.contents
+  True
+  >>> ctrl(name="query").value = "Bob"
+  >>> ctrl(name="search").click()
+  >>> ctrl(name="role::bob::role:editor").value
+  False
+  >>> ctrl(name="role::group:bobsgroup::role:editor").value
+  False

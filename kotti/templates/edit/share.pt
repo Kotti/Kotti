@@ -43,6 +43,8 @@
         </table>
         <ul>
           <li>
+            <input type="hidden" name="all-principals"
+                   value="${all_principals}" />
             <button type="submit" name="apply">
               Apply Changes
             </button>

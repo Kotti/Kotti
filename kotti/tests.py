@@ -751,6 +751,7 @@ class TestNodeShare(UnitTestBase):
         self.add_some_principals()
 
         request.params['apply'] = u''
+        request.params['all-principals'] = u'bob'
         share_node(root, request)
         self.assertEqual(request.session.pop_flash('info'),
                          [u'No changes made.'])
