@@ -253,7 +253,8 @@ mapper(Principal, principals_table, order_by=principals_table.c.id)
 # These roles are different to groups in that they will appear more
 # frequently in the user interface.
 ROLES = {
-    u'role:admin': Principal(u'role:admin', title=u'Admins'),
-    u'role:manager': Principal(u'role:manager', title=u'Managers'),
+    u'role:viewer': Principal(u'role:viewer', title=u'Viewers'),
     u'role:editor': Principal(u'role:editor', title=u'Editors'),
+    u'role:manager': Principal(u'role:manager', title=u'Managers'),
+    u'role:admin': Principal(u'role:admin', title=u'Admins'),
     }

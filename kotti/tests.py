@@ -65,6 +65,7 @@ class TestNode(UnitTestBase):
             root.__acl__, [
                 ('Allow', 'role:admin', ALL_PERMISSIONS),
                 ('Allow', 'system.Authenticated', ['view']),
+                ('Allow', 'role:viewer', ['view']),
                 ('Allow', 'role:editor', ['add', 'edit']),
                 ('Allow', 'role:manager', ['manage', 'edit']),
             ])

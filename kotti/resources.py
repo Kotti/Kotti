@@ -197,6 +197,7 @@ def populate():
         root = Document(name=u"", parent=None, title=u"My Site")
         root.__acl__ = [
             ['Allow', 'system.Authenticated', ['view']],
+            ['Allow', 'role:viewer', ['view']],
             ['Allow', 'role:editor', ['add', 'edit']],
             ['Allow', 'role:manager', ['manage', 'edit']],
             ]
