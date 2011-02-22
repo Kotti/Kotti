@@ -1,3 +1,5 @@
+from pyramid.httpexceptions import HTTPFound
+
 from kotti.security import get_principals
 from kotti.security import ROLES
 from kotti.security import map_principals_with_local_roles
@@ -9,7 +11,7 @@ from kotti.views.util import TemplateAPIEdit
 def share_node(context, request):
     flash = request.session.flash
     principals = get_principals()
-    
+
     if 'apply' in request.params:
         changed = False
         p_to_r = {}
@@ -26,9 +28,10 @@ def share_node(context, request):
                 changed = True
                 set_groups(principal_id, context, role_ids)
         if changed:
-            flash(u'Applied changes.', 'success')
+            flash(u'Your changes have been applied.', 'success')
         else:
             flash(u'No changes made.', 'info')
+        return HTTPFound(location=request.url)
 
     existing = map_principals_with_local_roles(context)
     def with_roles(entry):

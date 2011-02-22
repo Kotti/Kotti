@@ -760,7 +760,7 @@ class TestNodeShare(UnitTestBase):
         request.params['role::bob::role:editor'] = u'1'
         share_node(root, request)
         self.assertEqual(request.session.pop_flash('success'),
-                         [u'Applied changes.'])
+                         [u'Your changes have been applied.'])
         self.assertEqual(
             set(list_groups('bob', root)),
             set(['role:manager', 'role:editor'])

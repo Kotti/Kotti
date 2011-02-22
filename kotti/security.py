@@ -63,7 +63,7 @@ class PersistentACL(object):
             ]
 
 def all_groups_raw(context):
-    return getattr(context, '__groups__', None)
+    return getattr(context, '__roles__', None)
 
 def list_groups_raw(id, context):
     groups = all_groups_raw(context)
@@ -107,7 +107,7 @@ def list_groups_ext(id, context, _seen=None, _inherited=None):
     return list(groups), list(_inherited)
 
 def set_groups_raw(context, groups):
-    context.__groups__ = groups
+    context.__roles__ = groups
 
 def set_groups(id, context, groups_to_set):
     groups = all_groups_raw(context)
@@ -253,7 +253,7 @@ mapper(Principal, principals_table, order_by=principals_table.c.id)
 # These roles are different to groups in that they will appear more
 # frequently in the user interface.
 ROLES = {
-    u'role:admin': Principal(u'role:admin', title=u'Administrators'),
+    u'role:admin': Principal(u'role:admin', title=u'Admins'),
     u'role:manager': Principal(u'role:manager', title=u'Managers'),
     u'role:editor': Principal(u'role:editor', title=u'Editors'),
     }

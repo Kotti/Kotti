@@ -9,6 +9,7 @@ Setup
 
    >>> tools = tests.setUpFunctional()
    >>> browser = tools['Browser']()
+   >>> ctrl = browser.getControl
    >>> browser.open(tests.BASE_URL)
    >>> session = DBSession()
    >>> root = session.query(Node).get(1)
@@ -21,9 +22,9 @@ Editing is locked down to authenticated users:
   >>> browser.open(tests.BASE_URL + '/edit')
   >>> "Log in" in browser.contents
   True
-  >>> browser.getControl("Username or email").value = "admin"
-  >>> browser.getControl("Password").value = "secret"
-  >>> browser.getControl(name="submitted").click()
+  >>> ctrl("Username or email").value = "admin"
+  >>> ctrl("Password").value = "secret"
+  >>> ctrl(name="submitted").click()
   >>> "Welcome, Administrator" in browser.contents
   True
   >>> browser.url == tests.BASE_URL + '/edit'
@@ -38,16 +39,16 @@ the login form:
 
 Log in again, this time force an error:
 
-  >>> browser.getControl("Username or email").value = "admin"
-  >>> browser.getControl("Password").value = "funny"
-  >>> browser.getControl(name="submitted").click()
+  >>> ctrl("Username or email").value = "admin"
+  >>> ctrl("Password").value = "funny"
+  >>> ctrl(name="submitted").click()
   >>> "Welcome, Adminstrator" in browser.contents
   False
   >>> "Login failed" in browser.contents
   True
-  >>> browser.getControl("Username or email").value = "admin"
-  >>> browser.getControl("Password").value = "secret"
-  >>> browser.getControl(name="submitted").click()
+  >>> ctrl("Username or email").value = "admin"
+  >>> ctrl("Password").value = "secret"
+  >>> ctrl(name="submitted").click()
   >>> "Welcome, Administrator" in browser.contents
   True
   >>> browser.url == tests.BASE_URL + '/edit'
@@ -59,8 +60,8 @@ Add a document
   >>> browser.open(tests.BASE_URL)
   >>> browser.getLink("Edit").click()
   >>> browser.getLink("Add").click()
-  >>> browser.getControl("Title").value = "Child One"
-  >>> browser.getControl("save").click()
+  >>> ctrl("Title").value = "Child One"
+  >>> ctrl("save").click()
   >>> "Successfully added item" in browser.contents
   True
   >>> browser.url == tests.BASE_URL + '/child-one/edit'
@@ -70,11 +71,11 @@ Edit the document
 -----------------
 
   >>> browser.getLink("Edit").click()
-  >>> browser.getControl("Title").value = "First Child"
-  >>> browser.getControl("save").click()
+  >>> ctrl("Title").value = "First Child"
+  >>> ctrl("save").click()
   >>> "Your changes have been saved" in browser.contents
   True
-  >>> browser.getControl("Title").value
+  >>> ctrl("Title").value
   'First Child'
   >>> browser.getLink("View").click()
   >>> "First Child" in browser.contents
@@ -83,11 +84,11 @@ Edit the document
 And now force a validation error:
 
   >>> browser.getLink("Edit").click()
-  >>> browser.getControl("Title").value = ""
-  >>> browser.getControl("save").click()
+  >>> ctrl("Title").value = ""
+  >>> ctrl("save").click()
   >>> "There was a problem" in browser.contents
   True
-  >>> browser.getControl("Title").value
+  >>> ctrl("Title").value
   ''
   >>> browser.getLink("View").click()
   >>> "First Child" in browser.contents
@@ -98,20 +99,20 @@ Add two more documents, at different levels
 
   >>> browser.getLink("Edit").click()
   >>> browser.getLink("Add").click()
-  >>> browser.getControl("Add to My Site").selected = True
-  >>> browser.getControl("Continue").click()
-  >>> browser.getControl("Title").value = "Second Child"
-  >>> browser.getControl("save").click()
+  >>> ctrl("Add to My Site").selected = True
+  >>> ctrl("Continue").click()
+  >>> ctrl("Title").value = "Second Child"
+  >>> ctrl("save").click()
   >>> "Successfully added item" in browser.contents
   True
   >>> browser.url == tests.BASE_URL + '/second-child/edit'
   True
 
   >>> browser.getLink("Add").click()
-  >>> browser.getControl("Add to Second Child").selected = True
-  >>> browser.getControl("Continue").click()
-  >>> browser.getControl("Title").value = "Grandchild"
-  >>> browser.getControl("save").click()
+  >>> ctrl("Add to Second Child").selected = True
+  >>> ctrl("Continue").click()
+  >>> ctrl("Title").value = "Grandchild"
+  >>> ctrl("save").click()
   >>> browser.url == tests.BASE_URL + '/second-child/grandchild/edit'
   True
 
@@ -130,7 +131,7 @@ Reorder documents
   False
   >>> browser.getLink("Edit").click()
   >>> browser.getLink("Move").click()
-  >>> browser.getControl("First Child").click()
+  >>> ctrl("First Child").click()
   >>> "First Child reordered" in browser.contents
   True
   >>> browser.getLink("View").click()
@@ -142,8 +143,8 @@ Delete a document
 -----------------
 
   >>> browser.open(tests.BASE_URL + '/second-child/grandchild/move')
-  >>> browser.getControl(name="delete-confirm").displayValue = ['Yes']
-  >>> browser.getControl("delete").click()
+  >>> ctrl(name="delete-confirm").displayValue = ['Yes']
+  >>> ctrl("delete").click()
   >>> "Grandchild deleted" in browser.contents
   True
   >>> browser.url == tests.BASE_URL + '/second-child/edit'
@@ -153,12 +154,12 @@ Copy and paste
 --------------
 
   >>> browser.open(tests.BASE_URL + '/second-child/move')
-  >>> browser.getControl(name="cut").click()
+  >>> ctrl(name="cut").click()
   >>> "Second Child cut" in browser.contents
   True
 
   >>> browser.open(tests.BASE_URL + '/child-one/move')
-  >>> browser.getControl(name="paste").click()
+  >>> ctrl(name="paste").click()
   >>> "Second Child pasted" in browser.contents
   True
 
@@ -168,17 +169,17 @@ Copy and paste
   HTTPError: HTTP Error 404: Not Found
 
   >>> browser.open(tests.BASE_URL + '/child-one/second-child/move')
-  >>> browser.getControl(name="copy").click()
+  >>> ctrl(name="copy").click()
   >>> "Second Child copied" in browser.contents
   True
   >>> browser.open(tests.BASE_URL + '/move')
-  >>> browser.getControl(name="paste").click()
+  >>> ctrl(name="paste").click()
   >>> "Second Child pasted" in browser.contents
   True
 
 We can paste twice since we copied:
 
-  >>> browser.getControl(name="paste").click()
+  >>> ctrl(name="paste").click()
   >>> "Second Child pasted" in browser.contents
   True
   >>> browser.open(tests.BASE_URL + '/second-child/')
@@ -192,11 +193,11 @@ We can also copy and paste items that contain children, like the whole
 site:
 
   >>> browser.open(tests.BASE_URL + '/move')
-  >>> browser.getControl(name="copy").click()
+  >>> ctrl(name="copy").click()
   >>> "My Site copied" in browser.contents
   True
   >>> browser.open(tests.BASE_URL + '/second-child/move')
-  >>> browser.getControl(name="paste").click()
+  >>> ctrl(name="paste").click()
   >>> "My Site pasted" in browser.contents
   True
   >>> browser.open(tests.BASE_URL + '/second-child/my-site/')
@@ -205,9 +206,9 @@ site:
 And finally cut and paste a tree:
 
   >>> browser.open(tests.BASE_URL + '/second-child/move')
-  >>> browser.getControl(name="cut").click()
+  >>> ctrl(name="cut").click()
   >>> browser.open(tests.BASE_URL + '/child-one/second-child/move')
-  >>> browser.getControl(name="paste").click()
+  >>> ctrl(name="paste").click()
   >>> "Second Child pasted" in browser.contents
   True
   >>> browser.open(tests.BASE_URL + '/second-child/')
@@ -218,12 +219,12 @@ And finally cut and paste a tree:
 Note how we can't cut and paste an item into itself:
 
   >>> browser.open(tests.BASE_URL + '/child-one/move')
-  >>> browser.getControl(name="cut").click()
-  >>> browser.getControl(name="paste")
+  >>> ctrl(name="cut").click()
+  >>> ctrl(name="paste")
   Traceback (most recent call last):
   LookupError: name 'paste'
   >>> browser.open(tests.BASE_URL + '/child-one/second-child/move')
-  >>> browser.getControl(name="paste")
+  >>> ctrl(name="paste")
   Traceback (most recent call last):
   LookupError: name 'paste'
 
@@ -231,14 +232,14 @@ Whether we can paste or not also depends on the 'type_info.addable'
 property:
 
   >>> browser.open(tests.BASE_URL + '/child-one/move')
-  >>> browser.getControl(name="copy").click()
+  >>> ctrl(name="copy").click()
   >>> browser.open(tests.BASE_URL + '/child-one/second-child/move')
-  >>> browser.getControl(name="paste")
+  >>> ctrl(name="paste")
   <SubmitControl name='paste' type='submitbutton'>
   >>> save_addable = Document.type_info.addable_to
   >>> Document.type_info.addable_to = ()
   >>> browser.reload()
-  >>> browser.getControl(name="paste")
+  >>> ctrl(name="paste")
   Traceback (most recent call last):
   LookupError: name 'paste'
   >>> Document.type_info.addable_to = save_addable
@@ -246,13 +247,13 @@ property:
 We can rename an item:
 
   >>> browser.open(tests.BASE_URL + '/child-one/second-child/move')
-  >>> browser.getControl("New name").value
+  >>> ctrl("New name").value
   'second-child'
-  >>> browser.getControl("New title").value
+  >>> ctrl("New title").value
   'Second Child'
-  >>> browser.getControl("New name").value = "third-child"
-  >>> browser.getControl("New title").value = "My Third Child"
-  >>> browser.getControl(name="rename").click()
+  >>> ctrl("New name").value = "third-child"
+  >>> ctrl("New title").value = "My Third Child"
+  >>> ctrl(name="rename").click()
   >>> "Item renamed" in browser.contents
   True
   >>> browser.url == tests.BASE_URL + '/child-one/third-child/move'
@@ -264,7 +265,7 @@ We can rename an item:
 We cannot rename the root:
 
   >>> browser.open(tests.BASE_URL + '/move')
-  >>> browser.getControl("New name")
+  >>> ctrl("New name")
   Traceback (most recent call last):
   LookupError: label 'New name'
 
@@ -274,13 +275,14 @@ Share
 XXX Add a user called 'Bob' and a group called 'bobsgroup'
 
   >>> from kotti.security import get_principals
-  >>> get_principals()[u'bob'] = {
-  ...     'id': u"bob",
-  ...     'title': u"Bob Dabolina",
-  ... }
   >>> get_principals()[u'group:bobsgroup'] = {
   ...     'id': u"group:bobsgroup",
   ...     'title': u"Bob's Group",
+  ... }
+  >>> get_principals()[u'bob'] = {
+  ...     'id': u"bob",
+  ...     'title': u"Bob Dabolina",
+  ...     'groups': [u'group:bobsgroup'],
   ... }
 
 The Share tab allows us to assign users and groups to roles:
@@ -291,8 +293,8 @@ The Share tab allows us to assign users and groups to roles:
 
 We can search for users:
 
-  >>> browser.getControl("User name").value = "Bob"
-  >>> browser.getControl(name="search").click()
+  >>> ctrl("User name").value = "Bob"
+  >>> ctrl(name="search").click()
 
 Bob and Bob's Group are listed now:
 
@@ -301,4 +303,34 @@ Bob and Bob's Group are listed now:
   >>> "Bob's Group" in browser.contents
   True
 
+We add Bob's Group to Editors and Managers before taking away Managers
+again:
 
+  >>> ctrl(name="role::group:bobsgroup::role:editor").value = True
+  >>> ctrl(name="role::group:bobsgroup::role:manager").value = True
+  >>> ctrl(name="apply").click()
+  >>> "Your changes have been applied" in browser.contents
+  True
+  >>> browser.reload()
+  >>> ctrl(name="role::group:bobsgroup::role:editor").value
+  True
+  >>> ctrl(name="role::group:bobsgroup::role:manager").value
+  True
+  >>> ctrl(name="role::group:bobsgroup::role:manager").value = False
+  >>> ctrl(name="apply").click()
+  >>> ctrl(name="role::group:bobsgroup::role:editor").value
+  True
+  >>> ctrl(name="role::group:bobsgroup::role:manager").value
+  False
+
+Bob should now have an inherited Manager role, because he's part of
+Bob's Group:
+
+  >>> ctrl(name="query").value = "Bob Dabolina"
+  >>> ctrl(name="search").click()
+  >>> ctrl(name="role::bob::role:editor").value
+  True
+  >>> ctrl(name="role::bob::role:manager").value
+  False
+  >>> ctrl(name="role::bob::role:editor").disabled
+  True

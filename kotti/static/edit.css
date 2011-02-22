@@ -142,3 +142,23 @@ form fieldset {
 form li.error {
     background-color: #ff614e;
 }
+
+table {
+    text-align: left;
+}
+
+table td, table th {
+    padding: 0.5em 1em;
+}
+
+table th {
+    color: #555;
+}
+
+td.checkbox {
+    text-align: center;
+}
+
+tr.even {
+    background-color: white;
+}

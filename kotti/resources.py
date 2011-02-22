@@ -146,7 +146,7 @@ nodes = Table('nodes', metadata,
     Column('name', Unicode(50), nullable=False),
     Column('type', String(30), nullable=False),
     Column('_acl', JsonType()),
-    Column('__groups__', JsonType()),
+    Column('__roles__', JsonType()),
     Column('default_view', String(50)),
     Column('position', Integer),
 
