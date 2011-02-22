@@ -643,7 +643,8 @@ class TestNodeShare(UnitTestBase):
         session = DBSession()
         root = session.query(Node).get(1)
         request = testing.DummyRequest()
-        self.assertEqual(share_node(root, request)['all_roles'], ROLES)
+        self.assertEqual(share_node(root, request)['all_roles'],
+                         sorted(ROLES.values(), key=lambda r:r.id))
 
     def test_principals_to_roles(self):
         # 'share_node' returns a list of tuples of the form
@@ -704,6 +705,7 @@ class TestNodeShare(UnitTestBase):
 
         # Search for "Bob", which will return both the user and the
         # group, both of which have no roles:
+        request.params['search'] = u''
         request.params['query'] = u'Bob'
         entries = share_node(root, request)['entries']
         self.assertEqual(len(entries), 2)
@@ -730,6 +732,8 @@ class TestNodeShare(UnitTestBase):
         self.assertEqual(len(entries), 1)
         self.assertEqual(entries[0][0], P[u'bob'])
         self.assertEqual(entries[0][1], ([u'role:editor'], []))
+        self.assertEqual(request.session.pop_flash('error'),
+                         [u'No users or groups found.'])
 
         # It does not, however, include entries that have local group
         # assignments only:
@@ -738,6 +742,29 @@ class TestNodeShare(UnitTestBase):
         entries = share_node(root, request)['entries']
         self.assertEqual(len(entries), 1)
         self.assertEqual(entries[0][0], P['bob'])
+
+    def test_apply(self):
+        from kotti.views.manage import share_node
+        session = DBSession()
+        root = session.query(Node).get(1)
+        request = testing.DummyRequest()
+        self.add_some_principals()
+
+        request.params['apply'] = u''
+        share_node(root, request)
+        self.assertEqual(request.session.pop_flash('info'),
+                         [u'No changes made.'])
+        self.assertEqual(list_groups('bob', root), [])
+
+        request.params['role::bob::role:manager'] = u'1'
+        request.params['role::bob::role:editor'] = u'1'
+        share_node(root, request)
+        self.assertEqual(request.session.pop_flash('success'),
+                         [u'Applied changes.'])
+        self.assertEqual(
+            set(list_groups('bob', root)),
+            set(['role:manager', 'role:editor'])
+            )
 
 class TestTemplateAPI(UnitTestBase):
     def _make(self, context=None, id=1):

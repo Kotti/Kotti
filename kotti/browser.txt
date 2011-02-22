@@ -288,3 +288,17 @@ The Share tab allows us to assign users and groups to roles:
   >>> browser.open(tests.BASE_URL)
   >>> browser.getLink("Edit").click()
   >>> browser.getLink("Share").click()
+
+We can search for users:
+
+  >>> browser.getControl("User name").value = "Bob"
+  >>> browser.getControl(name="search").click()
+
+Bob and Bob's Group are listed now:
+
+  >>> "Bob Dabolina" in browser.contents
+  True
+  >>> "Bob's Group" in browser.contents
+  True
+
+

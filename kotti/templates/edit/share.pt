@@ -11,21 +11,43 @@
       <div metal:use-macro="api['master_edit.messages']">
       </div>
 
-      <form action="./share">
-        <h2>Assign roles</h2>
+      <form action="./share" method="post">
+        <h2>Assign local roles</h2>
         <ul>
           <li>
             <label for="search-query">User name</label>
-            <input type="text" name="query" id="search-query" />
-          </li>
-          <li>
+            <input type="text" name="query" id="search-query"
+                   value="${request.params.get('query')}" />
             <button type="submit" name="search">
               Search
             </button>
           </li>
         </ul>
+        <table>
+          <tr>
+            <th>Name</th>
+            <th tal:repeat="role all_roles">
+              ${role.title}
+            </th>
+          </tr>
+          <tr tal:repeat="entry entries">
+            <td>${entry[0].title}</td>
+            <td tal:repeat="role all_roles">
+              <input type="checkbox"
+                     name="role::${entry[0].id}::${role.id}"
+                     checked="${role.id in entry[1][0]}"
+                     disabled="${role.id in entry[1][1]}" />
+            </td>
+          </tr>
+        </table>
+        <ul>
+          <li>
+            <button type="submit" name="apply">
+              Apply Changes
+            </button>
+          </li>
+        </ul>
       </form>
-
     </div>
   </div>
 
