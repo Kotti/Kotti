@@ -763,6 +763,7 @@ class TestNodeShare(UnitTestBase):
         self.assertEqual(request.session.pop_flash('info'),
                          [u'No changes made.'])
         self.assertEqual(list_groups('bob', root), [])
+        set_groups('bob', root, ['role:special'])
 
         request.params['role::bob::role:owner'] = u'1'
         request.params['role::bob::role:editor'] = u'1'
@@ -774,7 +775,7 @@ class TestNodeShare(UnitTestBase):
                          [u'Your changes have been applied.'])
         self.assertEqual(
             set(list_groups('bob', root)),
-            set(['role:owner', 'role:editor'])
+            set(['role:owner', 'role:editor', 'role:special'])
             )
 
         # We cannot set a role that's not displayed, even if we forged
@@ -785,7 +786,7 @@ class TestNodeShare(UnitTestBase):
                          '403 Forbidden')
         self.assertEqual(
             set(list_groups('bob', root)),
-            set(['role:owner', 'role:editor'])
+            set(['role:owner', 'role:editor', 'role:special'])
             )
 
 class TestTemplateAPI(UnitTestBase):
