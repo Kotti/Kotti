@@ -1,6 +1,24 @@
 History
 =======
 
+0.1a5
+-----
+
+- Add sharing screen.
+
+  This allows you to set roles for groups and users on individual
+  folders.  This also considers roles that are inherited from higher
+  up in the hierarchy, and those that are inherited from groups that
+  the user belongs to.
+
+- Refined available system roles in ``kotti.security.ROLES``.  We now
+  have:
+
+  - Viewer: view
+  - Editor: view, add, edit
+  - Owner: view, add, edit, manage
+  - Admin: all permissions
+
 0.1a4
 -----
 

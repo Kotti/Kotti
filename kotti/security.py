@@ -255,8 +255,6 @@ principals_table = Table('principals', metadata,
 
 mapper(Principal, principals_table, order_by=principals_table.c.id)
 
-# These roles are different to groups in that they will appear more
-# frequently in the user interface.
 ROLES = {
     u'role:viewer': Principal(u'role:viewer', title=u'Viewer'),
     u'role:editor': Principal(u'role:editor', title=u'Editor'),
@@ -264,8 +262,10 @@ ROLES = {
     u'role:admin': Principal(u'role:admin', title=u'Admin'),
     }
 
+# These roles are visible in the sharing tab
 SHARING_ROLES = [u'role:viewer', u'role:editor', u'role:owner']
 
+# This is the ACL that gets set on the site root on creation.
 SITE_ACL = [
     ['Allow', 'system.Authenticated', ['view']],
     ['Allow', 'role:viewer', ['view']],
