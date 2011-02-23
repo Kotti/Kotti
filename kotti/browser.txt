@@ -304,24 +304,24 @@ Bob and Bob's Group are listed now:
   >>> "Bob's Group" in browser.contents
   True
 
-We add Bob's Group to Viewers and Managers before taking away Viewers
+We add Bob's Group to Owners and Editors before taking away Owners
 again:
 
-  >>> ctrl(name="role::group:bobsgroup::role:viewer").value = True
-  >>> ctrl(name="role::group:bobsgroup::role:manager").value = True
+  >>> ctrl(name="role::group:bobsgroup::role:owner").value = True
+  >>> ctrl(name="role::group:bobsgroup::role:editor").value = True
   >>> ctrl(name="apply").click()
   >>> "Your changes have been applied" in browser.contents
   True
   >>> browser.reload()
-  >>> ctrl(name="role::group:bobsgroup::role:viewer").value
+  >>> ctrl(name="role::group:bobsgroup::role:owner").value
   True
-  >>> ctrl(name="role::group:bobsgroup::role:manager").value
+  >>> ctrl(name="role::group:bobsgroup::role:editor").value
   True
-  >>> ctrl(name="role::group:bobsgroup::role:viewer").value = False
+  >>> ctrl(name="role::group:bobsgroup::role:owner").value = False
   >>> ctrl(name="apply").click()
   >>> "Your changes have been applied" in browser.contents
   True
-  >>> ctrl(name="role::group:bobsgroup::role:viewer").value
+  >>> ctrl(name="role::group:bobsgroup::role:owner").value
   False
 
 Not making any changes will give us a different feedback message:
@@ -329,28 +329,29 @@ Not making any changes will give us a different feedback message:
   >>> ctrl(name="apply").click()
   >>> "Your changes have been applied" in browser.contents
   False
-  >>> ctrl(name="role::group:bobsgroup::role:manager").value
-  True
-  >>> ctrl(name="role::group:bobsgroup::role:viewer").value
+  >>> ctrl(name="role::group:bobsgroup::role:owner").value
   False
+  >>> ctrl(name="role::group:bobsgroup::role:editor").value
+  True
 
-Bob should now have an inherited Manager role, because he's part of
+Bob should now have an inherited Editor role, because he's part of
 Bob's Group:
 
   >>> ctrl(name="query").value = "Bob Dabolina"
   >>> ctrl(name="search").click()
-  >>> ctrl(name="role::bob::role:manager").value
+  >>> ctrl(name="role::bob::role:editor").value
   True
-  >>> ctrl(name="role::bob::role:viewer").value
+  >>> ctrl(name="role::bob::role:owner").value
   False
-  >>> ctrl(name="role::bob::role:manager").disabled
+  >>> ctrl(name="role::bob::role:editor").disabled
   True
 
-Lastly, let's take away the Manager role from Bob's Group again:
+Lastly, let's take away the remaining Editor role from Bob's Group
+again:
 
   >>> "Bob's Group" in browser.contents
   True
-  >>> ctrl(name="role::group:bobsgroup::role:manager").value = False
+  >>> ctrl(name="role::group:bobsgroup::role:editor").value = False
   >>> ctrl(name="apply").click()
   >>> "Your changes have been applied" in browser.contents
   True

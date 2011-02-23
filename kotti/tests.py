@@ -62,17 +62,15 @@ class TestNode(UnitTestBase):
 
         # The root object has a persistent ACL set:
         self.assertEquals(
-            root.__acl__, [
-                ('Allow', 'role:manager', ALL_PERMISSIONS),
+            root.__acl__[1:], [
                 ('Allow', 'system.Authenticated', ['view']),
                 ('Allow', 'role:viewer', ['view']),
-                ('Allow', 'role:editor', ['add', 'edit']),
-                ('Allow', 'role:owner', ['add', 'edit', 'manage']),
-            ])
-
-        # Note how the last ACE is class-defined, that is, users in
-        # the 'admins' group will have all permissions, always.
-        # This is to prevent lock-out.
+                ('Allow', 'role:editor', ['view', 'add', 'edit']),
+                ('Allow', 'role:owner', ['view', 'add', 'edit', 'manage']),
+                ])
+        # Note how the first ACE is class-defined.  Users of the
+        # 'admin' role will always have all permissions.  This is to
+        # prevent lock-out.
         self.assertEquals(root.__acl__[:1], root._default_acl())
 
     def test_set_and_get_acl(self):
@@ -87,7 +85,7 @@ class TestNode(UnitTestBase):
         root.__acl__ = [['Allow', 'system.Authenticated', ['edit']]]
         self.assertEquals(
             root.__acl__, [
-                ('Allow', 'role:manager', ALL_PERMISSIONS),
+                ('Allow', 'role:admin', ALL_PERMISSIONS),
                 ('Allow', 'system.Authenticated', ['edit']),
                 ])
 
@@ -98,7 +96,7 @@ class TestNode(UnitTestBase):
         
         self.assertEquals(
             root.__acl__, [
-                ('Allow', 'role:manager', ALL_PERMISSIONS),
+                ('Allow', 'role:admin', ALL_PERMISSIONS),
                 ('Allow', 'system.Authenticated', ['view']),
                 ('Deny', 'system.Authenticated', ALL_PERMISSIONS),
                 ])
@@ -108,7 +106,7 @@ class TestNode(UnitTestBase):
         root.__acl__ = [second, first]
         self.assertEquals(
             root.__acl__, [
-                ('Allow', 'role:manager', ALL_PERMISSIONS),
+                ('Allow', 'role:admin', ALL_PERMISSIONS),
                 ('Deny', 'system.Authenticated', ALL_PERMISSIONS),
                 ('Allow', 'system.Authenticated', ['view']),
                 ])
@@ -156,7 +154,7 @@ class TestSecurity(UnitTestBase):
     def test_root_default(self):
         session = DBSession()
         root = session.query(Node).get(1)
-        self.assertEqual(list_groups('admin', root), ['role:manager'])
+        self.assertEqual(list_groups('admin', root), ['role:admin'])
         self.assertEqual(list_groups_raw('admin', root), set([]))
 
     def test_empty(self):
@@ -209,7 +207,7 @@ class TestSecurity(UnitTestBase):
         # child:
         #   group:bobsgroup   -> group:franksgroup
         # grandchild:
-        #   group:franksgroup -> role:manager
+        #   group:franksgroup -> role:admin
         #   group:franksgroup -> group:bobsgroup
 
         # bob and frank are a site-wide members of their respective groups:
@@ -222,11 +220,11 @@ class TestSecurity(UnitTestBase):
         # bobsgroup is part of franksgroup on the child level:
         set_groups('group:bobsgroup', child, ['group:franksgroup'])
 
-        # franksgroup has the manager role on the grandchild.
+        # franksgroup has the admin role on the grandchild.
         # and finally, to test recursion, we make franksgroup part of
         # bobsgroup on the grandchild level:
         set_groups('group:franksgroup', grandchild,
-                   ['role:manager', 'group:bobsgroup'])
+                   ['role:owner', 'group:bobsgroup'])
 
     def test_nested_groups(self):
         self.add_some_groups()
@@ -244,7 +242,7 @@ class TestSecurity(UnitTestBase):
         self.assertEqual(
             set(list_groups('bob', grandchild)),
             set(['group:bobsgroup', 'group:franksgroup', 'role:editor',
-                 'role:manager'])
+                 'role:owner'])
             )
 
         # Check group:franksgroup groups on every level:
@@ -258,7 +256,7 @@ class TestSecurity(UnitTestBase):
             )
         self.assertEqual(
             set(list_groups('frank', grandchild)),
-            set(['group:franksgroup', 'role:editor', 'role:manager',
+            set(['group:franksgroup', 'role:editor', 'role:owner',
                  'group:bobsgroup'])
             )
 
@@ -288,7 +286,7 @@ class TestSecurity(UnitTestBase):
         groups, inherited = list_groups_ext('group:franksgroup', grandchild)
         self.assertEqual(
             set(groups),
-            set(['group:bobsgroup', 'role:manager', 'role:editor'])
+            set(['group:bobsgroup', 'role:owner', 'role:editor'])
             )
         self.assertEqual(inherited, ['role:editor'])
 
@@ -433,7 +431,7 @@ class TestUser(UnitTestBase):
         admin = get_principals()[u'admin']
         hashed = get_principals().hash_password(u'secret')
         self.assertEqual(admin.password, hashed)
-        self.assertEqual(admin.groups, [u'role:manager'])
+        self.assertEqual(admin.groups, [u'role:admin'])
 
     def test_users_empty(self):
         users = get_principals()
@@ -646,14 +644,15 @@ class TestNodeShare(UnitTestBase):
 
     def test_roles(self):
         # The 'share_node' view will return a list of available roles
-        # as defined in 'kotti.security.ROLES'
+        # as defined in 'kotti.security.SHARING_ROLES'
         from kotti.views.manage import share_node
-        from kotti.security import ROLES
+        from kotti.security import SHARING_ROLES
         session = DBSession()
         root = session.query(Node).get(1)
         request = testing.DummyRequest()
-        self.assertEqual(share_node(root, request)['all_roles'],
-                         sorted(ROLES.values(), key=lambda r:r.id))
+        self.assertEqual(
+            [r.id for r in share_node(root, request)['available_roles']],
+            SHARING_ROLES)
 
     def test_principals_to_roles(self):
         # 'share_node' returns a list of tuples of the form
@@ -697,7 +696,7 @@ class TestNodeShare(UnitTestBase):
         franksgroup = ptr[3]
         self.assertEqual(
             set(franksgroup[1][0]),
-            set(['role:manager', 'group:bobsgroup', 'role:editor'])
+            set(['role:owner', 'group:bobsgroup', 'role:editor'])
             )
         self.assertEqual(
             set(franksgroup[1][1]),
@@ -724,15 +723,15 @@ class TestNodeShare(UnitTestBase):
         self.assertEqual(entries[1][1], ([], []))
 
         # We make Bob an Editor in this context, and Bob's Group
-        # becomes global Manager:
+        # becomes global Admin:
         set_groups(u'bob', root, [u'role:editor'])
-        P[u'group:bobsgroup'].groups = [u'role:manager']
+        P[u'group:bobsgroup'].groups = [u'role:admin']
         entries = share_node(root, request)['entries']
         self.assertEqual(len(entries), 2)
         self.assertEqual(entries[0][0], P['bob'])
         self.assertEqual(entries[0][1], ([u'role:editor'], []))
         self.assertEqual(entries[1][0], P['group:bobsgroup'])
-        self.assertEqual(entries[1][1], ([u'role:manager'], [u'role:manager']))
+        self.assertEqual(entries[1][1], ([u'role:admin'], [u'role:admin']))
 
         # A search that doesn't return any items will still include
         # entries with existing local roles:
@@ -765,9 +764,9 @@ class TestNodeShare(UnitTestBase):
                          [u'No changes made.'])
         self.assertEqual(list_groups('bob', root), [])
 
-        request.params['role::bob::role:manager'] = u'1'
+        request.params['role::bob::role:owner'] = u'1'
         request.params['role::bob::role:editor'] = u'1'
-        request.params['orig-role::bob::role:manager'] = u''
+        request.params['orig-role::bob::role:owner'] = u''
         request.params['orig-role::bob::role:editor'] = u''
 
         share_node(root, request)
@@ -775,7 +774,18 @@ class TestNodeShare(UnitTestBase):
                          [u'Your changes have been applied.'])
         self.assertEqual(
             set(list_groups('bob', root)),
-            set(['role:manager', 'role:editor'])
+            set(['role:owner', 'role:editor'])
+            )
+
+        # We cannot set a role that's not displayed, even if we forged
+        # the request:
+        request.params['role::bob::role:admin'] = u'1'
+        request.params['orig-role::bob::role:admin'] = u''
+        self.assertEqual(share_node(root, request).status,
+                         '403 Forbidden')
+        self.assertEqual(
+            set(list_groups('bob', root)),
+            set(['role:owner', 'role:editor'])
             )
 
 class TestTemplateAPI(UnitTestBase):

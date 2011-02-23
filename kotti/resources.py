@@ -31,6 +31,7 @@ from kotti import configuration
 from kotti.util import JsonType
 from kotti.security import PersistentACL
 from kotti.security import get_principals
+from kotti.security import SITE_ACL
 
 class Container(object, DictMixin):
     """Containers form the API of a Node that's used for subitem
@@ -195,12 +196,7 @@ def populate():
     nodecount = session.query(Node).count()
     if nodecount == 0:
         root = Document(name=u"", parent=None, title=u"My Site")
-        root.__acl__ = [
-            ['Allow', 'system.Authenticated', ['view']],
-            ['Allow', 'role:viewer', ['view']],
-            ['Allow', 'role:editor', ['add', 'edit']],
-            ['Allow', 'role:owner', ['add', 'edit', 'manage']],
-            ]
+        root.__acl__ = SITE_ACL
         session.add(root)
 
     principals = get_principals()
@@ -209,7 +205,7 @@ def populate():
             'id': u'admin',
             'password': configuration.secret,
             'title': u"Administrator",
-            'groups': [u'role:manager'],
+            'groups': [u'role:admin'],
             }
 
     session.flush()

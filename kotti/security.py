@@ -59,7 +59,7 @@ class PersistentACL(object):
     def _default_acl(self):
         # ACEs that will be put on top, no matter what
         return [
-            (Allow, 'role:manager', ALL_PERMISSIONS),
+            (Allow, 'role:admin', ALL_PERMISSIONS),
             ]
 
 def all_groups_raw(context):
@@ -258,7 +258,17 @@ mapper(Principal, principals_table, order_by=principals_table.c.id)
 # These roles are different to groups in that they will appear more
 # frequently in the user interface.
 ROLES = {
-    u'role:viewer': Principal(u'role:viewer', title=u'Viewers'),
-    u'role:editor': Principal(u'role:editor', title=u'Editors'),
-    u'role:manager': Principal(u'role:manager', title=u'Managers'),
+    u'role:viewer': Principal(u'role:viewer', title=u'Viewer'),
+    u'role:editor': Principal(u'role:editor', title=u'Editor'),
+    u'role:owner': Principal(u'role:owner', title=u'Owner'),
+    u'role:admin': Principal(u'role:admin', title=u'Admin'),
     }
+
+SHARING_ROLES = [u'role:viewer', u'role:editor', u'role:owner']
+
+SITE_ACL = [
+    ['Allow', 'system.Authenticated', ['view']],
+    ['Allow', 'role:viewer', ['view']],
+    ['Allow', 'role:editor', ['view', 'add', 'edit']],
+    ['Allow', 'role:owner', ['view', 'add', 'edit', 'manage']],
+    ]

@@ -28,14 +28,14 @@
         <table tal:condition="entries">
           <tr>
             <th>Name</th>
-            <th tal:repeat="role all_roles">
+            <th tal:repeat="role available_roles">
               ${role.title}
             </th>
           </tr>
           <tr tal:repeat="entry entries"
               class="${repeat.entry.even and 'even' or 'odd'}">
             <td>${entry[0].title}</td>
-            <td tal:repeat="role all_roles" class="checkbox">
+            <td tal:repeat="role available_roles" class="checkbox">
               <input type="checkbox"
                      name="role::${entry[0].id}::${role.id}"
                      checked="${role.id in entry[1][0]}"
