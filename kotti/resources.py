@@ -199,6 +199,7 @@ def populate():
             ['Allow', 'system.Authenticated', ['view']],
             ['Allow', 'role:viewer', ['view']],
             ['Allow', 'role:editor', ['add', 'edit']],
+            ['Allow', 'role:owner', ['add', 'edit', 'manage']],
             ]
         session.add(root)
 

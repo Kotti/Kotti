@@ -67,6 +67,7 @@ class TestNode(UnitTestBase):
                 ('Allow', 'system.Authenticated', ['view']),
                 ('Allow', 'role:viewer', ['view']),
                 ('Allow', 'role:editor', ['add', 'edit']),
+                ('Allow', 'role:owner', ['add', 'edit', 'manage']),
             ])
 
         # Note how the last ACE is class-defined, that is, users in
@@ -518,6 +519,14 @@ class TestEvents(UnitTestBase):
         child = root[u'child'] = Node()
         session.flush()
         self.assertEqual(child.owner, u'bob')
+        self.assertEqual(list_groups(u'bob', child), [u'role:owner'])
+
+        # The event listener does not set the role again for subitems:
+        grandchild = child[u'grandchild'] = Node()
+        session.flush()
+        self.assertEqual(grandchild.owner, u'bob')
+        self.assertEqual(list_groups(u'bob', grandchild), [u'role:owner'])
+        self.assertEqual(len(list_groups_raw(u'bob', grandchild)), 0)
 
 class TestNodeView(UnitTestBase):
     def test_it(self):
