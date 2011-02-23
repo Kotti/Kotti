@@ -293,7 +293,7 @@ The Share tab allows us to assign users and groups to roles:
 
 We can search for users:
 
-  >>> ctrl("User name").value = "Bob"
+  >>> ctrl("Users and groups").value = "Bob"
   >>> ctrl(name="search").click()
 
 Bob and Bob's Group are listed now:
