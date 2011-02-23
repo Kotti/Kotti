@@ -27,7 +27,7 @@ def share_node(context, request):
                     p_to_r[principal_id].add(role_id)
 
         for principal_id, role_ids in p_to_r.items():
-            orig_group_ids = set(r for r in list_groups_raw(principal_id, context))
+            orig_group_ids = set(list_groups_raw(principal_id, context))
             orig_role_ids = [r for r in orig_group_ids if r.startswith('role:')]
             orig_role_ids = set(orig_role_ids)
             if role_ids != orig_role_ids:
@@ -58,7 +58,7 @@ def share_node(context, request):
             if p.id not in seen:
                 entries.append((p, list_groups_ext(p.id, context)))
         if not found:
-            flash(u'No users or groups found.', 'error')
+            flash(u'No users or groups found.', 'info')
 
     entries = existing + entries
 

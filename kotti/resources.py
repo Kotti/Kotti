@@ -199,7 +199,6 @@ def populate():
             ['Allow', 'system.Authenticated', ['view']],
             ['Allow', 'role:viewer', ['view']],
             ['Allow', 'role:editor', ['add', 'edit']],
-            ['Allow', 'role:manager', ['manage', 'edit']],
             ]
         session.add(root)
 
@@ -209,7 +208,7 @@ def populate():
             'id': u'admin',
             'password': configuration.secret,
             'title': u"Administrator",
-            'groups': [u'role:admin'],
+            'groups': [u'role:manager'],
             }
 
     session.flush()

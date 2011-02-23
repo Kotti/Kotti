@@ -49,7 +49,7 @@
         <ul>
           <li>
             <button type="submit" name="apply">
-              Apply Changes
+              Apply changes
             </button>
           </li>
         </ul>

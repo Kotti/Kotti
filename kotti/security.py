@@ -59,7 +59,7 @@ class PersistentACL(object):
     def _default_acl(self):
         # ACEs that will be put on top, no matter what
         return [
-            (Allow, 'role:admin', ALL_PERMISSIONS),
+            (Allow, 'role:manager', ALL_PERMISSIONS),
             ]
 
 def all_groups_raw(context):
@@ -261,5 +261,4 @@ ROLES = {
     u'role:viewer': Principal(u'role:viewer', title=u'Viewers'),
     u'role:editor': Principal(u'role:editor', title=u'Editors'),
     u'role:manager': Principal(u'role:manager', title=u'Managers'),
-    u'role:admin': Principal(u'role:admin', title=u'Admins'),
     }

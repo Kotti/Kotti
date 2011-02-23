@@ -281,6 +281,7 @@ XXX Add a user called 'Bob' and a group called 'bobsgroup'
   ... }
   >>> get_principals()[u'bob'] = {
   ...     'id': u"bob",
+  ...     'password': u"secret",
   ...     'title': u"Bob Dabolina",
   ...     'groups': [u'group:bobsgroup'],
   ... }
@@ -303,54 +304,55 @@ Bob and Bob's Group are listed now:
   >>> "Bob's Group" in browser.contents
   True
 
-We add Bob's Group to Editors and Managers before taking away Managers
+We add Bob's Group to Viewers and Managers before taking away Viewers
 again:
 
-  >>> ctrl(name="role::group:bobsgroup::role:editor").value = True
+  >>> ctrl(name="role::group:bobsgroup::role:viewer").value = True
   >>> ctrl(name="role::group:bobsgroup::role:manager").value = True
   >>> ctrl(name="apply").click()
   >>> "Your changes have been applied" in browser.contents
   True
   >>> browser.reload()
-  >>> ctrl(name="role::group:bobsgroup::role:editor").value
+  >>> ctrl(name="role::group:bobsgroup::role:viewer").value
   True
   >>> ctrl(name="role::group:bobsgroup::role:manager").value
+  True
+  >>> ctrl(name="role::group:bobsgroup::role:viewer").value = False
+  >>> ctrl(name="apply").click()
+  >>> "Your changes have been applied" in browser.contents
+  True
+  >>> ctrl(name="role::group:bobsgroup::role:viewer").value
+  False
+
+Not making any changes will give us a different feedback message:
+
+  >>> ctrl(name="apply").click()
+  >>> "Your changes have been applied" in browser.contents
+  False
+  >>> ctrl(name="role::group:bobsgroup::role:manager").value
+  True
+  >>> ctrl(name="role::group:bobsgroup::role:viewer").value
+  False
+
+Bob should now have an inherited Manager role, because he's part of
+Bob's Group:
+
+  >>> ctrl(name="query").value = "Bob Dabolina"
+  >>> ctrl(name="search").click()
+  >>> ctrl(name="role::bob::role:manager").value
+  True
+  >>> ctrl(name="role::bob::role:viewer").value
+  False
+  >>> ctrl(name="role::bob::role:manager").disabled
+  True
+
+Lastly, let's take away the Manager role from Bob's Group again:
+
+  >>> "Bob's Group" in browser.contents
   True
   >>> ctrl(name="role::group:bobsgroup::role:manager").value = False
   >>> ctrl(name="apply").click()
   >>> "Your changes have been applied" in browser.contents
   True
-  >>> ctrl(name="role::group:bobsgroup::role:manager").value
-  False
-  >>> ctrl(name="apply").click()
-  >>> "Your changes have been applied" in browser.contents
-  False
-  >>> ctrl(name="role::group:bobsgroup::role:editor").value
-  True
-  >>> ctrl(name="role::group:bobsgroup::role:manager").value
-  False
-
-Bob should now have an inherited Editor role, because he's part of
-Bob's Group:
-
-  >>> ctrl(name="query").value = "Bob Dabolina"
-  >>> ctrl(name="search").click()
-  >>> ctrl(name="role::bob::role:editor").value
-  True
-  >>> ctrl(name="role::bob::role:manager").value
-  False
-  >>> ctrl(name="role::bob::role:editor").disabled
-  True
-
-We take away Editors again:
-
-  >>> ctrl(name="role::group:bobsgroup::role:editor").value = False
-  >>> ctrl(name="apply").click()
-  >>> "Your changes have been applied" in browser.contents
-  True
-  >>> ctrl(name="query").value = "Bob"
-  >>> ctrl(name="search").click()
-  >>> ctrl(name="role::bob::role:editor").value
-  False
-  >>> ctrl(name="role::group:bobsgroup::role:editor").value
+  >>> "Bob's Group" in browser.contents
   False

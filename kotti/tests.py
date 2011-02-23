@@ -63,11 +63,10 @@ class TestNode(UnitTestBase):
         # The root object has a persistent ACL set:
         self.assertEquals(
             root.__acl__, [
-                ('Allow', 'role:admin', ALL_PERMISSIONS),
+                ('Allow', 'role:manager', ALL_PERMISSIONS),
                 ('Allow', 'system.Authenticated', ['view']),
                 ('Allow', 'role:viewer', ['view']),
                 ('Allow', 'role:editor', ['add', 'edit']),
-                ('Allow', 'role:manager', ['manage', 'edit']),
             ])
 
         # Note how the last ACE is class-defined, that is, users in
@@ -87,7 +86,7 @@ class TestNode(UnitTestBase):
         root.__acl__ = [['Allow', 'system.Authenticated', ['edit']]]
         self.assertEquals(
             root.__acl__, [
-                ('Allow', 'role:admin', ALL_PERMISSIONS),
+                ('Allow', 'role:manager', ALL_PERMISSIONS),
                 ('Allow', 'system.Authenticated', ['edit']),
                 ])
 
@@ -98,7 +97,7 @@ class TestNode(UnitTestBase):
         
         self.assertEquals(
             root.__acl__, [
-                ('Allow', 'role:admin', ALL_PERMISSIONS),
+                ('Allow', 'role:manager', ALL_PERMISSIONS),
                 ('Allow', 'system.Authenticated', ['view']),
                 ('Deny', 'system.Authenticated', ALL_PERMISSIONS),
                 ])
@@ -108,7 +107,7 @@ class TestNode(UnitTestBase):
         root.__acl__ = [second, first]
         self.assertEquals(
             root.__acl__, [
-                ('Allow', 'role:admin', ALL_PERMISSIONS),
+                ('Allow', 'role:manager', ALL_PERMISSIONS),
                 ('Deny', 'system.Authenticated', ALL_PERMISSIONS),
                 ('Allow', 'system.Authenticated', ['view']),
                 ])
@@ -156,7 +155,7 @@ class TestSecurity(UnitTestBase):
     def test_root_default(self):
         session = DBSession()
         root = session.query(Node).get(1)
-        self.assertEqual(list_groups('admin', root), ['role:admin'])
+        self.assertEqual(list_groups('admin', root), ['role:manager'])
         self.assertEqual(list_groups_raw('admin', root), set([]))
 
     def test_empty(self):
@@ -433,7 +432,7 @@ class TestUser(UnitTestBase):
         admin = get_principals()[u'admin']
         hashed = get_principals().hash_password(u'secret')
         self.assertEqual(admin.password, hashed)
-        self.assertEqual(admin.groups, [u'role:admin'])
+        self.assertEqual(admin.groups, [u'role:manager'])
 
     def test_users_empty(self):
         users = get_principals()
@@ -733,7 +732,7 @@ class TestNodeShare(UnitTestBase):
         self.assertEqual(len(entries), 1)
         self.assertEqual(entries[0][0], P[u'bob'])
         self.assertEqual(entries[0][1], ([u'role:editor'], []))
-        self.assertEqual(request.session.pop_flash('error'),
+        self.assertEqual(request.session.pop_flash('info'),
                          [u'No users or groups found.'])
 
         # It does not, however, include entries that have local group

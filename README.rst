@@ -265,10 +265,9 @@ Auhorization in Kotti can be configured through
 `inherited access control lists`_.  The default install of Kotti has a
 root object with this ACL::
 
-  ('Allow', 'role:admin', ALL_PERMISSIONS)
+  ('Allow', 'role:manager', ALL_PERMISSIONS)
   ('Allow', 'system.Authenticated', ('view',))
   ('Allow', 'role:editor', ('add', 'edit'))
-  ('Allow', 'role:manager', ('manage', 'edit'))
 
 That is, the site is locked down to authenticated users.  You can set
 the ACL through the ``Node.__acl__`` property to your liking.  To open
@@ -281,9 +280,11 @@ your site so that everyone can ``view``, do::
 Roles and groups
 ----------------
 
-The default install of Kotti maps the ``role:admin`` role to the
+The default install of Kotti maps the ``role:manager`` role to the
 ``admin`` user.  The effect of which is that the ``admin`` user gains
-``ALL_PERMISSIONS`` throughout the site.
+``ALL_PERMISSIONS`` throughout the site.  In particular, ``admin``
+gains the ``manage`` permission by which they can add new users and
+assign roles to other users in different parts of the site.
 
 Principals can be assigned to roles or groups by use of the
 ``kotti.security.set_groups`` function, which needs to be passed a
