@@ -145,17 +145,8 @@ class TemplateAPIEdit(TemplateAPI):
 
     @reify
     def edit_links(self):
-        links = []
-        for name in self.context.type_info.edit_views:
-            if not view_execution_permitted(self.context, self.request, name):
-                continue # XXX testme
-            url = resource_url(self.context, self.request, name)
-            links.append(dict(
-                url=url,
-                name=name,
-                selected=self.request.url.startswith(url),
-                ))
-        return links
+        return [l for l in self.context.type_info.edit_links
+                if l.permitted(self.context, self.request)]
 
     def get_paste_item(self):
         info = self.request.session.get('kotti.paste')

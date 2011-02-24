@@ -1,5 +1,7 @@
 import json
 
+from pyramid.url import resource_url
+from pyramid.security import view_execution_permitted
 from sqlalchemy.types import TypeDecorator, VARCHAR
 
 class JsonType(TypeDecorator):
@@ -17,3 +19,25 @@ class JsonType(TypeDecorator):
         if value is not None:
             value = json.loads(value)
         return value
+
+class Link(object):
+    def __init__(self, path, title=None):
+        self.path = path
+        if title is None:
+            title = path.replace('-', ' ').replace('_', ' ').title()
+        self.title = title
+
+    def url(self, context, request):
+        return resource_url(context, request, self.path)
+
+    def selected(self, context, request):
+        return request.url.startswith(self.url(context, request))
+
+    def permitted(self, context, request):
+        return view_execution_permitted(context, request, self.path)
+
+    def __eq__(self, other):
+        return isinstance(other, Link) and repr(self) == repr(other)
+
+    def __repr__(self):
+        return "Link(%r, %r)" % (self.path, self.title)

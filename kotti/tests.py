@@ -24,6 +24,7 @@ from kotti.security import principals_with_local_roles
 from kotti.security import map_principals_with_local_roles
 from kotti.security import get_principals
 from kotti.security import is_user
+from kotti.util import Link
 from kotti import main
 
 BASE_URL = 'http://localhost:6543'
@@ -851,30 +852,29 @@ class TestTemplateAPI(UnitTestBase):
 
     def test_edit_links(self):
         api = self._make()
-        self.assertEqual(
-            api.edit_links, [
-                {'name': 'edit', 'selected': False,
-                 'url': 'http://example.com/edit'},
-                {'name': 'add', 'selected': False,
-                 'url': 'http://example.com/add'},
-                {'name': 'move', 'selected': False,
-                 'url': 'http://example.com/move'},
-                {'name': 'share', 'selected': False,
-                 'url': 'http://example.com/share'},
-                ])
+        self.assertEqual(api.edit_links, [
+            Link('edit'),
+            Link('add'),
+            Link('move'),
+            Link('share'),
+            ])
 
         # Edit links are controlled through
-        # 'root.type_info.edit_views' and the permissions that guard
+        # 'root.type_info.edit_links' and the permissions that guard
         # these:
-        root = api.root
-        root.type_info = root.type_info.copy(edit_views=['edit'])
+        class MyLink(Link):
+            permit = True
+            def permitted(self, context, request):
+                return self.permit
+        open_link = MyLink('open')
+        secure_link = MyLink('secure')
+        secure_link.permit = False
 
+        root = api.root
+        root.type_info = root.type_info.copy(
+            edit_links=[open_link, secure_link])
         api = self._make()
-        self.assertEqual(
-            api.edit_links, [
-                {'name': 'edit', 'selected': False,
-                 'url': 'http://example.com/edit'},
-                ])
+        self.assertEqual(api.edit_links, [open_link])
 
     def test_context_links(self):
         # 'context_links' returns a two-tuple of the form (siblings,

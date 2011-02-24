@@ -45,9 +45,9 @@
       <div class="tabs1" metal:define-slot="tabs1">
         <ul>
           <li tal:repeat="link api.edit_links">
-            <a href="${link['url']}"
-               class="${link['selected'] and 'selected' or None}">
-              ${link['name'].title()}
+            <a href="${link.url(context, request)}"
+               class="${link.selected(context, request) and 'selected' or None}">
+              ${link.title}
             </a>
           </li>
         </ul>

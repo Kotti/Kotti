@@ -28,6 +28,7 @@ metadata = MetaData()
 DBSession = scoped_session(sessionmaker(extension=ZopeTransactionExtension()))
 
 from kotti import configuration
+from kotti.util import Link
 from kotti.util import JsonType
 from kotti.security import PersistentACL
 from kotti.security import get_principals
@@ -84,7 +85,7 @@ class Node(Container, PersistentACL):
         name=u'Node',
         add_view=None,
         addable_to=[],
-        edit_views=['edit', 'add', 'move', 'share'],
+        edit_links=[Link('edit'), Link('add'), Link('move'), Link('share')],
         )
 
     id = None
