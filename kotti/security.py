@@ -18,6 +18,37 @@ from kotti.resources import DBSession
 from kotti.resources import metadata
 from kotti.util import JsonType
 
+class Principal(object):
+    def __init__(self, id, password=None, title=u"", groups=()):
+        self.id = id
+        if password is not None:
+            password = get_principals().hash_password(password)
+        self.password = password
+        self.title = title
+        self.groups = groups
+        self.creation_date = datetime.now()
+
+    def __repr__(self): # pragma: no cover
+        return '<Principal %r>' % self.id
+
+ROLES = {
+    u'role:viewer': Principal(u'role:viewer', title=u'Viewer'),
+    u'role:editor': Principal(u'role:editor', title=u'Editor'),
+    u'role:owner': Principal(u'role:owner', title=u'Owner'),
+    u'role:admin': Principal(u'role:admin', title=u'Admin'),
+    }
+
+# These roles are visible in the sharing tab
+SHARING_ROLES = [u'role:viewer', u'role:editor', u'role:owner']
+
+# This is the ACL that gets set on the site root on creation.
+SITE_ACL = [
+    ['Allow', 'system.Authenticated', ['view']],
+    ['Allow', 'role:viewer', ['view']],
+    ['Allow', 'role:editor', ['view', 'add', 'edit']],
+    ['Allow', 'role:owner', ['view', 'add', 'edit', 'manage']],
+    ]
+
 class PersistentACL(object):
     """Manages access to ``self._acl`` which is a JSON- serialized
     representation of ``self.__acl__``.
@@ -167,19 +198,6 @@ def is_user(principal):
         principal = principal.id
     return not (principal.startswith('group:') or principal.startswith('role:'))
 
-class Principal(object):
-    def __init__(self, id, password=None, title=u"", groups=()):
-        self.id = id
-        if password is not None:
-            password = get_principals().hash_password(password)
-        self.password = password
-        self.title = title
-        self.groups = groups
-        self.creation_date = datetime.now()
-
-    def __repr__(self): # pragma: no cover
-        return '<Principal %r>' % self.id
-
 class Principals(DictMixin):
     """Kotti's default principal database.
 
@@ -254,21 +272,3 @@ principals_table = Table('principals', metadata,
 )
 
 mapper(Principal, principals_table, order_by=principals_table.c.id)
-
-ROLES = {
-    u'role:viewer': Principal(u'role:viewer', title=u'Viewer'),
-    u'role:editor': Principal(u'role:editor', title=u'Editor'),
-    u'role:owner': Principal(u'role:owner', title=u'Owner'),
-    u'role:admin': Principal(u'role:admin', title=u'Admin'),
-    }
-
-# These roles are visible in the sharing tab
-SHARING_ROLES = [u'role:viewer', u'role:editor', u'role:owner']
-
-# This is the ACL that gets set on the site root on creation.
-SITE_ACL = [
-    ['Allow', 'system.Authenticated', ['view']],
-    ['Allow', 'role:viewer', ['view']],
-    ['Allow', 'role:editor', ['view', 'add', 'edit']],
-    ['Allow', 'role:owner', ['view', 'add', 'edit', 'manage']],
-    ]
