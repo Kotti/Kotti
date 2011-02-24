@@ -27,6 +27,7 @@ class TemplateAPI(object):
     macro_templates = dict(
         master_view=configuration['kotti.templates.master_view'],
         master_edit=configuration['kotti.templates.master_edit'],
+        master_cp=configuration['kotti.templates.master_cp'],
         )
 
     base_css = configuration['kotti.templates.base_css']
@@ -270,3 +271,6 @@ class FormController(object):
                 return self.form.render(context.__dict__)
             else:
                 return self.form.render()
+
+def is_root(context, request):
+    return context is TemplateAPI(context, request).root

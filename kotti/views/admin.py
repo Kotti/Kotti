@@ -9,6 +9,7 @@ from kotti.security import list_groups_ext
 from kotti.security import ROLES
 from kotti.security import SHARING_ROLES
 from kotti.views.util import TemplateAPIEdit
+from kotti.views.util import is_root
 
 def share_node(context, request):
     flash = request.session.flash
@@ -75,10 +76,28 @@ def share_node(context, request):
         'principals_to_roles': map_principals_with_local_roles(context),
         }
 
+def control_panel(context, request):
+    api = TemplateAPIEdit(
+        context, request,
+        page_title=u"Control Panel - %s" % context.title,
+        )
+
+    return {
+        'api': api,
+        }
+
 def includeme(config):
     config.add_view(
         share_node,
         name='share',
         permission='manage',
         renderer='../templates/edit/share.pt',
+        )
+
+    config.add_view(
+        control_panel,
+        name='cp',
+        permission='admin',
+        custom_predicates=(is_root,),
+        renderer='../templates/control-panel/main.pt',
         )

@@ -8,9 +8,9 @@ html, body {
 
 #edit-box {
     position: fixed;
-    padding: 0.2em 0.5em;
     top: 3.5em;
     left: 0;
+    padding: 0.2em 0.5em;
     background-color: #333;
     color: #fff;
     font-weight: bold;
@@ -43,8 +43,9 @@ html, body {
 
 .tabs1 a {
 	text-decoration: none;
+    white-space: nowrap;
 	display: block;
-	width: 6em;
+	width: 7em;
 	padding: 0 0.5em;
 	font-weight: bold;
 	color: #333;
@@ -54,10 +55,6 @@ html, body {
 .tabs1 a:hover, .tabs1 a.selected {
 	color: #000;
 	border-color: #555;
-}
-
-#navigation-local {
-    display: none;
 }
 
 #content {
@@ -96,6 +93,15 @@ html, body {
     -moz-border-radius-topright: 10px;
     border-top-left-radius: 10px;
     border-top-right-radius: 10px;
+}
+
+.round-corners-bottom {
+    -webkit-border-bottom-left-radius: 10px;
+    -webkit-border-bottom-right-radius: 10px;
+    -moz-border-radius-bottomleft: 10px;
+    -moz-border-radius-bottomright: 10px;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
 }
 
 .round-corners {

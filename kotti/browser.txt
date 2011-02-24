@@ -357,3 +357,12 @@ again:
   True
   >>> "Bob's Group" in browser.contents
   False
+
+Control Panel
+-------------
+
+We can access the control panel through a link:
+
+  >>> browser.getLink("Control Panel").click()
+  >>> browser.url == tests.BASE_URL + '/cp'
+  True

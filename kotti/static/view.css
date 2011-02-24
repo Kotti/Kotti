@@ -1,1 +1,5 @@
 /** Put here CSS that should apply to VIEW SCREENS ONLY. **/
+
+#navigation-local {
+    display: none;
+}

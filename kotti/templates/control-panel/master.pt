@@ -1,0 +1,28 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xml:lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      metal:extend-macro="api['master_edit.main']"
+      metal:define-macro="main">
+
+  <span tal:omit-tag="" metal:fill-slot="edit-box">
+    <a href="${api.url(context, 'edit')}">Edit</a>
+  </span>
+
+  <div class="tabs1" metal:fill-slot="tabs1">
+    <ul>
+      <li>
+        <a href="${api.url(context, 'cp')}" class="selected">Control Panel</a>
+      </li>
+    </ul>
+  </div>
+
+  <div metal:fill-slot="breadcrumbs" tal:omit-tag=""></div>
+
+  <div metal:fill-slot="content"
+       metal:define-slot="content">
+    <h1>${api.page_title}</h1>
+    <div metal:use-macro="api['master_edit.messages']">
+    </div>
+  </div>
+
+</html>
