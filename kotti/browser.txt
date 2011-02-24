@@ -363,6 +363,6 @@ Control Panel
 
 We can access the control panel through a link:
 
-  >>> browser.getLink("Control Panel").click()
+  >>> browser.getLink("Site Setup").click()
   >>> browser.url == tests.BASE_URL + '/cp'
   True

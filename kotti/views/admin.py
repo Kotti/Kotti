@@ -79,7 +79,7 @@ def share_node(context, request):
 def control_panel(context, request):
     api = TemplateAPIEdit(
         context, request,
-        page_title=u"Control Panel - %s" % context.title,
+        page_title=u"Site Setup - %s" % context.title,
         )
 
     return {
