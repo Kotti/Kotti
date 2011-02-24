@@ -5,6 +5,7 @@ import transaction
 from sqlalchemy.exc import IntegrityError
 from pyramid.authentication import CallbackAuthenticationPolicy
 from pyramid.config import DEFAULT_RENDERERS
+from pyramid.exceptions import Forbidden
 from pyramid.registry import Registry
 from pyramid.security import ALL_PERMISSIONS
 from pyramid import testing
@@ -782,8 +783,7 @@ class TestNodeShare(UnitTestBase):
         # the request:
         request.params['role::bob::role:admin'] = u'1'
         request.params['orig-role::bob::role:admin'] = u''
-        self.assertEqual(share_node(root, request).status,
-                         '403 Forbidden')
+        self.assertRaises(Forbidden, share_node, root, request)
         self.assertEqual(
             set(list_groups('bob', root)),
             set(['role:owner', 'role:editor', 'role:special'])

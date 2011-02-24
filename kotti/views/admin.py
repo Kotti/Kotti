@@ -1,4 +1,4 @@
-from pyramid.httpexceptions import HTTPForbidden
+from pyramid.exceptions import Forbidden
 from pyramid.httpexceptions import HTTPFound
 
 from kotti.security import get_principals
@@ -23,7 +23,7 @@ def share_node(context, request):
             if name.startswith('orig-role::'):
                 token, principal_id, role_id = name.split('::')
                 if role_id not in SHARING_ROLES:
-                    return HTTPForbidden()
+                    raise Forbidden()
                 new_value = bool(request.params.get(
                     'role::%s::%s' % (principal_id, role_id)))
                 if principal_id not in p_to_r:
