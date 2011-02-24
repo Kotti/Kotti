@@ -148,6 +148,10 @@ class TemplateAPIEdit(TemplateAPI):
         return [l for l in self.context.type_info.edit_links
                 if l.permitted(self.context, self.request)]
 
+    def more_links(self, name):
+        return [l for l in getattr(self, name)
+                if l.permitted(self.context, self.request)]
+
     def get_paste_item(self):
         info = self.request.session.get('kotti.paste')
         if info:

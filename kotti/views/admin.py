@@ -8,8 +8,13 @@ from kotti.security import list_groups_raw
 from kotti.security import list_groups_ext
 from kotti.security import ROLES
 from kotti.security import SHARING_ROLES
+from kotti.util import Link
 from kotti.views.util import TemplateAPIEdit
 from kotti.views.util import is_root
+
+CONTROL_PANEL_LINKS = [
+    Link('cp-users', u'User Management'),
+    ]
 
 def share_node(context, request):
     flash = request.session.flash
@@ -76,10 +81,20 @@ def share_node(context, request):
         'principals_to_roles': map_principals_with_local_roles(context),
         }
 
-def control_panel(context, request):
+def control_panel_main(context, request):
     api = TemplateAPIEdit(
         context, request,
         page_title=u"Site Setup - %s" % context.title,
+        cp_links=CONTROL_PANEL_LINKS,
+        )
+
+    return {'api': api}
+
+def users(context, request):
+    api = TemplateAPIEdit(
+        context, request,
+        page_title=u"User Management - %s" % context.title,
+        cp_links=CONTROL_PANEL_LINKS,
         )
 
     return {
@@ -95,9 +110,17 @@ def includeme(config):
         )
 
     config.add_view(
-        control_panel,
+        control_panel_main,
         name='cp',
         permission='admin',
         custom_predicates=(is_root,),
         renderer='../templates/control-panel/main.pt',
+        )
+
+    config.add_view(
+        users,
+        name='cp-users',
+        permission='admin',
+        custom_predicates=(is_root,),
+        renderer='../templates/control-panel/users.pt',
         )
