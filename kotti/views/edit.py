@@ -53,8 +53,7 @@ def add_node(context, request):
         session = DBSession()
         what = [t for t in all_types if t.type_info.name == what][0]
         where = session.query(Node).get(int(where))
-        location = resource_url(
-            where, request, what.type_info.add_view)
+        location = resource_url(where, request) + '@@' + what.type_info.add_view
         return HTTPFound(location=location)
 
     possible_parents, possible_types = addable_types(context, request)
@@ -63,7 +62,7 @@ def add_node(context, request):
         # choice of parents and addable types:
         parent = possible_parents[0]
         add_view = parent['factories'][0].type_info.add_view
-        location = resource_url(parent['node'], request, add_view)
+        location = resource_url(parent['node'], request) + '@@' + add_view
         return HTTPFound(location=location)
 
     # Swap first and second possible parents if there's no content in

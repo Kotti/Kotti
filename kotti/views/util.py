@@ -54,10 +54,11 @@ class TemplateAPI(object):
     def page_title(self):
         return u'%s - %s' % (self.context.title, self.root.title)
 
-    def url(self, context=None, *args, **kwargs):
+    def url(self, context=None, *elements):
         if context is None:
             context = self.context
-        return resource_url(context, self.request, *args, **kwargs)
+        rhs = '/'.join(elements)
+        return resource_url(context, self.request) + rhs
 
     @reify
     def root(self):

@@ -27,10 +27,10 @@
       <div id="user-dropdown" class="dropdown">
         <ul>
           <li tal:condition="api.has_permission('admin', api.root)">
-            <a href="${api.url(api.root, 'cp')}">Site Setup</a>
+            <a href="${api.url(api.root, '@@cp')}">Site Setup</a>
           </li>
           <li>
-            <a href="${request.application_url}/logout?came_from=${request.url}">Logout</a>
+            <a href="${request.application_url}/@@logout?came_from=${request.url}">Logout</a>
           </li>
         </ul>
       </div>

@@ -43,7 +43,7 @@ def login(context, request):
 
     return {
         'api': api,
-        'url': request.application_url + '/login',
+        'url': request.application_url + '/@@login',
         'came_from': came_from,
         'login': login,
         'password': password,

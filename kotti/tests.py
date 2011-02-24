@@ -24,7 +24,7 @@ from kotti.security import principals_with_local_roles
 from kotti.security import map_principals_with_local_roles
 from kotti.security import get_principals
 from kotti.security import is_user
-from kotti.util import Link
+from kotti.util import ViewLink
 from kotti import main
 
 BASE_URL = 'http://localhost:6543'
@@ -605,7 +605,8 @@ class TestNodeEdit(UnitTestBase):
         
         response = add_node(root, request)
         self.assertEqual(response.status, '302 Found')
-        self.assertEqual(response.location, 'http://example.com/add_document')
+        self.assertEqual(response.location,
+                         'http://example.com/@@add_document')
 
     def test_order_of_addable_parents(self):
         from kotti.views.edit import add_node
@@ -853,16 +854,16 @@ class TestTemplateAPI(UnitTestBase):
     def test_edit_links(self):
         api = self._make()
         self.assertEqual(api.edit_links, [
-            Link('edit'),
-            Link('add'),
-            Link('move'),
-            Link('share'),
+            ViewLink('edit'),
+            ViewLink('add'),
+            ViewLink('move'),
+            ViewLink('share'),
             ])
 
         # Edit links are controlled through
         # 'root.type_info.edit_links' and the permissions that guard
         # these:
-        class MyLink(Link):
+        class MyLink(ViewLink):
             permit = True
             def permitted(self, context, request):
                 return self.permit

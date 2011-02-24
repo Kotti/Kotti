@@ -8,12 +8,12 @@ from kotti.security import list_groups_raw
 from kotti.security import list_groups_ext
 from kotti.security import ROLES
 from kotti.security import SHARING_ROLES
-from kotti.util import Link
+from kotti.util import ViewLink
 from kotti.views.util import TemplateAPIEdit
 from kotti.views.util import is_root
 
 CONTROL_PANEL_LINKS = [
-    Link('cp-users', u'User Management'),
+    ViewLink('cp-users', u'User Management'),
     ]
 
 def share_node(context, request):

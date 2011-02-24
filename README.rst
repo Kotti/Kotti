@@ -170,7 +170,7 @@ resource might look like this::
       config.add_view(
           edit_event,
           context=Event,
-          name='edit',
+          name='@@edit',
           permission='edit',
           )
 
