@@ -211,31 +211,31 @@ class Principals(DictMixin):
     """
     factory = Principal
 
-    def __getitem__(self, key):
-        key = unicode(key)
+    def __getitem__(self, name):
+        name = unicode(name)
         session = DBSession()
         try:
             return session.query(
-                self.factory).filter(self.factory.name==key).one()
+                self.factory).filter(self.factory.name==name).one()
         except NoResultFound:
-            raise KeyError(key)
+            raise KeyError(name)
 
-    def __setitem__(self, key, principal):
-        key = unicode(key)
+    def __setitem__(self, name, principal):
+        name = unicode(name)
         session = DBSession()
         if isinstance(principal, dict):
             principal = self.factory(**principal)
         session.add(principal)
 
-    def __delitem__(self, key):
-        key = unicode(key)
+    def __delitem__(self, name):
+        name = unicode(name)
         session = DBSession()
         try:
             principal = session.query(
-                self.factory).filter(self.factory.name==key).one()
+                self.factory).filter(self.factory.name==name).one()
             session.delete(principal)
         except NoResultFound:
-            raise KeyError(key)
+            raise KeyError(name)
 
     def iterkeys(self):
         session = DBSession()
