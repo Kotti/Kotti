@@ -309,7 +309,7 @@ class TestSecurity(UnitTestBase):
             ['system.Everyone']
             )
 
-        get_principals()[u'bob'] = dict(id=u'bob')
+        get_principals()[u'bob'] = dict(name=u'bob')
         self.assertEqual(
             auth.effective_principals(request),
             ['system.Everyone', 'system.Authenticated', 'bob']
@@ -339,7 +339,7 @@ class TestSecurity(UnitTestBase):
         # And lastly test that circular group defintions are not a
         # problem here either:
         get_principals()[u'group:franksgroup'] = dict(
-            id=u'group:franksgroup',
+            name=u'group:franksgroup',
             title=u"Frank's group",
             groups=[u'group:funnygroup', u'group:bobsgroup'],
             )
@@ -354,8 +354,8 @@ class TestSecurity(UnitTestBase):
     def test_list_groups_callback_with_groups(self):
         # Although group definitions are also in the user database,
         # we're not allowed to authenticate with a group id:
-        get_principals()[u'bob'] = dict(id=u'bob')
-        get_principals()[u'group:bobsgroup'] = dict(id=u'group:bobsgroup')
+        get_principals()[u'bob'] = dict(name=u'bob')
+        get_principals()[u'group:bobsgroup'] = dict(name=u'group:bobsgroup')
         
         request = testing.DummyRequest()
         self.assertEqual(
@@ -397,8 +397,8 @@ class TestSecurity(UnitTestBase):
         # No users are defined in P, thus we get the empty list:
         self.assertEqual(map_principals_with_local_roles(root), [])
 
-        P['bob'] = {'id': u'bob'}
-        P['group:bobsgroup'] = {'id': u'group:bobsgroup'}
+        P['bob'] = {'name': u'bob'}
+        P['group:bobsgroup'] = {'name': u'group:bobsgroup'}
 
         value = map_principals_with_local_roles(root)
         self.assertEqual(len(value), 1)
@@ -421,11 +421,11 @@ class TestUser(UnitTestBase):
     def _make_bob(self):
         users = get_principals()
         users[u'bob'] = dict(
-            id=u'bob', title=u'Bob Dabolina', groups=[u'group:bobsgroup'])
+            name=u'bob', title=u'Bob Dabolina', groups=[u'group:bobsgroup'])
         return users[u'bob']
     
     def _assert_is_bob(self, bob):
-        self.assertEqual(bob.id, u'bob')
+        self.assertEqual(bob.name, u'bob')
         self.assertEqual(bob.title, u'Bob Dabolina')
         self.assertEqual(bob.groups, [u'group:bobsgroup'])
 
@@ -486,7 +486,7 @@ class TestUser(UnitTestBase):
     def test_is_user(self):
         bob = self._make_bob()
         self.assertEqual(is_user(bob), True)
-        bob.id = u'group:bobsgroup'
+        bob.name = u'group:bobsgroup'
         self.assertEqual(is_user(bob), False)
 
     def test_hash_password(self):
@@ -637,12 +637,12 @@ class TestNodeShare(UnitTestBase):
     @staticmethod
     def add_some_principals():
         P = get_principals()
-        P[u'bob'] = {'id': u'bob', 'title': u"Bob"}
-        P[u'frank'] = {'id': u'frank', 'title': u"Frank"}
+        P[u'bob'] = {'name': u'bob', 'title': u"Bob"}
+        P[u'frank'] = {'name': u'frank', 'title': u"Frank"}
         P[u'group:bobsgroup'] = {
-            'id': u'group:bobsgroup', 'title': u"Bob's Group"}
+            'name': u'group:bobsgroup', 'title': u"Bob's Group"}
         P[u'group:franksgroup'] = {
-            'id': u'group:franksgroup', 'title': u"Frank's Group"}
+            'name': u'group:franksgroup', 'title': u"Frank's Group"}
 
     def test_roles(self):
         # The 'share_node' view will return a list of available roles
@@ -653,7 +653,7 @@ class TestNodeShare(UnitTestBase):
         root = session.query(Node).get(1)
         request = testing.DummyRequest()
         self.assertEqual(
-            [r.id for r in share_node(root, request)['available_roles']],
+            [r.name for r in share_node(root, request)['available_roles']],
             SHARING_ROLES)
 
     def test_principals_to_roles(self):

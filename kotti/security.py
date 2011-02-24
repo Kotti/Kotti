@@ -2,10 +2,11 @@ from datetime import datetime
 import hashlib
 from UserDict import DictMixin
 
-from sqlalchemy import Table
 from sqlalchemy import Column
-from sqlalchemy import Unicode
+from sqlalchemy import Integer
 from sqlalchemy import DateTime
+from sqlalchemy import Table
+from sqlalchemy import Unicode
 from sqlalchemy.sql.expression import or_
 from sqlalchemy.orm import mapper
 from sqlalchemy.orm.exc import NoResultFound
@@ -19,8 +20,8 @@ from kotti.resources import metadata
 from kotti.util import JsonType
 
 class Principal(object):
-    def __init__(self, id, password=None, title=u"", groups=()):
-        self.id = id
+    def __init__(self, name, password=None, title=u"", groups=()):
+        self.name = name
         if password is not None:
             password = get_principals().hash_password(password)
         self.password = password
@@ -29,7 +30,7 @@ class Principal(object):
         self.creation_date = datetime.now()
 
     def __repr__(self): # pragma: no cover
-        return '<Principal %r>' % self.id
+        return '<Principal %r>' % self.name
 
 ROLES = {
     u'role:viewer': Principal(u'role:viewer', title=u'Viewer'),
@@ -96,25 +97,25 @@ class PersistentACL(object):
 def all_groups_raw(context):
     return getattr(context, '__roles__', None)
 
-def list_groups_raw(id, context):
+def list_groups_raw(name, context):
     groups = all_groups_raw(context)
     if groups is not None:
-        return groups.get(id, set())
+        return groups.get(name, set())
     else:
         return set()
 
-def list_groups(id, context):
-    return list_groups_ext(id, context)[0]
+def list_groups(name, context):
+    return list_groups_ext(name, context)[0]
 
-def list_groups_ext(id, context, _seen=None, _inherited=None):
+def list_groups_ext(name, context, _seen=None, _inherited=None):
     groups = set()
     recursing = _inherited is not None
     _inherited = _inherited or set()
     if _seen is None:
-        _seen = set([id])
+        _seen = set([name])
 
     # Add groups from principal db:
-    principal = get_principals().get(id)
+    principal = get_principals().get(name)
     if principal is not None:
         groups.update(principal.groups)
         _inherited.update(principal.groups)
@@ -122,16 +123,16 @@ def list_groups_ext(id, context, _seen=None, _inherited=None):
     # Add local groups:
     items = lineage(context)
     for idx, item in enumerate(items):
-        group_ids = [i for i in list_groups_raw(id, item) if i not in _seen]
-        groups.update(group_ids)
+        group_names = [i for i in list_groups_raw(name, item) if i not in _seen]
+        groups.update(group_names)
         if recursing or idx != 0:
-            _inherited.update(group_ids)
+            _inherited.update(group_names)
     
     new_groups = groups - _seen
     _seen.update(new_groups)
-    for group_id in new_groups:
+    for group_name in new_groups:
         g, i = list_groups_ext(
-            group_id, context, _seen=_seen, _inherited=_inherited)
+            group_name, context, _seen=_seen, _inherited=_inherited)
         groups.update(g)
         _inherited.update(i)
 
@@ -140,33 +141,33 @@ def list_groups_ext(id, context, _seen=None, _inherited=None):
 def set_groups_raw(context, groups):
     context.__roles__ = groups
 
-def set_groups(id, context, groups_to_set):
+def set_groups(name, context, groups_to_set):
     groups = all_groups_raw(context)
     if groups is None:
         groups = {}
     else:
         groups = dict(groups)
     if groups_to_set:
-        groups[id] = list(groups_to_set)
+        groups[name] = list(groups_to_set)
     else:
-        groups.pop(id, None)
+        groups.pop(name, None)
     set_groups_raw(context, groups)
 
-def list_groups_callback(id, request):
-    if not is_user(id):
+def list_groups_callback(name, request):
+    if not is_user(name):
         return None # Disallow logging in with groups
-    if id in get_principals():
+    if name in get_principals():
         context = getattr(request, 'context', None)
         if context is None:
             # XXX This stems from an issue with SA events; they don't
             # have request.context available:
             from kotti.resources import get_root
             context = get_root(request)
-        return list_groups(id, context)
+        return list_groups(name, context)
 
 def principals_with_local_roles(context):
-    """Return a list of principal ids that have local roles (inherited
-    or not) in the context.
+    """Return a list of principal names that have local roles
+    (inherited or not) in the context.
     """
     principals = set()
     for item in lineage(context):
@@ -179,24 +180,25 @@ def principals_with_local_roles(context):
 def map_principals_with_local_roles(context):
     principals = get_principals()
     value = []
-    for principal_id in principals_with_local_roles(context):
+    for principal_name in principals_with_local_roles(context):
         try:
-            principal = principals[principal_id]
+            principal = principals[principal_name]
         except KeyError:
             continue
         else:
             all, inherited = list_groups_ext(
-                principal_id, context)
+                principal_name, context)
             value.append((principal, (all, inherited)))
-    return sorted(value, key=lambda t: t[0].id)
+    return sorted(value, key=lambda t: t[0].name)
 
 def get_principals():
     return configuration['kotti.principals'][0]
 
 def is_user(principal):
     if not isinstance(principal, basestring):
-        principal = principal.id
-    return not (principal.startswith('group:') or principal.startswith('role:'))
+        principal = principal.name
+    return not (principal.startswith('group:') or
+                principal.startswith('role:'))
 
 class Principals(DictMixin):
     """Kotti's default principal database.
@@ -214,7 +216,7 @@ class Principals(DictMixin):
         session = DBSession()
         try:
             return session.query(
-                self.factory).filter(self.factory.id==key).one()
+                self.factory).filter(self.factory.name==key).one()
         except NoResultFound:
             raise KeyError(key)
 
@@ -230,15 +232,15 @@ class Principals(DictMixin):
         session = DBSession()
         try:
             principal = session.query(
-                self.factory).filter(self.factory.id==key).one()
+                self.factory).filter(self.factory.name==key).one()
             session.delete(principal)
         except NoResultFound:
             raise KeyError(key)
 
     def iterkeys(self):
         session = DBSession()
-        for (principal,) in session.query(self.factory.id):
-            yield principal
+        for (principal_name,) in session.query(self.factory.name):
+            yield principal_name
 
     def keys(self):
         return list(self.iterkeys())
@@ -250,7 +252,7 @@ class Principals(DictMixin):
         session = DBSession()
         query = session.query(self.factory)
         query = query.filter(or_(
-            self.factory.id.like(term),
+            self.factory.name.like(term),
             self.factory.title.like(term),
             self.factory.email.like(term),
             ))
@@ -263,7 +265,8 @@ class Principals(DictMixin):
 principals = Principals()
 
 principals_table = Table('principals', metadata,
-    Column('id', Unicode(100), primary_key=True),
+    Column('id', Integer, primary_key=True),
+    Column('name', Unicode(100), unique=True),
     Column('password', Unicode(100)),
     Column('title', Unicode(100), nullable=False),
     Column('email', Unicode(100), unique=True),
@@ -271,4 +274,4 @@ principals_table = Table('principals', metadata,
     Column('creation_date', DateTime(), nullable=False),
 )
 
-mapper(Principal, principals_table, order_by=principals_table.c.id)
+mapper(Principal, principals_table, order_by=principals_table.c.name)

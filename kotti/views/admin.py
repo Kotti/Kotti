@@ -19,33 +19,33 @@ CONTROL_PANEL_LINKS = [
 def share_node(context, request):
     flash = request.session.flash
     principals = get_principals()
-    available_roles = [ROLES[role_id] for role_id in SHARING_ROLES]
+    available_roles = [ROLES[role_name] for role_name in SHARING_ROLES]
 
     if 'apply' in request.params:
         changed = False
         p_to_r = {}
         for name in request.params:
             if name.startswith('orig-role::'):
-                token, principal_id, role_id = name.split('::')
-                if role_id not in SHARING_ROLES:
+                token, principal_name, role_name = name.split('::')
+                if role_name not in SHARING_ROLES:
                     raise Forbidden()
                 new_value = bool(request.params.get(
-                    'role::%s::%s' % (principal_id, role_id)))
-                if principal_id not in p_to_r:
-                    p_to_r[principal_id] = set()
+                    'role::%s::%s' % (principal_name, role_name)))
+                if principal_name not in p_to_r:
+                    p_to_r[principal_name] = set()
                 if new_value:
-                    p_to_r[principal_id].add(role_id)
+                    p_to_r[principal_name].add(role_name)
 
-        for principal_id, new_role_ids in p_to_r.items():
+        for principal_name, new_role_names in p_to_r.items():
             # We have to be careful with roles that aren't mutable here:
-            orig_role_ids = set(list_groups_raw(principal_id, context))
-            orig_sharing_role_ids = set(
-                r for r in orig_role_ids if r in SHARING_ROLES)
-            if new_role_ids != orig_sharing_role_ids:
+            orig_role_names = set(list_groups_raw(principal_name, context))
+            orig_sharing_role_names = set(
+                r for r in orig_role_names if r in SHARING_ROLES)
+            if new_role_names != orig_sharing_role_names:
                 changed = True
-                final_role_ids = orig_role_ids - set(SHARING_ROLES)
-                final_role_ids |= new_role_ids
-                set_groups(principal_id, context, final_role_ids)
+                final_role_names = orig_role_names - set(SHARING_ROLES)
+                final_role_names |= new_role_names
+                set_groups(principal_name, context, final_role_names)
 
         if changed:
             flash(u'Your changes have been applied.', 'success')
@@ -58,7 +58,7 @@ def share_node(context, request):
         all_groups = entry[1][0]
         return [g for g in all_groups if g.startswith('role:')]
     existing = filter(with_roles, existing)
-    seen = set([entry[0].id for entry in existing])
+    seen = set([entry[0].name for entry in existing])
 
     entries = []
 
@@ -67,8 +67,8 @@ def share_node(context, request):
         found = False
         for p in principals.search(query):
             found = True
-            if p.id not in seen:
-                entries.append((p, list_groups_ext(p.id, context)))
+            if p.name not in seen:
+                entries.append((p, list_groups_ext(p.name, context)))
         if not found:
             flash(u'No users or groups found.', 'info')
 

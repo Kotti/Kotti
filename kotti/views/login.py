@@ -36,7 +36,7 @@ def login(context, request):
             principal.password == principals.hash_password(password)):
             headers = remember(request, login)
             request.session.flash(
-                u"Welcome, %s!" % principal.title or principal.id, 'success')
+                u"Welcome, %s!" % principal.title or principal.name, 'success')
             return HTTPFound(location=came_from, headers=headers)
 
         request.session.flash(u"Login failed.", 'error')

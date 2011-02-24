@@ -37,12 +37,12 @@
             <td>${entry[0].title}</td>
             <td tal:repeat="role available_roles" class="checkbox">
               <input type="checkbox"
-                     name="role::${entry[0].id}::${role.id}"
-                     checked="${role.id in entry[1][0]}"
-                     disabled="${role.id in entry[1][1]}" />
+                     name="role::${entry[0].name}::${role.name}"
+                     checked="${role.name in entry[1][0]}"
+                     disabled="${role.name in entry[1][1]}" />
               <input type="hidden"
-                     name="orig-role::${entry[0].id}::${role.id}"
-                     value="${role.id in entry[1][0]}" />
+                     name="orig-role::${entry[0].name}::${role.name}"
+                     value="${role.name in entry[1][0]}" />
             </td>
           </tr>
         </table>

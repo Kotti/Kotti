@@ -269,6 +269,15 @@ We cannot rename the root:
   Traceback (most recent call last):
   LookupError: label 'New name'
 
+
+User management
+---------------
+
+The user management screen is available in the control panel:
+
+  >>> browser.getLink("Site Setup").click()
+  >>> browser.getLink("User Management").click()
+
 Share
 -----
 
@@ -276,11 +285,11 @@ XXX Add a user called 'Bob' and a group called 'bobsgroup'
 
   >>> from kotti.security import get_principals
   >>> get_principals()[u'group:bobsgroup'] = {
-  ...     'id': u"group:bobsgroup",
+  ...     'name': u"group:bobsgroup",
   ...     'title': u"Bob's Group",
   ... }
   >>> get_principals()[u'bob'] = {
-  ...     'id': u"bob",
+  ...     'name': u"bob",
   ...     'password': u"secret",
   ...     'title': u"Bob Dabolina",
   ...     'groups': [u'group:bobsgroup'],
@@ -357,12 +366,3 @@ again:
   True
   >>> "Bob's Group" in browser.contents
   False
-
-Control Panel
--------------
-
-We can access the control panel through a link:
-
-  >>> browser.getLink("Site Setup").click()
-  >>> browser.url == tests.BASE_URL + '/cp'
-  True

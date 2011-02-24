@@ -203,7 +203,7 @@ def populate():
     principals = get_principals()
     if u'admin' not in principals:
         principals[u'admin'] = {
-            'id': u'admin',
+            'name': u'admin',
             'password': configuration.secret,
             'title': u"Administrator",
             'groups': [u'role:admin'],
