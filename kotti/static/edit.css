@@ -45,7 +45,7 @@
     color: #fff;
 }
 
-#user-box .dropdown a:visited {
+#user-box .dropdown a, #user-box .dropdown a:visited {
     color: #fff;
 }
 
