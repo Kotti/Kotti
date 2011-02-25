@@ -11,7 +11,7 @@
   <div class="tabs1" metal:fill-slot="tabs1">
     <ul>
       <li>
-        <a href="${api.url(context, '@@cp')}" class="selected">Site Setup</a>
+        <a href="${api.url(api.root, '@@setup')}" class="selected">Site Setup</a>
       </li>
     </ul>
   </div>

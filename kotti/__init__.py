@@ -46,12 +46,12 @@ configuration = Configuration(
     {
         'kotti.templates.master_view': 'kotti:templates/view/master.pt',
         'kotti.templates.master_edit': 'kotti:templates/edit/master.pt',
-        'kotti.templates.master_cp': 'kotti:templates/control-panel/master.pt',
+        'kotti.templates.master_cp': 'kotti:templates/site-setup/master.pt',
         'kotti.templates.base_css': 'kotti:static/base.css',
         'kotti.templates.view_css': 'kotti:static/view.css',
         'kotti.templates.edit_css': 'kotti:static/edit.css',
         'kotti.configurators': '',
-        'kotti.includes': 'kotti.events kotti.views.view kotti.views.edit kotti.views.login kotti.views.admin',
+        'kotti.includes': 'kotti.events kotti.views.view kotti.views.edit kotti.views.login kotti.views.site_setup',
         'kotti.available_types': 'kotti.resources.Document',
         'kotti.authn_policy_factory': 'kotti.authtkt_factory',
         'kotti.authz_policy_factory': 'kotti.acl_factory',
@@ -128,4 +128,10 @@ def _configure_base_views(config):
         name='move',
         permission='edit',
         renderer='templates/edit/move.pt',
+        )
+    config.add_view(
+        'kotti.views.edit.share_node',
+        name='share',
+        permission='manage',
+        renderer='templates/edit/share.pt',
         )

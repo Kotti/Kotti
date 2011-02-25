@@ -648,7 +648,7 @@ class TestNodeShare(UnitTestBase):
     def test_roles(self):
         # The 'share_node' view will return a list of available roles
         # as defined in 'kotti.security.SHARING_ROLES'
-        from kotti.views.admin import share_node
+        from kotti.views.edit import share_node
         from kotti.security import SHARING_ROLES
         session = DBSession()
         root = session.query(Node).get(1)
@@ -661,7 +661,7 @@ class TestNodeShare(UnitTestBase):
         # 'share_node' returns a list of tuples of the form
         # (principal, (all, inherited)) akin to what
         # 'map_principals_with_local_roles' returns
-        from kotti.views.admin import share_node
+        from kotti.views.edit import share_node
         TestSecurity.add_some_groups()
         session = DBSession()
         root = session.query(Node).get(1)
@@ -707,7 +707,7 @@ class TestNodeShare(UnitTestBase):
             )
 
     def test_search(self):
-        from kotti.views.admin import share_node
+        from kotti.views.edit import share_node
         session = DBSession()
         root = session.query(Node).get(1)
         request = testing.DummyRequest()
@@ -755,7 +755,7 @@ class TestNodeShare(UnitTestBase):
         self.assertEqual(entries[0][0], P['bob'])
 
     def test_apply(self):
-        from kotti.views.admin import share_node
+        from kotti.views.edit import share_node
         session = DBSession()
         root = session.query(Node).get(1)
         request = testing.DummyRequest()

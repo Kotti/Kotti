@@ -273,7 +273,7 @@ We cannot rename the root:
 User management
 ---------------
 
-The user management screen is available in the control panel:
+The user management screen is available through Site Setup:
 
   >>> browser.getLink("Site Setup").click()
   >>> browser.getLink("User Management").click()
