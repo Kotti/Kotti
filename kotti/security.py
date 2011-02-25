@@ -220,7 +220,7 @@ class Principals(DictMixin):
     """
     factory = Principal
 
-    @request_cache(lambda f, name: name)
+    @request_cache(lambda self, name: name)
     def __getitem__(self, name):
         name = unicode(name)
         session = DBSession()
