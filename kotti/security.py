@@ -18,6 +18,8 @@ from kotti import configuration
 from kotti.resources import DBSession
 from kotti.resources import metadata
 from kotti.util import JsonType
+from kotti.util import request_cache
+from kotti.util import DontCache
 
 class Principal(object):
     def __init__(self, name, password=None, title=u"", groups=()):
@@ -107,6 +109,13 @@ def list_groups_raw(name, context):
 def list_groups(name, context):
     return list_groups_ext(name, context)[0]
 
+def _cachekey_list_groups_ext(name, context, _seen=None, _inherited=None):
+    if _seen is not None or _inherited is not None:
+        raise DontCache
+    else:
+        return (name, context.id)
+
+@request_cache(_cachekey_list_groups_ext)
 def list_groups_ext(name, context, _seen=None, _inherited=None):
     groups = set()
     recursing = _inherited is not None
@@ -211,6 +220,7 @@ class Principals(DictMixin):
     """
     factory = Principal
 
+    @request_cache(lambda f, name: name)
     def __getitem__(self, name):
         name = unicode(name)
         session = DBSession()

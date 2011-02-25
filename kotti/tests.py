@@ -25,6 +25,7 @@ from kotti.security import map_principals_with_local_roles
 from kotti.security import get_principals
 from kotti.security import is_user
 from kotti.util import ViewLink
+from kotti.util import clear_request_cache
 from kotti import main
 
 BASE_URL = 'http://localhost:6543'
@@ -521,6 +522,7 @@ class TestEvents(UnitTestBase):
         self.assertEqual(child.owner, u'bob')
         self.assertEqual(list_groups(u'bob', child), [u'role:owner'])
 
+        clear_request_cache()
         # The event listener does not set the role again for subitems:
         grandchild = child[u'grandchild'] = Node()
         session.flush()
@@ -914,6 +916,47 @@ class TestUtil(UnitTestBase):
         from kotti.views.util import disambiguate_name
         self.assertEqual(disambiguate_name(u'foo'), u'foo-1')
         self.assertEqual(disambiguate_name(u'foo-3'), u'foo-4')
+
+class TestRequestCache(UnitTestBase):
+    def setUp(self):
+        registry = Registry('testing')
+        request = testing.DummyRequest()
+        request.registry = registry
+        super(TestRequestCache, self).setUp(registry=registry, request=request)
+
+    def test_it(self):
+        from kotti.util import request_cache
+        called = []
+
+        @request_cache(lambda a, b: (a, b))
+        def my_fun(a, b):
+            called.append((a, b))
+
+        my_fun(1, 2)
+        my_fun(1, 2)
+        self.assertEqual(len(called), 1)
+        my_fun(2, 1)
+        self.assertEqual(len(called), 2)
+
+        clear_request_cache()
+        my_fun(1, 2)
+        self.assertEqual(len(called), 3)
+
+    def test_dont_cache(self):
+        from kotti.util import request_cache
+        from kotti.util import DontCache
+        called = []
+
+        def dont_cache(a, b):
+            raise DontCache
+
+        @request_cache(dont_cache)
+        def my_fun(a, b):
+            called.append((a, b))
+
+        my_fun(1, 2)
+        my_fun(1, 2)
+        self.assertEqual(len(called), 2)
 
 ## Functional tests
 
