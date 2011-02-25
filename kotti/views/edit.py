@@ -210,9 +210,9 @@ def share_node(context, request):
     entries = []
 
     if 'search' in request.params:
-        query = request.params['query']
+        query = '*%s*' % request.params['query']
         found = False
-        for p in principals.search(query):
+        for p in principals.search(name=query, title=query, email=query):
             found = True
             if p.name not in seen:
                 entries.append((p, list_groups_ext(p.name, context)))

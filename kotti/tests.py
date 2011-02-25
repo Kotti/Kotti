@@ -452,15 +452,18 @@ class TestUser(UnitTestBase):
         self.assertRaises(KeyError, users.__getitem__, u'bob')
         self.assertRaises(KeyError, users.__delitem__, u'bob')
 
-    def test_users_query(self):
+    def test_users_search(self):
         users = get_principals()
-        self.assertEqual(list(users.search(u"%Bob%")), [])
+        self.assertEqual(list(users.search(name=u"*Bob*")), [])
         self._make_bob()
-        [bob] = list(users.search(u"bob"))
+        [bob] = list(users.search(name=u"bob"))
         self._assert_is_bob(bob)
-        [bob] = list(users.search(u"%Bob%"))
+        [bob] = list(users.search(name=u"*Bob*"))
         self._assert_is_bob(bob)
-        self.assertEqual(list(users.search(u"")), [])
+        [bob] = list(users.search(name=u"*Bob*", title=u"*Frank*"))
+        self._assert_is_bob(bob)
+        self.assertRaises(AttributeError,
+                          users.search, name=u"bob", foo=u"bar")
 
     def test_groups_from_users(self):
         self._make_bob()

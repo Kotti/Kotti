@@ -18,19 +18,15 @@ def login(context, request):
         password = request.params['password']
         principals = get_principals()
         principal = principals.get(login)
-
         if principal is None:
-            # Maybe an e-mail address, XXX there should be a nicer way
-            # of searching 'principals', maybe add kwargs search back.
             try:
                 Email().to_python(login)
             except Exception:
                 pass
             else:
-                for p in principals.search(login):
-                    if p.email == login:
-                        principal = p
-                        break
+                results = [r for r in principals.search(email=login)]
+                if results:
+                    principal = results[0]
 
         if (principal is not None and
             principal.password == principals.hash_password(password)):

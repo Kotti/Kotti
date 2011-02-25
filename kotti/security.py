@@ -22,17 +22,75 @@ from kotti.util import request_cache
 from kotti.util import DontCache
 
 class Principal(object):
-    def __init__(self, name, password=None, title=u"", groups=()):
+    def __init__(self, name, password=None, title=u"", email=None, groups=()):
         self.name = name
         if password is not None:
             password = get_principals().hash_password(password)
         self.password = password
         self.title = title
+        self.email = email
         self.groups = groups
         self.creation_date = datetime.now()
 
     def __repr__(self): # pragma: no cover
         return '<Principal %r>' % self.name
+
+class AbstractPrincipals(object):
+    """This class serves as documentation and defines what methods are
+    expected from a Principals database.
+
+    Principals mostly provides dict-like access to the principal
+    objects in the database.  In addition, there's the 'search' method
+    which allows searching users and groups, and the 'hash_password'
+    method that implements user password hashing.
+
+    Use the 'kotti.principals' configuration variable to override
+    Kotti's default Principals implementation with your own.
+    """
+    def __getitem__(self, name):
+        """Return the Principal object with the id 'name'.
+        """
+
+    def __setitem__(self, name, principal):
+        """Add a given Principal object to the database.
+
+        'name' is expected to the the same as 'principal.name'.
+        """
+
+    def __delitem__(self, name):
+        """Remove the principal with the given name from the database.
+        """
+
+    def keys(self):
+        """Return a list of principal ids that are in the database.
+        """
+
+    def search(self, **kwargs):
+        """Return a list of principal objects that correspond to the
+        search arguments passed in.
+
+        This example would return all principals with the id 'bob':
+
+          get_principals().search(name=u'bob')
+
+        Here, we ask for all principals that have 'bob' in either
+        their 'name' or their 'title'.  We pass '*bob*' instead of
+        'bob' to indicate that we want case-insensitive substring
+        matching:
+
+          get_principals().search(name=u'*bob*', title=u'*bob*')
+
+        This call should fail with AttributeError unless there's a
+        'foo' attribute on principal objects that supports search:
+
+          get_principals().search(name=u'bob', foo=u'bar')
+        """
+
+    def hash_password(self, password):
+        """Return a hash of the given password.
+
+        This is what's stored in the database as 'principal.password'.
+        """
 
 ROLES = {
     u'role:viewer': Principal(u'role:viewer', title=u'Viewer'),
@@ -212,8 +270,7 @@ def is_user(principal):
 class Principals(DictMixin):
     """Kotti's default principal database.
 
-    Promises dict-like access to user profiles, a 'search' method for
-    finding users, and a 'hash_password' method for hashing passwords.
+    Look at 'AbstractPrincipals' for documentation.
 
     This is a default implementation that may be replaced by using the
     'kotti.principals' configuration variable.
@@ -255,17 +312,21 @@ class Principals(DictMixin):
     def keys(self):
         return list(self.iterkeys())
 
-    def search(self, term):
-        if not term:
+    def search(self, **kwargs):
+        if not kwargs:
             return []
-        term = u'%' + term + u'%'
+
+        filters = []
+        for key, value in kwargs.items():
+            col = getattr(self.factory, key)
+            if '*' in value:
+                filters.append(col.like(value.replace('*', '%')))
+            else:
+                filters.append(col == value)
+
         session = DBSession()
         query = session.query(self.factory)
-        query = query.filter(or_(
-            self.factory.name.like(term),
-            self.factory.title.like(term),
-            self.factory.email.like(term),
-            ))
+        query = query.filter(or_(*filters))
         return query
 
     def hash_password(self, password):
