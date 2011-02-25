@@ -1,4 +1,4 @@
-import json
+from pyramid.compat import json
 import urllib
 
 from pyramid.threadlocal import get_current_request
