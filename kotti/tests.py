@@ -418,9 +418,12 @@ class TestSecurity(UnitTestBase):
         self.assertEqual(bobsgroup_all, ['role:editor'])
         self.assertEqual(bobsgroup_inherited, [])
 
-class TestUser(UnitTestBase):
-    def _make_bob(self):
-        users = get_principals()
+class TestPrincipals(UnitTestBase):
+    def get_principals(self):
+        return get_principals()
+
+    def make_bob(self):
+        users = self.get_principals()
         users[u'bob'] = dict(
             name=u'bob', title=u'Bob Dabolina', groups=[u'group:bobsgroup'])
         return users[u'bob']
@@ -431,20 +434,20 @@ class TestUser(UnitTestBase):
         self.assertEqual(bob.groups, [u'group:bobsgroup'])
 
     def test_default_admin(self):
-        admin = get_principals()[u'admin']
-        hashed = get_principals().hash_password(u'secret')
+        admin = self.get_principals()[u'admin']
+        hashed = self.get_principals().hash_password(u'secret')
         self.assertEqual(admin.password, hashed)
         self.assertEqual(admin.groups, [u'role:admin'])
 
     def test_users_empty(self):
-        users = get_principals()
+        users = self.get_principals()
         self.assertRaises(KeyError, users.__getitem__, u'bob')
         self.assertRaises(KeyError, users.__delitem__, u'bob')
         self.assertEqual(users.keys(), [u'admin'])
 
     def test_users_add_and_remove(self):
-        self._make_bob()
-        users = get_principals()
+        self.make_bob()
+        users = self.get_principals()
         self._assert_is_bob(users[u'bob'])
         self.assertEqual(set(users.keys()), set([u'admin', u'bob']))
 
@@ -453,9 +456,9 @@ class TestUser(UnitTestBase):
         self.assertRaises(KeyError, users.__delitem__, u'bob')
 
     def test_users_search(self):
-        users = get_principals()
+        users = self.get_principals()
         self.assertEqual(list(users.search(name=u"*Bob*")), [])
-        self._make_bob()
+        self.make_bob()
         [bob] = list(users.search(name=u"bob"))
         self._assert_is_bob(bob)
         [bob] = list(users.search(name=u"*Bob*"))
@@ -466,7 +469,7 @@ class TestUser(UnitTestBase):
                           users.search, name=u"bob", foo=u"bar")
 
     def test_groups_from_users(self):
-        self._make_bob()
+        self.make_bob()
 
         session = DBSession()
         root = session.query(Node).get(1)
@@ -488,14 +491,14 @@ class TestUser(UnitTestBase):
             )
 
     def test_is_user(self):
-        bob = self._make_bob()
+        bob = self.make_bob()
         self.assertEqual(is_user(bob), True)
         bob.name = u'group:bobsgroup'
         self.assertEqual(is_user(bob), False)
 
     def test_hash_password(self):
         password = u"secret"
-        hash_password = get_principals().hash_password
+        hash_password = self.get_principals().hash_password
 
         # For 'hash_password' to work, we need to set a secret:
         configuration.secret = 'there is no secret'
