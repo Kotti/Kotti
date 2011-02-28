@@ -182,6 +182,13 @@ class TestNode(UnitTestBase):
         self.assertEquals(
             session.query(Node).filter(Node.name == u'subchild').count(), 0)
 
+    def test_node_copy(self):
+        # Test some of Node's container methods:
+        root = DBSession().query(Node).get(1)
+        copy_of_root = root.copy(name=u'copy_of_root')
+        self.assertEqual(copy_of_root.name, u'copy_of_root')
+        self.assertEqual(root.name, u'')
+
 class TestSecurity(UnitTestBase):
     def test_root_default(self):
         session = DBSession()
@@ -501,6 +508,7 @@ class TestPrincipals(UnitTestBase):
         self._assert_is_bob(bob)
         self.assertRaises(AttributeError,
                           users.search, name=u"bob", foo=u"bar")
+        self.assertEqual(users.search(), [])
 
     def test_groups_from_users(self):
         self.make_bob()
@@ -1033,6 +1041,10 @@ class TestTemplateAPI(UnitTestBase):
             [item['node'] for item in breadcrumbs],
             [root, a, ac, acb]
             )
+
+    def test_getitem(self):
+        api = self._make()
+        self.assertRaises(KeyError, api.__getitem__, 'no-exit')
 
 class TestUtil(UnitTestBase):
     def test_title_to_name(self):
