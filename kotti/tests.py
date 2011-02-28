@@ -771,6 +771,24 @@ class TestNodeEdit(UnitTestBase):
             self.assertEqual(first_parent['node'], child)
             self.assertEqual(second_parent['node'], root)
 
+class TestNodeMove(UnitTestBase):
+    def test_paste_without_edit_permission(self):
+        from kotti.views.edit import move_node
+        root = DBSession().query(Node).get(1)
+        request = testing.DummyRequest()
+        request.params['paste'] = u'on'
+        self.config.testing_securitypolicy(permissive=False)
+
+        # We need to have the 'edit' permission on the original object
+        # to be able to cut and paste:
+        request.session['kotti.paste'] = (1, 'cut')
+        self.assertRaises(Forbidden, move_node, root, request)
+
+        # We don't need 'edit' permission if we're just copying:
+        request.session['kotti.paste'] = (1, 'copy')
+        response = move_node(root, request)
+        self.assertEqual(response.status, '302 Found')
+
 class TestNodeShare(UnitTestBase):
     @staticmethod
     def add_some_principals():
