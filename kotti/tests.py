@@ -553,15 +553,28 @@ class TestPrincipals(UnitTestBase):
         self.assertEqual(result.status, '302 Found')
         self.assertEqual(request.session.pop_flash('success'),
                          [u'Welcome, Bob Dabolina!'])
-        self.assertEqual(request.session.pop_flash('error'), [])
 
         # Deactive Bob, logging in is no longer possible:
         bob.active = False
         result = login(None, request)
         self.assert_(isinstance(result, dict))
-        self.assertEqual(request.session.pop_flash('success'), [])
         self.assertEqual(request.session.pop_flash('error'),
                          [u'Login failed.'])
+
+        # If Bob has a 'confirm_token' set, logging in is not possible:
+        bob.active = True
+        bob.confirm_token = u'token'
+        result = login(None, request)
+        self.assert_(isinstance(result, dict))
+        self.assertEqual(request.session.pop_flash('error'),
+                         [u'Login failed.'])
+
+        # Allow logging in again:
+        bob.confirm_token = None
+        result = login(None, request)
+        self.assertEqual(result.status, '302 Found')
+        self.assertEqual(request.session.pop_flash('success'),
+                         [u'Welcome, Bob Dabolina!'])
 
 class TestEvents(UnitTestBase):
     def setUp(self):

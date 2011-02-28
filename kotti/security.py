@@ -28,14 +28,27 @@ class Principal(object):
     The attributes on this object correspond to what one ought to
     implement to get full support by the system.  You're free to add
     additional attributes.
+
+      - As convenience, when passing 'password' in the initializer, it
+        is hashed using 'get_principals().hash_password'
+
+      - The boolean 'active' attribute defines whether a principal may
+        log in.  This allows the deactivation of accounts without
+        deleting them.
+
+      - If 'confirm_token' is not None, it will likewise block log in
+        for that account.  This attribute is used for confirmed
+        subscriptions.  That is, after confirmation, 'confirm_token'
+        should be set to 'None'.
     """
-    def __init__(self, name, password=None, active=True,
+    def __init__(self, name, password=None, active=True, confirm_token=None,
                  title=u"", email=None, groups=()):
         self.name = name
         if password is not None:
             password = get_principals().hash_password(password)
         self.password = password
         self.active = active
+        self.confirm_token = confirm_token
         self.title = title
         self.email = email
         self.groups = groups
@@ -349,6 +362,7 @@ principals_table = Table('principals', metadata,
     Column('name', Unicode(100), unique=True),
     Column('password', Unicode(100)),
     Column('active', Boolean),
+    Column('confirm_token', Unicode(100)),
     Column('title', Unicode(100), nullable=False),
     Column('email', Unicode(100), unique=True),
     Column('groups', JsonType(), nullable=False),
