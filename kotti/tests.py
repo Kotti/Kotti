@@ -513,6 +513,16 @@ class TestPrincipals(UnitTestBase):
         self.assertNotEqual(hashed, hash_password(password))        
         del configuration.secret
 
+    def test_bobs_hashed_password(self):
+        bob = self.make_bob()
+        hash_password = self.get_principals().hash_password
+        self.assertEqual(bob.password, hash_password(u'secret'))
+
+        # When we set the 'password' attribute directly, we have to do
+        # the hashing ourselves.
+        bob.password = u'hashed secret'
+        self.assertEqual(bob.password, u'hashed secret')
+
     def test_active(self):
         bob = self.make_bob()
         self.assertEqual(bob.active, True)
