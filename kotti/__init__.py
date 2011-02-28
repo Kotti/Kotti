@@ -38,7 +38,7 @@ def acl_factory(**kwargs):
 def cookie_session_factory(**kwargs):
     return UnencryptedCookieSessionFactoryConfig(**kwargs)
 
-def none_factory(**kwargs):
+def none_factory(**kwargs): # pragma: no cover
     return None
 
 # All of these can be set by passing them in the Paste Deploy settings:

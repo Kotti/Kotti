@@ -10,7 +10,7 @@ from pyramid.registry import Registry
 from pyramid.security import ALL_PERMISSIONS
 from pyramid import testing
 
-from kotti import configuration
+import kotti
 from kotti.resources import DBSession
 from kotti.resources import Node
 from kotti.resources import Document
@@ -39,7 +39,7 @@ def _initTestingDB():
 
 def setUp(**kwargs):
     tearDown()
-    configuration.secret = 'secret'
+    kotti.configuration.secret = 'secret'
     _initTestingDB()
     config = testing.setUp(**kwargs)
     for name, renderer in DEFAULT_RENDERERS:
@@ -57,6 +57,35 @@ class UnitTestBase(unittest.TestCase):
 
     def tearDown(self):
         tearDown()
+
+class TestMain(UnitTestBase):
+    def setUp(self, **kwargs):
+        super(TestMain, self).setUp(**kwargs)
+        self.save_configuration = kotti.configuration.copy()
+
+    def tearDown(self):
+        super(TestMain, self).tearDown()
+        kotti.configuration.clear()
+        kotti.configuration.update(self.save_configuration)
+
+    def required_settings(self):
+        return {'sqlalchemy.url': 'sqlite://',
+                'kotti.secret': 'dude'}
+
+    def test_override_settings(self):
+        class MyType(object):
+            pass
+
+        def my_configurator(conf):
+            conf['kotti.includes'] = ''
+            conf['kotti.available_types'] = [MyType]
+            
+        settings = self.required_settings()
+        settings['kotti.configurators'] = [my_configurator]
+        main({}, **settings)
+
+        self.assertEqual(kotti.configuration['kotti.includes'], [])
+        self.assertEqual(kotti.configuration['kotti.available_types'], [MyType])
 
 class TestNode(UnitTestBase):
     def test_root_acl(self):
@@ -506,12 +535,12 @@ class TestPrincipals(UnitTestBase):
         hash_password = self.get_principals().hash_password
 
         # For 'hash_password' to work, we need to set a secret:
-        configuration.secret = 'there is no secret'
+        kotti.configuration.secret = 'there is no secret'
         hashed = hash_password(password)
         self.assertEqual(hashed, hash_password(password))
-        configuration.secret = 'different'
+        kotti.configuration.secret = 'different'
         self.assertNotEqual(hashed, hash_password(password))        
-        del configuration.secret
+        del kotti.configuration.secret
 
     def test_bobs_hashed_password(self):
         bob = self.make_bob()
@@ -629,11 +658,11 @@ def nodes_addable():
     save_node_type_info = Node.type_info.copy()
     Node.type_info.addable_to = [u'Document']
     Node.type_info.add_view = u'add_document'
-    configuration['kotti.available_types'].append(Node)
+    kotti.configuration['kotti.available_types'].append(Node)
     try:
         yield
     finally:
-        configuration['kotti.available_types'].pop()
+        kotti.configuration['kotti.available_types'].pop()
         Node.type_info = save_node_type_info
 
 class TestAddableTypes(UnitTestBase):
