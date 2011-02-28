@@ -13,7 +13,7 @@ def login(context, request):
     api = TemplateAPIEdit(root, request)
     came_from = request.params.get('came_from', request.url)
     login, password = u'', u''
-    if 'submitted' in request.POST:
+    if 'submitted' in request.params:
         login = request.params['login']
         password = request.params['password']
         principals = get_principals()
@@ -28,7 +28,7 @@ def login(context, request):
                 if results:
                     principal = results[0]
 
-        if (principal is not None and
+        if (principal is not None and principal.active and
             principal.password == principals.hash_password(password)):
             headers = remember(request, login)
             request.session.flash(

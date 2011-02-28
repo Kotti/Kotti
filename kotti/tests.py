@@ -425,7 +425,12 @@ class TestPrincipals(UnitTestBase):
     def make_bob(self):
         users = self.get_principals()
         users[u'bob'] = dict(
-            name=u'bob', title=u'Bob Dabolina', groups=[u'group:bobsgroup'])
+            name=u'bob',
+            password=u'secret',
+            email=u'bob@dabolina.com',
+            title=u'Bob Dabolina',
+            groups=[u'group:bobsgroup'],
+            )
         return users[u'bob']
     
     def _assert_is_bob(self, bob):
@@ -507,6 +512,56 @@ class TestPrincipals(UnitTestBase):
         configuration.secret = 'different'
         self.assertNotEqual(hashed, hash_password(password))        
         del configuration.secret
+
+    def test_active(self):
+        bob = self.make_bob()
+        self.assertEqual(bob.active, True)
+        bob.active = False
+        self.assertEqual(bob.active, False)
+
+    def test_login(self):
+        from kotti.views.login import login
+        request = testing.DummyRequest()
+
+        # No login attempt:
+        result = login(None, request)
+        self.assert_(isinstance(result, dict))
+        self.assertEqual(request.session.pop_flash('success'), [])
+        self.assertEqual(request.session.pop_flash('error'), [])
+
+        # Attempt to log in before Bob exists:
+        request.params['submitted'] = u'on'
+        request.params['login'] = u'bob'
+        request.params['password'] = u'secret'
+        result = login(None, request)
+        self.assert_(isinstance(result, dict))
+        self.assertEqual(request.session.pop_flash('success'), [])
+        self.assertEqual(request.session.pop_flash('error'),
+                         [u'Login failed.'])
+
+        # Make Bob and do it again:
+        bob = self.make_bob()
+        result = login(None, request)
+        self.assertEqual(result.status, '302 Found')
+        self.assertEqual(request.session.pop_flash('success'),
+                         [u'Welcome, Bob Dabolina!'])
+        self.assertEqual(request.session.pop_flash('error'), [])
+
+        # Log in with e-mail:
+        request.params['login'] = u'bob@dabolina.com'
+        result = login(None, request)
+        self.assertEqual(result.status, '302 Found')
+        self.assertEqual(request.session.pop_flash('success'),
+                         [u'Welcome, Bob Dabolina!'])
+        self.assertEqual(request.session.pop_flash('error'), [])
+
+        # Deactive Bob, logging in is no longer possible:
+        bob.active = False
+        result = login(None, request)
+        self.assert_(isinstance(result, dict))
+        self.assertEqual(request.session.pop_flash('success'), [])
+        self.assertEqual(request.session.pop_flash('error'),
+                         [u'Login failed.'])
 
 class TestEvents(UnitTestBase):
     def setUp(self):

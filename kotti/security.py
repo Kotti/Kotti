@@ -3,6 +3,7 @@ import hashlib
 from UserDict import DictMixin
 
 from sqlalchemy import Column
+from sqlalchemy import Boolean
 from sqlalchemy import Integer
 from sqlalchemy import DateTime
 from sqlalchemy import Table
@@ -22,11 +23,19 @@ from kotti.util import request_cache
 from kotti.util import DontCache
 
 class Principal(object):
-    def __init__(self, name, password=None, title=u"", email=None, groups=()):
+    """A minimal 'Principal' implementation.
+
+    The attributes on this object correspond to what one ought to
+    implement to get full support by the system.  You're free to add
+    additional attributes.
+    """
+    def __init__(self, name, password=None, active=True,
+                 title=u"", email=None, groups=()):
         self.name = name
         if password is not None:
             password = get_principals().hash_password(password)
         self.password = password
+        self.active = active
         self.title = title
         self.email = email
         self.groups = groups
@@ -339,6 +348,7 @@ principals_table = Table('principals', metadata,
     Column('id', Integer, primary_key=True),
     Column('name', Unicode(100), unique=True),
     Column('password', Unicode(100)),
+    Column('active', Boolean),
     Column('title', Unicode(100), nullable=False),
     Column('email', Unicode(100), unique=True),
     Column('groups', JsonType(), nullable=False),
