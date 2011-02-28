@@ -1126,7 +1126,7 @@ def setUpFunctional(global_config=None, **settings):
         }
 
     host, port = BASE_URL.split(':')[-2:]
-    app = lambda: main({}, **configuration)
-    wsgi_intercept.add_wsgi_intercept(host[2:], int(port), app)
+    app = main({}, **configuration)
+    wsgi_intercept.add_wsgi_intercept(host[2:], int(port), lambda: app)
 
     return dict(Browser=wsgi_intercept.zope_testbrowser.WSGI_Browser)
