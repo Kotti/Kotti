@@ -78,7 +78,7 @@ def main(global_config, **settings):
 
     # Allow extending packages to change 'configuration' w/ Python:
     for func in configuration['kotti.configurators']:
-        func(configuration) # XXX testme
+        func(configuration)
 
     secret1 = settings['kotti.secret']
     secret2 = settings.get('kotti.secret2', secret1)

@@ -666,6 +666,20 @@ def nodes_addable():
         Node.type_info = save_node_type_info
 
 class TestAddableTypes(UnitTestBase):
+    def test_view_permitted_yes(self):
+        self.config.testing_securitypolicy(permissive=True)
+        self.config.include('kotti.views.edit')
+        root = DBSession().query(Node).get(1)
+        request = testing.DummyRequest()
+        self.assertEquals(Document.type_info.addable(root, request), True)
+
+    def test_view_permitted_no(self):
+        self.config.testing_securitypolicy(permissive=False)
+        self.config.include('kotti.views.edit')
+        root = DBSession().query(Node).get(1)
+        request = testing.DummyRequest()
+        self.assertEquals(Document.type_info.addable(root, request), False)
+
     def test_multiple_types(self):
         from kotti.views.util import addable_types
         # Test a scenario where we may add multiple types to a folder:

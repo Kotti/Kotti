@@ -78,7 +78,7 @@ class TypeInfo(object):
         if view_execution_permitted(context, request, self.add_view):
             return context.type_info.name in self.addable_to
         else:
-            return False # XXX testme
+            return False
 
 class Node(Container, PersistentACL):
     type_info = TypeInfo(
