@@ -104,7 +104,8 @@ class Node(Container, PersistentACL):
         self.description = description
         self.language = language
         self.owner = owner
-        self.creation_date = creation_date # set through events if missing
+        # These are set by events if not defined at this point:
+        self.creation_date = creation_date
         self.modification_date = modification_date
 
     # Provide location-awareness through __name__ and __parent__
@@ -161,9 +162,8 @@ nodes = Table('nodes', metadata,
     Column('description', UnicodeText()),
     Column('language', Unicode(10)),
     Column('owner', Unicode(100)),
-    Column('creation_date', DateTime(), default=datetime.now),
-    Column('modification_date', DateTime(),
-           default=datetime.now, onupdate=datetime.now),
+    Column('creation_date', DateTime()),
+    Column('modification_date', DateTime()),
 
     UniqueConstraint('parent_id', 'name'),
 )

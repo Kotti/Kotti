@@ -24,6 +24,9 @@ install_requires.extend(tests_require) # for buildout
 if sys.version_info[:3] < (2,5,0):
     install_requires.append('pysqlite')
 
+if sys.version_info[:3] < (2,7,0):
+    install_requires.append('ordereddict')
+
 setup(name='Kotti',
       version='0.1a6',
       description="A friendly, light-weight web content management system (WCMS).  Written in Python, based on Pyramid and SQLAlchemy.",
