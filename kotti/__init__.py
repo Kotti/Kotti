@@ -24,7 +24,7 @@ class Configuration(dict):
         else:
             return value
 
-    def __getattr__(self, key):
+    def __getattr__(self, key): # pragma: no cover
         return self[key]
 
 def authtkt_factory(**kwargs):
