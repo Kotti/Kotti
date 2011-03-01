@@ -13,6 +13,7 @@ lib/
 coverage-*
 mechanize-*
 nose-*
+ordereddict-*
 pytz-*
 wsgi_intercept-*
 zope.testbrowser-*
