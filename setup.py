@@ -11,6 +11,7 @@ install_requires = [
     'pyramid',
     'repoze.tm2>=1.0b1', # default_commit_veto
     'sqlalchemy>=0.7b2',
+    'chameleon<1.2.999', # more recent versions have compat issues right now
     'zope.sqlalchemy',
     'formencode',
     'deform',
