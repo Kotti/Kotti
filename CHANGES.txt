@@ -1,6 +1,27 @@
 History
 =======
 
+0.1a6
+-----
+
+- Kotti now has a 100% automated test coverage, testing a total of
+  some 950 lines of code.
+
+- Add a user dropdown menu in the edit interface that display's the
+  currently logged in user's name and contains links to Site Setup (in
+  the works) and Logout.
+
+- Require Chameleon < 1.2.999 since higher version cause compatibility
+  issues with ``pyramid`` and ``deform``.
+
+- Implemented a simple events system in ``kotti.events`` that's akin
+  to Zope3's object events.  See the module for documentation and
+  examples.
+
+- Add a ``request_cache`` cache decorator in ``kotti.util`` for
+  memoizing function results in the current request.  Cut down number
+  of recursive queries run by ``kotti.security.list_groups_ext``.
+
 0.1a5
 -----
 
