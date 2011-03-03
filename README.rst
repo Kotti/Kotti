@@ -160,7 +160,8 @@ templates.  The defaults are::
 The default configuration here is::
 
   kotti.includes =
-    kotti.events kotti.views.view kotti.views.edit kotti.views.login kotti.views.site_setup
+    kotti.events kotti.views.view kotti.views.edit
+    kotti.views.login kotti.views.site_setup
 
 These point to modules that contain an ``includeme`` function.  An
 ``includeme`` function that registers an edit view for an ``Event``
@@ -179,15 +180,17 @@ look at ``kotti.views.view`` and ``kotti.views.edit``.  XXX Need
 example extension package.
 
 Changing the ``kotti.includes`` configuration allows you to register
-your own views or event handlers instead of Kotti's defaults.  As an
-example, consider a scenario where you want to implement your own
-management views.  This could be because you're using a user database
-implementation that is very different to Kotti's own.  Your
-configuration would look something like this::
+your own views or event handlers in addition to, or instead of Kotti's
+defaults.  To include hypothetical views from package A and event
+handlers, you woudl write something like this::
 
   kotti.includes =
-    kotti.events kotti.views.view kotti.views.edit kotti.views.login mypackage.manage
-  kotti.principals = mypackage.manage.principals
+    kotti.events kotti.views.view kotti.views.edit
+    kotti.views.login kotti.views.site_setup
+    A.views B.events
+
+XXX We need another variable that's just for adding, like
+``kotti.includes_add``.
 
 Note that it's also possible to set these options directly from your
 Python package by use of the `kotti.configurators`_ configuration
