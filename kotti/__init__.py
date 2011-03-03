@@ -92,7 +92,7 @@ def main(global_config, **settings):
     get_root = appmaker(engine)
 
     authentication_policy = configuration[
-        'kotti.authn_policy_factory'][0](secret=secret1)
+        'kotti.authn_policy_factory'][0](secret=secret2)
     authorization_policy = configuration[
         'kotti.authz_policy_factory'][0]()
     session_factory = configuration['kotti.session_factory'][0](secret=secret2)
