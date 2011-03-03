@@ -120,7 +120,7 @@ class TemplateAPIEdit(TemplateAPI):
         links = []
         for item in items:
             view_name = self._find_edit_view(item)
-            url = resource_url(item, self.request, view_name)
+            url = resource_url(item, self.request) + '@@' + view_name
             links.append(dict(
                 url=url,
                 name=item.title,
