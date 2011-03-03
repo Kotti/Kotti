@@ -77,14 +77,14 @@ class TestMain(UnitTestBase):
             pass
 
         def my_configurator(conf):
-            conf['kotti.includes'] = ''
+            conf['kotti.base_includes'] = ''
             conf['kotti.available_types'] = [MyType]
             
         settings = self.required_settings()
         settings['kotti.configurators'] = [my_configurator]
         main({}, **settings)
 
-        self.assertEqual(kotti.configuration['kotti.includes'], [])
+        self.assertEqual(kotti.configuration['kotti.base_includes'], [])
         self.assertEqual(kotti.configuration['kotti.available_types'], [MyType])
 
 class TestNode(UnitTestBase):

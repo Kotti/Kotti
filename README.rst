@@ -154,18 +154,17 @@ templates.  The defaults are::
   kotti.templates.view_css = kotti:static/view.css
   kotti.templates.edit_css = kotti:static/edit.css
 
-*kotti.includes*
-----------------
+*kotti.includes* and *kotti.base_includes*
+------------------------------------------
 
-The default configuration here is::
+``kotti.includes`` allows for convenient extension of Kotti with
+additional views, content types and event handlers.  An example::
 
-  kotti.includes =
-    kotti.events kotti.views.view kotti.views.edit
-    kotti.views.login kotti.views.site_setup
+  kotti.includes = mypackage.views mypackage.events
 
-These point to modules that contain an ``includeme`` function.  An
-``includeme`` function that registers an edit view for an ``Event``
-resource might look like this::
+You should list here modules that contain an ``includeme`` function.
+A ``mypackage.views`` module could have this function, which will
+register an edit view for a hypothetical event content type::
 
   def includeme(config):
       config.add_view(
@@ -175,22 +174,12 @@ resource might look like this::
           permission='edit',
           )
 
-Examples of views and their registrations are in Kotti itself.  Take a
-look at ``kotti.views.view`` and ``kotti.views.edit``.  XXX Need
-example extension package.
-
-Changing the ``kotti.includes`` configuration allows you to register
-your own views or event handlers in addition to, or instead of Kotti's
-defaults.  To include hypothetical views from package A and event
-handlers, you woudl write something like this::
+``kotti.base_includes`` is a list of modules that Kotti itself defines
+for inclusion.  The default::
 
   kotti.includes =
     kotti.events kotti.views.view kotti.views.edit
     kotti.views.login kotti.views.site_setup
-    A.views B.events
-
-XXX We need another variable that's just for adding, like
-``kotti.includes_add``.
 
 Note that it's also possible to set these options directly from your
 Python package by use of the `kotti.configurators`_ configuration
@@ -199,7 +188,8 @@ variable.
 *kotti.available_types*
 -----------------------
 
-The default configuration here is::
+Defines the list of content types available.  The default
+configuration here is::
 
   kotti.available_types = kotti.resources.Document
 
@@ -244,11 +234,10 @@ function that configures Kotti::
 
   # in mypackage/__init__.py
   def kotti_configure(config):
-      config['kotti.includes'] += ' mypackage.views'
+      config['kotti.base_includes'] += ' mypackage.views'
       config['kotti.principals'] = 'mypackage.security.principals'
-      config['kotti.authn_policy_factory'] = 'mypackage.security.authn_factory'
 
-And this is how you'd hook it up in the ``pasteserve.ini``::
+And this is how you'd hook it up in the Paste Serve ini file::
   
   kotti.configurators = mypackage.kotti_configure
 

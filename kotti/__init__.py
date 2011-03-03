@@ -51,7 +51,8 @@ configuration = Configuration(
         'kotti.templates.view_css': 'kotti:static/view.css',
         'kotti.templates.edit_css': 'kotti:static/edit.css',
         'kotti.configurators': '',
-        'kotti.includes': 'kotti.events kotti.views.view kotti.views.edit kotti.views.login kotti.views.site_setup',
+        'kotti.base_includes': 'kotti.events kotti.views.view kotti.views.edit kotti.views.login kotti.views.site_setup',
+        'kotti.includes': '',
         'kotti.available_types': 'kotti.resources.Document',
         'kotti.authn_policy_factory': 'kotti.authtkt_factory',
         'kotti.authz_policy_factory': 'kotti.acl_factory',
@@ -60,6 +61,7 @@ configuration = Configuration(
     },
     dotted_names=set([
         'kotti.configurators',
+        'kotti.base_includes',
         'kotti.includes',
         'kotti.available_types',
         'kotti.authn_policy_factory',
@@ -105,8 +107,9 @@ def main(global_config, **settings):
 
     _configure_base_views(config)
 
-    # Include modules listed in 'includeme' configuration:
-    for module in configuration['kotti.includes']:
+    # Include modules listed in 'kotti.includes' and 'kotti.includes':
+    for module in (
+        configuration['kotti.base_includes'] + configuration['kotti.includes']):
         config.include(module)
 
     return config.make_wsgi_app()
