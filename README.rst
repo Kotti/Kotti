@@ -85,54 +85,10 @@ Configuring Kotti
 Kotti includes two `Paste Deploy`_ configuration files in
 ``production.ini`` and ``development.ini``.
 
-*kotti.authn_policy_factory* and *kotti.authz_policy_factory*
--------------------------------------------------------------
-
-You can override the authentication and authorization policy that
-Kotti uses.  By default, Kotti uses these factories::
-
-  kotti.authn_policy_factory = kotti.authtkt_factory
-  kotti.authz_policy_factory = kotti.acl_factory
-
-These settings correspond to
-`pyramid.authentication.AuthTktAuthenticationPolicy`_ and
-`pyramid.authorization.ACLAuthorizationPolicy`_ being used.
-
-*kotti.secret*
---------------
-
-``kotti.secret`` and ``kotti.secret2`` (optional) are used as salts
-for various hashing functions.  Also, ``kotti.secret`` is the password
-of the default admin user.  (Which you should change immediately.)
-
-An example::
-
-  kotti.secret = qwerty
-  kotti.secret2 = asdfgh
-
-With these settings, to log in as admin, you would log in as ``admin``
-with the password ``qwerty``.
-
-``kotti.secret`` is used as a salt to the passwords in the default
-user database.  Changing it will result in the user database's
-passwords becoming invalid.
-
-*kotti.session_factory*
------------------------
-
-The ``kotti.session_factory`` configuration variable allows the
-overriding of the default session factory, which is
-`pyramid.session.UnencryptedCookieSessionFactoryConfig`_.
-
-*kotti.principals*
-------------------
-
-Kotti comes with a default user database implementation in
-``kotti.security.principals``.  You can use the ``kotti.principals``
-configuration variable to override the implementation used.  The
-default looks like this::
-
-  kotti.principals = kotti.security.principals
+There are various ``kotti.*`` configuration variables that allow you
+to configure and extend various aspects of Kotti, such as the master
+templates and CSS files used in Kotti's UI, the user database
+implementation, and the list of available content types.
 
 *kotti.templates.master_view* and *kotti.templates.master_edit*
 ---------------------------------------------------------------
@@ -148,11 +104,43 @@ You may override these to provide your own master templates.
 --------------------------------------------------------------------------------------
 
 These variables define the CSS files used by the default master
-templates.  The defaults are::
+templates.  The factory settings here are::
 
   kotti.templates.base_css = kotti:static/base.css
   kotti.templates.view_css = kotti:static/view.css
   kotti.templates.edit_css = kotti:static/edit.css
+
+*kotti.principals*
+------------------
+
+Kotti comes with a default user database implementation in
+``kotti.security.principals``.  You can use the ``kotti.principals``
+configuration variable to override the implementation used.  The
+default looks like this::
+
+  kotti.principals = kotti.security.principals
+
+
+*kotti.secret*
+--------------
+
+``kotti.secret`` (required) and ``kotti.secret2`` (optional) are used
+as salts for various hashing functions.  Also, ``kotti.secret`` is the
+password of the default admin user.  (Which you should change
+immediately.)
+
+An example::
+
+  kotti.secret = qwerty
+  kotti.secret2 = asdfgh
+
+With these settings, to log in as admin, you would log in as ``admin``
+with the password ``qwerty``.  **Do not use these defaults in
+production.**
+
+``kotti.secret`` is used as a salt to the passwords in the default
+user database.  Changing it will result in the user database's
+passwords becoming invalid.
 
 *kotti.includes* and *kotti.base_includes*
 ------------------------------------------
@@ -240,6 +228,26 @@ function that configures Kotti::
 And this is how you'd hook it up in the Paste Serve ini file::
   
   kotti.configurators = mypackage.kotti_configure
+
+*kotti.authn_policy_factory* and *kotti.authz_policy_factory*
+-------------------------------------------------------------
+
+You can override the authentication and authorization policy that
+Kotti uses.  By default, Kotti uses these factories::
+
+  kotti.authn_policy_factory = kotti.authtkt_factory
+  kotti.authz_policy_factory = kotti.acl_factory
+
+These settings correspond to
+`pyramid.authentication.AuthTktAuthenticationPolicy`_ and
+`pyramid.authorization.ACLAuthorizationPolicy`_ being used.
+
+*kotti.session_factory*
+-----------------------
+
+The ``kotti.session_factory`` configuration variable allows the
+overriding of the default session factory, which is
+`pyramid.session.UnencryptedCookieSessionFactoryConfig`_.
 
 Authentication and Authorization
 ================================
