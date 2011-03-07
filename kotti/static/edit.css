@@ -121,6 +121,14 @@
 
 div.form {
     width: 35em;
+    background-color:  #eee;
+    border: 1px solid #aaa;
+    padding: 1em;
+    margin: 1em 1em 1em 0;
+}
+
+div.form h2 {
+    margin-top: 0;
 }
 
 form ul {
@@ -142,17 +150,6 @@ form label.desc {
     display: block;
     margin: 0 0 0.5em 0;
     font-weight: bold;
-}
-
-form {
-    padding: 1em;
-    margin: 1em 1em 2em 0;
-    background-color:  #eee;
-    border: 1px solid #aaa;
-}
-
-form h2 {
-    margin-top: 0;
 }
 
 form fieldset {

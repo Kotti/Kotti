@@ -30,10 +30,10 @@
     }
 
     function collapse() {
-        $("form.collapse").each(function() {
-            $(this).children("ul").hide();
+        $(".collapse").each(function() {
+            $(this).find("ul").hide();
             function show() {
-                $(this).children("ul").show("fast");
+                $(this).find("ul").show("fast");
                 $(this).unbind("click");
                 $(this).unbind("hover");
             };

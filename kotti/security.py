@@ -77,6 +77,8 @@ class AbstractPrincipals(object):
         """Add a given Principal object to the database.
 
         'name' is expected to the the same as 'principal.name'.
+
+        'principal' may also be a dict of attributes.
         """
 
     def __delitem__(self, name):
@@ -123,6 +125,7 @@ ROLES = {
 
 # These roles are visible in the sharing tab
 SHARING_ROLES = [u'role:viewer', u'role:editor', u'role:owner']
+USER_MANAGEMENT_ROLES = SHARING_ROLES + ['role:admin']
 
 # This is the ACL that gets set on the site root on creation.
 SITE_ACL = [
@@ -186,36 +189,41 @@ def list_groups_raw(name, context):
     else:
         return set()
 
-def list_groups(name, context):
+def list_groups(name, context=None):
     return list_groups_ext(name, context)[0]
 
-def _cachekey_list_groups_ext(name, context, _seen=None, _inherited=None):
+def _cachekey_list_groups_ext(name, context=None, _seen=None, _inherited=None):
     if _seen is not None or _inherited is not None:
         raise DontCache
     else:
-        return (name, context.id)
+        context_id = context is not None and context.id
+        return (name, context_id)
 
 @request_cache(_cachekey_list_groups_ext)
-def list_groups_ext(name, context, _seen=None, _inherited=None):
+def list_groups_ext(name, context=None, _seen=None, _inherited=None):
     groups = set()
     recursing = _inherited is not None
     _inherited = _inherited or set()
-    if _seen is None:
-        _seen = set([name])
 
     # Add groups from principal db:
     principal = get_principals().get(name)
     if principal is not None:
         groups.update(principal.groups)
-        _inherited.update(principal.groups)
+        if context is not None or (context is None and _seen is not None):
+            _inherited.update(principal.groups)
+
+    if _seen is None:
+        _seen = set([name])
 
     # Add local groups:
-    items = lineage(context)
-    for idx, item in enumerate(items):
-        group_names = [i for i in list_groups_raw(name, item) if i not in _seen]
-        groups.update(group_names)
-        if recursing or idx != 0:
-            _inherited.update(group_names)
+    if context is not None:
+        items = lineage(context)
+        for idx, item in enumerate(items):
+            group_names = [i for i in list_groups_raw(name, item)
+                           if i not in _seen]
+            groups.update(group_names)
+            if recursing or idx != 0:
+                _inherited.update(group_names)
     
     new_groups = groups - _seen
     _seen.update(new_groups)
@@ -286,8 +294,7 @@ def get_principals():
 def is_user(principal):
     if not isinstance(principal, basestring):
         principal = principal.name
-    return not (principal.startswith('group:') or
-                principal.startswith('role:'))
+    return ':' not in principal
 
 class Principals(DictMixin):
     """Kotti's default principal database.

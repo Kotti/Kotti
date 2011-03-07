@@ -15,7 +15,7 @@
         <h2>Assign local roles</h2>
         <ul>
           <li>
-            <label for="search-query">Users and groups</label>
+            <label for="search-query">Search users and groups</label><br/>
             <input type="text" name="query" id="search-query"
                    value="${request.params.get('query')}"
                    placeholder="Search users and groups"
@@ -25,6 +25,7 @@
             </button>
           </li>
         </ul>
+
         <table tal:condition="entries">
           <tr>
             <th>Name</th>
@@ -46,6 +47,7 @@
             </td>
           </tr>
         </table>
+
         <ul>
           <li>
             <button type="submit" name="apply">
@@ -53,6 +55,7 @@
             </button>
           </li>
         </ul>
+
       </form>
     </div>
   </div>

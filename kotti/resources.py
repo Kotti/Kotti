@@ -1,4 +1,3 @@
-from datetime import datetime
 from UserDict import DictMixin
 
 import transaction
@@ -193,7 +192,7 @@ mapper(
 
 mapper(Document, documents, inherits=Node, polymorphic_identity='document')
 
-def get_root(request):
+def get_root(request=None):
     session = DBSession()
     return session.query(Node).filter(Node.parent_id==None).first()
 

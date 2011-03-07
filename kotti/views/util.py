@@ -255,18 +255,21 @@ class FormController(object):
                     location = resource_url(context, request, self.success_path)
                     return HTTPFound(location=location)
                 else: # add
-                    name = title_to_name(appstruct['title'])
-                    while name in context.keys():
-                        name = disambiguate_name(name)
-                    item = context[name] = self.add(**appstruct)
-                    request.session.flash(self.add_success_msg, 'success')
-                    location = resource_url(item, request, self.success_path)
-                    return HTTPFound(location=location)
+                    return self.add_item(context, request, appstruct)
         else: # no post means less action
             if self.add is None:
                 return self.form.render(context.__dict__)
             else:
                 return self.form.render()
+
+    def add_item(self, context, request, appstruct):
+        name = title_to_name(appstruct['title'])
+        while name in context.keys():
+            name = disambiguate_name(name)
+        item = context[name] = self.add(**appstruct)
+        request.session.flash(self.add_success_msg, 'success')
+        location = resource_url(item, request, self.success_path)
+        return HTTPFound(location=location)
 
 def is_root(context, request):
     return context is TemplateAPI(context, request).root

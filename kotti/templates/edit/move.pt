@@ -7,12 +7,12 @@
   <div metal:fill-slot="content">
     <h1>Move <em>${api.context.title}</em></h1>
 
-    <div class="form">
-      <div metal:use-macro="api['master_edit.messages']">
-      </div>
+    <div metal:use-macro="api['master_edit.messages']">
+    </div>
 
-      <form action="./move" method="post" class="collapse">
-        <h2>Copy and Paste</h2>
+    <div class="form collapse">
+      <h2>Copy and Paste</h2>
+      <form action="./move" method="post">
         <ul>
           <li>
             <button type="submit" name="copy" value="${context.id}">
@@ -29,9 +29,11 @@
           </li>
         </ul>
       </form>
+    </div>
 
-      <form action="./move" method="post" class="collapse">
-        <h2>Delete</h2>
+    <div class="form collapse">
+      <h2>Delete</h2>
+      <form action="./move" method="post">
         <ul>
           <li>
             Are you sure you want to delete <em>${api.context.title}</em>?
@@ -47,10 +49,12 @@
           </li>
         </ul>
       </form>
+    </div>
 
-      <form action="./move" method="post" class="collapse"
-            tal:condition="context != api.root">
-        <h2>Rename</h2>
+    <div class="form collapse"
+         tal:condition="context is not api.root">
+      <h2>Rename</h2>
+      <form action="./move" method="post">
         <ul>
           <li>
             <label for="move-new-name" class="desc">New name</label>
@@ -69,11 +73,13 @@
           </li>
         </ul>
       </form>
+    </div>
 
-      <form action="./move" method="post" class="collapse"
-            tal:define="children api.list_children()"
-            tal:condition="len(children) &gt; 1">
-        <h2>Order contained items</h2>
+    <div class="form collapse"
+         tal:define="children api.list_children()"
+         tal:condition="len(children) &gt; 1">
+      <h2>Order contained items</h2>
+      <form action="./move" method="post">
         <ul>
           <li>
             <ul>
@@ -98,8 +104,8 @@
           </li>
         </ul>
       </form>
-
     </div>
+
   </div>
 
 </html>

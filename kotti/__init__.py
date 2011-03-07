@@ -5,6 +5,8 @@ from pyramid.config import Configurator
 from pyramid.session import UnencryptedCookieSessionFactoryConfig
 from pyramid.util import DottedNameResolver
 
+import kotti.patches
+
 class Configuration(dict):
     """A dict that can resolve dotted names to Python objects the
     first time they're accessed.
@@ -51,7 +53,7 @@ configuration = Configuration(
         'kotti.templates.view_css': 'kotti:static/view.css',
         'kotti.templates.edit_css': 'kotti:static/edit.css',
         'kotti.configurators': '',
-        'kotti.base_includes': 'kotti.events kotti.views.view kotti.views.edit kotti.views.login kotti.views.site_setup',
+        'kotti.base_includes': 'kotti.events kotti.views.view kotti.views.edit kotti.views.login kotti.views.users kotti.views.site_setup',
         'kotti.includes': '',
         'kotti.available_types': 'kotti.resources.Document',
         'kotti.authn_policy_factory': 'kotti.authtkt_factory',
@@ -131,10 +133,4 @@ def _configure_base_views(config):
         name='move',
         permission='edit',
         renderer='templates/edit/move.pt',
-        )
-    config.add_view(
-        'kotti.views.edit.share_node',
-        name='share',
-        permission='manage',
-        renderer='templates/edit/share.pt',
         )

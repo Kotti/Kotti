@@ -15,6 +15,7 @@ from kotti.resources import DBSession
 from kotti.resources import Node
 from kotti.resources import Document
 from kotti.resources import initialize_sql
+from kotti.resources import get_root
 from kotti.security import list_groups
 from kotti.security import list_groups_ext
 from kotti.security import list_groups_raw
@@ -89,8 +90,7 @@ class TestMain(UnitTestBase):
 
 class TestNode(UnitTestBase):
     def test_root_acl(self):
-        session = DBSession()
-        root = session.query(Node).get(1)
+        root = get_root()
 
         # The root object has a persistent ACL set:
         self.assertEquals(
@@ -106,8 +106,7 @@ class TestNode(UnitTestBase):
         self.assertEquals(root.__acl__[:1], root._default_acl())
 
     def test_set_and_get_acl(self):
-        session = DBSession()
-        root = session.query(Node).get(1)
+        root = get_root()
 
         # The __acl__ attribute of Nodes allows access to the mapped
         # '_acl' property:
@@ -142,6 +141,7 @@ class TestNode(UnitTestBase):
                 ('Deny', 'system.Authenticated', ALL_PERMISSIONS),
                 ('Allow', 'system.Authenticated', ['view']),
                 ])
+        session = DBSession()
         session.flush() # try serialization
         self.assertEquals(root.__acl__[1:], [second, first])
 
@@ -149,10 +149,9 @@ class TestNode(UnitTestBase):
         self.assertRaises(AttributeError, root._del_acl)
 
     def test_unique_constraint(self):
-        session = DBSession()
-
         # Try to add two children with the same name to the root node:
-        root = session.query(Node).get(1)
+        session = DBSession()
+        root = get_root()
         session.add(Node(name=u'child1', parent=root))
         session.add(Node(name=u'child1', parent=root))
         self.assertRaises(IntegrityError, session.flush)
@@ -161,7 +160,7 @@ class TestNode(UnitTestBase):
         session = DBSession()
 
         # Test some of Node's container methods:
-        root = session.query(Node).get(1)
+        root = get_root()
         self.assertEquals(root.keys(), [])
 
         child1 = Node(name=u'child1', parent=root)
@@ -184,26 +183,23 @@ class TestNode(UnitTestBase):
 
     def test_node_copy(self):
         # Test some of Node's container methods:
-        root = DBSession().query(Node).get(1)
+        root = get_root()
         copy_of_root = root.copy(name=u'copy_of_root')
         self.assertEqual(copy_of_root.name, u'copy_of_root')
         self.assertEqual(root.name, u'')
 
 class TestSecurity(UnitTestBase):
     def test_root_default(self):
-        session = DBSession()
-        root = session.query(Node).get(1)
+        root = get_root()
         self.assertEqual(list_groups('admin', root), ['role:admin'])
         self.assertEqual(list_groups_raw('admin', root), set([]))
 
     def test_empty(self):
-        session = DBSession()
-        root = session.query(Node).get(1)
+        root = get_root()
         self.assertEqual(list_groups(root, 'bob'), [])
 
     def test_simple(self):
-        session = DBSession()
-        root = session.query(Node).get(1)
+        root = get_root()
         set_groups('bob', root, ['role:editor'])
         self.assertEqual(
             list_groups('bob', root), ['role:editor'])
@@ -212,7 +208,7 @@ class TestSecurity(UnitTestBase):
 
     def test_inherit(self):
         session = DBSession()
-        root = session.query(Node).get(1)
+        root = get_root()
         child = root[u'child'] = Node()
         session.flush()
 
@@ -234,7 +230,7 @@ class TestSecurity(UnitTestBase):
     @staticmethod
     def add_some_groups():
         session = DBSession()
-        root = session.query(Node).get(1)
+        root = get_root()
         child = root[u'child'] = Node()
         grandchild = child[u'grandchild'] = Node()
         session.flush()
@@ -267,8 +263,7 @@ class TestSecurity(UnitTestBase):
 
     def test_nested_groups(self):
         self.add_some_groups()
-        session = DBSession()
-        root = session.query(Node).get(1)
+        root = get_root()
         child = root[u'child']
         grandchild = child[u'grandchild']
 
@@ -331,7 +326,7 @@ class TestSecurity(UnitTestBase):
 
     def test_works_with_auth(self):
         session = DBSession()
-        root = session.query(Node).get(1)
+        root = get_root()
         child = root[u'child'] = Node()
         session.flush()
 
@@ -402,7 +397,7 @@ class TestSecurity(UnitTestBase):
 
     def test_principals_with_local_roles(self):
         session = DBSession()
-        root = session.query(Node).get(1)
+        root = get_root()
         child = root[u'child'] = Node()
         session.flush()
 
@@ -426,8 +421,7 @@ class TestSecurity(UnitTestBase):
 
     def test_map_principals_with_local_roles(self):
         self.test_principals_with_local_roles()
-        session = DBSession()
-        root = session.query(Node).get(1)
+        root = get_root()
         child = root[u'child']
         P = get_principals()
 
@@ -514,7 +508,7 @@ class TestPrincipals(UnitTestBase):
         self.make_bob()
 
         session = DBSession()
-        root = session.query(Node).get(1)
+        root = get_root()
         child = root[u'child'] = Node()
         session.flush()
 
@@ -637,7 +631,7 @@ class TestEvents(UnitTestBase):
     def test_owner(self):
         session = DBSession()
         self.config.testing_securitypolicy(userid=u'bob')
-        root = session.query(Node).get(1)
+        root = get_root()
         child = root[u'child'] = Node()
         session.flush()
         self.assertEqual(child.owner, u'bob')
@@ -654,8 +648,7 @@ class TestEvents(UnitTestBase):
 class TestNodeView(UnitTestBase):
     def test_it(self):
         from kotti.views.view import view_node
-        session = DBSession()
-        root = session.query(Node).get(1)
+        root = get_root()
         request = testing.DummyRequest()
         info = view_node(root, request)
         self.assertEqual(info['api'].context, root)
@@ -691,8 +684,7 @@ class TestAddableTypes(UnitTestBase):
     def test_multiple_types(self):
         from kotti.views.util import addable_types
         # Test a scenario where we may add multiple types to a folder:
-        session = DBSession()
-        root = session.query(Node).get(1)
+        root = get_root()
         request = testing.DummyRequest()
 
         with nodes_addable():
@@ -710,8 +702,7 @@ class TestAddableTypes(UnitTestBase):
     def test_multiple_parents_and_types(self):
         from kotti.views.util import addable_types
         # A scenario where we can add multiple types to multiple folders:
-        session = DBSession()
-        root = session.query(Node).get(1)
+        root = get_root()
         request = testing.DummyRequest()
 
         with nodes_addable():
@@ -736,8 +727,7 @@ class TestNodeEdit(UnitTestBase):
 
         # The view should redirect straight to the add form if there's
         # only one choice of parent and type:
-        session = DBSession()
-        root = session.query(Node).get(1)
+        root = get_root()
         request = testing.DummyRequest()
         
         response = add_node(root, request)
@@ -750,9 +740,7 @@ class TestNodeEdit(UnitTestBase):
         # The 'add_node' view sorts the 'possible_parents' returned by
         # 'addable_types' so that the parent comes first if the
         # context we're looking at does not have any children yet.
-
-        session = DBSession()
-        root = session.query(Node).get(1)
+        root = get_root()
         request = testing.DummyRequest()
 
         with nodes_addable():
@@ -803,68 +791,17 @@ class TestNodeShare(UnitTestBase):
     def test_roles(self):
         # The 'share_node' view will return a list of available roles
         # as defined in 'kotti.security.SHARING_ROLES'
-        from kotti.views.edit import share_node
+        from kotti.views.users import share_node
         from kotti.security import SHARING_ROLES
-        session = DBSession()
-        root = session.query(Node).get(1)
+        root = get_root()
         request = testing.DummyRequest()
         self.assertEqual(
             [r.name for r in share_node(root, request)['available_roles']],
             SHARING_ROLES)
 
-    def test_principals_to_roles(self):
-        # 'share_node' returns a list of tuples of the form
-        # (principal, (all, inherited)) akin to what
-        # 'map_principals_with_local_roles' returns
-        from kotti.views.edit import share_node
-        TestSecurity.add_some_groups()
-        session = DBSession()
-        root = session.query(Node).get(1)
-        child = root['child']
-        grandchild = child['grandchild']
-        request = testing.DummyRequest()
-        P = get_principals()
-
-        # If our principals do not exist in the database, nothing is
-        # returned:
-        ptr = share_node(root, request)['principals_to_roles']
-        self.assertEqual(len(ptr), 0)
-
-        self.add_some_principals()
-        # For root:
-        ptr = share_node(root, request)['principals_to_roles']
-        self.assertEqual(len(ptr), 3)
-        self.assertEqual(ptr[0], (P['bob'], (['group:bobsgroup'], [])))
-        self.assertEqual(ptr[1][0], P['frank'])
-        self.assertEqual(
-            set(ptr[1][1][0]),
-            set(['role:editor', 'group:franksgroup'])
-            )
-        self.assertEqual(ptr[1][1][1], ['role:editor'])
-        self.assertEqual(ptr[2], (
-            P['group:franksgroup'],
-            (['role:editor'], []))
-            )
-
-        # For child:
-        ptr = share_node(grandchild, request)['principals_to_roles']
-        # Bob has only inherited groups here:
-        self.assertEqual(set(ptr[0][1][0]), set(ptr[0][1][1]))
-        # While Franksgroup has two local group assignments:
-        franksgroup = ptr[3]
-        self.assertEqual(
-            set(franksgroup[1][0]),
-            set(['role:owner', 'group:bobsgroup', 'role:editor'])
-            )
-        self.assertEqual(
-            set(franksgroup[1][1]),
-            set(['role:editor'])
-            )
-
     def test_search(self):
-        from kotti.views.edit import share_node
-        session = DBSession()
-        root = session.query(Node).get(1)
+        from kotti.views.users import share_node
+        root = get_root()
         request = testing.DummyRequest()
         P = get_principals()
         self.add_some_principals()
@@ -910,9 +847,8 @@ class TestNodeShare(UnitTestBase):
         self.assertEqual(entries[0][0], P['bob'])
 
     def test_apply(self):
-        from kotti.views.edit import share_node
-        session = DBSession()
-        root = session.query(Node).get(1)
+        from kotti.views.users import share_node
+        root = get_root()
         request = testing.DummyRequest()
         self.add_some_principals()
 
@@ -943,6 +879,71 @@ class TestNodeShare(UnitTestBase):
         self.assertRaises(Forbidden, share_node, root, request)
         self.assertEqual(
             set(list_groups('bob', root)),
+            set(['role:owner', 'role:editor', 'role:special'])
+            )
+
+class TestUserManagement(UnitTestBase):
+    def test_roles(self):
+        from kotti.views.users import user_management
+        from kotti.security import USER_MANAGEMENT_ROLES
+        root = get_root()
+        request = testing.DummyRequest()
+        self.assertEqual(
+            [r.name for r in user_management(root, request)['available_roles']],
+            USER_MANAGEMENT_ROLES)
+
+    def test_search(self):
+        from kotti.views.users import user_management
+        root = get_root()
+        request = testing.DummyRequest()
+        P = get_principals()
+        TestNodeShare.add_some_principals()
+
+        request.params['search'] = u''
+        request.params['query'] = u'Joe'
+        entries = user_management(root, request)['entries']
+        self.assertEqual(len(entries), 0)
+        self.assertEqual(request.session.pop_flash('info'),
+                         [u'No users or groups found.'])
+        request.params['query'] = u'Bob'
+        entries = user_management(root, request)['entries']
+        self.assertEqual(entries[0][0], P['bob'])
+        self.assertEqual(entries[0][1], ([], []))
+        self.assertEqual(entries[1][0], P['group:bobsgroup'])
+        self.assertEqual(entries[1][1], ([], []))
+
+        P[u'bob'].groups = [u'group:bobsgroup']
+        P[u'group:bobsgroup'].groups = [u'role:admin']
+        entries = user_management(root, request)['entries']
+        self.assertEqual(entries[0][1],
+                         (['group:bobsgroup', 'role:admin'], ['role:admin']))
+        self.assertEqual(entries[1][1], (['role:admin'], []))
+
+    def test_apply(self):
+        from kotti.views.users import user_management
+        root = get_root()
+        request = testing.DummyRequest()
+
+        TestNodeShare.add_some_principals()
+        bob = get_principals()[u'bob']
+
+        request.params['apply'] = u''
+        user_management(root, request)
+        self.assertEqual(request.session.pop_flash('info'),
+                         [u'No changes made.'])
+        self.assertEqual(list_groups('bob'), [])
+        bob.groups = [u'role:special']
+
+        request.params['role::bob::role:owner'] = u'1'
+        request.params['role::bob::role:editor'] = u'1'
+        request.params['orig-role::bob::role:owner'] = u''
+        request.params['orig-role::bob::role:editor'] = u''
+
+        user_management(root, request)
+        self.assertEqual(request.session.pop_flash('success'),
+                         [u'Your changes have been applied.'])
+        self.assertEqual(
+            set(list_groups('bob')),
             set(['role:owner', 'role:editor', 'role:special'])
             )
 

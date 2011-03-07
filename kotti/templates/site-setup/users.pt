@@ -5,8 +5,73 @@
 
   <div metal:fill-slot="content">
     <h1>${api.page_title}</h1>
+
     <div metal:use-macro="api['master_edit.messages']">
     </div>
+
+    <div class="form">
+      <form action="./@@setup-users" method="post">
+        <h2>Search users and apply roles</h2>
+        <ul>
+          <li>
+            <label for="search-query">Search users and groups</label><br/>
+            <input type="text" name="query" id="search-query"
+                   value="${request.params.get('query')}"
+                   placeholder="Search users and groups"
+                   />
+            <button type="submit" name="search">
+              Search
+            </button>
+          </li>
+        </ul>
+
+        <table tal:condition="entries">
+          <tr>
+            <th>Name</th>
+            <th tal:repeat="role available_roles">
+              ${role.title}
+            </th>
+          </tr>
+          <tr tal:repeat="entry entries"
+              class="${repeat.entry.even and 'even' or 'odd'}">
+            <td><a href="./setup-user?name=${entry[0].name}">${entry[0].title}</a>
+            <span tal:condition="entry[0].email">(${entry[0].email})</span></td>
+            <td tal:repeat="role available_roles" class="checkbox">
+              <input type="checkbox"
+                     name="role::${entry[0].name}::${role.name}"
+                     checked="${role.name in entry[1][0]}"
+                     disabled="${role.name in entry[1][1]}" />
+              <input type="hidden"
+                     name="orig-role::${entry[0].name}::${role.name}"
+                     value="${role.name in entry[1][0]}" />
+            </td>
+          </tr>
+        </table>
+
+        <ul>
+          <li>
+            <button type="submit" name="apply">
+              Apply changes
+            </button>
+          </li>
+        </ul>
+        
+      </form>
+    </div>
+
+    <div class="form ${request.params.get('add-user') is None and 'collapse'}">
+      <h2>Add user</h2>
+      <form tal:replace="structure user_addform">
+      </form>
+    </div>
+
+    <div class="form ${request.params.get('add-group') is None and 'collapse'}">
+      <h2>Add group</h2>
+      <form tal:replace="structure group_addform">
+      </form>
+    </div>
+
+
   </div>
 
 </html>
