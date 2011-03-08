@@ -884,16 +884,16 @@ class TestNodeShare(UnitTestBase):
 
 class TestUserManagement(UnitTestBase):
     def test_roles(self):
-        from kotti.views.users import user_management
+        from kotti.views.users import users_manage
         from kotti.security import USER_MANAGEMENT_ROLES
         root = get_root()
         request = testing.DummyRequest()
         self.assertEqual(
-            [r.name for r in user_management(root, request)['available_roles']],
+            [r.name for r in users_manage(root, request)['available_roles']],
             USER_MANAGEMENT_ROLES)
 
     def test_search(self):
-        from kotti.views.users import user_management
+        from kotti.views.users import users_manage
         root = get_root()
         request = testing.DummyRequest()
         P = get_principals()
@@ -901,12 +901,12 @@ class TestUserManagement(UnitTestBase):
 
         request.params['search'] = u''
         request.params['query'] = u'Joe'
-        entries = user_management(root, request)['entries']
+        entries = users_manage(root, request)['entries']
         self.assertEqual(len(entries), 0)
         self.assertEqual(request.session.pop_flash('info'),
                          [u'No users or groups found.'])
         request.params['query'] = u'Bob'
-        entries = user_management(root, request)['entries']
+        entries = users_manage(root, request)['entries']
         self.assertEqual(entries[0][0], P['bob'])
         self.assertEqual(entries[0][1], ([], []))
         self.assertEqual(entries[1][0], P['group:bobsgroup'])
@@ -914,13 +914,13 @@ class TestUserManagement(UnitTestBase):
 
         P[u'bob'].groups = [u'group:bobsgroup']
         P[u'group:bobsgroup'].groups = [u'role:admin']
-        entries = user_management(root, request)['entries']
+        entries = users_manage(root, request)['entries']
         self.assertEqual(entries[0][1],
                          (['group:bobsgroup', 'role:admin'], ['role:admin']))
         self.assertEqual(entries[1][1], (['role:admin'], []))
 
     def test_apply(self):
-        from kotti.views.users import user_management
+        from kotti.views.users import users_manage
         root = get_root()
         request = testing.DummyRequest()
 
@@ -928,7 +928,7 @@ class TestUserManagement(UnitTestBase):
         bob = get_principals()[u'bob']
 
         request.params['apply'] = u''
-        user_management(root, request)
+        users_manage(root, request)
         self.assertEqual(request.session.pop_flash('info'),
                          [u'No changes made.'])
         self.assertEqual(list_groups('bob'), [])
@@ -939,7 +939,7 @@ class TestUserManagement(UnitTestBase):
         request.params['orig-role::bob::role:owner'] = u''
         request.params['orig-role::bob::role:editor'] = u''
 
-        user_management(root, request)
+        users_manage(root, request)
         self.assertEqual(request.session.pop_flash('success'),
                          [u'Your changes have been applied.'])
         self.assertEqual(

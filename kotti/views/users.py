@@ -14,6 +14,7 @@ from deform import Button
 from deform.widget import AutocompleteInputWidget
 from deform.widget import CheckedPasswordWidget
 from deform.widget import CheckboxChoiceWidget
+from deform.widget import SequenceWidget
 
 from kotti.security import USER_MANAGEMENT_ROLES
 from kotti.security import ROLES
@@ -152,6 +153,7 @@ class Groups(colander.SequenceSchema):
     group = colander.SchemaNode(
         colander.String(),
         validator=group_validator,
+        missing=None,
         widget=AutocompleteInputWidget(),
         )
 
@@ -167,7 +169,10 @@ class PrincipalSchema(colander.MappingSchema):
         validator=colander.Length(min=5),
         widget=CheckedPasswordWidget(),
         )
-    active = colander.SchemaNode(colander.Boolean())
+    active = colander.SchemaNode(
+        colander.Boolean(),
+        description=u"Untick this to deactivate the account.",
+        )
     roles = colander.SchemaNode(
         deform.Set(allow_empty=True),
         validator=roleset_validator,
@@ -175,23 +180,25 @@ class PrincipalSchema(colander.MappingSchema):
         title=u"Global roles",
         widget=CheckboxChoiceWidget(),
         )
-    groups = Groups(missing=[])
+    groups = Groups(
+        missing=[],
+        widget=SequenceWidget(min_len=1),
+        )
 
-def principal_add_schema(base=PrincipalSchema()):
+def principal_schema(base=PrincipalSchema()):
     principals = get_principals()
     all_groups = []
     for p in principals.search(name=u'group:*'):
         all_groups.append(p.name.split(u'group:')[1])
 
     schema = base.clone()
-    del schema['active']
     schema['groups']['group'].widget.values = all_groups
     schema['roles'].widget.values = [
         (n, ROLES[n].title) for n in USER_MANAGEMENT_ROLES]
     return schema
 
 def user_schema(base=PrincipalSchema()):
-    schema = principal_add_schema(base)
+    schema = principal_schema(base)
     schema['password'].description = (
         u"Leave this empty and provide an email address below "
         u"to send the user an email to set their own password."
@@ -200,12 +207,19 @@ def user_schema(base=PrincipalSchema()):
     return schema
 
 def group_schema(base=PrincipalSchema()):
-    schema = principal_add_schema(base)
+    schema = principal_schema(base)
     del schema['password']
     schema['email'].missing = None
     return schema
 
-def user_management(context, request):
+def _massage_groups(appstruct):
+    groups = appstruct['groups']
+    all_groups = [
+        u'group:%s' % g for g in groups if g] + list(appstruct['roles'])
+    del appstruct['roles']
+    appstruct['groups'] = all_groups
+
+def users_manage(context, request):
     api = TemplateAPIEdit(
         context, request,
         page_title=u"User Management - %s" % context.title,
@@ -241,11 +255,7 @@ def user_management(context, request):
     # take control as soon as the data validates and are responsible
     # for adding the actual principals and redirect:
     def add_user(context, request, appstruct):
-        groups = appstruct['groups']
-        all_groups = [
-            u'group:%s' % g for g in groups] + list(appstruct['roles'])
-        del appstruct['roles']
-        appstruct['groups'] = all_groups
+        _massage_groups(appstruct)
         name = appstruct['name'].lower()
         get_principals()[name] = appstruct
         request.session.flash(u'%s added.' % appstruct['title'], 'success')
@@ -258,6 +268,7 @@ def user_management(context, request):
 
     # The actual add forms:
     uschema = user_schema()
+    del uschema['active']
     user_form = Form(
         uschema,
         buttons=(Button('add-user', u'Add User'), 'cancel'),
@@ -273,6 +284,7 @@ def user_management(context, request):
         return user_addform
 
     gschema = group_schema()
+    del gschema['active']
     group_form = Form(
         gschema,
         buttons=(Button('add-group', u'Add Group'), 'cancel'),
@@ -295,6 +307,54 @@ def user_management(context, request):
         'group_addform': group_addform,
         }
 
+def user_manage(context, request):
+    username = request.params['name']
+    principal = get_principals()[username]
+
+    api = TemplateAPIEdit(
+        context, request,
+        page_title=u"Edit User - %s" % context.title,
+        cp_links=CONTROL_PANEL_LINKS,
+        principal=principal,
+        )
+
+    def edit_principal(context, request, appstruct):
+        _massage_groups(appstruct)
+        for key, value in appstruct.items():
+            setattr(context, key, value)
+        request.session.flash(u"Your changes have been saved.", 'success')
+        return HTTPFound(location=request.url)
+
+    def appstruct(principal):
+        d = principal.__dict__
+        groups = [g.split('group:')[1] for g in d['groups']
+                  if g.startswith('group:')]
+        roles = [r for r in d['groups'] if r.startswith('role:')]
+        d['groups'] = groups
+        d['roles'] = roles
+        return d
+
+    uschema = user_schema()
+    del uschema['name']
+    del uschema['password']
+    user_form = Form(
+        uschema,
+        buttons=('save', 'cancel'),
+        )
+    user_fc = FormController(
+        user_form,
+        appstruct=appstruct,
+        edit_item=edit_principal,
+        )
+    form = user_fc(principal, request)
+    if is_response(form):
+        return form
+
+    return {
+        'api': api,
+        'form': form,
+        }
+
 def includeme(config):
     config.add_view(
         share_node,
@@ -304,9 +364,17 @@ def includeme(config):
         )
 
     config.add_view(
-        user_management,
+        users_manage,
         name='setup-users',
         permission='admin',
         custom_predicates=(is_root,),
         renderer='../templates/site-setup/users.pt',
+        )
+
+    config.add_view(
+        user_manage,
+        name='setup-user',
+        permission='admin',
+        custom_predicates=(is_root,),
+        renderer='../templates/site-setup/user.pt',
         )

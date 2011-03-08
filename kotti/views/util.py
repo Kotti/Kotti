@@ -101,14 +101,14 @@ class TemplateAPI(object):
 
     inside = staticmethod(inside)
 
-    def avatar_url(self, user=None, s=20, default_image='identicon'):
+    def avatar_url(self, user=None, size="20", default_image='identicon'):
         if user is None:
             user = self.user
         email = user.email
         if not email:
             email = user.name
         h = hashlib.md5(email).hexdigest()
-        query = {'d': default_image, 's': str(s)}
+        query = {'default': default_image, 'size': str(size)}
         url = 'https://secure.gravatar.com/avatar/%s?%s' % (
             h, urllib.urlencode(query))
         return url
@@ -264,19 +264,26 @@ class FormController(object):
                 return e.render()
             else:
                 if self.add is None: # edit
-                    for key, value in appstruct.items():
-                        setattr(context, key, value)
-                    request.session.flash(self.edit_success_msg, 'success')
-                    location = resource_url(context, request, self.success_path)
-                    return HTTPFound(location=location)
+                    return self.edit_item(context, request, appstruct)
                 else: # add
                     return self.add_item(context, request, appstruct)
         else: # no post means less action
             if self.add is None:
-                return self.form.render(context.__dict__)
+                appstruct = self.appstruct(context)
+                return self.form.render(appstruct)
             else:
                 return self.form.render()
 
+    def appstruct(self, item):
+        return item.__dict__
+
+    def edit_item(self, context, request, appstruct):
+        for key, value in appstruct.items():
+            setattr(context, key, value)
+        request.session.flash(self.edit_success_msg, 'success')
+        location = resource_url(context, request, self.success_path)
+        return HTTPFound(location=location)
+        
     def add_item(self, context, request, appstruct):
         name = title_to_name(appstruct['title'])
         while name in context.keys():
