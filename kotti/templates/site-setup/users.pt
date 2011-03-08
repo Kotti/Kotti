@@ -11,7 +11,7 @@
 
     <div class="form">
       <form action="./@@setup-users" method="post">
-        <h2>Search users and apply roles</h2>
+        <h2>Search and modify users</h2>
         <ul>
           <li>
             <label for="search-query">Search users and groups</label><br/>

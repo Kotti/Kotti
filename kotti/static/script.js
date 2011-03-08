@@ -33,9 +33,14 @@
         $(".collapse").each(function() {
             $(this).find("ul").hide();
             function show() {
-                $(this).find("ul").show("fast");
-                $(this).unbind("click");
-                $(this).unbind("hover");
+                var child = $(this).find("ul:hidden");
+                if (child.length != 0) {
+                    $(this).find("ul").show(400);
+                    $("body").animate(
+                        {scrollTop: $(this).offset().top - 15}, 400);
+                    $(this).unbind("click");
+                    $(this).unbind("hover");
+                }
             };
             $(this).click(show);
             $(this).hover(show);
