@@ -23,9 +23,12 @@
   <body class="edit-view">
     <div id="user-box" class="round-corners-bottom"
          tal:condition="api.user is not None">
-      <a href="#user-dropdown" class="dropdown-trigger">
-        ${api.user.title} ↓
-      </a>
+      <div class="username"
+           style="background-image: url(${api.avatar_url(default_image='mm')})">
+        <a href="#user-dropdown" class="dropdown-trigger">
+          ${api.user.title} ↓
+        </a>
+      </div>
       <div id="user-dropdown" class="dropdown">
         <ul>
           <li tal:condition="api.has_permission('admin', api.root)">

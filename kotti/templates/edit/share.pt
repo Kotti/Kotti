@@ -26,7 +26,7 @@
           </li>
         </ul>
 
-        <table tal:condition="entries">
+        <table tal:condition="entries" class="users-matrix">
           <tr>
             <th>Name</th>
             <th tal:repeat="role available_roles">
@@ -34,8 +34,13 @@
             </th>
           </tr>
           <tr tal:repeat="entry entries"
-              class="${repeat.entry.even and 'even' or 'odd'}">
-            <td>${entry[0].title}</td>
+              class="entry ${repeat.entry.even and 'even' or 'odd'}">
+            <td>
+              <div class="username"
+                   style="background-image: url(${api.avatar_url(entry[0])})">
+                ${entry[0].title}
+              </div>
+            </td>
             <td tal:repeat="role available_roles" class="checkbox">
               <input type="checkbox"
                      name="role::${entry[0].name}::${role.name}"

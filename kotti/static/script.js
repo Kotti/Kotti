@@ -42,11 +42,28 @@
         });
     }
 
+    function hover_link_enable() {
+        $(".hover-link").removeClass("hover-link");
+
+        $(".hover-link-enable").hover(
+            function() { $(this).addClass("hover-link"); },
+            function() { $(this).removeClass("hover-link"); }
+        ).click(function() {
+            var link = $("a", $(this));
+            var target = link.attr("target");
+            if (!target)
+                target = "_self";
+            window.open(link.attr("href"), target);
+            return false;
+        });
+    }
+
     $(document).ready(function() {
         deform.load();
         dirty_forms();
         dropdowns();
         collapse();
+        hover_link_enable();
     });
 
 

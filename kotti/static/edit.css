@@ -4,6 +4,11 @@
     background-color: #edc06b;
 }
 
+.hover-link {
+    background-color: #ccc;
+    cursor: pointer;
+}
+
 /* Dropdown styles */
 
 .dropdown {
@@ -39,6 +44,11 @@
     padding: 0.2em 0.8em;
     background-color: #333;
     color: #fff;
+}
+
+div.username { 
+    background: transparent none no-repeat center left;
+    padding-left: 30px;
 }
 
 #user-box a.dropdown-trigger {
@@ -171,12 +181,14 @@ form li.error {
     background-color: #ff614e;
 }
 
+/* Table styles */
+
 table {
     text-align: left;
 }
 
 table td, table th {
-    padding: 0.5em 1em;
+    padding: 0.5em 0.5em;
 }
 
 table th {

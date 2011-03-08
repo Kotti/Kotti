@@ -1,4 +1,6 @@
+import hashlib
 import string
+import urllib
 
 from pyramid.decorator import reify
 from pyramid.httpexceptions import HTTPFound
@@ -89,6 +91,7 @@ class TemplateAPI(object):
         return children
 
     def list_children_go_up(self, context=None, permission='view'):
+        # XXX Needs to go
         if context is None:
             context = self.context
         children = self.list_children(context, permission)
@@ -97,6 +100,18 @@ class TemplateAPI(object):
         return children
 
     inside = staticmethod(inside)
+
+    def avatar_url(self, user=None, s=20, default_image='identicon'):
+        if user is None:
+            user = self.user
+        email = user.email
+        if not email:
+            email = user.name
+        h = hashlib.md5(email).hexdigest()
+        query = {'d': default_image, 's': str(s)}
+        url = 'https://secure.gravatar.com/avatar/%s?%s' % (
+            h, urllib.urlencode(query))
+        return url
 
 class TemplateAPIEdit(TemplateAPI):
     @reify
