@@ -116,16 +116,6 @@ def share_node(context, request):
         'available_roles': available_roles,
         }
 
-def group_validator(node, value):
-    """
-      >>> group_validator(None, u'this-group-never-exists')
-      Traceback (most recent call last):
-      Invalid: <unprintable Invalid object>
-    """
-    group = get_principals().get('group:' + value)
-    if group is None:
-        raise colander.Invalid(node, u"No such group: %s" % value)
-
 def name_pattern_validator(node, value):
     """
       >>> name_pattern_validator(None, u'bob')
@@ -144,24 +134,26 @@ def name_new_validator(node, value):
     if get_principals().get(value.lower()) is not None:
         raise colander.Invalid(node, u"A user with that name already exists.")
 
-class Group(colander.MappingSchema):
-    name = colander.SchemaNode(
+def roleset_validator(node, value):
+    oneof = colander.OneOf(USER_MANAGEMENT_ROLES)
+    [oneof(node, item) for item in value]
+
+def group_validator(node, value):
+    """
+      >>> group_validator(None, u'this-group-never-exists')
+      Traceback (most recent call last):
+      Invalid: <unprintable Invalid object>
+    """
+    principals = get_principals()
+    if principals.get('group:' + value) is None:
+        raise colander.Invalid(node, u"No such group: %s" % value)
+
+class Groups(colander.SequenceSchema):
+    group = colander.SchemaNode(
         colander.String(),
         validator=group_validator,
         widget=AutocompleteInputWidget(),
         )
-
-class Groups(colander.SequenceSchema):
-    group = Group()
-
-class Role(colander.MappingSchema):
-    name = colander.SchemaNode(
-        colander.String(),
-        validator=colander.OneOf(USER_MANAGEMENT_ROLES),
-        )
-
-class Roles(colander.SequenceSchema):
-    role = Role()
 
 class PrincipalSchema(colander.MappingSchema):
     name = colander.SchemaNode(
@@ -178,6 +170,7 @@ class PrincipalSchema(colander.MappingSchema):
     active = colander.SchemaNode(colander.Boolean())
     roles = colander.SchemaNode(
         deform.Set(allow_empty=True),
+        validator=roleset_validator,
         missing=[],
         title=u"Global roles",
         widget=CheckboxChoiceWidget(),
@@ -192,7 +185,7 @@ def principal_add_schema(base=PrincipalSchema()):
 
     schema = base.clone()
     del schema['active']
-    schema['groups']['group']['name'].widget.values = all_groups
+    schema['groups']['group'].widget.values = all_groups
     schema['roles'].widget.values = [
         (n, ROLES[n].title) for n in USER_MANAGEMENT_ROLES]
     return schema
