@@ -95,7 +95,7 @@ class TestNode(UnitTestBase):
         # The root object has a persistent ACL set:
         self.assertEquals(
             root.__acl__[1:], [
-                ('Allow', 'system.Authenticated', ['view']),
+                ('Allow', 'system.Everyone', ['view']),
                 ('Allow', 'role:viewer', ['view']),
                 ('Allow', 'role:editor', ['view', 'add', 'edit']),
                 ('Allow', 'role:owner', ['view', 'add', 'edit', 'manage']),

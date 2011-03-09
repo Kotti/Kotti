@@ -129,7 +129,7 @@ USER_MANAGEMENT_ROLES = SHARING_ROLES + ['role:admin']
 
 # This is the ACL that gets set on the site root on creation.
 SITE_ACL = [
-    ['Allow', 'system.Authenticated', ['view']],
+    ['Allow', 'system.Everyone', ['view']],
     ['Allow', 'role:viewer', ['view']],
     ['Allow', 'role:editor', ['view', 'add', 'edit']],
     ['Allow', 'role:owner', ['view', 'add', 'edit', 'manage']],

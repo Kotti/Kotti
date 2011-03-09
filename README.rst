@@ -267,19 +267,19 @@ root object with this ACL that's defined in
 ``kotti.security.SITE_ACL``::
 
   SITE_ACL = [
-      ['Allow', 'system.Authenticated', ['view']],
+      ['Allow', 'system.Everyone', ['view']],
       ['Allow', 'role:viewer', ['view']],
       ['Allow', 'role:editor', ['view', 'add', 'edit']],
       ['Allow', 'role:owner', ['view', 'add', 'edit', 'manage']],
       ]
 
-You can see how viewing the site is locked down to authenticated
-users.  You can set the ACL through the ``Node.__acl__`` property to
-your liking.  To open your site so that everyone can ``view``, do::
+This makes the site viewable by everyone per default.  You can set the
+ACL on the site to your liking.  To lock down the site so that only
+authenticated users can view, do::
 
   from kotti.resources import get_root
   root = get_root(request)
-  root.__acl__ = root.__acl__ + [('Allow', 'system.Everyone'), ['view']]
+  root.__acl__ = root.__acl__[1:] + [('Allow', 'system.Authenticated', ['view'])]
 
 Roles and groups
 ----------------
