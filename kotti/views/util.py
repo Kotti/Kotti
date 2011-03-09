@@ -9,7 +9,6 @@ from pyramid.location import lineage
 from pyramid.renderers import get_renderer
 from pyramid.security import authenticated_userid
 from pyramid.security import has_permission
-from pyramid.security import view_execution_permitted
 from pyramid.url import resource_url
 from deform import ValidationFailure
 
@@ -17,6 +16,7 @@ from kotti import configuration
 from kotti.resources import DBSession
 from kotti.resources import Node
 from kotti.security import get_principals
+from kotti.security import view_permitted
 
 class TemplateAPI(object):
     """This implements the 'api' object that's passed to all
@@ -125,9 +125,9 @@ class TemplateAPIEdit(TemplateAPI):
 
     def _find_edit_view(self, item):
         view_name = self.request.view_name
-        if not view_execution_permitted(item, self.request, view_name):
+        if not view_permitted(item, self.request, view_name):
             view_name = u'edit' # XXX testme
-        if not view_execution_permitted(item, self.request, view_name):
+        if not view_permitted(item, self.request, view_name):
             view_name = u'' # XXX testme
         return view_name
 
@@ -135,7 +135,8 @@ class TemplateAPIEdit(TemplateAPI):
         links = []
         for item in items:
             view_name = self._find_edit_view(item)
-            url = resource_url(item, self.request) + '@@' + view_name
+            view_name = view_name and '@@' + view_name
+            url = resource_url(item, self.request) + view_name
             links.append(dict(
                 url=url,
                 name=item.title,

@@ -2,7 +2,6 @@ from pkg_resources import resource_filename
 from pyramid.exceptions import Forbidden
 from pyramid.httpexceptions import HTTPFound
 from pyramid.security import has_permission
-from pyramid.security import view_execution_permitted
 from pyramid.url import resource_url
 from pyramid.view import is_response
 import colander
@@ -14,6 +13,7 @@ from kotti import configuration
 from kotti.resources import DBSession
 from kotti.resources import Node
 from kotti.resources import Document
+from kotti.security import view_permitted
 from kotti.views.util import TemplateAPIEdit
 from kotti.views.util import addable_types
 from kotti.views.util import title_to_name
@@ -134,7 +134,7 @@ def move_node(context, request):
     if 'delete' in P and 'delete-confirm' in P:
         parent = context.__parent__
         redirect_elements = []
-        if view_execution_permitted(parent, request, 'edit'):
+        if view_permitted(parent, request, 'edit'):
             redirect_elements.append('edit')
         location = resource_url(parent, request, *redirect_elements)
         request.session.flash(u'%s deleted.' % context.title, 'success')

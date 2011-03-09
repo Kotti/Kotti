@@ -3,7 +3,6 @@ import urllib
 
 from pyramid.threadlocal import get_current_request
 from pyramid.url import resource_url
-from pyramid.security import view_execution_permitted
 from sqlalchemy.types import TypeDecorator, VARCHAR
 
 class JsonType(TypeDecorator):
@@ -37,7 +36,8 @@ class ViewLink(object):
             self.url(context, request))
 
     def permitted(self, context, request):
-        return view_execution_permitted(context, request, self.path)
+        from kotti.security import view_permitted
+        return view_permitted(context, request, self.path)
 
     def __eq__(self, other):
         return isinstance(other, ViewLink) and repr(self) == repr(other)

@@ -14,6 +14,7 @@ from sqlalchemy.orm.exc import NoResultFound
 from pyramid.location import lineage
 from pyramid.security import Allow
 from pyramid.security import ALL_PERMISSIONS
+from pyramid.security import view_execution_permitted
 
 from kotti import configuration
 from kotti.resources import DBSession
@@ -254,13 +255,20 @@ def list_groups_callback(name, request):
     if not is_user(name):
         return None # Disallow logging in with groups
     if name in get_principals():
-        context = getattr(request, 'context', None)
+        context = request.environ.get(
+            'authz_context', getattr(request, 'context', None))
         if context is None:
-            # XXX This stems from an issue with SA events; they don't
-            # have request.context available:
+            # SA events don't have request.context available
             from kotti.resources import get_root
             context = get_root(request)
         return list_groups(name, context)
+
+def view_permitted(context, request, name=''):
+    try:
+        request.environ['authz_context'] = context
+        return view_execution_permitted(context, request, name)
+    finally:
+        del request.environ['authz_context']
 
 def principals_with_local_roles(context):
     """Return a list of principal names that have local roles

@@ -21,7 +21,6 @@ from sqlalchemy import Unicode
 from sqlalchemy import UnicodeText
 from sqlalchemy import MetaData
 from pyramid.traversal import resource_path
-from pyramid.security import view_execution_permitted
 
 metadata = MetaData()
 DBSession = scoped_session(sessionmaker(extension=ZopeTransactionExtension()))
@@ -31,6 +30,7 @@ from kotti.util import ViewLink
 from kotti.util import JsonType
 from kotti.security import PersistentACL
 from kotti.security import get_principals
+from kotti.security import view_permitted
 from kotti.security import SITE_ACL
 
 class Container(object, DictMixin):
@@ -74,7 +74,7 @@ class TypeInfo(object):
         """Return True if the type described in 'self' may be added to
         'context'.
         """
-        if view_execution_permitted(context, request, self.add_view):
+        if view_permitted(context, request, self.add_view):
             return context.type_info.name in self.addable_to
         else:
             return False
