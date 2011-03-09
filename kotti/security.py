@@ -37,14 +37,12 @@ class Principal(object):
         log in.  This allows the deactivation of accounts without
         deleting them.
 
-      - Attributes 'confirm_token' and 'confirm_token_date' are set
-        whenever a user has forgotten their password.  This token is
-        used to identify the receiver of the e-mail.  These two
-        attributes should be set to None once confirmation has
-        succeeded.
+      - The 'confirm_token' attribute is set whenever a user has
+        forgotten their password.  This token is used to identify the
+        receiver of the e-mail.  This attribute should be set to
+        'None' once confirmation has succeeded.
     """
-    def __init__(self, name, password=None, active=True,
-                 confirm_token=None, confirm_token_date=None,
+    def __init__(self, name, password=None, active=True, confirm_token=None,
                  title=u"", email=None, groups=()):
         self.name = name
         if password is not None:
@@ -52,7 +50,6 @@ class Principal(object):
         self.password = password
         self.active = active
         self.confirm_token = confirm_token
-        self.confirm_token_date = confirm_token_date
         self.title = title
         self.email = email
         self.groups = groups
@@ -381,7 +378,6 @@ principals_table = Table('principals', metadata,
     Column('password', Unicode(100)),
     Column('active', Boolean),
     Column('confirm_token', Unicode(100)),
-    Column('confirm_token_date', DateTime()),
     Column('title', Unicode(100), nullable=False),
     Column('email', Unicode(100), unique=True),
     Column('groups', JsonType(), nullable=False),
