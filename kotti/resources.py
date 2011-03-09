@@ -1,9 +1,6 @@
 from UserDict import DictMixin
 
 import transaction
-from zope.sqlalchemy import ZopeTransactionExtension
-from sqlalchemy.orm import scoped_session
-from sqlalchemy.orm import sessionmaker
 from sqlalchemy.orm import backref
 from sqlalchemy.orm import mapper
 from sqlalchemy.orm import object_mapper
@@ -19,13 +16,11 @@ from sqlalchemy import Integer
 from sqlalchemy import String
 from sqlalchemy import Unicode
 from sqlalchemy import UnicodeText
-from sqlalchemy import MetaData
 from pyramid.traversal import resource_path
 
-metadata = MetaData()
-DBSession = scoped_session(sessionmaker(extension=ZopeTransactionExtension()))
-
-from kotti import configuration
+from kotti import get_settings
+from kotti import DBSession
+from kotti import metadata
 from kotti.util import ViewLink
 from kotti.util import JsonType
 from kotti.security import PersistentACL
@@ -208,7 +203,7 @@ def populate():
     if u'admin' not in principals:
         principals[u'admin'] = {
             'name': u'admin',
-            'password': configuration.secret,
+            'password': get_settings()['kotti.secret'],
             'title': u"Administrator",
             'groups': [u'role:admin'],
             }

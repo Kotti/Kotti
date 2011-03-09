@@ -12,8 +12,8 @@ from pyramid.security import has_permission
 from pyramid.url import resource_url
 from deform import ValidationFailure
 
-from kotti import configuration
-from kotti.resources import DBSession
+from kotti import get_settings
+from kotti import DBSession
 from kotti.resources import Node
 from kotti.security import get_principals
 from kotti.security import view_permitted
@@ -26,18 +26,19 @@ class TemplateAPI(object):
     templates.  ``api['master_edit.messages']`` will return the
     'messages' macro from the 'master_edit' template.
     """
-    macro_templates = dict(
-        master_view=configuration['kotti.templates.master_view'],
-        master_edit=configuration['kotti.templates.master_edit'],
-        master_cp=configuration['kotti.templates.master_cp'],
-        )
-
-    base_css = configuration['kotti.templates.base_css']
-    view_css = configuration['kotti.templates.view_css']
-    edit_css = configuration['kotti.templates.edit_css']
 
     def __init__(self, context, request, **kwargs):
         self.context, self.request = context, request
+
+        self.macro_templates = dict(
+            master_view=get_settings()['kotti.templates.master_view'],
+            master_edit=get_settings()['kotti.templates.master_edit'],
+            master_cp=get_settings()['kotti.templates.master_cp'],
+            )
+        self.base_css = get_settings()['kotti.templates.base_css']
+        self.view_css = get_settings()['kotti.templates.view_css']
+        self.edit_css = get_settings()['kotti.templates.edit_css']
+
         self.__dict__.update(kwargs)
 
     def __getitem__(self, dottedname):
@@ -183,7 +184,7 @@ class TemplateAPIEdit(TemplateAPI):
             return item
 
 def addable_types(context, request):
-    all_types = configuration['kotti.available_types']
+    all_types = get_settings()['kotti.available_types']
 
     # 'possible_parents' is a list of dicts with 'node' and 'factories',
     # where 'node' is the context to add to and 'factories' is the list

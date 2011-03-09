@@ -16,6 +16,7 @@ from deform.widget import CheckedPasswordWidget
 from deform.widget import CheckboxChoiceWidget
 from deform.widget import SequenceWidget
 
+#from kotti.message import send_set_password
 from kotti.security import USER_MANAGEMENT_ROLES
 from kotti.security import ROLES
 from kotti.security import SHARING_ROLES
@@ -140,11 +141,6 @@ def roleset_validator(node, value):
     [oneof(node, item) for item in value]
 
 def group_validator(node, value):
-    """
-      >>> group_validator(None, u'this-group-never-exists')
-      Traceback (most recent call last):
-      Invalid: <unprintable Invalid object>
-    """
     principals = get_principals()
     if principals.get('group:' + value) is None:
         raise colander.Invalid(node, u"No such group: %s" % value)
@@ -283,7 +279,10 @@ def users_manage(context, request):
     def add_user(context, request, appstruct):
         _massage_groups_in(appstruct)
         name = appstruct['name'].lower()
+        invitation = appstruct.pop('invitation', False)
         get_principals()[name] = appstruct
+        # if invitation:
+        #     send_set_password(get_principals()[name], context, request)
         request.session.flash(u'%s added.' % appstruct['title'], 'success')
         location = request.url.split('?')[0] + '?' + urlencode({'extra': name})
         return HTTPFound(location=location)
@@ -295,6 +294,12 @@ def users_manage(context, request):
     # The actual add forms:
     uschema = user_schema()
     del uschema['active']
+    uschema.add(colander.SchemaNode(
+        colander.Boolean(),
+        name=u'invitation',
+        title=u'Send invitation e-mail',
+        default=False,
+        ))
     user_form = Form(
         uschema,
         buttons=(Button('add-user', u'Add User'), 'cancel'),

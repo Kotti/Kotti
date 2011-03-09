@@ -9,8 +9,8 @@ from deform import Form
 from deform.widget import RichTextWidget
 from deform.widget import TextAreaWidget
 
-from kotti import configuration
-from kotti.resources import DBSession
+from kotti import get_settings
+from kotti import DBSession
 from kotti.resources import Node
 from kotti.resources import Document
 from kotti.security import view_permitted
@@ -46,7 +46,7 @@ def add_node(context, request):
     nodes to add, and redirect to the actual add form based on this
     information.
     """
-    all_types = configuration['kotti.available_types']
+    all_types = get_settings()['kotti.available_types']
     
     if request.POST:
         what, where = request.POST['what'], request.POST['where']

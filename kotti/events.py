@@ -33,7 +33,7 @@ from sqlalchemy.orm import mapper
 from pyramid.threadlocal import get_current_request
 from pyramid.security import authenticated_userid
 
-from kotti.resources import DBSession
+from kotti import DBSession
 from kotti.resources import Node
 from kotti.security import list_groups
 from kotti.security import list_groups_raw

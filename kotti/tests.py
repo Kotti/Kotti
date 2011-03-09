@@ -3,6 +3,7 @@ import unittest
 
 import transaction
 from sqlalchemy.exc import IntegrityError
+import colander
 from pyramid.authentication import CallbackAuthenticationPolicy
 from pyramid.config import DEFAULT_RENDERERS
 from pyramid.exceptions import Forbidden
@@ -10,8 +11,11 @@ from pyramid.registry import Registry
 from pyramid.security import ALL_PERMISSIONS
 from pyramid import testing
 
-import kotti
-from kotti.resources import DBSession
+from kotti import conf_defaults
+from kotti import get_settings
+from kotti import _resolve_dotted
+from kotti import main
+from kotti import DBSession
 from kotti.resources import Node
 from kotti.resources import Document
 from kotti.resources import initialize_sql
@@ -27,7 +31,6 @@ from kotti.security import get_principals
 from kotti.security import is_user
 from kotti.util import ViewLink
 from kotti.util import clear_request_cache
-from kotti import main
 
 BASE_URL = 'http://localhost:6543'
 
@@ -40,9 +43,15 @@ def _initTestingDB():
 
 def setUp(**kwargs):
     tearDown()
-    kotti.configuration.secret = 'secret'
-    _initTestingDB()
+    settings = kwargs.get('settings', {})
+    if not settings:
+        settings = conf_defaults.copy()
+        settings['kotti.secret'] = 'secret'
+        _resolve_dotted(settings)
+        kwargs['settings'] = settings
     config = testing.setUp(**kwargs)
+
+    _initTestingDB()
     for name, renderer in DEFAULT_RENDERERS:
         config.add_renderer(name, renderer)
     transaction.begin()
@@ -60,15 +69,6 @@ class UnitTestBase(unittest.TestCase):
         tearDown()
 
 class TestMain(UnitTestBase):
-    def setUp(self, **kwargs):
-        super(TestMain, self).setUp(**kwargs)
-        self.save_configuration = kotti.configuration.copy()
-
-    def tearDown(self):
-        super(TestMain, self).tearDown()
-        kotti.configuration.clear()
-        kotti.configuration.update(self.save_configuration)
-
     def required_settings(self):
         return {'sqlalchemy.url': 'sqlite://',
                 'kotti.secret': 'dude'}
@@ -85,8 +85,8 @@ class TestMain(UnitTestBase):
         settings['kotti.configurators'] = [my_configurator]
         main({}, **settings)
 
-        self.assertEqual(kotti.configuration['kotti.base_includes'], [])
-        self.assertEqual(kotti.configuration['kotti.available_types'], [MyType])
+        self.assertEqual(get_settings()['kotti.base_includes'], [])
+        self.assertEqual(get_settings()['kotti.available_types'], [MyType])
 
 class TestNode(UnitTestBase):
     def test_root_acl(self):
@@ -537,12 +537,12 @@ class TestPrincipals(UnitTestBase):
         hash_password = self.get_principals().hash_password
 
         # For 'hash_password' to work, we need to set a secret:
-        kotti.configuration.secret = 'there is no secret'
+        get_settings()['kotti.secret'] = 'there is no secret'
         hashed = hash_password(password)
         self.assertEqual(hashed, hash_password(password))
-        kotti.configuration.secret = 'different'
+        get_settings()['kotti.secret'] = 'different'
         self.assertNotEqual(hashed, hash_password(password))        
-        del kotti.configuration.secret
+        del get_settings()['kotti.secret']
 
     def test_bobs_hashed_password(self):
         bob = self.make_bob()
@@ -659,11 +659,11 @@ def nodes_addable():
     save_node_type_info = Node.type_info.copy()
     Node.type_info.addable_to = [u'Document']
     Node.type_info.add_view = u'add_document'
-    kotti.configuration['kotti.available_types'].append(Node)
+    get_settings()['kotti.available_types'].append(Node)
     try:
         yield
     finally:
-        kotti.configuration['kotti.available_types'].pop()
+        get_settings()['kotti.available_types'].pop()
         Node.type_info = save_node_type_info
 
 class TestAddableTypes(UnitTestBase):
@@ -947,6 +947,12 @@ class TestUserManagement(UnitTestBase):
             set(['role:owner', 'role:editor', 'role:special'])
             )
 
+    def test_group_validator(self):
+        from kotti.views.users import group_validator
+        self.assertRaises(
+            colander.Invalid,
+            group_validator, None, u'this-group-never-exists')
+
 class TestTemplateAPI(UnitTestBase):
     def _make(self, context=None, id=1):
         from kotti.views.util import TemplateAPIEdit
@@ -1121,13 +1127,13 @@ class TestRequestCache(UnitTestBase):
 def setUpFunctional(global_config=None, **settings):
     import wsgi_intercept.zope_testbrowser
 
-    configuration = {
+    settings = {
         'sqlalchemy.url': 'sqlite://',
         'kotti.secret': 'secret',
         }
 
     host, port = BASE_URL.split(':')[-2:]
-    app = main({}, **configuration)
+    app = main({}, **settings)
     wsgi_intercept.add_wsgi_intercept(host[2:], int(port), lambda: app)
 
     return dict(Browser=wsgi_intercept.zope_testbrowser.WSGI_Browser)

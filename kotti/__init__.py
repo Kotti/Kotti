@@ -1,33 +1,20 @@
 from sqlalchemy import engine_from_config
+from sqlalchemy import MetaData
+from sqlalchemy.orm import scoped_session
+from sqlalchemy.orm import sessionmaker
+from zope.sqlalchemy import ZopeTransactionExtension
 from pyramid.authentication import AuthTktAuthenticationPolicy
 from pyramid.authorization import ACLAuthorizationPolicy
 from pyramid.config import Configurator
 from pyramid.session import UnencryptedCookieSessionFactoryConfig
+from pyramid.threadlocal import get_current_registry
 from pyramid.util import DottedNameResolver
+from pyramid_mailer.mailer import Mailer
 
 import kotti.patches
 
-class Configuration(dict):
-    """A dict that can resolve dotted names to Python objects the
-    first time they're accessed.
-    """
-    def __init__(self, d, dotted_names):
-        super(Configuration, self).__init__(d)
-        self.dotted_names = dotted_names
-
-    def __getitem__(self, key):
-        value = super(Configuration, self).__getitem__(key)
-        if key in self.dotted_names and isinstance(value, basestring):
-            values = []
-            for dottedname in value.split():
-                values.append(DottedNameResolver(None).resolve(dottedname))
-            super(Configuration, self).__setitem__(key, values)
-            return values
-        else:
-            return value
-
-    def __getattr__(self, key): # pragma: no cover
-        return self[key]
+metadata = MetaData()
+DBSession = scoped_session(sessionmaker(extension=ZopeTransactionExtension()))
 
 def authtkt_factory(**kwargs):
     from kotti.security import list_groups_callback
@@ -44,74 +31,89 @@ def none_factory(**kwargs): # pragma: no cover
     return None
 
 # All of these can be set by passing them in the Paste Deploy settings:
-configuration = Configuration(
-    {
-        'kotti.templates.master_view': 'kotti:templates/view/master.pt',
-        'kotti.templates.master_edit': 'kotti:templates/edit/master.pt',
-        'kotti.templates.master_cp': 'kotti:templates/site-setup/master.pt',
-        'kotti.templates.base_css': 'kotti:static/base.css',
-        'kotti.templates.view_css': 'kotti:static/view.css',
-        'kotti.templates.edit_css': 'kotti:static/edit.css',
-        'kotti.configurators': '',
-        'kotti.base_includes': 'kotti.events kotti.views.view kotti.views.edit kotti.views.login kotti.views.users kotti.views.site_setup',
-        'kotti.includes': '',
-        'kotti.available_types': 'kotti.resources.Document',
-        'kotti.authn_policy_factory': 'kotti.authtkt_factory',
-        'kotti.authz_policy_factory': 'kotti.acl_factory',
-        'kotti.session_factory': 'kotti.cookie_session_factory',
-        'kotti.principals': 'kotti.security.principals',
-    },
-    dotted_names=set([
-        'kotti.configurators',
-        'kotti.base_includes',
-        'kotti.includes',
-        'kotti.available_types',
-        'kotti.authn_policy_factory',
-        'kotti.authz_policy_factory',
-        'kotti.session_factory',
-        'kotti.principals',
-        ]),
-    )
+conf_defaults = {
+    'kotti.templates.master_view': 'kotti:templates/view/master.pt',
+    'kotti.templates.master_edit': 'kotti:templates/edit/master.pt',
+    'kotti.templates.master_cp': 'kotti:templates/site-setup/master.pt',
+    'kotti.templates.base_css': 'kotti:static/base.css',
+    'kotti.templates.view_css': 'kotti:static/view.css',
+    'kotti.templates.edit_css': 'kotti:static/edit.css',
+    'kotti.configurators': '',
+    'kotti.base_includes': 'kotti.events kotti.views.view kotti.views.edit kotti.views.login kotti.views.users kotti.views.site_setup',
+    'kotti.includes': '',
+    'kotti.available_types': 'kotti.resources.Document',
+    'kotti.authn_policy_factory': 'kotti.authtkt_factory',
+    'kotti.authz_policy_factory': 'kotti.acl_factory',
+    'kotti.session_factory': 'kotti.cookie_session_factory',
+    'kotti.principals': 'kotti.security.principals',
+    }
+
+conf_dotted = set([
+    'kotti.configurators',
+    'kotti.base_includes',
+    'kotti.includes',
+    'kotti.available_types',
+    'kotti.authn_policy_factory',
+    'kotti.authz_policy_factory',
+    'kotti.session_factory',
+    'kotti.principals',
+    ])
+
+def get_settings():
+    return get_current_registry().settings
+
+def _resolve_dotted(d, keys=conf_dotted):
+    for key in keys:
+        value = d[key]
+        if not isinstance(value, basestring):
+            continue
+        new_value = []
+        for dottedname in value.split():
+            new_value.append(DottedNameResolver(None).resolve(dottedname))
+        d[key] = new_value
 
 def main(global_config, **settings):
     """ This function returns a WSGI application.
     """
-    for key in configuration:
-        if key in settings:
-            configuration[key] = settings.pop(key)
+    for key, value in conf_defaults.items():
+        settings.setdefault(key, value)
 
-    # Allow extending packages to change 'configuration' w/ Python:
-    for func in configuration['kotti.configurators']:
-        func(configuration)
+    _resolve_dotted(settings, keys=('kotti.configurators',))
+
+    # Allow extending packages to change 'settings' w/ Python:
+    for func in settings['kotti.configurators']:
+        func(settings)
+
+    _resolve_dotted(settings)
 
     secret1 = settings['kotti.secret']
-    secret2 = settings.get('kotti.secret2', secret1)
-    configuration.secret = secret1
-    configuration.secret2 = secret2    
+    secret2 = settings.setdefault('kotti.secret2', secret1)
 
-    from kotti.resources import appmaker
-    engine = engine_from_config(settings, 'sqlalchemy.')
-    get_root = appmaker(engine)
-
-    authentication_policy = configuration[
+    authentication_policy = settings[
         'kotti.authn_policy_factory'][0](secret=secret2)
-    authorization_policy = configuration[
+    authorization_policy = settings[
         'kotti.authz_policy_factory'][0]()
-    session_factory = configuration['kotti.session_factory'][0](secret=secret2)
+    session_factory = settings['kotti.session_factory'][0](secret=secret2)
 
     config = Configurator(
         settings=settings,
-        root_factory=get_root,
         authentication_policy=authentication_policy,
         authorization_policy=authorization_policy,
         session_factory=session_factory,
         )
 
+    config.begin()
+    from kotti.resources import appmaker
+    engine = engine_from_config(settings, 'sqlalchemy.')
+    config._set_root_factory(appmaker(engine))
+
+    config.registry['mailer'] = Mailer.from_settings(settings)
+
     _configure_base_views(config)
 
     # Include modules listed in 'kotti.includes' and 'kotti.includes':
     for module in (
-        configuration['kotti.base_includes'] + configuration['kotti.includes']):
+        settings['kotti.base_includes'] + settings['kotti.includes']):
         config.include(module)
 
     return config.make_wsgi_app()

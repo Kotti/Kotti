@@ -16,9 +16,9 @@ from pyramid.security import Allow
 from pyramid.security import ALL_PERMISSIONS
 from pyramid.security import view_execution_permitted
 
-from kotti import configuration
-from kotti.resources import DBSession
-from kotti.resources import metadata
+from kotti import get_settings
+from kotti import DBSession
+from kotti import metadata
 from kotti.util import JsonType
 from kotti.util import request_cache
 from kotti.util import DontCache
@@ -37,12 +37,14 @@ class Principal(object):
         log in.  This allows the deactivation of accounts without
         deleting them.
 
-      - If 'confirm_token' is not None, it will likewise block log in
-        for that account.  This attribute is used for confirmed
-        subscriptions.  That is, after confirmation, 'confirm_token'
-        should be set to 'None'.
+      - Attributes 'confirm_token' and 'confirm_token_date' are set
+        whenever a user has forgotten their password.  This token is
+        used to identify the receiver of the e-mail.  These two
+        attributes should be set to None once confirmation has
+        succeeded.
     """
-    def __init__(self, name, password=None, active=True, confirm_token=None,
+    def __init__(self, name, password=None, active=True,
+                 confirm_token=None, confirm_token_date=None,
                  title=u"", email=None, groups=()):
         self.name = name
         if password is not None:
@@ -50,6 +52,7 @@ class Principal(object):
         self.password = password
         self.active = active
         self.confirm_token = confirm_token
+        self.confirm_token_date = confirm_token_date
         self.title = title
         self.email = email
         self.groups = groups
@@ -67,8 +70,8 @@ class AbstractPrincipals(object):
     which allows searching users and groups, and the 'hash_password'
     method that implements user password hashing.
 
-    Use the 'kotti.principals' configuration variable to override
-    Kotti's default Principals implementation with your own.
+    Use the 'kotti.principals' settings variable to override Kotti's
+    default Principals implementation with your own.
     """
     def __getitem__(self, name):
         """Return the Principal object with the id 'name'.
@@ -297,7 +300,7 @@ def map_principals_with_local_roles(context):
     return sorted(value, key=lambda t: t[0].name)
 
 def get_principals():
-    return configuration['kotti.principals'][0]
+    return get_settings()['kotti.principals'][0]
 
 def is_user(principal):
     if not isinstance(principal, basestring):
@@ -310,7 +313,7 @@ class Principals(DictMixin):
     Look at 'AbstractPrincipals' for documentation.
 
     This is a default implementation that may be replaced by using the
-    'kotti.principals' configuration variable.
+    'kotti.principals' settings variable.
     """
     factory = Principal
 
@@ -367,7 +370,7 @@ class Principals(DictMixin):
         return query
 
     def hash_password(self, password):
-        salt = configuration.secret
+        salt = get_settings()['kotti.secret']
         return unicode(hashlib.sha224(salt + password).hexdigest())
 
 principals = Principals()
@@ -378,6 +381,7 @@ principals_table = Table('principals', metadata,
     Column('password', Unicode(100)),
     Column('active', Boolean),
     Column('confirm_token', Unicode(100)),
+    Column('confirm_token_date', DateTime()),
     Column('title', Unicode(100), nullable=False),
     Column('email', Unicode(100), unique=True),
     Column('groups', JsonType(), nullable=False),

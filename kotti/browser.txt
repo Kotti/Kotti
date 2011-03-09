@@ -4,8 +4,8 @@ Kotti browser tests
 Setup
 -----
 
-   >>> from kotti import tests
-   >>> from kotti.resources import Node, Document, DBSession
+   >>> from kotti import tests, DBSession
+   >>> from kotti.resources import Node, Document
 
    >>> tools = tests.setUpFunctional()
    >>> browser = tools['Browser']()
@@ -442,3 +442,6 @@ again:
   True
   >>> "Bob's Group" in browser.contents
   False
+
+
+  >>> tests.tearDown()
