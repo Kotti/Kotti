@@ -24,6 +24,11 @@ Features:
 
 - Easily extensible with **your own content types and views**
 
+Try it out
+----------
+
+You can try out Kotti on `Kotti's demo site`_.
+
 Note
 ----
 
@@ -328,6 +333,7 @@ support.
 
 .. _web content management system: http://en.wikipedia.org/wiki/Web_content_management_system
 .. _Access control lists: http://en.wikipedia.org/wiki/Access_control_list
+.. _Kotti's demo site: http://kottidemo.danielnouri.org/
 .. _developed on Github: https://github.com/dnouri/Kotti
 .. _issue tracker: https://github.com/dnouri/Kotti/issues
 .. _virtualenv: http://pypi.python.org/pypi/virtualenv
