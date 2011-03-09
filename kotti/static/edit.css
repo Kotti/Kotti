@@ -156,6 +156,21 @@ form li.error {
     padding: 1em;
 }
 
+.deformClosebuttonActive {
+   border: 0;
+   cursor: pointer;
+   float: left;
+   /* width: 1em; */
+   /* height: 1em; */
+   /* margin: .5em; */
+}
+
+.deformClosebuttonActive:before {
+    content:"✖";
+    color:red;
+    margin-right: 2px;
+}
+
 form label.desc {
     display: block;
     margin: 0 0 0.5em 0;

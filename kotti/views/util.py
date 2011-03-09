@@ -275,7 +275,7 @@ class FormController(object):
                 return self.form.render()
 
     def appstruct(self, item):
-        return item.__dict__
+        return item.__dict__.copy()
 
     def edit_item(self, context, request, appstruct):
         for key, value in appstruct.items():

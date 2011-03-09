@@ -182,6 +182,9 @@ class PrincipalSchema(colander.MappingSchema):
         )
     groups = Groups(
         missing=[],
+        # XXX min_len doesn't really do what we want here.  We'd like
+        # the close buttons to appear nevertheless (maybe the now
+        # deprecated render_initial_item did exactly that).
         widget=SequenceWidget(min_len=1),
         )
 
@@ -189,7 +192,9 @@ def principal_schema(base=PrincipalSchema()):
     principals = get_principals()
     all_groups = []
     for p in principals.search(name=u'group:*'):
-        all_groups.append(p.name.split(u'group:')[1])
+        value = p.name.split(u'group:')[1]
+        label = u"%s, %s" % (p.title, value)
+        all_groups.append(dict(value=value, label=label))
 
     schema = base.clone()
     schema['groups']['group'].widget.values = all_groups
@@ -212,12 +217,33 @@ def group_schema(base=PrincipalSchema()):
     schema['email'].missing = None
     return schema
 
-def _massage_groups(appstruct):
+def _massage_groups_in(appstruct):
+    """Manipulate appstruct received from form so that it's suitable
+    for saving on the Principal.
+
+    What we do for groups is we prefix them with 'group:'.  And the
+    'roles' in the form are really groups too, so we add to 'groups'.
+
+    The value in the form is 'name', not 'group:name', so we'll
+    need to append that before we save.
+    """
     groups = appstruct['groups']
-    all_groups = [
-        u'group:%s' % g for g in groups if g] + list(appstruct['roles'])
+    all_groups = list(appstruct['roles']) + [
+        u'group:%s' % g for g in groups if g]
     del appstruct['roles']
     appstruct['groups'] = all_groups
+
+def _massage_groups_out(appstruct):
+    """Opposite of '_massage_groups_in': remove 'groups:' prefix and
+    split 'groups' into 'roles' and 'groups'.
+    """
+    d = appstruct
+    groups = [g.split(u'group:')[1] for g in d['groups']
+              if g.startswith(u'group:')]
+    roles = [r for r in d['groups'] if r.startswith(u'role:')]
+    d['groups'] = groups
+    d['roles'] = roles
+    return d
 
 def users_manage(context, request):
     api = TemplateAPIEdit(
@@ -255,7 +281,7 @@ def users_manage(context, request):
     # take control as soon as the data validates and are responsible
     # for adding the actual principals and redirect:
     def add_user(context, request, appstruct):
-        _massage_groups(appstruct)
+        _massage_groups_in(appstruct)
         name = appstruct['name'].lower()
         get_principals()[name] = appstruct
         request.session.flash(u'%s added.' % appstruct['title'], 'success')
@@ -319,20 +345,11 @@ def user_manage(context, request):
         )
 
     def edit_principal(context, request, appstruct):
-        _massage_groups(appstruct)
+        _massage_groups_in(appstruct)
         for key, value in appstruct.items():
             setattr(context, key, value)
         request.session.flash(u"Your changes have been saved.", 'success')
         return HTTPFound(location=request.url)
-
-    def appstruct(principal):
-        d = principal.__dict__
-        groups = [g.split('group:')[1] for g in d['groups']
-                  if g.startswith('group:')]
-        roles = [r for r in d['groups'] if r.startswith('role:')]
-        d['groups'] = groups
-        d['roles'] = roles
-        return d
 
     uschema = user_schema()
     del uschema['name']
@@ -343,7 +360,7 @@ def user_manage(context, request):
         )
     user_fc = FormController(
         user_form,
-        appstruct=appstruct,
+        appstruct=lambda p: _massage_groups_out(p.__dict__.copy()),
         edit_item=edit_principal,
         )
     form = user_fc(principal, request)

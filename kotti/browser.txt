@@ -341,14 +341,35 @@ Searching for Bob will return both Bob and Bob's Group:
   True
   >>> ctrl(name="role::group:bobsgroup::role:editor").value
   False
+  >>> ctrl(name="role::bob::role:editor").value
+  False
+
+We can click on the Bob's entry to edit the list of groups he belongs
+to:
+
+  >>> browser.getLink("Bob Dabolina").click()
+  >>> ctrl(name="group").value = "bobsgroup"
+  >>> ctrl(name="save").click()
+  >>> "Your changes have been saved" in browser.contents
+  True
+
+Back in user management we can see how Bob's inherited the Viewer role
+from Bob's Group:
+
+  >>> browser.getLink("User Management").click()
+  >>> ctrl(name="query").value = "Bob"
+  >>> ctrl(name="search").click()
+  >>> ctrl(name="role::group:bobsgroup::role:viewer").value
+  True
+  >>> ctrl(name="role::group:bobsgroup::role:viewer").disabled
+  False
+  >>> ctrl(name="role::bob::role:viewer").value
+  True
+  >>> ctrl(name="role::bob::role:viewer").disabled
+  True
 
 Share
 -----
-
-XXX Assign Bob to Bob's Group
-
-  >>> from kotti.security import get_principals
-  >>> get_principals()[u'bob'].groups = [u'group:bobsgroup']
 
 The Share tab allows us to assign users and groups to roles:
 
