@@ -16,6 +16,7 @@ install_requires = [
     'formencode',
     'deform>=0.9dev',
     'WebError',
+    'pyramid_mailer',
     ]
 
 tests_require = ['nose', 'coverage', 'wsgi_intercept', 'zope.testbrowser']
