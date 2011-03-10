@@ -10,39 +10,58 @@ from pyramid.security import forget
 from pyramid.url import resource_url
 
 from kotti.message import validate_token
+from kotti.message import send_set_password
 from kotti.resources import get_root
 from kotti.resources import Node
 from kotti.security import get_principals
 from kotti.views.util import TemplateAPIEdit
 
+def _find_user(login):
+    principals = get_principals()
+    principal = principals.get(login)
+    if principal is None:
+        try:
+            Email().to_python(login)
+        except Exception:
+            pass
+        else:
+            results = [r for r in principals.search(email=login)]
+            if results:
+                principal = results[0]
+    return principal
+
 def login(context, request):
     root = get_root(request)
     api = TemplateAPIEdit(root, request)
+    principals = get_principals()
+
     came_from = request.params.get('came_from', request.url)
     login, password = u'', u''
+
     if 'submit' in request.POST:
         login = request.params['login']
         password = request.params['password']
-        principals = get_principals()
-        principal = principals.get(login)
-        if principal is None:
-            try:
-                Email().to_python(login)
-            except Exception:
-                pass
-            else:
-                results = [r for r in principals.search(email=login)]
-                if results:
-                    principal = results[0]
+        user = _find_user(login)
 
-        if (principal is not None and principal.active and 
-            principal.password == principals.hash_password(password)):
+        if (user is not None and user.active and 
+            user.password == principals.hash_password(password)):
             headers = remember(request, login)
             request.session.flash(
-                u"Welcome, %s!" % principal.title or principal.name, 'success')
+                u"Welcome, %s!" % user.title or user.name, 'success')
             return HTTPFound(location=came_from, headers=headers)
-
         request.session.flash(u"Login failed.", 'error')
+
+    if 'reset-password' in request.POST:
+        login = request.params['login']
+        user = _find_user(login)
+        if user is not None:
+            send_set_password(user, request, templates='reset-password')
+            request.session.flash(
+                u"You should receive an email with a link to reset your "
+                u"password momentarily.", 'success')
+        else:
+            request.session.flash(
+                "That username or email is not known to us.", 'error')
 
     return {
         'api': api,

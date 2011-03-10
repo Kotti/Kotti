@@ -317,8 +317,8 @@ And a Bob.  Only alphanumeric characters are allowed for the name:
   >>> "There was a problem" in browser.contents
   True
 
-Use a valid username now.  Note how the checkbox to send an invitation
-e-mail is ticked:
+Use a valid username now.  Note how the checkbox to send a password
+registration link is ticked:
 
   >>> ctrl("Name", index=0).value = u"bob"
   >>> ctrl("Send password registration link").selected
@@ -377,11 +377,11 @@ from Bob's Group:
   >>> ctrl(name="role::bob::role:viewer").disabled
   True
 
-Reset password
---------------
+Set password
+------------
 
-Remember that we sent Bob an e-mail for registration.  He can use it
-to set his own password:
+Remember that we sent Bob an email for registration.  He can use it to
+set his own password:
 
   >>> [email] = mailer.outbox
   >>> print email.recipients
@@ -431,8 +431,27 @@ Log in as Bob with the new password:
   >>> browser.open(tests.BASE_URL + '/edit')
   >>> browser.getLink("Logout").click()
 
+The login form has a "forgot password" button.  Let's try it:
+
+  >>> browser.open(tests.BASE_URL + '/edit')
+  >>> ctrl("Username or email").value = "bobby" # silly error
+  >>> ctrl("Password").value = ""
+  >>> ctrl(name="reset-password").click()
+  >>> "That username or email is not known to us" in browser.contents
+  True
+  >>> ctrl("Username or email").value = "bob"
+  >>> ctrl(name="reset-password").click()
+  >>> "You should receive an email" in browser.contents
+  True
+
+  >>> [email1, email2] = mailer.outbox
+  >>> print email2.body # doctest: +ELLIPSIS +NORMALIZE_WHITESPACE
+  Hello, Bob Dabolina!
+  Click this link to reset your password at Website des Kottbusser Tors:...
+
 Log in as admin again:
 
+  >>> browser.open(tests.BASE_URL + '/edit')
   >>> ctrl("Username or email").value = "admin"
   >>> ctrl("Password").value = "secret"
   >>> ctrl(name="submit").click()

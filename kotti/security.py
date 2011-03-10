@@ -39,7 +39,7 @@ class Principal(object):
 
       - The 'confirm_token' attribute is set whenever a user has
         forgotten their password.  This token is used to identify the
-        receiver of the e-mail.  This attribute should be set to
+        receiver of the email.  This attribute should be set to
         'None' once confirmation has succeeded.
     """
     def __init__(self, name, password=None, active=True, confirm_token=None,

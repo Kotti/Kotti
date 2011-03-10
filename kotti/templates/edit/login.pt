@@ -7,9 +7,10 @@
   <div metal:fill-slot="content" class="login-form">
     <h1>Login</h1>
 
+    <div metal:use-macro="api['master_view.messages']">
+    </div>
+
     <div class="form">
-      <div metal:use-macro="api['master_view.messages']">
-      </div>
 
       <form action="${url}" method="post">
         <input type="hidden" name="came_from" value="${came_from}"/>
@@ -30,6 +31,23 @@
             </button>
           </li>
         </ul>
+
+        <div class="collapse">
+          <h3 class="forgot-password">Forgot your password?</h3>
+          <ul>
+            <li>
+              Fill out your username or email above and click
+              <em>Reset password</em> below to receive an email with a
+              link to reset your password.
+            </li>
+            <li>
+              <button type="submit" name="reset-password" class="submit">
+                Reset password
+              </button>
+            </li>
+          </ul>
+        </div>
+
       </form>
     </div>
 

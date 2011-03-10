@@ -16,9 +16,17 @@ You've just been invited to join ${site_title}.  Click here to set
 your password and log in: ${url}
 """
 
+RESET_PASSWORD_SUBJECT = u"Reset your password for ${site_title}"
+RESET_PASSWORD_BODY = u"""Hello, ${user_title}!
+
+Click this link to reset your password at ${site_title}: ${url}
+"""
+
 message_templates = {
     'set-password': dict(subject=Template(SET_PASSWORD_SUBJECT),
                          body=Template(SET_PASSWORD_BODY)),
+    'reset-password': dict(subject=Template(RESET_PASSWORD_SUBJECT),
+                           body=Template(RESET_PASSWORD_BODY)),
     }
 
 _inject_mailer = []
@@ -68,7 +76,7 @@ def validate_token(user, token, valid_hrs=24):
             return True
     return False
 
-def send_set_password(user, request):
+def send_set_password(user, request, templates='set-password'):
     site_title = get_settings()['kotti.site_title']
     token = make_token(user)
     user.confirm_token = unicode(token)
@@ -82,7 +90,7 @@ def send_set_password(user, request):
         site_title=site_title,
         url=set_password_url,
         )
-    templates = message_templates['set-password']
+    templates = message_templates[templates]
     subject = templates['subject'].substitute(variables)
     body = templates['body'].substitute(variables)
     message = Message(

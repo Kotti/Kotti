@@ -105,28 +105,6 @@ div.username {
     background-color: white;
 }
 
-/* Messages */
-
-.message {
-    background-color: #bbb;
-    padding: 0.5em 1em;
-    margin: 0.5em 2em 1em;
-    text-align: center;
-    font-weight: bold;
-}
-
-.message.success {
-    background-color: #b5cc7a;
-}
-
-.message.info {
-    background-color: #edc06b;
-}
-
-.message.error {
-    background-color: #ff614e;
-}
-
 /* Form styles */
 
 div.form {
@@ -216,4 +194,10 @@ td.checkbox {
 
 tr.even {
     background-color: white;
+}
+
+/* Login form */
+
+.login-form .forgot-password {
+    text-align: center;
 }

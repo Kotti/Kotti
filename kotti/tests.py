@@ -590,7 +590,7 @@ class TestPrincipals(UnitTestBase):
                          [u'Welcome, Bob Dabolina!'])
         self.assertEqual(request.session.pop_flash('error'), [])
 
-        # Log in with e-mail:
+        # Log in with email:
         request.params['login'] = u'bob@dabolina.com'
         result = login(None, request)
         self.assertEqual(result.status, '302 Found')
