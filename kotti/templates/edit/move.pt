@@ -7,7 +7,7 @@
   <div metal:fill-slot="content">
     <h1>Move <em>${api.context.title}</em></h1>
 
-    <div metal:use-macro="api['master_edit.messages']">
+    <div metal:use-macro="api['master_view.messages']">
     </div>
 
     <div class="form collapse">

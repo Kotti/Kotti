@@ -5,6 +5,10 @@
       metal:use-macro="api['master_view.main']">
   <div metal:fill-slot="content" class="document-view">
     <h1>${api.context.title}</h1>
+
+    <div metal:use-macro="api['master_view.messages']">
+    </div>
+
     <p class="description">
       ${api.context.description}
     </p>

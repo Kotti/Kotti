@@ -4,11 +4,11 @@
       xmlns:tal="http://xml.zope.org/namespaces/tal"
       metal:use-macro="api['master_edit.main']">
 
-  <div metal:fill-slot="content" class="document-view">
+  <div metal:fill-slot="content" class="login-form">
     <h1>Login</h1>
 
     <div class="form">
-      <div metal:use-macro="api['master_edit.messages']">
+      <div metal:use-macro="api['master_view.messages']">
       </div>
 
       <form action="${url}" method="post">
@@ -25,7 +25,7 @@
                    value="${password}"/>
           </li>
           <li>
-            <button type="submit" name="submitted" class="submit">
+            <button type="submit" name="submit" class="submit">
               Log in
             </button>
           </li>

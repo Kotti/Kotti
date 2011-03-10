@@ -33,7 +33,7 @@ from kotti.views.util import FormController
 def roles_form_handler(context, request, available_role_names, groups_lister):
     changed = []
     
-    if 'apply' in request.params:
+    if 'apply' in request.POST:
         p_to_r = {}
         for name in request.params:
             if name.startswith('orig-role::'):
@@ -80,7 +80,7 @@ def search_principals(request, context=None, ignore=None, extra=()):
             entries.append((p, list_groups_ext(principal_name, context)))
             ignore.add(principal_name)
 
-    if 'search' in request.params:
+    if 'search' in request.POST:
         query = '*%s*' % request.params['query']
         found = False
         for p in principals.search(name=query, title=query, email=query):

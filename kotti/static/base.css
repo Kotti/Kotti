@@ -22,6 +22,30 @@ html, body {
     color: #fff;
 }
 
+/* Messages */
+
+.message {
+    background-color: #bbb;
+    padding: 0.5em 1em;
+    margin: 0.5em 2em 1em;
+    text-align: center;
+    font-weight: bold;
+}
+
+.message.success {
+    background-color: #b5cc7a;
+}
+
+.message.info {
+    background-color: #edc06b;
+}
+
+.message.error {
+    background-color: #ff614e;
+}
+
+/* Nav */
+
 #header {
     background-color: #eee;
     padding-top: 2em;

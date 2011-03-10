@@ -573,7 +573,7 @@ class TestPrincipals(UnitTestBase):
         self.assertEqual(request.session.pop_flash('error'), [])
 
         # Attempt to log in before Bob exists:
-        request.params['submitted'] = u'on'
+        request.params['submit'] = u'on'
         request.params['login'] = u'bob'
         request.params['password'] = u'secret'
         result = login(None, request)

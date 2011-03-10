@@ -82,19 +82,6 @@
       metal:define-macro="snippets">
   <body>
 
-    <div metal:define-macro="messages">
-      <div tal:repeat="queue ('success', 'info', 'error', '')">
-        <div class="message ${queue} round-corners"
-             tal:define="messages request.session.pop_flash(queue)"
-             tal:repeat="message messages">
-          <span tal:omit-tag="" tal:repeat="line message.splitlines()">
-            ${line}
-            <br/>
-          </span>
-        </div>
-      </div>
-    </div>
-
     <div metal:define-macro="breadcrumbs" class="breadcrumbs" tal:define="(siblings, children) api.context_links">
       <span class="you-are-here">You are here:</span>
       <div tal:repeat="link api.breadcrumbs" tal:omit-tag="">

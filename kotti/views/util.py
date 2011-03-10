@@ -23,7 +23,7 @@ class TemplateAPI(object):
     templates.
 
     Use dict-access as a shortcut to retrieve template macros from
-    templates.  ``api['master_edit.messages']`` will return the
+    templates.  ``api['master_view.messages']`` will return the
     'messages' macro from the 'master_edit' template.
     """
 

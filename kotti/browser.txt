@@ -30,7 +30,7 @@ Editing is locked down to authenticated users:
   True
   >>> ctrl("Username or email").value = "admin"
   >>> ctrl("Password").value = "secret"
-  >>> ctrl(name="submitted").click()
+  >>> ctrl(name="submit").click()
   >>> "Welcome, Administrator" in browser.contents
   True
   >>> browser.url == tests.BASE_URL + '/edit'
@@ -47,14 +47,14 @@ Log in again, this time force an error:
 
   >>> ctrl("Username or email").value = "admin"
   >>> ctrl("Password").value = "funny"
-  >>> ctrl(name="submitted").click()
+  >>> ctrl(name="submit").click()
   >>> "Welcome, Adminstrator" in browser.contents
   False
   >>> "Login failed" in browser.contents
   True
   >>> ctrl("Username or email").value = "admin"
   >>> ctrl("Password").value = "secret"
-  >>> ctrl(name="submitted").click()
+  >>> ctrl(name="submit").click()
   >>> "Welcome, Administrator" in browser.contents
   True
   >>> browser.url == tests.BASE_URL + '/edit'
@@ -377,6 +377,9 @@ from Bob's Group:
   >>> ctrl(name="role::bob::role:viewer").disabled
   True
 
+Reset password
+--------------
+
 Remember that we sent Bob an e-mail for registration.  He can use it
 to set his own password:
 
@@ -390,6 +393,51 @@ to set his own password:
   You've just been invited to join Website des Kottbusser Tors.
   Click here to set your password and log in:
   http://localhost:6543/@@set-password?token=...
+
+We'll use that link to set our password:
+
+  >>> browser.getLink("Logout").click()
+  >>> link = email.body[email.body.index('http://localhost'):].split()[0]
+  >>> browser.open(link)
+  >>> ctrl("Password", index=0).value = "newpassword"
+  >>> ctrl("Confirm Password").value = "newpasswoops" # a silly error
+  >>> ctrl(name="submit").click()
+  >>> "There was an error" in browser.contents
+  True
+  >>> ctrl("Confirm Password").value = "newpassword"
+  >>> ctrl(name="submit").click()
+  >>> "You've reset your password successfully" in browser.contents
+  True
+  >>> browser.open(tests.BASE_URL + '/edit')
+  >>> browser.getLink("Logout").click()
+
+We cannot use that link again:
+
+  >>> browser.open(link)
+  >>> ctrl("Password", index=0).value = "wontwork"
+  >>> ctrl("Confirm Password").value = "wontwork"
+  >>> ctrl(name="submit").click()
+  >>> "Your password reset token may have expired" in browser.contents
+  True
+
+Log in as Bob with the new password:
+
+  >>> browser.open(tests.BASE_URL + '/edit')
+  >>> ctrl("Username or email").value = "bob"
+  >>> ctrl("Password").value = "newpassword"
+  >>> ctrl(name="submit").click()
+  >>> "Welcome, Bob Dabolina" in browser.contents
+  True
+  >>> browser.open(tests.BASE_URL + '/edit')
+  >>> browser.getLink("Logout").click()
+
+Log in as admin again:
+
+  >>> ctrl("Username or email").value = "admin"
+  >>> ctrl("Password").value = "secret"
+  >>> ctrl(name="submit").click()
+  >>> "Welcome, Administrator" in browser.contents
+  True
 
 Share
 -----
