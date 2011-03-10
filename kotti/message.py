@@ -37,7 +37,7 @@ def get_mailer():
     return Mailer.from_settings(get_settings()) # pragma: no cover
 
 def make_token(user, seconds=None):
-    secret = get_settings()['kotti.secret']
+    secret = get_settings()['kotti.secret2']
     if seconds is None:
         seconds = time.time()
     token = '%s:%s:%s' % (user.name, secret, seconds)

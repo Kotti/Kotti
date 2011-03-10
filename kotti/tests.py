@@ -48,6 +48,7 @@ def setUp(**kwargs):
     if not settings:
         settings = conf_defaults.copy()
         settings['kotti.secret'] = 'secret'
+        settings['kotti.secret2'] = 'secret2'
         _resolve_dotted(settings)
         kwargs['settings'] = settings
     config = testing.setUp(**kwargs)
