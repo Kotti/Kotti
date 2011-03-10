@@ -95,6 +95,17 @@ to configure and extend various aspects of Kotti, such as the master
 templates and CSS files used in Kotti's UI, the user database
 implementation, and the list of available content types.
 
+*kotti.site_title*
+------------------
+
+Your site's title.
+
+Mail settings: *mail.default_sender*, *mail.host* and friends
+-------------------------------------------------------------
+
+Kotti uses `pyramid_mailer`_ for its e-mailing.  See the
+`configuration options in the pyramid_mailer docs`_.
+
 *kotti.templates.master_view* and *kotti.templates.master_edit*
 ---------------------------------------------------------------
 
@@ -125,14 +136,13 @@ default looks like this::
 
   kotti.principals = kotti.security.principals
 
-
 *kotti.secret*
 --------------
 
 ``kotti.secret`` (required) and ``kotti.secret2`` (optional) are used
 as salts for various hashing functions.  Also, ``kotti.secret`` is the
-password of the default admin user.  (Which you should change
-immediately.)
+password of the default admin user.  (The admin password you should
+change immediately after you log in.)
 
 An example::
 
@@ -153,10 +163,10 @@ passwords becoming invalid.
 ``kotti.includes`` allows for convenient extension of Kotti with
 additional views, content types and event handlers.  An example::
 
-  kotti.includes = mypackage.views mypackage.events
+  kotti.includes = mypackage.views
 
 You should list here modules that contain an ``includeme`` function.
-A ``mypackage.views`` module could have this function, which will
+A ``mypackage.views`` module could have this function, which would
 register an edit view for a hypothetical event content type::
 
   def includeme(config):
@@ -339,6 +349,8 @@ support.
 .. _virtualenv: http://pypi.python.org/pypi/virtualenv
 .. _buildout: http://pypi.python.org/pypi/zc.buildout
 .. _Paste Deploy: http://pythonpaste.org/deploy/
+.. _pyramid_mailer: http://docs.pylonsproject.org/thirdparty/pyramid_mailer/
+.. _configuration options in the pyramid_mailer docs: http://docs.pylonsproject.org/thirdparty/pyramid_mailer/dev/#configuration
 .. _pyramid.authentication.AuthTktAuthenticationPolicy: http://docs.pylonsproject.org/projects/pyramid/dev/api/authentication.html
 .. _pyramid.authorization.ACLAuthorizationPolicy: http://docs.pylonsproject.org/projects/pyramid/dev/api/authorization.html
 .. _pyramid.session.UnencryptedCookieSessionFactoryConfig: http://docs.pylonsproject.org/projects/pyramid/dev/api/session.html

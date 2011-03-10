@@ -16,6 +16,7 @@ from kotti import get_settings
 from kotti import _resolve_dotted
 from kotti import main
 from kotti import DBSession
+from kotti.message import _inject_mailer
 from kotti.resources import Node
 from kotti.resources import Document
 from kotti.resources import initialize_sql
@@ -58,6 +59,7 @@ def setUp(**kwargs):
     return config
 
 def tearDown():
+    _inject_mailer[:] = []
     transaction.abort()
     testing.tearDown()
 
@@ -602,16 +604,9 @@ class TestPrincipals(UnitTestBase):
         self.assertEqual(request.session.pop_flash('error'),
                          [u'Login failed.'])
 
-        # If Bob has a 'confirm_token' set, logging in is not possible:
+        # If Bob has a 'confirm_token' set, logging in is still possible:
         bob.active = True
         bob.confirm_token = u'token'
-        result = login(None, request)
-        self.assert_(isinstance(result, dict))
-        self.assertEqual(request.session.pop_flash('error'),
-                         [u'Login failed.'])
-
-        # Allow logging in again:
-        bob.confirm_token = None
         result = login(None, request)
         self.assertEqual(result.status, '302 Found')
         self.assertEqual(request.session.pop_flash('success'),
@@ -1130,6 +1125,8 @@ def setUpFunctional(global_config=None, **settings):
     settings = {
         'sqlalchemy.url': 'sqlite://',
         'kotti.secret': 'secret',
+        'kotti.site_title': 'Website des Kottbusser Tors', # for mailing
+        'mail.default_sender': 'kotti@localhost',
         }
 
     host, port = BASE_URL.split(':')[-2:]
@@ -1137,3 +1134,9 @@ def setUpFunctional(global_config=None, **settings):
     wsgi_intercept.add_wsgi_intercept(host[2:], int(port), lambda: app)
 
     return dict(Browser=wsgi_intercept.zope_testbrowser.WSGI_Browser)
+
+def registerDummyMailer():
+    from pyramid_mailer.mailer import DummyMailer
+    mailer = DummyMailer()
+    _inject_mailer.append(mailer)
+    return mailer

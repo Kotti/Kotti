@@ -28,8 +28,7 @@ def login(context, request):
                 if results:
                     principal = results[0]
 
-        if (principal is not None and
-            principal.active and principal.confirm_token is None and
+        if (principal is not None and principal.active and 
             principal.password == principals.hash_password(password)):
             headers = remember(request, login)
             request.session.flash(

@@ -54,8 +54,12 @@ class TemplateAPI(object):
         return template.macros[macro_name]
 
     @reify
+    def site_title(self):
+        return get_settings().get('kotti.site_title', self.root.title)
+
+    @reify
     def page_title(self):
-        return u'%s - %s' % (self.context.title, self.root.title)
+        return u'%s - %s' % (self.context.title, self.site_title)
 
     def url(self, context=None, *elements):
         if context is None:
@@ -118,7 +122,7 @@ class TemplateAPIEdit(TemplateAPI):
     @reify
     def page_title(self):
         return u'%s - %s' % (
-            self.request.view_name.replace('_', ' ').title(), self.root.title)
+            self.request.view_name.replace('_', ' ').title(), self.site_title)
 
     @reify
     def first_heading(self):

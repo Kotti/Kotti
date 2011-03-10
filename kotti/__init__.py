@@ -9,9 +9,8 @@ from pyramid.config import Configurator
 from pyramid.session import UnencryptedCookieSessionFactoryConfig
 from pyramid.threadlocal import get_current_registry
 from pyramid.util import DottedNameResolver
-from pyramid_mailer.mailer import Mailer
 
-import kotti.patches
+import kotti.patches; kotti.patches
 
 metadata = MetaData()
 DBSession = scoped_session(sessionmaker(extension=ZopeTransactionExtension()))
@@ -106,8 +105,6 @@ def main(global_config, **settings):
     from kotti.resources import appmaker
     engine = engine_from_config(settings, 'sqlalchemy.')
     config._set_root_factory(appmaker(engine))
-
-    config.registry['mailer'] = Mailer.from_settings(settings)
 
     _configure_base_views(config)
 

@@ -16,7 +16,7 @@ from deform.widget import CheckedPasswordWidget
 from deform.widget import CheckboxChoiceWidget
 from deform.widget import SequenceWidget
 
-#from kotti.message import send_set_password
+from kotti.message import send_set_password
 from kotti.security import USER_MANAGEMENT_ROLES
 from kotti.security import ROLES
 from kotti.security import SHARING_ROLES
@@ -163,6 +163,7 @@ class PrincipalSchema(colander.MappingSchema):
     password = colander.SchemaNode(
         colander.String(),
         validator=colander.Length(min=5),
+        missing=None,
         widget=CheckedPasswordWidget(),
         )
     active = colander.SchemaNode(
@@ -279,10 +280,10 @@ def users_manage(context, request):
     def add_user(context, request, appstruct):
         _massage_groups_in(appstruct)
         name = appstruct['name'].lower()
-        invitation = appstruct.pop('invitation', False)
+        send_email = appstruct.pop('send_email', False)
         get_principals()[name] = appstruct
-        # if invitation:
-        #     send_set_password(get_principals()[name], context, request)
+        if send_email:
+            send_set_password(get_principals()[name], request)
         request.session.flash(u'%s added.' % appstruct['title'], 'success')
         location = request.url.split('?')[0] + '?' + urlencode({'extra': name})
         return HTTPFound(location=location)
@@ -296,9 +297,9 @@ def users_manage(context, request):
     del uschema['active']
     uschema.add(colander.SchemaNode(
         colander.Boolean(),
-        name=u'invitation',
-        title=u'Send invitation e-mail',
-        default=False,
+        name=u'send_email',
+        title=u'Send password registration link',
+        default=True,
         ))
     user_form = Form(
         uschema,

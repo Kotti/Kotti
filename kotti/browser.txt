@@ -7,12 +7,18 @@ Setup
    >>> from kotti import tests, DBSession
    >>> from kotti.resources import Node, Document
 
+Get a handle for some useful objects:
+
    >>> tools = tests.setUpFunctional()
    >>> browser = tools['Browser']()
    >>> ctrl = browser.getControl
-   >>> browser.open(tests.BASE_URL)
    >>> session = DBSession()
    >>> root = session.query(Node).get(1)
+   >>> mailer = tests.registerDummyMailer()
+
+Open the page:
+
+   >>> browser.open(tests.BASE_URL)
 
 Login
 -----
@@ -311,9 +317,12 @@ And a Bob.  Only alphanumeric characters are allowed for the name:
   >>> "There was a problem" in browser.contents
   True
 
-Correct:
+Use a valid username now.  Note how the checkbox to send an invitation
+e-mail is ticked:
 
   >>> ctrl("Name", index=0).value = u"bob"
+  >>> ctrl("Send password registration link").selected
+  True
   >>> ctrl(name="add-user").click()
   >>> "Bob Dabolina added" in browser.contents
   True
@@ -367,6 +376,20 @@ from Bob's Group:
   True
   >>> ctrl(name="role::bob::role:viewer").disabled
   True
+
+Remember that we sent Bob an e-mail for registration.  He can use it
+to set his own password:
+
+  >>> [email] = mailer.outbox
+  >>> print email.recipients
+  [u'"Bob Dabolina" <bob@dabolina.com>']
+  >>> print email.subject
+  Your registration for Website des Kottbusser Tors
+  >>> print email.body # doctest: +ELLIPSIS +NORMALIZE_WHITESPACE
+  Hello, Bob Dabolina!
+  You've just been invited to join Website des Kottbusser Tors.
+  Click here to set your password and log in:
+  http://localhost:6543/@@set-password?token=...
 
 Share
 -----
