@@ -10,19 +10,25 @@ What is Kotti?
 
 Features:
 
-- Support for **pluggable authentication** modules and single sign-on
+- A simple, **user-friendly** edit interface that hides advanced
+  functionality from less experienced content managers.
 
-- `Access control lists`_ (ACL) for **fine-grained security**
-
-- **Separation** between public area and editor interface
-
-- Separation of basic and advanced functionality in the editor user
-  interface, enabling a **pleasant learning curve for editors**
+- Separation of public site and editor interface allows for easier
+  **templating**
 
 - Easily extensible with **your own look & feel** with no programming
   required
 
-- Easily extensible with **your own content types and views**
+- a **WYSIWYG editor**
+
+- Advanced user and groups management, `Access control lists`_ (ACL)
+  for **fine-grained security control**
+
+- Support for **pluggable authentication** modules and single sign-on
+
+- **Easy configuration** through use of INI files.
+
+- Extensible with **your own content types and views**
 
 Try it out
 ----------

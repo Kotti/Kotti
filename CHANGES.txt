@@ -4,6 +4,17 @@ History
 0.1a7
 -----
 
+- Add a user management screen for adding new users and assigning them
+  to roles and groups globally.  Allow new users to set their own
+  passwords.
+
+- Add "forgotten password" button to login screen; sends an e-mail
+  with a reset password link.
+
+- Add a simple user preferences screen.
+
+- Ditch 'kotti.configuration' in favour of 'pyramid.settings'.
+
 0.1a6
 -----
 
