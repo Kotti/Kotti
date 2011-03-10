@@ -49,6 +49,11 @@ http://groups.google.com/group/kotti
 You can also find us on IRC: join the ``#kotti`` channel on
 irc.freenode.net.
 
+Requirements
+============
+
+Kotti requires Python 2.5 or later to run.
+
 Installation using virtualenv
 =============================
 

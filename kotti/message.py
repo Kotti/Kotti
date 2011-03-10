@@ -1,4 +1,5 @@
 import hashlib
+from string import Template
 import time
 import urllib
 
@@ -8,16 +9,16 @@ from pyramid_mailer.mailer import Mailer
 from kotti import get_settings
 
 
-SET_PASSWORD_SUBJECT = u"Your registration for {site_title}"
-SET_PASSWORD_BODY = u"""Hello, {user_title}!
+SET_PASSWORD_SUBJECT = u"Your registration for ${site_title}"
+SET_PASSWORD_BODY = u"""Hello, ${user_title}!
 
-You've just been invited to join {site_title}.  Click here to set
-your password and log in: {url}
+You've just been invited to join ${site_title}.  Click here to set
+your password and log in: ${url}
 """
 
 message_templates = {
-    'set-password': dict(subject=SET_PASSWORD_SUBJECT,
-                         body=SET_PASSWORD_BODY),
+    'set-password': dict(subject=Template(SET_PASSWORD_SUBJECT),
+                         body=Template(SET_PASSWORD_BODY)),
     }
 
 _inject_mailer = []
@@ -81,8 +82,9 @@ def send_set_password(user, request):
         site_title=site_title,
         url=set_password_url,
         )
-    subject = message_templates['set-password']['subject'].format(**variables)
-    body = message_templates['set-password']['body'].format(**variables)
+    templates = message_templates['set-password']
+    subject = templates['subject'].substitute(variables)
+    body = templates['body'].substitute(variables)
     message = Message(
         recipients=[u'"%s" <%s>' % (user.title, user.email)], # XXX naive?
         subject=subject,
