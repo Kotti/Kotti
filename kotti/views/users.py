@@ -153,13 +153,15 @@ class Groups(colander.SequenceSchema):
         widget=AutocompleteInputWidget(),
         )
 
-class PrincipalSchema(colander.MappingSchema):
+class PrincipalBasic(colander.MappingSchema):
+    title = colander.SchemaNode(colander.String())
+    email = colander.SchemaNode(colander.String())
+
+class PrincipalFull(PrincipalBasic):
     name = colander.SchemaNode(
         colander.String(),
         validator=colander.All(name_pattern_validator, name_new_validator),
         )
-    title = colander.SchemaNode(colander.String())
-    email = colander.SchemaNode(colander.String())
     password = colander.SchemaNode(
         colander.String(),
         validator=colander.Length(min=5),
@@ -185,30 +187,41 @@ class PrincipalSchema(colander.MappingSchema):
         widget=SequenceWidget(min_len=1),
         )
 
-def principal_schema(base=PrincipalSchema()):
+def principal_schema(base=PrincipalFull()):
     principals = get_principals()
-    all_groups = []
-    for p in principals.search(name=u'group:*'):
-        value = p.name.split(u'group:')[1]
-        label = u"%s, %s" % (p.title, value)
-        all_groups.append(dict(value=value, label=label))
-
     schema = base.clone()
-    schema['groups']['group'].widget.values = all_groups
-    schema['roles'].widget.values = [
-        (n, ROLES[n].title) for n in USER_MANAGEMENT_ROLES]
+    has_groups = True
+    try:
+        schema['groups']
+    except KeyError:
+        has_groups = False
+    if has_groups:
+        all_groups = []
+        for p in principals.search(name=u'group:*'):
+            value = p.name.split(u'group:')[1]
+            label = u"%s, %s" % (p.title, value)
+            all_groups.append(dict(value=value, label=label))
+        schema['groups']['group'].widget.values = all_groups
+        schema['roles'].widget.values = [
+            (n, ROLES[n].title) for n in USER_MANAGEMENT_ROLES]
     return schema
 
-def user_schema(base=PrincipalSchema()):
+def user_schema(base=PrincipalFull()):
     schema = principal_schema(base)
-    schema['password'].description = (
-        u"Leave this empty and provide an email address below "
-        u"to send the user an email to set their own password."
-        )
+    has_password = True
+    try:
+        schema['password']
+    except KeyError:
+        has_password = False
+    if has_password:
+        schema['password'].description = (
+            u"Leave this empty and provide an email address below "
+            u"to send the user an email to set their own password."
+            )
     schema['title'].title = u"Full name"
     return schema
 
-def group_schema(base=PrincipalSchema()):
+def group_schema(base=PrincipalFull()):
     schema = principal_schema(base)
     del schema['password']
     schema['email'].missing = None
@@ -378,6 +391,25 @@ def user_manage(context, request):
         'form': form,
         }
 
+def preferences(context, request):
+    api = TemplateAPIEdit(
+        context, request,
+        page_title=u"My preferences - %s" % context.title,
+        )
+
+    user = api.user
+    uschema = user_schema(PrincipalBasic())
+    user_form = Form(uschema, buttons=('save', 'cancel'))
+    user_fc = FormController(user_form)
+    form = user_fc(user, request)
+    if is_response(form):
+        return form
+
+    return {
+        'api': api,
+        'form': form,
+        }
+
 def includeme(config):
     config.add_view(
         share_node,
@@ -400,4 +432,11 @@ def includeme(config):
         permission='admin',
         custom_predicates=(is_root,),
         renderer='../templates/site-setup/user.pt',
+        )
+
+    config.add_view(
+        preferences,
+        name='prefs',
+        custom_predicates=(is_root,),
+        renderer='../templates/edit/simpleform.pt',
         )

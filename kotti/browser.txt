@@ -431,7 +431,7 @@ Log in as Bob with the new password:
   >>> browser.open(tests.BASE_URL + '/edit')
   >>> browser.getLink("Logout").click()
 
-The login form has a "forgot password" button.  Let's try it:
+The login form has a "Reset password" button.  Let's try it:
 
   >>> browser.open(tests.BASE_URL + '/edit')
   >>> ctrl("Username or email").value = "bobby" # silly error
@@ -456,6 +456,19 @@ Log in as admin again:
   >>> ctrl("Password").value = "secret"
   >>> ctrl(name="submit").click()
   >>> "Welcome, Administrator" in browser.contents
+  True
+
+User preferences
+----------------
+
+The "Preferences" link leads us to a form where the user can change
+their preferences:
+
+  >>> browser.getLink("Preferences").click()
+  >>> ctrl("Full name").value = "Mr. Administrator"
+  >>> #ctrl("Email").value # returns 'None'-the-string currently
+  >>> ctrl(name="save").click()
+  >>> "Your changes have been saved" in browser.contents
   True
 
 Share

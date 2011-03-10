@@ -156,5 +156,5 @@ def includeme(config):
     config.add_view(
         set_password,
         name='set-password',
-        renderer='../templates/edit/set-password.pt',
+        renderer='../templates/edit/simpleform.pt',
         )

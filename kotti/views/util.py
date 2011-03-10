@@ -287,7 +287,10 @@ class FormController(object):
         for key, value in appstruct.items():
             setattr(context, key, value)
         request.session.flash(self.edit_success_msg, 'success')
-        location = resource_url(context, request, self.success_path)
+        try:
+            location = resource_url(context, request, self.success_path)
+        except AttributeError:
+            location = request.url
         return HTTPFound(location=location)
         
     def add_item(self, context, request, appstruct):
