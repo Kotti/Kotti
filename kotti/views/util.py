@@ -131,9 +131,9 @@ class TemplateAPIEdit(TemplateAPI):
     def _find_edit_view(self, item):
         view_name = self.request.view_name
         if not view_permitted(item, self.request, view_name):
-            view_name = u'edit' # XXX testme
+            view_name = u'edit'
         if not view_permitted(item, self.request, view_name):
-            view_name = u'' # XXX testme
+            view_name = u''
         return view_name
 
     def _make_links(self, items):
@@ -250,7 +250,7 @@ class FormController(object):
     add_success_msg = u"Successfully added item."
     error_msg = (u"There was a problem with your submission.\n"
                  u"Errors have been highlighted below.")
-    success_path = 'edit'
+    success_path = '@@edit'
 
     def __init__(self, form, **kwargs):
         self.form = form
@@ -288,7 +288,7 @@ class FormController(object):
             setattr(context, key, value)
         request.session.flash(self.edit_success_msg, 'success')
         try:
-            location = resource_url(context, request, self.success_path)
+            location = resource_url(context, request) + self.success_path
         except AttributeError:
             location = request.url
         return HTTPFound(location=location)
@@ -299,7 +299,7 @@ class FormController(object):
             name = disambiguate_name(name)
         item = context[name] = self.add(**appstruct)
         request.session.flash(self.add_success_msg, 'success')
-        location = resource_url(item, request, self.success_path)
+        location = resource_url(item, request) + self.success_path
         return HTTPFound(location=location)
 
 def is_root(context, request):

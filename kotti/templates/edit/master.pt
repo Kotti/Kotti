@@ -62,20 +62,26 @@
       </div>
       <div class="clear"></div>
     </div>
-    <div id="content">
+
+    <div id="main">
       <div metal:use-macro="api['master_edit.breadcrumbs']"
            metal:define-slot="breadcrumbs">
       </div>
 
-      <div metal:define-slot="content">
-        <h1>${api.context.title}</h1>
-        <dl>
-          <dt>Name</dt>
-          <dd>${api.context.name}</dd>
-        </dl>
+      <div metal:use-macro="api['master_view.messages']">
       </div>
 
-    </div>
+      <div class="content">
+        <div metal:define-slot="content">
+          <h1>${api.context.title}</h1>
+          <dl>
+            <dt>Name</dt>
+            <dd>${api.context.name}</dd>
+          </dl>
+        </div>
+      </div>
+
+      </div>
   </body>
 </html>
 

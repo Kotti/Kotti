@@ -7,12 +7,9 @@
   <div metal:fill-slot="content">
     <h1>Move <em>${api.context.title}</em></h1>
 
-    <div metal:use-macro="api['master_view.messages']">
-    </div>
-
     <div class="form collapse">
       <h2>Copy and Paste</h2>
-      <form action="./move" method="post">
+      <form action="${request.url}" method="post">
         <ul>
           <li>
             <button type="submit" name="copy" value="${context.id}">
@@ -33,7 +30,7 @@
 
     <div class="form collapse">
       <h2>Delete</h2>
-      <form action="./move" method="post">
+      <form action="${request.url}" method="post">
         <ul>
           <li>
             Are you sure you want to delete <em>${api.context.title}</em>?
@@ -54,7 +51,7 @@
     <div class="form collapse"
          tal:condition="context is not api.root">
       <h2>Rename</h2>
-      <form action="./move" method="post">
+      <form action="${request.url}" method="post">
         <ul>
           <li>
             <label for="move-new-name" class="desc">New name</label>
@@ -79,7 +76,7 @@
          tal:define="children api.list_children()"
          tal:condition="len(children) &gt; 1">
       <h2>Order contained items</h2>
-      <form action="./move" method="post">
+      <form action="${request.url}" method="post">
         <ul>
           <li>
             <ul>

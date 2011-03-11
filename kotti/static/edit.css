@@ -67,7 +67,7 @@ div.username {
 
 .breadcrumbs {
     color: #333;
-    padding-bottom: 1em;
+    padding: 0.5em 0;
 }
 
 .breadcrumbs .you-are-here {

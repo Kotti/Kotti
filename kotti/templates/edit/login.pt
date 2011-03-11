@@ -7,11 +7,7 @@
   <div metal:fill-slot="content" class="login-form">
     <h1>Login</h1>
 
-    <div metal:use-macro="api['master_view.messages']">
-    </div>
-
     <div class="form">
-
       <form action="${url}" method="post">
         <input type="hidden" name="came_from" value="${came_from}"/>
         <ul>
@@ -47,7 +43,6 @@
             </li>
           </ul>
         </div>
-
       </form>
     </div>
 

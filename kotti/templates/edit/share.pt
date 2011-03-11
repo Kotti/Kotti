@@ -8,10 +8,7 @@
     <h1>Share <em>${api.context.title}</em></h1>
 
     <div class="form">
-      <div metal:use-macro="api['master_view.messages']">
-      </div>
-
-      <form action="./share" method="post">
+      <form action="${request.url}" method="post">
         <h2>Assign local roles</h2>
         <ul>
           <li>

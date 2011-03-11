@@ -6,10 +6,6 @@
 
   <div metal:fill-slot="content" class="set-password-form">
     <h1>${api.page_title}</h1>
-
-    <div metal:use-macro="api['master_view.messages']">
-    </div>
-
     <div class="form">
       <form tal:replace="structure form" />
     </div>

@@ -27,7 +27,8 @@ html, body {
 .message {
     background-color: #bbb;
     padding: 0.5em 1em;
-    margin: 0.5em 2em 1em;
+    margin: 1em 0;
+    width: 40em;
     text-align: center;
     font-weight: bold;
 }
@@ -81,12 +82,12 @@ html, body {
 	border-color: #555;
 }
 
-#content {
+#main {
     margin: 2em;
     margin-left: 4em;
 }
 
-#content .description {
+.content .description {
     font-weight: bold;
 }
 

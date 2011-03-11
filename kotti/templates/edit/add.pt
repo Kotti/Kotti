@@ -7,11 +7,8 @@
   <div metal:fill-slot="content">
     <h1>Add item</h1>
 
-    <div metal:use-macro="api['master_view.messages']">
-    </div>
-
     <div class="form">
-      <form action="./add" method="post">
+      <form action="${request.url}" method="post">
         <div id="what-to-add" tal:condition="len(possible_types) &gt; 1">
           <h2>What do you want to add?</h2>
           <ul>

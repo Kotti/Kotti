@@ -101,7 +101,7 @@ def move_node(context, request):
         item = session.query(Node).get(id)
         if action == 'cut':
             if not has_permission('edit', item, request):
-                raise Forbidden() # XXX testme
+                raise Forbidden()
             item.__parent__.children.remove(item)
             context.children.append(item)
             del request.session['kotti.paste']

@@ -17,7 +17,7 @@
   <body class="view-view">
     <div id="edit-box" class="vertical-text round-corners-top"
          tal:condition="api.has_permission('edit')">
-      <a href="${api.url()}@@edit">Edit</a>
+      <a href="${api.url(context, '@@edit')}">Edit</a>
     </div>
 
     <!-- Header -->
@@ -44,11 +44,16 @@
       <div class="clear"></div>
     </div>
 
-    <!-- Content -->
-    <div id="content">
-      <div metal:define-slot="content">
+    <div id="main">
+      <div metal:use-macro="api['master_view.messages']">
+      </div>
+
+      <div class="content">
+        <div metal:define-slot="content">
+        </div>
       </div>
     </div>
+
   </body>
 </html>
 
