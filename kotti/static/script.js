@@ -95,12 +95,33 @@
         });
     }
 
+    function messages(els) {
+        els.find2(".message").each(function() {
+            var type = "notice";
+            var msg = $(this);
+            var text = msg.html();
+
+            if (msg.hasClass("success"))
+                type = "success";
+            else if (msg.hasClass("error"))
+                type = "error";
+
+            msg.remove();
+            $().toastmessage('showToast', {
+                text: text,
+                type: type
+            });
+
+        });
+    }
+
     function dom_changed(els) {
         ajax_forms(els);
         dirty_forms(els);
         dropdowns(els);
         collapse(els);
         hover_link_enable(els);
+        messages(els);
     }
 
     $(document).ready(function() {

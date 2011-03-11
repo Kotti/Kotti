@@ -4,8 +4,8 @@
       metal:define-macro="snippets">
   <body>
 
-    <div metal:define-macro="messages" id="messages" class="ajax-replace">
-      <div tal:repeat="queue ('success', 'info', 'error', '')" tal:omit-tag="">
+    <div metal:define-macro="messages" id="messages" class="${request.is_xhr and 'ajax-replace' or ''}">
+      <div tal:repeat="queue ('notice', 'success', 'error', '')" tal:omit-tag="">
         <div class="message ${queue} round-corners"
              tal:define="messages request.session.pop_flash(queue)"
              tal:condition="messages"

@@ -33,12 +33,12 @@ html, body {
     font-weight: bold;
 }
 
-.message.success {
-    background-color: #b5cc7a;
+.message.notice {
+    background-color: #edc06b;
 }
 
-.message.info {
-    background-color: #edc06b;
+.message.success {
+    background-color: #b5cc7a;
 }
 
 .message.error {

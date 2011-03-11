@@ -10,7 +10,7 @@
     <div class="form collapse">
       <h2>Copy and Paste</h2>
       <form action="${request.url}" method="post"
-            class="ajax ${'copy' in request.POST or 'cut' in request.POST or 'paste' in request.POST and 'ajax-replace'}" id="form-move-1">
+            class="ajax ${'copy' in request.POST or 'cut' in request.POST or 'paste' in request.POST and 'ajax-replace' or ''}" id="form-move-1">
         <ul>
           <li>
             <button type="submit" name="copy" value="${context.id}">
@@ -32,7 +32,7 @@
     <div class="form collapse">
       <h2>Delete</h2>
       <form action="${request.url}" method="post"
-            class="ajax ${'delete' in request.POST and 'ajax-replace'}" id="form-move-2">
+            class="ajax ${'delete' in request.POST and 'ajax-replace' or ''}" id="form-move-2">
         <ul>
           <li>
             Are you sure you want to delete <em>${api.context.title}</em>?
@@ -54,7 +54,7 @@
          tal:condition="context is not api.root">
       <h2>Rename</h2>
       <form action="${request.url}" method="post"
-            class="ajax ${'rename' in request.POST and 'ajax-replace'}" id="form-move-3">
+            class="ajax ${'rename' in request.POST and 'ajax-replace' or ''}" id="form-move-3">
         <ul>
           <li>
             <label for="move-new-name" class="desc">New name</label>
@@ -80,7 +80,7 @@
          tal:condition="len(children) &gt; 1">
       <h2>Order contained items</h2>
       <form action="${request.url}" method="post"
-            class="ajax ${'order-up' in request.POST or 'order-down' in request.POST and 'ajax-replace'}" id="form-move-4">
+            class="ajax ${'order-up' in request.POST or 'order-down' in request.POST and 'ajax-replace' or ''}" id="form-move-4">
         <ul>
           <li>
             <ul>

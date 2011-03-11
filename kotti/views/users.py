@@ -62,7 +62,7 @@ def roles_form_handler(context, request, available_role_names, groups_lister):
         if changed:
             request.session.flash(u'Your changes have been applied.', 'success')
         else:
-            request.session.flash(u'No changes made.', 'info')
+            request.session.flash(u'No changes made.', 'notice')
 
     return changed
 
@@ -88,7 +88,7 @@ def search_principals(request, context=None, ignore=None, extra=()):
             if p.name not in ignore:
                 entries.append((p, list_groups_ext(p.name, context)))
         if not found:
-            flash(u'No users or groups found.', 'info')
+            flash(u'No users or groups found.', 'notice')
 
     return entries
 

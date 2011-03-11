@@ -834,7 +834,7 @@ class TestNodeShare(UnitTestBase):
         self.assertEqual(len(entries), 1)
         self.assertEqual(entries[0][0], P[u'bob'])
         self.assertEqual(entries[0][1], ([u'role:editor'], []))
-        self.assertEqual(request.session.pop_flash('info'),
+        self.assertEqual(request.session.pop_flash('notice'),
                          [u'No users or groups found.'])
 
         # It does not, however, include entries that have local group
@@ -853,7 +853,7 @@ class TestNodeShare(UnitTestBase):
 
         request.params['apply'] = u''
         share_node(root, request)
-        self.assertEqual(request.session.pop_flash('info'),
+        self.assertEqual(request.session.pop_flash('notice'),
                          [u'No changes made.'])
         self.assertEqual(list_groups('bob', root), [])
         set_groups('bob', root, ['role:special'])
@@ -902,7 +902,7 @@ class TestUserManagement(UnitTestBase):
         request.params['query'] = u'Joe'
         entries = users_manage(root, request)['entries']
         self.assertEqual(len(entries), 0)
-        self.assertEqual(request.session.pop_flash('info'),
+        self.assertEqual(request.session.pop_flash('notice'),
                          [u'No users or groups found.'])
         request.params['query'] = u'Bob'
         entries = users_manage(root, request)['entries']
@@ -928,7 +928,7 @@ class TestUserManagement(UnitTestBase):
 
         request.params['apply'] = u''
         users_manage(root, request)
-        self.assertEqual(request.session.pop_flash('info'),
+        self.assertEqual(request.session.pop_flash('notice'),
                          [u'No changes made.'])
         self.assertEqual(list_groups('bob'), [])
         bob.groups = [u'role:special']
@@ -953,15 +953,14 @@ class TestUserManagement(UnitTestBase):
             group_validator, None, u'this-group-never-exists')
 
 class TestTemplateAPI(UnitTestBase):
-    def _make(self, context=None, id=1):
+    def _make(self, context=None, request=None, id=1, **kwargs):
         from kotti.views.util import TemplateAPIEdit
-
         if context is None:
             session = DBSession()
             context = session.query(Node).get(id)
-
-        request = DummyRequest()
-        return TemplateAPIEdit(context, request)
+        if request is None:
+            request = DummyRequest()
+        return TemplateAPIEdit(context, request, **kwargs)
 
     def _create_nodes(self, root):
         # root -> a --> aa
@@ -1069,6 +1068,26 @@ class TestTemplateAPI(UnitTestBase):
     def test_getitem(self):
         api = self._make()
         self.assertRaises(KeyError, api.__getitem__, 'no-exit')
+
+    def test_bare(self):
+        # By default, no "bare" templates are used:
+        api = self._make()
+        self.assertEqual(api.bare, None)
+
+        # We can ask for "bare" templates explicitely:
+        api = self._make(bare=True)
+        self.assertEqual(api.bare, True)
+        self.assertEqual(api.macro_templates['master_view'], api.BARE_TMPL)
+
+        # An XHR request will always result in bare master templates:
+        request = DummyRequest()
+        request.is_xhr = True
+        api = self._make(request=request)
+        self.assertEqual(api.bare, True)
+
+        # unless overridden:
+        api = self._make(request=request, bare=False)
+        self.assertEqual(api.bare, False)
 
 class TestUtil(UnitTestBase):
     def test_title_to_name(self):

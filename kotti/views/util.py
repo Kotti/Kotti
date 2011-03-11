@@ -26,16 +26,17 @@ class TemplateAPI(object):
     templates.  ``api['master_view.messages']`` will return the
     'messages' macro from the 'master_edit' template.
     """
+    BARE_TMPL = 'kotti:templates/master-bare.pt'
 
-    def __init__(self, context, request, bare=False, **kwargs):
+    def __init__(self, context, request, bare=None, **kwargs):
         self.context, self.request = context, request
 
-        if request.is_xhr:
+        if request.is_xhr and bare is None:
             bare = True
-
-        bare_tmpl = 'kotti:templates/master-bare.pt'
+        self.bare = bare
         S = get_settings()
-        
+        bare_tmpl = self.BARE_TMPL
+
         self.macro_templates = dict(
             master_view=bare and bare_tmpl or S['kotti.templates.master_view'],
             master_edit=bare and bare_tmpl or S['kotti.templates.master_edit'],
@@ -256,7 +257,7 @@ class FormController(object):
     edit_success_msg = u"Your changes have been saved."
     add_success_msg = u"Successfully added item."
     error_msg = (u"There was a problem with your submission.\n"
-                 u"Errors have been highlighted below.")
+                 u"Errors have been highlighted.")
     success_path = '@@edit'
 
     def __init__(self, form, **kwargs):
