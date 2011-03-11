@@ -1,22 +1,37 @@
 (function($) {
 
-    function dirty_forms() {
-        function forms() { return $("form").not("[class~=dirty-ignore]"); }
+    $.fn.find2 = function(selector) {
+        // A find() that also return matches on the root element(s)
+        return this.filter(selector).add(this.find(selector));
+    };
 
-        forms().submit(function() { $(window).unbind('beforeunload'); });
-        var initial = forms().serialize();
-        $(window).bind("beforeunload", function() {
-            if (tinyMCE != undefined)
-                tinyMCE.triggerSave(true);
-            if ($("form").serialize() != initial) {
-                return "Your changes have not been saved.\nAre you sure you want to leave this page?";
+    function replace_html(html) {
+        // This function looks for nodes in the received HTML with the
+        // class "ajax-replace" and replaces nodes in the current DOM
+        // with matching *ids*.
+        var root = $(html);
+        var selector = null;
+        var new_el = null;
+        root.find2(".ajax-replace").each(function() {
+            if (this.id == "") {
+                throw "Found .ajax-replace elemnt without id: " + this;
             }
-            return null;
+
+            selector = "#" + this.id;
+            $(selector).replaceWith(this);
+            new_el = $(selector);
+            dom_changed(new_el);
         });
     }
 
-    function dropdowns() {
-        $(".dropdown-trigger").click(function () {
+    function ajax_forms(els) {
+        els.find2("form.ajax").ajaxForm({
+            success: replace_html
+        });
+    }
+
+    function dropdowns(els) {
+        els.find2(".dropdown-trigger").click(function () {
             var target = $($(this).attr("href"));
             // move the dropdown to the correct position
             target.css("left", $(this).position().left);
@@ -29,10 +44,12 @@
         });
     }
 
-    function collapse() {
-        $(".collapse").each(function() {
+    function collapse(els) {
+        els.find2(".collapse").each(function() {
             $(this).find("ul").hide();
+            $(this).addClass("collapsed");
             function show() {
+                $(this).removeClass("collapsed");
                 var child = $(this).find("ul:hidden");
                 if (child.length != 0) {
                     $(this).find("ul").show(400);
@@ -47,10 +64,10 @@
         });
     }
 
-    function hover_link_enable() {
-        $(".hover-link").removeClass("hover-link");
+    function hover_link_enable(els) {
+        els.find2(".hover-link").removeClass("hover-link");
 
-        $(".hover-link-enable").hover(
+        els.find2(".hover-link-enable").hover(
             function() { $(this).addClass("hover-link"); },
             function() { $(this).removeClass("hover-link"); }
         ).click(function() {
@@ -63,12 +80,17 @@
         });
     }
 
+    function dom_changed(els) {
+        ajax_forms(els);
+        dropdowns(els);
+        collapse(els);
+        hover_link_enable(els);
+    }
+
     $(document).ready(function() {
+        var els = $('html');
         deform.load();
-        dirty_forms();
-        dropdowns();
-        collapse();
-        hover_link_enable();
+        dom_changed(els);
     });
 
 

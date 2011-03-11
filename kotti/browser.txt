@@ -25,7 +25,7 @@ Login
 
 Editing is locked down to authenticated users:
 
-  >>> browser.open(tests.BASE_URL + '/edit')
+  >>> browser.open(tests.BASE_URL + '/@@edit')
   >>> "Log in" in browser.contents
   True
   >>> ctrl("Username or email").value = "admin"
@@ -33,7 +33,7 @@ Editing is locked down to authenticated users:
   >>> ctrl(name="submit").click()
   >>> "Welcome, Administrator" in browser.contents
   True
-  >>> browser.url == tests.BASE_URL + '/edit'
+  >>> browser.url == tests.BASE_URL + '/@@edit'
   True
 
 Logging out redirects us to the URL we came from and presents us with
@@ -57,7 +57,7 @@ Log in again, this time force an error:
   >>> ctrl(name="submit").click()
   >>> "Welcome, Administrator" in browser.contents
   True
-  >>> browser.url == tests.BASE_URL + '/edit'
+  >>> browser.url == tests.BASE_URL + '/@@edit'
   True
 
 Add a document
@@ -130,7 +130,7 @@ Add two more documents, at different levels
 
 Add another grandchild with the same name:
 
-  >>> browser.open(tests.BASE_URL + '/second-child/edit')
+  >>> browser.open(tests.BASE_URL + '/second-child/@@edit')
   >>> browser.getLink("Add").click()
   >>> ctrl("Add to Second Child").selected = True
   >>> ctrl("Continue").click()
@@ -159,23 +159,23 @@ Reorder documents
 Delete a document
 -----------------
 
-  >>> browser.open(tests.BASE_URL + '/second-child/grandchild/move')
+  >>> browser.open(tests.BASE_URL + '/second-child/grandchild/@@move')
   >>> ctrl(name="delete-confirm").displayValue = ['Yes']
   >>> ctrl("delete").click()
   >>> "Grandchild deleted" in browser.contents
   True
-  >>> browser.url == tests.BASE_URL + '/second-child/edit'
+  >>> browser.url == tests.BASE_URL + '/second-child/@@edit'
   True
 
 Copy and paste
 --------------
 
-  >>> browser.open(tests.BASE_URL + '/second-child/move')
+  >>> browser.open(tests.BASE_URL + '/second-child/@@move')
   >>> ctrl(name="cut").click()
   >>> "Second Child cut" in browser.contents
   True
 
-  >>> browser.open(tests.BASE_URL + '/child-one/move')
+  >>> browser.open(tests.BASE_URL + '/child-one/@@move')
   >>> ctrl(name="paste").click()
   >>> "Second Child pasted" in browser.contents
   True
@@ -185,11 +185,11 @@ Copy and paste
   Traceback (most recent call last):
   HTTPError: HTTP Error 404: Not Found
 
-  >>> browser.open(tests.BASE_URL + '/child-one/second-child/move')
+  >>> browser.open(tests.BASE_URL + '/child-one/second-child/@@move')
   >>> ctrl(name="copy").click()
   >>> "Second Child copied" in browser.contents
   True
-  >>> browser.open(tests.BASE_URL + '/move')
+  >>> browser.open(tests.BASE_URL + '/@@move')
   >>> ctrl(name="paste").click()
   >>> "Second Child pasted" in browser.contents
   True
@@ -209,11 +209,11 @@ We can paste twice since we copied:
 We can also copy and paste items that contain children, like the whole
 site:
 
-  >>> browser.open(tests.BASE_URL + '/move')
+  >>> browser.open(tests.BASE_URL + '/@@move')
   >>> ctrl(name="copy").click()
   >>> "My Site copied" in browser.contents
   True
-  >>> browser.open(tests.BASE_URL + '/second-child/move')
+  >>> browser.open(tests.BASE_URL + '/second-child/@@move')
   >>> ctrl(name="paste").click()
   >>> "My Site pasted" in browser.contents
   True
@@ -222,9 +222,9 @@ site:
 
 And finally cut and paste a tree:
 
-  >>> browser.open(tests.BASE_URL + '/second-child/move')
+  >>> browser.open(tests.BASE_URL + '/second-child/@@move')
   >>> ctrl(name="cut").click()
-  >>> browser.open(tests.BASE_URL + '/child-one/second-child/move')
+  >>> browser.open(tests.BASE_URL + '/child-one/second-child/@@move')
   >>> ctrl(name="paste").click()
   >>> "Second Child pasted" in browser.contents
   True
@@ -235,12 +235,12 @@ And finally cut and paste a tree:
 
 Note how we can't cut and paste an item into itself:
 
-  >>> browser.open(tests.BASE_URL + '/child-one/move')
+  >>> browser.open(tests.BASE_URL + '/child-one/@@move')
   >>> ctrl(name="cut").click()
   >>> ctrl(name="paste")
   Traceback (most recent call last):
   LookupError: name 'paste'
-  >>> browser.open(tests.BASE_URL + '/child-one/second-child/move')
+  >>> browser.open(tests.BASE_URL + '/child-one/second-child/@@move')
   >>> ctrl(name="paste")
   Traceback (most recent call last):
   LookupError: name 'paste'
@@ -248,9 +248,9 @@ Note how we can't cut and paste an item into itself:
 Whether we can paste or not also depends on the 'type_info.addable'
 property:
 
-  >>> browser.open(tests.BASE_URL + '/child-one/move')
+  >>> browser.open(tests.BASE_URL + '/child-one/@@move')
   >>> ctrl(name="copy").click()
-  >>> browser.open(tests.BASE_URL + '/child-one/second-child/move')
+  >>> browser.open(tests.BASE_URL + '/child-one/second-child/@@move')
   >>> ctrl(name="paste")
   <SubmitControl name='paste' type='submitbutton'>
   >>> save_addable = Document.type_info.addable_to
@@ -263,7 +263,7 @@ property:
 
 We can rename an item:
 
-  >>> browser.open(tests.BASE_URL + '/child-one/second-child/move')
+  >>> browser.open(tests.BASE_URL + '/child-one/second-child/@@move')
   >>> ctrl("New name").value
   'second-child'
   >>> ctrl("New title").value
@@ -273,7 +273,7 @@ We can rename an item:
   >>> ctrl(name="rename").click()
   >>> "Item renamed" in browser.contents
   True
-  >>> browser.url == tests.BASE_URL + '/child-one/third-child/move'
+  >>> browser.url == tests.BASE_URL + '/child-one/third-child/@@move'
   True
   >>> browser.getLink("View").click()
   >>> "My Third Child" in browser.contents
@@ -281,7 +281,7 @@ We can rename an item:
 
 We cannot rename the root:
 
-  >>> browser.open(tests.BASE_URL + '/move')
+  >>> browser.open(tests.BASE_URL + '/@@move')
   >>> ctrl("New name")
   Traceback (most recent call last):
   LookupError: label 'New name'
@@ -408,7 +408,7 @@ We'll use that link to set our password:
   >>> ctrl(name="submit").click()
   >>> "You've reset your password successfully" in browser.contents
   True
-  >>> browser.open(tests.BASE_URL + '/edit')
+  >>> browser.open(tests.BASE_URL + '/@@edit')
   >>> browser.getLink("Logout").click()
 
 We cannot use that link again:
@@ -422,18 +422,18 @@ We cannot use that link again:
 
 Log in as Bob with the new password:
 
-  >>> browser.open(tests.BASE_URL + '/edit')
+  >>> browser.open(tests.BASE_URL + '/@@edit')
   >>> ctrl("Username or email").value = "bob"
   >>> ctrl("Password").value = "newpassword"
   >>> ctrl(name="submit").click()
   >>> "Welcome, Bob Dabolina" in browser.contents
   True
-  >>> browser.open(tests.BASE_URL + '/edit')
+  >>> browser.open(tests.BASE_URL + '/@@edit')
   >>> browser.getLink("Logout").click()
 
 The login form has a "Reset password" button.  Let's try it:
 
-  >>> browser.open(tests.BASE_URL + '/edit')
+  >>> browser.open(tests.BASE_URL + '/@@edit')
   >>> ctrl("Username or email").value = "bobby" # silly error
   >>> ctrl("Password").value = ""
   >>> ctrl(name="reset-password").click()
@@ -451,7 +451,7 @@ The login form has a "Reset password" button.  Let's try it:
 
 Log in as admin again:
 
-  >>> browser.open(tests.BASE_URL + '/edit')
+  >>> browser.open(tests.BASE_URL + '/@@edit')
   >>> ctrl("Username or email").value = "admin"
   >>> ctrl("Password").value = "secret"
   >>> ctrl(name="submit").click()

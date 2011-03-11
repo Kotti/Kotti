@@ -37,6 +37,9 @@ BASE_URL = 'http://localhost:6543'
 
 ## Unit tests
 
+class DummyRequest(testing.DummyRequest):
+    is_xhr = False
+
 def _initTestingDB():
     from sqlalchemy import create_engine
     session = initialize_sql(create_engine('sqlite://'))
@@ -333,7 +336,7 @@ class TestSecurity(UnitTestBase):
         child = root[u'child'] = Node()
         session.flush()
 
-        request = testing.DummyRequest()
+        request = DummyRequest()
         auth = CallbackAuthenticationPolicy()
         auth.unauthenticated_userid = lambda *args: 'bob'
         auth.callback = list_groups_callback
@@ -392,7 +395,7 @@ class TestSecurity(UnitTestBase):
         get_principals()[u'bob'] = dict(name=u'bob')
         get_principals()[u'group:bobsgroup'] = dict(name=u'group:bobsgroup')
         
-        request = testing.DummyRequest()
+        request = DummyRequest()
         self.assertEqual(
             list_groups_callback(u'bob', request), [])
         self.assertEqual(
@@ -565,7 +568,7 @@ class TestPrincipals(UnitTestBase):
 
     def test_login(self):
         from kotti.views.login import login
-        request = testing.DummyRequest()
+        request = DummyRequest()
 
         # No login attempt:
         result = login(None, request)
@@ -619,7 +622,7 @@ class TestEvents(UnitTestBase):
         # to be able to do 'pyramid.threadlocal.get_current_request'
         # and 'authenticated_userid'.
         registry = Registry('testing')
-        request = testing.DummyRequest()
+        request = DummyRequest()
         request.registry = registry
         super(TestEvents, self).setUp(registry=registry, request=request)
         self.config.include('kotti.events')
@@ -645,7 +648,7 @@ class TestNodeView(UnitTestBase):
     def test_it(self):
         from kotti.views.view import view_node
         root = get_root()
-        request = testing.DummyRequest()
+        request = DummyRequest()
         info = view_node(root, request)
         self.assertEqual(info['api'].context, root)
 
@@ -667,21 +670,21 @@ class TestAddableTypes(UnitTestBase):
         self.config.testing_securitypolicy(permissive=True)
         self.config.include('kotti.views.edit')
         root = DBSession().query(Node).get(1)
-        request = testing.DummyRequest()
+        request = DummyRequest()
         self.assertEquals(Document.type_info.addable(root, request), True)
 
     def test_view_permitted_no(self):
         self.config.testing_securitypolicy(permissive=False)
         self.config.include('kotti.views.edit')
         root = DBSession().query(Node).get(1)
-        request = testing.DummyRequest()
+        request = DummyRequest()
         self.assertEquals(Document.type_info.addable(root, request), False)
 
     def test_multiple_types(self):
         from kotti.views.util import addable_types
         # Test a scenario where we may add multiple types to a folder:
         root = get_root()
-        request = testing.DummyRequest()
+        request = DummyRequest()
 
         with nodes_addable():
             # We should be able to add both Nodes and Documents now:
@@ -699,7 +702,7 @@ class TestAddableTypes(UnitTestBase):
         from kotti.views.util import addable_types
         # A scenario where we can add multiple types to multiple folders:
         root = get_root()
-        request = testing.DummyRequest()
+        request = DummyRequest()
 
         with nodes_addable():
             # We should be able to add both to the child and to the parent:
@@ -724,7 +727,7 @@ class TestNodeEdit(UnitTestBase):
         # The view should redirect straight to the add form if there's
         # only one choice of parent and type:
         root = get_root()
-        request = testing.DummyRequest()
+        request = DummyRequest()
         
         response = add_node(root, request)
         self.assertEqual(response.status, '302 Found')
@@ -737,7 +740,7 @@ class TestNodeEdit(UnitTestBase):
         # 'addable_types' so that the parent comes first if the
         # context we're looking at does not have any children yet.
         root = get_root()
-        request = testing.DummyRequest()
+        request = DummyRequest()
 
         with nodes_addable():
             # The child Document does not contain any other Nodes, so it's
@@ -759,7 +762,7 @@ class TestNodeMove(UnitTestBase):
     def test_paste_without_edit_permission(self):
         from kotti.views.edit import move_node
         root = DBSession().query(Node).get(1)
-        request = testing.DummyRequest()
+        request = DummyRequest()
         request.params['paste'] = u'on'
         self.config.testing_securitypolicy(permissive=False)
 
@@ -790,7 +793,7 @@ class TestNodeShare(UnitTestBase):
         from kotti.views.users import share_node
         from kotti.security import SHARING_ROLES
         root = get_root()
-        request = testing.DummyRequest()
+        request = DummyRequest()
         self.assertEqual(
             [r.name for r in share_node(root, request)['available_roles']],
             SHARING_ROLES)
@@ -798,7 +801,7 @@ class TestNodeShare(UnitTestBase):
     def test_search(self):
         from kotti.views.users import share_node
         root = get_root()
-        request = testing.DummyRequest()
+        request = DummyRequest()
         P = get_principals()
         self.add_some_principals()
 
@@ -845,7 +848,7 @@ class TestNodeShare(UnitTestBase):
     def test_apply(self):
         from kotti.views.users import share_node
         root = get_root()
-        request = testing.DummyRequest()
+        request = DummyRequest()
         self.add_some_principals()
 
         request.params['apply'] = u''
@@ -883,7 +886,7 @@ class TestUserManagement(UnitTestBase):
         from kotti.views.users import users_manage
         from kotti.security import USER_MANAGEMENT_ROLES
         root = get_root()
-        request = testing.DummyRequest()
+        request = DummyRequest()
         self.assertEqual(
             [r.name for r in users_manage(root, request)['available_roles']],
             USER_MANAGEMENT_ROLES)
@@ -891,7 +894,7 @@ class TestUserManagement(UnitTestBase):
     def test_search(self):
         from kotti.views.users import users_manage
         root = get_root()
-        request = testing.DummyRequest()
+        request = DummyRequest()
         P = get_principals()
         TestNodeShare.add_some_principals()
 
@@ -918,7 +921,7 @@ class TestUserManagement(UnitTestBase):
     def test_apply(self):
         from kotti.views.users import users_manage
         root = get_root()
-        request = testing.DummyRequest()
+        request = DummyRequest()
 
         TestNodeShare.add_some_principals()
         bob = get_principals()[u'bob']
@@ -957,7 +960,7 @@ class TestTemplateAPI(UnitTestBase):
             session = DBSession()
             context = session.query(Node).get(id)
 
-        request = testing.DummyRequest()
+        request = DummyRequest()
         return TemplateAPIEdit(context, request)
 
     def _create_nodes(self, root):
@@ -1080,7 +1083,7 @@ class TestUtil(UnitTestBase):
 class TestRequestCache(UnitTestBase):
     def setUp(self):
         registry = Registry('testing')
-        request = testing.DummyRequest()
+        request = DummyRequest()
         request.registry = registry
         super(TestRequestCache, self).setUp(registry=registry, request=request)
 

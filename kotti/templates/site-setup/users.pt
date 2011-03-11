@@ -6,9 +6,6 @@
   <div metal:fill-slot="content">
     <h1>${api.page_title}</h1>
 
-    <div metal:use-macro="api['master_view.messages']">
-    </div>
-
     <div class="form">
       <form action="${request.url}" method="post">
         <h2>Search and modify users</h2>

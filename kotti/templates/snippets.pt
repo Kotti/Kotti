@@ -1,0 +1,22 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xml:lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      metal:define-macro="snippets">
+  <body>
+
+    <div metal:define-macro="messages" id="messages" class="ajax-replace">
+      <div tal:repeat="queue ('success', 'info', 'error', '')" tal:omit-tag="">
+        <div class="message ${queue} round-corners"
+             tal:define="messages request.session.pop_flash(queue)"
+             tal:condition="messages"
+             tal:repeat="message messages">
+          <span tal:omit-tag="" tal:repeat="line message.splitlines()">
+            ${line}
+            <br/>
+          </span>
+        </div>
+      </div>
+    </div>
+
+  </body>
+</html>

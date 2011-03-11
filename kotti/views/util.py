@@ -27,17 +27,24 @@ class TemplateAPI(object):
     'messages' macro from the 'master_edit' template.
     """
 
-    def __init__(self, context, request, **kwargs):
+    def __init__(self, context, request, bare=False, **kwargs):
         self.context, self.request = context, request
 
+        if request.is_xhr:
+            bare = True
+
+        bare_tmpl = 'kotti:templates/master-bare.pt'
+        S = get_settings()
+        
         self.macro_templates = dict(
-            master_view=get_settings()['kotti.templates.master_view'],
-            master_edit=get_settings()['kotti.templates.master_edit'],
-            master_cp=get_settings()['kotti.templates.master_cp'],
+            master_view=bare and bare_tmpl or S['kotti.templates.master_view'],
+            master_edit=bare and bare_tmpl or S['kotti.templates.master_edit'],
+            master_cp=bare and bare_tmpl or S['kotti.templates.master_cp'],
+            snippets='kotti:templates/snippets.pt',
             )
-        self.base_css = get_settings()['kotti.templates.base_css']
-        self.view_css = get_settings()['kotti.templates.view_css']
-        self.edit_css = get_settings()['kotti.templates.edit_css']
+        self.base_css = S['kotti.templates.base_css']
+        self.view_css = S['kotti.templates.view_css']
+        self.edit_css = S['kotti.templates.edit_css']
 
         self.__dict__.update(kwargs)
 

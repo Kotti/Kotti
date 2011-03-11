@@ -7,9 +7,6 @@
     <div><a href="./@@setup-users?extra=${api.principal.name}">&larr; Back to User Management</a></div>
     <h1>${api.page_title}</h1>
 
-    <div metal:use-macro="api['master_view.messages']">
-    </div>
-
     <div class="form">
       <img src="${api.avatar_url(api.principal, size=40)}"
            alt="${api.principal.title}"

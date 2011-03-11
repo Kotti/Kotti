@@ -85,16 +85,18 @@ def move_node(context, request):
     """
     P = request.POST
     session = DBSession()
-    
+
     if 'copy' in P:
         request.session['kotti.paste'] = (context.id, 'copy')
         request.session.flash(u'%s copied.' % context.title, 'success')
-        return HTTPFound(location=request.url)
+        if not request.is_xhr:
+            return HTTPFound(location=request.url)
 
     if 'cut' in P:
         request.session['kotti.paste'] = (context.id, 'cut')
         request.session.flash(u'%s cut.' % context.title, 'success')
-        return HTTPFound(location=request.url)
+        if not request.is_xhr:
+            return HTTPFound(location=request.url)
 
     if 'paste' in P:
         id, action = request.session['kotti.paste']
@@ -115,7 +117,8 @@ def move_node(context, request):
             copy.name = name
             context.children.append(copy)
         request.session.flash(u'%s pasted.' % item.title, 'success')
-        return HTTPFound(location=request.url)
+        if not request.is_xhr:
+            return HTTPFound(location=request.url)
 
     if 'order-up' in P or 'order-down' in P:
         up, down = P.get('order-up'), P.get('order-down')
@@ -130,15 +133,16 @@ def move_node(context, request):
         context.children.pop(index)
         context.children.insert(index+mod, child)
         request.session.flash(u'%s reordered.' % child.title, 'success')
+        if not request.is_xhr:
+            return HTTPFound(location=request.url)
 
     if 'delete' in P and 'delete-confirm' in P:
         parent = context.__parent__
-        redirect_elements = []
-        if view_permitted(parent, request, 'edit'):
-            redirect_elements.append('edit')
-        location = resource_url(parent, request, *redirect_elements)
         request.session.flash(u'%s deleted.' % context.title, 'success')
         parent.children.remove(context)
+        location = resource_url(parent, request)
+        if view_permitted(parent, request, 'edit'):
+            location += '@@edit'
         return HTTPFound(location=location)
 
     if 'rename' in P:
@@ -147,7 +151,7 @@ def move_node(context, request):
         context.name = name
         context.title = title
         request.session.flash(u'Item renamed', 'success')
-        location = resource_url(context, request, 'move')        
+        location = resource_url(context, request) + '@@move'
         return HTTPFound(location=location)
 
     return {

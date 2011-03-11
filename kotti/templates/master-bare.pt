@@ -1,0 +1,18 @@
+<!--
+    This template is used for XHR requests and when content is rendered inline.
+-->
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xml:lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      tal:omit-tag=""
+      metal:define-macro="main">
+
+  <div metal:use-macro="api['snippets.messages']"
+       tal:condition="request.is_xhr">
+  </div>
+
+  <div metal:define-slot="content">
+    <h1>${api.context.title}</h1>
+  </div>
+
+</html>

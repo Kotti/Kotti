@@ -14,6 +14,7 @@
     <link rel="stylesheet" href="${request.static_url('deform:static/css/ui-lightness/jquery-ui-1.8.4.custom.css')}" type="text/css" />
     <script type="text/javascript" src="${request.static_url('deform:static/scripts/jquery-1.4.2.min.js')}"></script>
     <script type="text/javascript" src="${request.static_url('deform:static/scripts/jquery-ui-1.8.4.custom.min.js')}"></script>
+    <script type="text/javascript" src="${request.static_url('deform:static/scripts/jquery.form.js')}"></script>    
     <script type="text/javascript" src="${request.static_url('deform:static/tinymce/jscripts/tiny_mce/tiny_mce.js')}"></script>
     <script type="text/javascript" src="${request.static_url('deform:static/scripts/deform.js')}"></script>    
     <script type="text/javascript" src="${request.static_url('kotti:static/script.js')}"></script>
@@ -68,20 +69,16 @@
            metal:define-slot="breadcrumbs">
       </div>
 
-      <div metal:use-macro="api['master_view.messages']">
+      <div metal:use-macro="api['snippets.messages']">
       </div>
 
       <div class="content">
         <div metal:define-slot="content">
           <h1>${api.context.title}</h1>
-          <dl>
-            <dt>Name</dt>
-            <dd>${api.context.name}</dd>
-          </dl>
         </div>
       </div>
+    </div>
 
-      </div>
   </body>
 </html>
 
