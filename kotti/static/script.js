@@ -30,6 +30,21 @@
         });
     }
 
+    function dirty_forms(els) {
+        var forms = $("form").not("[class~=dirty-ignore]");
+        $(window).unbind('beforeunload');
+        forms.submit(function() { $(window).unbind('beforeunload'); });
+        var initial = forms.serialize();
+        $(window).bind("beforeunload", function() {
+            if (tinyMCE != undefined)
+                tinyMCE.triggerSave(true);
+            if ($("form").serialize() != initial) {
+                return "Your changes have not been saved.\nAre you sure you want to leave this page?";
+            }
+            return null;
+        });
+    }
+
     function dropdowns(els) {
         els.find2(".dropdown-trigger").click(function () {
             var target = $($(this).attr("href"));
@@ -82,6 +97,7 @@
 
     function dom_changed(els) {
         ajax_forms(els);
+        dirty_forms(els);
         dropdowns(els);
         collapse(els);
         hover_link_enable(els);
