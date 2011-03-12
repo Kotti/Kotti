@@ -35,8 +35,8 @@ Try it out
 
 You can try out Kotti on `Kotti's demo site`_.
 
-Note
-----
+Unstable
+--------
 
 At this point, Kotti is **experimental**.  You're encouraged to try it
 out and give us feedback, but don't use it in production yet.  We're
@@ -345,6 +345,16 @@ Have a question?  Join our mailing list at
 http://groups.google.com/group/kotti or read `this blog post`_ for
 more implementation details.
 
+License
+=======
+
+Kotti is available under the BSD- derived `Repoze Public License`_.
+
+Kotti includes the following third party packages:
+
+- `jquery.toastmessage`_ by Daniel Bremer-Tonn, available under the
+  Apache License Version 2.0
+
 Thanks
 ======
 
@@ -372,4 +382,5 @@ support.
 .. _SQLAlchemy: http://www.sqlalchemy.org/
 .. _support in SQLAlchemy: http://www.sqlalchemy.org/docs/core/engines.html#supported-databases
 .. _this blog post: http://danielnouri.org/notes/2010/01/25/16-hours-into-a-new-cms-with-pyramid/
+.. _Repoze Public License: http://repoze.org/LICENSE.txt
 .. _University of Coimbra: http://uc.pt/
