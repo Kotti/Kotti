@@ -33,6 +33,7 @@ var kotti_dom_changed_handlers = new Array();
     }
 
     function messages(els) {
+        els.find2("#messages").hide();
         els.find2(".message").each(function() {
             var type = "notice";
             var msg = $(this);
@@ -46,7 +47,6 @@ var kotti_dom_changed_handlers = new Array();
                 stayTime = 6000;
             }
 
-            msg.remove();
             $().toastmessage('showToast', {
                 text: text,
                 type: type,
