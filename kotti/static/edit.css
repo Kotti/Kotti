@@ -201,3 +201,9 @@ tr.even {
 .login-form .forgot-password {
     text-align: center;
 }
+
+/* jquery.toastmessage */
+
+.toast-position-top-right {
+    top: 40px;
+}

@@ -30,6 +30,30 @@
         });
     }
 
+    function messages(els) {
+        els.find2(".message").each(function() {
+            var type = "notice";
+            var msg = $(this);
+            var text = msg.html();
+            var stayTime = 3000;
+
+            if (msg.hasClass("success"))
+                type = "success";
+            else if (msg.hasClass("error")) {
+                type = "error";
+                stayTime = 6000;
+            }
+
+            msg.remove();
+            $().toastmessage('showToast', {
+                text: text,
+                type: type,
+                stayTime: stayTime
+            });
+
+        });
+    }
+
     function dirty_forms(els) {
         var forms = $("form").not("[class~=dirty-ignore]");
         $(window).unbind('beforeunload');
@@ -95,33 +119,13 @@
         });
     }
 
-    function messages(els) {
-        els.find2(".message").each(function() {
-            var type = "notice";
-            var msg = $(this);
-            var text = msg.html();
-
-            if (msg.hasClass("success"))
-                type = "success";
-            else if (msg.hasClass("error"))
-                type = "error";
-
-            msg.remove();
-            $().toastmessage('showToast', {
-                text: text,
-                type: type
-            });
-
-        });
-    }
-
     function dom_changed(els) {
+        messages(els);
         ajax_forms(els);
         dirty_forms(els);
         dropdowns(els);
         collapse(els);
         hover_link_enable(els);
-        messages(els);
     }
 
     $(document).ready(function() {
