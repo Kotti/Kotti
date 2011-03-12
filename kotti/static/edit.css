@@ -1,7 +1,12 @@
 /** Put here CSS that should apply to EDIT SCREENS ONLY. **/
 
-#header {
+.top-navigation {
     background-color: #edc06b;
+}
+
+#main {
+    margin: 2em;
+    margin-left: 4em;
 }
 
 .hover-link {
@@ -66,8 +71,9 @@ div.username {
 /* Breadcrumbs */
 
 .breadcrumbs {
+    display: block;
+    padding-bottom: 1em;
     color: #333;
-    padding: 0.5em 0;
 }
 
 .breadcrumbs .you-are-here {
@@ -205,5 +211,6 @@ tr.even {
 /* jquery.toastmessage */
 
 .toast-position-top-right {
-    top: 40px;
+    top: 3em;
+    right: 2em;
 }

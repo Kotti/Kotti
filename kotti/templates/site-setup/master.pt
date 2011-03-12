@@ -4,7 +4,7 @@
       metal:extend-macro="api['master_edit.main']"
       metal:define-macro="main">
 
-  <span tal:omit-tag="" metal:fill-slot="edit-box">
+  <span tal:omit-tag="" metal:fill-slot="switch-mode-box">
     <a href="${api.url(context, '@@edit')}">Edit</a>
   </span>
 
@@ -17,9 +17,6 @@
   </div>
 
   <div metal:fill-slot="breadcrumbs" tal:omit-tag=""></div>
-
-  <div metal:use-macro="api['snippets.messages']">
-  </div>
 
   <div metal:fill-slot="content"
        metal:define-slot="content">

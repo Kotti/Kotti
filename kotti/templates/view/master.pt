@@ -15,14 +15,22 @@
   </head>
 
   <body class="view-view">
-    <div id="edit-box" class="vertical-text round-corners-top"
+    <div id="skiplinks" class="hidden">
+      <ul>
+        <li><a href="#start-navigation">Skip to navigation</a></li>
+        <li><a href="#start-content">Skip to content</a></li>
+      </ul>
+    </div>
+
+    <!-- The tab to switch modes  -->
+    <div id="switch-mode-box" class="vertical-text round-corners-top"
          tal:condition="api.has_permission('edit')">
       <a href="${api.url(context, '@@edit')}">Edit</a>
     </div>
 
-    <!-- Header -->
-    <div id="header">
-      <div id="navigation-site" class="tabs1">
+    <nav id="site-navigation" class="top-navigation">
+      <a id="start-navigation" name="start-navigation"></a>
+      <div class="tabs1">
         <h2 class="hidden">Site navigation</h2>
         <ul>
           <li><a href="${api.url(api.root)}" class="${api.root == api.context and 'selected'}">Home</a></li>
@@ -42,14 +50,19 @@
         </ul>
       </div>
       <div class="clear"></div>
-    </div>
+    </nav>
 
+    <!-- The main diff -->
     <div id="main">
-      <div metal:use-macro="api['snippets.messages']">
+      <div id="main-top">
+        <div metal:use-macro="api['snippets.messages']">
+        </div>
       </div>
 
-      <div class="content">
+      <div id="main-content">
+        <a id="start-content" name="start-content"></a>
         <div metal:define-slot="content">
+          <h1>${api.context.title}</h1>
         </div>
       </div>
     </div>

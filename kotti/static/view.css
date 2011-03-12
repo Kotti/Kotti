@@ -1,5 +1,15 @@
 /** Put here CSS that should apply to VIEW SCREENS ONLY. **/
 
+#main {
+    margin: 2em;
+    margin-left: 4em;
+}
+
 #navigation-local {
     display: none;
 }
+
+.content .description {
+    font-weight: bold;
+}
+

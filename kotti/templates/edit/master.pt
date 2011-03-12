@@ -27,6 +27,16 @@
   </head>
 
   <body class="edit-view">
+
+    <div id="skiplinks" class="hidden">
+      <ul>
+        <li><a href="#start-navigation">Skip to navigation</a></li>
+        <li><a href="#start-tools">Skip to tools menu</a></li>
+        <li><a href="#start-content">Skip to content</a></li>
+      </ul>
+    </div>
+
+    <!-- The user dropdown to the top right -->
     <div id="user-box" class="round-corners-bottom"
          tal:condition="api.user is not None">
       <div class="username"
@@ -49,13 +59,17 @@
         </ul>
       </div>
     </div>
-    <div id="edit-box" class="vertical-text round-corners-top"
+
+    <!-- The tab to switch modes  -->
+    <div id="switch-mode-box" class="vertical-text round-corners-top"
          tal:condition="api.has_permission('view')">
-      <span tal:omit-tag="" metal:define-slot="edit-box">
+      <span tal:omit-tag="" metal:define-slot="switch-mode-box">
         <a href="${api.url()}">View</a>
       </span>
     </div>
-    <div id="header">
+
+    <nav id="edit-tools" class="top-navigation">
+      <a id="start-tools" name="start-tools"></a>
       <div class="tabs1" metal:define-slot="tabs1">
         <ul>
           <li tal:repeat="link api.edit_links">
@@ -67,21 +81,26 @@
         </ul>
       </div>
       <div class="clear"></div>
-    </div>
+    </nav>
 
+    <!-- The main diff -->
     <div id="main">
-      <div metal:use-macro="api['master_edit.breadcrumbs']"
-           metal:define-slot="breadcrumbs">
+      <div id="main-top">
+      <a id="start-navigation" name="start-navigation"></a>
+        <div metal:use-macro="api['master_edit.breadcrumbs']"
+             metal:define-slot="breadcrumbs">
+        </div>
+        <div metal:use-macro="api['snippets.messages']">
+        </div>
       </div>
 
-      <div metal:use-macro="api['snippets.messages']">
-      </div>
-
-      <div class="content">
+      <div id="main-content">
+        <a id="start-content" name="start-content"></a>
         <div metal:define-slot="content">
           <h1>${api.context.title}</h1>
         </div>
       </div>
+
     </div>
 
   </body>
@@ -93,7 +112,7 @@
       metal:define-macro="snippets">
   <body>
 
-    <div metal:define-macro="breadcrumbs" class="breadcrumbs" tal:define="(siblings, children) api.context_links">
+    <nav metal:define-macro="breadcrumbs" class="breadcrumbs" tal:define="(siblings, children) api.context_links">
       <span class="you-are-here">You are here:</span>
       <div tal:repeat="link api.breadcrumbs" tal:omit-tag="">
         <a href="${link.is_context and '#bread-dropdown' or link.url}"
@@ -126,7 +145,7 @@
           </ul>
         </div>
       </div>
-    </div>
+    </nav>
 
   </body>
 </html>

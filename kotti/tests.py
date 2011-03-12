@@ -865,7 +865,7 @@ class TestNodeShare(UnitTestBase):
 
         share_node(root, request)
         self.assertEqual(request.session.pop_flash('success'),
-                         [u'Your changes have been applied.'])
+                         [u'Your changes have been saved.'])
         self.assertEqual(
             set(list_groups('bob', root)),
             set(['role:owner', 'role:editor', 'role:special'])
@@ -940,7 +940,7 @@ class TestUserManagement(UnitTestBase):
 
         users_manage(root, request)
         self.assertEqual(request.session.pop_flash('success'),
-                         [u'Your changes have been applied.'])
+                         [u'Your changes have been saved.'])
         self.assertEqual(
             set(list_groups('bob')),
             set(['role:owner', 'role:editor', 'role:special'])

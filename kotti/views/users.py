@@ -60,7 +60,7 @@ def roles_form_handler(context, request, available_role_names, groups_lister):
                 changed.append((principal_name, context, final_role_names))
 
         if changed:
-            request.session.flash(u'Your changes have been applied.', 'success')
+            request.session.flash(u'Your changes have been saved.', 'success')
         else:
             request.session.flash(u'No changes made.', 'notice')
 

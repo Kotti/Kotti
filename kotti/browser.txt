@@ -498,7 +498,7 @@ again:
   >>> ctrl(name="role::group:bobsgroup::role:owner").value = True
   >>> ctrl(name="role::group:bobsgroup::role:editor").value = True
   >>> ctrl(name="apply").click()
-  >>> "Your changes have been applied" in browser.contents
+  >>> "Your changes have been saved" in browser.contents
   True
   >>> browser.reload()
   >>> ctrl(name="role::group:bobsgroup::role:owner").value
@@ -507,7 +507,7 @@ again:
   True
   >>> ctrl(name="role::group:bobsgroup::role:owner").value = False
   >>> ctrl(name="apply").click()
-  >>> "Your changes have been applied" in browser.contents
+  >>> "Your changes have been saved" in browser.contents
   True
   >>> ctrl(name="role::group:bobsgroup::role:owner").value
   False
@@ -515,7 +515,7 @@ again:
 Not making any changes will give us a different feedback message:
 
   >>> ctrl(name="apply").click()
-  >>> "Your changes have been applied" in browser.contents
+  >>> "Your changes have been saved" in browser.contents
   False
   >>> ctrl(name="role::group:bobsgroup::role:owner").value
   False
@@ -541,7 +541,7 @@ again:
   True
   >>> ctrl(name="role::group:bobsgroup::role:editor").value = False
   >>> ctrl(name="apply").click()
-  >>> "Your changes have been applied" in browser.contents
+  >>> "Your changes have been saved" in browser.contents
   True
   >>> "Bob's Group" in browser.contents
   False

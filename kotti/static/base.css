@@ -6,7 +6,7 @@ html, body {
     padding: 0;
 }
 
-#edit-box {
+#switch-mode-box {
     position: fixed;
     top: 3.5em;
     left: 0;
@@ -17,7 +17,7 @@ html, body {
     text-transform: uppercase;
 }
 
-#edit-box a {
+#switch-mode-box a {
     text-decoration: none;
     color: #fff;
 }
@@ -47,10 +47,11 @@ html, body {
 
 /* Nav */
 
-#header {
-    background-color: #eee;
+.top-navigation {
+    display: block;
     padding-top: 2em;
     padding-left: 4em;
+    background-color: #eee;
 }
 
 .tabs1 ul {
@@ -80,15 +81,6 @@ html, body {
 .tabs1 a:hover, .tabs1 a.selected {
 	color: #000;
 	border-color: #555;
-}
-
-#main {
-    margin: 2em;
-    margin-left: 4em;
-}
-
-.content .description {
-    font-weight: bold;
 }
 
 /* Generic styles */
