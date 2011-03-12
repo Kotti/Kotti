@@ -251,6 +251,17 @@ def disambiguate_name(name):
         parts.append(u'1')
     return u'-'.join(parts)
 
+def ensure_view_selector(func):
+    def wrapper(context, request):
+        path_els = request.path_info.split(u'/')
+        if not path_els[-1].startswith('@@'):
+            path_els[-1] = '@@' + path_els[-1]
+            request.path_info = u'/'.join(path_els)
+            return HTTPFound(location=request.url)
+        return func(context, request)
+    wrapper.__doc__ = func.__doc__
+    return wrapper
+
 class FormController(object):
     add = None
     post_key = 'save'

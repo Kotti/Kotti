@@ -18,6 +18,7 @@ from kotti.views.util import TemplateAPIEdit
 from kotti.views.util import addable_types
 from kotti.views.util import title_to_name
 from kotti.views.util import disambiguate_name
+from kotti.views.util import ensure_view_selector
 from kotti.views.util import FormController
 
 deform_templates = resource_filename('deform', 'templates')
@@ -158,6 +159,7 @@ def move_node(context, request):
         'api': TemplateAPIEdit(context, request),
         }
 
+@ensure_view_selector
 def edit_document(context, request):
     form = Form(DocumentSchema(), buttons=('save', 'cancel'))
     rendered = FormController(form)(context, request)

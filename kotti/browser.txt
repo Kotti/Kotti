@@ -25,7 +25,7 @@ Login
 
 Editing is locked down to authenticated users:
 
-  >>> browser.open(tests.BASE_URL + '/@@edit')
+  >>> browser.open(tests.BASE_URL + '/edit')
   >>> "Log in" in browser.contents
   True
   >>> ctrl("Username or email").value = "admin"
