@@ -1,3 +1,5 @@
+var kotti_dom_changed_handlers = new Array();
+
 (function($) {
 
     $.fn.find2 = function(selector) {
@@ -120,16 +122,17 @@
     }
 
     function dom_changed(els) {
-        messages(els);
-        ajax_forms(els);
-        dirty_forms(els);
-        dropdowns(els);
-        collapse(els);
-        hover_link_enable(els);
+        $.each(kotti_dom_changed_handlers, function(index, func) { 
+            func(els);
+        });
     }
 
     $(document).ready(function() {
         var els = $('html');
+        $.each([messages, ajax_forms, dirty_forms, dropdowns, collapse,
+                hover_link_enable], function(index, func) {
+            kotti_dom_changed_handlers.push(func);
+        });
         deform.load();
         dom_changed(els);
     });
