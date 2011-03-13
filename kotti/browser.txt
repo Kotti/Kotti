@@ -148,8 +148,8 @@ Reorder documents
   False
   >>> browser.getLink("Edit").click()
   >>> browser.getLink("Move").click()
-  >>> ctrl("First Child").click()
-  >>> "First Child moved" in browser.contents
+  >>> ctrl(name="order-up", index=1).click()
+  >>> "Second Child moved" in browser.contents
   True
   >>> browser.getLink("View").click()
   >>> index = browser.contents.index

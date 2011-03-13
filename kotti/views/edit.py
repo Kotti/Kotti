@@ -124,9 +124,9 @@ def move_node(context, request):
     if 'order-up' in P or 'order-down' in P:
         up, down = P.get('order-up'), P.get('order-down')
         id = int(down or up)
-        if up is not None: # pragma: no cover
+        if up is not None:
             mod = -1
-        else:
+        else: # pragma: no cover
             mod = +1
 
         child = session.query(Node).get(id)
