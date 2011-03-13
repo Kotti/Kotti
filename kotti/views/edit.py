@@ -133,7 +133,7 @@ def move_node(context, request):
         index = context.children.index(child)
         context.children.pop(index)
         context.children.insert(index+mod, child)
-        request.session.flash(u'%s reordered.' % child.title, 'success')
+        request.session.flash(u'%s moved.' % child.title, 'success')
         if not request.is_xhr:
             return HTTPFound(location=request.url)
 
@@ -149,11 +149,14 @@ def move_node(context, request):
     if 'rename' in P:
         name = P['name']
         title = P['title']
-        context.name = name
-        context.title = title
-        request.session.flash(u'Item renamed', 'success')
-        location = resource_url(context, request) + '@@move'
-        return HTTPFound(location=location)
+        if not name or not title:
+            request.session.flash(u'Name and title are required.', 'error')
+        else:
+            context.name = name
+            context.title = title
+            request.session.flash(u'Item renamed', 'success')
+            location = resource_url(context, request) + '@@move'
+            return HTTPFound(location=location)
 
     return {
         'api': TemplateAPIEdit(context, request),

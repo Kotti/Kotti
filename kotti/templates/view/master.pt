@@ -58,7 +58,6 @@
         <div metal:use-macro="api['snippets.messages']">
         </div>
       </div>
-
       <div id="main-content">
         <a id="start-content" name="start-content"></a>
         <div metal:define-slot="content">

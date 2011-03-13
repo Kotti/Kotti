@@ -26,15 +26,15 @@ var kotti_dom_changed_handlers = new Array();
         });
     }
 
-    function ajax_forms(els) {
-        els.find2("form.ajax").ajaxForm({
+    function ajax_forms(node) {
+        node.find2("form.ajax").ajaxForm({
             success: replace_html
         });
     }
 
-    function messages(els) {
-        els.find2("#messages").hide();
-        els.find2(".message").each(function() {
+    function messages(node) {
+        node.find2("#messages").hide();
+        node.find2(".message").each(function() {
             var type = "notice";
             var msg = $(this);
             var text = msg.html();
@@ -56,7 +56,7 @@ var kotti_dom_changed_handlers = new Array();
         });
     }
 
-    function dirty_forms(els) {
+    function dirty_forms(node) {
         var forms = $("form").not("[class~=dirty-ignore]");
         $(window).unbind('beforeunload');
         forms.submit(function() { $(window).unbind('beforeunload'); });
@@ -71,8 +71,8 @@ var kotti_dom_changed_handlers = new Array();
         });
     }
 
-    function dropdowns(els) {
-        els.find2(".dropdown-trigger").click(function () {
+    function dropdowns(node) {
+        node.find2(".dropdown-trigger").click(function () {
             var target = $($(this).attr("href"));
             // move the dropdown to the correct position
             target.css("left", $(this).position().left);
@@ -85,8 +85,8 @@ var kotti_dom_changed_handlers = new Array();
         });
     }
 
-    function collapse(els) {
-        els.find2(".collapse").each(function() {
+    function collapse(node) {
+        node.find2(".collapse").each(function() {
             $(this).find("ul").hide();
             $(this).addClass("collapsed");
             function show() {
@@ -105,10 +105,10 @@ var kotti_dom_changed_handlers = new Array();
         });
     }
 
-    function hover_link_enable(els) {
-        els.find2(".hover-link").removeClass("hover-link");
+    function hover_link_enable(node) {
+        node.find2(".hover-link").removeClass("hover-link");
 
-        els.find2(".hover-link-enable").hover(
+        node.find2(".hover-link-enable").hover(
             function() { $(this).addClass("hover-link"); },
             function() { $(this).removeClass("hover-link"); }
         ).click(function() {
@@ -121,20 +121,20 @@ var kotti_dom_changed_handlers = new Array();
         });
     }
 
-    function dom_changed(els) {
+    function dom_changed(node) {
         $.each(kotti_dom_changed_handlers, function(index, func) { 
-            func(els);
+            func(node);
         });
     }
 
     $(document).ready(function() {
-        var els = $('html');
+        var node = $('html');
         $.each([messages, ajax_forms, dirty_forms, dropdowns, collapse,
                 hover_link_enable], function(index, func) {
             kotti_dom_changed_handlers.push(func);
         });
         deform.load();
-        dom_changed(els);
+        dom_changed(node);
     });
 
 

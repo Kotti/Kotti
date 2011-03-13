@@ -776,6 +776,18 @@ class TestNodeMove(UnitTestBase):
         response = move_node(root, request)
         self.assertEqual(response.status, '302 Found')
 
+    def test_rename_to_empty_name(self):
+        from kotti.views.edit import move_node
+        root = DBSession().query(Node).get(1)
+        child = root['child'] = Document(title=u"Child")
+        request = DummyRequest()
+        request.params['rename'] = u'on'
+        request.params['name'] = u''
+        request.params['title'] = u'foo'
+        move_node(child, request)
+        self.assertEqual(request.session.pop_flash('error'),
+                         [u'Name and title are required.'])
+
 class TestNodeShare(UnitTestBase):
     @staticmethod
     def add_some_principals():
