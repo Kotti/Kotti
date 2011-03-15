@@ -14,60 +14,6 @@
     cursor: pointer;
 }
 
-/* Dropdown styles */
-
-.dropdown {
-    display: none;
-    z-index: 1;
-	opacity: .95;
-	filter: alpha(opacity=95);
-	-ms-filter:"progid:DXImageTransform.Microsoft.Alpha(Opacity=95)";
-}
-
-.dropdown ul {
-    margin: 0;
-    padding: 0;
-    list-style: none;
-}
-
-.dropdown a {
-    display: block;
-    padding: 0.2em 1em;
-    text-decoration: none;
-}
-
-.dropdown-trigger {
-    text-decoration: none;
-}
-
-/* User box */
-
-#user-box {
-    position: absolute;
-    top: 0;
-    right: 2em;
-    padding: 0.2em 0.8em;
-    background-color: #333;
-    color: #fff;
-}
-
-div.username { 
-    background: transparent none no-repeat top left;
-    padding-left: 30px;
-}
-
-#user-box a.dropdown-trigger {
-    color: #fff;
-}
-
-#user-box .dropdown a, #user-box .dropdown a:visited {
-    color: #fff;
-}
-
-#user-box .dropdown a:hover {
-    color: #bbb;
-}
-
 /* Breadcrumbs */
 
 .breadcrumbs {
