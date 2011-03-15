@@ -1012,9 +1012,9 @@ class TestTemplateAPI(UnitTestBase):
         # The 'list_children_go_up' function works slightly different:
         # it returns the parent's children if the context doesn't have
         # any.  Only the third case is gonna be different:
-        self.assertEquals(api.list_children_go_up(root), [a])
-        self.assertEquals(api.list_children_go_up(a), [aa, ab, ac])
-        self.assertEquals(api.list_children_go_up(aca), [aca, acb])
+        self.assertEquals(api.list_children_go_up(root), (root, [a]))
+        self.assertEquals(api.list_children_go_up(a), (a, [aa, ab, ac]))
+        self.assertEquals(api.list_children_go_up(aca), (ac, [aca, acb]))
 
     def test_root(self):
         api = self._make()

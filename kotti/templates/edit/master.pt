@@ -48,25 +48,27 @@
       </span>
     </div>
 
-    <nav id="edit-tools" class="top-navigation">
-      <a id="start-tools" name="start-tools"></a>
-      <div class="tabs1" metal:define-slot="tabs1">
-        <ul>
-          <li tal:repeat="link api.edit_links">
-            <a href="${link.url(context, request)}"
-               class="${link.selected(context, request) and 'selected' or None}">
-              ${link.title}
-            </a>
-          </li>
-        </ul>
-      </div>
-      <div class="clear"></div>
-    </nav>
+    <div id="header">
+      <nav id="edit-tools" class="top-navigation">
+        <a id="start-tools" name="start-tools"></a>
+        <div class="tabs1" metal:define-slot="tabs1">
+          <ul>
+            <li tal:repeat="link api.edit_links">
+              <a href="${link.url(context, request)}"
+                 class="${link.selected(context, request) and 'selected' or None}">
+                ${link.title}
+              </a>
+            </li>
+          </ul>
+        </div>
+        <div class="clear"></div>
+      </nav>
+    </div>
 
     <!-- The main diff -->
     <div id="main">
-      <div id="main-top">
-      <a id="start-navigation" name="start-navigation"></a>
+      <div>
+        <a id="start-navigation" name="start-navigation"></a>
         <div metal:use-macro="api['master_edit.breadcrumbs']"
              metal:define-slot="breadcrumbs">
         </div>

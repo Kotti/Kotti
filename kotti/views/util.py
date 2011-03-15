@@ -104,13 +104,14 @@ class TemplateAPI(object):
         return children
 
     def list_children_go_up(self, context=None, permission='view'):
-        # XXX Needs to go
         if context is None:
             context = self.context
+        parent = context
         children = self.list_children(context, permission)
         if not children and context.__parent__ is not None:
-            children = self.list_children(context.__parent__)
-        return children
+            parent = context.__parent__
+            children = self.list_children(parent)
+        return (parent, children)
 
     inside = staticmethod(inside)
 

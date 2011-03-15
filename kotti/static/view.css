@@ -5,8 +5,36 @@
     margin-left: 4em;
 }
 
-#navigation-local {
-    display: none;
+#main-column {
+    margin-right: 15em;
+}
+
+#right-column {
+    float: right;
+    width: 15em;
+}
+
+#local-navigation ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    width: 100%;
+}
+
+#local-navigation li {
+    padding: 0.5em 0.2em;
+}
+
+#local-navigation a {
+    display: block;
+    white-space: nowrap;
+    text-decoration: none;
+    font-weight: bold;
+    color: #333;
+}
+
+#local-navigation a.selected {
+    text-decoration: underline;
 }
 
 .content .description {

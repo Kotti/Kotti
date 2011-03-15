@@ -28,42 +28,60 @@
       <a href="${api.url(context, '@@edit')}">Edit</a>
     </div>
 
-    <nav id="site-navigation" class="top-navigation">
-      <a id="start-navigation" name="start-navigation"></a>
-      <div class="tabs1">
-        <h2 class="hidden">Site navigation</h2>
-        <ul>
-          <li><a href="${api.url(api.root)}" class="${api.root == api.context and 'selected'}">Home</a></li>
-          <li tal:repeat="item api.list_children(api.root)">
-            <a href="${api.url(item)}" class="${api.inside(api.context, item) and 'selected'}">${item.title}</a>
-          </li>
-        </ul>
-      </div>
-      <div id="navigation-local">
-        <ul tal:define="children api.list_children_go_up()">
-          <li tal:condition="api.context not in children">
-            <a href="${api.url()}">${api.context.title}</a>
-          </li>
-          <li tal:repeat="item children">
-            <a href="${api.url(item)}">${item.title}</a>
-          </li>
-        </ul>
-      </div>
-      <div class="clear"></div>
-    </nav>
+    <div id="header">
+      <nav id="site-navigation" class="top-navigation">
+        <a id="start-navigation" name="start-navigation"></a>
+        <div class="tabs1">
+          <h2 class="hidden">Site navigation</h2>
+          <ul>
+            <li><a href="${api.url(api.root)}" class="${api.root == api.context and 'selected'}">Home</a></li>
+            <li tal:repeat="item api.list_children(api.root)">
+              <a href="${api.url(item)}"
+                 class="${api.inside(api.context, item) and 'selected'}"
+                 title="${item.description}">${item.title}</a>
+            </li>
+          </ul>
+        </div>
+        <div class="clear"></div>
+      </nav>
+    </div>
 
     <!-- The main diff -->
     <div id="main">
-      <div id="main-top">
+      <div id="right-column">
+        <div id="local-navigation">
+          <h2 class="hidden">Local navigation</h2>
+          <ul tal:define="(parent, children) api.list_children_go_up()"
+              tal:condition="children and parent != api.root">
+            <li>
+              <a href="${api.url(parent)}" title="${parent.description}"
+                 class="${parent == api.context and 'selected' or ''}">
+                ${parent.title}
+              </a>
+            </li>
+            <li tal:repeat="item children">
+              <a href="${api.url(item)}" title="${item.description}"
+                 class="${item == api.context and 'selected' or ''}">
+                ${item.title}
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <div id="main-column">
         <div metal:use-macro="api['snippets.messages']">
         </div>
-      </div>
-      <div id="main-content">
         <a id="start-content" name="start-content"></a>
-        <div metal:define-slot="content">
-          <h1>${api.context.title}</h1>
+        <div id="main-content">
+          <div metal:define-slot="content">
+            <h1>${api.context.title}</h1>
+          </div>
         </div>
       </div>
+    </div>
+
+    <div id="footer">
     </div>
 
   </body>
