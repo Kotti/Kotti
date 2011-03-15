@@ -1,4 +1,6 @@
-var kotti_dom_changed_handlers = new Array();
+var kotti = {
+    dom_changed_handlers: new Array()
+};
 
 (function($) {
 
@@ -7,7 +9,7 @@ var kotti_dom_changed_handlers = new Array();
         return this.filter(selector).add(this.find(selector));
     };
 
-    function replace_html(html) {
+    kotti.replace_html = function(html) {
         // This function looks for nodes in the received HTML with the
         // class "ajax-replace" and replaces nodes in the current DOM
         // with matching *ids*.
@@ -24,15 +26,15 @@ var kotti_dom_changed_handlers = new Array();
             new_el = $(selector);
             dom_changed(new_el);
         });
-    }
+    };
 
-    function ajax_forms(node) {
+    kotti.ajax_forms = function(node) {
         node.find2("form.ajax").ajaxForm({
-            success: replace_html
+            success: kotti.replace_html
         });
-    }
+    };
 
-    function messages(node) {
+    kotti.messages = function(node) {
         node.find2("#messages").hide();
         node.find2(".message").each(function() {
             var type = "notice";
@@ -54,12 +56,14 @@ var kotti_dom_changed_handlers = new Array();
             });
 
         });
-    }
+    };
 
-    function dirty_forms(node) {
+    kotti.dirty_forms = function(node) {
         var forms = $("form").not("[class~=dirty-ignore]");
         $(window).unbind('beforeunload');
-        forms.submit(function() { $(window).unbind('beforeunload'); });
+        forms.submit(function() { $(window).unbind('beforeunload') });
+        if (tinyMCE != undefined)
+            tinyMCE.triggerSave(true);
         var initial = forms.serialize();
         $(window).bind("beforeunload", function() {
             if (tinyMCE != undefined)
@@ -69,9 +73,9 @@ var kotti_dom_changed_handlers = new Array();
             }
             return null;
         });
-    }
+    };
 
-    function dropdowns(node) {
+    kotti.dropdowns = function(node) {
         node.find2(".dropdown-trigger").click(function () {
             var target = $($(this).attr("href"));
             // move the dropdown to the correct position
@@ -83,9 +87,9 @@ var kotti_dom_changed_handlers = new Array();
             target.toggle();
             return false;
         });
-    }
+    };
 
-    function collapse(node) {
+    kotti.collapse = function(node) {
         node.find2(".collapse").each(function() {
             $(this).find("ul").hide();
             $(this).addClass("collapsed");
@@ -105,7 +109,7 @@ var kotti_dom_changed_handlers = new Array();
         });
     }
 
-    function hover_link_enable(node) {
+    kotti.hover_link_enable = function(node) {
         node.find2(".hover-link").removeClass("hover-link");
 
         node.find2(".hover-link-enable").hover(
@@ -121,20 +125,22 @@ var kotti_dom_changed_handlers = new Array();
         });
     }
 
-    function dom_changed(node) {
-        $.each(kotti_dom_changed_handlers, function(index, func) { 
+    kotti.dom_changed = function(node) {
+        $.each(kotti.dom_changed_handlers, function(index, func) { 
             func(node);
         });
     }
 
     $(document).ready(function() {
         var node = $('html');
-        $.each([messages, ajax_forms, dirty_forms, dropdowns, collapse,
-                hover_link_enable], function(index, func) {
-            kotti_dom_changed_handlers.push(func);
+        $.each([
+            kotti.messages, kotti.ajax_forms, kotti.dirty_forms,
+            kotti.dropdowns, kotti.collapse, kotti.hover_link_enable
+        ], function(index, func) {
+            kotti.dom_changed_handlers.push(func);
         });
         deform.load();
-        dom_changed(node);
+        kotti.dom_changed(node);
     });
 
 
