@@ -24,7 +24,7 @@ var kotti = {
             selector = "#" + this.id;
             $(selector).replaceWith(this);
             new_el = $(selector);
-            dom_changed(new_el);
+            kotti.dom_changed(new_el);
         });
     };
 
