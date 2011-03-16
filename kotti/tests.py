@@ -16,6 +16,7 @@ from kotti import get_settings
 from kotti import _resolve_dotted
 from kotti import main
 from kotti import DBSession
+from kotti.events import clear
 from kotti.message import _inject_mailer
 from kotti.resources import Node
 from kotti.resources import Document
@@ -64,6 +65,7 @@ def setUp(**kwargs):
 
 def tearDown():
     _inject_mailer[:] = []
+    clear()
     transaction.abort()
     testing.tearDown()
 
@@ -1100,6 +1102,34 @@ class TestTemplateAPI(UnitTestBase):
         # unless overridden:
         api = self._make(request=request, bare=False)
         self.assertEqual(api.bare, False)
+
+    def test_slots(self):
+        from kotti.views.slots import register, RenderAboveContent
+        def render_something(event):
+            return u"Hello, %s!" % event.object.title
+        register(RenderAboveContent, None, render_something)
+
+        api = self._make()
+        self.assertEqual(api.slots['abovecontent'], [u'Hello, My Site!'])
+
+        # Slot renderers may also return lists:
+        def render_a_list(event):
+            return [u"a", u"list"]
+        register(RenderAboveContent, None, render_a_list)
+        api = self._make()
+        self.assertEqual(
+            api.slots['abovecontent'],
+            [u'Hello, My Site!', u'a', u'list']
+            )
+
+    def test_slots_empty(self):
+        api = self._make()
+        self.assertEqual(
+            sorted(api.slots.keys()),
+            ['abovecontent', 'belowcontent', 'left', 'right']
+            )
+        for key in api.slots.keys():
+            self.assertEqual(api.slots[key], [])
 
 class TestUtil(UnitTestBase):
     def test_title_to_name(self):

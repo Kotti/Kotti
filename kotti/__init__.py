@@ -38,7 +38,7 @@ conf_defaults = {
     'kotti.templates.view_css': 'kotti:static/view.css',
     'kotti.templates.edit_css': 'kotti:static/edit.css',
     'kotti.configurators': '',
-    'kotti.base_includes': 'kotti.events kotti.views.view kotti.views.edit kotti.views.login kotti.views.users kotti.views.site_setup',
+    'kotti.base_includes': 'kotti.events kotti.views.view kotti.views.edit kotti.views.login kotti.views.users kotti.views.site_setup kotti.views.slots',
     'kotti.includes': '',
     'kotti.available_types': 'kotti.resources.Document',
     'kotti.authn_policy_factory': 'kotti.authtkt_factory',

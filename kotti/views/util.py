@@ -14,9 +14,11 @@ from deform import ValidationFailure
 
 from kotti import get_settings
 from kotti import DBSession
+from kotti.events import objectevent_listeners
 from kotti.resources import Node
 from kotti.security import get_principals
 from kotti.security import view_permitted
+from kotti.views.slots import slot_events
 
 class TemplateAPI(object):
     """This implements the 'api' object that's passed to all
@@ -126,6 +128,20 @@ class TemplateAPI(object):
         url = 'https://secure.gravatar.com/avatar/%s?%s' % (
             h, urllib.urlencode(query))
         return url
+
+    @reify
+    def slots(self):
+        value = {}
+        for event_type in slot_events:
+            event = event_type(self.context, self.request)
+            this_slots = value[event.name] = []
+            for snippet in objectevent_listeners(event):
+                if snippet is not None:
+                    if isinstance(snippet, list):
+                        this_slots.extend(snippet)
+                    else:
+                        this_slots.append(snippet)
+        return value
 
 class TemplateAPIEdit(TemplateAPI):
     @reify

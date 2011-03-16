@@ -5,13 +5,32 @@
     margin-left: 4em;
 }
 
-#main-column {
-    margin-right: 15em;
+.has-leftcol {
+    margin-left: 13em;
 }
 
-#right-column {
+.has-rightcol {
+    margin-right: 17em;
+}
+
+.right-column {
     float: right;
-    width: 15em;
+    width: 12em;
+}
+
+.left-column {
+    float: left;
+    width: 12em;
+}
+
+#footer {
+    clear: both;
+}
+
+.slot {
+    list-style: none;
+    padding: 0;
+    margin: 0;
 }
 
 #local-navigation ul {

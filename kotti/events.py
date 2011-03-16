@@ -105,33 +105,41 @@ class ObjectEventDispatcher(DispatcherDict):
       ...     return 'base'
       >>> def subobj_insert_listener(event):
       ...     return 'sub'
+      >>> def all_listener(event):
+      ...     return 'all'
       
       >>> dispatcher = ObjectEventDispatcher()
       >>> dispatcher[(ObjectEvent, BaseObject)].append(base_listener)
       >>> dispatcher[(ObjectInsert, SubObject)].append(subobj_insert_listener)
+      >>> dispatcher[(ObjectEvent, None)].append(all_listener)
 
       >>> dispatcher(ObjectEvent(BaseObject()))
-      ['base']
+      ['base', 'all']
       >>> dispatcher(ObjectInsert(BaseObject()))
-      ['base']
+      ['base', 'all']
       >>> dispatcher(ObjectEvent(SubObject()))
-      ['base']
+      ['base', 'all']
       >>> dispatcher(ObjectInsert(SubObject()))
-      ['base', 'sub']
+      ['base', 'sub', 'all']
     """
     def __call__(self, event):
         results = []
         for (event_type, object_type), handlers in self.items():
             if (isinstance(event, event_type) and
-                isinstance(event.object, object_type)):
+                (object_type is None or isinstance(event.object, object_type))):
                 for handler in handlers:
                     results.append(handler(event))
         return results
 
+def clear():
+    listeners.clear()
+    objectevent_listeners.clear()
+    listeners[ObjectEvent].append(objectevent_listeners)
+
 listeners = Dispatcher()
 notify = listeners.__call__
 objectevent_listeners = ObjectEventDispatcher()
-listeners[ObjectEvent].append(objectevent_listeners)
+clear()
 
 def _before_insert(mapper, connection, target):
     notify(ObjectInsert(target, get_current_request()))

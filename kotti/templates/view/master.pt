@@ -47,37 +47,45 @@
     </div>
 
     <!-- The main diff -->
-    <div id="main">
-      <div id="right-column">
-        <div id="local-navigation">
-          <h2 class="hidden">Local navigation</h2>
-          <ul tal:define="(parent, children) api.list_children_go_up()"
-              tal:condition="children and parent != api.root">
-            <li>
-              <a href="${api.url(parent)}" title="${parent.description}"
-                 class="${parent == api.context and 'selected' or ''}">
-                ${parent.title}
-              </a>
-            </li>
-            <li tal:repeat="item children">
-              <a href="${api.url(item)}" title="${item.description}"
-                 class="${item == api.context and 'selected' or ''}">
-                ${item.title}
-              </a>
-            </li>
-          </ul>
-        </div>
-      </div>
+    <div id="main" tal:define="page_slots api.slots">
 
-      <div id="main-column">
+      <!-- left column -->
+      <ul id="left-slot" class="left-column slot"
+          tal:define="snippets page_slots.left" tal:condition="snippets">
+        <li tal:repeat="snippet snippets" tal:content="structure snippet">
+        </li>
+      </ul>
+
+      <!-- right column -->
+      <ul id="right-slot" class="right-column slot"
+          tal:define="snippets page_slots.right" tal:condition="snippets">
+        <li tal:repeat="snippet snippets" tal:content="structure snippet">
+        </li>
+      </ul>
+      
+      <!-- main column -->
+      <div class="main-column ${page_slots.left and 'has-leftcol' or ''} ${page_slots.right and 'has-rightcol' or ''}">
         <div metal:use-macro="api['snippets.messages']">
         </div>
+
+        <ul id="abovecontent-slot" class="slot"
+            tal:define="snippets page_slots.abovecontent"
+            tal:condition="snippets">
+          <li tal:repeat="snippet snippets" tal:content="structure snippet"></li>
+        </ul>
+
         <a id="start-content" name="start-content"></a>
         <div id="main-content">
           <div metal:define-slot="content">
             <h1>${api.context.title}</h1>
           </div>
         </div>
+
+        <ul id="belowcontent-slot" class="slot"
+            tal:define="snippets page_slots.belowcontent"
+            tal:condition="snippets">
+          <li tal:repeat="snippet snippets" tal:content="structure snippet"></li>
+        </ul>
       </div>
     </div>
 

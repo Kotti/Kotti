@@ -1,0 +1,17 @@
+<div id="local-navigation">
+  <h2 class="hidden">Local navigation</h2>
+  <ul>
+    <li>
+      <a href="${api.url(parent)}" title="${parent.description}"
+         class="${parent == api.context and 'selected' or ''}">
+        ${parent.title}
+      </a>
+    </li>
+    <li tal:repeat="item children">
+      <a href="${api.url(item)}" title="${item.description}"
+         class="${item == api.context and 'selected' or ''}">
+        ${item.title}
+      </a>
+    </li>
+  </ul>
+</div>
