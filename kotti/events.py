@@ -70,6 +70,7 @@ class Dispatcher(DispatcherDict):
       ...     print 'Called sub listener'
       >>> def unrelated_listener(event):
       ...     print 'Called unrelated listener'
+      ...     return 1
 
       >>> dispatcher = Dispatcher()
       >>> dispatcher[BaseEvent].append(base_listener)
@@ -78,17 +79,22 @@ class Dispatcher(DispatcherDict):
 
       >>> dispatcher(BaseEvent())
       Called base listener
+      [None]
       >>> dispatcher(SubEvent())
       Called base listener
       Called sub listener
+      [None, None]
       >>> dispatcher(UnrelatedEvent())
       Called unrelated listener
+      [1]
     """
     def __call__(self, event):
+        results = []
         for event_type, handlers in self.items():
             if isinstance(event, event_type):
                 for handler in handlers:
-                    handler(event)
+                    results.append(handler(event))
+        return results
 
 class ObjectEventDispatcher(DispatcherDict):
     """Dispatches based on both event type and object type.
@@ -96,30 +102,31 @@ class ObjectEventDispatcher(DispatcherDict):
       >>> class BaseObject(object): pass
       >>> class SubObject(BaseObject): pass
       >>> def base_listener(event):
-      ...     print 'Called base listener'
+      ...     return 'base'
       >>> def subobj_insert_listener(event):
-      ...     print 'Called sub listener'
+      ...     return 'sub'
       
       >>> dispatcher = ObjectEventDispatcher()
       >>> dispatcher[(ObjectEvent, BaseObject)].append(base_listener)
       >>> dispatcher[(ObjectInsert, SubObject)].append(subobj_insert_listener)
 
       >>> dispatcher(ObjectEvent(BaseObject()))
-      Called base listener
+      ['base']
       >>> dispatcher(ObjectInsert(BaseObject()))
-      Called base listener
+      ['base']
       >>> dispatcher(ObjectEvent(SubObject()))
-      Called base listener
+      ['base']
       >>> dispatcher(ObjectInsert(SubObject()))
-      Called base listener
-      Called sub listener
+      ['base', 'sub']
     """
     def __call__(self, event):
+        results = []
         for (event_type, object_type), handlers in self.items():
             if (isinstance(event, event_type) and
                 isinstance(event.object, object_type)):
                 for handler in handlers:
-                    handler(event)
+                    results.append(handler(event))
+        return results
 
 listeners = Dispatcher()
 notify = listeners.__call__
