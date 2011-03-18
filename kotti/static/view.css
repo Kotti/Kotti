@@ -57,7 +57,7 @@
 }
 
 #local-navigation a.selected {
-    text-decoration: underline;
+    font-style: italic;
 }
 
 .content .description {
