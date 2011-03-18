@@ -33,6 +33,10 @@
     margin: 0;
 }
 
+.slot > li {
+    margin-bottom: 2em;
+}
+
 #local-navigation ul {
     list-style: none;
     padding: 0;
