@@ -82,3 +82,18 @@ def clear_request_cache(): # only useful for tests really
     request = get_current_request()
     if request is not None:
         setattr(request, _CACHE_ATTR, None)
+
+def extract_from_settings(prefix):
+    """
+      >>> from pyramid.threadlocal import get_current_registry
+      >>> get_current_registry().settings = {
+      ...     'kotti_twitter.foo_bar': '1', 'kotti.spam_eggs': '2'}
+      >>> print extract_from_settings('kotti_twitter.')
+      {'foo_bar': '1'}
+    """
+    from kotti import get_settings
+    extracted = {}
+    for key, value in get_settings().items():
+        if key.startswith(prefix):
+            extracted[key[len(prefix):]] = value
+    return extracted
