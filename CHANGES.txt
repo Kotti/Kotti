@@ -4,6 +4,19 @@ History
 0.1a8
 -----
 
+- Add slots/portlets through which thirdy party packages can extend
+  Kotti and put fragments of markup into the site's HTML.  Look at
+  the ``kotti.views.slots`` for documentation.
+
+- Enable AJAX forms in the Move screen and add Growl-like notification
+  for messages.
+
+- Fixed silly packaging problem with 0.1a7 release.  Install would
+  fail with ``README.rst: No such file or directory`` before.
+
+- Fix bug with TinyMCE which would trigger "Are you sure you want to
+  leave this page?" all the time.
+
 0.1a7
 -----
 
