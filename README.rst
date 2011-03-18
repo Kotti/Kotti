@@ -350,7 +350,7 @@ License
 
 Kotti is available under the BSD- derived `Repoze Public License`_.
 
-Kotti includes the following third party packages:
+Kotti includes the following third party modules:
 
 - `jquery.toastmessage`_ by Daniel Bremer-Tonn, available under the
   Apache License Version 2.0
@@ -383,4 +383,5 @@ support.
 .. _support in SQLAlchemy: http://www.sqlalchemy.org/docs/core/engines.html#supported-databases
 .. _this blog post: http://danielnouri.org/notes/2010/01/25/16-hours-into-a-new-cms-with-pyramid/
 .. _Repoze Public License: http://repoze.org/LICENSE.txt
+.. _jquery.toastmessage: http://plugins.jquery.com/project/jquery-toastmessage-plugin
 .. _University of Coimbra: http://uc.pt/
