@@ -1105,15 +1105,15 @@ class TestTemplateAPI(UnitTestBase):
 
     def test_slots(self):
         from kotti.views.slots import register, RenderAboveContent
-        def render_something(event):
-            return u"Hello, %s!" % event.object.title
+        def render_something(context, request):
+            return u"Hello, %s!" % context.title
         register(RenderAboveContent, None, render_something)
 
         api = self._make()
         self.assertEqual(api.slots['abovecontent'], [u'Hello, My Site!'])
 
         # Slot renderers may also return lists:
-        def render_a_list(event):
+        def render_a_list(context, request):
             return [u"a", u"list"]
         register(RenderAboveContent, None, render_a_list)
         api = self._make()
