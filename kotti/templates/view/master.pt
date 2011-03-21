@@ -35,7 +35,8 @@
           <h2 class="hidden">Site navigation</h2>
           <ul>
             <li><a href="${api.url(api.root)}" class="${api.root == api.context and 'selected'}">Home</a></li>
-            <li tal:repeat="item api.list_children(api.root)">
+            <li tal:define="items [i for i in api.list_children(api.root) if i.in_navigation]"
+                tal:repeat="item items">
               <a href="${api.url(item)}"
                  class="${api.inside(api.context, item) and 'selected'}"
                  title="${item.description}">${item.title}</a>

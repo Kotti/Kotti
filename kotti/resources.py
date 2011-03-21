@@ -11,6 +11,7 @@ from sqlalchemy import Table
 from sqlalchemy import Column
 from sqlalchemy import UniqueConstraint
 from sqlalchemy import ForeignKey
+from sqlalchemy import Boolean
 from sqlalchemy import DateTime
 from sqlalchemy import Integer
 from sqlalchemy import String
@@ -90,7 +91,8 @@ class Node(Container, PersistentACL):
     id = None
     def __init__(self, name=None, parent=None, default_view=None,
                  title=u"", description=u"", language=None,
-                 owner=None, creation_date=None, modification_date=None):
+                 owner=None, creation_date=None, modification_date=None,
+                 in_navigation=True):
         self.name = name
         self.parent = parent
         self.default_view = default_view
@@ -101,6 +103,7 @@ class Node(Container, PersistentACL):
         # These are set by events if not defined at this point:
         self.creation_date = creation_date
         self.modification_date = modification_date
+        self.in_navigation = in_navigation
 
     # Provide location-awareness through __name__ and __parent__
     @property
@@ -158,6 +161,7 @@ nodes = Table('nodes', metadata,
     Column('owner', Unicode(100)),
     Column('creation_date', DateTime()),
     Column('modification_date', DateTime()),
+    Column('in_navigation', Boolean()),
 
     UniqueConstraint('parent_id', 'name'),
 )

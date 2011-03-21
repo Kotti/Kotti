@@ -1131,6 +1131,17 @@ class TestTemplateAPI(UnitTestBase):
         for key in api.slots.keys():
             self.assertEqual(api.slots[key], [])
 
+    def test_slots_render_local_navigation(self):
+        from kotti.views.slots import render_local_navigation
+        root = DBSession().query(Node).get(1)
+        request = DummyRequest()
+        a, aa, ab, ac, aca, acb = self._create_nodes(root)
+        self.assertEqual(render_local_navigation(root, request), None)
+        self.assertNotEqual(render_local_navigation(a, request), None)
+        self.assertEqual("ab" in render_local_navigation(a, request), True)
+        ab.in_navigation = False
+        self.assertEqual("ab" in render_local_navigation(a, request), False)
+
 class TestUtil(UnitTestBase):
     def test_title_to_name(self):
         from kotti.views.util import title_to_name
