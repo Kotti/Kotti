@@ -1,12 +1,12 @@
-Detailed list of changes
-========================
+History
+=======
 
-0.1a8
------
+0.1a8 - 2011-03-18
+------------------
 
-- Add slots/portlets through which thirdy party packages can extend
-  Kotti and put fragments of markup into the site's HTML.  Look at
-  the ``kotti.views.slots`` for documentation.
+- Add slots/portlets through which third party packages can extend
+  Kotti and put fragments of markup into the site's HTML.  Look at the
+  ``kotti.views.slots`` for documentation.
 
 - Enable AJAX forms in the Move screen and add Growl-like notification
   for messages.

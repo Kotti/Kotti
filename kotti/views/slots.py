@@ -34,7 +34,8 @@ to filter on context.  These two are equivalent::
 
 Usually you'll want to call :func:`kotti.views.slots.register` inside
 an ``includeme`` function and not on a module level, to allow users of
-your package to conditionally include your slot renderers.
+your package to include your slot renderers through the
+``kotti.includes`` configuration setting.
 """
 
 from pyramid.renderers import render
