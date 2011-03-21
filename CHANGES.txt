@@ -1,5 +1,5 @@
-History
-=======
+Detailed list of changes
+========================
 
 0.1a8
 -----

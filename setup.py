@@ -36,7 +36,7 @@ if sys.version_info[:3] < (2,7,0):
 
 setup(name='Kotti',
       version='0.1a9',
-      description="A friendly, light-weight web content management system (WCMS).  Written in Python, based on Pyramid and SQLAlchemy.",
+      description="A user-friendly, light-weight and extensible web content management system.  Written in Python, based on Pyramid and SQLAlchemy.",
       long_description=README + '\n\n' +  CHANGES,
       classifiers=[
         "Development Status :: 3 - Alpha",
@@ -50,7 +50,7 @@ setup(name='Kotti',
       author='Daniel Nouri',
       author_email='daniel.nouri@gmail.com',
       url='https://github.com/dnouri/Kotti',
-      keywords='web pylons pyramid cms wcms',
+      keywords='web kotti cms wcms pylons pyramid',
       license="BSD-derived (http://www.repoze.org/LICENSE.txt)",
       packages=find_packages(),
       include_package_data=True,

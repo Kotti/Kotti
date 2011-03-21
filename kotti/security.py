@@ -191,6 +191,11 @@ def list_groups_raw(name, context):
         return set()
 
 def list_groups(name, context=None):
+    """List groups for principal with a given ``name``.
+
+    The optional ``context`` argument may be passed to check the list
+    of groups in a given context.
+    """
     return list_groups_ext(name, context)[0]
 
 def _cachekey_list_groups_ext(name, context=None, _seen=None, _inherited=None):
@@ -240,6 +245,9 @@ def set_groups_raw(context, groups):
     context.__roles__ = groups
 
 def set_groups(name, context, groups_to_set):
+    """Set the list of groups for principal with given ``name`` and in
+    given ``context``.
+    """
     groups = all_groups_raw(context)
     if groups is None:
         groups = {}
@@ -297,7 +305,7 @@ def map_principals_with_local_roles(context):
     return sorted(value, key=lambda t: t[0].name)
 
 def get_principals():
-    return get_settings()['kotti.principals'][0]
+    return get_settings()['kotti.principals_factory'][0]()
 
 def is_user(principal):
     if not isinstance(principal, basestring):
@@ -370,7 +378,8 @@ class Principals(DictMixin):
         salt = get_settings()['kotti.secret']
         return unicode(hashlib.sha224(salt + password).hexdigest())
 
-principals = Principals()
+def principals_factory():
+    return Principals()
 
 principals_table = Table('principals', metadata,
     Column('id', Integer, primary_key=True),

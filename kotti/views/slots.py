@@ -1,18 +1,40 @@
-"""This module implements a method by which packages external to Kotti
-can render pieces of HTML that are to be included in the page.
+"""This module allows add-ons to register renderers that add pieces of
+HTML to the overall page.  In other systems, these are called portlets
+or viewlets.
 
-A simple example that'll render 'Hello, World!' in in the left column
+A simple example that'll render *Hello, World!* in in the left column
 of every page::
 
-  def render_something(context, request):
+  def render_hello(context, request):
       return u'Hello, World!'  
 
   from kotti.views.slots import register
-  register(RenderLeftSlot, None, render_something)
+  register(RenderLeftSlot, None, render_hello)
 
-Usually you'll want to call ``register`` inside a ``includeme``
-function and not on a module level, to allow users of your package to
-conditionally include your slot renderers.
+Slot renderers may also return ``None`` to indicate that they don't
+want to include anything.  We can change our ``render_hello`` function
+to include a message only when the context is the root object::
+
+  from kotti.resources import get_root
+  def render_hello(context, request):
+      if context == get_root():
+          return u'Hello, World!'  
+
+The second argument to :func:`kotti.views.slots.register` allows you
+to filter on context.  These two are equivalent::
+
+  def render_agenda1(context, request):
+      if isinstance(context, Calendar):
+          return '<div>...</div>'
+  register(RenderRightSlot, None, render_agenda1)
+  
+  def render_agenda2(context, request):
+      return '<div>...</div>'
+  register(RenderRightSlot, Calendar, render_agenda2)
+
+Usually you'll want to call :func:`kotti.views.slots.register` inside
+an ``includeme`` function and not on a module level, to allow users of
+your package to conditionally include your slot renderers.
 """
 
 from pyramid.renderers import render
@@ -55,6 +77,7 @@ def render_local_navigation(context, request):
     from kotti.views.util import TemplateAPI
     api = TemplateAPI(context, request)
     parent, children = api.list_children_go_up()
+    children = [c for c in children if c.in_navigation]
     if parent != api.root and children:
         return render('../templates/view/slot-local-navigation.pt',
                       dict(parent=parent, children=children, api=api),

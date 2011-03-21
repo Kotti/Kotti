@@ -1,24 +1,33 @@
-"""A simple events system that allows users to subscribe to specific
-events and object events with specific object types.
+"""This module includes a simple events system that allows users to
+subscribe to specific events, and more particularly to *object events*
+of specific object types.
 
-Listeners are called in the order in which they were registered.
-
-To subscribe to any event, do::
+To subscribe to any event, write::
 
   def all_events_handler(event):
       print event  
   kotti.events.listeners[object].append(all_events_handler)
 
-To subscribe only to insert events of documents, do::
+To subscribe only to *ObjectInsert* events of *Document* types,
+write::
 
   def document_insert_handler(event):
       print event.object, event.request
   kotti.events.objectevent_listeners[(ObjectInsert, Document)].append(
       document_insert_handler)
 
-Events of type ``ObjectEvent`` carry a ``request`` argument with them
-that may be ``None`` if no ``request`` was present at the time the
-event was fired.
+Events of type ``ObjectEvent`` have ``object`` and ``request``
+attributes.  ``event.request`` may be ``None`` when no request is
+available.
+
+Notifying listeners of an event is as simple as calling the
+``listeners_notify`` function::
+
+  from kotti events import listeners
+  listeners.notify(MyFunnyEvent())
+
+Listeners are generally called in the order in which they are
+registered.
 """
 
 from collections import defaultdict

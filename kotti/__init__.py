@@ -44,7 +44,7 @@ conf_defaults = {
     'kotti.authn_policy_factory': 'kotti.authtkt_factory',
     'kotti.authz_policy_factory': 'kotti.acl_factory',
     'kotti.session_factory': 'kotti.cookie_session_factory',
-    'kotti.principals': 'kotti.security.principals',
+    'kotti.principals_factory': 'kotti.security.principals_factory',
     }
 
 conf_dotted = set([
@@ -55,7 +55,7 @@ conf_dotted = set([
     'kotti.authn_policy_factory',
     'kotti.authz_policy_factory',
     'kotti.session_factory',
-    'kotti.principals',
+    'kotti.principals_factory',
     ])
 
 def get_settings():
