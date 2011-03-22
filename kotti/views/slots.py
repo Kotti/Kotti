@@ -9,6 +9,7 @@ of every page::
       return u'Hello, World!'  
 
   from kotti.views.slots import register
+  from kotti.views.slots import RenderLeftSlot
   register(RenderLeftSlot, None, render_hello)
 
 Slot renderers may also return ``None`` to indicate that they don't

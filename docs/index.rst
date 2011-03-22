@@ -109,9 +109,10 @@ Configuration and customization
 INI File
 --------
 
-Kotti is configured using a INI file.  The installation_ section
-explain how to get hold of a sample configuration file.  The
-``[app:Kotti]`` section in it might look like this:
+Kotti is configured using an INI configuration file.  The
+installation_ section explains how to get hold of a sample
+configuration file.  The ``[app:Kotti]`` section in it might look like
+this:
 
 .. code-block:: ini
 
@@ -178,7 +179,7 @@ Using add-ons
 
 Add-ons will usually include in their installation instructions which
 settings one should modify to activate them.  Configuration settings
-that are available to hook in add-ons are:
+that are used to activate add-ons are:
 
 - ``kotti.includes``
 - ``kotti.available_types``
@@ -188,9 +189,10 @@ that are available to hook in add-ons are:
 kotti.includes
 ``````````````
 
-``kotti.includes`` allows you to hook in third party packages.
+``kotti.includes`` is what you'll use most often to activate third
+party packages.
 
-As an example, we'll install the `kotti_twitter`_ extension to add a
+As an example, we'll add the `kotti_twitter`_ extension to add a
 Twitter profile widget to the right column of all pages.  First we
 install the package from PyPI:
 
@@ -198,9 +200,9 @@ install the package from PyPI:
 
   bin/pip install kotti_twitter
 
-Then we activate the add-on by editing the ``kotti.includes`` setting
-in the ``[app:Kotti]`` section of our INI file.  (If a line with
-``kotti.includes`` does not exist, add it now.)
+Then we activate the add-on in our site by editing the
+``kotti.includes`` setting in the ``[app:Kotti]`` section of our INI
+file.  (If a line with ``kotti.includes`` does not exist, add it.)
 
 .. code-block:: ini
 
