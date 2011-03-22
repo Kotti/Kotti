@@ -24,6 +24,9 @@ to include a message only when the context is the root object::
 The second argument to :func:`kotti.views.slots.register` allows you
 to filter on context.  These two are equivalent::
 
+  from kotti.views.slots import RenderRightSlot
+  from mypackage.resources import Calendar
+
   def render_agenda1(context, request):
       if isinstance(context, Calendar):
           return '<div>...</div>'
