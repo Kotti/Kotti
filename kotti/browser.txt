@@ -16,7 +16,7 @@ Get a handle for some useful objects:
    >>> root = session.query(Node).get(1)
    >>> mailer = tests.registerDummyMailer()
 
-Open the page:
+Open the frontpage:
 
    >>> browser.open(tests.BASE_URL)
 

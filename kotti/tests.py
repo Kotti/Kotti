@@ -1207,15 +1207,16 @@ class TestRequestCache(UnitTestBase):
 def setUpFunctional(global_config=None, **settings):
     import wsgi_intercept.zope_testbrowser
 
-    settings = {
+    _settings = {
         'sqlalchemy.url': 'sqlite://',
         'kotti.secret': 'secret',
         'kotti.site_title': 'Website des Kottbusser Tors', # for mailing
         'mail.default_sender': 'kotti@localhost',
         }
+    _settings.update(settings)
 
     host, port = BASE_URL.split(':')[-2:]
-    app = main({}, **settings)
+    app = main({}, **_settings)
     wsgi_intercept.add_wsgi_intercept(host[2:], int(port), lambda: app)
 
     return dict(Browser=wsgi_intercept.zope_testbrowser.WSGI_Browser)
