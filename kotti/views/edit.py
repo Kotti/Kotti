@@ -162,9 +162,9 @@ def move_node(context, request):
         'api': TemplateAPIEdit(context, request),
         }
 
-@ensure_view_selector
-def edit_document(context, request):
-    form = Form(DocumentSchema(), buttons=('save', 'cancel'))
+
+def generic_edit(context, request, schema):
+    form = Form(schema, buttons=('save', 'cancel'))
     rendered = FormController(form)(context, request)
     if is_response(rendered):
         return rendered
@@ -173,18 +173,25 @@ def edit_document(context, request):
         'form': rendered,
         }
 
-def add_document(context, request):
+def generic_add(context, request, schema, factory):
     api = TemplateAPIEdit(
         context, request,
         first_heading=u'<h1>Add document to <em>%s</em></h1>' % context.title)
-    form = Form(DocumentSchema(), buttons=('save', 'cancel'))
-    rendered = FormController(form, add=Document)(context, request)
+    form = Form(schema, buttons=('save', 'cancel'))
+    rendered = FormController(form, add=factory)(context, request)
     if is_response(rendered):
         return rendered
     return {
         'api': api,
         'form': rendered,
         }
+
+@ensure_view_selector
+def edit_document(context, request):
+    return generic_edit(context, request, DocumentSchema())
+
+def add_document(context, request):
+    return generic_add(context, request, DocumentSchema(), Document)
 
 def includeme(config):
     config.add_view(
