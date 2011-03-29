@@ -45,7 +45,7 @@
           </ul>
         </div>
         <div tal:condition="len(possible_parents) == 1">
-          <input type="hidden" name="what"
+          <input type="hidden" name="where"
                  value="${possible_parents[0]['node'].id}" />
         </div>
         <ul>
