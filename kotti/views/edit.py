@@ -173,10 +173,12 @@ def generic_edit(context, request, schema):
         'form': rendered,
         }
 
-def generic_add(context, request, schema, factory):
+def generic_add(context, request, schema, factory, title):
     api = TemplateAPIEdit(
         context, request,
-        first_heading=u'<h1>Add document to <em>%s</em></h1>' % context.title)
+        first_heading=u'<h1>Add %s to <em>%s</em></h1>' % (
+            title, context.title)
+        )
     form = Form(schema, buttons=('save', 'cancel'))
     rendered = FormController(form, add=factory)(context, request)
     if is_response(rendered):
@@ -191,7 +193,8 @@ def edit_document(context, request):
     return generic_edit(context, request, DocumentSchema())
 
 def add_document(context, request):
-    return generic_add(context, request, DocumentSchema(), Document)
+    return generic_add(
+        context, request, DocumentSchema(), Document, u'document')
 
 def includeme(config):
     config.add_view(
