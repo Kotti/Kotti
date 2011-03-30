@@ -107,7 +107,7 @@ var kotti = {
             $(this).click(show);
             $(this).hover(show);
         });
-    }
+    };
 
     kotti.hover_link_enable = function(node) {
         node.find2(".hover-link").removeClass("hover-link");
@@ -123,13 +123,13 @@ var kotti = {
             window.open(link.attr("href"), target);
             return false;
         });
-    }
+    };
 
     kotti.dom_changed = function(node) {
-        $.each(kotti.dom_changed_handlers, function(index, func) { 
+        $.each(kotti.dom_changed_handlers, function(index, func) {
             func(node);
         });
-    }
+    };
 
     $(document).ready(function() {
         var node = $('html');
