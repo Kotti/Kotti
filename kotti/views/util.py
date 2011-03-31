@@ -43,7 +43,7 @@ class TemplateAPI(object):
             master_view=bare and bare_tmpl or S['kotti.templates.master_view'],
             master_edit=bare and bare_tmpl or S['kotti.templates.master_edit'],
             master_cp=bare and bare_tmpl or S['kotti.templates.master_cp'],
-            snippets='kotti:templates/snippets.pt',
+            snippets=S['kotti.templates.snippets'],
             )
         self.base_css = S['kotti.templates.base_css']
         self.view_css = S['kotti.templates.view_css']

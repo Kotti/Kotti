@@ -34,6 +34,7 @@ conf_defaults = {
     'kotti.templates.master_view': 'kotti:templates/view/master.pt',
     'kotti.templates.master_edit': 'kotti:templates/edit/master.pt',
     'kotti.templates.master_cp': 'kotti:templates/site-setup/master.pt',
+    'kotti.templates.snippets': 'kotti:templates/snippets.pt',
     'kotti.templates.base_css': 'kotti:static/base.css',
     'kotti.templates.view_css': 'kotti:static/view.css',
     'kotti.templates.edit_css': 'kotti:static/edit.css',

@@ -3,17 +3,8 @@
       xmlns:tal="http://xml.zope.org/namespaces/tal"
       metal:define-macro="main">
 
-  <head>
-	<title metal:define-slot="page-title">${api.page_title}</title>
-	<meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/>
-	<meta name="description" content="${api.context.description}" />
-	<link rel="shortcut icon" href="${request.static_url('kotti:static/favicon.ico')}" />
-	<link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Neuton|Nobile:regular,i,b,bi&amp;subset=latin" type="text/css" media="screen" charset="utf-8" />
-	<link rel="stylesheet" href="${request.static_url(api.base_css)}" type="text/css" media="screen" charset="utf-8" />
-	<link rel="stylesheet" href="${request.static_url(api.view_css)}" type="text/css" media="screen" charset="utf-8" />
-
-    <script type="text/javascript" src="${request.static_url('deform:static/scripts/jquery-1.4.2.min.js')}"></script>
-    <more tal:omit-tag="" metal:define-slot="head"></more>
+  <head tal:define="macro api['snippets.head-view']"
+        metal:use-macro="macro" metal:extend-macro="macro">
   </head>
 
   <body class="view-view">
