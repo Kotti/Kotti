@@ -132,9 +132,9 @@ Overview of settings
 
 This table provides an overview of available settings:
 
-===========================  =========================================
+===========================  ===========================================
 Setting                      Description                            
-===========================  =========================================
+===========================  ===========================================
 **kotti.site_title**         The title of your site
 **kotti.secret**             Secret key used for encryption
 **kotti.secret2**            Another secret key for encryption
@@ -158,7 +158,11 @@ kotti.templates.base_css     Base CSS file; used for both
 kotti.authn_policy_factory   Component used for authentication
 kotti.authz_policy_factory   Component used for authorization
 kotti.session_factory        Component used for sessions
-===========================  =======================================
+
+kotti.date_format            Date format to use, default: ``medium``
+kotti.datetime_format        Datetime format to use, default: ``medium``
+kotti.time_format            Time format to use, default: ``medium``
+===========================  ===========================================
 
 Only the settings in bold letters required.  The rest has defaults.
 

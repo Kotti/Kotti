@@ -16,6 +16,7 @@ install_requires = [
     'formencode',
     'deform>=0.9dev',
     'WebError',
+    'Babel',
     'pyramid_mailer',
     ]
 

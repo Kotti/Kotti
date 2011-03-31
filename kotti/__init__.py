@@ -46,6 +46,9 @@ conf_defaults = {
     'kotti.authz_policy_factory': 'kotti.acl_factory',
     'kotti.session_factory': 'kotti.cookie_session_factory',
     'kotti.principals_factory': 'kotti.security.principals_factory',
+    'kotti.date_format': 'medium',
+    'kotti.datetime_format': 'medium',
+    'kotti.time_format': 'medium',
     }
 
 conf_dotted = set([

@@ -2,8 +2,12 @@ import hashlib
 import string
 import urllib
 
+from babel.dates import format_date
+from babel.dates import format_datetime
+from babel.dates import format_time
 from pyramid.decorator import reify
 from pyramid.httpexceptions import HTTPFound
+from pyramid.i18n import get_locale_name
 from pyramid.location import inside
 from pyramid.location import lineage
 from pyramid.renderers import get_renderer
@@ -36,7 +40,7 @@ class TemplateAPI(object):
         if request.is_xhr and bare is None:
             bare = True
         self.bare = bare
-        S = get_settings()
+        S = self.S = get_settings()
         bare_tmpl = self.BARE_TMPL
 
         self.macro_templates = dict(
@@ -142,6 +146,25 @@ class TemplateAPI(object):
                     else:
                         this_slots.append(snippet)
         return value
+
+    @reify
+    def locale_name(self):
+        return get_locale_name(self.request)
+
+    def format_date(self, d, format=None):
+        if format is None:
+            format = self.S['kotti.date_format']
+        return format_date(d, format=format, locale=self.locale_name)
+
+    def format_datetime(self, dt, format=None):
+        if format is None:
+            format = self.S['kotti.datetime_format']
+        return format_datetime(dt, format=format, locale=self.locale_name)
+
+    def format_time(self, t, format=None):
+        if format is None:
+            format = self.S['kotti.time_format']
+        return format_time(t, format=format, locale=self.locale_name)
 
 class TemplateAPIEdit(TemplateAPI):
     @reify

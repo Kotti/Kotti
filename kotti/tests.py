@@ -1142,6 +1142,58 @@ class TestTemplateAPI(UnitTestBase):
         ab.in_navigation = False
         self.assertEqual("ab" in render_local_navigation(a, request), False)
 
+    def test_format_datetime(self):
+        import datetime
+        from babel.dates import format_datetime
+        from babel.core import UnknownLocaleError
+        api = self._make()
+        first = datetime.datetime(2012, 1, 1, 0)
+        self.assertEqual(
+            api.format_datetime(first),
+            format_datetime(first, format='medium', locale='en'),
+            )
+        self.assertEqual(
+            api.format_datetime(first, format='short'),
+            format_datetime(first, format='short', locale='en'),
+            )
+        api.locale_name = 'unknown'
+        self.assertRaises(UnknownLocaleError, api.format_datetime, first)
+
+    def test_format_date(self):
+        import datetime
+        from babel.dates import format_date
+        from babel.core import UnknownLocaleError
+        api = self._make()
+        first = datetime.date(2012, 1, 1)
+        self.assertEqual(
+            api.format_date(first),
+            format_date(first, format='medium', locale='en'),
+            )
+        self.assertEqual(
+            api.format_date(first, format='short'),
+            format_date(first, format='short', locale='en'),
+            )
+        api.locale_name = 'unknown'
+        self.assertRaises(UnknownLocaleError, api.format_date, first)
+
+    def test_format_time(self):
+        import datetime
+        from babel.dates import format_time
+        from babel.core import UnknownLocaleError
+        api = self._make()
+        first = datetime.time(23, 59)
+        self.assertEqual(
+            api.format_time(first),
+            format_time(first, format='medium', locale='en'),
+            )
+        self.assertEqual(
+            api.format_time(first, format='short'),
+            format_time(first, format='short', locale='en'),
+            )
+        api.locale_name = 'unknown'
+        self.assertRaises(UnknownLocaleError, api.format_time, first)
+
+
 class TestUtil(UnitTestBase):
     def test_title_to_name(self):
         from kotti.views.util import title_to_name
