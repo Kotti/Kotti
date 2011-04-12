@@ -1,6 +1,14 @@
 History
 =======
 
+0.1a9 - 2011-04-12
+------------------
+
+- Add 'in_navigation' flag for all Nodes to control whether or not it
+  appears in the navigation.
+
+- Improvements related to writing add-ons.
+
 0.1a8 - 2011-03-18
 ------------------
 
