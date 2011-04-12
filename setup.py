@@ -14,7 +14,8 @@ install_requires = [
     'chameleon<1.2.999', # more recent versions have compat issues right now
     'zope.sqlalchemy',
     'formencode',
-    'deform>=0.9dev',
+    'deform>=0.10dev',
+    'colander>=0.9.3dev',
     'WebError',
     'Babel',
     'pyramid_mailer',
@@ -26,7 +27,7 @@ install_requires.extend(tests_require) # for buildout
 
 dependency_links = [
     'http://prdownloads.sourceforge.net/sqlalchemy/SQLAlchemy-0.7b2.tar.gz?download',
-    'http://danielnouri.org/tmp/deform-0.9dev.tar.gz',
+    'http://danielnouri.org/packages/',
     ]
 
 if sys.version_info[:3] < (2,5,0):
