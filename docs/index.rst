@@ -130,7 +130,9 @@ Various aspects of your site can be changed right here.
 Overview of settings
 --------------------
 
-This table provides an overview of available settings:
+This table provides an overview of available settings.  All these
+settings must go into the ``[app:Kotti]`` section of your Paste Deploy
+configuration file.
 
 ===========================  ===========================================
 Setting                      Description                            
