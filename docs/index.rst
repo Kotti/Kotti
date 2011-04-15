@@ -196,8 +196,10 @@ that are used to activate add-ons are:
 kotti.includes
 ``````````````
 
-``kotti.includes`` is what you'll use most often to activate third
-party packages.
+``kotti.includes`` defines a list of hooks that will be called by
+Kotti when it starts up.  This gives the opportunity to third party
+packages to add registrations to the `Pyramid Configurator API`_ in
+order to configure views and more.
 
 As an example, we'll add the `kotti_twitter`_ extension to add a
 Twitter profile widget to the right column of all pages.  First we
@@ -216,7 +218,7 @@ file.  (If a line with ``kotti.includes`` does not exist, add it.)
   kotti.includes = kotti_twitter.include_profile_widget
 
 kotti_twitter also asks us to configure the Twitter widget itself, so
-we add some more lines:
+we add some more lines right where we were:
 
 .. code-block:: ini
 
@@ -278,6 +280,7 @@ overriding of the default session factory, which is
 `pyramid.session.UnencryptedCookieSessionFactoryConfig`_.
 
 .. _SQLAlchemy database URL: http://www.sqlalchemy.org/docs/core/engines.html#database-urls
+.. _Pyramid Configurator API: http://docs.pylonsproject.org/projects/pyramid/dev/api/config.html
 .. _kotti_twitter: http://pypi.python.org/pypi/kotti_twitter
 .. _pyramid.authentication.AuthTktAuthenticationPolicy: http://docs.pylonsproject.org/projects/pyramid/dev/api/authentication.html
 .. _pyramid.authorization.ACLAuthorizationPolicy: http://docs.pylonsproject.org/projects/pyramid/dev/api/authorization.html
@@ -314,6 +317,34 @@ Document content type serves as an example here:
 
   mapper(Document, documents, inherits=Node, polymorphic_identity='document')
 
+You can configure the list of active content types in Kotti by
+modifying the `kotti.available_types`_ setting.
+
+Configuring custom views, subscribers and more
+----------------------------------------------
+
+`kotti.includes`_ allows you to hook ``includeme`` functions that
+configure your custom views, subscribers and more.  An ``includeme``
+function takes the `Pyramid Configurator API`_ object as its sole
+argument.  An example:
+
+.. code-block:: python
+
+  def my_view(request):
+      from pyramid.response import Response
+      return Response('OK')
+
+  def includeme(config):
+      config.add_view(my_view)
+
+By adding the *dotted name string* of your ``includeme`` function to
+the `kotti.includes`_ setting, you ask Kotti to call it on application
+start-up.  An example:
+
+.. code-block:: ini
+
+  kotti.includes = mypackage.views.includeme
+
 :mod:`kotti.views.slots`
 ------------------------
 
@@ -327,11 +358,13 @@ Document content type serves as an example here:
 ``kotti.configurators``
 -----------------------
 
-Requiring users of your package to set all the configuration variables
-by hand in ``pasteserve.ini`` is not ideal.  That's why Kotti includes
-a configuration variable through which extending packages can set all
-other configuration options through Python.  Here's an example of a
-function that configures Kotti:
+Requiring users of your package to set all the configuration settings
+by hand in the Paste Deploy INI file is not ideal.  That's why Kotti
+includes a configuration variable through which extending packages can
+set all other INI settings through Python.  Here's an example of a
+function that programmatically modified ``kotti.base_includes`` and
+``kotti_principals`` which would otherwise be configured by hand in
+the INI file:
 
 .. code-block:: python
 
