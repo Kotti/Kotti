@@ -222,7 +222,8 @@ def initialize_sql(engine):
     DBSession.configure(bind=engine)
     metadata.bind = engine
     metadata.create_all(engine)
-    populate()
+    for populate in get_settings()['kotti.populators']:
+        populate()
     session = DBSession()
     _session.append(session)
     return session
