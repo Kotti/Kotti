@@ -101,8 +101,8 @@ class TestMain(UnitTestBase):
         from kotti.resources import Settings
         session = DBSession()
         [settings] = session.query(Settings).all()
-        self.assertEqual(settings.data, {'kotti.version': get_version()})
-        self.assertEqual(get_settings()['kotti.version'], get_version())
+        self.assertEqual(settings.data, {'kotti.db_version': get_version()})
+        self.assertEqual(get_settings()['kotti.db_version'], get_version())
         settings.data['foo.bar'] = u'baz'
         self.assertEqual(get_settings()['foo.bar'], u'baz')
 
@@ -110,11 +110,11 @@ class TestMain(UnitTestBase):
         from kotti.resources import Settings
         session = DBSession()
         [settings] = session.query(Settings).all()
-        data = {'foo.bar': u'spam', 'kotti.version': u'next'}
+        data = {'foo.bar': u'spam', 'kotti.db_version': u'next'}
         new_settings = settings.copy(data)
         session.add(new_settings)
         self.assertEqual(get_settings()['foo.bar'], u'spam')
-        self.assertEqual(get_settings()['kotti.version'], u'next')
+        self.assertEqual(get_settings()['kotti.db_version'], u'next')
 
 class TestNode(UnitTestBase):
     def test_root_acl(self):

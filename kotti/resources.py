@@ -223,7 +223,7 @@ def populate():
 
     settingscount = session.query(Settings).count()
     if settingscount == 0:
-        settings = Settings(data={'kotti.version': get_version()})
+        settings = Settings(data={'kotti.db_version': get_version()})
         session.add(settings)
 
     principals = get_principals()
