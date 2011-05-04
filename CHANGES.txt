@@ -1,8 +1,11 @@
 History
 =======
 
-0.1a10 - Unreleased
--------------------
+0.1 - 2011-05-04
+----------------
+
+- Add persistent settings, which allow the overriding of registry
+  settings and carry along with them the version of the last update.
 
 0.1a9 - 2011-04-12
 ------------------
