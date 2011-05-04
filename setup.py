@@ -10,7 +10,7 @@ CHANGES = open(os.path.join(here, 'CHANGES.txt')).read()
 install_requires = [
     'pyramid',
     'repoze.tm2>=1.0b1', # default_commit_veto
-    'sqlalchemy>=0.7b2',
+    'sqlalchemy>=0.7b4',
     'chameleon<1.2.999', # more recent versions have compat issues right now
     'zope.sqlalchemy',
     'formencode',
@@ -26,7 +26,7 @@ tests_require = ['nose', 'coverage', 'wsgi_intercept', 'zope.testbrowser']
 install_requires.extend(tests_require) # for buildout
 
 dependency_links = [
-    'http://prdownloads.sourceforge.net/sqlalchemy/SQLAlchemy-0.7b2.tar.gz?download',
+    'http://prdownloads.sourceforge.net/sqlalchemy/SQLAlchemy-0.7b4.tar.gz?download'
     'http://danielnouri.org/packages/',
     ]
 

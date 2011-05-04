@@ -1,5 +1,8 @@
+import pkg_resources
+
 from sqlalchemy import engine_from_config
 from sqlalchemy import MetaData
+from sqlalchemy.sql.expression import desc
 from sqlalchemy.orm import scoped_session
 from sqlalchemy.orm import sessionmaker
 from zope.sqlalchemy import ZopeTransactionExtension
@@ -11,6 +14,7 @@ from pyramid.threadlocal import get_current_registry
 from pyramid.util import DottedNameResolver
 
 import kotti.patches; kotti.patches
+from kotti.util import request_cache
 
 metadata = MetaData()
 DBSession = scoped_session(sessionmaker(extension=ZopeTransactionExtension()))
@@ -64,8 +68,21 @@ conf_dotted = set([
     'kotti.principals_factory',
     ])
 
+def get_version():
+    return pkg_resources.require("Kotti")[0].version
+
+@request_cache(lambda: None)
 def get_settings():
-    return get_current_registry().settings
+    from kotti.resources import Settings
+    session = DBSession()
+
+    db_settings = session.query(Settings).order_by(desc(Settings.id)).first()
+    if db_settings is not None:
+        reg_settings = dict(get_current_registry().settings)
+        reg_settings.update(db_settings.data)
+        return reg_settings
+    else:
+        return get_current_registry().settings
 
 def _resolve_dotted(d, keys=conf_dotted):
     for key in keys:

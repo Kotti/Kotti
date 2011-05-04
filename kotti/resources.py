@@ -19,6 +19,7 @@ from sqlalchemy import Unicode
 from sqlalchemy import UnicodeText
 from pyramid.traversal import resource_path
 
+from kotti import get_version
 from kotti import get_settings
 from kotti import DBSession
 from kotti import metadata
@@ -191,6 +192,23 @@ mapper(
 
 mapper(Document, documents, inherits=Node, polymorphic_identity='document')
 
+class Settings(object):
+    def __init__(self, data):
+        self.data = data
+
+    def copy(self, newdata):
+        data = self.data.copy()
+        data.update(newdata)
+        copy = self.__class__(data)
+        return copy
+
+settings = Table('settings', metadata,
+    Column('id', Integer, primary_key=True),
+    Column('data', JsonType()),
+    )
+
+mapper(Settings, settings)
+
 def get_root(request=None):
     session = DBSession()
     return session.query(Node).filter(Node.parent_id==None).first()
@@ -202,6 +220,11 @@ def populate():
         root = Document(name=u"", parent=None, title=u"My Site")
         root.__acl__ = SITE_ACL
         session.add(root)
+
+    settingscount = session.query(Settings).count()
+    if settingscount == 0:
+        settings = Settings(data={'kotti.version': get_version()})
+        session.add(settings)
 
     principals = get_principals()
     if u'admin' not in principals:

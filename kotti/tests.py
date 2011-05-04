@@ -96,6 +96,26 @@ class TestMain(UnitTestBase):
         self.assertEqual(get_settings()['kotti.base_includes'], [])
         self.assertEqual(get_settings()['kotti.available_types'], [MyType])
 
+    def test_persistent_settings(self):
+        from kotti import get_version
+        from kotti.resources import Settings
+        session = DBSession()
+        [settings] = session.query(Settings).all()
+        self.assertEqual(settings.data, {'kotti.version': get_version()})
+        self.assertEqual(get_settings()['kotti.version'], get_version())
+        settings.data['foo.bar'] = u'baz'
+        self.assertEqual(get_settings()['foo.bar'], u'baz')
+
+    def test_persistent_settings_add_new(self):
+        from kotti.resources import Settings
+        session = DBSession()
+        [settings] = session.query(Settings).all()
+        data = {'foo.bar': u'spam', 'kotti.version': u'next'}
+        new_settings = settings.copy(data)
+        session.add(new_settings)
+        self.assertEqual(get_settings()['foo.bar'], u'spam')
+        self.assertEqual(get_settings()['kotti.version'], u'next')
+
 class TestNode(UnitTestBase):
     def test_root_acl(self):
         root = get_root()
@@ -545,12 +565,13 @@ class TestPrincipals(UnitTestBase):
         hash_password = self.get_principals().hash_password
 
         # For 'hash_password' to work, we need to set a secret:
-        get_settings()['kotti.secret'] = 'there is no secret'
+        settings = self.config.registry.settings
+        settings['kotti.secret'] = 'there is no secret'
         hashed = hash_password(password)
         self.assertEqual(hashed, hash_password(password))
-        get_settings()['kotti.secret'] = 'different'
+        settings['kotti.secret'] = 'different'
         self.assertNotEqual(hashed, hash_password(password))        
-        del get_settings()['kotti.secret']
+        del settings['kotti.secret']
 
     def test_bobs_hashed_password(self):
         bob = self.make_bob()
