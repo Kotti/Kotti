@@ -29,8 +29,8 @@ class TemplateAPI(object):
     templates.
 
     Use dict-access as a shortcut to retrieve template macros from
-    templates.  ``api['master_view.messages']`` will return the
-    'messages' macro from the 'master_edit' template.
+    templates.  ``api['snippets.messages']`` will return the
+    'messages' macro from the 'snippets' template.
     """
     BARE_TMPL = 'kotti:templates/master-bare.pt'
 
