@@ -18,3 +18,5 @@ ordereddict-*
 pytz-*
 wsgi_intercept-*
 zope.testbrowser-*
+*~
+*.swp
