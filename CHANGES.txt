@@ -4,6 +4,11 @@ History
 0.2a1 - Unreleased
 ------------------
 
+0.1.1 - 2011-05-17
+------------------
+
+- Fix an installation issue with ``colander`` and ``dependency_links``.
+
 0.1 - 2011-05-04
 ----------------
 
