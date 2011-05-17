@@ -321,6 +321,23 @@ Document content type serves as an example here:
 You can configure the list of active content types in Kotti by
 modifying the `kotti.available_types`_ setting.
 
+If you were to totally customize Kotti, and not even include the stock Document type,
+you would need to follow the template provided by Document, with some attention to
+detail for configuration and for instantiating a resource hierarchy, especially the 
+root object. For example, let's say that you replace Document with a custom type called 
+Project (updating available types configuration as needed). In your design, under the 
+Project custom type, you might have a hierarchy of other types, the relationships 
+determined by how the type_info.addable_to setup is done, and how the parent property 
+is set for each record on instantiation. When you instantiate the root Project object, 
+the code in the populate() method of resources.py would be something like:
+
+.. code-block:: python
+
+  root = Project(name="", title="Mother Project", propertyOne="Something", parent=None)
+
+NOTE: So, the details are that the root object must have an empty name (name="") and 
+the parent is None.
+
 Configuring custom views, subscribers and more
 ----------------------------------------------
 
