@@ -42,6 +42,7 @@ conf_defaults = {
     'kotti.templates.base_css': 'kotti:static/base.css',
     'kotti.templates.view_css': 'kotti:static/view.css',
     'kotti.templates.edit_css': 'kotti:static/edit.css',
+    'kotti.templates.add_static_views': '',
     'kotti.configurators': '',
     'kotti.base_includes': 'kotti.events kotti.views.view kotti.views.edit kotti.views.login kotti.views.users kotti.views.site_setup kotti.views.slots',
     'kotti.includes': '',
@@ -130,6 +131,7 @@ def main(global_config, **settings):
     config._set_root_factory(appmaker(engine))
 
     _configure_base_views(config)
+    _configure_additional_views(config, settings)
 
     # Include modules listed in 'kotti.includes' and 'kotti.includes':
     for module in (
@@ -143,6 +145,7 @@ def _configure_base_views(config):
 
     config.add_static_view('static-deform', 'deform:static')
     config.add_static_view('static-kotti', 'kotti:static')
+
     config.add_view('kotti.views.view.view_node_default', context=Node)
     config.add_view(
         'kotti.views.edit.add_node',
@@ -156,3 +159,10 @@ def _configure_base_views(config):
         permission='edit',
         renderer='templates/edit/move.pt',
         )
+
+def _configure_additional_views(config, settings):
+    static_views = settings['kotti.templates.add_static_views']
+    if static_views:
+        for view_pair in static_views.split(' '):
+            parts = view_pair.split(',')
+            config.add_static_view(parts[0], parts[1])
