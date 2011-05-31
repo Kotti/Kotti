@@ -14,7 +14,7 @@ from kotti import DBSession
 from kotti.resources import Node
 from kotti.resources import Document
 from kotti.security import view_permitted
-from kotti.views.util import TemplateAPIEdit
+from kotti.views.util import template_api
 from kotti.views.util import addable_types
 from kotti.views.util import title_to_name
 from kotti.views.util import disambiguate_name
@@ -69,7 +69,7 @@ def add_node(context, request):
     # Swap first and second possible parents if there's no content in
     # 'possible_parents[0]' yet.  This makes the parent then the
     # default choice in the form:
-    api = TemplateAPIEdit(context, request)
+    api = template_api(context, request)
     if not api.list_children() and len(possible_parents) > 1:
         possible_parents[0], possible_parents[1] = (
             possible_parents[1], possible_parents[0])
@@ -159,30 +159,36 @@ def move_node(context, request):
             return HTTPFound(location=location)
 
     return {
-        'api': TemplateAPIEdit(context, request),
+        'api': template_api(context, request),
         }
 
 
 def generic_edit(context, request, schema):
+    api = template_api(context, request)
+    api.first_heading=u'<h1>Edit <em>%s</em></h1>' % context.title
+    api.page_title = u'Edit %s - %s' % (context.title, api.site_title)
+
     form = Form(schema, buttons=('save', 'cancel'))
     rendered = FormController(form)(context, request)
     if is_response(rendered):
         return rendered
+
     return {
-        'api': TemplateAPIEdit(context, request),
+        'api': api,
         'form': rendered,
         }
 
 def generic_add(context, request, schema, factory, title):
-    api = TemplateAPIEdit(
-        context, request,
-        first_heading=u'<h1>Add %s to <em>%s</em></h1>' % (
-            title, context.title)
-        )
+    api = template_api(context, request)
+    api.first_heading = u'<h1>Add %s to <em>%s</em></h1>' % (
+        title, context.title)
+    api.page_title=u'Add %s to %s - %s' % (title, context.title, api.site_title)
+
     form = Form(schema, buttons=('save', 'cancel'))
     rendered = FormController(form, add=factory)(context, request)
     if is_response(rendered):
         return rendered
+
     return {
         'api': api,
         'form': rendered,

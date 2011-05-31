@@ -157,6 +157,7 @@ kotti.templates.snippets     Override <head> and other common elements
 kotti.templates.view_css     CSS file used for public views
 kotti.templates.edit_css     CSS file used for edit screens
 kotti.templates.base_css     Base CSS file; used for both
+kotti.templates.api          Override ``api`` used by all templates
 
 kotti.authn_policy_factory   Component used for authentication
 kotti.authz_policy_factory   Component used for authorization

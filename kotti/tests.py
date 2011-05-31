@@ -989,13 +989,13 @@ class TestUserManagement(UnitTestBase):
 
 class TestTemplateAPI(UnitTestBase):
     def _make(self, context=None, request=None, id=1, **kwargs):
-        from kotti.views.util import TemplateAPIEdit
+        from kotti.views.util import TemplateAPI
         if context is None:
             session = DBSession()
             context = session.query(Node).get(id)
         if request is None:
             request = DummyRequest()
-        return TemplateAPIEdit(context, request, **kwargs)
+        return TemplateAPI(context, request, **kwargs)
 
     def _create_nodes(self, root):
         # root -> a --> aa
@@ -1014,12 +1014,14 @@ class TestTemplateAPI(UnitTestBase):
         return a, aa, ab, ac, aca, acb
 
     def test_page_title(self):
-        from kotti.views.util import TemplateAPI
-        edit_api = self._make()
-        view_api = TemplateAPI(edit_api.context, edit_api.request)
-        view_api.root.title = u"Hello, world!"
-        self.assertEqual(edit_api.page_title, u" - Hello, world!")
-        self.assertEqual(view_api.page_title, u"Hello, world! - Hello, world!")
+        api = self._make()
+        api.context.title = u"Hello, world!"
+        self.assertEqual(api.page_title, u"Hello, world! - Hello, world!")
+
+        api = self._make()
+        api.context.title = u"Hello, world!"
+        api.site_title = u"Wasnhierlos"
+        self.assertEqual(api.page_title, u"Hello, world! - Wasnhierlos")
 
     def test_list_children(self):
         api = self._make() # the default context is root

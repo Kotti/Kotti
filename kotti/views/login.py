@@ -14,7 +14,7 @@ from kotti.message import send_set_password
 from kotti.resources import get_root
 from kotti.resources import Node
 from kotti.security import get_principals
-from kotti.views.util import TemplateAPIEdit
+from kotti.views.util import template_api
 
 def _find_user(login):
     principals = get_principals()
@@ -32,7 +32,7 @@ def _find_user(login):
 
 def login(context, request):
     root = get_root(request)
-    api = TemplateAPIEdit(root, request)
+    api = template_api(root, request)
     principals = get_principals()
 
     came_from = request.params.get('came_from', request.url)
@@ -124,7 +124,7 @@ def set_password(context, request,
     if rendered_form is None:
         rendered_form = form.render(request.params.items())
 
-    api = TemplateAPIEdit(
+    api = template_api(
         context, request,
         page_title=u"Reset your password - %s" % context.title,
         )

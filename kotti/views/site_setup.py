@@ -1,5 +1,5 @@
 from kotti.util import ViewLink
-from kotti.views.util import TemplateAPIEdit
+from kotti.views.util import template_api
 from kotti.views.util import is_root
 
 
@@ -8,11 +8,12 @@ CONTROL_PANEL_LINKS = [
     ]
 
 def main(context, request):
-    api = TemplateAPIEdit(
+    api = template_api(
         context, request,
-        page_title=u"Site Setup - %s" % context.title,
         cp_links=CONTROL_PANEL_LINKS,
         )
+    api.page_title=u"Site Setup - %s" % api.site_title
+
 
     return {'api': api}
 

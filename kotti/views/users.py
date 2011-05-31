@@ -26,7 +26,7 @@ from kotti.security import list_groups_raw
 from kotti.security import list_groups_ext
 from kotti.security import set_groups
 from kotti.views.site_setup import CONTROL_PANEL_LINKS
-from kotti.views.util import TemplateAPIEdit
+from kotti.views.util import template_api
 from kotti.views.util import is_root
 from kotti.views.util import FormController
 
@@ -113,7 +113,7 @@ def share_node(context, request):
     available_roles = [ROLES[role_name] for role_name in SHARING_ROLES]
 
     return {
-        'api': TemplateAPIEdit(context, request),
+        'api': template_api(context, request),
         'entries': entries,
         'available_roles': available_roles,
         }
@@ -256,11 +256,12 @@ def _massage_groups_out(appstruct):
     return d
 
 def users_manage(context, request):
-    api = TemplateAPIEdit(
+    api = template_api(
         context, request,
-        page_title=u"User Management - %s" % context.title,
         cp_links=CONTROL_PANEL_LINKS,
         )
+    api.page_title = u"User Management - %s" % api.site_title
+
     principals = get_principals()
 
     def groups_lister(principal_name, context):
@@ -356,7 +357,7 @@ def user_manage(context, request):
     username = request.params['name']
     principal = get_principals()[username]
 
-    api = TemplateAPIEdit(
+    api = template_api(
         context, request,
         page_title=u"Edit User - %s" % context.title,
         cp_links=CONTROL_PANEL_LINKS,
@@ -392,11 +393,8 @@ def user_manage(context, request):
         }
 
 def preferences(context, request):
-    api = TemplateAPIEdit(
-        context, request,
-        page_title=u"My preferences - %s" % context.title,
-        )
-
+    api = template_api(context, request)
+    api.page_title=u"My preferences - %s" % api.site_title
     user = api.user
     uschema = user_schema(PrincipalBasic())
     user_form = Form(uschema, buttons=('save', 'cancel'))

@@ -79,8 +79,8 @@ slot_events = [
     RenderLeftSlot, RenderRightSlot, RenderAboveContent, RenderBelowContent]
 
 def render_local_navigation(context, request):
-    from kotti.views.util import TemplateAPI
-    api = TemplateAPI(context, request)
+    from kotti.views.util import template_api
+    api = template_api(context, request)
     parent, children = api.list_children_go_up()
     children = [c for c in children if c.in_navigation]
     if parent != api.root and children:

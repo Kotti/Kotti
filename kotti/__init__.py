@@ -42,6 +42,7 @@ conf_defaults = {
     'kotti.templates.base_css': 'kotti:static/base.css',
     'kotti.templates.view_css': 'kotti:static/view.css',
     'kotti.templates.edit_css': 'kotti:static/edit.css',
+    'kotti.templates.api': 'kotti.views.util.TemplateAPI',
     'kotti.configurators': '',
     'kotti.base_includes': 'kotti.events kotti.views.view kotti.views.edit kotti.views.login kotti.views.users kotti.views.site_setup kotti.views.slots',
     'kotti.includes': '',
@@ -57,6 +58,7 @@ conf_defaults = {
     }
 
 conf_dotted = set([
+    'kotti.templates.api',
     'kotti.configurators',
     'kotti.base_includes',
     'kotti.includes',
