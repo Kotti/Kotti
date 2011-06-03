@@ -101,10 +101,10 @@ class Node(Container, PersistentACL):
         self.description = description
         self.language = language
         self.owner = owner
+        self.in_navigation = in_navigation
         # These are set by events if not defined at this point:
         self.creation_date = creation_date
         self.modification_date = modification_date
-        self.in_navigation = in_navigation
 
     # Provide location-awareness through __name__ and __parent__
     @property
