@@ -344,9 +344,12 @@ class FormController(object):
     def appstruct(self, item):
         return item.__dict__.copy()
 
-    def edit_item(self, context, request, appstruct):
+    def edit(self, item, **appstruct):
         for key, value in appstruct.items():
-            setattr(context, key, value)
+            setattr(item, key, value)
+
+    def edit_item(self, context, request, appstruct):
+        self.edit(context, **appstruct)
         request.session.flash(self.edit_success_msg, 'success')
         try:
             location = resource_url(context, request) + self.success_path
@@ -355,9 +358,11 @@ class FormController(object):
         return HTTPFound(location=location)
         
     def add_item(self, context, request, appstruct):
-        name = title_to_name(appstruct['title'])
-        while name in context.keys():
-            name = disambiguate_name(name)
+        name = appstruct.get('name')
+        if name is None:
+            name = title_to_name(appstruct['title'])
+            while name in context.keys():
+                name = disambiguate_name(name)
         item = context[name] = self.add(**appstruct)
         request.session.flash(self.add_success_msg, 'success')
         location = resource_url(item, request) + self.success_path
