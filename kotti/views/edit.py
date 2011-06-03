@@ -194,17 +194,20 @@ def generic_add(context, request, schema, factory, title):
         'form': rendered,
         }
 
-@ensure_view_selector
-def edit_document(context, request):
-    return generic_edit(context, request, DocumentSchema())
+def make_generic_edit(schema):
+    @ensure_view_selector
+    def view(context, request):
+        return generic_edit(context, request, schema)
+    return view
 
-def add_document(context, request):
-    return generic_add(
-        context, request, DocumentSchema(), Document, u'document')
+def make_generic_add(schema, factory, title):
+    def view(context, request):
+        return generic_add(context, request, schema, factory,title)
+    return view
 
 def includeme(config):
     config.add_view(
-        edit_document,
+        make_generic_edit(DocumentSchema()),
         context=Document,
         name='edit',
         permission='edit',
@@ -212,7 +215,7 @@ def includeme(config):
         )
 
     config.add_view(
-        add_document,
+        make_generic_add(DocumentSchema(), Document, u'document'),
         name=Document.type_info.add_view,
         permission='add',
         renderer='../templates/edit/node.pt',
