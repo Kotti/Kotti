@@ -1,11 +1,19 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xml:lang="en"
       xmlns:tal="http://xml.zope.org/namespaces/tal"
-      metal:define-macro="main">
+      metal:define-macro="main"
+      tal:define="page_slots api.slots">
 
   <head tal:define="macro api['snippets.head-view']"
         metal:use-macro="macro" metal:extend-macro="macro">
   </head>
+
+  <!-- header slots -->
+  <headerslots tal:omit-tag=""
+      tal:define="snippets page_slots.inheader" tal:condition="snippets">
+    <snip tal:repeat="snippet snippets" tal:replace="structure snippet">
+    </snip>
+  </headerslots>
 
   <body class="view-view">
     <div id="skiplinks" class="hidden">
@@ -41,7 +49,7 @@
     </div>
 
     <!-- The main diff -->
-    <div id="main" tal:define="page_slots api.slots">
+    <div id="main">
 
       <!-- left column -->
       <ul id="left-slot" class="left-column slot"
