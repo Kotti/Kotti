@@ -75,11 +75,11 @@ class RenderAboveContent(ObjectEvent):
 class RenderBelowContent(ObjectEvent):
     name = u'belowcontent'
 
-class RenderInHeader(ObjectEvent):
-    name = u'inheader'
+class RenderInHead(ObjectEvent):
+    name = u'inhead'
 
 slot_events = [
-    RenderLeftSlot, RenderRightSlot, RenderAboveContent, RenderBelowContent, RenderInHeader]
+    RenderLeftSlot, RenderRightSlot, RenderAboveContent, RenderBelowContent, RenderInHead]
 
 def render_local_navigation(context, request):
     from kotti.views.util import template_api

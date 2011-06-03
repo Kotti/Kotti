@@ -6,14 +6,14 @@
 
   <head tal:define="macro api['snippets.head-view']"
         metal:use-macro="macro" metal:extend-macro="macro">
+    <!-- head slots -->
+    <headslots tal:omit-tag=""
+        tal:define="snippets page_slots.inhead" tal:condition="snippets"
+        metal:fill-slot="head-more">
+      <snip tal:repeat="snippet snippets" tal:replace="structure snippet">
+      </snip>
+    </headslots>
   </head>
-
-  <!-- header slots -->
-  <headerslots tal:omit-tag=""
-      tal:define="snippets page_slots.inheader" tal:condition="snippets">
-    <snip tal:repeat="snippet snippets" tal:replace="structure snippet">
-    </snip>
-  </headerslots>
 
   <body class="view-view">
     <div id="skiplinks" class="hidden">
