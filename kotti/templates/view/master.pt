@@ -1,18 +1,10 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xml:lang="en"
       xmlns:tal="http://xml.zope.org/namespaces/tal"
-      metal:define-macro="main"
-      tal:define="page_slots api.slots">
+      metal:define-macro="main">
 
   <head tal:define="macro api['snippets.head-view']"
         metal:use-macro="macro" metal:extend-macro="macro">
-    <!-- head slots -->
-    <headslots tal:omit-tag=""
-        tal:define="snippets page_slots.inhead" tal:condition="snippets"
-        metal:fill-slot="head-more">
-      <snip tal:repeat="snippet snippets" tal:replace="structure snippet">
-      </snip>
-    </headslots>
   </head>
 
   <body class="view-view">
@@ -49,7 +41,7 @@
     </div>
 
     <!-- The main diff -->
-    <div id="main">
+    <div id="main" tal:define="page_slots api.slots">
 
       <!-- left column -->
       <ul id="left-slot" class="left-column slot"
