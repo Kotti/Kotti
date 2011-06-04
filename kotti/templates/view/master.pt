@@ -7,7 +7,7 @@
         metal:use-macro="macro" metal:extend-macro="macro">
   </head>
 
-  <body class="view-view">
+  <body class="view-view" tal:define="page_slots api.slots">
     <div id="skiplinks" class="hidden">
       <ul>
         <li><a href="#start-navigation">Skip to navigation</a></li>
@@ -41,7 +41,7 @@
     </div>
 
     <!-- The main diff -->
-    <div id="main" tal:define="page_slots api.slots">
+    <div id="main">
 
       <!-- left column -->
       <ul id="left-slot" class="left-column slot"
@@ -85,6 +85,13 @@
 
     <div id="footer">
     </div>
+
+    <!-- before body end slots -->
+    <beforebodyendslots tal:omit-tag=""
+        tal:define="snippets api.slots.beforebodyend" tal:condition="snippets">
+      <snip tal:repeat="snippet snippets" tal:replace="structure snippet">
+      </snip>
+    </beforebodyendslots>
 
   </body>
 </html>
