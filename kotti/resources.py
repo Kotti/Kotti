@@ -56,55 +56,14 @@ class Container(object, DictMixin):
     def keys(self):
         return [child.name for child in self.children]
 
-class TypeInfo(object):
-    addable_to = ()
-
-    def __init__(self, **kwargs):
-        self.__dict__.update(kwargs)
-
-    def copy(self, **kwargs):
-        d = self.__dict__.copy()
-        d.update(kwargs)
-        return TypeInfo(**d)
-
-    def addable(self, context, request):
-        """Return True if the type described in 'self' may be added to
-        'context'.
-        """
-        if view_permitted(context, request, self.add_view):
-            return context.type_info.name in self.addable_to
-        else:
-            return False
-
 class Node(Container, PersistentACL):
-    type_info = TypeInfo(
-        name=u'Node',
-        add_view=None,
-        addable_to=[],
-        edit_links=[
-            ViewLink('edit'),
-            ViewLink('add'),
-            ViewLink('move'),
-            ViewLink('share'),
-            ],
-        )
-
     id = None
-    def __init__(self, name=None, parent=None, default_view=None,
-                 title=u"", description=u"", language=None,
-                 owner=None, creation_date=None, modification_date=None,
-                 in_navigation=True):
+    def __init__(self, name=None, parent=None, annotations=None):
+        if annotations is None:
+            annotations = {}
         self.name = name
         self.parent = parent
-        self.default_view = default_view
-        self.title = title
-        self.description = description
-        self.language = language
-        self.owner = owner
-        self.in_navigation = in_navigation
-        # These are set by events if not defined at this point:
-        self.creation_date = creation_date
-        self.modification_date = modification_date
+        self.annotations = annotations
 
     # Provide location-awareness through __name__ and __parent__
     @property
@@ -134,8 +93,56 @@ class Node(Container, PersistentACL):
             copy.children.append(child.copy())
         return copy
 
-class Document(Node):
-    type_info = Node.type_info.copy(
+class TypeInfo(object):
+    addable_to = ()
+
+    def __init__(self, **kwargs):
+        self.__dict__.update(kwargs)
+
+    def copy(self, **kwargs):
+        d = self.__dict__.copy()
+        d.update(kwargs)
+        return TypeInfo(**d)
+
+    def addable(self, context, request):
+        """Return True if the type described in 'self' may be added to
+        'context'.
+        """
+        if view_permitted(context, request, self.add_view):
+            return context.type_info.name in self.addable_to
+        else:
+            return False
+
+class Content(Node):
+    type_info = TypeInfo(
+        name=u'Content',
+        add_view=None,
+        addable_to=[],
+        edit_links=[
+            ViewLink('edit'),
+            ViewLink('add'),
+            ViewLink('move'),
+            ViewLink('share'),
+            ],
+        )
+
+    def __init__(self, name=None, parent=None, default_view=None,
+                 title=u"", description=u"", language=None,
+                 owner=None, creation_date=None, modification_date=None,
+                 in_navigation=True):
+        super(Content, self).__init__(name, parent)
+        self.default_view = default_view
+        self.title = title
+        self.description = description
+        self.language = language
+        self.owner = owner
+        self.in_navigation = in_navigation
+        # These are set by events if not defined at this point:
+        self.creation_date = creation_date
+        self.modification_date = modification_date
+
+class Document(Content):
+    type_info = Content.type_info.copy(
         name=u'Document',
         add_view=u'add_document',
         addable_to=[u'Document'],
@@ -148,13 +155,20 @@ class Document(Node):
 
 nodes = Table('nodes', metadata,
     Column('id', Integer, primary_key=True),
+    Column('type', String(30), nullable=False),
     Column('parent_id', ForeignKey('nodes.id')),
     Column('name', Unicode(50), nullable=False),
-    Column('type', String(30), nullable=False),
+    Column('annotations', JsonType()),
+    Column('position', Integer),
     Column('_acl', JsonType()),
     Column('__roles__', JsonType()),
+
+    UniqueConstraint('parent_id', 'name'),
+)
+
+contents = Table('contents', metadata,
+    Column('id', Integer, ForeignKey('nodes.id'), primary_key=True),
     Column('default_view', String(50)),
-    Column('position', Integer),
 
     Column('title', Unicode(100)),
     Column('description', UnicodeText()),
@@ -163,12 +177,10 @@ nodes = Table('nodes', metadata,
     Column('creation_date', DateTime()),
     Column('modification_date', DateTime()),
     Column('in_navigation', Boolean()),
-
-    UniqueConstraint('parent_id', 'name'),
 )
 
 documents = Table('documents', metadata,
-    Column('id', Integer, ForeignKey('nodes.id'), primary_key=True),
+    Column('id', Integer, ForeignKey('contents.id'), primary_key=True),
     Column('body', UnicodeText()),
     Column('mime_type', String(30)),
 )
@@ -190,7 +202,9 @@ mapper(
         },
     )
 
-mapper(Document, documents, inherits=Node, polymorphic_identity='document')
+mapper(Content, contents, inherits=Node, polymorphic_identity='content')
+       
+mapper(Document, documents, inherits=Content, polymorphic_identity='document')
 
 class Settings(object):
     def __init__(self, data):

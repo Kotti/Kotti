@@ -19,6 +19,7 @@ from kotti import DBSession
 from kotti.events import clear
 from kotti.message import _inject_mailer
 from kotti.resources import Node
+from kotti.resources import Content
 from kotti.resources import Document
 from kotti.resources import initialize_sql
 from kotti.resources import get_root
@@ -654,21 +655,21 @@ class TestEvents(UnitTestBase):
         session = DBSession()
         self.config.testing_securitypolicy(userid=u'bob')
         root = get_root()
-        child = root[u'child'] = Node()
+        child = root[u'child'] = Content()
         session.flush()
         self.assertEqual(child.owner, u'bob')
         self.assertEqual(list_groups(u'bob', child), [u'role:owner'])
 
         clear_request_cache()
         # The event listener does not set the role again for subitems:
-        grandchild = child[u'grandchild'] = Node()
+        grandchild = child[u'grandchild'] = Content()
         session.flush()
         self.assertEqual(grandchild.owner, u'bob')
         self.assertEqual(list_groups(u'bob', grandchild), [u'role:owner'])
         self.assertEqual(len(list_groups_raw(u'bob', grandchild)), 0)
 
 class TestNodeView(UnitTestBase):
-    def test_it(self):
+    def test_with_root(self):
         from kotti.views.view import view_node
         root = get_root()
         request = DummyRequest()
@@ -676,17 +677,17 @@ class TestNodeView(UnitTestBase):
         self.assertEqual(info['api'].context, root)
 
 @contextmanager
-def nodes_addable():
+def contents_addable():
     # Allow Nodes to be added to documents:
-    save_node_type_info = Node.type_info.copy()
-    Node.type_info.addable_to = [u'Document']
-    Node.type_info.add_view = u'add_document'
-    get_settings()['kotti.available_types'].append(Node)
+    save_node_type_info = Content.type_info.copy()
+    Content.type_info.addable_to = [u'Document']
+    Content.type_info.add_view = u'add_document'
+    get_settings()['kotti.available_types'].append(Content)
     try:
         yield
     finally:
         get_settings()['kotti.available_types'].pop()
-        Node.type_info = save_node_type_info
+        Content.type_info = save_node_type_info
 
 class TestAddableTypes(UnitTestBase):
     def test_view_permitted_yes(self):
@@ -709,15 +710,16 @@ class TestAddableTypes(UnitTestBase):
         root = get_root()
         request = DummyRequest()
 
-        with nodes_addable():
+        with contents_addable():
             # We should be able to add both Nodes and Documents now:
             possible_parents, possible_types = addable_types(root, request)
             self.assertEqual(len(possible_parents), 1)
-            self.assertEqual(possible_parents[0]['factories'], [Document, Node])
+            self.assertEqual(possible_parents[0]['factories'],
+                             [Document, Content])
 
             document_info, node_info = possible_types
             self.assertEqual(document_info['factory'], Document)
-            self.assertEqual(node_info['factory'], Node)
+            self.assertEqual(node_info['factory'], Content)
             self.assertEqual(document_info['nodes'], [root])
             self.assertEqual(node_info['nodes'], [root])
 
@@ -727,19 +729,19 @@ class TestAddableTypes(UnitTestBase):
         root = get_root()
         request = DummyRequest()
 
-        with nodes_addable():
+        with contents_addable():
             # We should be able to add both to the child and to the parent:
             child = root['child'] = Document(title=u"Child")
             possible_parents, possible_types = addable_types(child, request)
             child_parent, root_parent = possible_parents
             self.assertEqual(child_parent['node'], child)
             self.assertEqual(root_parent['node'], root)
-            self.assertEqual(child_parent['factories'], [Document, Node])
-            self.assertEqual(root_parent['factories'], [Document, Node])
+            self.assertEqual(child_parent['factories'], [Document, Content])
+            self.assertEqual(root_parent['factories'], [Document, Content])
 
             document_info, node_info = possible_types
             self.assertEqual(document_info['factory'], Document)
-            self.assertEqual(node_info['factory'], Node)
+            self.assertEqual(node_info['factory'], Content)
             self.assertEqual(document_info['nodes'], [child, root])
             self.assertEqual(node_info['nodes'], [child, root])
 
@@ -765,7 +767,7 @@ class TestNodeEdit(UnitTestBase):
         root = get_root()
         request = DummyRequest()
 
-        with nodes_addable():
+        with contents_addable():
             # The child Document does not contain any other Nodes, so it's
             # second in the 'possible_parents' list returned by 'node_add':
             child = root['child'] = Document(title=u"Child")
@@ -997,7 +999,7 @@ class TestTemplateAPI(UnitTestBase):
             request = DummyRequest()
         return TemplateAPI(context, request, **kwargs)
 
-    def _create_nodes(self, root):
+    def _create_contents(self, root):
         # root -> a --> aa
         #         |
         #         \ --> ab
@@ -1005,12 +1007,12 @@ class TestTemplateAPI(UnitTestBase):
         #         \ --> ac --> aca
         #               |
         #               \ --> acb
-        a = root['a'] = Node()
-        aa = root['a']['aa'] = Node()
-        ab = root['a']['ab'] = Node()
-        ac = root['a']['ac'] = Node()
-        aca = ac['aca'] = Node()
-        acb = ac['acb'] = Node()
+        a = root['a'] = Content()
+        aa = root['a']['aa'] = Content()
+        ab = root['a']['ab'] = Content()
+        ac = root['a']['ac'] = Content()
+        aca = ac['aca'] = Content()
+        acb = ac['acb'] = Content()
         return a, aa, ab, ac, aca, acb
 
     def test_page_title(self):
@@ -1029,7 +1031,7 @@ class TestTemplateAPI(UnitTestBase):
         self.assertEquals(len(api.list_children(root)), 0)
 
         # Now try it on a little graph:
-        a, aa, ab, ac, aca, acb = self._create_nodes(root)
+        a, aa, ab, ac, aca, acb = self._create_contents(root)
         self.assertEquals(api.list_children(root), [a])
         self.assertEquals(api.list_children(a), [aa, ab, ac])
         self.assertEquals(api.list_children(aca), [])
@@ -1044,7 +1046,7 @@ class TestTemplateAPI(UnitTestBase):
     def test_root(self):
         api = self._make()
         root = api.context
-        a, aa, ab, ac, aca, acb = self._create_nodes(root)
+        a, aa, ab, ac, aca, acb = self._create_contents(root)
         self.assertEquals(self._make().root, root)
         self.assertEquals(self._make(acb).root, root)
 
@@ -1078,7 +1080,7 @@ class TestTemplateAPI(UnitTestBase):
         # 'context_links' returns a two-tuple of the form (siblings,
         # children), where the URLs point to edit pages:
         root = self._make().root
-        a, aa, ab, ac, aca, acb = self._create_nodes(root)
+        a, aa, ab, ac, aca, acb = self._create_contents(root)
         api = self._make(ac)
         siblings, children = api.context_links
 
@@ -1094,7 +1096,7 @@ class TestTemplateAPI(UnitTestBase):
 
     def test_breadcrumbs(self):
         root = self._make().root
-        a, aa, ab, ac, aca, acb = self._create_nodes(root)
+        a, aa, ab, ac, aca, acb = self._create_contents(root)
         api = self._make(acb)
         breadcrumbs = api.breadcrumbs
         self.assertEqual(
@@ -1149,7 +1151,8 @@ class TestTemplateAPI(UnitTestBase):
         api = self._make()
         self.assertEqual(
             sorted(api.slots.keys()),
-            ['abovecontent', 'belowcontent', 'left', 'right']
+            ['abovecontent', 'beforebodyend', 'belowcontent', 'inhead',
+             'left', 'right']
             )
         for key in api.slots.keys():
             self.assertEqual(api.slots[key], [])
@@ -1158,7 +1161,7 @@ class TestTemplateAPI(UnitTestBase):
         from kotti.views.slots import render_local_navigation
         root = DBSession().query(Node).get(1)
         request = DummyRequest()
-        a, aa, ab, ac, aca, acb = self._create_nodes(root)
+        a, aa, ab, ac, aca, acb = self._create_contents(root)
         self.assertEqual(render_local_navigation(root, request), None)
         self.assertNotEqual(render_local_navigation(a, request), None)
         self.assertEqual("ab" in render_local_navigation(a, request), True)
@@ -1215,7 +1218,6 @@ class TestTemplateAPI(UnitTestBase):
             )
         api.locale_name = 'unknown'
         self.assertRaises(UnknownLocaleError, api.format_time, first)
-
 
 class TestUtil(UnitTestBase):
     def test_title_to_name(self):

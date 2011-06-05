@@ -4,8 +4,8 @@ from pyramid.view import render_view_to_response
 from kotti.resources import Document
 from kotti.views.util import template_api
 
-def view_node_default(context, request):
-    """This view is always registered as the default view for any Node.
+def view_content_default(context, request):
+    """This view is always registered as the default view for any Content.
 
     Its job is to delegate to a view of which the name may be defined
     per instance.  If a instance level view is not defined for

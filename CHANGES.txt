@@ -4,6 +4,13 @@ History
 0.2a1 - Unreleased
 ------------------
 
+- Split ``Node`` class into ``Node`` and ``Content``.
+
+  This change is backward incompatible in that existing subclasses of
+  ``Node`` will need to subclass from ``Content`` instead.  The
+  example in the docs has been updated.  Also, the underlying database
+  schema has changed.
+
 0.1.1 - 2011-05-17
 ------------------
 

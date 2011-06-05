@@ -299,8 +299,8 @@ Document content type serves as an example here:
 
 .. code-block:: python
 
-  class Document(Node):
-      type_info = Node.type_info.copy(
+  class Document(Content):
+      type_info = Content.type_info.copy(
           name=u'Document',
           add_view=u'add_document',
           addable_to=[u'Document'],
@@ -312,12 +312,12 @@ Document content type serves as an example here:
           self.mime_type = mime_type
 
   documents = Table('documents', metadata,
-      Column('id', Integer, ForeignKey('nodes.id'), primary_key=True),
+      Column('id', Integer, ForeignKey('contents.id'), primary_key=True),
       Column('body', UnicodeText()),
       Column('mime_type', String(30)),
   )
 
-  mapper(Document, documents, inherits=Node, polymorphic_identity='document')
+  mapper(Document, documents, inherits=Content, polymorphic_identity='document')
 
 You can configure the list of active content types in Kotti by
 modifying the `kotti.available_types`_ setting.

@@ -44,6 +44,7 @@ from pyramid.security import authenticated_userid
 
 from kotti import DBSession
 from kotti.resources import Node
+from kotti.resources import Content
 from kotti.security import list_groups
 from kotti.security import list_groups_raw
 from kotti.security import set_groups
@@ -186,6 +187,6 @@ def includeme(config):
     sqlalchemy.event.listen(mapper, 'before_update', _before_update)
     sqlalchemy.event.listen(mapper, 'before_delete', _before_delete)
 
-    objectevent_listeners[(ObjectInsert, Node)].append(set_owner)
-    objectevent_listeners[(ObjectInsert, Node)].append(set_creation_date)
-    objectevent_listeners[(ObjectUpdate, Node)].append(set_modification_date)
+    objectevent_listeners[(ObjectInsert, Content)].append(set_owner)
+    objectevent_listeners[(ObjectInsert, Content)].append(set_creation_date)
+    objectevent_listeners[(ObjectUpdate, Content)].append(set_modification_date)
