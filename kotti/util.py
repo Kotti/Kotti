@@ -4,6 +4,7 @@ import urllib
 from pyramid.threadlocal import get_current_request
 from pyramid.url import resource_url
 from sqlalchemy.types import TypeDecorator, VARCHAR
+from sqlalchemy.ext.mutable import Mutable
 
 class JsonType(TypeDecorator):
     """http://www.sqlalchemy.org/docs/core/types.html#marshal-json-strings
@@ -13,13 +14,32 @@ class JsonType(TypeDecorator):
     def process_bind_param(self, value, dialect):
         if value is not None:
             value = json.dumps(value)
-
         return value
 
     def process_result_value(self, value, dialect):
         if value is not None:
             value = json.loads(value)
         return value
+
+class MutationDict(Mutable, dict):
+    """http://www.sqlalchemy.org/docs/orm/extensions/mutable.html
+    """
+    @classmethod
+    def coerce(cls, key, value):
+        if not isinstance(value, MutationDict):
+            if isinstance(value, dict):
+                return MutationDict(value)
+            return Mutable.coerce(key, value)
+        else:
+            return value
+
+    def __setitem__(self, key, value):
+        dict.__setitem__(self, key, value)
+        self.changed()
+
+    def __delitem__(self, key):
+        dict.__delitem__(self, key)
+        self.changed()
 
 class ViewLink(object):
     def __init__(self, path, title=None):

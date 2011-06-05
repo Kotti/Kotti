@@ -25,6 +25,7 @@ from kotti import DBSession
 from kotti import metadata
 from kotti.util import ViewLink
 from kotti.util import JsonType
+from kotti.util import MutationDict
 from kotti.security import PersistentACL
 from kotti.security import get_principals
 from kotti.security import view_permitted
@@ -163,7 +164,7 @@ nodes = Table('nodes', metadata,
 
     Column('name', Unicode(50), nullable=False),
     Column('title', Unicode(100)),
-    Column('annotations', JsonType()),
+    Column('annotations', MutationDict.as_mutable(JsonType)),
 
     UniqueConstraint('parent_id', 'name'),
 )

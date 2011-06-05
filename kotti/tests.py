@@ -217,6 +217,17 @@ class TestNode(UnitTestBase):
         self.assertEqual(copy_of_root.name, u'copy_of_root')
         self.assertEqual(root.name, u'')
 
+    def test_annotations_mutable(self):
+        root = get_root()
+        session = DBSession()
+        root.annotations['foo'] = u'bar'
+        self.assertTrue(root in session.dirty)
+        del root.annotations['foo']
+
+    def test_annotations_coerce_fail(self):
+        root = get_root()
+        self.assertRaises(ValueError, setattr, root, 'annotations', [])
+
 class TestSecurity(UnitTestBase):
     def test_root_default(self):
         root = get_root()
