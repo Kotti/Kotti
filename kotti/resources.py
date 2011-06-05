@@ -58,11 +58,12 @@ class Container(object, DictMixin):
 
 class Node(Container, PersistentACL):
     id = None
-    def __init__(self, name=None, parent=None, annotations=None):
+    def __init__(self, name=None, parent=None, title=u"", annotations=None):
         if annotations is None:
             annotations = {}
         self.name = name
         self.parent = parent
+        self.title = title
         self.annotations = annotations
 
     # Provide location-awareness through __name__ and __parent__
@@ -126,13 +127,12 @@ class Content(Node):
             ],
         )
 
-    def __init__(self, name=None, parent=None, default_view=None,
-                 title=u"", description=u"", language=None,
+    def __init__(self, name=None, parent=None, title=u"", annotations=None,
+                 default_view=None, description=u"", language=None,
                  owner=None, creation_date=None, modification_date=None,
                  in_navigation=True):
-        super(Content, self).__init__(name, parent)
+        super(Content, self).__init__(name, parent, title, annotations)
         self.default_view = default_view
-        self.title = title
         self.description = description
         self.language = language
         self.owner = owner
@@ -157,11 +157,13 @@ nodes = Table('nodes', metadata,
     Column('id', Integer, primary_key=True),
     Column('type', String(30), nullable=False),
     Column('parent_id', ForeignKey('nodes.id')),
-    Column('name', Unicode(50), nullable=False),
-    Column('annotations', JsonType()),
     Column('position', Integer),
     Column('_acl', JsonType()),
     Column('__roles__', JsonType()),
+
+    Column('name', Unicode(50), nullable=False),
+    Column('title', Unicode(100)),
+    Column('annotations', JsonType()),
 
     UniqueConstraint('parent_id', 'name'),
 )
@@ -169,8 +171,6 @@ nodes = Table('nodes', metadata,
 contents = Table('contents', metadata,
     Column('id', Integer, ForeignKey('nodes.id'), primary_key=True),
     Column('default_view', String(50)),
-
-    Column('title', Unicode(100)),
     Column('description', UnicodeText()),
     Column('language', Unicode(10)),
     Column('owner', Unicode(100)),
