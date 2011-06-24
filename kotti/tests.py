@@ -232,11 +232,11 @@ class TestSecurity(UnitTestBase):
     def test_root_default(self):
         root = get_root()
         self.assertEqual(list_groups('admin', root), ['role:admin'])
-        self.assertEqual(list_groups_raw('admin', root), set([]))
+        self.assertEqual(list_groups_raw(u'admin', root), set([]))
 
     def test_empty(self):
         root = get_root()
-        self.assertEqual(list_groups(root, 'bob'), [])
+        self.assertEqual(list_groups('bob', root), [])
 
     def test_simple(self):
         root = get_root()
@@ -244,7 +244,26 @@ class TestSecurity(UnitTestBase):
         self.assertEqual(
             list_groups('bob', root), ['role:editor'])
         self.assertEqual(
-            list_groups_raw('bob', root), ['role:editor'])
+            list_groups_raw(u'bob', root), set(['role:editor']))
+
+    def test_overwrite_and_delete(self):
+        root = get_root()
+        set_groups('bob', root, ['role:editor'])
+        self.assertEqual(
+            list_groups('bob', root), ['role:editor'])
+        self.assertEqual(
+            list_groups_raw(u'bob', root), set(['role:editor']))
+
+        set_groups('bob', root, ['role:admin'])
+        self.assertEqual(
+            list_groups('bob', root), ['role:admin'])
+        self.assertEqual(
+            list_groups_raw(u'bob', root), set(['role:admin']))
+
+        set_groups('bob', root)
+        self.assertEqual(
+            list_groups('bob', root), [])
+        self.assertTrue(get_root() is root)
 
     def test_inherit(self):
         session = DBSession()
@@ -265,7 +284,7 @@ class TestSecurity(UnitTestBase):
 
         # We can ask to list only those groups that are defined locally:
         self.assertEqual(
-            list_groups_raw('bob', child), ['group:somegroup'])
+            list_groups_raw(u'bob', child), set(['group:somegroup']))
 
     @staticmethod
     def add_some_groups():

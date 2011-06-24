@@ -160,7 +160,6 @@ nodes = Table('nodes', metadata,
     Column('parent_id', ForeignKey('nodes.id')),
     Column('position', Integer),
     Column('_acl', JsonType()),
-    Column('__roles__', JsonType()),
 
     Column('name', Unicode(50), nullable=False),
     Column('title', Unicode(100)),
@@ -206,6 +205,30 @@ mapper(
 mapper(Content, contents, inherits=Node, polymorphic_identity='content')
        
 mapper(Document, documents, inherits=Content, polymorphic_identity='document')
+
+class LocalGroup(object):
+    def __init__(self, node, principal_name, group_name):
+        self.node = node
+        self.principal_name = principal_name
+        self.group_name = group_name
+
+local_groups_table = Table('local_groups', metadata,
+    Column('id', Integer, primary_key=True),
+    Column('node_id', ForeignKey('nodes.id')),
+    Column('principal_name', Unicode(100)),
+    Column('group_name', Unicode(100)),
+
+    UniqueConstraint('node_id', 'principal_name', 'group_name'),
+)
+
+from kotti.resources import Node
+mapper(LocalGroup, local_groups_table, properties={
+    'node': relation(
+        Node,
+        cascade='all',
+        ),
+    },
+)
 
 class Settings(object):
     def __init__(self, data):

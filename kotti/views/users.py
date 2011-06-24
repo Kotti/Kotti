@@ -39,7 +39,7 @@ def roles_form_handler(context, request, available_role_names, groups_lister):
             if name.startswith('orig-role::'):
                 # orig-role::* is hidden checkboxes that allow us to
                 # see what checkboxes were in the form originally
-                token, principal_name, role_name = name.split('::')
+                token, principal_name, role_name = unicode(name).split(u'::')
                 if role_name not in available_role_names:
                     raise Forbidden()
                 new_value = bool(request.params.get(
@@ -51,7 +51,8 @@ def roles_form_handler(context, request, available_role_names, groups_lister):
 
         for principal_name, new_role_names in p_to_r.items():
             # We have to be careful with roles that aren't mutable here:
-            orig_role_names = set(groups_lister(principal_name, context))
+            orig_role_names = set(
+                groups_lister(principal_name, context))
             orig_sharing_role_names = set(
                 r for r in orig_role_names if r in available_role_names)
             if new_role_names != orig_sharing_role_names:

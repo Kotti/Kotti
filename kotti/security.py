@@ -180,15 +180,17 @@ class PersistentACL(object):
             (Allow, 'role:admin', ALL_PERMISSIONS),
             ]
 
-def all_groups_raw(context):
-    return getattr(context, '__roles__', None)
-
 def list_groups_raw(name, context):
-    groups = all_groups_raw(context)
-    if groups is not None:
-        return groups.get(name, set())
-    else:
-        return set()
+    """A set of group names in given ``context`` for ``name``.
+
+    Only groups defined in context will be considered, therefore no
+    global or inherited groups are returned.
+    """
+    from kotti.resources import LocalGroup
+    session = DBSession()
+    return set(r[0] for r in session.query(LocalGroup.group_name).filter(
+        LocalGroup.node_id==context.id).filter(
+        LocalGroup.principal_name==name).all())
 
 def list_groups(name, context=None):
     """List groups for principal with a given ``name``.
@@ -207,6 +209,7 @@ def _cachekey_list_groups_ext(name, context=None, _seen=None, _inherited=None):
 
 @request_cache(_cachekey_list_groups_ext)
 def list_groups_ext(name, context=None, _seen=None, _inherited=None):
+    name = unicode(name)
     groups = set()
     recursing = _inherited is not None
     _inherited = _inherited or set()
@@ -241,23 +244,19 @@ def list_groups_ext(name, context=None, _seen=None, _inherited=None):
 
     return list(groups), list(_inherited)
 
-def set_groups_raw(context, groups):
-    context.__roles__ = groups
-
-def set_groups(name, context, groups_to_set):
+def set_groups(name, context, groups_to_set=()):
     """Set the list of groups for principal with given ``name`` and in
     given ``context``.
     """
-    groups = all_groups_raw(context)
-    if groups is None:
-        groups = {}
-    else:
-        groups = dict(groups)
-    if groups_to_set:
-        groups[name] = list(groups_to_set)
-    else:
-        groups.pop(name, None)
-    set_groups_raw(context, groups)
+    name = unicode(name)
+    from kotti.resources import LocalGroup
+    session = DBSession()
+    session.query(LocalGroup).filter(
+        LocalGroup.node_id==context.id).filter(
+        LocalGroup.principal_name==name).delete()
+
+    for group_name in groups_to_set:
+        session.add(LocalGroup(context, name, unicode(group_name)))
 
 def list_groups_callback(name, request):
     if not is_user(name):
@@ -282,12 +281,17 @@ def principals_with_local_roles(context):
     """Return a list of principal names that have local roles
     (inherited or not) in the context.
     """
+    from resources import LocalGroup
+    session = DBSession()
     principals = set()
     for item in lineage(context):
-        agr = all_groups_raw(item)
-        if agr is not None:
-            ap = [p for p in agr.keys() if not p.startswith('role:')]
-            principals.update(ap)
+        principals.update(
+            r[0] for r in
+            session.query(LocalGroup.principal_name).filter(
+                LocalGroup.node_id==item.id).group_by(
+                LocalGroup.principal_name).all()
+            if not r[0].startswith('role:')
+            )
     return list(principals)
 
 def map_principals_with_local_roles(context):
