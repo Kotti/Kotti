@@ -11,22 +11,26 @@ from pyramid.i18n import get_locale_name
 from pyramid.location import inside
 from pyramid.location import lineage
 from pyramid.renderers import get_renderer
-from pyramid.security import authenticated_userid
 from pyramid.security import has_permission
 from pyramid.url import resource_url
+from pyramid.view import render_view_to_response
 from deform import ValidationFailure
 
 from kotti import get_settings
 from kotti import DBSession
 from kotti.events import objectevent_listeners
 from kotti.resources import Node
-from kotti.security import get_principals
 from kotti.security import view_permitted
+from kotti.security import get_user
 from kotti.views.slots import slot_events
 
 def template_api(context, request, **kwargs):
     return get_settings()['kotti.templates.api'][0](
         context, request, **kwargs)
+
+def render_view(context, request, name='', secure=True):
+    response = render_view_to_response(context, request, name, secure)
+    return response.ubody
 
 class TemplateAPI(object):
     """This implements the 'api' object that's passed to all
@@ -103,13 +107,19 @@ class TemplateAPI(object):
 
     @reify
     def user(self):
-        userid = authenticated_userid(self.request)
-        return get_principals().get(userid)
+        return get_user(self.request)
     
     def has_permission(self, permission, context=None):
         if context is None:
             context = self.context
         return has_permission(permission, context, self.request)
+
+    def render_view(self, name='', context=None, request=None, secure=True):
+        if context is None:
+            context = self.context
+        if request is None:
+            request = self.request
+        return render_view(context, request, name, secure)
 
     def list_children(self, context=None, permission='view'):
         if context is None:

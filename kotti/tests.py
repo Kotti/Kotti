@@ -1249,6 +1249,21 @@ class TestTemplateAPI(UnitTestBase):
         api.locale_name = 'unknown'
         self.assertRaises(UnknownLocaleError, api.format_time, first)
 
+    def test_render_view(self):
+        from pyramid.response import Response
+        def first_view(context, request):
+            return Response(u'first')
+        def second_view(context, request):
+            return Response(u'second')
+        self.config.add_view(first_view, name='')
+        self.config.add_view(second_view, name='second')
+        api = self._make()
+        self.assertEqual(api.render_view(), u'first')
+        self.assertEqual(api.render_view('second'), u'second')
+        self.assertEqual(
+            api.render_view(context=api.context, request=api.request), u'first')
+
+
 class TestUtil(UnitTestBase):
     def test_title_to_name(self):
         from kotti.views.util import title_to_name

@@ -15,6 +15,7 @@ from pyramid.location import lineage
 from pyramid.security import Allow
 from pyramid.security import ALL_PERMISSIONS
 from pyramid.security import view_execution_permitted
+from pyramid.security import authenticated_userid
 
 from kotti import get_settings
 from kotti import DBSession
@@ -315,6 +316,10 @@ def is_user(principal):
     if not isinstance(principal, basestring):
         principal = principal.name
     return ':' not in principal
+
+def get_user(request):
+    userid = authenticated_userid(request)
+    return get_principals().get(userid)
 
 class Principals(DictMixin):
     """Kotti's default principal database.
