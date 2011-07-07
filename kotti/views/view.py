@@ -2,7 +2,6 @@ from pyramid.exceptions import NotFound
 from pyramid.view import render_view_to_response
 
 from kotti.resources import Document
-from kotti.views.util import template_api
 
 def view_content_default(context, request):
     """This view is always registered as the default view for any Content.
@@ -19,7 +18,7 @@ def view_content_default(context, request):
     return response
 
 def view_node(context, request):
-    return {'api': template_api(context, request)}
+    return {}
 
 def includeme(config):
     config.add_view(

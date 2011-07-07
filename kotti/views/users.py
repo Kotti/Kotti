@@ -114,7 +114,6 @@ def share_node(context, request):
     available_roles = [ROLES[role_name] for role_name in SHARING_ROLES]
 
     return {
-        'api': template_api(context, request),
         'entries': entries,
         'available_roles': available_roles,
         }

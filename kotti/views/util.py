@@ -32,6 +32,9 @@ def render_view(context, request, name='', secure=True):
     response = render_view_to_response(context, request, name, secure)
     return response.ubody
 
+def add_renderer_globals(event):
+    event['api'] = template_api(event['context'], event['request'])
+
 class TemplateAPI(object):
     """This implements the 'api' object that's passed to all
     templates.

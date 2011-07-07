@@ -9,6 +9,7 @@ from zope.sqlalchemy import ZopeTransactionExtension
 from pyramid.authentication import AuthTktAuthenticationPolicy
 from pyramid.authorization import ACLAuthorizationPolicy
 from pyramid.config import Configurator
+from pyramid.events import BeforeRender
 from pyramid.session import UnencryptedCookieSessionFactoryConfig
 from pyramid.threadlocal import get_current_registry
 from pyramid.util import DottedNameResolver
@@ -131,6 +132,10 @@ def main(global_config, **settings):
     engine = engine_from_config(settings, 'sqlalchemy.')
     config._set_root_factory(appmaker(engine))
 
+    import kotti.views.util
+    config.add_subscriber(
+        kotti.views.util.add_renderer_globals, BeforeRender)
+    
     _configure_base_views(config)
 
     # Include modules listed in 'kotti.includes' and 'kotti.includes':

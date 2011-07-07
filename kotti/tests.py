@@ -698,14 +698,6 @@ class TestEvents(UnitTestBase):
         self.assertEqual(list_groups(u'bob', grandchild), [u'role:owner'])
         self.assertEqual(len(list_groups_raw(u'bob', grandchild)), 0)
 
-class TestNodeView(UnitTestBase):
-    def test_with_root(self):
-        from kotti.views.view import view_node
-        root = get_root()
-        request = DummyRequest()
-        info = view_node(root, request)
-        self.assertEqual(info['api'].context, root)
-
 @contextmanager
 def contents_addable():
     # Allow Nodes to be added to documents:

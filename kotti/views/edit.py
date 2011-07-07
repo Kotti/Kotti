@@ -158,10 +158,7 @@ def move_node(context, request):
             location = resource_url(context, request) + '@@move'
             return HTTPFound(location=location)
 
-    return {
-        'api': template_api(context, request),
-        }
-
+    return {}
 
 def generic_edit(context, request, schema, **kwargs):
     api = template_api(context, request)
