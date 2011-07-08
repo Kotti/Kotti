@@ -21,6 +21,7 @@ from kotti.message import _inject_mailer
 from kotti.resources import Node
 from kotti.resources import Content
 from kotti.resources import Document
+from kotti.resources import LocalGroup
 from kotti.resources import initialize_sql
 from kotti.resources import get_root
 from kotti.security import list_groups
@@ -478,6 +479,31 @@ class TestSecurity(UnitTestBase):
             set(['bob', 'group:franksgroup'])
             )
 
+    def test_copy_local_groups(self):
+        self.test_principals_with_local_roles()
+        root = get_root()
+        child = root[u'child']
+        self.assertEqual(
+            set(principals_with_local_roles(child)),
+            set(['bob', 'group:bobsgroup', 'group:franksgroup'])
+            )
+
+        # We make a copy of 'child', and we expect the local roles to
+        # be copied over:
+        child2 = root['child2'] = child.copy()
+        DBSession.flush()
+        self.assertEqual(
+            set(principals_with_local_roles(child2)),
+            set(['bob', 'group:bobsgroup', 'group:franksgroup'])
+            )
+        self.assertEqual(len(principals_with_local_roles(child)), 3)
+
+        # When we now change the local roles of 'child', the copy is
+        # unaffected:
+        set_groups('group:bobsgroup', child, [])
+        self.assertEqual(len(principals_with_local_roles(child)), 2)
+        self.assertEqual(len(principals_with_local_roles(child2)), 3)
+
     def test_map_principals_with_local_roles(self):
         self.test_principals_with_local_roles()
         root = get_root()
@@ -506,6 +532,22 @@ class TestSecurity(UnitTestBase):
                          set(['group:bobsgroup', 'role:editor']))
         self.assertEqual(bobsgroup_all, ['role:editor'])
         self.assertEqual(bobsgroup_inherited, [])
+
+    def test_local_roles_db_cascade(self):
+        session = DBSession()
+        root = get_root()
+        child = root[u'child'] = Node()
+        session.flush()
+
+        # We set a local group on child and delete child.  We then
+        # expect the LocalGroup entry to have been deleted from the
+        # database:
+        self.assertEqual(session.query(LocalGroup).count(), 0)
+        set_groups('group:bobsgroup', child, ['role:editor'])
+        self.assertEqual(session.query(LocalGroup).count(), 1)
+        del root[u'child']
+        session.flush()
+        self.assertEqual(session.query(LocalGroup).count(), 0)
 
 class TestPrincipals(UnitTestBase):
     def get_principals(self):
