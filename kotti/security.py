@@ -279,8 +279,8 @@ def view_permitted(context, request, name=''):
         del request.environ['authz_context']
 
 def principals_with_local_roles(context, inherit=True):
-    """Return a list of principal names that have local roles
-    (inherited or not) in the context.
+    """Return a list of principal names that have local roles in the
+    context.
     """
     from resources import LocalGroup
     session = DBSession()
@@ -307,8 +307,7 @@ def map_principals_with_local_roles(context):
         except KeyError:
             continue
         else:
-            all, inherited = list_groups_ext(
-                principal_name, context)
+            all, inherited = list_groups_ext(principal_name, context)
             value.append((principal, (all, inherited)))
     return sorted(value, key=lambda t: t[0].name)
 
