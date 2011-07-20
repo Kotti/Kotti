@@ -50,13 +50,12 @@ def _initTestingDB():
 
 def setUp(**kwargs):
     tearDown()
-    settings = kwargs.get('settings', {})
-    if not settings:
-        settings = conf_defaults.copy()
-        settings['kotti.secret'] = 'secret'
-        settings['kotti.secret2'] = 'secret2'
-        _resolve_dotted(settings)
-        kwargs['settings'] = settings
+    settings = conf_defaults.copy()
+    settings['kotti.secret'] = 'secret'
+    settings['kotti.secret2'] = 'secret2'
+    _resolve_dotted(settings)
+    settings.update(kwargs.get('settings', {}))
+    kwargs['settings'] = settings
     config = testing.setUp(**kwargs)
 
     _initTestingDB()

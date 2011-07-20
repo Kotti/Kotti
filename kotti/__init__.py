@@ -138,7 +138,7 @@ def main(global_config, **settings):
     
     _configure_base_views(config)
 
-    # Include modules listed in 'kotti.includes' and 'kotti.includes':
+    # Include modules listed in 'kotti.base_includes' and 'kotti.includes':
     for module in (
         settings['kotti.base_includes'] + settings['kotti.includes']):
         config.include(module)
