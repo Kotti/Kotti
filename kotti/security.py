@@ -278,14 +278,17 @@ def view_permitted(context, request, name=''):
     finally:
         del request.environ['authz_context']
 
-def principals_with_local_roles(context):
+def principals_with_local_roles(context, inherit=True):
     """Return a list of principal names that have local roles
     (inherited or not) in the context.
     """
     from resources import LocalGroup
     session = DBSession()
     principals = set()
-    for item in lineage(context):
+    items = [context]
+    if inherit:
+        items = lineage(context)
+    for item in items:
         principals.update(
             r[0] for r in
             session.query(LocalGroup.principal_name).filter(

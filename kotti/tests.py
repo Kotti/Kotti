@@ -475,6 +475,10 @@ class TestSecurity(UnitTestBase):
             set(['bob', 'group:bobsgroup', 'group:franksgroup'])
             )
         self.assertEqual(
+            set(principals_with_local_roles(child, inherit=False)),
+            set(['group:bobsgroup'])
+            )
+        self.assertEqual(
             set(principals_with_local_roles(root)),
             set(['bob', 'group:franksgroup'])
             )
