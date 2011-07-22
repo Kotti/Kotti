@@ -19,6 +19,7 @@ install_requires = [
     'WebError',
     'Babel',
     'pyramid_mailer',
+    'py-bcrypt',
     ]
 
 tests_require = ['nose', 'coverage', 'wsgi_intercept', 'zope.testbrowser']

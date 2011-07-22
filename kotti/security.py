@@ -1,7 +1,7 @@
 from datetime import datetime
-import hashlib
 from UserDict import DictMixin
 
+import bcrypt
 from sqlalchemy import Column
 from sqlalchemy import Boolean
 from sqlalchemy import Integer
@@ -65,8 +65,12 @@ class AbstractPrincipals(object):
 
     Principals mostly provides dict-like access to the principal
     objects in the database.  In addition, there's the 'search' method
-    which allows searching users and groups, and the 'hash_password'
-    method that implements user password hashing.
+    which allows searching users and groups.
+
+    'hash_password' is for initial hashing of a clear text password,
+    while 'validate_password' is used by the login to see if the
+    entered password matches the hashed password that's already in the
+    database.
 
     Use the 'kotti.principals' settings variable to override Kotti's
     default Principals implementation with your own.
@@ -116,6 +120,10 @@ class AbstractPrincipals(object):
         """Return a hash of the given password.
 
         This is what's stored in the database as 'principal.password'.
+        """
+
+    def validate_password(self, clear, hashed):
+        """Returns True if the clear text password matches the hash.
         """
 
 ROLES = {
@@ -385,9 +393,17 @@ class Principals(DictMixin):
         query = query.filter(or_(*filters))
         return query
 
-    def hash_password(self, password):
-        salt = get_settings()['kotti.secret']
-        return unicode(hashlib.sha224(salt + password).hexdigest())
+    log_rounds = 10
+    def hash_password(self, password, hashed=None):
+        if hashed is None:
+            hashed = bcrypt.gensalt(self.log_rounds)
+        return unicode(bcrypt.hashpw(password, hashed))
+
+    def validate_password(self, clear, hashed):
+        try:
+            return self.hash_password(clear, hashed) == hashed
+        except ValueError:
+            return False
 
 def principals_factory():
     return Principals()

@@ -44,7 +44,7 @@ def login(context, request):
         user = _find_user(login)
 
         if (user is not None and user.active and 
-            user.password == principals.hash_password(password)):
+            principals.validate_password(password, user.password)):
             headers = remember(request, login)
             request.session.flash(
                 u"Welcome, %s!" % user.title or user.name, 'success')

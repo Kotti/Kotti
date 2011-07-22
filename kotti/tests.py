@@ -574,8 +574,8 @@ class TestPrincipals(UnitTestBase):
 
     def test_default_admin(self):
         admin = self.get_principals()[u'admin']
-        hashed = self.get_principals().hash_password(u'secret')
-        self.assertEqual(admin.password, hashed)
+        self.assertTrue(
+            self.get_principals().validate_password(u'secret', admin.password))
         self.assertEqual(admin.groups, [u'role:admin'])
 
     def test_users_empty(self):
@@ -636,28 +636,28 @@ class TestPrincipals(UnitTestBase):
         bob.name = u'group:bobsgroup'
         self.assertEqual(is_user(bob), False)
 
-    def test_hash_password(self):
+    def test_hash_and_validate_password(self):
         password = u"secret"
-        hash_password = self.get_principals().hash_password
-
-        # For 'hash_password' to work, we need to set a secret:
-        settings = self.config.registry.settings
-        settings['kotti.secret'] = 'there is no secret'
-        hashed = hash_password(password)
-        self.assertEqual(hashed, hash_password(password))
-        settings['kotti.secret'] = 'different'
-        self.assertNotEqual(hashed, hash_password(password))        
-        del settings['kotti.secret']
+        principals = self.get_principals()
+        hashed = principals.hash_password(password)
+        self.assertTrue(principals.validate_password(password, hashed))
+        self.assertFalse(principals.validate_password(u"foo", hashed))
 
     def test_bobs_hashed_password(self):
         bob = self.make_bob()
-        hash_password = self.get_principals().hash_password
-        self.assertEqual(bob.password, hash_password(u'secret'))
+        principals = self.get_principals()
+        self.assertTrue(principals.validate_password(u"secret", bob.password))
 
         # When we set the 'password' attribute directly, we have to do
-        # the hashing ourselves.
-        bob.password = u'hashed secret'
-        self.assertEqual(bob.password, u'hashed secret')
+        # the hashing ourselves.  This won't work:
+        bob.password = u'anothersecret'
+        self.assertFalse(
+            principals.validate_password(u"anothersecret", bob.password))
+
+        # This will:
+        bob.password = principals.hash_password(u"anothersecret")
+        self.assertTrue(
+            principals.validate_password(u"anothersecret", bob.password))
 
     def test_active(self):
         bob = self.make_bob()

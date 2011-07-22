@@ -138,12 +138,12 @@ This table provides an overview of available settings.  All these
 settings must go into the ``[app:Kotti]`` section of your Paste Deploy
 configuration file.
 
-===========================  ===========================================
+===========================  ===================================================
 Setting                      Description                            
-===========================  ===========================================
+===========================  ===================================================
 **kotti.site_title**         The title of your site
-**kotti.secret**             Secret key used for encryption
-**kotti.secret2**            Another secret key for encryption
+**kotti.secret**             Secret token used as initial admin password
+**kotti.secret2**            Secret token used for email password reset token
 
 **sqlalchemy.url**           `SQLAlchemy database URL`_
 **mail.default_sender**      Sender address for outgoing email
@@ -170,9 +170,31 @@ kotti.session_factory        Component used for sessions
 kotti.date_format            Date format to use, default: ``medium``
 kotti.datetime_format        Datetime format to use, default: ``medium``
 kotti.time_format            Time format to use, default: ``medium``
-===========================  ===========================================
+===========================  ===================================================
 
 Only the settings in bold letters required.  The rest has defaults.
+
+kotti.secret and kotti.secret2
+------------------------------
+
+The value of ``kotti.secret`` will define the initial password of the
+``admin`` user.  This is the initial user that Kotti creates in the
+user database.  So if you put *mysecret* here, use *mysecret* as the
+password when you log in as ``admin``.  You may then change the
+``admin`` user's password through the web interface.
+
+The ``kotti.secret`` token is also used for signing browser session
+cookies.
+
+The ``kotti.secret2`` token is used for signing the password reset
+token.
+
+Here's an example.  Make sure you use different values though!
+
+.. code-block:: ini
+
+  kotti.secret = myadminspassword
+  kotti.secret2 = $2a$12$VVpW/i1MA2wUUIUHwY6v8O
 
 Adjusting the look & feel
 -------------------------

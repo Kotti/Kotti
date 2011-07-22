@@ -15,6 +15,7 @@ coverage-*
 mechanize-*
 nose-*
 ordereddict-*
+py_bcrypt-*
 pytz-*
 wsgi_intercept-*
 zope.testbrowser-*
