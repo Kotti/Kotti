@@ -96,8 +96,8 @@ class AbstractPrincipals(object):
         """
 
     def search(self, **kwargs):
-        """Return a list of principal objects that correspond to the
-        search arguments passed in.
+        """Return an iterable with principal objects that correspond
+        to the search arguments passed in.
 
         This example would return all principals with the id 'bob':
 

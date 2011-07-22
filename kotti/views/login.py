@@ -19,16 +19,16 @@ from kotti.views.util import template_api
 def _find_user(login):
     principals = get_principals()
     principal = principals.get(login)
-    if principal is None:
+    if principal is not None:
+        return principal
+    else:
         try:
             Email().to_python(login)
         except Exception:
             pass
         else:
-            results = [r for r in principals.search(email=login)]
-            if results:
-                principal = results[0]
-    return principal
+            for p in principals.search(email=login):
+                return p
 
 def login(context, request):
     root = get_root(request)
@@ -106,20 +106,20 @@ def set_password(context, request,
         else:
             token = appstruct['token']
             email = appstruct['email']
-            principals = get_principals()
-            results = principals.search(email=email)
-            if results:
-                user = results[0]
-                if validate_token(user, token) and token == user.confirm_token:
-                    password = appstruct['password']
-                    user.password = principals.hash_password(password)
-                    user.confirm_token = None
-                    headers = remember(request, user.name)
-                    location = resource_url(context, request)
-                    request.session.flash(success_msg, 'success')
-                    return HTTPFound(location=location, headers=headers)
-            request.session.flash(
-                u"Your password reset token may have expired.", 'error')
+            user = _find_user(email)
+            if (user is not None and
+                validate_token(user, token) and
+                token == user.confirm_token):
+                password = appstruct['password']
+                user.password = get_principals().hash_password(password)
+                user.confirm_token = None
+                headers = remember(request, user.name)
+                location = resource_url(context, request)
+                request.session.flash(success_msg, 'success')
+                return HTTPFound(location=location, headers=headers)
+            else:
+                request.session.flash(
+                    u"Your password reset token may have expired.", 'error')
 
     if rendered_form is None:
         rendered_form = form.render(request.params.items())

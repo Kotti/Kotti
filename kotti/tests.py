@@ -606,7 +606,7 @@ class TestPrincipals(UnitTestBase):
         self._assert_is_bob(bob)
         self.assertRaises(AttributeError,
                           users.search, name=u"bob", foo=u"bar")
-        self.assertEqual(users.search(), [])
+        self.assertEqual(list(users.search()), [])
 
     def test_groups_from_users(self):
         self.make_bob()
