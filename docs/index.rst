@@ -127,6 +127,10 @@ this:
 
 Various aspects of your site can be changed right here.
 
+Also, Kotti depends on a `repoze.tm2`_ middleware to be set up.  Look
+for the ``[filter.tm]`` section in the sample configuration file for
+an example.
+
 Overview of settings
 --------------------
 
@@ -281,6 +285,7 @@ The ``kotti.session_factory`` configuration variable allows the
 overriding of the default session factory, which is
 `pyramid.session.UnencryptedCookieSessionFactoryConfig`_.
 
+.. _repoze.tm2: http://pypi.python.org/pypi/repoze.tm2
 .. _SQLAlchemy database URL: http://www.sqlalchemy.org/docs/core/engines.html#database-urls
 .. _Pyramid Configurator API: http://docs.pylonsproject.org/projects/pyramid/dev/api/config.html
 .. _kotti_twitter: http://pypi.python.org/pypi/kotti_twitter
