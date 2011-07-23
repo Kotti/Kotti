@@ -14,8 +14,8 @@ install_requires = [
     'chameleon<1.2.999', # more recent versions have compat issues right now
     'zope.sqlalchemy',
     'formencode',
-    'deform>=0.10dev',
-    'colander>=0.9.3dev',
+    'deform>=0.9.1',
+    'colander>=0.9.3',
     'WebError',
     'Babel',
     'pyramid_mailer',
@@ -25,10 +25,6 @@ install_requires = [
 tests_require = ['nose', 'coverage', 'wsgi_intercept', 'zope.testbrowser']
 
 install_requires.extend(tests_require) # for buildout
-
-dependency_links = [
-    'http://danielnouri.org/packages/',
-    ]
 
 if sys.version_info[:3] < (2,5,0):
     install_requires.append('pysqlite')
@@ -57,7 +53,7 @@ setup(name='Kotti',
       packages=find_packages(),
       include_package_data=True,
       zip_safe=False,
-      dependency_links=dependency_links,
+      dependency_links=[],
       setup_requires=['nose'],
       install_requires=install_requires,
       tests_require=tests_require,
