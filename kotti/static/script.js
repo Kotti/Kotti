@@ -61,7 +61,7 @@ var kotti = {
     kotti.dirty_forms = function(node) {
         var forms = $("form").not("[class~=dirty-ignore]");
         $(window).unbind('beforeunload');
-        forms.submit(function() { $(window).unbind('beforeunload') });
+        forms.submit(function() { $(window).unbind('beforeunload'); });
         if (tinyMCE != undefined)
             tinyMCE.triggerSave(true);
         var initial = forms.serialize();
@@ -131,7 +131,7 @@ var kotti = {
         });
     };
 
-    $(document).ready(function() {
+    kotti.main = function() {
         var node = $('html');
         $.each([
             kotti.messages, kotti.ajax_forms, kotti.dirty_forms,
@@ -141,7 +141,6 @@ var kotti = {
         });
         deform.load();
         kotti.dom_changed(node);
-    });
-
+    };
 
  })(jQuery);

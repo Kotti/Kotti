@@ -48,6 +48,10 @@
 
     <script type="text/javascript" src="${request.static_url('kotti:static/script.js')}"></script>
 
+    <script type="text/javascript">
+      $(document).ready(kotti.main);
+    </script>
+
     <more tal:omit-tag="" metal:define-slot="head-more"></more>
   </head>
 
