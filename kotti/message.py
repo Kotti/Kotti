@@ -80,7 +80,11 @@ def send_set_password(user, request, templates='set-password'):
     site_title = get_settings()['kotti.site_title']
     token = make_token(user)
     user.confirm_token = unicode(token)
-    set_password_query = {'token': token, 'email': user.email}
+    if user.email is None:
+        email = user.name
+    else:
+        email = user.email
+    set_password_query = {'token': token, 'email': email}
     set_password_url = '%s/@@set-password?%s' % (
         request.application_url,
         urllib.urlencode(set_password_query),
