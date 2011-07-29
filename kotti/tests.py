@@ -687,10 +687,13 @@ class TestPrincipals(UnitTestBase):
 
         # Make Bob and do it again:
         bob = self.make_bob()
+        self.assertEqual(bob.last_login_date, None)
         result = login(None, request)
         self.assertEqual(result.status, '302 Found')
         self.assertEqual(request.session.pop_flash('success'),
                          [u'Welcome, Bob Dabolina!'])
+        last_login_date = bob.last_login_date
+        self.assertNotEqual(last_login_date, None)
         self.assertEqual(request.session.pop_flash('error'), [])
 
         # Log in with email:
@@ -699,6 +702,7 @@ class TestPrincipals(UnitTestBase):
         self.assertEqual(result.status, '302 Found')
         self.assertEqual(request.session.pop_flash('success'),
                          [u'Welcome, Bob Dabolina!'])
+        self.assertTrue(last_login_date < bob.last_login_date)
 
         # Deactive Bob, logging in is no longer possible:
         bob.active = False

@@ -1,3 +1,5 @@
+from datetime import datetime
+
 import colander
 from deform import Form
 from deform import ValidationFailure
@@ -48,6 +50,7 @@ def login(context, request):
             headers = remember(request, login)
             request.session.flash(
                 u"Welcome, %s!" % user.title or user.name, 'success')
+            user.last_login_date = datetime.now()
             return HTTPFound(location=came_from, headers=headers)
         request.session.flash(u"Login failed.", 'error')
 

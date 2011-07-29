@@ -55,6 +55,7 @@ class Principal(object):
         self.email = email
         self.groups = groups
         self.creation_date = datetime.now()
+        self.last_login_date = None
 
     def __repr__(self): # pragma: no cover
         return '<Principal %r>' % self.name
@@ -418,6 +419,7 @@ principals_table = Table('principals', metadata,
     Column('email', Unicode(100), unique=True),
     Column('groups', JsonType(), nullable=False),
     Column('creation_date', DateTime(), nullable=False),
+    Column('last_login_date', DateTime()),
 )
 
 mapper(Principal, principals_table, order_by=principals_table.c.name)
