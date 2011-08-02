@@ -165,7 +165,7 @@ def generic_edit(context, request, schema, form_factory=Form, **kwargs):
     api.first_heading=u'<h1>Edit <em>%s</em></h1>' % context.title
     api.page_title = u'Edit %s - %s' % (context.title, api.site_title)
 
-    form = form_factory(schema, buttons=('save', 'cancel'))
+    form = form_factory(schema, buttons=('save', 'cancel'), action=request.url)
     rendered = FormController(form, **kwargs)(context, request)
     if is_response(rendered):
         return rendered
@@ -182,7 +182,7 @@ def generic_add(context, request, schema, add, title, form_factory=Form,
         title, context.title)
     api.page_title=u'Add %s to %s - %s' % (title, context.title, api.site_title)
 
-    form = form_factory(schema, buttons=('save', 'cancel'))
+    form = form_factory(schema, buttons=('save', 'cancel'), action=request.url)
     rendered = FormController(form, add=add, **kwargs)(context, request)
     if is_response(rendered):
         return rendered
