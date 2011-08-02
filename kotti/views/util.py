@@ -191,6 +191,11 @@ class TemplateAPI(object):
             format = self.S['kotti.time_format']
         return format_time(t, format=format, locale=self.locale_name)
 
+    def get_type(self, name):
+        for class_ in get_settings()['kotti.available_types']:
+            if class_.type_info.name == name:
+                return class_
+
     def _find_edit_view(self, item):
         view_name = self.request.view_name
         if not view_permitted(item, self.request, view_name):

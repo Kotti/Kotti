@@ -1304,6 +1304,11 @@ class TestTemplateAPI(UnitTestBase):
         self.assertEqual(
             api.render_view(context=api.context, request=api.request), u'first')
 
+    def test_get_type(self):
+        from kotti.resources import Document
+        api = self._make()
+        self.assertEqual(api.get_type('Document'), Document)
+        self.assertEqual(api.get_type('NoExist'), None)
 
 class TestUtil(UnitTestBase):
     def test_title_to_name(self):
