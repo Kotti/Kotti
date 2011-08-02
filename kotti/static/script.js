@@ -131,15 +131,17 @@ var kotti = {
         });
     };
 
-    kotti.main = function() {
+    kotti.main = function(handlers) {
         var node = $('html');
-        $.each([
-            kotti.messages, kotti.ajax_forms, kotti.dirty_forms,
-            kotti.dropdowns, kotti.collapse, kotti.hover_link_enable
-        ], function(index, func) {
+        if (!handlers) {
+            handlers = [
+                kotti.messages, kotti.ajax_forms, kotti.dirty_forms,
+                kotti.dropdowns, kotti.collapse, kotti.hover_link_enable
+            ];
+        }
+        $.each(handlers, function(index, func) {
             kotti.dom_changed_handlers.push(func);
         });
-        deform.load();
         kotti.dom_changed(node);
     };
 
