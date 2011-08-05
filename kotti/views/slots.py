@@ -88,7 +88,7 @@ def render_local_navigation(context, request):
     from kotti.views.util import template_api
     api = template_api(context, request)
     parent, children = api.list_children_go_up()
-    children = [c for c in children if c.in_navigation]
+    children = [c for c in children if getattr(c, 'in_navigation', False)]
     if parent != api.root and children:
         return render('../templates/view/slot-local-navigation.pt',
                       dict(parent=parent, children=children, api=api),

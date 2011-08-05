@@ -1,5 +1,4 @@
 import hashlib
-import string
 import urllib
 
 from babel.dates import format_date
@@ -18,6 +17,7 @@ from deform import ValidationFailure
 
 from kotti import get_settings
 from kotti import DBSession
+from kotti.util import title_to_name
 from kotti.events import objectevent_listeners
 from kotti.resources import Node
 from kotti.security import view_permitted
@@ -291,12 +291,6 @@ def addable_types(context, request):
             possible_types.append(entry)
 
     return possible_parents, possible_types
-
-def title_to_name(title):
-    okay = string.letters + string.digits + '-'
-    name = u'-'.join(title.lower().split())
-    name = u''.join(ch for ch in name if ch in okay)
-    return name
 
 def disambiguate_name(name):
     parts = name.split(u'-')

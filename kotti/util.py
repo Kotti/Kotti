@@ -1,4 +1,5 @@
 from pyramid.compat import json
+import string
 import urllib
 
 from pyramid.threadlocal import get_current_request
@@ -117,3 +118,9 @@ def extract_from_settings(prefix):
         if key.startswith(prefix):
             extracted[key[len(prefix):]] = value
     return extracted
+
+def title_to_name(title):
+    okay = string.letters + string.digits + '-'
+    name = u'-'.join(title.lower().split())
+    name = u''.join(ch for ch in name if ch in okay)
+    return name
