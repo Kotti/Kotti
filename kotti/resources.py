@@ -1,6 +1,6 @@
 from UserDict import DictMixin
 
-import transaction
+from pyramid.traversal import resource_path
 from sqlalchemy.orm import backref
 from sqlalchemy.orm import mapper
 from sqlalchemy.orm import object_mapper
@@ -17,7 +17,9 @@ from sqlalchemy import Integer
 from sqlalchemy import String
 from sqlalchemy import Unicode
 from sqlalchemy import UnicodeText
-from pyramid.traversal import resource_path
+import transaction
+from zope.interface import implements
+from zope.interface import Interface
 
 from kotti import get_version
 from kotti import get_settings
@@ -57,7 +59,15 @@ class Container(object, DictMixin):
     def keys(self):
         return [child.name for child in self.children]
 
+class INode(Interface):
+    pass
+
+class IContent(Interface):
+    pass
+
 class Node(Container, PersistentACL):
+    implements(INode)
+
     id = None
     def __init__(self, name=None, parent=None, title=u"", annotations=None):
         if annotations is None:
@@ -130,6 +140,8 @@ class TypeInfo(object):
             return False
 
 class Content(Node):
+    implements(IContent)
+
     type_info = TypeInfo(
         name=u'Content',
         add_view=None,

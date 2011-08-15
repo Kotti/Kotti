@@ -146,11 +146,11 @@ def main(global_config, **settings):
     return config.make_wsgi_app()
 
 def _configure_base_views(config):
-    from kotti.resources import Content
+    from kotti.resources import IContent
 
     config.add_static_view('static-deform', 'deform:static')
     config.add_static_view('static-kotti', 'kotti:static')
-    config.add_view('kotti.views.view.view_content_default', context=Content)
+    config.add_view('kotti.views.view.view_content_default', context=IContent)
     config.add_view(
         'kotti.views.edit.add_node',
         name='add',
