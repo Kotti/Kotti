@@ -33,7 +33,8 @@ def render_view(context, request, name='', secure=True):
     return response.ubody
 
 def add_renderer_globals(event):
-    event['api'] = template_api(event['context'], event['request'])
+    if event['renderer_name'] != 'json':
+        event['api'] = template_api(event['context'], event['request'])
 
 class TemplateAPI(object):
     """This implements the 'api' object that's passed to all
