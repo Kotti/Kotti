@@ -128,6 +128,12 @@ def main(global_config, **settings):
         )
 
     config.begin()
+
+    # Include modules listed in 'kotti.base_includes' and 'kotti.includes':
+    for module in (
+        settings['kotti.base_includes'] + settings['kotti.includes']):
+        config.include(module)
+
     from kotti.resources import appmaker
     engine = engine_from_config(settings, 'sqlalchemy.')
     config._set_root_factory(appmaker(engine))
@@ -137,11 +143,6 @@ def main(global_config, **settings):
         kotti.views.util.add_renderer_globals, BeforeRender)
     
     _configure_base_views(config)
-
-    # Include modules listed in 'kotti.base_includes' and 'kotti.includes':
-    for module in (
-        settings['kotti.base_includes'] + settings['kotti.includes']):
-        config.include(module)
 
     return config.make_wsgi_app()
 
