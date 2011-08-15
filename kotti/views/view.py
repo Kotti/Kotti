@@ -1,3 +1,5 @@
+import warnings
+
 from pyramid.exceptions import NotFound
 from pyramid.view import render_view_to_response
 
@@ -11,9 +13,11 @@ def view_content_default(context, request):
     'context' (in 'context.defaultview'), we will fall back to a view
     with the name 'view'.
     """
-    view_name = context.default_view or u'view'
+    view_name = context.default_view or 'view'
     response = render_view_to_response(context, request, name=view_name)
     if response is None: # pragma: no coverage
+        warnings.warn("Failed to look up default view called %r for %r" %
+                      (view_name, context))
         raise NotFound()
     return response
 
