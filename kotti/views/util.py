@@ -33,8 +33,12 @@ def render_view(context, request, name='', secure=True):
     return response.ubody
 
 def add_renderer_globals(event):
+    import pdb; pdb.set_trace()
     if event['renderer_name'] != 'json':
-        event['api'] = template_api(event['context'], event['request'])
+        api = getattr(event['request'], 'template_api', None)
+        if api is None:
+            api = template_api(event['context'], event['request'])
+        event['api'] = api
 
 class TemplateAPI(object):
     """This implements the 'api' object that's passed to all
@@ -64,6 +68,9 @@ class TemplateAPI(object):
         self.base_css = S['kotti.templates.base_css']
         self.view_css = S['kotti.templates.view_css']
         self.edit_css = S['kotti.templates.edit_css']
+
+        if getattr(request, 'template_api', None) is None:
+            request.template_api = self
 
         self.__dict__.update(kwargs)
 

@@ -1310,6 +1310,35 @@ class TestTemplateAPI(UnitTestBase):
         self.assertEqual(api.get_type('Document'), Document)
         self.assertEqual(api.get_type('NoExist'), None)
 
+class TestViewUtil(UnitTestBase):
+    def test_add_renderer_globals_json(self):
+        from kotti.views.util import add_renderer_globals
+
+        event = {'renderer_name': 'json'}
+        add_renderer_globals(event)
+        self.assertEqual(event.keys(), ['renderer_name'])
+
+    def test_add_renderer_globals_request_has_template_api(self):
+        from kotti.views.util import add_renderer_globals
+
+        request = DummyRequest()
+        request.template_api = template_api = object()
+        event = {'request': request, 'renderer_name': 'foo'}
+        add_renderer_globals(event)
+        self.assertTrue(event['api'] is template_api)
+
+    def test_add_renderer_globals(self):
+        from kotti.views.util import add_renderer_globals
+
+        request = DummyRequest()
+        event = {
+            'request': request,
+            'context': object(),
+            'renderer_name': 'foo',
+            }
+        add_renderer_globals(event)
+        self.assertTrue('api' in event)
+
 class TestUtil(UnitTestBase):
     def test_title_to_name(self):
         from kotti.views.util import title_to_name
