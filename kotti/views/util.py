@@ -33,7 +33,6 @@ def render_view(context, request, name='', secure=True):
     return response.ubody
 
 def add_renderer_globals(event):
-    import pdb; pdb.set_trace()
     if event['renderer_name'] != 'json':
         api = getattr(event['request'], 'template_api', None)
         if api is None:
