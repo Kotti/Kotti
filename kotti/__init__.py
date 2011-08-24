@@ -128,6 +128,7 @@ def main(global_config, **settings):
         )
 
     config.begin()
+    config.commit()
 
     # Include modules listed in 'kotti.base_includes' and 'kotti.includes':
     for module in (
