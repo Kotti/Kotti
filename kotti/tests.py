@@ -1,4 +1,5 @@
 from contextlib import contextmanager
+import os
 import unittest
 
 import transaction
@@ -43,9 +44,13 @@ BASE_URL = 'http://localhost:6543'
 class DummyRequest(testing.DummyRequest):
     is_xhr = False
 
+def testing_db_url():
+    return os.environ.get('KOTTI_TEST_DB_STRING', 'sqlite://')
+
 def _initTestingDB():
     from sqlalchemy import create_engine
-    session = initialize_sql(create_engine('sqlite://'))
+    database_url = testing_db_url()
+    session = initialize_sql(create_engine(database_url), drop_all=True)
     return session
 
 def setUp(**kwargs):
@@ -1405,7 +1410,7 @@ def setUpFunctional(global_config=None, **settings):
     import wsgi_intercept.zope_testbrowser
 
     _settings = {
-        'sqlalchemy.url': 'sqlite://',
+        'sqlalchemy.url': testing_db_url(),
         'kotti.secret': 'secret',
         'kotti.site_title': 'Website des Kottbusser Tors', # for mailing
         'mail.default_sender': 'kotti@localhost',

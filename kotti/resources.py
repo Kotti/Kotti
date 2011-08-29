@@ -1,3 +1,4 @@
+import os
 from UserDict import DictMixin
 
 from pyramid.traversal import resource_path
@@ -296,11 +297,13 @@ def populate():
     transaction.commit()
 
 _session = []
-def initialize_sql(engine):
+def initialize_sql(engine, drop_all=False):
     if _session:
         return _session[0]
     DBSession.configure(bind=engine)
     metadata.bind = engine
+    if drop_all or os.environ.get('KOTTI_TEST_DB_STRING'):
+        metadata.drop_all(engine)
     metadata.create_all(engine)
     for populate in get_settings()['kotti.populators']:
         populate()
