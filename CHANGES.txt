@@ -1,15 +1,23 @@
 History
 =======
 
-0.2a1 - Unreleased
+0.2a2 - Unreleased
 ------------------
 
-- Split ``Node`` class into ``Node`` and ``Content``.
+0.2a1 - 2011-08-29
+------------------
 
-  This change is backward incompatible in that existing subclasses of
-  ``Node`` will need to subclass from ``Content`` instead.  The
-  example in the docs has been updated.  Also, the underlying database
-  schema has changed.
+- Improve database schema for ``Nodes``.  Split ``Node`` class into
+  ``Node`` and ``Content``.
+
+  This change is backward incompatible in that existing content types
+  in your code will need to subclass ``Content`` instead of ``Node``.
+  The example in the docs has been updated.  Also, the underlying
+  database schema has changed.
+
+- Improve user database hashing and local roles storage.
+
+- Compatibility fix for Pyramid 1.2.
 
 0.1.1 - 2011-05-17
 ------------------
