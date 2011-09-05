@@ -46,7 +46,7 @@
       </nav>
     </div>
 
-    <!-- The main diff -->
+    <!-- The main div -->
     <div id="main">
       <div>
         <a id="start-navigation" name="start-navigation"></a>
@@ -84,7 +84,7 @@
           <em tal:omit-tag="not link.is_context">
             ${link.name}
           </em>
-          <span tal:content="not link.is_context and '&rarr;' or default"
+          <span tal:content="not link.is_context and u'→' or default"
                 tal:condition="not link.is_context or (link.is_context and not no_nav)">
             ↓
           </span>
