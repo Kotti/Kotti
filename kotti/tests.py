@@ -44,6 +44,12 @@ BASE_URL = 'http://localhost:6543'
 class DummyRequest(testing.DummyRequest):
     is_xhr = False
 
+    def is_response(self, ob):
+        if ( hasattr(ob, 'app_iter') and hasattr(ob, 'headerlist') and
+             hasattr(ob, 'status') ):
+            return True
+        return False
+
 def testing_db_url():
     return os.environ.get('KOTTI_TEST_DB_STRING', 'sqlite://')
 

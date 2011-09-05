@@ -8,7 +8,7 @@ README = open(os.path.join(here, 'README.rst')).read()
 CHANGES = open(os.path.join(here, 'CHANGES.txt')).read()
 
 install_requires = [
-    'pyramid',
+    'pyramid>=1.2a5',
     'repoze.tm2>=1.0b1', # default_commit_veto
     'sqlalchemy>=0.7',
     'zope.sqlalchemy',
@@ -19,6 +19,7 @@ install_requires = [
     'Babel',
     'pyramid_mailer',
     'py-bcrypt',
+    'pyramid_debugtoolbar',
     ]
 
 tests_require = ['nose', 'coverage', 'wsgi_intercept', 'zope.testbrowser']

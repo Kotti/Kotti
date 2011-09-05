@@ -3,7 +3,6 @@ from pyramid.exceptions import Forbidden
 from pyramid.httpexceptions import HTTPFound
 from pyramid.security import has_permission
 from pyramid.url import resource_url
-from pyramid.view import is_response
 import colander
 from deform import Form
 from deform.widget import RichTextWidget
@@ -167,7 +166,7 @@ def generic_edit(context, request, schema, form_factory=Form, **kwargs):
 
     form = form_factory(schema, buttons=('save', 'cancel'), action=request.url)
     rendered = FormController(form, **kwargs)(context, request)
-    if is_response(rendered):
+    if request.is_response(rendered):
         return rendered
 
     return {
@@ -184,7 +183,7 @@ def generic_add(context, request, schema, add, title, form_factory=Form,
 
     form = form_factory(schema, buttons=('save', 'cancel'), action=request.url)
     rendered = FormController(form, add=add, **kwargs)(context, request)
-    if is_response(rendered):
+    if request.is_response(rendered):
         return rendered
 
     return {

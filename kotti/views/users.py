@@ -6,7 +6,6 @@ from urllib import urlencode
 
 from pyramid.httpexceptions import HTTPFound
 from pyramid.exceptions import Forbidden
-from pyramid.view import is_response
 import colander
 import deform
 from deform import Form
@@ -326,7 +325,7 @@ def users_manage(context, request):
         post_key='add-user',
         )
     user_addform = user_fc(context, request)
-    if is_response(user_addform):
+    if request.is_response(user_addform):
         return user_addform
 
     gschema = group_schema()
@@ -342,7 +341,7 @@ def users_manage(context, request):
         post_key='add-group',
         )
     group_addform = group_fc(context, request)
-    if is_response(group_addform):
+    if request.is_response(group_addform):
         return group_addform
 
     return {
@@ -384,7 +383,7 @@ def user_manage(context, request):
         edit_item=edit_principal,
         )
     form = user_fc(principal, request)
-    if is_response(form):
+    if request.is_response(form):
         return form
 
     return {
@@ -400,7 +399,7 @@ def preferences(context, request):
     user_form = Form(uschema, buttons=('save', 'cancel'))
     user_fc = FormController(user_form)
     form = user_fc(user, request)
-    if is_response(form):
+    if request.is_response(form):
         return form
 
     return {

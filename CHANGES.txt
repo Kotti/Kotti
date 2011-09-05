@@ -7,6 +7,9 @@ History
 - Fix templates to be compatible with Chameleon 2.  Also, require
   Chameleon 2.
 
+- Require pyramid 1.2.  Also, enable pyramid_debugtoolbar for
+  development.ini profile.
+
 0.2a1 - 2011-08-29
 ------------------
 
