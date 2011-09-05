@@ -11,12 +11,11 @@ install_requires = [
     'pyramid',
     'repoze.tm2>=1.0b1', # default_commit_veto
     'sqlalchemy>=0.7',
-    'chameleon<1.2.999', # more recent versions have compat issues right now
     'zope.sqlalchemy',
+    'Chameleon>=2',
     'formencode',
-    'deform>=0.9.1',
+    'deform>=0.9.2', # Chameleon 2
     'colander>=0.9.3',
-    'WebError',
     'Babel',
     'pyramid_mailer',
     'py-bcrypt',
@@ -53,7 +52,6 @@ setup(name='Kotti',
       packages=find_packages(),
       include_package_data=True,
       zip_safe=False,
-      dependency_links=[],
       setup_requires=['nose'],
       install_requires=install_requires,
       tests_require=tests_require,
