@@ -18,9 +18,8 @@
 
   <div metal:fill-slot="breadcrumbs" tal:omit-tag=""></div>
 
-  <div metal:fill-slot="content"
-       metal:define-slot="content">
-    <h1>${api.page_title}</h1>
+  <div metal:fill-slot="content">
+      <h1>${api.page_title}</h1>
   </div>
 
 </html>
