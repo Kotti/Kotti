@@ -4,6 +4,9 @@ History
 0.2a2 - Unreleased
 ------------------
 
+- Fix templates to be compatible with Chameleon 2.  Also, require
+  Chameleon 2.
+
 0.2a1 - 2011-08-29
 ------------------
 
