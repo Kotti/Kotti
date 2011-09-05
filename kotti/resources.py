@@ -303,7 +303,7 @@ def initialize_sql(engine, drop_all=False):
     DBSession.configure(bind=engine)
     metadata.bind = engine
     if drop_all or os.environ.get('KOTTI_TEST_DB_STRING'):
-        metadata.drop_all(engine)
+        metadata.drop_all(engine) # pragma: no coverage
     metadata.create_all(engine)
     for populate in get_settings()['kotti.populators']:
         populate()
