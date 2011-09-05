@@ -1,6 +1,9 @@
 History
 =======
 
+0.2a3 - unreleased
+------------------
+
 0.2a2 - 2011-09-05
 ------------------
 
@@ -8,7 +11,7 @@ History
   Chameleon 2.
 
 - Require pyramid 1.2.  Also, enable pyramid_debugtoolbar for
-  development.ini profile.
+  ``development.ini`` profile.
 
 0.2a1 - 2011-08-29
 ------------------
