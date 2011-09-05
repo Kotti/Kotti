@@ -80,28 +80,23 @@
       <form action="${request.url}" method="post"
             class="ajax ${('order-up' in request.POST or 'order-down' in request.POST) and 'ajax-replace' or ''}" id="form-move-4">
         <ul>
-          <li>
-            <ul>
               <li tal:repeat="item children">
-                <input type="hidden" name="foo" value="bar" />
                 <button type="submit" name="order-up" value="${item.id}"
                         title="Move ${item.title} up"
                         id="order-up-${item.id}"
-                        disabled="${item.position==0 and 'disabled'}">
+                        disabled="${item.position==0 and 'disabled' or None}">
                   ↑
                 </button>
                 <button type="submit" name="order-down" value="${item.id}"
                         title="Move ${item.title} down"
                         id="order-down-${item.id}"
-                        disabled="${item.position+1 == len(children) and 'disabled'}">
+                        disabled="${item.position+1 == len(children) and 'disabled' or None}">
                   ↓
                 </button>
                 <label for="order-down-${item.id}">
                   ${item.title}
                 </label>
               </li>
-            </ul>
-          </li>
         </ul>
       </form>
     </div>
