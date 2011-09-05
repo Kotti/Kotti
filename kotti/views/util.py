@@ -74,6 +74,14 @@ class TemplateAPI(object):
         self.__dict__.update(kwargs)
 
     def __getitem__(self, dottedname):
+        """Given a dottedname of the form ``template_name.macro_name``
+        this will return the ``macro_name`` macro of the
+        ``template_name`` template.
+
+        The template that corresponds to ``template_name`` may be
+        defined through the ``kotti.templates.*`` configuration
+        variables.
+        """
         try:
             template_name, macro_name = dottedname.split('.')
         except ValueError: # Chameleon will try dict access after attr access
