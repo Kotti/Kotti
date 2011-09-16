@@ -1,16 +1,18 @@
 History
 =======
 
-0.2a3 - unreleased
-------------------
+0.2 - 2011-09-16
+----------------
+
+- No changes.
 
 0.2a2 - 2011-09-05
 ------------------
 
 - Fix templates to be compatible with Chameleon 2.  Also, require
-  Chameleon 2.
+  Chameleon>=2.
 
-- Require pyramid 1.2.  Also, enable pyramid_debugtoolbar for
+- Require pyramid>=1.2.  Also, enable pyramid_debugtoolbar for
   ``development.ini`` profile.
 
 0.2a1 - 2011-08-29

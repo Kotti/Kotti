@@ -8,7 +8,7 @@ README = open(os.path.join(here, 'README.rst')).read()
 CHANGES = open(os.path.join(here, 'CHANGES.txt')).read()
 
 install_requires = [
-    'pyramid>=1.2a5',
+    'pyramid>=1.2',
     'repoze.tm2>=1.0b1', # default_commit_veto
     'sqlalchemy>=0.7',
     'zope.sqlalchemy',
@@ -33,7 +33,7 @@ if sys.version_info[:3] < (2,7,0):
     install_requires.append('ordereddict')
 
 setup(name='Kotti',
-      version='0.2a3',
+      version='0.2',
       description="A user-friendly, light-weight and extensible web content management system.  Written in Python, based on Pyramid and SQLAlchemy.",
       long_description=README + '\n\n' +  CHANGES,
       classifiers=[
