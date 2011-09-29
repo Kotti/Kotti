@@ -1,8 +1,14 @@
 History
 =======
 
-0.3a1 - Unreleased
+0.2.2 - Unreleased
 ------------------
+
+
+0.2.1 - 2011-09-29
+------------------
+
+- Minor changes to events setup code to ease usage in tests.
 
 0.2 - 2011-09-16
 ----------------
