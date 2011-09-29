@@ -182,11 +182,19 @@ def set_creation_date(event):
 def set_modification_date(event):
     event.object.modification_date = datetime.now()
 
-def includeme(config):
+_WIRED_SQLALCHMEY = False
+def wire_sqlalchemy():
+    global _WIRED_SQLALCHMEY
+    if _WIRED_SQLALCHMEY:
+        return
+    else:
+        _WIRED_SQLALCHMEY = True
     sqlalchemy.event.listen(mapper, 'before_insert', _before_insert)
     sqlalchemy.event.listen(mapper, 'before_update', _before_update)
     sqlalchemy.event.listen(mapper, 'before_delete', _before_delete)
 
+def includeme(config):
+    wire_sqlalchemy()
     objectevent_listeners[(ObjectInsert, Content)].append(set_owner)
     objectevent_listeners[(ObjectInsert, Content)].append(set_creation_date)
     objectevent_listeners[(ObjectUpdate, Content)].append(set_modification_date)
