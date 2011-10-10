@@ -1,7 +1,10 @@
 History
 =======
 
-0.2.2 - Unreleased
+0.2.3 - Unreleased
+------------------
+
+0.2.2 - 2011-10-10
 ------------------
 
 - Change the function signature of ``kotti.authn_policy_factory``,
