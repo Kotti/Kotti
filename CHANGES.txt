@@ -4,6 +4,9 @@ History
 0.2.2 - Unreleased
 ------------------
 
+- Change the function signature of ``kotti.authn_policy_factory``,
+  ``kotti.authz_policy_factory`` and ``kotti.session_factory`` to
+  include all settings from the configuration file.
 
 0.2.1 - 2011-09-29
 ------------------

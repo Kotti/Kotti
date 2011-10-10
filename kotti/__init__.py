@@ -20,16 +20,17 @@ from kotti.util import request_cache
 metadata = MetaData()
 DBSession = scoped_session(sessionmaker(extension=ZopeTransactionExtension()))
 
-def authtkt_factory(**kwargs):
+def authtkt_factory(**settings):
     from kotti.security import list_groups_callback
-    kwargs.setdefault('callback', list_groups_callback)
-    return AuthTktAuthenticationPolicy(**kwargs)
+    return AuthTktAuthenticationPolicy(
+        secret=settings['kotti.secret2'], callback=list_groups_callback)
 
-def acl_factory(**kwargs):
+def acl_factory(**settings):
     return ACLAuthorizationPolicy()
 
-def cookie_session_factory(**kwargs):
-    return UnencryptedCookieSessionFactoryConfig(**kwargs)
+def cookie_session_factory(**settings):
+    secret = settings['kotti.secret2']
+    return UnencryptedCookieSessionFactoryConfig(secret)
 
 def none_factory(**kwargs): # pragma: no cover
     return None
@@ -78,7 +79,6 @@ def get_version():
 def get_settings():
     from kotti.resources import Settings
     session = DBSession()
-
     db_settings = session.query(Settings).order_by(desc(Settings.id)).first()
     if db_settings is not None:
         reg_settings = dict(get_current_registry().settings)
@@ -112,13 +112,13 @@ def main(global_config, **settings):
     _resolve_dotted(settings)
 
     secret1 = settings['kotti.secret']
-    secret2 = settings.setdefault('kotti.secret2', secret1)
+    settings.setdefault('kotti.secret2', secret1)
 
     authentication_policy = settings[
-        'kotti.authn_policy_factory'][0](secret=secret2)
+        'kotti.authn_policy_factory'][0](**settings)
     authorization_policy = settings[
-        'kotti.authz_policy_factory'][0]()
-    session_factory = settings['kotti.session_factory'][0](secret=secret2)
+        'kotti.authz_policy_factory'][0](**settings)
+    session_factory = settings['kotti.session_factory'][0](**settings)
 
     config = Configurator(
         settings=settings,
