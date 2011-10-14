@@ -74,6 +74,8 @@ class Node(Container, PersistentACL):
     implements(INode)
 
     id = None
+    in_navigation = False
+    
     def __init__(self, name=None, parent=None, title=u"", annotations=None):
         if annotations is None:
             annotations = {}
