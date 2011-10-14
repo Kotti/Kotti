@@ -221,6 +221,18 @@ class TestNode(UnitTestBase):
         self.assertEquals(
             session.query(Node).filter(Node.name == u'subchild').count(), 0)
 
+        # Overwriting an existing Node will delete it:
+        child3 = Node(name=u'child3', parent=root)
+        session.add(child3)
+        self.assertEquals(root.keys(), [u'child3'])
+
+        child33 = Node(name=u'child3')
+        session.add(child33)
+        root[u'child3'] = child33
+        self.assertEquals(root.keys(), [u'child3'])
+        self.assertEquals(
+            session.query(Node).filter(Node.name == u'child3').count(), 1)
+        
     def test_node_copy(self):
         # Test some of Node's container methods:
         root = get_root()

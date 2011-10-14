@@ -49,7 +49,11 @@ class Container(object, DictMixin):
             raise KeyError(key)
 
     def __setitem__(self, key, node):
-        node.name = unicode(key)
+        key = node.name = unicode(key)
+        try:
+            del self[key]
+        except KeyError:
+            pass
         self.children.append(node)
 
     def __delitem__(self, key):

@@ -4,6 +4,8 @@ History
 0.2.3 - Unreleased
 ------------------
 
+- ``Node.__setitem__`` will now first delete any child with the given key.
+
 0.2.2 - 2011-10-10
 ------------------
 
