@@ -2,13 +2,13 @@
   <h2 class="hidden">Local navigation</h2>
   <ul>
     <li>
-      <a href="${api.url(parent)}" title="${parent.description}"
+      <a href="${api.url(parent)}" title="${getattr(parent, 'description', None)}"
          class="${parent == api.context and 'selected' or ''}">
         ${parent.title}
       </a>
     </li>
     <li tal:repeat="item children">
-      <a href="${api.url(item)}" title="${item.description}"
+      <a href="${api.url(item)}" title="${getattr(item, 'description', None)}"
          class="${item == api.context and 'selected' or ''}">
         ${item.title}
       </a>
