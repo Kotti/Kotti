@@ -3,6 +3,7 @@ import os
 import unittest
 
 import transaction
+from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.exc import IntegrityError
 import colander
 from pyramid.authentication import CallbackAuthenticationPolicy
@@ -38,8 +39,6 @@ from kotti.util import ViewLink
 from kotti.util import clear_request_cache
 
 BASE_URL = 'http://localhost:6543'
-
-## Unit tests
 
 class DummyRequest(testing.DummyRequest):
     is_xhr = False
@@ -221,7 +220,7 @@ class TestNode(UnitTestBase):
         self.assertEquals(
             session.query(Node).filter(Node.name == u'subchild').count(), 0)
 
-        # Overwriting an existing Node will delete it:
+        # Overwriting an existing Node is an error; first delete manually!
         child3 = Node(name=u'child3', parent=root)
         session.add(child3)
         self.assertEquals(root.keys(), [u'child3'])
@@ -229,9 +228,8 @@ class TestNode(UnitTestBase):
         child33 = Node(name=u'child3')
         session.add(child33)
         root[u'child3'] = child33
-        self.assertEquals(root.keys(), [u'child3'])
-        self.assertEquals(
-            session.query(Node).filter(Node.name == u'child3').count(), 1)
+        self.assertEquals(root.keys(), [u'child3', 'child3'])
+        self.assertRaises(SQLAlchemyError, session.flush)
         
     def test_node_copy(self):
         # Test some of Node's container methods:
@@ -1421,8 +1419,6 @@ class TestRequestCache(UnitTestBase):
         my_fun(1, 2)
         my_fun(1, 2)
         self.assertEqual(len(called), 2)
-
-## Functional tests
 
 def setUpFunctional(global_config=None, **settings):
     import wsgi_intercept.zope_testbrowser

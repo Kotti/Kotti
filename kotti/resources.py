@@ -50,10 +50,6 @@ class Container(object, DictMixin):
 
     def __setitem__(self, key, node):
         key = node.name = unicode(key)
-        try:
-            del self[key]
-        except KeyError:
-            pass
         self.children.append(node)
 
     def __delitem__(self, key):
