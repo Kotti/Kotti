@@ -298,20 +298,18 @@ def populate():
     session.flush()
     transaction.commit()
 
-_session = []
 def initialize_sql(engine, drop_all=False):
-    if _session:
-        return _session[0]
+    DBSession.registry.clear()
     DBSession.configure(bind=engine)
     metadata.bind = engine
+
     if drop_all or os.environ.get('KOTTI_TEST_DB_STRING'):
-        metadata.drop_all(engine) # pragma: no coverage
+        metadata.drop_all(engine)
     metadata.create_all(engine)
     for populate in get_settings()['kotti.populators']:
         populate()
-    session = DBSession()
-    _session.append(session)
-    return session
+
+    return DBSession()
 
 def appmaker(engine):
     initialize_sql(engine)

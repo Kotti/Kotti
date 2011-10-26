@@ -1,6 +1,7 @@
 from contextlib import contextmanager
 import os
 import unittest
+import warnings
 
 import transaction
 from sqlalchemy.exc import SQLAlchemyError
@@ -58,7 +59,8 @@ def _initTestingDB():
     session = initialize_sql(create_engine(database_url), drop_all=True)
     return session
 
-def setUp(**kwargs):
+def setUp(init_db=True, **kwargs):
+    warnings.filterwarnings("error")
     tearDown()
     settings = conf_defaults.copy()
     settings['kotti.secret'] = 'secret'
@@ -67,10 +69,12 @@ def setUp(**kwargs):
     settings.update(kwargs.get('settings', {}))
     kwargs['settings'] = settings
     config = testing.setUp(**kwargs)
-
-    _initTestingDB()
     for name, renderer in DEFAULT_RENDERERS:
         config.add_renderer(name, renderer)
+
+    if init_db:
+        _initTestingDB()
+
     transaction.begin()
     return config
 
