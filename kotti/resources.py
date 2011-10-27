@@ -2,12 +2,15 @@ import os
 from UserDict import DictMixin
 
 from pyramid.traversal import resource_path
+from sqlalchemy.exc import InvalidRequestError
+from sqlalchemy.sql import and_
+from sqlalchemy.sql import select
 from sqlalchemy.orm import backref
 from sqlalchemy.orm import mapper
 from sqlalchemy.orm import object_mapper
 from sqlalchemy.orm import relation
-from sqlalchemy.ext.orderinglist import ordering_list
 from sqlalchemy.orm.exc import NoResultFound
+from sqlalchemy.ext.orderinglist import ordering_list
 from sqlalchemy import Table
 from sqlalchemy import Column
 from sqlalchemy import UniqueConstraint
@@ -38,16 +41,6 @@ class Container(object, DictMixin):
     """Containers form the API of a Node that's used for subitem
     access and in traversal.
     """
-    def __getitem__(self, key):
-        key = unicode(key)
-        session = DBSession()
-        query = session.query(Node).filter(
-            Node.name==key).filter(Node.parent==self)
-        try:
-            return query.one()
-        except NoResultFound:
-            raise KeyError(key)
-
     def __setitem__(self, key, node):
         key = node.name = unicode(key)
         self.children.append(node)
@@ -59,6 +52,25 @@ class Container(object, DictMixin):
 
     def keys(self):
         return [child.name for child in self.children]
+
+    def __getitem__(self, path):
+        if not hasattr(path, '__iter__'):
+            path = (path,)
+        # Using the ORM interface here in a loop would join over all
+        # polymorphic tables, so we'll use a 'handmade' select instead.
+        conditions = [nodes.c.id==self.id]
+        alias = nodes
+        for name in path:
+            alias, old_alias = nodes.alias(), alias
+            conditions.append(alias.c.parent_id==old_alias.c.id)
+            conditions.append(alias.c.name==unicode(name))
+        expr = select([alias.c.id], and_(*conditions))
+        session = DBSession()
+        session._autoflush()
+        row = session.execute(expr).fetchone()
+        if row is None:
+            raise KeyError(path)
+        return session.query(Node).get(row.id)
 
 class INode(Interface):
     pass

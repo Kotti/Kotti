@@ -4,6 +4,11 @@ History
 0.2.3 - Unreleased
 ------------------
 
+- ``Node.__getitem__`` will now also accept a tuple as key.
+
+  ``folder['1', '2']`` is the same as ``folder['1']['2']``, just more
+  efficient.
+
 0.2.2 - 2011-10-10
 ------------------
 

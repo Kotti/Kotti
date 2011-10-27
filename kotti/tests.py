@@ -224,15 +224,26 @@ class TestNode(UnitTestBase):
         self.assertEquals(
             session.query(Node).filter(Node.name == u'subchild').count(), 0)
 
-        # Overwriting an existing Node is an error; first delete manually!
-        child3 = Node(name=u'child3', parent=root)
-        session.add(child3)
-        self.assertEquals(root.keys(), [u'child3'])
+        # We can pass a tuple as the key to more efficiently reach
+        # down to child objects:
+        root[u'child3'] = Node()
+        subchild33 = Node(name=u'subchild33', parent=root[u'child3'])
+        session.add(subchild33)
+        self.assertTrue(
+            root[u'child3', u'subchild33'] is root[u'child3'][u'subchild33'])
+        self.assertTrue(
+            root[(u'child3', u'subchild33')] is subchild33)
+        self.assertRaises(KeyError, root.__getitem__, (u'child3', u'bad-name'))
+        del root[u'child3']
 
-        child33 = Node(name=u'child3')
-        session.add(child33)
-        root[u'child3'] = child33
-        self.assertEquals(root.keys(), [u'child3', 'child3'])
+        # Overwriting an existing Node is an error; first delete manually!
+        child4 = Node(name=u'child4', parent=root)
+        session.add(child4)
+        self.assertEquals(root.keys(), [u'child4'])
+
+        child44 = Node(name=u'child4')
+        session.add(child44)
+        root[u'child4'] = child44
         self.assertRaises(SQLAlchemyError, session.flush)
         
     def test_node_copy(self):
