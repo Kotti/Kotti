@@ -37,7 +37,7 @@ from kotti.security import map_principals_with_local_roles
 from kotti.security import get_principals
 from kotti.security import is_user
 from kotti.util import ViewLink
-from kotti.util import clear_request_cache
+from kotti.util import clear_cache
 
 BASE_URL = 'http://localhost:6543'
 
@@ -775,7 +775,7 @@ class TestEvents(UnitTestBase):
         self.assertEqual(child.owner, u'bob')
         self.assertEqual(list_groups(u'bob', child), [u'role:owner'])
 
-        clear_request_cache()
+        clear_cache()
         # The event listener does not set the role again for subitems:
         grandchild = child[u'grandchild'] = Content()
         session.flush()
@@ -1408,16 +1408,18 @@ class TestUtil(UnitTestBase):
 
 class TestRequestCache(UnitTestBase):
     def setUp(self):
+        from kotti.util import request_cache
+
         registry = Registry('testing')
         request = DummyRequest()
         request.registry = registry
         super(TestRequestCache, self).setUp(registry=registry, request=request)
+        self.cache_decorator = request_cache
 
     def test_it(self):
-        from kotti.util import request_cache
         called = []
 
-        @request_cache(lambda a, b: (a, b))
+        @self.cache_decorator(lambda a, b: (a, b))
         def my_fun(a, b):
             called.append((a, b))
 
@@ -1427,25 +1429,31 @@ class TestRequestCache(UnitTestBase):
         my_fun(2, 1)
         self.assertEqual(len(called), 2)
 
-        clear_request_cache()
+        clear_cache()
         my_fun(1, 2)
         self.assertEqual(len(called), 3)
 
     def test_dont_cache(self):
-        from kotti.util import request_cache
         from kotti.util import DontCache
         called = []
 
         def dont_cache(a, b):
             raise DontCache
 
-        @request_cache(dont_cache)
+        @self.cache_decorator(dont_cache)
         def my_fun(a, b):
             called.append((a, b))
 
         my_fun(1, 2)
         my_fun(1, 2)
         self.assertEqual(len(called), 2)
+
+class TestLRUCache(TestRequestCache):
+    def setUp(self):
+        from kotti.util import lru_cache
+        
+        super(TestLRUCache, self).setUp()
+        self.cache_decorator = lru_cache
 
 def setUpFunctional(global_config=None, **settings):
     import wsgi_intercept.zope_testbrowser

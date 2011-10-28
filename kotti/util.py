@@ -2,6 +2,7 @@ from pyramid.compat import json
 import string
 import urllib
 
+from repoze.lru import LRUCache
 from pyramid.threadlocal import get_current_request
 from pyramid.url import resource_url
 from sqlalchemy.types import TypeDecorator, VARCHAR
@@ -66,22 +67,28 @@ class ViewLink(object):
     def __repr__(self):
         return "ViewLink(%r, %r)" % (self.path, self.title)
 
-_CACHE_ATTR = 'kotti_cache'
-
 class DontCache(Exception):
     pass
 
-def request_cache(compute_key):
+_CACHE_ATTR = 'kotti_cache'
+
+def request_container():
+    request = get_current_request()
+    if request is None:
+        return None
+    cache = getattr(request, _CACHE_ATTR, None)
+    if cache is None:
+        cache = {}
+        setattr(request, _CACHE_ATTR, cache)
+    return cache
+
+def cache(compute_key, container_factory):
     marker = object()
     def decorator(func):
         def replacement(*args, **kwargs):
-            request = get_current_request()
-            if request is None:
-                return func(*args, **kwargs)
-            cache = getattr(request, _CACHE_ATTR, None)
+            cache = container_factory()
             if cache is None:
-                cache = {}
-                setattr(request, _CACHE_ATTR, cache)
+                return func(*args, **kwargs)
             try:
                 key = compute_key(*args, **kwargs)
             except DontCache:
@@ -99,10 +106,22 @@ def request_cache(compute_key):
         return replacement
     return decorator
 
-def clear_request_cache(): # only useful for tests really
+def request_cache(compute_key):
+    return cache(compute_key, request_container)
+
+class LRUCacheSetItem(LRUCache):
+    __setitem__ = LRUCache.put
+
+_lru_cache = LRUCacheSetItem(1000)
+
+def lru_cache(compute_key):
+    return cache(compute_key, lambda: _lru_cache)
+
+def clear_cache(): # only useful for tests really
     request = get_current_request()
     if request is not None:
         setattr(request, _CACHE_ATTR, None)
+    _lru_cache.clear()
 
 def extract_from_settings(prefix):
     """
