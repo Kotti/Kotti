@@ -39,6 +39,28 @@ def add_renderer_globals(event):
             api = template_api(event['context'], event['request'])
         event['api'] = api
 
+class Slots(object):
+    def __init__(self, context, request):
+        self.context = context
+        self.request = request
+    
+    def __getattr__(self, name):
+        for event_type in slot_events:
+            if event_type.name == name:
+                break
+        else:
+            raise AttributeError(name)
+        value = []
+        event = event_type(self.context, self.request)
+        for snippet in objectevent_listeners(event):
+            if snippet is not None:
+                if isinstance(snippet, list):
+                    value.extend(snippet)
+                else:
+                    value.append(snippet)
+        setattr(self, name, value)
+        return value
+
 class TemplateAPI(object):
     """This implements the 'api' object that's passed to all
     templates.
@@ -70,6 +92,8 @@ class TemplateAPI(object):
 
         if getattr(request, 'template_api', None) is None:
             request.template_api = self
+
+        self.slots = Slots(context, request)
 
         self.__dict__.update(kwargs)
 
@@ -172,20 +196,6 @@ class TemplateAPI(object):
         url = 'https://secure.gravatar.com/avatar/%s?%s' % (
             h, urllib.urlencode(query))
         return url
-
-    @reify
-    def slots(self):
-        value = {}
-        for event_type in slot_events:
-            event = event_type(self.context, self.request)
-            this_slots = value[event.name] = []
-            for snippet in objectevent_listeners(event):
-                if snippet is not None:
-                    if isinstance(snippet, list):
-                        this_slots.extend(snippet)
-                    else:
-                        this_slots.append(snippet)
-        return value
 
     @reify
     def locale_name(self):

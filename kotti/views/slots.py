@@ -82,7 +82,9 @@ class RenderBeforeBodyEnd(ObjectEvent):
     name = u'beforebodyend'
 
 slot_events = [
-    RenderLeftSlot, RenderRightSlot, RenderAboveContent, RenderBelowContent, RenderInHead, RenderBeforeBodyEnd]
+    RenderLeftSlot, RenderRightSlot, RenderAboveContent, RenderBelowContent,
+    RenderInHead, RenderBeforeBodyEnd,
+    ]
 
 def render_local_navigation(context, request):
     from kotti.views.util import template_api

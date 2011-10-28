@@ -1242,7 +1242,7 @@ class TestTemplateAPI(UnitTestBase):
         register(RenderAboveContent, None, render_something)
 
         api = self._make()
-        self.assertEqual(api.slots['abovecontent'], [u'Hello, My Site!'])
+        self.assertEqual(api.slots.abovecontent, [u'Hello, My Site!'])
 
         # Slot renderers may also return lists:
         def render_a_list(context, request):
@@ -1250,19 +1250,31 @@ class TestTemplateAPI(UnitTestBase):
         register(RenderAboveContent, None, render_a_list)
         api = self._make()
         self.assertEqual(
-            api.slots['abovecontent'],
+            api.slots.abovecontent,
             [u'Hello, My Site!', u'a', u'list']
             )
 
-    def test_slots_empty(self):
-        api = self._make()
-        self.assertEqual(
-            sorted(api.slots.keys()),
-            ['abovecontent', 'beforebodyend', 'belowcontent', 'inhead',
-             'left', 'right']
+        self.assertRaises(
+            AttributeError,
+            getattr, api.slots, 'foobar'
             )
-        for key in api.slots.keys():
-            self.assertEqual(api.slots[key], [])
+
+    def test_slots_only_rendered_when_accessed(self):
+        from kotti.views.slots import register, RenderAboveContent
+
+        called = []
+        def render_something(context, request):
+            called.append(True)
+        register(RenderAboveContent, None, render_something)
+        
+        api = self._make()
+        api.slots.belowcontent
+        self.assertFalse(called)
+
+        api.slots.abovecontent
+        self.assertEquals(len(called), 1)
+        api.slots.abovecontent
+        self.assertEquals(len(called), 1)
 
     def test_slots_render_local_navigation(self):
         from kotti.views.slots import render_local_navigation
