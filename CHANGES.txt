@@ -1,13 +1,15 @@
 History
 =======
 
-0.2.3 - Unreleased
+0.2.3 - 2011-10-28
 ------------------
 
 - ``Node.__getitem__`` will now also accept a tuple as key.
 
   ``folder['1', '2']`` is the same as ``folder['1']['2']``, just more
   efficient.
+
+- Added a new cache decorator based on ``repoze.lru``.
 
 0.2.2 - 2011-10-10
 ------------------
