@@ -2,14 +2,12 @@ import os
 from UserDict import DictMixin
 
 from pyramid.traversal import resource_path
-from sqlalchemy.exc import InvalidRequestError
 from sqlalchemy.sql import and_
 from sqlalchemy.sql import select
 from sqlalchemy.orm import backref
 from sqlalchemy.orm import mapper
 from sqlalchemy.orm import object_mapper
 from sqlalchemy.orm import relation
-from sqlalchemy.orm.exc import NoResultFound
 from sqlalchemy.ext.orderinglist import ordering_list
 from sqlalchemy import Table
 from sqlalchemy import Column
@@ -54,10 +52,26 @@ class Container(object, DictMixin):
         return [child.name for child in self.children]
 
     def __getitem__(self, path):
+        session = DBSession()
+        session._autoflush()
+
         if not hasattr(path, '__iter__'):
             path = (path,)
+
+        if 'children' in self.__dict__:
+            # If children are already in memory, don't query the database:
+            first, rest = path[0], path[1:]
+            try:
+                [v] = [child for child in self.children if child.name == path[0]]
+            except ValueError:
+                raise KeyError(path)
+            if rest:
+                return v[rest]
+            else:
+                return v
+
         # Using the ORM interface here in a loop would join over all
-        # polymorphic tables, so we'll use a 'handmade' select instead.
+        # polymorphic tables, so we'll use a 'handmade' select instead:
         conditions = [nodes.c.id==self.id]
         alias = nodes
         for name in path:
@@ -65,8 +79,6 @@ class Container(object, DictMixin):
             conditions.append(alias.c.parent_id==old_alias.c.id)
             conditions.append(alias.c.name==unicode(name))
         expr = select([alias.c.id], and_(*conditions))
-        session = DBSession()
-        session._autoflush()
         row = session.execute(expr).fetchone()
         if row is None:
             raise KeyError(path)
@@ -107,6 +119,9 @@ class Node(Container, PersistentACL):
 
     def __eq__(self, other):
         return isinstance(other, Node) and self.id == other.id
+
+    def __ne__(self, other):
+        return not self == other
 
     def copy(self, **kwargs):
         copy = self.__class__()
