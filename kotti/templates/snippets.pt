@@ -69,7 +69,7 @@
              tal:repeat="message messages">
           <span tal:omit-tag="" tal:repeat="line message.splitlines()">
             ${line}
-            <br/>
+            <br />
           </span>
         </div>
       </div>

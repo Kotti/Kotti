@@ -12,7 +12,7 @@
         <h2>Assign local roles</h2>
         <ul>
           <li>
-            <label for="search-query">Search users and groups</label><br/>
+            <label for="search-query">Search users and groups</label><br />
             <input type="text" name="query" id="search-query"
                    value="${request.params.get('query')}"
                    placeholder="Search users and groups"

@@ -10,7 +10,7 @@
     <div class="form">
       <img src="${api.avatar_url(api.principal, size=40)}"
            alt="${api.principal.title}"
-           style="float: right"/>
+           style="float: right" />
       <h2>
         Edit <em>${api.principal.title}</em>
       </h2>
