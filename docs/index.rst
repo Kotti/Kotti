@@ -487,7 +487,13 @@ To run Kotti's automated test suite, do:
 
 .. code-block:: bash
 
-  bin/python setup.py nosetests
+  bin/py.test
+
+Or alternatively:
+
+.. code-block:: bash
+
+  bin/python setup.py test
 
 You can also run the tests against a different database using the
 ``KOTTI_TEST_DB_STRING`` environment variable.  By default, Kotti uses
@@ -495,7 +501,7 @@ an in-memory SQLite database.  An example:
 
 .. code-block:: bash
 
-  KOTTI_TEST_DB_STRING=postgresql://kotti:kotti@localhost:5432/kotti-testing bin/python setup.py nosetests
+  KOTTI_TEST_DB_STRING=postgresql://kotti:kotti@localhost:5432/kotti-testing bin/python setup.py test
 
 **Important**: Never use this feature against a production
 database. It will destroy your data.

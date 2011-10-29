@@ -45,10 +45,8 @@ class DummyRequest(testing.DummyRequest):
     is_xhr = False
 
     def is_response(self, ob):
-        if ( hasattr(ob, 'app_iter') and hasattr(ob, 'headerlist') and
-             hasattr(ob, 'status') ):
-            return True
-        return False
+        return ( hasattr(ob, 'app_iter') and hasattr(ob, 'headerlist') and
+                 hasattr(ob, 'status') )
 
 def testing_db_url():
     return os.environ.get('KOTTI_TEST_DB_STRING', 'sqlite://')
@@ -60,7 +58,7 @@ def _initTestingDB():
     return session
 
 def setUp(init_db=True, **kwargs):
-    warnings.filterwarnings("error")
+    #warnings.filterwarnings("error")
     tearDown()
     settings = conf_defaults.copy()
     settings['kotti.secret'] = 'secret'

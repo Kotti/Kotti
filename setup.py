@@ -1,7 +1,10 @@
 import os
+import subprocess
 import sys
 
-from setuptools import setup, find_packages
+from setuptools import setup
+from setuptools import find_packages
+from setuptools import Command
 
 here = os.path.abspath(os.path.dirname(__file__))
 README = open(os.path.join(here, 'README.rst')).read()
@@ -23,15 +26,31 @@ install_requires = [
     'pyramid_debugtoolbar',
     ]
 
-tests_require = ['nose', 'coverage', 'wsgi_intercept', 'zope.testbrowser']
-
-install_requires.extend(tests_require) # for buildout
+tests_require = [
+    'pytest',
+    'pytest-cov',
+    'pytest-xdist',
+    'wsgi_intercept',
+    'zope.testbrowser',
+    ]
 
 if sys.version_info[:3] < (2,5,0):
     install_requires.append('pysqlite')
 
 if sys.version_info[:3] < (2,7,0):
     install_requires.append('ordereddict')
+
+class PyTest(Command):
+    user_options = []
+    initialize_options = finalize_options = lambda self: None
+    errno = 1
+
+    def run(self):
+        script = os.path.join(
+            os.path.dirname(os.path.abspath(__file__)),
+            'bin', 'py.test')
+        errno = subprocess.call([sys.executable, script])
+        raise SystemExit(errno)
 
 setup(name='Kotti',
       version='0.2.4',
@@ -53,10 +72,9 @@ setup(name='Kotti',
       packages=find_packages(),
       include_package_data=True,
       zip_safe=False,
-      setup_requires=['nose'],
-      install_requires=install_requires,
-      tests_require=tests_require,
-      test_suite="kotti",
+      cmdclass={'test': PyTest},
+      install_requires=install_requires + tests_require,
+      #tests_require=tests_require,
       entry_points = """\
       [paste.app_factory]
       main = kotti:main
