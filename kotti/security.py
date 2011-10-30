@@ -8,6 +8,7 @@ from sqlalchemy import Integer
 from sqlalchemy import DateTime
 from sqlalchemy import Table
 from sqlalchemy import Unicode
+from sqlalchemy import func
 from sqlalchemy.sql.expression import or_
 from sqlalchemy.orm import mapper
 from sqlalchemy.orm.exc import NoResultFound
@@ -385,7 +386,8 @@ class Principals(DictMixin):
         for key, value in kwargs.items():
             col = getattr(self.factory, key)
             if '*' in value:
-                filters.append(col.like(value.replace('*', '%')))
+                value = value.replace('*', '%').lower()
+                filters.append(func.lower(col).like(value))
             else:
                 filters.append(col == value)
 
