@@ -27,11 +27,11 @@ install_requires = [
     ]
 
 tests_require = [
-    'pytest',
     'pytest-cov',
     'pytest-xdist',
     'wsgi_intercept',
     'zope.testbrowser',
+    'pytest',
     ]
 
 if sys.version_info[:3] < (2,5,0):
