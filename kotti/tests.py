@@ -781,6 +781,46 @@ class TestEvents(UnitTestBase):
         self.assertEqual(list_groups(u'bob', grandchild), [u'role:owner'])
         self.assertEqual(len(list_groups_raw(u'bob', grandchild)), 0)
 
+    def test_sqlalchemy_events(self):
+        from kotti import events
+
+        insert_events = []
+        def insert(event):
+            insert_events.append(event)
+        update_events = []
+        def update(event):
+            update_events.append(event)
+        delete_events = []
+        def delete(event):
+            delete_events.append(event)
+
+        lis = events.objectevent_listeners
+        lis[(events.ObjectInsert, None)].append(insert)
+        lis[(events.ObjectUpdate, None)].append(update)
+        lis[(events.ObjectDelete, None)].append(delete)
+
+        root = get_root()
+        child = root[u'child'] = Content()
+        DBSession.flush()
+        self.assertEqual(
+            (len(insert_events), len(update_events), len(delete_events)),
+            (1, 0, 0))
+        self.assertEqual(insert_events[0].object, child)
+
+        child.title = u"Bar"
+        DBSession.flush()
+        self.assertEqual(
+            (len(insert_events), len(update_events), len(delete_events)),
+            (1, 1, 0))
+        self.assertEqual(update_events[0].object, child)
+
+        DBSession.delete(child)
+        DBSession.flush()
+        self.assertEqual(
+            (len(insert_events), len(update_events), len(delete_events)),
+            (1, 1, 1))
+        self.assertEqual(delete_events[0].object, child)
+
 @contextmanager
 def contents_addable():
     # Allow Nodes to be added to documents:
