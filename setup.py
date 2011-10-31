@@ -37,9 +37,6 @@ tests_require = [
     'pytest',
     ]
 
-if sys.version_info[:3] < (2,5,0):
-    install_requires.append('pysqlite')
-
 if sys.version_info[:3] < (2,7,0):
     install_requires.append('ordereddict')
 
