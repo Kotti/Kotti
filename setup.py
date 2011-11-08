@@ -15,7 +15,7 @@ except IOError:
 
 install_requires = [
     'pyramid>=1.2',
-    'repoze.tm2>=1.0b1', # default_commit_veto
+    'pyramid_tm',
     'repoze.lru',
     'sqlalchemy>=0.7',
     'zope.sqlalchemy',
