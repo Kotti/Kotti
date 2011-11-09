@@ -2,6 +2,8 @@
 Kotti CMS
 =========
 
+:Authors: Daniel Nouri, Mike Orr
+
 Kotti is a light-weight, user-friendly and extensible web content
 management system.  It is licensed under a `BSD-like license
 <http://repoze.org/license.html>`_
@@ -116,31 +118,33 @@ INI File
 
 Kotti is configured using an INI configuration file.  The
 installation_ section explains how to get hold of a sample
-configuration file.  The ``[app:Kotti]`` section in it might look like
+configuration file.  The ``[app:main]`` section in it might look like
 this:
 
 .. code-block:: ini
 
-  [app:Kotti]
+  [app:main]
   use = egg:Kotti
-  default_locale_name = en
-  sqlalchemy.url = sqlite:///%(here)s/Kotti.db
+  pyramid.reload_templates = true
+  pyramid.debug_authorization = false
+  pyramid.debug_notfound = false
+  pyramid.debug_routematch = false
+  pyramid.debug_templates = true
+  pyramid.default_locale_name = en
+  pyramid.includes = pyramid_debugtoolbar
+                     pyramid_tm
   mail.default_sender = yourname@yourhost
-  kotti.site_title = My Site
+  sqlalchemy.url = sqlite:///%(here)s/Kotti.db
+  kotti.site_title = Kotti
   kotti.secret = changethis1
-  kotti.secret2 = changethis2
 
 Various aspects of your site can be changed right here.
-
-Also, Kotti depends on a `repoze.tm2`_ middleware to be set up.  Look
-for the ``[filter.tm]`` section in the sample configuration file for
-an example.
 
 Overview of settings
 --------------------
 
 This table provides an overview of available settings.  All these
-settings must go into the ``[app:Kotti]`` section of your Paste Deploy
+settings must go into the ``[app:main]`` section of your Paste Deploy
 configuration file.
 
 ===========================  ===================================================
@@ -148,7 +152,7 @@ Setting                      Description
 ===========================  ===================================================
 **kotti.site_title**         The title of your site
 **kotti.secret**             Secret token used as initial admin password
-**kotti.secret2**            Secret token used for email password reset token
+kotti.secret2                Secret token used for email password reset token
 
 **sqlalchemy.url**           `SQLAlchemy database URL`_
 **mail.default_sender**      Sender address for outgoing email
