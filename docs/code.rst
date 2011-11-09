@@ -1,2 +1,0 @@
-Kotti Python Implementation
-^^^^^^^^^^^^^^^^^^^^^^^^^^^

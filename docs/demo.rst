@@ -41,7 +41,6 @@ Installation
         git checkout git://github.com/dnouri/Kotti
         git checkout git://github.com/dnouri/kotti_calendar
         git checkout git://github.com/dnouri/kotti_twitter
-        git checkout git://github.com/dnouri/kotti_rstdocument
 
    We're using the development versions of Pyramid and Kotti because they're
    changing rapidly. We're checking out kotti_calendar and kotti_twitter
@@ -58,9 +57,6 @@ Installation
         pip install -e Kotti
         pip install -e kotti_calendar
         pip install -e kotti_twitter
-        pip install -e kotti_rstdocument
-
-   (If you skipped 'kotti_rstdocument', skip it here too.)
 
 5. Make a local copy of the demo directory and chdir into it.
 
@@ -116,7 +112,7 @@ The top row is the main menu. Four sections are predefined: "Home", "Bob's
 dept", "Calendar", and "About". Click "Bob's dept". Open the page editor by
 appending "edit" to the URL (so that it's
 "http://127.0.0.1:5000/bobs-department/edit"). You'll get a login screen. Enter
-username "admin", password "querty". (There are two other users, "owner" and
+username "admin", password "qwerty". (There are two other users, "owner" and
 "bob", all with the same password.) The "View" button at the left allows you to
 switch between view and edit mode. To log out, change the URL to
 "http://localhost:5000/logout".

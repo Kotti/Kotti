@@ -39,7 +39,7 @@ Documentation
 =============
 
 `Click here to access Kotti's documentation
-<http://packages.python.org/Kotti/>`_
+<http://kotti.readthedocs.org/>`_
 
 Try it out
 ==========

@@ -46,8 +46,6 @@ Kotti's souce distribution, and the following documentation is available:
 .. toctree::
 
    demo
-   database
-   code
 
 Under the hood
 --------------
