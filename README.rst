@@ -2,7 +2,7 @@ Kotti is a user-friendly, light-weight and extensible `web content
 management system`_.  It is licensed under a `BSD-like license
 <http://repoze.org/license.html>`_
 
-(c) 2011  Daniel Nouri and Mike Orr
+:Authors: Daniel Nouri, Mike Orr
 
 Features
 ========
