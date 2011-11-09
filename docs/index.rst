@@ -40,7 +40,14 @@ Features
 Try it out
 ----------
 
-You can try out Kotti on `Kotti's demo site`_.
+You can try out Kotti on `Kotti's demo site`_.  The demo files are included in
+Kotti's souce distribution, and the following documentation is available:
+
+.. toctree::
+
+   demo
+   database
+   code
 
 Under the hood
 --------------
