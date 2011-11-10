@@ -198,10 +198,15 @@ def list_groups_raw(name, context):
     global or inherited groups are returned.
     """
     from kotti.resources import LocalGroup
-    session = DBSession()
-    return set(r[0] for r in session.query(LocalGroup.group_name).filter(
-        LocalGroup.node_id==context.id).filter(
-        LocalGroup.principal_name==name).all())
+    from kotti.resources import Node
+
+    if isinstance(context, Node):
+        return set(
+            r[0] for r in DBSession.query(LocalGroup.group_name).filter(
+            LocalGroup.node_id==context.id).filter(
+            LocalGroup.principal_name==name).all()
+            )
+    return set()
 
 def list_groups(name, context=None):
     """List groups for principal with a given ``name``.

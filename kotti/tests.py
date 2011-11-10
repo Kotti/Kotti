@@ -280,6 +280,9 @@ class TestSecurity(UnitTestBase):
         self.assertEqual(
             list_groups_raw(u'bob', root), set(['role:editor']))
 
+    def test_not_a_node(self):
+        self.assertEqual(list_groups_raw(u'bob', object()), set())
+
     def test_overwrite_and_delete(self):
         root = get_root()
         set_groups('bob', root, ['role:editor'])
