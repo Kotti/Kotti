@@ -1,7 +1,7 @@
 History
 =======
 
-0.2.4 - Unreleased
+0.2.4 - 2011-11-13
 ------------------
 
 - Adjust for Pyramid 1.2: INI file updates, switch to pyramid_tm. (MO)
