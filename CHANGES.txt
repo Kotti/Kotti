@@ -4,7 +4,8 @@ History
 0.2.4 - Unreleased
 ------------------
 
-- Adjust for Pyramid 1.2: INI file updates, switch to pyramid_tm. (MO)
+- Adjust for Pyramid 1.2: INI file, pyramid_tm, Wsgiref server, pcreate and
+  pserve. (MO)
 
 - Add Kotti Demo source and documentation.
 
