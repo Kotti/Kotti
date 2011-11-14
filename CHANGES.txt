@@ -1,7 +1,7 @@
 History
 =======
 
-0.2.5 - Unreleased
+0.2.5 - 2011-11-14
 ------------------
 
 - Add 'TemplateAPI.render_template'; allow templates to be rendered
