@@ -30,6 +30,7 @@ install_requires = [
     ]
 
 tests_require = [
+    'mock',
     'pytest-cov',
     'pytest-xdist',
     'wsgi_intercept',
