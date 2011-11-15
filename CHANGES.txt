@@ -1,7 +1,10 @@
 History
 =======
 
-0.2.4 - Unreleased
+0.2.5 - Unreleased
+------------------
+
+0.2.4 - 2011-11-13
 ------------------
 
 - Adjust for Pyramid 1.2: INI file, pyramid_tm, Wsgiref server, pcreate and
