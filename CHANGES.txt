@@ -1,8 +1,16 @@
 History
 =======
 
-0.2.5 - Unreleased
+0.2.6 - Unreleased
 ------------------
+
+- Add a welcome page.
+
+0.2.5 - 2011-11-14
+------------------
+
+- Add 'TemplateAPI.render_template'; allow templates to be rendered
+  conveniently from templates.
 
 0.2.4 - 2011-11-13
 ------------------

@@ -3,6 +3,7 @@ import os
 import unittest
 import warnings
 
+from mock import MagicMock
 import transaction
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.exc import IntegrityError
@@ -1392,6 +1393,13 @@ class TestTemplateAPI(UnitTestBase):
         self.assertEqual(api.render_view('second'), u'second')
         self.assertEqual(
             api.render_view(context=api.context, request=api.request), u'first')
+
+    def test_render_template(self):
+        renderer = MagicMock()
+        self.config.testing_add_renderer('my-rendererer', renderer)
+        api = self._make()
+        api.render_template('my-rendererer', some='variable')
+        self.assertEqual(renderer.call_args[0][0], {'some': 'variable'})
 
     def test_get_type(self):
         from kotti.resources import Document

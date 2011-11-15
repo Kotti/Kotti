@@ -36,8 +36,8 @@ Features
 - **Open**: built on top of well-documented, open source components,
   such as Python_, Pyramid_ and SQLAlchemy_
 
-- **Tested**: an automated test coverage of 100% guarantees Kotti's
-  stability
+- **Tested**: `continuous testing`_ with a test coverage of 100%
+  guarantees Kotti's stability
 
 Try it out
 ----------
@@ -66,6 +66,7 @@ libraries as much as possible, thus:
 .. _Python: http://www.python.org/
 .. _Pyramid: http://docs.pylonsproject.org/projects/pyramid/dev/
 .. _SQLAlchemy: http://www.sqlalchemy.org/
+.. _continuous testing: http://jenkins.danielnouri.org/job/Kotti/
 
 Installation
 ============

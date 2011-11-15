@@ -1,4 +1,5 @@
 import os
+from pkg_resources import resource_string
 from UserDict import DictMixin
 
 from pyramid.traversal import resource_path
@@ -304,7 +305,9 @@ def populate():
     session = DBSession()
     nodecount = session.query(Node).count()
     if nodecount == 0:
-        root = Document(name=u"", parent=None, title=u"My Site")
+        body = unicode(resource_string('kotti', 'welcome.html'))
+        root = Document(
+            name=u"", parent=None, title=u"Welcome to Kotti!", body=body)
         root.__acl__ = SITE_ACL
         session.add(root)
 

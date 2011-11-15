@@ -10,6 +10,7 @@ from pyramid.i18n import get_locale_name
 from pyramid.location import inside
 from pyramid.location import lineage
 from pyramid.renderers import get_renderer
+from pyramid.renderers import render
 from pyramid.security import has_permission
 from pyramid.url import resource_url
 from pyramid.view import render_view_to_response
@@ -162,6 +163,9 @@ class TemplateAPI(object):
         if request is None:
             request = self.request
         return render_view(context, request, name, secure)
+
+    def render_template(self, renderer, **kwargs):
+        return render(renderer, kwargs, self.request)
 
     def list_children(self, context=None, permission='view'):
         if context is None:
