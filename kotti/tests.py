@@ -1284,7 +1284,8 @@ class TestTemplateAPI(UnitTestBase):
         register(RenderAboveContent, None, render_something)
 
         api = self._make()
-        self.assertEqual(api.slots.abovecontent, [u'Hello, My Site!'])
+        self.assertEqual(api.slots.abovecontent,
+                         [u'Hello, %s!' % api.context.title])
 
         # Slot renderers may also return lists:
         def render_a_list(context, request):
@@ -1293,7 +1294,7 @@ class TestTemplateAPI(UnitTestBase):
         api = self._make()
         self.assertEqual(
             api.slots.abovecontent,
-            [u'Hello, My Site!', u'a', u'list']
+            [u'Hello, %s!' % api.context.title, u'a', u'list']
             )
 
         self.assertRaises(

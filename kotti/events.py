@@ -183,7 +183,7 @@ def set_modification_date(event):
     event.object.modification_date = datetime.now()
 
 _WIRED_SQLALCHMEY = False
-def wire_sqlalchemy():
+def wire_sqlalchemy(): # pragma: no cover
     global _WIRED_SQLALCHMEY
     if _WIRED_SQLALCHMEY:
         return

@@ -105,7 +105,7 @@ Add two more documents, at different levels
 
   >>> browser.getLink("Edit").click()
   >>> browser.getLink("Add").click()
-  >>> ctrl("Add to My Site").selected = True
+  >>> ctrl("Add to Welcome to Kotti!").selected = True
   >>> ctrl("Continue").click()
   >>> ctrl("Title").value = "Second Child"
   >>> ctrl("save").click()
@@ -211,14 +211,16 @@ site:
 
   >>> browser.open(tests.BASE_URL + '/@@move')
   >>> ctrl(name="copy").click()
-  >>> "My Site copied" in browser.contents
+  >>> "Welcome to Kotti! copied" in browser.contents
   True
   >>> browser.open(tests.BASE_URL + '/second-child/@@move')
   >>> ctrl(name="paste").click()
-  >>> "My Site pasted" in browser.contents
+  >>> "Welcome to Kotti! pasted" in browser.contents
   True
-  >>> browser.open(tests.BASE_URL + '/second-child/my-site/')
-  >>> browser.open(tests.BASE_URL + '/second-child/my-site/second-child/')
+  >>> browser.open(
+  ...     tests.BASE_URL + '/second-child/welcome-to-kotti/')
+  >>> browser.open(
+  ...     tests.BASE_URL + '/second-child/welcome-to-kotti/second-child/')
 
 And finally cut and paste a tree:
 
