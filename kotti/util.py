@@ -1,3 +1,4 @@
+from UserDict import DictMixin
 from pyramid.compat import json
 import string
 import urllib
@@ -42,6 +43,47 @@ class MutationDict(Mutable, dict):
     def __delitem__(self, key):
         dict.__delitem__(self, key)
         self.changed()
+
+def _keyerror_to_attributeerror(func):
+    def decorator(*args, **kwargs):
+        try:
+            return func(*args, **kwargs)
+        except KeyError as e:
+            raise AttributeError(*e.args)
+    return decorator
+
+class MutableAnnotationsWrapper(object, DictMixin):
+    def __init__(self, data, mutable):
+        self.__dict__['__data__'] = data
+        self.__dict__['__mutable__'] = mutable
+
+    def changed(self):
+        self.__mutable__.changed()
+
+    def __getitem__(self, key):
+        value = self.__data__[key]
+        if isinstance(value, dict):
+            value = self.__class__(value, self.__mutable__)
+        return value
+    __getattr__ = _keyerror_to_attributeerror(__getitem__)
+
+    def __setitem__(self, key, value):
+        self.__data__[key] = value
+        self.changed()
+    __setattr__ = _keyerror_to_attributeerror(__setitem__)
+
+    def __delitem__(self, key):
+        del self.__data__[key]
+        self.changed()
+    __delattr__ = _keyerror_to_attributeerror(__delitem__)
+
+    def keys(self):
+        return self.__data__.keys()
+
+class MutableAnnotationsMixin(object):
+    @property
+    def __annotations__(self):
+        return MutableAnnotationsWrapper(self.annotations, self.annotations)
 
 class ViewLink(object):
     def __init__(self, path, title=None):

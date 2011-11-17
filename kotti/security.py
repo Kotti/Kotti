@@ -147,7 +147,7 @@ SITE_ACL = [
     ['Allow', 'role:owner', ['view', 'add', 'edit', 'manage']],
     ]
 
-class PersistentACL(object):
+class PersistentACLMixin(object):
     """Manages access to ``self._acl`` which is a JSON- serialized
     representation of ``self.__acl__``.
     """
@@ -156,7 +156,7 @@ class PersistentACL(object):
     @staticmethod
     def _deserialize_ace(ace):
         ace = list(ace)
-        if ace[2] == PersistentACL.ALL_PERMISSIONS_SERIALIZED:
+        if ace[2] == PersistentACLMixin.ALL_PERMISSIONS_SERIALIZED:
             ace[2] = ALL_PERMISSIONS
         return tuple(ace)
 
@@ -164,7 +164,7 @@ class PersistentACL(object):
     def _serialize_ace(ace):
         ace = list(ace)
         if ace[2] == ALL_PERMISSIONS:
-            ace[2] = PersistentACL.ALL_PERMISSIONS_SERIALIZED
+            ace[2] = PersistentACLMixin.ALL_PERMISSIONS_SERIALIZED
         return ace
 
     def _get_acl(self):

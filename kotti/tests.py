@@ -263,6 +263,51 @@ class TestNode(UnitTestBase):
         root = get_root()
         self.assertRaises(ValueError, setattr, root, 'annotations', [])
 
+    def test_annotations_wrapper(self):
+        root = get_root()
+        root.__annotations__.people = {}
+        root.__annotations__.people.andy = {}
+        root.__annotations__.people.candy = {}
+        root.__annotations__.people.randy = {}
+        root.__annotations__.people.andy.age = 88
+        root.__annotations__.people.candy.age = 46
+        DBSession.flush()
+        DBSession.refresh(root)
+
+        self.assertTrue(root not in DBSession.dirty)
+        self.assertEqual(len(root.__annotations__.people), 3)
+        self.assertEqual(root.__annotations__.people.andy.age, 88)
+        self.assertEqual(root.__annotations__.people.candy.age, 46)
+        self.assertTrue(root not in DBSession.dirty)
+
+        root.__annotations__.people.andy.friends = ['randy']
+        self.assertTrue(root in DBSession.dirty)
+        DBSession.flush()
+        DBSession.refresh(root)
+        self.assertEqual(
+            root.__annotations__.people.andy.friends, ['randy'])
+        self.assertEqual(
+            root.__annotations__['people'].andy['friends'], ['randy'])
+
+        root.__annotations__.people.candy.age = 77
+        self.assertTrue(root in DBSession.dirty)
+        DBSession.flush()
+        DBSession.refresh(root)
+            
+        del root.__annotations__.people.candy
+        self.assertTrue(root in DBSession.dirty)
+        DBSession.flush()
+        DBSession.refresh(root)
+        self.assertEquals(sorted(root.__annotations__.people.keys()),
+                          ['andy', 'randy'])
+
+        self.assertRaises(
+            AttributeError,
+            getattr, root.__annotations__.people.randy, 'age')
+        self.assertRaises(
+            KeyError,
+            root.__annotations__.people.randy.__getitem__, 'age')
+
 class TestSecurity(UnitTestBase):
     def test_root_default(self):
         root = get_root()
