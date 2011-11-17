@@ -301,15 +301,26 @@ def get_root(request=None):
     session = DBSession()
     return session.query(Node).filter(Node.parent_id==None).first()
 
+def _add_document(filename, name, parent, title, session, package='kotti', 
+    directory='content', acl=SITE_ACL):
+    """Add a Document to the Kotti database.
+
+    Return the Document instance, which can be passed as the 'parent' argument
+    for a sub-document.
+    """
+    body = unicode(resource_string(package, os.path.join(directory, filename)))
+    node = Document(name=name, parent=parent, title=title, body=body)
+    node.__acl__ = acl
+    session.add(node)
+    session.flush()
+    return node
+
 def populate():
     session = DBSession()
     nodecount = session.query(Node).count()
     if nodecount == 0:
-        body = unicode(resource_string('kotti', 'welcome.html'))
-        root = Document(
-            name=u"", parent=None, title=u"Welcome to Kotti!", body=body)
-        root.__acl__ = SITE_ACL
-        session.add(root)
+        p = _add_document("home.html", u"", None, u"Welcome to Kotti!", session)
+        _add_document("about.html", u"about", p, u"About Foo World", session)
 
     settingscount = session.query(Settings).count()
     if settingscount == 0:
