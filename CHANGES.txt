@@ -1,7 +1,7 @@
 History
 =======
 
-0.2.6 - Unreleased
+0.2.6 - 2011-11-17
 ------------------
 
 - Add `Node.__annotations__` convenience attribute.
