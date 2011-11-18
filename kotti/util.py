@@ -48,7 +48,7 @@ def _keyerror_to_attributeerror(func):
     def decorator(*args, **kwargs):
         try:
             return func(*args, **kwargs)
-        except KeyError as e:
+        except KeyError, e:
             raise AttributeError(*e.args)
     return decorator
 
