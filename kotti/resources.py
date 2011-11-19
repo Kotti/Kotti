@@ -31,12 +31,13 @@ from kotti import metadata
 from kotti.util import ViewLink
 from kotti.util import JsonType
 from kotti.util import MutationDict
-from kotti.security import PersistentACL
+from kotti.util import MutableAnnotationsMixin
+from kotti.security import PersistentACLMixin
 from kotti.security import get_principals
 from kotti.security import view_permitted
 from kotti.security import SITE_ACL
 
-class Container(object, DictMixin):
+class ContainerMixin(object, DictMixin):
     """Containers form the API of a Node that's used for subitem
     access and in traversal.
     """
@@ -91,7 +92,7 @@ class INode(Interface):
 class IContent(Interface):
     pass
 
-class Node(Container, PersistentACL):
+class Node(MutableAnnotationsMixin, ContainerMixin, PersistentACLMixin):
     implements(INode)
 
     id = None

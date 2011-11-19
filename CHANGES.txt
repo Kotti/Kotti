@@ -1,8 +1,18 @@
 History
 =======
 
-0.2.6 - Unreleased
+0.2.7 - Unreleased
 ------------------
+
+0.2.6 - 2011-11-17
+------------------
+
+- Add `Node.__annotations__` convenience attribute.
+
+  `Node.__annotations__` will wrap the annotations dict in such a way
+  that both item and attribute access are possible.  It'll also record
+  changes to dicts inside dicts and mark the parent `__annotations__`
+  attribute as dirty.
 
 - Add a welcome page.
 - Delete the demo added in version 0.2.4. The default database content and
