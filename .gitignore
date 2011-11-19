@@ -1,6 +1,7 @@
 Kotti.db*
 Kotti.egg-info/
 bin/
+build/
 develop-eggs/
 dist/
 eggs/
