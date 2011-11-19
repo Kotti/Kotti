@@ -4,6 +4,9 @@ History
 0.2.7 - Unreleased
 ------------------
 
+- Structural analysis documentation. (Unfinished; in 'analysis' directory
+  during development. Will be moved to main docs when finished.)
+
 0.2.6 - 2011-11-17
 ------------------
 
@@ -15,9 +18,7 @@ History
   attribute as dirty.
 
 - Add a welcome page.
-- Delete the demo added in version 0.2.4. The default database content and
-  documentation will be enhanced instead, and perhaps a larger demo will later
-  be released as a separate package.
+- Delete the demo added in version 0.2.4.
 
 0.2.5 - 2011-11-14
 ------------------
