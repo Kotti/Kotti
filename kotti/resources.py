@@ -1,5 +1,4 @@
 import os
-from pkg_resources import resource_string
 from UserDict import DictMixin
 
 from pyramid.traversal import resource_path
@@ -20,11 +19,9 @@ from sqlalchemy import Integer
 from sqlalchemy import String
 from sqlalchemy import Unicode
 from sqlalchemy import UnicodeText
-import transaction
 from zope.interface import implements
 from zope.interface import Interface
 
-from kotti import get_version
 from kotti import get_settings
 from kotti import DBSession
 from kotti import metadata
@@ -33,9 +30,7 @@ from kotti.util import JsonType
 from kotti.util import MutationDict
 from kotti.util import MutableAnnotationsMixin
 from kotti.security import PersistentACLMixin
-from kotti.security import get_principals
 from kotti.security import view_permitted
-from kotti.security import SITE_ACL
 
 class ContainerMixin(object, DictMixin):
     """Containers form the API of a Node that's used for subitem
@@ -299,46 +294,7 @@ settings = Table('settings', metadata,
 mapper(Settings, settings)
 
 def get_root(request=None):
-    session = DBSession()
-    return session.query(Node).filter(Node.parent_id==None).first()
-
-def _add_document(filename, name, parent, title, session, package='kotti', 
-    directory='content', acl=SITE_ACL):
-    """Add a Document to the Kotti database.
-
-    Return the Document instance, which can be passed as the 'parent' argument
-    for a sub-document.
-    """
-    body = unicode(resource_string(package, os.path.join(directory, filename)))
-    node = Document(name=name, parent=parent, title=title, body=body)
-    node.__acl__ = acl
-    session.add(node)
-    session.flush()
-    return node
-
-def populate():
-    session = DBSession()
-    nodecount = session.query(Node).count()
-    if nodecount == 0:
-        p = _add_document("home.html", u"", None, u"Welcome to Kotti!", session)
-        _add_document("about.html", u"about", p, u"About Foo World", session)
-
-    settingscount = session.query(Settings).count()
-    if settingscount == 0:
-        settings = Settings(data={'kotti.db_version': get_version()})
-        session.add(settings)
-
-    principals = get_principals()
-    if u'admin' not in principals:
-        principals[u'admin'] = {
-            'name': u'admin',
-            'password': get_settings()['kotti.secret'],
-            'title': u"Administrator",
-            'groups': [u'role:admin'],
-            }
-
-    session.flush()
-    transaction.commit()
+    return DBSession.query(Node).filter(Node.parent_id==None).first()
 
 def initialize_sql(engine, drop_all=False):
     DBSession.registry.clear()

@@ -58,12 +58,20 @@ def _initTestingDB():
     session = initialize_sql(create_engine(database_url), drop_all=True)
     return session
 
+def _populator():
+    from kotti.populate import populate
+    populate()
+    for doc in DBSession.query(Document)[1:]:
+        DBSession.delete(doc)
+    transaction.commit()
+
 def setUp(init_db=True, **kwargs):
     #warnings.filterwarnings("error")
     tearDown()
     settings = conf_defaults.copy()
     settings['kotti.secret'] = 'secret'
     settings['kotti.secret2'] = 'secret2'
+    settings['kotti.populators'] = 'kotti.tests._populator'
     _resolve_dotted(settings)
     settings.update(kwargs.get('settings', {}))
     kwargs['settings'] = settings
@@ -1557,6 +1565,7 @@ def setUpFunctional(global_config=None, **settings):
         'sqlalchemy.url': testing_db_url(),
         'kotti.secret': 'secret',
         'kotti.site_title': 'Website des Kottbusser Tors', # for mailing
+        'kotti.populators': 'kotti.tests._populator',
         'mail.default_sender': 'kotti@localhost',
         }
     _settings.update(settings)

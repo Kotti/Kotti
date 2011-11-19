@@ -48,7 +48,7 @@ conf_defaults = {
     'kotti.configurators': '',
     'kotti.base_includes': 'kotti.events kotti.views.view kotti.views.edit kotti.views.login kotti.views.users kotti.views.site_setup kotti.views.slots',
     'kotti.includes': '',
-    'kotti.populators': 'kotti.resources.populate',
+    'kotti.populators': 'kotti.populate.populate',
     'kotti.available_types': 'kotti.resources.Document',
     'kotti.authn_policy_factory': 'kotti.authtkt_factory',
     'kotti.authz_policy_factory': 'kotti.acl_factory',

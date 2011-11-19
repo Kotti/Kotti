@@ -1,1 +1,1 @@
-recursive-include kotti/content *
+recursive-include kotti/populate-content *
