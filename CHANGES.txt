@@ -1,8 +1,13 @@
 History
 =======
 
-0.2.7 - Unreleased
+0.2.7 - 2011-11-20
 ------------------
+
+- Add 'PasteScript' dependency.
+
+- Fix #11 where 'python setup.py test' would look into a hard-coded
+  'bin' directory.
 
 - Structural analysis documentation. (Unfinished; in 'analysis' directory
   during development. Will be moved to main docs when finished.)
