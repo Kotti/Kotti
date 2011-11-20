@@ -206,7 +206,7 @@ Adjusting the look & feel
 
 The ``kotti.templates.*`` configuration settings allow you to define
 alternative template and CSS files to be used.  An example that
-overrides botht the master template for all public views and
+overrides both the master template for all public views and
 configures an alternative CSS file for the edit interface:
 
 .. code-block:: ini
@@ -243,7 +243,7 @@ install the package from PyPI:
   bin/pip install kotti_twitter
 
 Then we activate the add-on in our site by editing the
-``kotti.includes`` setting in the ``[app:Kotti]`` section of our INI
+``kotti.includes`` setting in the ``[app:main]`` section of our INI
 file.  (If a line with ``kotti.includes`` does not exist, add it.)
 
 .. code-block:: ini
@@ -258,9 +258,9 @@ we add some more lines right where we were:
   kotti_twitter.profile_widget.user = dnouri
   kotti_twitter.profile_widget.loop = true
 
-The order in which the includes are listed matters.  When you add two
-slots on the right hand side, the order in which you list them here
-will control the order in which they will appear.
+The order in which the includes are listed matters.  For example, when
+you add two slots on the right hand side, the order in which you list
+them here will control the order in which they will appear.
 
 With this configuration, the search widget is displayed on top of the
 profile widget:
