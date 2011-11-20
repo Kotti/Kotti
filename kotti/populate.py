@@ -27,7 +27,7 @@ def populate():
         p = _add_document_from_file(
             "home.html", u"", None, u"Welcome to Kotti!", acl=SITE_ACL)
         _add_document_from_file(
-            "about.html", u"about", p, u"About Foo World")
+            "about.html", u"about", p, u"About")
 
     settingscount = DBSession.query(Settings).count()
     if settingscount == 0:
