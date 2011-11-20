@@ -17,7 +17,6 @@ install_requires = [
     'Babel',
     'Chameleon>=2',
     'PasteDeploy',
-    'PasteScript',
     'colander>=0.9.3',
     'deform>=0.9.2', # Chameleon 2
     'formencode',
@@ -83,5 +82,4 @@ setup(name='Kotti',
       [paste.app_factory]
       main = kotti:main
       """,
-      paster_plugins=['pyramid'],
       )
