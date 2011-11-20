@@ -47,9 +47,10 @@ class PyTest(Command):
     errno = 1
 
     def run(self):
-        script = os.path.join(
-            os.path.dirname(os.path.abspath(__file__)),
-            'bin', 'py.test')
+        script = os.path.join(os.path.dirname(sys.executable), 'py.test')
+        if not os.path.exists(script):
+            print "Could not find 'py.test' script.  Please run it by hand."
+            sys.exit(1)
         errno = subprocess.call([sys.executable, script])
         raise SystemExit(errno)
 
