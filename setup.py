@@ -14,28 +14,28 @@ except IOError:
     README = CHANGES = ''
 
 install_requires = [
+    'Babel',
+    'Chameleon>=2',
+    'colander>=0.9.3',
+    'deform>=0.9.2', # Chameleon 2
+    'formencode',
+    'py-bcrypt',
     'pyramid>=1.2',
+    'pyramid_debugtoolbar',
+    'pyramid_mailer',
     'pyramid_tm',
     'repoze.lru',
     'sqlalchemy>=0.7',
     'zope.sqlalchemy',
-    'Chameleon>=2',
-    'formencode',
-    'deform>=0.9.2', # Chameleon 2
-    'colander>=0.9.3',
-    'Babel',
-    'pyramid_mailer',
-    'py-bcrypt',
-    'pyramid_debugtoolbar',
     ]
 
 tests_require = [
     'mock',
+    'pytest',
     'pytest-cov',
     'pytest-xdist',
     'wsgi_intercept',
     'zope.testbrowser',
-    'pytest',
     ]
 
 if sys.version_info[:3] < (2,7,0):
