@@ -16,6 +16,7 @@ except IOError:
 install_requires = [
     'Babel',
     'Chameleon>=2',
+    'PasteDeploy',
     'PasteScript',
     'colander>=0.9.3',
     'deform>=0.9.2', # Chameleon 2
@@ -56,7 +57,7 @@ class PyTest(Command):
         raise SystemExit(errno)
 
 setup(name='Kotti',
-      version='0.2.7',
+      version='0.2.8',
       description="A user-friendly, light-weight and extensible web content management system.  Written in Python, based on Pyramid and SQLAlchemy.",
       long_description=README + '\n\n' +  CHANGES,
       classifiers=[
