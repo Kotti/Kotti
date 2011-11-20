@@ -16,6 +16,7 @@ except IOError:
 install_requires = [
     'Babel',
     'Chameleon>=2',
+    'PasteScript',
     'colander>=0.9.3',
     'deform>=0.9.2', # Chameleon 2
     'formencode',
