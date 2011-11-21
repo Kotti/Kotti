@@ -1,8 +1,17 @@
 History
 =======
 
-0.2.8 - Unreleased
+0.2.9 - 2011-11-21
 ------------------
+
+- Remove MANIFEST.in in favour of using 'setuptools-git'.
+
+0.2.8 - 2011-11-21
+------------------
+
+- Remove 'PasteScript' dependency since that would result in spurious
+  errors when installing Kotti. See
+  http://jenkins.danielnouri.org/job/Kotti/42/TOXENV=py27/console
 
 0.2.7 - 2011-11-20
 ------------------
