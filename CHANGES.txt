@@ -1,7 +1,7 @@
 History
 =======
 
-0.2.10 - Unreleased
+0.2.10 - 2011-11-22
 -------------------
 
 - 'api.format_datetime' now also accepts a timestamp in addition to datetime.
