@@ -1,6 +1,7 @@
 from contextlib import contextmanager
 import os
 import unittest
+import time
 import warnings
 
 from mock import MagicMock
@@ -1391,6 +1392,10 @@ class TestTemplateAPI(UnitTestBase):
         first = datetime.datetime(2012, 1, 1, 0)
         self.assertEqual(
             api.format_datetime(first),
+            format_datetime(first, format='medium', locale='en'),
+            )
+        self.assertEqual(
+            api.format_datetime(time.mktime(first.timetuple())),
             format_datetime(first, format='medium', locale='en'),
             )
         self.assertEqual(

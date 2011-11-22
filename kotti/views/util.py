@@ -1,3 +1,4 @@
+from datetime import datetime
 import hashlib
 import urllib
 
@@ -213,6 +214,8 @@ class TemplateAPI(object):
     def format_datetime(self, dt, format=None):
         if format is None:
             format = self.S['kotti.datetime_format']
+        if not isinstance(dt, datetime):
+            dt = datetime.fromtimestamp(dt)
         return format_datetime(dt, format=format, locale=self.locale_name)
 
     def format_time(self, t, format=None):
