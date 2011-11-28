@@ -192,8 +192,8 @@ class TestNode(UnitTestBase):
                 ('Deny', 'system.Authenticated', ALL_PERMISSIONS),
                 ('Allow', 'system.Authenticated', ['view']),
                 ])
-        session = DBSession()
-        session.flush() # try serialization
+        DBSession.flush()
+        DBSession.expire_all()
         self.assertEquals(root.__acl__[1:], [second, first])
 
         root._del_acl()
@@ -263,59 +263,106 @@ class TestNode(UnitTestBase):
 
     def test_annotations_mutable(self):
         root = get_root()
-        session = DBSession()
         root.annotations['foo'] = u'bar'
-        self.assertTrue(root in session.dirty)
+        self.assertTrue(root in DBSession.dirty)
         del root.annotations['foo']
+
+    def test_nested_annotations_mutable(self):
+        root = get_root()
+        root.annotations['foo'] = {}
+        DBSession.flush()
+        DBSession.expire_all()
+
+        root = get_root()
+        root.annotations['foo']['bar'] = u'baz'
+        self.assertTrue(root in DBSession.dirty)
+        DBSession.flush()
+        DBSession.expire_all()
+
+        root = get_root()
+        self.assertEqual(root.annotations['foo']['bar'], u'baz')
 
     def test_annotations_coerce_fail(self):
         root = get_root()
         self.assertRaises(ValueError, setattr, root, 'annotations', [])
 
-    def test_annotations_wrapper(self):
-        root = get_root()
-        root.__annotations__.people = {}
-        root.__annotations__.people.andy = {}
-        root.__annotations__.people.candy = {}
-        root.__annotations__.people.randy = {}
-        root.__annotations__.people.andy.age = 88
-        root.__annotations__.people.candy.age = 46
-        DBSession.flush()
-        DBSession.refresh(root)
 
-        self.assertTrue(root not in DBSession.dirty)
-        self.assertEqual(len(root.__annotations__.people), 3)
-        self.assertEqual(root.__annotations__.people.andy.age, 88)
-        self.assertEqual(root.__annotations__.people.candy.age, 46)
-        self.assertTrue(root not in DBSession.dirty)
+class TestNestedMutationDict(unittest.TestCase):
+    def test_dictwrapper_basics(self):
+        from kotti.util import NestedMutationDict
 
-        root.__annotations__.people.andy.friends = ['randy']
-        self.assertTrue(root in DBSession.dirty)
-        DBSession.flush()
-        DBSession.refresh(root)
-        self.assertEqual(
-            root.__annotations__.people.andy.friends, ['randy'])
-        self.assertEqual(
-            root.__annotations__['people'].andy['friends'], ['randy'])
+        data = {}
+        wrapper = NestedMutationDict(data)
+        changed = wrapper.changed = MagicMock()
 
-        root.__annotations__.people.candy.age = 77
-        self.assertTrue(root in DBSession.dirty)
-        DBSession.flush()
-        DBSession.refresh(root)
-            
-        del root.__annotations__.people.candy
-        self.assertTrue(root in DBSession.dirty)
-        DBSession.flush()
-        DBSession.refresh(root)
-        self.assertEquals(sorted(root.__annotations__.people.keys()),
-                          ['andy', 'randy'])
+        wrapper['name'] = 'andy'
+        assert data == {'name': 'andy'}
+        assert wrapper == {'name': 'andy'}
+        assert wrapper['name'] == 'andy'
+        assert changed.call_count == 1
 
-        self.assertRaises(
-            AttributeError,
-            getattr, root.__annotations__.people.randy, 'age')
-        self.assertRaises(
-            KeyError,
-            root.__annotations__.people.randy.__getitem__, 'age')
+        wrapper['age'] = 77
+        assert data == {'name': 'andy', 'age': 77}
+        assert wrapper['age'] == 77
+        assert wrapper['name'] == 'andy'
+        assert changed.call_count == 2
+
+        wrapper['age'] += 1
+        assert data == {'name': 'andy', 'age': 78}
+        assert wrapper['age'] == 78
+        assert changed.call_count == 3
+
+    def test_listwrapper_basics(self):
+        from kotti.util import NestedMutationList
+
+        data = []
+        wrapper = NestedMutationList(data)
+        changed = wrapper.changed = MagicMock()
+
+        wrapper.append(5)
+        assert data == [5]
+        assert wrapper == [5]
+        assert wrapper[0] == 5
+        assert changed.call_count == 1
+
+        wrapper.insert(0, 33)
+        assert data == [33, 5]
+        assert wrapper[0] == 33
+        assert changed.call_count == 2
+
+        del wrapper[0]
+        assert data == [5]
+        assert wrapper[0] == 5
+        assert changed.call_count == 3
+
+    def test_dictwrapper_wraps(self):
+        from kotti.util import NestedMutationDict
+        from kotti.util import NestedMutationList
+
+        wrapper = NestedMutationDict(
+            {'name': 'andy', 'age': 77, 'children': []})
+        changed = wrapper.changed = MagicMock()
+
+        wrapper['name'] = 'randy'
+        assert changed.call_count == 1
+
+        assert isinstance(wrapper['children'], NestedMutationList)
+        wrapper['children'].append({'name': 'sandy', 'age': 33})
+        assert changed.call_count == 2
+        assert len(wrapper['children']), 1
+        assert isinstance(wrapper['children'][0], NestedMutationDict)
+
+    def test_listwrapper_wraps(self):
+        from kotti.util import NestedMutationDict
+        from kotti.util import NestedMutationList
+
+        wrapper = NestedMutationList(
+            [{'name': 'andy', 'age': 77, 'children': []}])
+        changed = wrapper.changed = MagicMock()
+
+        assert isinstance(wrapper[0], NestedMutationDict)
+        assert isinstance(wrapper[0]['children'], NestedMutationList)
+        assert changed.call_count == 0
 
 class TestSecurity(UnitTestBase):
     def test_root_default(self):

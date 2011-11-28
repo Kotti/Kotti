@@ -1,4 +1,3 @@
-from UserDict import DictMixin
 from pyramid.compat import json
 import string
 import urllib
@@ -9,6 +8,12 @@ from pyramid.url import resource_url
 from sqlalchemy.types import TypeDecorator, VARCHAR
 from sqlalchemy.ext.mutable import Mutable
 
+def dump_default(obj):
+    if isinstance(obj, MutationDict):
+        return obj._d
+    elif isinstance(obj, MutationList):
+        return obj._d
+
 class JsonType(TypeDecorator):
     """http://www.sqlalchemy.org/docs/core/types.html#marshal-json-strings
     """
@@ -16,7 +21,7 @@ class JsonType(TypeDecorator):
 
     def process_bind_param(self, value, dialect):
         if value is not None:
-            value = json.dumps(value)
+            value = json.dumps(value, default=dump_default)
         return value
 
     def process_result_value(self, value, dialect):
@@ -24,66 +29,103 @@ class JsonType(TypeDecorator):
             value = json.loads(value)
         return value
 
-class MutationDict(Mutable, dict):
+class MutationDict(Mutable):
     """http://www.sqlalchemy.org/docs/orm/extensions/mutable.html
     """
+    def __init__(self, data):
+        self._d = data
+        super(MutationDict, self).__init__()
+
     @classmethod
     def coerce(cls, key, value):
         if not isinstance(value, MutationDict):
             if isinstance(value, dict):
-                return MutationDict(value)
+                return cls(value)
             return Mutable.coerce(key, value)
         else:
             return value
 
-    def __setitem__(self, key, value):
-        dict.__setitem__(self, key, value)
-        self.changed()
+class MutationList(Mutable):
+    def __init__(self, data):
+        self._d = data
+        super(MutationList, self).__init__()
 
-    def __delitem__(self, key):
-        dict.__delitem__(self, key)
-        self.changed()
+    @classmethod
+    def coerce(cls, key, value):
+        if not isinstance(value, MutationList):
+            if isinstance(value, list):
+                return cls(value)
+            return Mutable.coerce(key, value)
+        else:
+            return value
 
-def _keyerror_to_attributeerror(func):
-    def decorator(*args, **kwargs):
-        try:
-            return func(*args, **kwargs)
-        except KeyError, e:
-            raise AttributeError(*e.args)
-    return decorator
+    def __radd__(self, other):
+        return other + self._d
 
-class MutableAnnotationsWrapper(object, DictMixin):
-    def __init__(self, data, mutable):
-        self.__dict__['__data__'] = data
-        self.__dict__['__mutable__'] = mutable
+def _make_mutable_method_wrapper(wrapper_class, methodname, mutates):
+    def replacer(self, *args, **kwargs):
+        method = getattr(self._d, methodname)
+        value = method(*args, **kwargs)
+        if mutates:
+            self.changed()
+        return value
+    replacer.__name__ = methodname
+    return replacer
 
-    def changed(self):
-        self.__mutable__.changed()
+for wrapper_class in (MutationDict, MutationList):
+    for methodname, mutates in (
+        ('__iter__', False),
+        ('__len__', False),
+        ('__eq__', False),
+        ('__add__', False),
+        ('get', False),
+
+        ('__setitem__', True),
+        ('__delitem__', True),
+        ('append', True),
+        ('insert', True),
+        ('setdefault', True),
+        ):
+        setattr(
+            wrapper_class, methodname,
+            _make_mutable_method_wrapper(
+                wrapper_class, methodname, mutates),
+            )
+
+class NestedMixin(object):
+    __parent__ = None
+    
+    def __init__(self, *args, **kwargs):
+        self.__parent__ = kwargs.pop('__parent__', None)
+        super(NestedMixin, self).__init__(*args, **kwargs)
 
     def __getitem__(self, key):
-        value = self.__data__[key]
-        if isinstance(value, dict):
-            value = self.__class__(value, self.__mutable__)
+        value = self._d.__getitem__(key)
+        return self.try_wrap(value)
+
+    def changed(self):
+        if self.__parent__ is not None:
+            self.__parent__.changed()
+        else:
+            super(NestedMixin, self).changed()
+
+    def try_wrap(self, value):
+        for typ, wrapper in MUTATION_WRAPPERS.items():
+            if isinstance(value, typ):
+                value = wrapper(value, __parent__=self)
+                break
         return value
-    __getattr__ = _keyerror_to_attributeerror(__getitem__)
 
-    def __setitem__(self, key, value):
-        self.__data__[key] = value
-        self.changed()
-    __setattr__ = _keyerror_to_attributeerror(__setitem__)
+class NestedMutationDict(NestedMixin, MutationDict):
+    pass
 
-    def __delitem__(self, key):
-        del self.__data__[key]
-        self.changed()
-    __delattr__ = _keyerror_to_attributeerror(__delitem__)
+class NestedMutationList(NestedMixin, MutationList):
+    pass
 
-    def keys(self):
-        return self.__data__.keys()
-
-class MutableAnnotationsMixin(object):
-    @property
-    def __annotations__(self):
-        return MutableAnnotationsWrapper(self.annotations, self.annotations)
+MUTATION_WRAPPERS = {
+    dict: NestedMutationDict,
+    list: NestedMutationList,
+    }
 
 class ViewLink(object):
     def __init__(self, path, title=None):

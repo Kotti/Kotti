@@ -4,6 +4,14 @@ History
 0.2.11 - Unreleased
 -------------------
 
+- Replace `Node.__annotations__` in favor of an extended `Node.annotations`.
+
+  `Node.annotations` will attempt to not only recognize changes to
+  subobjects of type dict, it will also handle list objects
+  transparently.  That is, chaning arbitrary JSON structures should
+  just work with regard to calling `node.annotations.changed()` when
+  the structure was changed.
+
 0.2.10 - 2011-11-22
 -------------------
 

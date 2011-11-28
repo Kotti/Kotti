@@ -27,8 +27,8 @@ from kotti import DBSession
 from kotti import metadata
 from kotti.util import ViewLink
 from kotti.util import JsonType
-from kotti.util import MutationDict
-from kotti.util import MutableAnnotationsMixin
+from kotti.util import MutationList
+from kotti.util import NestedMutationDict
 from kotti.security import PersistentACLMixin
 from kotti.security import view_permitted
 
@@ -87,7 +87,7 @@ class INode(Interface):
 class IContent(Interface):
     pass
 
-class Node(MutableAnnotationsMixin, ContainerMixin, PersistentACLMixin):
+class Node(ContainerMixin, PersistentACLMixin):
     implements(INode)
 
     id = None
@@ -212,11 +212,11 @@ nodes = Table('nodes', metadata,
     Column('type', String(30), nullable=False),
     Column('parent_id', ForeignKey('nodes.id')),
     Column('position', Integer),
-    Column('_acl', JsonType()),
+    Column('_acl', MutationList.as_mutable(JsonType)),
 
     Column('name', Unicode(50), nullable=False),
     Column('title', Unicode(100)),
-    Column('annotations', MutationDict.as_mutable(JsonType)),
+    Column('annotations', NestedMutationDict.as_mutable(JsonType)),
 
     UniqueConstraint('parent_id', 'name'),
 )
