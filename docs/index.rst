@@ -351,6 +351,9 @@ Document content type serves as an example here:
 You can configure the list of active content types in Kotti by
 modifying the `kotti.available_types`_ setting.
 
+Using kotti.populators to create your own root object
+`````````````````````````````````````````````````````
+
 If you were to totally customize Kotti, and not even include the stock Document type,
 you would need to follow the template provided by Document, with some attention to
 detail for configuration and for instantiating a resource hierarchy, especially the 
