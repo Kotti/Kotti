@@ -98,13 +98,10 @@ Finally, to run the application:
 
   bin/paster serve development.ini
 
-An `example configuration file for Buildout`_ also exists.
-
 .. _many SQL databases: http://www.sqlalchemy.org/docs/core/engines.html#supported-databases
 .. _variety of web servers: http://wsgi.org/wsgi/Servers
 .. _virtualenv: http://pypi.python.org/pypi/virtualenv
 .. _Paste Deploy: http://pythonpaste.org/deploy/#the-config-file
-.. _example configuration file for Buildout: https://github.com/dnouri/Kotti/raw/master/buildout.cfg
 
 Configuration and customization
 ===============================
