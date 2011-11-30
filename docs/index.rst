@@ -70,7 +70,7 @@ Requirements
 ------------
 
 - Runs on Python versions 2.5, 2.6 and 2.7.
-- Support for `many SQL databases`_, including SQLite, MySQL and PostgreSQL
+- Support for PostgreSQL and SQLite (tested continuously), and a list of `other SQL databases`_ (not tested regularly)
 - Support for WSGI and a `variety of web servers`_, including Apache
 
 Installation using ``virtualenv``
@@ -98,7 +98,7 @@ Finally, to run the application:
 
   bin/paster serve development.ini
 
-.. _many SQL databases: http://www.sqlalchemy.org/docs/core/engines.html#supported-databases
+.. _other SQL databases: http://www.sqlalchemy.org/docs/core/engines.html#supported-databases
 .. _variety of web servers: http://wsgi.org/wsgi/Servers
 .. _virtualenv: http://pypi.python.org/pypi/virtualenv
 .. _Paste Deploy: http://pythonpaste.org/deploy/#the-config-file
