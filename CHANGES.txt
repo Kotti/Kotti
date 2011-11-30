@@ -1,7 +1,7 @@
 History
 =======
 
-0.2.11 - Unreleased
+0.3.0 - 2011-11-30
 -------------------
 
 - Replace `Node.__annotations__` in favor of an extended `Node.annotations`.
