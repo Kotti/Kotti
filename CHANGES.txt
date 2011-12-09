@@ -1,7 +1,10 @@
 History
 =======
 
-0.3.1 - Unreleased
+0.3.2 - Unreleased
+------------------
+
+0.3.1 - 2011-12-09
 ------------------
 
 - Add 'keys' method to mutation dicts (see 0.3.0).
