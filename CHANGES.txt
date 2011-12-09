@@ -4,6 +4,8 @@ History
 0.3.1 - Unreleased
 ------------------
 
+- Add 'keys' method to mutation dicts (see 0.3.0).
+
 0.3.0 - 2011-11-30
 -------------------
 
@@ -11,7 +13,7 @@ History
 
   `Node.annotations` will attempt to not only recognize changes to
   subobjects of type dict, it will also handle list objects
-  transparently.  That is, chaning arbitrary JSON structures should
+  transparently.  That is, changing arbitrary JSON structures should
   just work with regard to calling `node.annotations.changed()` when
   the structure was changed.
 

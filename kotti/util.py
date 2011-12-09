@@ -79,6 +79,7 @@ for wrapper_class in (MutationDict, MutationList):
         ('__eq__', False),
         ('__add__', False),
         ('get', False),
+        ('keys', False),
 
         ('__setitem__', True),
         ('__delitem__', True),
