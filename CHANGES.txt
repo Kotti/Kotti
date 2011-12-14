@@ -4,6 +4,8 @@ History
 0.4.0 - Unreleased
 ------------------
 
+- No longer get asset spec of base.css and friends through TemplateAPI.
+
 - Factor snippets in 'kotti/templates/snippets.pt' out into their own
   templates.  Use 'api.render_template' to render them instead of
   macros.

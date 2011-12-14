@@ -11,8 +11,8 @@
     <link rel="stylesheet" href="${request.static_url('deform:static/css/ui-lightness/jquery-ui-1.8.11.custom.css')}" type="text/css" />
     <link rel="stylesheet" href="${request.static_url('deform:static/css/jquery-ui-timepicker-addon.css')}" type="text/css" />
     <link rel="stylesheet" href="${request.static_url('kotti:static/3rdparty/jquery.toastmessage/css/jquery.toastmessage.css')}" type="text/css" />
-	<link rel="stylesheet" href="${request.static_url(api.base_css)}" type="text/css" media="screen" charset="utf-8" />
-    <link rel="stylesheet" href="${request.static_url(api.edit_css)}" type="text/css" />
+	<link rel="stylesheet" href="${request.static_url('kotti:static/base.css')}" type="text/css" media="screen" charset="utf-8" />
+    <link rel="stylesheet" href="${request.static_url('kotti:static/edit.css')}" type="text/css" />
 
     <script type="text/javascript" src="${request.static_url('deform:static/scripts/jquery-1.4.2.min.js')}"></script>
     <script type="text/javascript" src="${request.static_url('deform:static/scripts/jquery-ui-1.8.11.custom.min.js')}"></script>

@@ -159,9 +159,6 @@ kotti.populators             List of functions to fill initial database
 
 kotti.templates.master_view  Master template used for public views
 kotti.templates.master_edit  Master template used for edit screens
-kotti.templates.view_css     CSS file used for public views
-kotti.templates.edit_css     CSS file used for edit screens
-kotti.templates.base_css     Base CSS file; used for both
 kotti.templates.api          Override ``api`` used by all templates
 
 kotti.authn_policy_factory   Component used for authentication
@@ -200,15 +197,7 @@ Here's an example.  Make sure you use different values though!
 Adjusting the look & feel
 -------------------------
 
-The ``kotti.templates.*`` configuration settings allow you to define
-alternative template and CSS files to be used.  An example that
-overrides both the master template for all public views and
-configures an alternative CSS file for the edit interface:
-
-.. code-block:: ini
-
-  kotti.templates.master_view = mypackage:templates/master.pt
-  kotti.templates.edit_css = mypackage:static/edit.css
+XXX
 
 Using add-ons
 -------------

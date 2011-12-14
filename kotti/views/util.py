@@ -86,9 +86,6 @@ class TemplateAPI(object):
             master_edit=bare and bare_tmpl or S['kotti.templates.master_edit'],
             master_cp=bare and bare_tmpl or S['kotti.templates.master_cp'],
             )
-        self.base_css = S['kotti.templates.base_css']
-        self.view_css = S['kotti.templates.view_css']
-        self.edit_css = S['kotti.templates.edit_css']
 
         if getattr(request, 'template_api', None) is None:
             request.template_api = self
