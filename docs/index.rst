@@ -98,6 +98,9 @@ Finally, to run the application:
 
   bin/paster serve development.ini
 
+Should the ``bin/paster`` script not be available in your environment,
+install it first using ``bin/pip install PasteScript``.
+
 .. _other SQL databases: http://www.sqlalchemy.org/docs/core/engines.html#supported-databases
 .. _variety of web servers: http://wsgi.org/wsgi/Servers
 .. _virtualenv: http://pypi.python.org/pypi/virtualenv
