@@ -1,8 +1,12 @@
 History
 =======
 
-0.3.2 - Unreleased
+0.4.0 - Unreleased
 ------------------
+
+- Factor snippets in 'kotti/templates/snippets.pt' out into their own
+  templates.  Use 'api.render_template' to render them instead of
+  macros.
 
 0.3.1 - 2011-12-09
 ------------------

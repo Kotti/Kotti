@@ -6,9 +6,8 @@
       tal:omit-tag=""
       metal:define-macro="main">
 
-  <div metal:use-macro="api['snippets.messages']"
-       tal:condition="request.is_xhr">
-  </div>
+  <div tal:replace="structure api.render_template('kotti:templates/messages.pt')"
+       tal:condition="request.is_xhr" />
 
   <div metal:define-slot="content">
     <h1>${api.context.title}</h1>

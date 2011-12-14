@@ -1,0 +1,22 @@
+<div tal:condition="api.user is not None"
+     id="user-box" class="round-corners-bottom">
+  <div class="username"
+       style="background-image: url(${api.avatar_url(default_image='mm')})">
+    <a href="#user-dropdown" class="dropdown-trigger">
+      ${api.user.title} ↓
+    </a>
+  </div>
+  <div id="user-dropdown" class="dropdown">
+    <ul>
+      <li tal:condition="api.has_permission('admin', api.root)">
+        <a href="${api.url(api.root, '@@setup')}">Site Setup</a>
+      </li>
+      <li>
+        <a href="${api.url(api.root, '@@prefs')}">Preferences</a>
+      </li>
+      <li>
+        <a href="${request.application_url}/@@logout?came_from=${request.url}">Logout</a>
+      </li>
+    </ul>
+  </div>
+</div>

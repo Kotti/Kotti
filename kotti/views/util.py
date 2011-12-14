@@ -68,8 +68,7 @@ class TemplateAPI(object):
     templates.
 
     Use dict-access as a shortcut to retrieve template macros from
-    templates.  ``api['snippets.messages']`` will return the
-    'messages' macro from the 'snippets' template.
+    templates.
     """
     BARE_TMPL = 'kotti:templates/master-bare.pt'
 
@@ -77,7 +76,7 @@ class TemplateAPI(object):
         self.context, self.request = context, request
 
         if request.is_xhr and bare is None:
-            bare = True
+            bare = True  # render just the content area
         self.bare = bare
         S = self.S = get_settings()
         bare_tmpl = self.BARE_TMPL
@@ -86,7 +85,6 @@ class TemplateAPI(object):
             master_view=bare and bare_tmpl or S['kotti.templates.master_view'],
             master_edit=bare and bare_tmpl or S['kotti.templates.master_edit'],
             master_cp=bare and bare_tmpl or S['kotti.templates.master_cp'],
-            snippets=S['kotti.templates.snippets'],
             )
         self.base_css = S['kotti.templates.base_css']
         self.view_css = S['kotti.templates.view_css']

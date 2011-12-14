@@ -2,8 +2,25 @@
       xmlns:tal="http://xml.zope.org/namespaces/tal"
       metal:define-macro="main">
 
-  <head tal:define="macro api['snippets.head-view']"
-        metal:use-macro="macro" metal:extend-macro="macro">
+  <head>
+	<title metal:define-slot="page-title">${api.page_title}</title>
+	<meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/>
+	<meta name="description" content="${api.context.description}" />
+	<link rel="shortcut icon" href="${request.static_url('kotti:static/favicon.ico')}" />
+	<link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Neuton|Nobile:regular,i,b,bi&amp;subset=latin" type="text/css" media="screen" charset="utf-8" />
+	<link rel="stylesheet" href="${request.static_url(api.base_css)}" type="text/css" media="screen" charset="utf-8" />
+	<link rel="stylesheet" href="${request.static_url(api.view_css)}" type="text/css" media="screen" charset="utf-8" />
+
+    <script type="text/javascript" src="${request.static_url('deform:static/scripts/jquery-1.4.2.min.js')}"></script>
+
+    <more tal:omit-tag="" metal:define-slot="head-more"></more>
+
+    <!-- head: slots -->
+    <headslots tal:omit-tag=""
+        tal:define="snippets api.slots.inhead" tal:condition="snippets">
+      <snip tal:repeat="snippet snippets" tal:replace="structure snippet">
+      </snip>
+    </headslots>
   </head>
 
   <body class="view-view" tal:define="page_slots api.slots">
@@ -58,8 +75,7 @@
       
       <!-- main column -->
       <div class="main-column ${page_slots.left and 'has-leftcol' or ''} ${page_slots.right and 'has-rightcol' or ''}">
-        <div metal:use-macro="api['snippets.messages']">
-        </div>
+        <div tal:replace="structure api.render_template('kotti:templates/messages.pt')" />
 
         <ul id="abovecontent-slot" class="slot"
             tal:define="snippets page_slots.abovecontent"

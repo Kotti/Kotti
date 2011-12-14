@@ -159,7 +159,6 @@ kotti.populators             List of functions to fill initial database
 
 kotti.templates.master_view  Master template used for public views
 kotti.templates.master_edit  Master template used for edit screens
-kotti.templates.snippets     Override <head> and other common elements
 kotti.templates.view_css     CSS file used for public views
 kotti.templates.edit_css     CSS file used for edit screens
 kotti.templates.base_css     Base CSS file; used for both
