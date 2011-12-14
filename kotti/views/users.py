@@ -412,7 +412,7 @@ def includeme(config):
         share_node,
         name='share',
         permission='manage',
-        renderer='../templates/edit/share.pt',
+        renderer='kotti:templates/edit/share.pt',
         )
 
     config.add_view(
@@ -420,7 +420,7 @@ def includeme(config):
         name='setup-users',
         permission='admin',
         custom_predicates=(is_root,),
-        renderer='../templates/site-setup/users.pt',
+        renderer='kotti:templates/site-setup/users.pt',
         )
 
     config.add_view(
@@ -428,12 +428,12 @@ def includeme(config):
         name='setup-user',
         permission='admin',
         custom_predicates=(is_root,),
-        renderer='../templates/site-setup/user.pt',
+        renderer='kotti:templates/site-setup/user.pt',
         )
 
     config.add_view(
         preferences,
         name='prefs',
         custom_predicates=(is_root,),
-        renderer='../templates/edit/simpleform.pt',
+        renderer='kotti:templates/edit/simpleform.pt',
         )

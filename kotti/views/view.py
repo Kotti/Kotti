@@ -30,5 +30,5 @@ def includeme(config):
         context=Document,
         name='view',
         permission='view',
-        renderer='../templates/view/document.pt',
+        renderer='kotti:templates/view/document.pt',
         )

@@ -23,5 +23,5 @@ def includeme(config):
         name='setup',
         permission='admin',
         custom_predicates=(is_root,),
-        renderer='../templates/site-setup/main.pt',
+        renderer='kotti:templates/site-setup/main.pt',
         )

@@ -141,14 +141,14 @@ def includeme(config):
     config.add_view(
         login,
         context='pyramid.exceptions.Forbidden',
-        renderer='../templates/edit/login.pt',
+        renderer='kotti:templates/edit/login.pt',
         )
 
     config.add_view(
         login,
         name='login',
         context=Node,
-        renderer='../templates/edit/login.pt',
+        renderer='kotti:templates/edit/login.pt',
         )
 
     config.add_view(
@@ -159,5 +159,5 @@ def includeme(config):
     config.add_view(
         set_password,
         name='set-password',
-        renderer='../templates/edit/simpleform.pt',
+        renderer='kotti:templates/edit/simpleform.pt',
         )

@@ -208,12 +208,12 @@ def includeme(config):
         context=Document,
         name='edit',
         permission='edit',
-        renderer='../templates/edit/node.pt',
+        renderer='kotti:templates/edit/node.pt',
         )
 
     config.add_view(
         make_generic_add(DocumentSchema(), Document, u'document'),
         name=Document.type_info.add_view,
         permission='add',
-        renderer='../templates/edit/node.pt',
+        renderer='kotti:templates/edit/node.pt',
         )
