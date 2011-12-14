@@ -1,7 +1,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xml:lang="en"
       xmlns:tal="http://xml.zope.org/namespaces/tal"
-      metal:extend-macro="api['master_edit.main']"
+      metal:extend-macro="api.macro('kotti:templates/edit/master.pt')"
       metal:define-macro="main">
 
   <span tal:omit-tag="" metal:fill-slot="switch-mode-box">

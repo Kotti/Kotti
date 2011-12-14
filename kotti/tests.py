@@ -5,6 +5,7 @@ import time
 import warnings
 
 from mock import MagicMock
+from mock import patch
 import transaction
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.exc import IntegrityError
@@ -1354,9 +1355,28 @@ class TestTemplateAPI(UnitTestBase):
             [root, a, ac, acb]
             )
 
-    def test_getitem(self):
+    @patch('kotti.views.util.get_renderer')
+    def test_macro(self, get_renderer):
         api = self._make()
-        self.assertRaises(KeyError, api.__getitem__, 'no-exit')
+        macro = api.macro('mypackage:mytemplate.pt')
+        get_renderer.assert_called_with('mypackage:mytemplate.pt')
+        assert get_renderer().implementation().macros['main'] == macro
+
+    @patch('kotti.views.util.get_renderer')
+    def test_macro_bare_with_master(self, get_renderer):
+         # getting EDIT_MASTER when bare=True will return BARE_MASTER
+        api = self._make(bare=True)
+        macro = api.macro(api.EDIT_MASTER)
+        get_renderer.assert_called_with(api.BARE_MASTER)
+        assert get_renderer().implementation().macros['main'] == macro
+
+    @patch('kotti.views.util.get_renderer')
+    def test_macro_bare_without_master(self, get_renderer):
+         # getting other templates when bare=True
+        api = self._make(bare=True)
+        macro = api.macro('mypackage:mytemplate.pt')
+        get_renderer.assert_called_with('mypackage:mytemplate.pt')
+        assert get_renderer().implementation().macros['main'] == macro
 
     def test_bare(self):
         # By default, no "bare" templates are used:
@@ -1366,7 +1386,6 @@ class TestTemplateAPI(UnitTestBase):
         # We can ask for "bare" templates explicitely:
         api = self._make(bare=True)
         self.assertEqual(api.bare, True)
-        self.assertEqual(api.macro_templates['master_view'], api.BARE_TMPL)
 
         # An XHR request will always result in bare master templates:
         request = DummyRequest()

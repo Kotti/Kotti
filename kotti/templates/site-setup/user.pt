@@ -1,7 +1,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xml:lang="en"
       xmlns:tal="http://xml.zope.org/namespaces/tal"
-      metal:use-macro="api['master_cp.main']">
+      metal:use-macro="api.macro('kotti:templates/site-setup/master.pt')">
 
   <div metal:fill-slot="content">
     <div><a href="./@@setup-users?extra=${api.principal.name}">&larr; Back to User Management</a></div>

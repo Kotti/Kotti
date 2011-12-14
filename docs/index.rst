@@ -157,8 +157,6 @@ kotti.base_includes          List of base Python configuration hooks
 kotti.configurators          List of advanced functions for config
 kotti.populators             List of functions to fill initial database
 
-kotti.templates.master_view  Master template used for public views
-kotti.templates.master_edit  Master template used for edit screens
 kotti.templates.api          Override ``api`` used by all templates
 
 kotti.authn_policy_factory   Component used for authentication

@@ -37,9 +37,6 @@ def none_factory(**kwargs): # pragma: no cover
 
 # All of these can be set by passing them in the Paste Deploy settings:
 conf_defaults = {
-    'kotti.templates.master_view': 'kotti:templates/view/master.pt',
-    'kotti.templates.master_edit': 'kotti:templates/edit/master.pt',
-    'kotti.templates.master_cp': 'kotti:templates/site-setup/master.pt',
     'kotti.templates.api': 'kotti.views.util.TemplateAPI',
     'kotti.configurators': '',
     'kotti.base_includes': 'kotti.events kotti.views.view kotti.views.edit kotti.views.login kotti.views.users kotti.views.site_setup kotti.views.slots',

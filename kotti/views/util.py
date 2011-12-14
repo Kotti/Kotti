@@ -70,49 +70,31 @@ class TemplateAPI(object):
     Use dict-access as a shortcut to retrieve template macros from
     templates.
     """
-    BARE_TMPL = 'kotti:templates/master-bare.pt'
+    # Instead of overriding these, consider using the
+    # 'kotti.overrides' variable.
+    BARE_MASTER = 'kotti:templates/master-bare.pt'
+    VIEW_MASTER = 'kotti:templates/view/master.pt'
+    EDIT_MASTER = 'kotti:templates/edit/master.pt'
+    SITE_SETUP_MASTER = 'kotti:templates/site-setup/master.pt'
 
     def __init__(self, context, request, bare=None, **kwargs):
         self.context, self.request = context, request
 
-        if request.is_xhr and bare is None:
-            bare = True  # render just the content area
-        self.bare = bare
-        S = self.S = get_settings()
-        bare_tmpl = self.BARE_TMPL
-
-        self.macro_templates = dict(
-            master_view=bare and bare_tmpl or S['kotti.templates.master_view'],
-            master_edit=bare and bare_tmpl or S['kotti.templates.master_edit'],
-            master_cp=bare and bare_tmpl or S['kotti.templates.master_cp'],
-            )
-
         if getattr(request, 'template_api', None) is None:
             request.template_api = self
 
+        self.S = get_settings()
+        if request.is_xhr and bare is None:
+            bare = True  # use bare template that renders just the content area
+        self.bare = bare
         self.slots = Slots(context, request)
-
         self.__dict__.update(kwargs)
 
-    def __getitem__(self, dottedname):
-        """Given a dottedname of the form ``template_name.macro_name``
-        this will return the ``macro_name`` macro of the
-        ``template_name`` template.
-
-        The template that corresponds to ``template_name`` may be
-        defined through the ``kotti.templates.*`` configuration
-        variables.
-        """
-        try:
-            template_name, macro_name = dottedname.split('.')
-        except ValueError: # Chameleon will try dict access after attr access
-            raise KeyError(dottedname)
-        
-        template = self.macro_templates[template_name]
-        if isinstance(template, basestring):
-            template = self.macro_templates[template_name] = get_renderer(
-                template).implementation()
-        return template.macros[macro_name]
+    def macro(self, asset_spec, macro_name='main'):
+        if self.bare and asset_spec in (
+            self.VIEW_MASTER, self.EDIT_MASTER, self.SITE_SETUP_MASTER):
+            asset_spec = self.BARE_MASTER
+        return get_renderer(asset_spec).implementation().macros[macro_name]
 
     @reify
     def site_title(self):
