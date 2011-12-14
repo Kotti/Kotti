@@ -78,6 +78,9 @@ setup(name='Kotti',
       cmdclass={'test': PyTest},
       install_requires=install_requires + tests_require,
       #tests_require=tests_require,
+      dependency_links = [
+          "http://www.voidspace.org.uk/downloads/mock-0.8.0beta4.tar.gz",
+      ],
       entry_points = """\
       [paste.app_factory]
       main = kotti:main
