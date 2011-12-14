@@ -1369,7 +1369,7 @@ class TestTemplateAPI(UnitTestBase):
 
     @patch('kotti.views.util.get_renderer')
     def test_macro_bare_with_master(self, get_renderer):
-         # getting EDIT_MASTER when bare=True will return BARE_MASTER
+        # getting EDIT_MASTER when bare=True will return BARE_MASTER
         api = self._make(bare=True)
         macro = api.macro(api.EDIT_MASTER)
         get_renderer.assert_called_with(api.BARE_MASTER)
@@ -1377,7 +1377,7 @@ class TestTemplateAPI(UnitTestBase):
 
     @patch('kotti.views.util.get_renderer')
     def test_macro_bare_without_master(self, get_renderer):
-         # getting other templates when bare=True
+        # getting other templates when bare=True
         api = self._make(bare=True)
         macro = api.macro('mypackage:mytemplate.pt')
         get_renderer.assert_called_with('mypackage:mytemplate.pt')

@@ -31,7 +31,7 @@ install_requires = [
     ]
 
 tests_require = [
-    'mock',
+    'mock>=0.8.0beta4',
     'pytest',
     'pytest-cov',
     'pytest-xdist',
