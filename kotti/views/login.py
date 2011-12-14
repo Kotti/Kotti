@@ -141,14 +141,14 @@ def includeme(config):
     config.add_view(
         login,
         context='pyramid.exceptions.Forbidden',
-        renderer='kotti:templates/edit/login.pt',
+        renderer='kotti:templates/login.pt',
         )
 
     config.add_view(
         login,
         name='login',
         context=Node,
-        renderer='kotti:templates/edit/login.pt',
+        renderer='kotti:templates/login.pt',
         )
 
     config.add_view(

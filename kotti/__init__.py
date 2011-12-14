@@ -41,6 +41,7 @@ conf_defaults = {
     'kotti.configurators': '',
     'kotti.base_includes': 'kotti.events kotti.views.view kotti.views.edit kotti.views.login kotti.views.users kotti.views.site_setup kotti.views.slots',
     'kotti.includes': '',
+    'kotti.asset_overrides': '',
     'kotti.populators': 'kotti.populate.populate',
     'kotti.available_types': 'kotti.resources.Document',
     'kotti.authn_policy_factory': 'kotti.authtkt_factory',
@@ -135,9 +136,14 @@ def main(global_config, **settings):
     import kotti.views.util
     config.add_subscriber(
         kotti.views.util.add_renderer_globals, BeforeRender)
-    
+
     _configure_base_views(config)
 
+    for override in [a.strip()
+                     for a in settings['kotti.asset_overrides'].split()
+                     if a.strip()]:
+        config.override_asset(to_override='kotti', override_with=override)
+    
     return config.make_wsgi_app()
 
 def _configure_base_views(config):

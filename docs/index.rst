@@ -158,6 +158,7 @@ kotti.configurators          List of advanced functions for config
 kotti.populators             List of functions to fill initial database
 
 kotti.templates.api          Override ``api`` used by all templates
+kotti.asset_overrides        Override Kotti's templates, CSS files and images.
 
 kotti.authn_policy_factory   Component used for authentication
 kotti.authz_policy_factory   Component used for authorization
@@ -192,10 +193,28 @@ Here's an example.  Make sure you use different values though!
   kotti.secret = myadminspassword
   kotti.secret2 = $2a$12$VVpW/i1MA2wUUIUHwY6v8O
 
-Adjusting the look & feel
--------------------------
+Adjusting the look & feel with ``kotti.override_assets``
+--------------------------------------------------------
 
-XXX
+In your settings file, set ``kotti.override_assets`` to a list of
+*asset specifications*.  This allows you to set up a directory in your
+package that will mirror Kotti's own and that allows you to override
+Kotti's templates, CSS files and images on a case by case basis.
+
+As an example, image that we wanted to override Kotti's master layout
+template.  Inside the Kotti source, the layout template is at
+``kotti/templates/view/master.pt``.  To override this, we would add a
+directory to our own package called ``kotti-overrides`` and therein
+put our own version of the template so that the full path to our own
+custom template is
+``mypackage/kotti-overrides/templates/view/master.pt``.
+
+We can then register our ``kotti-overrides`` directory by use of the
+``kotti.asset_overrides`` setting, like so:
+
+.. code-block:: ini
+
+  kotti.asset_overrides = mypackage:kotti-overrides/
 
 Using add-ons
 -------------

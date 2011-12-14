@@ -120,6 +120,11 @@ class TestMain(UnitTestBase):
         self.assertEqual(get_settings()['kotti.base_includes'], [])
         self.assertEqual(get_settings()['kotti.available_types'], [MyType])
 
+    def test_asset_overrides(self):
+        settings = self.required_settings()
+        settings['kotti.asset_overrides'] = 'kotti.views kotti:views/'
+        main({}, **settings)
+
     def test_persistent_settings(self):
         from kotti import get_version
         from kotti.resources import Settings

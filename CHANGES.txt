@@ -5,10 +5,11 @@ History
 ------------------
 
 - Remove configuration variables 'kotti.templates.*' in favour of
-  using asset specs.
+  'kotti.asset_overrides', which uses Pyramid asset specs and their
+  overrides.
 
-  Remove 'TemplateAPI.__getitem__' and instead add 'TemplateAPI.macro'
-  which does a similar thing.
+- Remove 'TemplateAPI.__getitem__' and instead add 'TemplateAPI.macro'
+  which has a similar but less 'special' API.
 
 - Factor snippets in 'kotti/templates/snippets.pt' out into their own
   templates.  Use 'api.render_template' to render them instead of
