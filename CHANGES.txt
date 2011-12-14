@@ -1,7 +1,7 @@
 History
 =======
 
-0.4.0 - Unreleased
+0.4.0 - 2011-12-14
 ------------------
 
 - Remove configuration variables 'kotti.templates.*' in favour of
