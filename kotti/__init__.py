@@ -39,7 +39,7 @@ def none_factory(**kwargs): # pragma: no cover
 conf_defaults = {
     'kotti.templates.api': 'kotti.views.util.TemplateAPI',
     'kotti.configurators': '',
-    'kotti.base_includes': 'kotti.events kotti.views.view kotti.views.edit kotti.views.login kotti.views.users kotti.views.site_setup kotti.views.slots',
+    'kotti.base_includes': 'kotti kotti.events kotti.views kotti.views.view kotti.views.edit kotti.views.login kotti.views.users kotti.views.site_setup kotti.views.slots',
     'kotti.includes': '',
     'kotti.asset_overrides': '',
     'kotti.populators': 'kotti.populate.populate',
@@ -92,75 +92,67 @@ def _resolve_dotted(d, keys=conf_dotted):
         d[key] = new_value
 
 def main(global_config, **settings):
-    """ This function returns a WSGI application.
+    """ This function is a 'paste.app_factory' and returns a WSGI
+    application.
+    """
+    config = base_configure(global_config, **settings)
+    return config.make_wsgi_app()
+
+def base_configure(global_config, **settings):
+    """Resolve dotted names in settings, include plug-ins and create a
+    Configurator.
     """
     for key, value in conf_defaults.items():
         settings.setdefault(key, value)
 
-    _resolve_dotted(settings, keys=('kotti.configurators',))
-
     # Allow extending packages to change 'settings' w/ Python:
+    _resolve_dotted(settings, keys=('kotti.configurators',))
     for func in settings['kotti.configurators']:
         func(settings)
 
     _resolve_dotted(settings)
-
     secret1 = settings['kotti.secret']
     settings.setdefault('kotti.secret2', secret1)
+
+    config = Configurator(
+        settings=settings,
+        )
+    config.begin()
+
+    # Include modules listed in 'kotti.base_includes' and 'kotti.includes':
+    for module in (
+        settings['kotti.base_includes'] + settings['kotti.includes']):
+        config.include(module)
+    config.commit()
+
+    return config
+
+def includeme(config):
+    from kotti.resources import appmaker
+    import kotti.views.util
+
+    settings = config.get_settings()
 
     authentication_policy = settings[
         'kotti.authn_policy_factory'][0](**settings)
     authorization_policy = settings[
         'kotti.authz_policy_factory'][0](**settings)
     session_factory = settings['kotti.session_factory'][0](**settings)
+    if authentication_policy:
+        config.set_authentication_policy(authentication_policy)
+    if authorization_policy:
+        config.set_authorization_policy(authorization_policy)
+    config.set_session_factory(session_factory)
 
-    config = Configurator(
-        settings=settings,
-        authentication_policy=authentication_policy,
-        authorization_policy=authorization_policy,
-        session_factory=session_factory,
-        )
-
-    config.begin()
-    config.commit()
-
-    # Include modules listed in 'kotti.base_includes' and 'kotti.includes':
-    for module in (
-        settings['kotti.base_includes'] + settings['kotti.includes']):
-        config.include(module)
-
-    from kotti.resources import appmaker
     engine = engine_from_config(settings, 'sqlalchemy.')
     config._set_root_factory(appmaker(engine))
 
-    import kotti.views.util
     config.add_subscriber(
         kotti.views.util.add_renderer_globals, BeforeRender)
-
-    _configure_base_views(config)
 
     for override in [a.strip()
                      for a in settings['kotti.asset_overrides'].split()
                      if a.strip()]:
         config.override_asset(to_override='kotti', override_with=override)
-    
-    return config.make_wsgi_app()
 
-def _configure_base_views(config):
-    from kotti.resources import IContent
-
-    config.add_static_view('static-deform', 'deform:static')
-    config.add_static_view('static-kotti', 'kotti:static')
-    config.add_view('kotti.views.view.view_content_default', context=IContent)
-    config.add_view(
-        'kotti.views.edit.add_node',
-        name='add',
-        permission='add',
-        renderer='templates/edit/add.pt',
-        )
-    config.add_view(
-        'kotti.views.edit.move_node',
-        name='move',
-        permission='edit',
-        renderer='templates/edit/move.pt',
-        )
+    return config

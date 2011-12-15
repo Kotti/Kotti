@@ -120,6 +120,32 @@ class TestMain(UnitTestBase):
         self.assertEqual(get_settings()['kotti.base_includes'], [])
         self.assertEqual(get_settings()['kotti.available_types'], [MyType])
 
+    def test_auth_policies_no_override(self):
+        from pyramid.interfaces import IAuthenticationPolicy
+        from pyramid.interfaces import IAuthorizationPolicy
+        from pyramid.threadlocal import get_current_registry
+
+        settings = self.required_settings()
+        main({}, **settings)
+
+        registry = get_current_registry()
+        assert registry.queryUtility(IAuthenticationPolicy) != None
+        assert registry.queryUtility(IAuthorizationPolicy) != None
+
+    def test_auth_policies_override(self):
+        from pyramid.interfaces import IAuthenticationPolicy
+        from pyramid.interfaces import IAuthorizationPolicy
+        from pyramid.threadlocal import get_current_registry
+
+        settings = self.required_settings()
+        settings['kotti.authn_policy_factory'] = 'kotti.none_factory'
+        settings['kotti.authz_policy_factory'] = 'kotti.none_factory'
+        main({}, **settings)
+
+        registry = get_current_registry()
+        assert registry.queryUtility(IAuthenticationPolicy) == None
+        assert registry.queryUtility(IAuthorizationPolicy) == None
+
     def test_asset_overrides(self):
         settings = self.required_settings()
         settings['kotti.asset_overrides'] = 'kotti.views kotti:views/'
