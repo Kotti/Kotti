@@ -6,8 +6,8 @@ History
 
 - Modularize Kotti's Paste App Factory 'kotti.main'.
 
-  This should allow external packages to more effectively use Kotti
-  as a library.
+- Allow explicit setting of tables that Kotti creates
+  ('kotti.use_tables').
 
 0.4.0 - 2011-12-14
 ------------------

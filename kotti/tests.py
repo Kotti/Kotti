@@ -151,6 +151,12 @@ class TestMain(UnitTestBase):
         settings['kotti.asset_overrides'] = 'kotti.views kotti:views/'
         main({}, **settings)
 
+    def test_use_tables(self):
+        settings = self.required_settings()
+        settings['kotti.populators'] = ''
+        settings['kotti.use_tables'] = 'principals'
+        main({}, **settings)
+
     def test_persistent_settings(self):
         from kotti import get_version
         from kotti.resources import Settings

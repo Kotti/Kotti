@@ -1,6 +1,7 @@
 import os
 from UserDict import DictMixin
 
+from pyramid.threadlocal import get_current_registry
 from pyramid.traversal import resource_path
 from sqlalchemy.sql import and_
 from sqlalchemy.sql import select
@@ -303,7 +304,16 @@ def initialize_sql(engine, drop_all=False):
 
     if drop_all or os.environ.get('KOTTI_TEST_DB_STRING'):
         metadata.drop_all(engine)
-    metadata.create_all(engine)
+
+    # Allow users of Kotti to cherry pick the tables that they want to use:
+    settings = get_current_registry().settings
+    tables = settings['kotti.use_tables'].strip() or None
+    if tables:
+        if 'settings' not in tables:
+            tables += ' settings'
+        tables = [metadata.tables[name] for name in tables.split()]
+
+    metadata.create_all(engine, tables=tables)
     for populate in get_settings()['kotti.populators']:
         populate()
 
