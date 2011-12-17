@@ -90,7 +90,7 @@ distribution:
 
 .. code-block:: bash
 
-  wget https://github.com/dnouri/Kotti/raw/master/development.ini
+  wget https://github.com/Pylons/Kotti/raw/master/development.ini
 
 Finally, to run the application:
 
@@ -489,8 +489,8 @@ there.
 Have a question or a suggestion?  Write to `Kotti's mailing list`_ or
 find us on IRC on irc.freenode.net in channel ``#kotti``.
 
-.. _developed on Github: https://github.com/dnouri/Kotti
-.. _issue tracker: https://github.com/dnouri/Kotti/issues
+.. _developed on Github: https://github.com/Pylons/Kotti
+.. _issue tracker: https://github.com/Pylons/Kotti/issues
 .. _Kotti's mailing list: http://groups.google.com/group/kotti
 
 Tests
