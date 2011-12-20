@@ -148,7 +148,7 @@ class TestMain(UnitTestBase):
 
     def test_asset_overrides(self):
         settings = self.required_settings()
-        settings['kotti.asset_overrides'] = 'kotti.views kotti:views/'
+        settings['kotti.asset_overrides'] = 'pyramid:scaffold/ pyramid.fixers'
         main({}, **settings)
 
     def test_use_tables(self):

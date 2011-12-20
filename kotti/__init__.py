@@ -103,6 +103,8 @@ def base_configure(global_config, **settings):
     """Resolve dotted names in settings, include plug-ins and create a
     Configurator.
     """
+    from kotti.resources import appmaker
+
     for key, value in conf_defaults.items():
         settings.setdefault(key, value)
 
@@ -126,10 +128,12 @@ def base_configure(global_config, **settings):
         config.include(module)
     config.commit()
 
+    engine = engine_from_config(settings, 'sqlalchemy.')
+    config._set_root_factory(appmaker(engine))
+
     return config
 
 def includeme(config):
-    from kotti.resources import appmaker
     import kotti.views.util
 
     settings = config.get_settings()
@@ -144,9 +148,6 @@ def includeme(config):
     if authorization_policy:
         config.set_authorization_policy(authorization_policy)
     config.set_session_factory(session_factory)
-
-    engine = engine_from_config(settings, 'sqlalchemy.')
-    config._set_root_factory(appmaker(engine))
 
     config.add_subscriber(
         kotti.views.util.add_renderer_globals, BeforeRender)
