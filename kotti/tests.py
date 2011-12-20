@@ -151,6 +151,21 @@ class TestMain(UnitTestBase):
         settings['kotti.asset_overrides'] = 'pyramid:scaffold/ pyramid.fixers'
         main({}, **settings)
 
+    @staticmethod
+    def _includeme(config):
+        from kotti.views.login import login
+        config.add_view(
+            login,
+            name='login',
+            context=Node,
+            renderer='kotti:templates/login.pt',
+            )
+
+    def test_includes_overrides(self):
+        settings = self.required_settings()
+        settings['kotti.includes'] = 'kotti.tests.TestMain._includeme'
+        main({}, **settings)
+
     def test_use_tables(self):
         settings = self.required_settings()
         settings['kotti.populators'] = ''

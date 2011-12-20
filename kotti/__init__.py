@@ -123,8 +123,10 @@ def base_configure(global_config, **settings):
     config.begin()
 
     # Include modules listed in 'kotti.base_includes' and 'kotti.includes':
-    for module in (
-        settings['kotti.base_includes'] + settings['kotti.includes']):
+    for module in settings['kotti.base_includes']:
+        config.include(module)
+    config.commit()
+    for module in settings['kotti.includes']:
         config.include(module)
     config.commit()
 
