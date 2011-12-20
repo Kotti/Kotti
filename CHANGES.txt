@@ -1,7 +1,7 @@
 History
 =======
 
-0.4.2 - Unreleased
+0.4.2 - 2011-12-20
 ------------------
 
 - More convenient overrides for add-on packages by better use of
