@@ -69,7 +69,7 @@ Installation
 Requirements
 ------------
 
-- Runs on Python versions 2.5, 2.6 and 2.7.
+- Runs on Python versions 2.6 and 2.7.
 - Support for PostgreSQL and SQLite (tested continuously), and a list of `other SQL databases`_ (not tested regularly)
 - Support for WSGI and a `variety of web servers`_, including Apache
 

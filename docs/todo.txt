@@ -1,0 +1,7 @@
+- To allow for easier integration with 'repoze.workflow', add a
+  'status' attribute to the Content class.
+
+- Use 'pyramid_deform' instead of our own Form class.  Also, implement
+  CSRF protection.
+
+- Create a control panel that integrates with 'pyramid_exclog'.
