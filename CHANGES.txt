@@ -4,6 +4,9 @@ History
 0.4.3 - Unreleased
 ------------------
 
+- Add 'kotti.root_factory' setting which allows the override Kotti's
+  default Pyramid *root factory*.
+
 0.4.2 - 2011-12-20
 ------------------
 

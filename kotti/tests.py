@@ -172,6 +172,17 @@ class TestMain(UnitTestBase):
         settings['kotti.use_tables'] = 'principals'
         main({}, **settings)
 
+    @staticmethod
+    def _root_factory(request=None):
+        return 'my root object'
+
+    def test_root_factory(self):
+        settings = self.required_settings()
+        settings['kotti.root_factory'] = 'kotti.tests.TestMain._root_factory'
+        app = main({}, **settings)
+        assert get_root() == 'my root object'
+        assert app.root_factory() == 'my root object'
+
     def test_persistent_settings(self):
         from kotti import get_version
         from kotti.resources import Settings
