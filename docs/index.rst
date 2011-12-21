@@ -2,7 +2,7 @@
 Kotti CMS
 =========
 
-:Authors: Daniel Nouri, Mike Orr
+:Documentation authors: Daniel Nouri, Mike Orr
 
 Kotti is a light-weight, user-friendly and extensible web content
 management system.  It is licensed under a `BSD-like license
@@ -328,6 +328,16 @@ overriding of the default session factory, which is
 Writing add-ons
 ===============
 
+Screencast
+----------
+
+Here's a screencast that guides you through the process of creating a
+simple Kotti add-on for visitor comments:
+
+.. raw:: html
+
+   <iframe width="640" height="480" src="http://www.youtube-nocookie.com/embed/GC3tw6Tli54?rel=0" frameborder="0" allowfullscreen></iframe>
+
 Content types
 -------------
 
@@ -525,4 +535,3 @@ API
 .. toctree::
 
    api
-
