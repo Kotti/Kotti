@@ -147,7 +147,6 @@ def includeme(config):
     config.add_view(
         login,
         name='login',
-        context=Node,
         renderer='kotti:templates/login.pt',
         )
 

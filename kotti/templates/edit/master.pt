@@ -3,9 +3,9 @@
       metal:define-macro="main">
 
   <head>
-	<title metal:define-slot="page-title">${api.page_title}</title>
+	<title metal:define-slot="page-title">${api.page_title | api.site_title}</title>
 	<meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/>
-	<meta name="description" content="${api.context.description}" />
+	<meta name="description" content="${api.context.description | ''}" />
 	<link rel="shortcut icon" href="${request.static_url('kotti:static/favicon.ico')}" />
 	<link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Neuton|Nobile:regular,i,b,bi&amp;subset=latin" type="text/css" media="screen" charset="utf-8" />
     <link rel="stylesheet" href="${request.static_url('deform:static/css/ui-lightness/jquery-ui-1.8.11.custom.css')}" type="text/css" />

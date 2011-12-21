@@ -3,9 +3,9 @@
       metal:define-macro="main">
 
   <head>
-	<title metal:define-slot="page-title">${api.page_title}</title>
+	<title metal:define-slot="page-title">${api.page_title | api.site_title}</title>
 	<meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/>
-	<meta name="description" content="${api.context.description}" />
+	<meta name="description" content="${api.context.description | ''}" />
 	<link rel="shortcut icon" href="${request.static_url('kotti:static/favicon.ico')}" />
 	<link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Neuton|Nobile:regular,i,b,bi&amp;subset=latin" type="text/css" media="screen" charset="utf-8" />
 	<link rel="stylesheet" href="${request.static_url('kotti:static/base.css')}" type="text/css" media="screen" charset="utf-8" />
@@ -43,7 +43,7 @@
         <div class="tabs1">
           <h2 class="hidden">Site navigation</h2>
           <ul>
-            <li><a href="${api.url(api.root)}" class="${api.root == api.context and 'selected'}">Home</a></li>
+            <li><a href="${request.application_url}" class="${api.root == api.context and 'selected'}">Home</a></li>
             <li tal:define="items [i for i in api.list_children(api.root) if i.in_navigation]"
                 tal:repeat="item items">
               <a href="${api.url(item)}"

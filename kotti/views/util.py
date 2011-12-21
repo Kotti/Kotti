@@ -98,7 +98,9 @@ class TemplateAPI(object):
 
     @reify
     def site_title(self):
-        return get_settings().get('kotti.site_title', self.root.title)
+        value = get_settings().get('kotti.site_title')
+        if not value:
+            return self.root.title
 
     @reify
     def page_title(self):
@@ -149,10 +151,11 @@ class TemplateAPI(object):
         if context is None:
             context = self.context
         children = []
-        for child in context.values():
-            if (not permission or
-                has_permission(permission, child, self.request)):
-                children.append(child)
+        if hasattr(context, 'values'):
+            for child in context.values():
+                if (not permission or
+                    has_permission(permission, child, self.request)):
+                    children.append(child)
         return children
 
     def list_children_go_up(self, context=None, permission='view'):
@@ -221,7 +224,7 @@ class TemplateAPI(object):
             url = resource_url(item, self.request) + view_name
             links.append(dict(
                 url=url,
-                name=item.title,
+                name=getattr(item, 'title', item.__name__),
                 is_edit_link=view_name != '',
                 node=item,
                 is_context=item == self.context,
@@ -244,6 +247,8 @@ class TemplateAPI(object):
 
     @reify
     def edit_links(self):
+        if not hasattr(self.context, 'type_info'):
+            return []
         return [l for l in self.context.type_info.edit_links
                 if l.permitted(self.context, self.request)]
 

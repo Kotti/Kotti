@@ -7,6 +7,7 @@ import warnings
 from mock import MagicMock
 from mock import patch
 import transaction
+from webob import Request
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.exc import IntegrityError
 import colander
@@ -152,7 +153,7 @@ class TestMain(UnitTestBase):
         main({}, **settings)
 
     @staticmethod
-    def _includeme(config):
+    def _includeme_login(config):
         from kotti.views.login import login
         config.add_view(
             login,
@@ -163,7 +164,7 @@ class TestMain(UnitTestBase):
 
     def test_includes_overrides(self):
         settings = self.required_settings()
-        settings['kotti.includes'] = 'kotti.tests.TestMain._includeme'
+        settings['kotti.includes'] = 'kotti.tests.TestMain._includeme_login'
         main({}, **settings)
 
     def test_use_tables(self):
@@ -174,14 +175,46 @@ class TestMain(UnitTestBase):
 
     @staticmethod
     def _root_factory(request=None):
-        return 'my root object'
+        class Root(object):
+            __name__ = 'my root object'
+            __parent__ = None
+        return Root()
 
     def test_root_factory(self):
         settings = self.required_settings()
         settings['kotti.root_factory'] = 'kotti.tests.TestMain._root_factory'
         app = main({}, **settings)
-        assert get_root() == 'my root object'
-        assert app.root_factory() == 'my root object'
+        assert get_root().__name__ == 'my root object'
+        assert app.root_factory().__name__ == 'my root object'
+
+    def test_render_master_view_template_with_minimal_root(self):
+        settings = self.required_settings()
+        settings['kotti.root_factory'] = 'kotti.tests.TestMain._root_factory'
+        settings['kotti.site_title'] = 'My Site'
+        app = main({}, **settings)
+        
+        request = Request.blank('/@@login')
+        (status, headers, response) = request.call_application(app)
+        assert status == '200 OK'
+
+    @staticmethod
+    def _includeme_layout(config):
+        # override edit master layout with view master layout
+        config.override_asset(
+            to_override='kotti:templates/edit/master.pt',
+            override_with='kotti:templates/view/master.pt',
+            )
+
+    def test_render_master_edit_template_with_minimal_root(self):
+        settings = self.required_settings()
+        settings['kotti.root_factory'] = 'kotti.tests.TestMain._root_factory'
+        settings['kotti.includes'] = 'kotti.tests.TestMain._includeme_layout'
+        settings['kotti.site_title'] = 'My Site'
+        app = main({}, **settings)
+        
+        request = Request.blank('/@@login')
+        (status, headers, response) = request.call_application(app)
+        assert status == '200 OK'
 
     def test_persistent_settings(self):
         from kotti import get_version
