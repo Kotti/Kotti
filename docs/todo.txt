@@ -4,4 +4,6 @@
 - Use 'pyramid_deform' instead of our own Form class.  Also, implement
   CSRF protection.
 
-- Create a control panel that integrates with 'pyramid_exclog'.
+- Add an item to control panel that integrates with 'pyramid_exclog'.
+
+- Move navigation related functionality out of TemplateAPI and into snippets.
