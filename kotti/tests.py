@@ -101,141 +101,6 @@ class UnitTestBase(unittest.TestCase):
     def tearDown(self):
         tearDown()
 
-class TestMain(UnitTestBase):
-    def required_settings(self):
-        return {'sqlalchemy.url': 'sqlite://',
-                'kotti.secret': 'dude'}
-
-    def test_override_settings(self):
-        class MyType(object):
-            pass
-
-        def my_configurator(conf):
-            conf['kotti.base_includes'] = ''
-            conf['kotti.available_types'] = [MyType]
-            
-        settings = self.required_settings()
-        settings['kotti.configurators'] = [my_configurator]
-        main({}, **settings)
-
-        self.assertEqual(get_settings()['kotti.base_includes'], [])
-        self.assertEqual(get_settings()['kotti.available_types'], [MyType])
-
-    def test_auth_policies_no_override(self):
-        from pyramid.interfaces import IAuthenticationPolicy
-        from pyramid.interfaces import IAuthorizationPolicy
-        from pyramid.threadlocal import get_current_registry
-
-        settings = self.required_settings()
-        main({}, **settings)
-
-        registry = get_current_registry()
-        assert registry.queryUtility(IAuthenticationPolicy) != None
-        assert registry.queryUtility(IAuthorizationPolicy) != None
-
-    def test_auth_policies_override(self):
-        from pyramid.interfaces import IAuthenticationPolicy
-        from pyramid.interfaces import IAuthorizationPolicy
-        from pyramid.threadlocal import get_current_registry
-
-        settings = self.required_settings()
-        settings['kotti.authn_policy_factory'] = 'kotti.none_factory'
-        settings['kotti.authz_policy_factory'] = 'kotti.none_factory'
-        main({}, **settings)
-
-        registry = get_current_registry()
-        assert registry.queryUtility(IAuthenticationPolicy) == None
-        assert registry.queryUtility(IAuthorizationPolicy) == None
-
-    def test_asset_overrides(self):
-        settings = self.required_settings()
-        settings['kotti.asset_overrides'] = 'pyramid:scaffold/ pyramid.fixers'
-        main({}, **settings)
-
-    @staticmethod
-    def _includeme_login(config):
-        from kotti.views.login import login
-        config.add_view(
-            login,
-            name='login',
-            context=Node,
-            renderer='kotti:templates/login.pt',
-            )
-
-    def test_includes_overrides(self):
-        settings = self.required_settings()
-        settings['kotti.includes'] = 'kotti.tests.TestMain._includeme_login'
-        main({}, **settings)
-
-    def test_use_tables(self):
-        settings = self.required_settings()
-        settings['kotti.populators'] = ''
-        settings['kotti.use_tables'] = 'principals'
-        main({}, **settings)
-
-    @staticmethod
-    def _root_factory(request=None):
-        class Root(object):
-            __name__ = 'my root object'
-            __parent__ = None
-        return Root()
-
-    def test_root_factory(self):
-        settings = self.required_settings()
-        settings['kotti.root_factory'] = 'kotti.tests.TestMain._root_factory'
-        app = main({}, **settings)
-        assert get_root().__name__ == 'my root object'
-        assert app.root_factory().__name__ == 'my root object'
-
-    def test_render_master_view_template_with_minimal_root(self):
-        settings = self.required_settings()
-        settings['kotti.root_factory'] = 'kotti.tests.TestMain._root_factory'
-        settings['kotti.site_title'] = 'My Site'
-        app = main({}, **settings)
-        
-        request = Request.blank('/@@login')
-        (status, headers, response) = request.call_application(app)
-        assert status == '200 OK'
-
-    @staticmethod
-    def _includeme_layout(config):
-        # override edit master layout with view master layout
-        config.override_asset(
-            to_override='kotti:templates/edit/master.pt',
-            override_with='kotti:templates/view/master.pt',
-            )
-
-    def test_render_master_edit_template_with_minimal_root(self):
-        settings = self.required_settings()
-        settings['kotti.root_factory'] = 'kotti.tests.TestMain._root_factory'
-        settings['kotti.includes'] = 'kotti.tests.TestMain._includeme_layout'
-        settings['kotti.site_title'] = 'My Site'
-        app = main({}, **settings)
-        
-        request = Request.blank('/@@login')
-        (status, headers, response) = request.call_application(app)
-        assert status == '200 OK'
-
-    def test_persistent_settings(self):
-        from kotti import get_version
-        from kotti.resources import Settings
-        session = DBSession()
-        [settings] = session.query(Settings).all()
-        self.assertEqual(settings.data, {'kotti.db_version': get_version()})
-        self.assertEqual(get_settings()['kotti.db_version'], get_version())
-        settings.data['foo.bar'] = u'baz'
-        self.assertEqual(get_settings()['foo.bar'], u'baz')
-
-    def test_persistent_settings_add_new(self):
-        from kotti.resources import Settings
-        session = DBSession()
-        [settings] = session.query(Settings).all()
-        data = {'foo.bar': u'spam', 'kotti.db_version': u'next'}
-        new_settings = settings.copy(data)
-        session.add(new_settings)
-        self.assertEqual(get_settings()['foo.bar'], u'spam')
-        self.assertEqual(get_settings()['kotti.db_version'], u'next')
-
 class TestNode(UnitTestBase):
     def test_root_acl(self):
         root = get_root()
@@ -1725,6 +1590,128 @@ class TestLRUCache(TestRequestCache):
         super(TestLRUCache, self).setUp()
         self.cache_decorator = lru_cache
 
+class TestApp(UnitTestBase):
+    def required_settings(self):
+        return {'sqlalchemy.url': 'sqlite://',
+                'kotti.secret': 'dude'}
+
+    def test_override_settings(self):
+        class MyType(object):
+            pass
+
+        def my_configurator(conf):
+            conf['kotti.base_includes'] = ''
+            conf['kotti.available_types'] = [MyType]
+            
+        settings = self.required_settings()
+        settings['kotti.configurators'] = [my_configurator]
+        main({}, **settings)
+
+        self.assertEqual(get_settings()['kotti.base_includes'], [])
+        self.assertEqual(get_settings()['kotti.available_types'], [MyType])
+
+    def test_auth_policies_no_override(self):
+        from pyramid.interfaces import IAuthenticationPolicy
+        from pyramid.interfaces import IAuthorizationPolicy
+        from pyramid.threadlocal import get_current_registry
+
+        settings = self.required_settings()
+        main({}, **settings)
+
+        registry = get_current_registry()
+        assert registry.queryUtility(IAuthenticationPolicy) != None
+        assert registry.queryUtility(IAuthorizationPolicy) != None
+
+    def test_auth_policies_override(self):
+        from pyramid.interfaces import IAuthenticationPolicy
+        from pyramid.interfaces import IAuthorizationPolicy
+        from pyramid.threadlocal import get_current_registry
+
+        settings = self.required_settings()
+        settings['kotti.authn_policy_factory'] = 'kotti.none_factory'
+        settings['kotti.authz_policy_factory'] = 'kotti.none_factory'
+        main({}, **settings)
+
+        registry = get_current_registry()
+        assert registry.queryUtility(IAuthenticationPolicy) == None
+        assert registry.queryUtility(IAuthorizationPolicy) == None
+
+    def test_persistent_settings(self):
+        from kotti import get_version
+        from kotti.resources import Settings
+        session = DBSession()
+        [settings] = session.query(Settings).all()
+        self.assertEqual(settings.data, {'kotti.db_version': get_version()})
+        self.assertEqual(get_settings()['kotti.db_version'], get_version())
+        settings.data['foo.bar'] = u'baz'
+        self.assertEqual(get_settings()['foo.bar'], u'baz')
+
+    def test_persistent_settings_add_new(self):
+        from kotti.resources import Settings
+        session = DBSession()
+        [settings] = session.query(Settings).all()
+        data = {'foo.bar': u'spam', 'kotti.db_version': u'next'}
+        new_settings = settings.copy(data)
+        session.add(new_settings)
+        self.assertEqual(get_settings()['foo.bar'], u'spam')
+        self.assertEqual(get_settings()['kotti.db_version'], u'next')
+
+    def test_asset_overrides(self):
+        settings = self.required_settings()
+        settings['kotti.asset_overrides'] = 'pyramid:scaffold/ pyramid.fixers'
+        main({}, **settings)
+
+    @staticmethod
+    def _includeme_login(config):
+        from kotti.views.login import login
+        config.add_view(
+            login,
+            name='login',
+            context=Node,
+            renderer='kotti:templates/login.pt',
+            )
+
+    def test_includes_overrides(self):
+        settings = self.required_settings()
+        settings['kotti.includes'] = (self._includeme_login,)
+        main({}, **settings)
+
+    def test_use_tables(self):
+        settings = self.required_settings()
+        settings['kotti.populators'] = ''
+        settings['kotti.use_tables'] = 'principals'
+        main({}, **settings)
+
+    def test_root_factory(self):
+        settings = self.required_settings()
+        settings['kotti.root_factory'] = (TestingRootFactory,)
+        app = main({}, **settings)
+        assert get_root().__name__ == 'my root object'
+        assert app.root_factory().__name__ == 'my root object'
+
+    def test_render_master_edit_template_with_minimal_root(self, settings=None):
+        settings = settings or self.required_settings()
+        settings['kotti.root_factory'] = (TestingRootFactory,)
+        settings['kotti.site_title'] = 'My Site'
+        app = main({}, **settings)
+        
+        request = Request.blank('/@@login')
+        (status, headers, response) = request.call_application(app)
+        assert status == '200 OK'
+
+    @staticmethod
+    def _includeme_layout(config):
+        # override edit master layout with view master layout
+        config.override_asset(
+            to_override='kotti:templates/edit/master.pt',
+            override_with='kotti:templates/view/master.pt',
+            )
+
+    def test_render_master_view_template_with_minimal_root(self):
+        settings = self.required_settings()
+        settings['kotti.includes'] = (self._includeme_layout,)
+        return self.test_render_master_edit_template_with_minimal_root(settings)
+
 def setUpFunctional(global_config=None, **settings):
     import wsgi_intercept.zope_testbrowser
 
@@ -1742,6 +1729,47 @@ def setUpFunctional(global_config=None, **settings):
     wsgi_intercept.add_wsgi_intercept(host[2:], int(port), lambda: app)
 
     return dict(Browser=wsgi_intercept.zope_testbrowser.WSGI_Browser)
+
+class TestingRootFactory(dict):
+    __name__ = 'my root object'
+    __parent__ = None
+    __acl__ = [('Allow', 'role:admin', ALL_PERMISSIONS)]
+
+    def __init__(self, request):
+        super(TestingRootFactory, self).__init__()
+
+def dummy_view(context, request):
+    return {}
+
+def include_testing_view(config):
+    config.add_view(
+        dummy_view,
+        context=TestingRootFactory,
+        renderer='kotti:testing_view.pt',
+        )
+
+    config.add_view(
+        dummy_view,
+        name='secured',
+        permission='view',
+        context=TestingRootFactory,
+        renderer='kotti:testing_view.pt',
+        )
+
+def setUpFunctionalStrippedDownApp(global_config=None, **settings):
+    # An app that doesn't use Nodes at all
+    _settings = {
+        'kotti.base_includes': (
+            'kotti kotti.views kotti.views.login kotti.views.users'),
+        'kotti.use_tables': 'principals',
+        'kotti.populators': 'kotti.populate.populate_users',
+        'kotti.includes': 'kotti.tests.include_testing_view',
+        'kotti.root_factory': 'kotti.tests.TestingRootFactory',
+        'kotti.site_title': 'My Stripped Down Kotti',
+        }
+    _settings.update(settings)
+
+    return setUpFunctional(global_config, **_settings)
 
 def registerDummyMailer():
     from pyramid_mailer.mailer import DummyMailer

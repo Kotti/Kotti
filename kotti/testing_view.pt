@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xml:lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      metal:use-macro="api.macro('kotti:templates/view/master.pt')">
+
+  <div metal:fill-slot="content">
+    <div tal:condition="api.user">
+      Welcome, ${api.user.title}!  You are logged in.
+    </div>
+    <div tal:condition="not api.user">
+      Welcome, you are not logged in.
+    </div>
+  </div>
+
+</html>

@@ -21,6 +21,18 @@ def _add_document_from_file(filename, name, parent, title, package='kotti',
     DBSession.add(node)
     return node
 
+def populate_users():
+    principals = get_principals()
+    if u'admin' not in principals:
+        principals[u'admin'] = {
+            'name': u'admin',
+            'password': get_settings()['kotti.secret'],
+            'title': u"Administrator",
+            'groups': [u'role:admin'],
+            }
+        DBSession.flush()
+        transaction.commit()
+
 def populate():
     nodecount = DBSession.query(Node).count()
     if nodecount == 0:
@@ -34,14 +46,6 @@ def populate():
         settings = Settings(data={'kotti.db_version': get_version()})
         DBSession.add(settings)
 
-    principals = get_principals()
-    if u'admin' not in principals:
-        principals[u'admin'] = {
-            'name': u'admin',
-            'password': get_settings()['kotti.secret'],
-            'title': u"Administrator",
-            'groups': [u'role:admin'],
-            }
-
+    populate_users()
     DBSession.flush()
     transaction.commit()

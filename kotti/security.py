@@ -220,7 +220,7 @@ def _cachekey_list_groups_ext(name, context=None, _seen=None, _inherited=None):
     if _seen is not None or _inherited is not None:
         raise DontCache
     else:
-        context_id = context is not None and context.id
+        context_id = context is not None and getattr(context, 'id', id(context))
         return (name, context_id)
 
 @request_cache(_cachekey_list_groups_ext)
