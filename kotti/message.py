@@ -45,7 +45,7 @@ def make_token(user, seconds=None):
 
 def validate_token(user, token, valid_hrs=24):
     """
-      >>> from kotti.tests import setUp, tearDown
+      >>> from kotti.testing import setUp, tearDown
       >>> ignore = setUp()
       >>> class User(object):
       ...     pass

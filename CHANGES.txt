@@ -9,6 +9,9 @@ History
   robust so that a minimal root with '__parent__' and '__name__' can
   be rendered.
 
+- The 'kotti.tests' was factored out.  Tests must now import from
+  'kotti.testing'.
+
 0.4.2 - 2011-12-20
 ------------------
 

@@ -4,18 +4,21 @@ Kotti browser tests for a stripped down app
 These browser tests use a setup that includes only a selection of
 Kotti's functionality.
 
-  >>> from kotti import tests
-  >>> tools = tests.setUpFunctionalStrippedDownApp()
+  >>> from kotti import testing
+  >>> tools = testing.setUpFunctionalStrippedDownApp()
   >>> browser = tools['Browser']()
   >>> ctrl = browser.getControl
 
-  >>> browser.open(tests.BASE_URL)
+  >>> browser.open(testing.BASE_URL)
   >>> "Welcome, you are not logged in" in browser.contents
   True
 
-  >>> browser.open(tests.BASE_URL + '/secured')
+  >>> browser.open(testing.BASE_URL + '/secured')
   >>> ctrl("Username or email").value = "admin"
   >>> ctrl("Password").value = "secret"
   >>> ctrl(name="submit").click()
   >>> "You are logged in" in browser.contents
   True
+
+
+  >>> testing.tearDown()
