@@ -9,6 +9,9 @@ Kotti's functionality.
   >>> browser = tools['Browser']()
   >>> ctrl = browser.getControl
 
+Logging in
+----------
+
   >>> browser.open(testing.BASE_URL)
   >>> "Welcome, you are not logged in" in browser.contents
   True
@@ -18,6 +21,19 @@ Kotti's functionality.
   >>> ctrl("Password").value = "secret"
   >>> ctrl(name="submit").click()
   >>> "You are logged in" in browser.contents
+  True
+
+User management
+---------------
+
+  >>> browser.open(testing.BASE_URL + '/@@setup')
+  >>> browser.getLink("User Management").click()
+
+  >>> ctrl(name="query").value = "admin"
+  >>> ctrl(name="search").click()
+  >>> ctrl(name="role::admin::role:editor").value
+  False
+  >>> ctrl(name="role::admin::role:admin").value
   True
 
 

@@ -120,8 +120,8 @@ class TestApp(UnitTestBase):
         settings = self.required_settings()
         settings['kotti.root_factory'] = (TestingRootFactory,)
         app = main({}, **settings)
-        assert get_root().__name__ == 'my root object'
-        assert app.root_factory().__name__ == 'my root object'
+        assert isinstance(get_root(), TestingRootFactory)
+        assert isinstance(app.root_factory(), TestingRootFactory)
 
     def test_render_master_edit_template_with_minimal_root(self, settings=None):
         from kotti import main

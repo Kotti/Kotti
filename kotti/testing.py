@@ -98,7 +98,7 @@ def setUpFunctional(global_config=None, **settings):
     return dict(Browser=wsgi_intercept.zope_testbrowser.WSGI_Browser)
 
 class TestingRootFactory(dict):
-    __name__ = 'my root object'
+    __name__ = '' # root is required to have an empty name!
     __parent__ = None
     __acl__ = [('Allow', 'role:admin', ALL_PERMISSIONS)]
 
@@ -127,7 +127,8 @@ def setUpFunctionalStrippedDownApp(global_config=None, **settings):
     # An app that doesn't use Nodes at all
     _settings = {
         'kotti.base_includes': (
-            'kotti kotti.views kotti.views.login kotti.views.users'),
+            'kotti kotti.views kotti.views.login kotti.views.site_setup '
+            'kotti.views.users'),
         'kotti.use_tables': 'principals',
         'kotti.populators': 'kotti.populate.populate_users',
         'kotti.includes': 'kotti.testing.include_testing_view',
