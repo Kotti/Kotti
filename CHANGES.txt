@@ -1,7 +1,7 @@
 History
 =======
 
-0.4.3 - Unreleased
+0.4.3 - 2011-12-22
 ------------------
 
 - Add 'kotti.root_factory' setting which allows the override Kotti's
@@ -9,7 +9,7 @@ History
   robust so that a minimal root with '__parent__' and '__name__' can
   be rendered.
 
-- The 'kotti.tests' was factored out.  Tests must now import from
+- The 'kotti.tests' was factored out.  Tests should now import from
   'kotti.testing'.
 
 0.4.2 - 2011-12-20
