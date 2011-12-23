@@ -4,6 +4,8 @@ History
 0.4.4 - Unreleased
 ------------------
 
+- Fix bug with 'kotti.site_title' setting.
+
 0.4.3 - 2011-12-22
 ------------------
 

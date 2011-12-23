@@ -47,6 +47,12 @@ class TestTemplateAPI(UnitTestBase):
         api.site_title = u"Wasnhierlos"
         self.assertEqual(api.page_title, u"Hello, world! - Wasnhierlos")
 
+    @patch('kotti.views.util.get_settings')
+    def test_site_title(self, get_settings):
+        get_settings.return_value = {'kotti.site_title': u'This is it.'}
+        api = self._make()
+        self.assertEqual(api.site_title, u'This is it.')
+
     def test_list_children(self):
         api = self._make() # the default context is root
         root = api.context

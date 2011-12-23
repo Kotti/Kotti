@@ -100,7 +100,8 @@ class TemplateAPI(object):
     def site_title(self):
         value = get_settings().get('kotti.site_title')
         if not value:
-            return self.root.title
+            value = self.root.title
+        return value
 
     @reify
     def page_title(self):
