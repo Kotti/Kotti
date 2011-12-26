@@ -1,3 +1,5 @@
+- Use declarative for SQLAlchemy models.
+
 - To allow for easier integration with 'repoze.workflow', add a
   'status' attribute to the Content class.
 
