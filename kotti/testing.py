@@ -46,8 +46,8 @@ def setUp(init_db=True, **kwargs):
     settings['kotti.secret'] = 'secret'
     settings['kotti.secret2'] = 'secret2'
     settings['kotti.populators'] = 'kotti.testing._populator'
-    _resolve_dotted(settings)
     settings.update(kwargs.get('settings', {}))
+    _resolve_dotted(settings)
     kwargs['settings'] = settings
     config = testing.setUp(**kwargs)
     for name, renderer in DEFAULT_RENDERERS:
