@@ -6,7 +6,9 @@ from deform import ValidationFailure
 from deform.widget import CheckedPasswordWidget
 from deform.widget import HiddenWidget
 from formencode.validators import Email
+from pyramid.encode import urlencode
 from pyramid.httpexceptions import HTTPFound
+from pyramid.httpexceptions import HTTPForbidden
 from pyramid.security import remember
 from pyramid.security import forget
 from pyramid.url import resource_url
@@ -14,7 +16,6 @@ from pyramid.url import resource_url
 from kotti.message import validate_token
 from kotti.message import send_set_password
 from kotti.resources import get_root
-from kotti.resources import Node
 from kotti.security import get_principals
 from kotti.views.util import template_api
 
@@ -137,11 +138,15 @@ def set_password(context, request,
         'form': rendered_form,
         }
 
+def forbidden_view(request):
+    location = request.application_url + '/login?' + urlencode(
+        {'came_from': request.url})
+    return HTTPFound(location=location)
+
 def includeme(config):
     config.add_view(
-        login,
-        context='pyramid.exceptions.Forbidden',
-        renderer='kotti:templates/login.pt',
+        forbidden_view,
+        context=HTTPForbidden,
         )
 
     config.add_view(
