@@ -4,6 +4,9 @@ History
 0.4.4 - Unreleased
 ------------------
 
+- The "Forbidden View" will no longer redirect clients that don't
+  accept 'text/html' to the login form.
+
 - Fix bug with 'kotti.site_title' setting.
 
 0.4.3 - 2011-12-22

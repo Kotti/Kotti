@@ -138,12 +138,21 @@ def set_password(context, request,
         'form': rendered_form,
         }
 
-def forbidden_view(request):
+def forbidden_redirect(request):
     location = request.application_url + '/login?' + urlencode(
         {'came_from': request.url})
     return HTTPFound(location=location)
 
+def forbidden_view(request):
+    return request.exception
+
 def includeme(config):
+    config.add_view(
+        forbidden_redirect,
+        context=HTTPForbidden,
+        accept='text/html',
+        )
+
     config.add_view(
         forbidden_view,
         context=HTTPForbidden,

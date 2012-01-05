@@ -81,6 +81,7 @@ class UnitTestBase(TestCase):
 def setUpFunctional(global_config=None, **settings):
     from kotti import main
     import wsgi_intercept.zope_testbrowser
+    from webtest import TestApp
 
     _settings = {
         'sqlalchemy.url': testing_db_url(),
@@ -94,8 +95,27 @@ def setUpFunctional(global_config=None, **settings):
     host, port = BASE_URL.split(':')[-2:]
     app = main({}, **_settings)
     wsgi_intercept.add_wsgi_intercept(host[2:], int(port), lambda: app)
+    Browser = wsgi_intercept.zope_testbrowser.WSGI_Browser
 
-    return dict(Browser=wsgi_intercept.zope_testbrowser.WSGI_Browser)
+    return dict(
+        Browser=Browser,
+        browser=Browser(),
+        test_app=TestApp(app),
+        )
+
+class FunctionalTestBase(TestCase):
+    def setUp(self, **kwargs):
+        self.__dict__.update(setUpFunctional(**kwargs))
+
+    def tearDown(self):
+        tearDown()
+
+    def login(self, login=u'admin', password=u'secret'):
+        return self.test_app.post(
+            '/@@login',
+            {'login': login, 'password': password, 'submit': 'submit'},
+            status=302,
+            )
 
 class TestingRootFactory(dict):
     __name__ = '' # root is required to have an empty name!

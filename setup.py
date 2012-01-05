@@ -31,6 +31,7 @@ install_requires = [
     ]
 
 tests_require = [
+    'WebTest',
     'mock>=0.8.0beta4',
     'pytest',
     'pytest-cov',
