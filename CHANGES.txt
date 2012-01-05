@@ -1,7 +1,7 @@
 History
 =======
 
-0.4.4 - Unreleased
+0.4.4 - 2012-01-05
 ------------------
 
 - The "Forbidden View" will no longer redirect clients that don't
