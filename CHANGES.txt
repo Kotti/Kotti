@@ -4,6 +4,9 @@ History
 0.4.5 - Unreleased
 ------------------
 
+- Add a template ('forbidden.pt') for when user is logged in but still
+  getting HTTPForbidden.
+
 0.4.4 - 2012-01-05
 ------------------
 

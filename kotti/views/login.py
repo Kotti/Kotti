@@ -9,6 +9,7 @@ from formencode.validators import Email
 from pyramid.encode import urlencode
 from pyramid.httpexceptions import HTTPFound
 from pyramid.httpexceptions import HTTPForbidden
+from pyramid.security import authenticated_userid
 from pyramid.security import remember
 from pyramid.security import forget
 from pyramid.url import resource_url
@@ -138,9 +139,12 @@ def set_password(context, request,
         'form': rendered_form,
         }
 
-def forbidden_redirect(request):
-    location = request.application_url + '/login?' + urlencode(
-        {'came_from': request.url})
+def forbidden_redirect(context, request):
+    if authenticated_userid(request):
+        location = request.application_url + '/@@forbidden'
+    else:
+        location = request.application_url + '/@@login?' + urlencode(
+            {'came_from': request.url})
     return HTTPFound(location=location)
 
 def forbidden_view(request):
@@ -156,6 +160,11 @@ def includeme(config):
     config.add_view(
         forbidden_view,
         context=HTTPForbidden,
+        )
+
+    config.add_view(
+        name='forbidden',
+        renderer='kotti:templates/forbidden.pt',
         )
 
     config.add_view(
