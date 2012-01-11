@@ -16,8 +16,9 @@ from sqlalchemy.orm.exc import NoResultFound
 from pyramid.location import lineage
 from pyramid.security import Allow
 from pyramid.security import ALL_PERMISSIONS
-from pyramid.security import view_execution_permitted
 from pyramid.security import authenticated_userid
+from pyramid.security import has_permission as base_has_permission
+from pyramid.security import view_execution_permitted
 
 from kotti import get_settings
 from kotti import DBSession
@@ -32,6 +33,10 @@ def get_principals():
 def get_user(request):
     userid = authenticated_userid(request)
     return get_principals().get(userid)
+
+def has_permission(permission, context, request):
+    with authz_context(context, request):
+        return base_has_permission(permission, context, request)
 
 class Principal(object):
     """A minimal 'Principal' implementation.
