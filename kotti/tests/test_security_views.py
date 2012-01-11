@@ -1,4 +1,5 @@
 import colander
+from mock import patch
 
 from kotti.testing import DummyRequest
 from kotti.testing import UnitTestBase
@@ -84,3 +85,88 @@ class TestUserManagement(UnitTestBase):
         self.assertRaises(
             colander.Invalid,
             group_validator, None, u'this-group-never-exists')
+
+class TestSetPassword(UnitTestBase):
+    def setUp(self):
+        super(TestSetPassword, self).setUp()
+
+        Form_patcher = patch('kotti.views.login.Form')
+        self.Form_mock = Form_patcher.start()
+
+        _find_user_patcher = patch('kotti.views.login._find_user')
+        self._find_user_mock = _find_user_patcher.start()
+        self.user = self._find_user_mock.return_value
+
+        validate_token_patcher = patch('kotti.views.login.validate_token')
+        self.validate_token_mock = validate_token_patcher.start()
+
+        self.patchers = (
+            Form_patcher, _find_user_patcher, validate_token_patcher)
+
+    def tearDown(self):
+        super(TestSetPassword, self).tearDown()
+        for patcher in self.patchers:
+            patcher.stop()
+
+    def form_values(self, values):
+        self.Form_mock.return_value.validate.return_value = values
+
+    def test_success(self):
+        from kotti.resources import get_root
+        from kotti.security import get_principals
+        from kotti.views.login import set_password
+
+        self.form_values({
+            'token': 'mytoken',
+            'email': 'myemail',
+            'password': 'mypassword',
+            'continue_to': '',
+            })
+        self.user.confirm_token = 'mytoken'
+        self.user.password = 'old_password'
+        context, request = get_root(), DummyRequest(post={'submit': 'submit'})
+        res = set_password(context, request)
+
+        assert self.user.confirm_token is None
+        assert get_principals().validate_password(
+            'mypassword', self.user.password)
+        assert res.status == '302 Found'
+
+    def test_wrong_token(self):
+        from kotti.resources import get_root
+        from kotti.security import get_principals
+        from kotti.views.login import set_password
+
+        self.form_values({
+            'token': 'wrongtoken',
+            'email': 'myemail',
+            'password': 'mypassword',
+            'continue_to': '',
+            })
+        self.user.confirm_token = 'mytoken'
+        self.user.password = 'old_password'
+        context, request = get_root(), DummyRequest(post={'submit': 'submit'})
+        res = set_password(context, request)
+
+        assert self.user.confirm_token == 'mytoken'
+        assert not get_principals().validate_password(
+            'mypassword', self.user.password)
+        assert not request.is_response(res)
+
+    def test_success_continue(self):
+        from kotti.resources import get_root
+        from kotti.views.login import set_password
+
+        self.form_values({
+            'token': 'mytoken',
+            'email': 'myemail',
+            'password': 'mypassword',
+            'continue_to': 'http://example.com/here#there',
+            })
+        self.user.confirm_token = 'mytoken'
+        context, request = get_root(), DummyRequest(
+            post={'submit': 'submit'})
+        res = set_password(context, request)
+
+        assert res.status == '302 Found'
+        assert res.location == 'http://example.com/here#there'

@@ -96,6 +96,11 @@ class SetPasswordSchema(colander.MappingSchema):
         colander.String(),
         widget=HiddenWidget(),
         )
+    continue_to = colander.SchemaNode(
+        colander.String(),
+        widget=HiddenWidget(),
+        missing=colander.null,
+        )
 
 def set_password(context, request,
                  success_msg=u"You've reset your password successfully."):
@@ -119,7 +124,8 @@ def set_password(context, request,
                 user.password = get_principals().hash_password(password)
                 user.confirm_token = None
                 headers = remember(request, user.name)
-                location = resource_url(context, request)
+                location = (appstruct['continue_to'] or
+                            resource_url(context, request))
                 request.session.flash(success_msg, 'success')
                 return HTTPFound(location=location, headers=headers)
             else:
