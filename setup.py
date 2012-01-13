@@ -28,6 +28,7 @@ install_requires = [
     'repoze.lru',
     'sqlalchemy>=0.7',
     'zope.sqlalchemy',
+    'lingua>=1.2dev',
     ]
 
 tests_require = [
@@ -80,9 +81,15 @@ setup(name='Kotti',
       #tests_require=tests_require,
       dependency_links = [
           "http://www.voidspace.org.uk/downloads/mock-0.8.0beta4.tar.gz",
+          "http://github.com/teixas/lingua/tarball/master#egg=lingua-1.2dev",
       ],
       entry_points = """\
       [paste.app_factory]
       main = kotti:main
       """,
+      message_extractors={'kotti': [
+            ('**.py', 'lingua_python', None),
+            ('**.zcml', 'lingua_xml', None),
+            ('**.pt', 'lingua_xml', None),
+            ]},
       )
