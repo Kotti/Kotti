@@ -1,3 +1,4 @@
+from __future__ import with_statement
 from contextlib import contextmanager
 from datetime import datetime
 from UserDict import DictMixin
