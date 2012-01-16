@@ -2,13 +2,17 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xml:lang="en"
       xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      i18n:domain="Kotti"
       metal:use-macro="api.macro('kotti:templates/view/master.pt')">
 
   <div metal:fill-slot="content">
-    <div tal:condition="api.user">
-      Welcome, ${api.user.title}!  You are logged in.
+    <div tal:condition="api.user"
+         i18n:translate="">
+      Welcome, <span tal:omit-tag="" i18n:name="user">${api.user.title}</span>!  You are logged in.
     </div>
-    <div tal:condition="not api.user">
+    <div tal:condition="not api.user"
+         i18n:translate="">
       Welcome, you are not logged in.
     </div>
   </div>

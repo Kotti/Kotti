@@ -1,5 +1,6 @@
-<nav class="breadcrumbs" tal:define="(siblings, children) api.context_links">
-  <span class="you-are-here">You are here:</span>
+<nav class="breadcrumbs" tal:define="(siblings, children) api.context_links"
+     i18n:domain="Kotti">
+  <span class="you-are-here" i18n:translate="">You are here:</span>
   <div tal:repeat="link api.breadcrumbs" tal:omit-tag="">
     <a href="${link.is_context and '#bread-dropdown' or link.url}"
        class="${not link.is_edit_link and 'no-edit-link' or ''} ${link.is_context and 'is-context dropdown-trigger' or ''}"
@@ -17,13 +18,13 @@
          tal:condition="link.is_context and siblings or children">
       <ul>
         <talcondition tal:condition="children" tal:omit-tag="">
-          <li><h4>Items in <em>${api.context.title}</em></h4></li>
+          <li><h4><span tal:omit-tag="" i18n:translate="">Items in</span> <em>${api.context.title}</em></h4></li>
           <li tal:repeat="link children">
             <a href="${link.url}" class="${not link.is_edit_link and 'no-edit-link'}">${link.name}</a>
           </li>
         </talcondition>
         <talcondition tal:condition="siblings" tal:omit-tag="">
-          <li><h4>Items in <em>${api.context.__parent__.title}</em></h4></li>
+          <li><h4><span tal:omit-tag="" i18n:translate="">Items in</span> <em>${api.context.__parent__.title}</em></h4></li>
           <li tal:repeat="link siblings">
             <a href="${link.url}" class="${not link.is_edit_link and 'no-edit-link'}">${link.name}</a>
           </li>

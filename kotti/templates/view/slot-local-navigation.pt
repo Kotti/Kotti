@@ -1,5 +1,6 @@
-<div id="local-navigation">
-  <h2 class="hidden">Local navigation</h2>
+<div id="local-navigation"
+     i18n:domain="Kotti">
+  <h2 class="hidden" i18n:translate="">Local navigation</h2>
   <ul>
     <li>
       <a href="${api.url(parent)}" title="${getattr(parent, 'description', None)}"

@@ -2,22 +2,27 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xml:lang="en"
       xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      i18n:domain="Kotti"
       metal:use-macro="api.macro('kotti:templates/edit/master.pt')">
 
   <div metal:fill-slot="content">
-    <h1>Share <em>${api.context.title}</em></h1>
+    <h1><span tal:omit-tag=""
+              i18n:translate="">Share</span> <em>${api.context.title}</em></h1>
 
     <div class="form">
       <form action="${request.url}" method="post">
-        <h2>Assign local roles</h2>
+        <h2 i18n:translate="">Assign local roles</h2>
         <ul>
           <li>
-            <label for="search-query">Search users and groups</label><br />
+            <label for="search-query"
+                   i18n:translate="">Search users and groups</label><br />
             <input type="text" name="query" id="search-query"
                    value="${request.params.get('query')}"
                    placeholder="Search users and groups"
+                   i18n:attributes="placeholder"
                    />
-            <button type="submit" name="search">
+            <button type="submit" name="search" i18n:translate="">
               Search
             </button>
           </li>
@@ -25,7 +30,7 @@
 
         <table tal:condition="entries" class="users-matrix">
           <tr>
-            <th>Name</th>
+            <th i18n:translate="">Name</th>
             <th tal:repeat="role available_roles">
               ${role.title}
             </th>
@@ -54,7 +59,7 @@
 
         <ul>
           <li>
-            <button type="submit" name="apply">
+            <button type="submit" name="apply" i18n:translate="">
               Apply changes
             </button>
           </li>

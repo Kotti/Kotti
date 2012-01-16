@@ -1,17 +1,20 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xml:lang="en"
       xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      i18n:domain="Kotti"
       metal:extend-macro="api.macro('kotti:templates/edit/master.pt')"
       metal:define-macro="main">
 
   <span tal:omit-tag="" metal:fill-slot="switch-mode-box">
-    <a href="${api.url(context, '@@edit')}">Edit</a>
+    <a href="${api.url(context, '@@edit')}" i18n:translate="">Edit</a>
   </span>
 
   <div class="tabs1" metal:fill-slot="tabs1">
     <ul>
       <li>
-        <a href="${api.url(api.root, '@@setup')}" class="selected">Site Setup</a>
+        <a href="${api.url(api.root, '@@setup')}" class="selected"
+           i18n:translate="">Site Setup</a>
       </li>
     </ul>
   </div>

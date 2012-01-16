@@ -1,6 +1,8 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xml:lang="en"
       xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      i18n:domain="Kotti"
       metal:use-macro="api.macro('kotti:templates/site-setup/master.pt')">
 
   <div metal:fill-slot="content">
@@ -8,15 +10,17 @@
 
     <div class="form">
       <form action="${request.url}" method="post">
-        <h2>Search and modify users</h2>
+        <h2 i18n:translate="">Search and modify users</h2>
         <ul>
           <li>
-            <label for="search-query">Search users and groups</label><br />
+            <label for="search-query"
+                   i18n:translate="">Search users and groups</label><br />
             <input type="text" name="query" id="search-query"
                    value="${request.params.get('query')}"
                    placeholder="Search users and groups"
+                   i18n:attributes="placeholder"
                    />
-            <button type="submit" name="search">
+            <button type="submit" name="search" i18n:translate="">
               Search
             </button>
           </li>
@@ -24,7 +28,7 @@
 
         <table tal:condition="entries" class="users-matrix">
           <tr>
-            <th>Name</th>
+            <th i18n:translate="">Name</th>
             <th tal:repeat="role available_roles">
               ${role.title}
             </th>
@@ -54,7 +58,7 @@
 
         <ul>
           <li>
-            <button type="submit" name="apply">
+            <button type="submit" name="apply" i18n:translate="">
               Apply changes
             </button>
           </li>
@@ -64,13 +68,13 @@
     </div>
 
     <div class="form ${request.params.get('add-user') is None and 'collapse'}">
-      <h2>Add user</h2>
+      <h2 i18n:translate="">Add user</h2>
       <form tal:replace="structure user_addform">
       </form>
     </div>
 
     <div class="form ${request.params.get('add-group') is None and 'collapse'}">
-      <h2>Add group</h2>
+      <h2 i18n:translate="">Add group</h2>
       <form tal:replace="structure group_addform">
       </form>
     </div>

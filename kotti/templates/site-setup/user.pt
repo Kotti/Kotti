@@ -1,10 +1,12 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xml:lang="en"
       xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      i18n:domain="Kotti"
       metal:use-macro="api.macro('kotti:templates/site-setup/master.pt')">
 
   <div metal:fill-slot="content">
-    <div><a href="./@@setup-users?extra=${api.principal.name}">&larr; Back to User Management</a></div>
+    <div><a href="./@@setup-users?extra=${api.principal.name}">&larr; <span tal:omit-tag="" i18n:translate="">Back to User Management</span></a></div>
     <h1>${api.page_title}</h1>
 
     <div class="form">
@@ -12,7 +14,8 @@
            alt="${api.principal.title}"
            style="float: right" />
       <h2>
-        Edit <em>${api.principal.title}</em>
+        <span tal:omit-tag=""
+              i18n:translate="">Edit</span> <em>${api.principal.title}</em>
       </h2>
       <form tal:replace="structure form">
       </form>

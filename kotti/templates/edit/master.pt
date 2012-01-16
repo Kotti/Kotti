@@ -1,5 +1,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      i18n:domain="Kotti"
       metal:define-macro="main">
 
   <head>
@@ -40,9 +42,9 @@
 
     <div id="skiplinks" class="hidden">
       <ul>
-        <li><a href="#start-navigation">Skip to navigation</a></li>
-        <li><a href="#start-tools">Skip to tools menu</a></li>
-        <li><a href="#start-content">Skip to content</a></li>
+        <li><a href="#start-navigation" i18n:translate="">Skip to navigation</a></li>
+        <li><a href="#start-tools" i18n:translate="">Skip to tools menu</a></li>
+        <li><a href="#start-content" i18n:translate="">Skip to content</a></li>
       </ul>
     </div>
 
@@ -54,7 +56,7 @@
     <div id="switch-mode-box" class="vertical-text round-corners-top"
          tal:condition="api.has_permission('view')">
       <span tal:omit-tag="" metal:define-slot="switch-mode-box">
-        <a href="${api.url()}">View</a>
+        <a href="${api.url()}" i18n:translate="">View</a>
       </span>
     </div>
 

@@ -2,15 +2,17 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xml:lang="en"
       xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      i18n:domain="Kotti"
       metal:use-macro="api.macro('kotti:templates/edit/master.pt')">
 
   <div metal:fill-slot="content">
-    <h1>Add item</h1>
+    <h1 i18n:translate="">Add item</h1>
 
     <div class="form">
       <form action="${request.url}" method="post">
         <div id="what-to-add" tal:condition="len(possible_types) &gt; 1">
-          <h2>What do you want to add?</h2>
+          <h2 i18n:translate="">What do you want to add?</h2>
           <ul>
             <li tal:repeat="type possible_types">
               <span tal:define="type_name type['factory'].type_info.name"
@@ -31,7 +33,7 @@
         </div>
 
         <div id="where-to-add" tal:condition="len(possible_parents) &gt; 1">
-          <h2>Which folder do you want to add to?</h2>
+          <h2 i18n:translate="">Which folder do you want to add to?</h2>
           <ul>
             <li tal:repeat="parent possible_parents[:2]">
               <input type="radio" name="where" value="${parent['node'].id}"
@@ -39,7 +41,7 @@
                      id="where-to-add-${parent['node'].id}" />
               <label for="where-to-add-${parent['node'].id}"
                      tal:define="url api.url(parent['node'])">
-                Add to <em>${parent['node'].title}</em>
+                <span tal:omit-tag="" i18n:translate="">Add to</span> <em>${parent['node'].title}</em>
               </label>
             </li>
           </ul>
@@ -50,7 +52,7 @@
         </div>
         <ul>
           <li>
-            <input type="submit" value="Continue" />
+            <input type="submit" value="Continue" i18n:attributes="value" />
           </li>
         </ul>
       </form>

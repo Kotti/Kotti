@@ -1,5 +1,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      i18n:domain="Kotti"
       metal:define-macro="main">
 
   <head>
@@ -26,24 +28,24 @@
   <body class="view-view" tal:define="page_slots api.slots">
     <div id="skiplinks" class="hidden">
       <ul>
-        <li><a href="#start-navigation">Skip to navigation</a></li>
-        <li><a href="#start-content">Skip to content</a></li>
+        <li><a href="#start-navigation" i18n:translate="">Skip to navigation</a></li>
+        <li><a href="#start-content" i18n:translate="">Skip to content</a></li>
       </ul>
     </div>
 
     <!-- The tab to switch modes  -->
     <div id="switch-mode-box" class="vertical-text round-corners-top"
          tal:condition="api.has_permission('edit')">
-      <a href="${api.url(context, '@@edit')}">Edit</a>
+      <a href="${api.url(context, '@@edit')}" i18n:translate="">Edit</a>
     </div>
 
     <div id="header">
       <nav id="site-navigation" class="top-navigation">
         <a id="start-navigation" name="start-navigation"></a>
         <div class="tabs1">
-          <h2 class="hidden">Site navigation</h2>
+          <h2 class="hidden" i18n:translate="">Site navigation</h2>
           <ul>
-            <li><a href="${request.application_url}" class="${api.root == api.context and 'selected'}">Home</a></li>
+            <li><a href="${request.application_url}" class="${api.root == api.context and 'selected'}" i18n:translate="">Home</a></li>
             <li tal:define="items [i for i in api.list_children(api.root) if i.in_navigation]"
                 tal:repeat="item items">
               <a href="${api.url(item)}"
