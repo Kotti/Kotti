@@ -161,4 +161,6 @@ def includeme(config):
                      if a.strip()]:
         config.override_asset(to_override='kotti', override_with=override)
 
+    config.add_translation_dirs('kotti:locale')
+
     return config
