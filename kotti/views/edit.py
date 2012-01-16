@@ -199,7 +199,10 @@ def generic_add(context, request, schema, add, title, form_factory=Form,
           mapping=dict(title=title,
                        context_title=emphasized_title,
                        site_title=api.site_title)))
-    form = form_factory(schema, buttons=('save', 'cancel'), action=request.url)
+    form = form_factory(schema,
+                        buttons=(Button('save', _(u'Save')),
+                                 Button('cancel', _(u'Cancel'))),
+                        action=request.url)
     rendered = FormController(form, add=add, **kwargs)(context, request)
     if request.is_response(rendered):
         return rendered
