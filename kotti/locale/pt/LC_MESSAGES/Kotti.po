@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Kotti 0.4.4\n"
-"POT-Creation-Date: 2012-01-16 17:44+0000\n"
+"POT-Creation-Date: 2012-01-16 18:44+0000\n"
 "PO-Revision-Date: 2012-01-16 12:02+0000\n"
 "Last-Translator: Nuno Teixeira <teixas@gmail.com>\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
@@ -45,16 +45,12 @@ msgid "Share"
 msgstr "Partilha"
 
 #: kotti/security.py:147
-#, fuzzy
-#| msgid "View"
 msgid "Viewer"
-msgstr "Ver"
+msgstr "Leitor"
 
 #: kotti/security.py:148
-#, fuzzy
-#| msgid "Edit"
 msgid "Editor"
-msgstr "Editar"
+msgstr "Editor"
 
 #: kotti/security.py:149
 msgid "Owner"
@@ -251,16 +247,12 @@ msgid "Welcome, ${user}! You are logged in."
 msgstr "Bem-vindo, ${user}! Você está autenticado."
 
 #: kotti/tests/testing_view.pt:14
-#, fuzzy
-#| msgid "Welcome, ${user}! You are logged in."
 msgid "Welcome, you are not logged in."
-msgstr "Bem-vindo, ${user}! Você está autenticado."
+msgstr "Bem-vindo, você não está autenticado."
 
 #: kotti/views/edit.py:31 kotti/views/users.py:161
-#, fuzzy
-#| msgid "New title"
 msgid "Title"
-msgstr "Novo título"
+msgstr "Título"
 
 #: kotti/views/edit.py:34
 msgid "Description"
@@ -275,10 +267,8 @@ msgid "${title} copied."
 msgstr "${title} copiado."
 
 #: kotti/views/edit.py:102
-#, fuzzy
-#| msgid "Cut ${title}"
 msgid "${title} cut."
-msgstr "Cortar ${title}"
+msgstr "${title} cortado."
 
 #: kotti/views/edit.py:125
 msgid "${title} pasted."
@@ -297,16 +287,12 @@ msgid "Name and title are required."
 msgstr "Nome e título são obrigatórios."
 
 #: kotti/views/edit.py:165
-#, fuzzy
-#| msgid "New name"
 msgid "Item renamed"
-msgstr "Novo nome"
+msgstr "Item renomeado"
 
 #: kotti/views/edit.py:175
-#, fuzzy
-#| msgid "Cut ${title}"
 msgid "Edit ${title}"
-msgstr "Cortar ${title}"
+msgstr "Editar ${title}"
 
 #: kotti/views/edit.py:176
 msgid "Edit ${title} - ${site_title}"
@@ -327,10 +313,8 @@ msgid "Add ${title} to ${context_title} - ${site_title}"
 msgstr "Adicionar ${title} a ${context_title} - ${site_title}"
 
 #: kotti/views/login.py:56
-#, fuzzy
-#| msgid "Welcome, ${user}! You are logged in."
 msgid "Welcome, ${user}!"
-msgstr "Bem-vindo, ${user}! Você está autenticado."
+msgstr "Bem-vindo, ${user}!"
 
 #: kotti/views/login.py:60
 msgid "Login failed."
@@ -371,22 +355,16 @@ msgid "Your password reset token may have expired."
 msgstr "A seu pedido para alterar a palavra passe expirou."
 
 #: kotti/views/login.py:145
-#, fuzzy
-#| msgid "Forgot your password?"
 msgid "Reset your password - ${title}"
-msgstr "Esqueceu-se da palavra passe?"
+msgstr "Reiniciar a sua palavra passe - ${title}"
 
 #: kotti/views/site_setup.py:8
-#, fuzzy
-#| msgid "Back to User Management"
 msgid "User Management"
-msgstr "Voltar à gestão de utilizadores"
+msgstr "Gestão de Utilizadores"
 
 #: kotti/views/site_setup.py:16
-#, fuzzy
-#| msgid "Cut ${title}"
 msgid "Site Setup - ${title}"
-msgstr "Cortar ${title}"
+msgstr "Configuração do Sítio - ${title}"
 
 #: kotti/views/users.py:65 kotti/views/users.py:385 kotti/views/util.py:338
 msgid "Your changes have been saved."
@@ -413,10 +391,8 @@ msgid "No such group: ${group}"
 msgstr "Grupo não encontrado: ${group}"
 
 #: kotti/views/users.py:154
-#, fuzzy
-#| msgid "Add group"
 msgid "Group"
-msgstr "Adicionar grupo"
+msgstr "Grupo"
 
 #: kotti/views/users.py:179
 msgid "Active"
@@ -427,16 +403,12 @@ msgid "Untick this to deactivate the account."
 msgstr "Retirar para desactivar a conta."
 
 #: kotti/views/users.py:186
-#, fuzzy
-#| msgid "Assign local roles"
 msgid "Global roles"
-msgstr "Atribuir papéis locais"
+msgstr "Papéis globais"
 
 #: kotti/views/users.py:190
-#, fuzzy
-#| msgid "Add group"
 msgid "Groups"
-msgstr "Adicionar grupo"
+msgstr "Grupos"
 
 #: kotti/views/users.py:225
 msgid ""
@@ -461,22 +433,16 @@ msgid "Send password registration link"
 msgstr "Enviar ligação para registo de palavra passe"
 
 #: kotti/views/users.py:331
-#, fuzzy
-#| msgid "Add user"
 msgid "Add User"
-msgstr "Adicionar utilizador"
+msgstr "Adicionar Utilizador"
 
 #: kotti/views/users.py:348
-#, fuzzy
-#| msgid "Add group"
 msgid "Add Group"
-msgstr "Adicionar grupo"
+msgstr "Adicionar Grupo"
 
 #: kotti/views/users.py:375
-#, fuzzy
-#| msgid "Cut ${title}"
 msgid "Edit User - ${title}"
-msgstr "Cortar ${title}"
+msgstr "Editar Utilizador - ${title}"
 
 #: kotti/views/util.py:339
 msgid "Successfully added item."
@@ -489,7 +455,3 @@ msgid ""
 msgstr ""
 "Houve um problema na submissão.\n"
 "Os erros encontram-se destacados."
-
-#~ msgid "Bem-vindo, você não está autenticado."
-#~ msgstr ""
-
