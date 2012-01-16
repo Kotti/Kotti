@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Kotti 0.4.4\n"
-"POT-Creation-Date: 2012-01-16 18:44+0000\n"
+"POT-Creation-Date: 2012-01-16 18:54+0000\n"
 "PO-Revision-Date: 2012-01-16 12:02+0000\n"
 "Last-Translator: Nuno Teixeira <teixas@gmail.com>\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
@@ -85,6 +85,9 @@ msgid ""
 "Fill out your username or email above and click Reset password below to "
 "receive an email with a link to reset your password."
 msgstr ""
+"Preencha com o seu nome de utilizador com o seu e-mail e clique em "
+"Repor a palavra passe para receber um e-mail com uma ligação para "
+"reiniciar a sua palavra passe."
 
 #: kotti/templates/login.pt:42
 msgid "Reset password"
@@ -325,6 +328,8 @@ msgid ""
 "You should receive an email with a link to reset your password "
 "momentarily."
 msgstr ""
+"Você deverá receber um e-mail com uma ligação temporária para "
+"reiniciar a sua palavra passe."
 
 #: kotti/views/login.py:72
 msgid "That username or email is not known to us."
@@ -415,6 +420,8 @@ msgid ""
 "Leave this empty and provide an email address below to send the user an "
 "email to set their own password."
 msgstr ""
+"Deixe este campo por preencher e indique um e-mail abaixo para enviar um e-mail "
+"ao utilizador que permite escolher a sua palavra passe."
 
 #: kotti/views/users.py:229
 msgid "Full name"
