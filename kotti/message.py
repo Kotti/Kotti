@@ -76,19 +76,21 @@ def validate_token(user, token, valid_hrs=24):
             return True
     return False
 
-def send_set_password(user, request, templates='set-password'):
+def send_set_password(user, request, templates='set-password', add_query=None):
     site_title = get_settings()['kotti.site_title']
     token = make_token(user)
     user.confirm_token = unicode(token)
     set_password_query = {'token': token, 'email': user.email}
-    set_password_url = '%s/@@set-password?%s' % (
+    if add_query:
+        set_password_query.update(add_query)
+    url = '%s/@@set-password?%s' % (
         request.application_url,
         urllib.urlencode(set_password_query),
         )
     variables = dict(
         user_title=user.title,
         site_title=site_title,
-        url=set_password_url,
+        url=url,
         )
     templates = message_templates[templates]
     subject = templates['subject'].substitute(variables)

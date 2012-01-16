@@ -1,8 +1,26 @@
 History
 =======
 
-0.4.4 - Unreleased
+0.4.5 - Unreleased
 ------------------
+
+- Add 'kotti.security.has_permission' which may be used instead of
+  'pyramid.security.has_permission'.
+
+  The difference is that Kotti's version will set the "authorization
+  context" to be the context that you pass to 'has_permission'.  The
+  effect is that 'list_groups' will return a more correct list of
+  local roles, i.e. the groups in the given context instead of
+  'request.context'.
+
+- Add a template ('forbidden.pt') for when user is logged in but still
+  getting HTTPForbidden.
+
+0.4.4 - 2012-01-05
+------------------
+
+- The "Forbidden View" will no longer redirect clients that don't
+  accept 'text/html' to the login form.
 
 - Fix bug with 'kotti.site_title' setting.
 

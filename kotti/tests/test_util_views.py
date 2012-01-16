@@ -134,6 +134,20 @@ class TestTemplateAPI(UnitTestBase):
             [root, a, ac, acb]
             )
 
+    @patch('kotti.views.util.view_permitted')
+    def test_find_edit_view_not_permitted(self, view_permitted):
+        view_permitted.return_value = False
+        api = self._make()
+        api.request.view_name = u'edit'
+        assert api._find_edit_view(api.context) == u''
+
+    @patch('kotti.views.util.view_permitted')
+    def test_find_edit_view(self, view_permitted):
+        view_permitted.return_value = True
+        api = self._make()
+        api.request.view_name = u'share'
+        assert api._find_edit_view(api.context) == u'share'
+
     @patch('kotti.views.util.get_renderer')
     def test_macro(self, get_renderer):
         api = self._make()

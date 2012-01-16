@@ -6,7 +6,10 @@ from deform import ValidationFailure
 from deform.widget import CheckedPasswordWidget
 from deform.widget import HiddenWidget
 from formencode.validators import Email
+from pyramid.encode import urlencode
 from pyramid.httpexceptions import HTTPFound
+from pyramid.httpexceptions import HTTPForbidden
+from pyramid.security import authenticated_userid
 from pyramid.security import remember
 from pyramid.security import forget
 from pyramid.url import resource_url
@@ -14,7 +17,6 @@ from pyramid.url import resource_url
 from kotti.message import validate_token
 from kotti.message import send_set_password
 from kotti.resources import get_root
-from kotti.resources import Node
 from kotti.security import get_principals
 from kotti.views.util import template_api
 
@@ -94,6 +96,11 @@ class SetPasswordSchema(colander.MappingSchema):
         colander.String(),
         widget=HiddenWidget(),
         )
+    continue_to = colander.SchemaNode(
+        colander.String(),
+        widget=HiddenWidget(),
+        missing=colander.null,
+        )
 
 def set_password(context, request,
                  success_msg=u"You've reset your password successfully."):
@@ -117,7 +124,8 @@ def set_password(context, request,
                 user.password = get_principals().hash_password(password)
                 user.confirm_token = None
                 headers = remember(request, user.name)
-                location = resource_url(context, request)
+                location = (appstruct['continue_to'] or
+                            resource_url(context, request))
                 request.session.flash(success_msg, 'success')
                 return HTTPFound(location=location, headers=headers)
             else:
@@ -137,11 +145,32 @@ def set_password(context, request,
         'form': rendered_form,
         }
 
+def forbidden_redirect(context, request):
+    if authenticated_userid(request):
+        location = request.application_url + '/@@forbidden'
+    else:
+        location = request.application_url + '/@@login?' + urlencode(
+            {'came_from': request.url})
+    return HTTPFound(location=location)
+
+def forbidden_view(request):
+    return request.exception
+
 def includeme(config):
     config.add_view(
-        login,
-        context='pyramid.exceptions.Forbidden',
-        renderer='kotti:templates/login.pt',
+        forbidden_redirect,
+        context=HTTPForbidden,
+        accept='text/html',
+        )
+
+    config.add_view(
+        forbidden_view,
+        context=HTTPForbidden,
+        )
+
+    config.add_view(
+        name='forbidden',
+        renderer='kotti:templates/forbidden.pt',
         )
 
     config.add_view(

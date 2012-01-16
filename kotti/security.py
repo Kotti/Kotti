@@ -1,3 +1,5 @@
+from __future__ import with_statement
+from contextlib import contextmanager
 from datetime import datetime
 from UserDict import DictMixin
 
@@ -15,8 +17,9 @@ from sqlalchemy.orm.exc import NoResultFound
 from pyramid.location import lineage
 from pyramid.security import Allow
 from pyramid.security import ALL_PERMISSIONS
-from pyramid.security import view_execution_permitted
 from pyramid.security import authenticated_userid
+from pyramid.security import has_permission as base_has_permission
+from pyramid.security import view_execution_permitted
 
 from kotti import get_settings
 from kotti import DBSession
@@ -24,6 +27,17 @@ from kotti import metadata
 from kotti.util import JsonType
 from kotti.util import request_cache
 from kotti.util import DontCache
+
+def get_principals():
+    return get_settings()['kotti.principals_factory'][0]()
+
+def get_user(request):
+    userid = authenticated_userid(request)
+    return get_principals().get(userid)
+
+def has_permission(permission, context, request):
+    with authz_context(context, request):
+        return base_has_permission(permission, context, request)
 
 class Principal(object):
     """A minimal 'Principal' implementation.
@@ -286,12 +300,20 @@ def list_groups_callback(name, request):
             context = get_root(request)
         return list_groups(name, context)
 
-def view_permitted(context, request, name=''):
+@contextmanager
+def authz_context(context, request):
+    before = request.environ.pop('authz_context', None)
+    request.environ['authz_context'] = context
     try:
-        request.environ['authz_context'] = context
-        return view_execution_permitted(context, request, name)
+        yield
     finally:
         del request.environ['authz_context']
+        if before is not None:
+            request.environ['authz_context'] = before
+
+def view_permitted(context, request, name=''):
+    with authz_context(context, request):
+        return view_execution_permitted(context, request, name)
 
 def principals_with_local_roles(context, inherit=True):
     """Return a list of principal names that have local roles in the
@@ -326,17 +348,10 @@ def map_principals_with_local_roles(context):
             value.append((principal, (all, inherited)))
     return sorted(value, key=lambda t: t[0].name)
 
-def get_principals():
-    return get_settings()['kotti.principals_factory'][0]()
-
 def is_user(principal):
     if not isinstance(principal, basestring):
         principal = principal.name
     return ':' not in principal
-
-def get_user(request):
-    userid = authenticated_userid(request)
-    return get_principals().get(userid)
 
 class Principals(DictMixin):
     """Kotti's default principal database.

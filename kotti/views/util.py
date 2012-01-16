@@ -12,7 +12,6 @@ from pyramid.location import inside
 from pyramid.location import lineage
 from pyramid.renderers import get_renderer
 from pyramid.renderers import render
-from pyramid.security import has_permission
 from pyramid.url import resource_url
 from pyramid.view import render_view_to_response
 from deform import ValidationFailure
@@ -22,8 +21,9 @@ from kotti import DBSession
 from kotti.util import title_to_name
 from kotti.events import objectevent_listeners
 from kotti.resources import Node
-from kotti.security import view_permitted
 from kotti.security import get_user
+from kotti.security import has_permission
+from kotti.security import view_permitted
 from kotti.views.slots import slot_events
 
 def template_api(context, request, **kwargs):

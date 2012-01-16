@@ -1,9 +1,12 @@
+from unittest import TestCase
+
+from mock import patch
 from pyramid.authentication import CallbackAuthenticationPolicy
 
 from kotti.testing import DummyRequest
 from kotti.testing import UnitTestBase
 
-class TestSecurity(UnitTestBase):
+class TestGroups(UnitTestBase):
     def test_root_default(self):
         from kotti.resources import get_root
         from kotti.security import list_groups
@@ -565,3 +568,50 @@ class TestPrincipals(UnitTestBase):
         self.assertEqual(result.status, '302 Found')
         self.assertEqual(request.session.pop_flash('success'),
                          [u'Welcome, Bob Dabolina!'])
+
+class TestAuthzContextManager(TestCase):
+    def test_basic(self):
+        from kotti.security import authz_context
+
+        context, request = object(), DummyRequest()
+        with authz_context(context, request):
+            assert request.environ['authz_context'] == context
+        assert 'authz_context' not in request.environ
+
+    def test_set_before(self):
+        from kotti.security import authz_context
+
+        context, context2, request = object(), object(), DummyRequest()
+        request.environ['authz_context'] = context2
+        with authz_context(context, request):
+            assert request.environ['authz_context'] == context
+        assert request.environ['authz_context'] == context2
+
+    def test_with_exception(self):
+        from kotti.security import authz_context
+
+        context, context2, request = object(), object(), DummyRequest()
+        request.environ['authz_context'] = context2
+        try:
+            with authz_context(context, request):
+                assert request.environ['authz_context'] == context
+                raise ValueError
+        except ValueError:
+            assert request.environ['authz_context'] == context2
+
+class TestHasPermission(TestCase):
+    def test_basic(self):
+        from kotti.security import has_permission
+
+        permission, context, request = object(), object(), DummyRequest()
+        args = []
+
+        def has_permission_fake(permission, context, request):
+            args.append((permission, context, request))
+            assert request.environ['authz_context'] == context
+
+        with patch('kotti.security.base_has_permission',
+                   new=has_permission_fake):
+            has_permission(permission, context, request)
+
+        assert args == [(permission, context, request)]

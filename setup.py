@@ -32,6 +32,7 @@ install_requires = [
     ]
 
 tests_require = [
+    'WebTest',
     'mock>=0.8.0beta4',
     'pytest',
     'pytest-cov',
@@ -57,7 +58,7 @@ class PyTest(Command):
         raise SystemExit(errno)
 
 setup(name='Kotti',
-      version='0.4.4',
+      version='0.4.5dev4',
       description="A user-friendly, light-weight and extensible web content management system.  Written in Python, based on Pyramid and SQLAlchemy.",
       long_description=README + '\n\n' +  CHANGES,
       classifiers=[
