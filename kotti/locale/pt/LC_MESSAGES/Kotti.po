@@ -1,0 +1,219 @@
+# Portuguese translations for Kotti.
+# Copyright (C) 2012 ORGANIZATION
+# This file is distributed under the same license as the Kotti project.
+# Nuno Teixeira <teixas@gmail.com>, 2012.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Kotti 0.4.4\n"
+"POT-Creation-Date: 2012-01-16 12:02+0000\n"
+"PO-Revision-Date: 2012-01-16 12:02+0000\n"
+"Last-Translator: Nuno Teixeira <teixas@gmail.com>\n"
+"Plural-Forms: nplurals=2; plural=(n != 1)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 0.9.6\n"
+
+#: kotti/templates/login.pt:10
+msgid "Login"
+msgstr "Entrar"
+
+#: kotti/templates/login.pt:16
+msgid "Username or email"
+msgstr "Utilizador ou e-mail"
+
+#: kotti/templates/login.pt:21
+msgid "Password"
+msgstr "Palavra pass"
+
+#: kotti/templates/login.pt:27
+msgid "Log in"
+msgstr "Entrar"
+
+#: kotti/templates/login.pt:34
+msgid "Forgot your password?"
+msgstr "Esqueceu-se da palavra passe?"
+
+#: kotti/templates/login.pt:36
+msgid ""
+"Fill out your username or email above and click Reset password below to "
+"receive an email with a link to reset your password."
+msgstr ""
+
+#: kotti/templates/login.pt:42
+msgid "Reset password"
+msgstr "Repor a palavra passe"
+
+#: kotti/templates/user-box.pt:13 kotti/templates/site-setup/master.pt:16
+msgid "Site Setup"
+msgstr "Configurar sítio"
+
+#: kotti/templates/user-box.pt:16
+msgid "Preferences"
+msgstr "Preferências"
+
+#: kotti/templates/user-box.pt:19
+msgid "Logout"
+msgstr "Sair"
+
+#: kotti/templates/edit/add.pt:10
+msgid "Add item"
+msgstr "Adicionar item"
+
+#: kotti/templates/edit/add.pt:15
+msgid "What do you want to add?"
+msgstr "O que deseja adicionar?"
+
+#: kotti/templates/edit/add.pt:36
+msgid "Which folder do you want to add to?"
+msgstr "Para que pasta deseja adicionar?"
+
+#: kotti/templates/edit/add.pt:44
+msgid "Add to"
+msgstr "Adicionar para"
+
+#: kotti/templates/edit/add.pt:55
+msgid "Continue"
+msgstr "Continuar"
+
+#: kotti/templates/edit/breadcrumbs.pt:3
+msgid "You are here:"
+msgstr "Você está aqui:"
+
+#: kotti/templates/edit/breadcrumbs.pt:21
+#: kotti/templates/edit/breadcrumbs.pt:27
+msgid "Items in"
+msgstr "Items em"
+
+#: kotti/templates/edit/master.pt:45 kotti/templates/view/master.pt:31
+msgid "Skip to navigation"
+msgstr "Saltar para nevegação"
+
+#: kotti/templates/edit/master.pt:46
+msgid "Skip to tools menu"
+msgstr "Saltar para menu de ferramentas"
+
+#: kotti/templates/edit/master.pt:47 kotti/templates/view/master.pt:32
+msgid "Skip to content"
+msgstr "Saltar para conteúdo"
+
+#: kotti/templates/edit/master.pt:59
+msgid "View"
+msgstr "Ver"
+
+#: kotti/templates/edit/move.pt:10
+msgid "Move"
+msgstr "Mover"
+
+#: kotti/templates/edit/move.pt:14
+msgid "Copy and Paste"
+msgstr "Copiar e Colar"
+
+#: kotti/templates/edit/move.pt:19
+msgid "Copy ${title}"
+msgstr "Copiar ${title}"
+
+#: kotti/templates/edit/move.pt:23
+msgid "Cut ${title}"
+msgstr "Cortar ${title}"
+
+#: kotti/templates/edit/move.pt:27
+msgid "Paste ${from} into ${to}"
+msgstr "Colar ${from} em ${to}"
+
+#: kotti/templates/edit/move.pt:41 kotti/templates/edit/move.pt:52
+msgid "Delete"
+msgstr "Apagar"
+
+#: kotti/templates/edit/move.pt:47 kotti/templates/edit/move.pt:49
+msgid "Yes"
+msgstr "Sim"
+
+#: kotti/templates/edit/move.pt:52
+msgid "delete"
+msgstr "apagar"
+
+#: kotti/templates/edit/move.pt:63 kotti/templates/edit/move.pt:79
+msgid "Rename"
+msgstr "Renomear"
+
+#: kotti/templates/edit/move.pt:67
+msgid "New name"
+msgstr "Novo nome"
+
+#: kotti/templates/edit/move.pt:73
+msgid "New title"
+msgstr "Novo título"
+
+#: kotti/templates/edit/move.pt:91
+msgid "Order contained items"
+msgstr "Ordenar items"
+
+#: kotti/templates/edit/share.pt:10
+msgid "Share"
+msgstr "Partilha"
+
+#: kotti/templates/edit/share.pt:15
+msgid "Assign local roles"
+msgstr "Atribuir papéis locais"
+
+#: kotti/templates/edit/share.pt:18 kotti/templates/edit/share.pt:20
+#: kotti/templates/site-setup/users.pt:16
+#: kotti/templates/site-setup/users.pt:18
+msgid "Search users and groups"
+msgstr "Procurar utilizadores e grupos"
+
+#: kotti/templates/edit/share.pt:25 kotti/templates/site-setup/users.pt:23
+msgid "Search"
+msgstr "Procurar"
+
+#: kotti/templates/edit/share.pt:33 kotti/templates/site-setup/users.pt:31
+msgid "Name"
+msgstr "Nome"
+
+#: kotti/templates/edit/share.pt:62 kotti/templates/site-setup/users.pt:61
+msgid "Apply changes"
+msgstr "Aplicar alterações"
+
+#: kotti/templates/site-setup/master.pt:10
+#: kotti/templates/site-setup/user.pt:17 kotti/templates/view/master.pt:39
+msgid "Edit"
+msgstr "Editar"
+
+#: kotti/templates/site-setup/user.pt:9
+msgid "Back to User Management"
+msgstr "Voltar à gestão de utilizadores"
+
+#: kotti/templates/site-setup/users.pt:13
+msgid "Search and modify users"
+msgstr "Procurar e modificar utilizadores"
+
+#: kotti/templates/site-setup/users.pt:71
+msgid "Add user"
+msgstr "Adicionar utilizador"
+
+#: kotti/templates/site-setup/users.pt:77
+msgid "Add group"
+msgstr "Adicionar grupo"
+
+#: kotti/templates/view/master.pt:46
+msgid "Site navigation"
+msgstr "Navegação do sítio"
+
+#: kotti/templates/view/master.pt:48
+msgid "Home"
+msgstr ""
+
+#: kotti/templates/view/slot-local-navigation.pt:3
+msgid "Local navigation"
+msgstr "Navegação local"
+
+#: kotti/tests/testing_view.pt:10
+msgid "Welcome, ${user}! You are logged in."
+msgstr "Bem-vindo, ${user}! Você está autenticado."
+
+#: kotti/tests/testing_view.pt:14
+msgid "Bem-vindo, você não está autenticado."
+msgstr ""
+
