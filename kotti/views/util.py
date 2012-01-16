@@ -18,6 +18,7 @@ from deform import ValidationFailure
 
 from kotti import get_settings
 from kotti import DBSession
+from kotti.util import _
 from kotti.util import title_to_name
 from kotti.events import objectevent_listeners
 from kotti.resources import Node
@@ -45,7 +46,7 @@ class Slots(object):
     def __init__(self, context, request):
         self.context = context
         self.request = request
-    
+
     def __getattr__(self, name):
         for event_type in slot_events:
             if event_type.name == name:
@@ -132,7 +133,7 @@ class TemplateAPI(object):
     @reify
     def user(self):
         return get_user(self.request)
-    
+
     def has_permission(self, permission, context=None):
         if context is None:
             context = self.context
@@ -334,10 +335,10 @@ def ensure_view_selector(func):
 class FormController(object):
     add = None
     post_key = 'save'
-    edit_success_msg = u"Your changes have been saved."
-    add_success_msg = u"Successfully added item."
-    error_msg = (u"There was a problem with your submission.\n"
-                 u"Errors have been highlighted.")
+    edit_success_msg = _(u"Your changes have been saved.")
+    add_success_msg = _(u"Successfully added item.")
+    error_msg = _(u"There was a problem with your submission.\n"
+                  u"Errors have been highlighted.")
     success_path = '@@edit'
 
     def __init__(self, form, **kwargs):

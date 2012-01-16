@@ -11,6 +11,7 @@ from kotti.resources import Document
 from kotti.resources import Settings
 from kotti.security import get_principals
 from kotti.security import SITE_ACL
+from kotti.util import _
 
 def _add_document_from_file(filename, name, parent, title, package='kotti', 
                             directory='populate-content', acl=None):
@@ -27,7 +28,7 @@ def populate_users():
         principals[u'admin'] = {
             'name': u'admin',
             'password': get_settings()['kotti.secret'],
-            'title': u"Administrator",
+            'title': _(u"Administrator"),
             'groups': [u'role:admin'],
             }
         DBSession.flush()
@@ -37,9 +38,9 @@ def populate():
     nodecount = DBSession.query(Node).count()
     if nodecount == 0:
         p = _add_document_from_file(
-            "home.html", u"", None, u"Welcome to Kotti!", acl=SITE_ACL)
+            "home.html", u"", None, _(u"Welcome to Kotti!"), acl=SITE_ACL)
         _add_document_from_file(
-            "about.html", u"about", p, u"About")
+            "about.html", u"about", p, _(u"About"))
 
     settingscount = DBSession.query(Settings).count()
     if settingscount == 0:

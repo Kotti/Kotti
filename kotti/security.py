@@ -24,6 +24,7 @@ from pyramid.security import view_execution_permitted
 from kotti import get_settings
 from kotti import DBSession
 from kotti import metadata
+from kotti.util import _
 from kotti.util import JsonType
 from kotti.util import request_cache
 from kotti.util import DontCache
@@ -143,10 +144,10 @@ class AbstractPrincipals(object):
         """
 
 ROLES = {
-    u'role:viewer': Principal(u'role:viewer', title=u'Viewer'),
-    u'role:editor': Principal(u'role:editor', title=u'Editor'),
-    u'role:owner': Principal(u'role:owner', title=u'Owner'),
-    u'role:admin': Principal(u'role:admin', title=u'Admin'),
+    u'role:viewer': Principal(u'role:viewer', title=_(u'Viewer')),
+    u'role:editor': Principal(u'role:editor', title=_(u'Editor')),
+    u'role:owner': Principal(u'role:owner', title=_(u'Owner')),
+    u'role:admin': Principal(u'role:admin', title=_(u'Admin')),
     }
 
 # These roles are visible in the sharing tab

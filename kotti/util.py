@@ -3,6 +3,8 @@ import string
 import urllib
 
 from repoze.lru import LRUCache
+from pyramid.i18n import TranslationStringFactory
+from pyramid.i18n import get_localizer
 from pyramid.threadlocal import get_current_request
 from pyramid.url import resource_url
 from sqlalchemy.types import TypeDecorator, VARCHAR
@@ -133,7 +135,7 @@ class ViewLink(object):
         self.path = path
         if title is None:
             title = path.replace('-', ' ').replace('_', ' ').title()
-        self.title = title
+        self.title = isinstance(title, unicode) and title or unicode(title)
 
     def url(self, context, request):
         return resource_url(context, request) + '@@' + self.path
@@ -228,3 +230,19 @@ def title_to_name(title):
     name = u'-'.join(title.lower().split())
     name = u''.join(ch for ch in name if ch in okay)
     return name
+
+class Translator(object):
+    def __init__(self, request=None):
+        class dummy_request(object):
+            _LOCALE_ = 'en'
+
+        if request is None:
+            request = dummy_request
+        self.localizer = get_localizer(request)
+
+    def __call__(self, msgid, default=None, mapping=None):
+        return self.localizer.translate(
+            TranslationStringFactory('Kotti')(
+                msgid, default=default, mapping=mapping))
+translator = Translator()
+_ = translator

@@ -4,6 +4,7 @@ from pyramid.httpexceptions import HTTPFound
 from pyramid.security import has_permission
 from pyramid.url import resource_url
 import colander
+from deform import Button
 from deform import Form
 from deform.widget import RichTextWidget
 from deform.widget import TextAreaWidget
@@ -13,6 +14,7 @@ from kotti import DBSession
 from kotti.resources import Node
 from kotti.resources import Document
 from kotti.security import view_permitted
+from kotti.util import _
 from kotti.views.util import template_api
 from kotti.views.util import addable_types
 from kotti.views.util import title_to_name
@@ -26,9 +28,10 @@ search_path = (kotti_templates, deform_templates)
 Form.set_zpt_renderer(search_path)
 
 class ContentSchema(colander.MappingSchema):
-    title = colander.SchemaNode(colander.String())
+    title = colander.SchemaNode(colander.String(), title=_(u'Title'))
     description = colander.SchemaNode(
         colander.String(),
+        title=_(u'Description'),
         widget=TextAreaWidget(cols=40, rows=5),
         missing=u"",
         )
@@ -36,6 +39,7 @@ class ContentSchema(colander.MappingSchema):
 class DocumentSchema(ContentSchema):
     body = colander.SchemaNode(
         colander.String(),
+        title=_(u'Body'),
         widget=RichTextWidget(theme='advanced'),
         missing=u"",
         )
@@ -88,13 +92,15 @@ def move_node(context, request):
 
     if 'copy' in P:
         request.session['kotti.paste'] = (context.id, 'copy')
-        request.session.flash(u'%s copied.' % context.title, 'success')
+        request.session.flash(_(u'${title} copied.',
+                                mapping=dict(title=context.title)), 'success')
         if not request.is_xhr:
             return HTTPFound(location=request.url)
 
     if 'cut' in P:
         request.session['kotti.paste'] = (context.id, 'cut')
-        request.session.flash(u'%s cut.' % context.title, 'success')
+        request.session.flash(_(u'${title} cut.',
+                                mapping=dict(title=context.title)), 'success')
         if not request.is_xhr:
             return HTTPFound(location=request.url)
 
@@ -116,7 +122,8 @@ def move_node(context, request):
                 name = disambiguate_name(name)
             copy.name = name
             context.children.append(copy)
-        request.session.flash(u'%s pasted.' % item.title, 'success')
+        request.session.flash(_(u'${title} pasted.',
+                                mapping=dict(title=item.title)), 'success')
         if not request.is_xhr:
             return HTTPFound(location=request.url)
 
@@ -132,13 +139,15 @@ def move_node(context, request):
         index = context.children.index(child)
         context.children.pop(index)
         context.children.insert(index+mod, child)
-        request.session.flash(u'%s moved.' % child.title, 'success')
+        request.session.flash(_(u'${title} moved.',
+                                mapping=dict(title=child.title)), 'success')
         if not request.is_xhr:
             return HTTPFound(location=request.url)
 
     if 'delete' in P and 'delete-confirm' in P:
         parent = context.__parent__
-        request.session.flash(u'%s deleted.' % context.title, 'success')
+        request.session.flash(_(u'${title} deleted.',
+                                mapping=dict(title=context.title)), 'success')
         parent.children.remove(context)
         location = resource_url(parent, request)
         if view_permitted(parent, request, 'edit'):
@@ -149,11 +158,11 @@ def move_node(context, request):
         name = P['name']
         title = P['title']
         if not name or not title:
-            request.session.flash(u'Name and title are required.', 'error')
+            request.session.flash(_(u'Name and title are required.'), 'error')
         else:
             context.name = name
             context.title = title
-            request.session.flash(u'Item renamed', 'success')
+            request.session.flash(_(u'Item renamed'), 'success')
             location = resource_url(context, request) + '@@move'
             return HTTPFound(location=location)
 
@@ -161,10 +170,17 @@ def move_node(context, request):
 
 def generic_edit(context, request, schema, form_factory=Form, **kwargs):
     api = template_api(context, request)
-    api.first_heading=u'<h1>Edit <em>%s</em></h1>' % context.title
-    api.page_title = u'Edit %s - %s' % (context.title, api.site_title)
+    emphasized_title = '<em>%s</em>' % context.title
+    api.first_heading = '<h1>%s</h1>' % (
+        _(u'Edit ${title}', mapping=dict(title=emphasized_title)))
+    api.page_title = _(u'Edit ${title} - ${site_title}',
+                       mapping=dict(title=context.title,
+                                    site_title=api.site_title))
 
-    form = form_factory(schema, buttons=('save', 'cancel'), action=request.url)
+    form = form_factory(schema,
+                        buttons=(Button('save', _(u'Save')),
+                                 Button('cancel', _(u'Cancel'))),
+                        action=request.url)
     rendered = FormController(form, **kwargs)(context, request)
     if request.is_response(rendered):
         return rendered
@@ -177,10 +193,12 @@ def generic_edit(context, request, schema, form_factory=Form, **kwargs):
 def generic_add(context, request, schema, add, title, form_factory=Form,
                 **kwargs):
     api = template_api(context, request)
-    api.first_heading = u'<h1>Add %s to <em>%s</em></h1>' % (
-        title, context.title)
-    api.page_title=u'Add %s to %s - %s' % (title, context.title, api.site_title)
-
+    emphasized_title = '<em>%s</em>' % context.title
+    api.first_heading = u'<h1>%s</em></h1>' % (
+        _(u'Add ${title} to ${context_title} - ${site_title}',
+          mapping=dict(title=title,
+                       context_title=emphasized_title,
+                       site_title=api.site_title)))
     form = form_factory(schema, buttons=('save', 'cancel'), action=request.url)
     rendered = FormController(form, add=add, **kwargs)(context, request)
     if request.is_response(rendered):

@@ -26,6 +26,7 @@ from zope.interface import Interface
 from kotti import get_settings
 from kotti import DBSession
 from kotti import metadata
+from kotti.util import _
 from kotti.util import ViewLink
 from kotti.util import JsonType
 from kotti.util import MutationList
@@ -175,10 +176,10 @@ class Content(Node):
         add_view=None,
         addable_to=[],
         edit_links=[
-            ViewLink('edit'),
-            ViewLink('add'),
-            ViewLink('move'),
-            ViewLink('share'),
+            ViewLink('edit', title=_(u'Edit')),
+            ViewLink('add', title=_(u'Add')),
+            ViewLink('move', title=_(u'Move')),
+            ViewLink('share', title=_(u'Share')),
             ],
         )
 
