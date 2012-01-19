@@ -203,6 +203,8 @@ def make_generic_add(schema, add, title, **kwargs):
     return view
 
 def includeme(config):
+    nodes_includeme(config)
+
     config.add_view(
         make_generic_edit(DocumentSchema()),
         context=Document,
@@ -216,4 +218,18 @@ def includeme(config):
         name=Document.type_info.add_view,
         permission='add',
         renderer='kotti:templates/edit/node.pt',
+        )
+
+def nodes_includeme(config):
+    config.add_view(
+        'kotti.views.edit.add_node',
+        name='add',
+        permission='add',
+        renderer='kotti:templates/edit/add.pt',
+        )
+    config.add_view(
+        'kotti.views.edit.move_node',
+        name='move',
+        permission='edit',
+        renderer='kotti:templates/edit/move.pt',
         )

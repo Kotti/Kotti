@@ -3,6 +3,7 @@ import warnings
 from pyramid.exceptions import NotFound
 from pyramid.view import render_view_to_response
 
+from kotti.resources import IContent
 from kotti.resources import Document
 
 def view_content_default(context, request):
@@ -25,6 +26,8 @@ def view_node(context, request):
     return {}
 
 def includeme(config):
+    config.add_view('kotti.views.view.view_content_default', context=IContent)
+
     config.add_view(
         view_node,
         context=Document,
