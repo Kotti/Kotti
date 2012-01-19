@@ -10,7 +10,6 @@
 	<link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Neuton|Nobile:regular,i,b,bi&amp;subset=latin" type="text/css" media="screen" charset="utf-8" />
     <link rel="stylesheet" href="${request.static_url('deform:static/css/ui-lightness/jquery-ui-1.8.11.custom.css')}" type="text/css" />
     <link rel="stylesheet" href="${request.static_url('deform:static/css/jquery-ui-timepicker-addon.css')}" type="text/css" />
-    <link rel="stylesheet" href="${request.static_url('kotti:static/3rdparty/jquery.toastmessage/css/jquery.toastmessage.css')}" type="text/css" />
 	<link rel="stylesheet" href="${request.static_url('kotti:static/base.css')}" type="text/css" media="screen" charset="utf-8" />
     <link rel="stylesheet" href="${request.static_url('kotti:static/edit.css')}" type="text/css" />
 
@@ -20,8 +19,6 @@
     <script type="text/javascript" src="${request.static_url('deform:static/scripts/jquery.form.js')}"></script>    
     <script type="text/javascript" src="${request.static_url('deform:static/tinymce/jscripts/tiny_mce/tiny_mce.js')}"></script>
     <script type="text/javascript" src="${request.static_url('deform:static/scripts/deform.js')}"></script>    
-
-    <script type="text/javascript" src="${request.static_url('kotti:static/3rdparty/jquery.toastmessage/jquery.toastmessage.js')}"></script>    
 
     <script type="text/javascript" src="${request.static_url('kotti:static/script.js')}"></script>
 

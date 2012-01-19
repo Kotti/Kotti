@@ -34,30 +34,6 @@ var kotti = {
         });
     };
 
-    kotti.messages = function(node) {
-        node.find2("#messages").hide();
-        node.find2(".message").each(function() {
-            var type = "notice";
-            var msg = $(this);
-            var text = msg.html();
-            var stayTime = 3000;
-
-            if (msg.hasClass("success"))
-                type = "success";
-            else if (msg.hasClass("error")) {
-                type = "error";
-                stayTime = 6000;
-            }
-
-            $().toastmessage('showToast', {
-                text: text,
-                type: type,
-                stayTime: stayTime
-            });
-
-        });
-    };
-
     kotti.dirty_forms = function(node) {
         var forms = $("form").not("[class~=dirty-ignore]");
         $(window).unbind('beforeunload');
@@ -135,7 +111,7 @@ var kotti = {
         var node = $('html');
         if (!handlers) {
             handlers = [
-                kotti.messages, kotti.ajax_forms, kotti.dirty_forms,
+                kotti.ajax_forms, kotti.dirty_forms,
                 kotti.dropdowns, kotti.collapse, kotti.hover_link_enable
             ];
         }
