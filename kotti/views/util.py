@@ -77,6 +77,8 @@ class TemplateAPI(object):
     EDIT_MASTER = 'kotti:templates/edit/master.pt'
     SITE_SETUP_MASTER = 'kotti:templates/site-setup/master.pt'
 
+    body_css_class = ''
+
     def __init__(self, context, request, bare=None, **kwargs):
         self.context, self.request = context, request
 
@@ -128,6 +130,10 @@ class TemplateAPI(object):
     @reify
     def lineage(self):
         return list(lineage(self.context))
+
+    @reify
+    def breadcrumbs(self):
+        return reversed(self.lineage)
 
     @reify
     def user(self):
@@ -209,42 +215,13 @@ class TemplateAPI(object):
             if class_.type_info.name == name:
                 return class_
 
-    def _find_edit_view(self, item):
+    def find_edit_view(self, item):
         view_name = self.request.view_name
         if not view_permitted(item, self.request, view_name):
             view_name = u'edit'
         if not view_permitted(item, self.request, view_name):
             view_name = u''
         return view_name
-
-    def _make_links(self, items):
-        links = []
-        for item in items:
-            view_name = self._find_edit_view(item)
-            view_name = view_name and '@@' + view_name
-            url = resource_url(item, self.request) + view_name
-            links.append(dict(
-                url=url,
-                name=getattr(item, 'title', item.__name__),
-                is_edit_link=view_name != '',
-                node=item,
-                is_context=item == self.context,
-                ))
-        return links
-
-    @reify
-    def breadcrumbs(self):
-        return self._make_links(tuple(reversed(self.lineage)))
-
-    @reify
-    def context_links(self):
-        siblings = []
-        if self.context.__parent__ is not None:
-            siblings = self._make_links(
-                self.list_children(self.context.__parent__))
-            siblings = filter(lambda l: not l['is_context'], siblings)
-        children = self._make_links(self.list_children(self.context))
-        return siblings, children
 
     @reify
     def edit_links(self):
@@ -336,8 +313,6 @@ class FormController(object):
     post_key = 'save'
     edit_success_msg = u"Your changes have been saved."
     add_success_msg = u"Successfully added item."
-    error_msg = (u"There was a problem with your submission.\n"
-                 u"Errors have been highlighted.")
     success_path = '@@edit'
 
     def __init__(self, form, **kwargs):
@@ -354,7 +329,6 @@ class FormController(object):
             try:
                 appstruct = self.form.validate(controls)
             except ValidationFailure, e:
-                request.session.flash(self.error_msg, 'error')
                 return e.render()
             else:
                 if self.add is None: # edit

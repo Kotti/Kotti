@@ -1,27 +1,28 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xml:lang="en"
-      xmlns:tal="http://xml.zope.org/namespaces/tal"
       metal:use-macro="api.macro('kotti:templates/edit/master.pt')">
 
   <div metal:fill-slot="content">
     <h1>Share <em>${api.context.title}</em></h1>
 
-    <div class="form">
-      <form action="${request.url}" method="post">
-        <h2>Assign local roles</h2>
-        <ul>
-          <li>
-            <label for="search-query">Search users and groups</label><br />
+    <form action="${request.url}" method="post">
+      <fieldset>
+        <legend>Assign local roles</legend>
+
+        <div class="clearfix">
+          <label for="search-query">Search users and groups</label>
+          <div class="input">
             <input type="text" name="query" id="search-query"
                    value="${request.params.get('query')}"
                    placeholder="Search users and groups"
                    />
-            <button type="submit" name="search">
-              Search
-            </button>
-          </li>
-        </ul>
+          </div>
+        </div>
+        <div class="actions">
+          <button type="submit" name="search" class="btn primary">
+            Search
+          </button>
+        </div>
 
         <table tal:condition="entries" class="users-matrix">
           <tr>
@@ -33,10 +34,8 @@
           <tr tal:repeat="entry entries"
               class="entry ${repeat.entry.even and 'even' or 'odd'}">
             <td>
-              <div class="username"
-                   style="background-image: url(${api.avatar_url(entry[0])})">
-                ${entry[0].title}
-              </div>
+              <img src="${api.avatar_url(entry[0])}" alt="Gravatar" />
+              ${entry[0].title}
             </td>
             <td tal:repeat="role available_roles" class="checkbox">
               <input type="checkbox"
@@ -52,16 +51,13 @@
           </tr>
         </table>
 
-        <ul>
-          <li>
-            <button type="submit" name="apply">
-              Apply changes
-            </button>
-          </li>
-        </ul>
-
+        <div class="actions">
+          <button type="submit" name="apply" class="btn primary">
+            Apply changes
+          </button>
+        </div>
+      </fieldset>
       </form>
     </div>
-  </div>
 
 </html>

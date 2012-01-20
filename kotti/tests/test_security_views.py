@@ -31,7 +31,7 @@ class TestUserManagement(UnitTestBase):
         request.params['query'] = u'Joe'
         entries = users_manage(root, request)['entries']
         self.assertEqual(len(entries), 0)
-        self.assertEqual(request.session.pop_flash('notice'),
+        self.assertEqual(request.session.pop_flash('info'),
                          [u'No users or groups found.'])
         request.params['query'] = u'Bob'
         entries = users_manage(root, request)['entries']
@@ -62,7 +62,7 @@ class TestUserManagement(UnitTestBase):
 
         request.params['apply'] = u''
         users_manage(root, request)
-        self.assertEqual(request.session.pop_flash('notice'),
+        self.assertEqual(request.session.pop_flash('info'),
                          [u'No changes made.'])
         self.assertEqual(list_groups('bob'), [])
         bob.groups = [u'role:special']

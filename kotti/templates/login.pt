@@ -6,45 +6,46 @@
 
   <div metal:fill-slot="content" class="login-form">
     <h1>Login</h1>
-
-    <div class="form">
-      <form action="${url}" method="post">
-        <ul>
-          <li>
-            <label for="form-login">Username or email</label><br />
-            <input type="text" name="login" id="form-login"
-                   value="${login}" />
-          </li>
-          <li>
-            <label for="form-password">Password</label><br />
-            <input type="password" name="password" id="form-password"
-                   value="${password}" />
-          </li>
-          <li>
-            <input type="hidden" name="came_from" value="${came_from}" />
-            <button type="submit" name="submit" class="submit">
-              Log in
-            </button>
-          </li>
-        </ul>
-
-        <div class="collapse">
-          <h3 class="forgot-password">Forgot your password?</h3>
-          <ul>
-            <li>
-              Fill out your username or email above and click
-              <em>Reset password</em> below to receive an email with a
-              link to reset your password.
-            </li>
-            <li>
-              <button type="submit" name="reset-password" class="submit">
-                Reset password
-              </button>
-            </li>
-          </ul>
+    
+    <form class="login" action="${url}" method="post">
+      <div class="clearfix">
+        <label for="form-login">Username or email</label>
+        <div class="input">
+          <input type="text" name="login" id="form-login"
+                 class="span4" value="${login}" />
         </div>
-      </form>
-    </div>
+      </div>
+      <div class="clearfix">
+        <label for="form-password">Password</label>
+        <div class="input">
+          <input type="password" name="password" id="form-password"
+                 class="span4" value="${password}" />
+        </div>
+      </div>
+      <div class="actions">
+        <input type="hidden" name="came_from" value="${came_from}" />
+        <button type="submit" name="submit" class="btn primary">
+          Log in
+        </button>
+      </div>
 
+      <div class="collapse">
+        <h3 class="forgot-password">Forgot your password?</h3>
+
+        <div class="collapseme">
+          <div>
+            Fill out your username or email above and click <em>Reset
+            password</em> below to receive an email with a link to
+            reset your password.
+          </div>
+          <div class="actions">
+            <button type="submit" name="reset-password" class="btn primary">
+              Reset password
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </form>
   </div>
 </html>

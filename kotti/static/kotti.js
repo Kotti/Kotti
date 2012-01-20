@@ -67,18 +67,9 @@ var kotti = {
 
     kotti.collapse = function(node) {
         node.find2(".collapse").each(function() {
-            $(this).find("ul").hide();
-            $(this).addClass("collapsed");
+            $(this).find(".collapseme").hide();
             function show() {
-                $(this).removeClass("collapsed");
-                var child = $(this).find("ul:hidden");
-                if (child.length != 0) {
-                    $(this).find("ul").show(400);
-                    $("body").animate(
-                        {scrollTop: $(this).offset().top - 15}, 400);
-                    $(this).unbind("click");
-                    $(this).unbind("hover");
-                }
+              $(this).find(".collapseme").show();
             };
             $(this).click(show);
             $(this).hover(show);
@@ -111,7 +102,7 @@ var kotti = {
         var node = $('html');
         if (!handlers) {
             handlers = [
-                kotti.ajax_forms, kotti.dirty_forms,
+                kotti.ajax_forms, //kotti.dirty_forms,
                 kotti.dropdowns, kotti.collapse, kotti.hover_link_enable
             ];
         }
@@ -119,6 +110,8 @@ var kotti = {
             kotti.dom_changed_handlers.push(func);
         });
         kotti.dom_changed(node);
+        
+        $('.tabs').tabs();
     };
 
  })(jQuery);

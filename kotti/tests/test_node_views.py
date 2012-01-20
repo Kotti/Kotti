@@ -238,7 +238,7 @@ class TestNodeShare(UnitTestBase):
         self.assertEqual(len(entries), 1)
         self.assertEqual(entries[0][0], P[u'bob'])
         self.assertEqual(entries[0][1], ([u'role:editor'], []))
-        self.assertEqual(request.session.pop_flash('notice'),
+        self.assertEqual(request.session.pop_flash('info'),
                          [u'No users or groups found.'])
 
         # It does not, however, include entries that have local group
@@ -261,7 +261,7 @@ class TestNodeShare(UnitTestBase):
 
         request.params['apply'] = u''
         share_node(root, request)
-        self.assertEqual(request.session.pop_flash('notice'),
+        self.assertEqual(request.session.pop_flash('info'),
                          [u'No changes made.'])
         self.assertEqual(list_groups('bob', root), [])
         set_groups('bob', root, ['role:special'])

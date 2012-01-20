@@ -19,6 +19,7 @@ install_requires = [
     'PasteDeploy',
     'colander>=0.9.3',
     'deform>=0.9.2', # Chameleon 2
+    'deform_bootstrap',
     'formencode',
     'py-bcrypt',
     'pyramid>=1.2',

@@ -1,28 +1,29 @@
+<!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xml:lang="en"
-      xmlns:tal="http://xml.zope.org/namespaces/tal"
       metal:use-macro="api.macro('kotti:templates/site-setup/master.pt')">
 
   <div metal:fill-slot="content">
     <h1>${api.page_title}</h1>
 
-    <div class="form">
-      <form action="${request.url}" method="post">
-        <h2>Search and modify users</h2>
-        <ul>
-          <li>
-            <label for="search-query">Search users and groups</label><br />
-            <input type="text" name="query" id="search-query"
-                   value="${request.params.get('query')}"
-                   placeholder="Search users and groups"
-                   />
-            <button type="submit" name="search">
-              Search
-            </button>
-          </li>
-        </ul>
+    <form action="${request.url}" method="post">
+      <fieldset>
+        <legend>Search and modify users</legend>
 
-        <table tal:condition="entries" class="users-matrix">
+        <div class="clearfix">
+          <label for="search-query">Search users and groups</label>
+          <div class="input">
+            <input type="text" name="query" id="search-query"
+                   value="${request.params.get('query')}" />
+          </div>
+        </div>
+
+        <div class="actions">
+          <button type="submit" name="search" class="btn primary">
+            Search
+          </button>
+        </div>
+
+        <table tal:condition="entries">
           <tr>
             <th>Name</th>
             <th tal:repeat="role available_roles">
@@ -32,11 +33,9 @@
           <tr tal:repeat="entry entries"
               class="entry ${repeat.entry.even and 'even' or 'odd'}">
             <td class="hover-link-enable">
-              <div class="username"
-                   style="background-image: url(${api.avatar_url(entry[0])})">
-                <a href="./setup-user?name=${entry[0].name}">${entry[0].title}</a>
-                <span tal:condition="entry[0].email">&lt;${entry[0].email}&gt;</span>
-              </div>
+              <img src="${api.avatar_url(entry[0])}" alt="Gravatar" />
+              <a href="./setup-user?name=${entry[0].name}">${entry[0].title}</a>
+              <span tal:condition="entry[0].email">&lt;${entry[0].email}&gt;</span>
             </td>
             <td tal:repeat="role available_roles" class="checkbox">
               <input type="checkbox"
@@ -52,30 +51,31 @@
           </tr>
         </table>
 
-        <ul>
-          <li>
-            <button type="submit" name="apply">
-              Apply changes
-            </button>
-          </li>
-        </ul>
-        
-      </form>
-    </div>
+        <div class="actions" tal:condition="entries">
+          <button type="submit" name="apply" class="btn primary">
+            Apply changes
+          </button>
+        </div>
 
-    <div class="form ${request.params.get('add-user') is None and 'collapse'}">
-      <h2>Add user</h2>
-      <form tal:replace="structure user_addform">
-      </form>
-    </div>
+      </fieldset>        
+    </form>
 
-    <div class="form ${request.params.get('add-group') is None and 'collapse'}">
-      <h2>Add group</h2>
-      <form tal:replace="structure group_addform">
-      </form>
-    </div>
+    <ul class="tabs">
+      <li class="active"><a href="#add-user-tab">Add user</a></li>
+      <li><a href="#add-group-tab">Add group</a></li>
+    </ul>
 
+    <div class="pill-content">
+      <div class="${not request.params.get('add-group') and 'active'}"
+           id="add-user-tab">
+        <form tal:replace="structure user_addform" />
+      </div>
+
+      <div class="${request.params.get('add-group') and 'active'}" 
+           id="add-group-tab">
+        <form tal:replace="structure group_addform" />
+      </div>
+    </div>
 
   </div>
-
 </html>

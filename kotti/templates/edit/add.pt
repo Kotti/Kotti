@@ -1,13 +1,10 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xml:lang="en"
-      xmlns:tal="http://xml.zope.org/namespaces/tal"
       metal:use-macro="api.macro('kotti:templates/edit/master.pt')">
 
   <div metal:fill-slot="content">
     <h1>Add item</h1>
 
-    <div class="form">
       <form action="${request.url}" method="post">
         <div id="what-to-add" tal:condition="len(possible_types) &gt; 1">
           <h2>What do you want to add?</h2>
@@ -55,6 +52,5 @@
         </ul>
       </form>
     </div>
-  </div>
 
 </html>

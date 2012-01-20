@@ -410,7 +410,6 @@ We'll use that link to set our password:
   >>> ctrl(name="submit").click()
   >>> "You've reset your password successfully" in browser.contents
   True
-  >>> browser.open(testing.BASE_URL + '/@@edit')
   >>> browser.getLink("Logout").click()
 
 We cannot use that link again:

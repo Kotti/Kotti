@@ -1,6 +1,5 @@
 <div id="local-navigation">
-  <h2 class="hidden">Local navigation</h2>
-  <ul>
+  <ul class="nav">
     <li>
       <a href="${api.url(parent)}" title="${getattr(parent, 'description', None)}"
          class="${parent == api.context and 'selected' or ''}">

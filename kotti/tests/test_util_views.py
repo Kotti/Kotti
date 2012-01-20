@@ -78,6 +78,12 @@ class TestTemplateAPI(UnitTestBase):
         self.assertEquals(self._make().root, root)
         self.assertEquals(self._make(acb).root, root)
 
+    @patch('kotti.views.util.has_permission')
+    def test_has_permission(self, has_permission):
+        api = self._make()
+        api.has_permission('drink')
+        has_permission.assert_called_with('drink', api.root, api.request)
+
     def test_edit_links(self):
         from kotti.util import ViewLink
 
@@ -106,47 +112,19 @@ class TestTemplateAPI(UnitTestBase):
         api = self._make()
         self.assertEqual(api.edit_links, [open_link])
 
-    def test_context_links(self):
-        # 'context_links' returns a two-tuple of the form (siblings,
-        # children), where the URLs point to edit pages:
-        root = self._make().root
-        a, aa, ab, ac, aca, acb = self._create_contents(root)
-        api = self._make(ac)
-        siblings, children = api.context_links
-
-        # Note how siblings don't include self (ac)
-        self.assertEqual(
-            [item['node'] for item in siblings],
-            [aa, ab]
-            )
-        self.assertEqual(
-            [item['node'] for item in children],
-            [aca, acb]
-            )
-
-    def test_breadcrumbs(self):
-        root = self._make().root
-        a, aa, ab, ac, aca, acb = self._create_contents(root)
-        api = self._make(acb)
-        breadcrumbs = api.breadcrumbs
-        self.assertEqual(
-            [item['node'] for item in breadcrumbs],
-            [root, a, ac, acb]
-            )
-
     @patch('kotti.views.util.view_permitted')
     def test_find_edit_view_not_permitted(self, view_permitted):
         view_permitted.return_value = False
         api = self._make()
         api.request.view_name = u'edit'
-        assert api._find_edit_view(api.context) == u''
+        assert api.find_edit_view(api.context) == u''
 
     @patch('kotti.views.util.view_permitted')
     def test_find_edit_view(self, view_permitted):
         view_permitted.return_value = True
         api = self._make()
         api.request.view_name = u'share'
-        assert api._find_edit_view(api.context) == u'share'
+        assert api.find_edit_view(api.context) == u'share'
 
     @patch('kotti.views.util.get_renderer')
     def test_macro(self, get_renderer):

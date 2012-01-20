@@ -92,7 +92,7 @@ def render_local_navigation(context, request):
     parent, children = api.list_children_go_up()
     children = [c for c in children if c.in_navigation]
     if parent != api.root and children:
-        return render('kotti:templates/view/slot-local-navigation.pt',
+        return render('kotti:templates/view/local-navigation.pt',
                       dict(parent=parent, children=children, api=api),
                       request)
 

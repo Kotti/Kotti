@@ -36,7 +36,7 @@ class ContentSchema(colander.MappingSchema):
 class DocumentSchema(ContentSchema):
     body = colander.SchemaNode(
         colander.String(),
-        widget=RichTextWidget(theme='advanced'),
+        widget=RichTextWidget(theme='advanced', width=790, height=500),
         missing=u"",
         )
 

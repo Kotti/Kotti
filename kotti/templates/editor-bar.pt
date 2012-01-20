@@ -1,0 +1,44 @@
+<div class="topbar" data-dropdown="dropdown">
+  <div class="fill">
+    <div class="container">
+      <span class="brand">Kotti</span>
+
+      <ul class="nav">
+        <li class="${api.url() == request.url and 'active' or None}">
+          <a href="${api.url()}">View</a>
+        </li>
+        <li tal:repeat="link api.edit_links"
+            class="${link.selected(context, request) and 'active' or None}">
+          <a href="${link.url(context, request)}">
+            ${link.title}
+          </a>
+        </li>
+      </ul>
+
+      <div class="pull-right" tal:condition="api.user is not None">
+
+        <ul class="nav secondary-nav">
+          <li class="dropdown">
+            <a href="#" class="dropdown-toggle user-dropdown">
+              <img src="${api.avatar_url(default_image='mm')}" />
+              ${api.user.title}
+            </a>
+            <ul class="dropdown-menu">
+              <li tal:condition="api.has_permission('admin', api.root)">
+                <a href="${api.url(api.root, '@@setup')}">Site Setup</a>
+              </li>
+              <li>
+                <a href="${api.url(api.root, '@@prefs')}">Preferences</a>
+              </li>
+              <li>
+                <a href="${request.application_url}/@@logout?came_from=${request.url}">Logout</a>
+              </li>
+            </ul>
+          </li>
+        </ul>
+
+      </div>
+
+    </div>
+  </div>
+</div>
