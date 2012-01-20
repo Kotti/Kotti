@@ -1,7 +1,10 @@
 History
 =======
 
-0.4.5 - Unreleased
+0.5.0 - Unreleased
+------------------
+
+0.4.5 - 2012-01-19
 ------------------
 
 - Add 'kotti.security.has_permission' which may be used instead of
