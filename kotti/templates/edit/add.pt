@@ -13,7 +13,7 @@
               ${type_name}
             </label>
             <div class="input">
-              <input tal:define="type_name ${type['factory'].type_info.name}"
+              <input tal:define="type_name type['factory'].type_info.name"
                      type="radio" name="what"
                      value="${type_name}"
                      checked="${type == possible_types[0] and 'checked' or None}"
