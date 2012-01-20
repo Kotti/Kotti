@@ -4,7 +4,7 @@
 </div>
 
 <div class="row">
-  <ul class="pills">
+  <ul class="tabs">
     <li class="${api.root == api.context and 'active'}">
       <a href="${request.application_url}">Home</a>
     </li>
