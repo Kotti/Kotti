@@ -9,16 +9,17 @@
         <fieldset tal:condition="len(possible_types) &gt; 1">
           <legend>What do you want to add?</legend>
           <div class="clearfix" tal:repeat="type possible_types">
-            <label for="what-to-add-${type_name}">
-              ${type_name}
-            </label>
-            <div class="input">
-              <input tal:define="type_name type['factory'].type_info.name"
-                     type="radio" name="what"
-                     value="${type_name}"
-                     checked="${type == possible_types[0] and 'checked' or None}"
-                     id="what-to-add-${type_name}" />
-            </div>
+            <tal:define tal:define="type_name type['factory'].type_info.name">
+              <label for="what-to-add-${type_name}">
+                ${type_name}
+              </label>
+              <div class="input">
+                <input type="radio" name="what"
+                       value="${type_name}"
+                       checked="${type == possible_types[0] and 'checked' or None}"
+                       id="what-to-add-${type_name}" />
+              </div>
+            </tal:define>
           </div>
         </fieldset>
         <div>
