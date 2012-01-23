@@ -102,7 +102,7 @@ def render_local_navigation(context, request):
         children = ch(parent)
     if len(children) and parent != get_root():
         return render(
-            'kotti:templates/view/local-navigation.pt',
+            'kotti:templates/view/nav-local.pt',
             dict(parent=parent, children=children),
             request,
             )
