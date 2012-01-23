@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      metal:use-macro="api.macro('kotti:templates/edit/master.pt')">
+
+  <div metal:fill-slot="content">
+    <h1>Navigate</h1>
+
+    <div tal:replace="structure api.render_view('render_tree_navigation')">
+    </div>
+
+  </div>
+
+</html>

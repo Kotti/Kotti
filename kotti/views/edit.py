@@ -13,12 +13,13 @@ from kotti import DBSession
 from kotti.resources import Node
 from kotti.resources import Document
 from kotti.security import view_permitted
-from kotti.views.util import template_api
+from kotti.views.util import FormController
 from kotti.views.util import addable_types
-from kotti.views.util import title_to_name
 from kotti.views.util import disambiguate_name
 from kotti.views.util import ensure_view_selector
-from kotti.views.util import FormController
+from kotti.views.util import nodes_tree
+from kotti.views.util import template_api
+from kotti.views.util import title_to_name
 
 deform_templates = resource_filename('deform', 'templates')
 kotti_templates = resource_filename('kotti', 'templates/edit/widgets')
@@ -202,6 +203,15 @@ def make_generic_add(schema, add, title, **kwargs):
         return generic_add(context, request, schema, add, title, **kwargs)
     return view
 
+def render_tree_navigation(context, request):
+    tree = nodes_tree(request)['tree']
+    return {
+        'tree': {
+            'item': None,
+            'children': [tree],
+            },
+        }
+
 def includeme(config):
     nodes_includeme(config)
 
@@ -218,6 +228,20 @@ def includeme(config):
         name=Document.type_info.add_view,
         permission='add',
         renderer='kotti:templates/edit/node.pt',
+        )
+
+    config.add_view(
+        render_tree_navigation,
+        name='render_tree_navigation',
+        permission='view',
+        renderer='kotti:templates/edit/nav-tree.pt',
+        )
+
+    config.add_view(
+        render_tree_navigation,
+        name='navigate',
+        permission='view',
+        renderer='kotti:templates/edit/nav-tree-view.pt',
         )
 
 def nodes_includeme(config):

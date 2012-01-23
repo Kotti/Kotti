@@ -103,6 +103,7 @@ class TestTemplateAPI(UnitTestBase):
             ViewLink('add'),
             ViewLink('move'),
             ViewLink('share'),
+            ViewLink('navigate'),
             ])
 
         # Edit links are controlled through
@@ -351,17 +352,53 @@ class TestUtil(UnitTestBase):
         self.assertEqual(request.path_info, u'/@@edit')
 
 class TestLocalNavigationSlot(UnitTestBase):
+    def setUp(self):
+        super(TestLocalNavigationSlot, self).setUp()
+        self.renderer = self.config.testing_add_renderer(
+            'kotti:templates/view/nav-local.pt')
+
     def test_it(self):
         from kotti.views.slots import render_local_navigation
-
-        renderer = self.config.testing_add_renderer(
-            'kotti:templates/view/local-navigation.pt')
         a, aa, ab, ac, aca, acb = create_contents()
 
         assert render_local_navigation(ac, DummyRequest()) is not None
-        renderer.assert_(parent=ac, children=[aca, acb])
+        self.renderer.assert_(parent=ac, children=[aca, acb])
 
         assert render_local_navigation(acb, DummyRequest()) is not None
-        renderer.assert_(parent=ac, children=[aca, acb])
+        self.renderer.assert_(parent=ac, children=[aca, acb])
 
         assert render_local_navigation(a.__parent__, DummyRequest()) is None
+
+    @patch('kotti.views.slots.has_permission')
+    def test_no_permission(self, has_permission):
+        from kotti.views.slots import render_local_navigation
+        a, aa, ab, ac, aca, acb = create_contents()
+
+        has_permission.return_value = True
+        assert render_local_navigation(ac, DummyRequest()) is not None
+
+        has_permission.return_value = False
+        assert render_local_navigation(ac, DummyRequest()) is None
+
+    def test_in_navigation(self):
+        from kotti.views.slots import render_local_navigation
+        a, aa, ab, ac, aca, acb = create_contents()
+        
+        assert render_local_navigation(a, DummyRequest()) is not None
+        aa.in_navigation = False
+        ab.in_navigation = False
+        ac.in_navigation = False
+        assert render_local_navigation(a, DummyRequest()) is None
+
+class TestNodesTree(UnitTestBase):
+    def test_it(self):
+        from kotti.views.util import nodes_tree
+
+        a, aa, ab, ac, aca, acb = create_contents()
+        tree = nodes_tree(DummyRequest())['tree']
+        assert tree['item'] == a.__parent__
+        assert [ch['item'] for ch in tree['children']] == [a]
+        assert [ch['item'] for ch in tree[
+            'children'][0]['children']] == [aa, ab, ac]
+        assert [ch['item'] for ch in tree[
+            'children'][0]['children'][2]['children']] == [aca, acb]

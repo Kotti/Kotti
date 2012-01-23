@@ -288,6 +288,12 @@ We cannot rename the root:
   Traceback (most recent call last):
   LookupError: label 'New name'
 
+Navigation
+----------
+
+  >>> browser.getLink("Navigate").click()
+  >>> browser.getLink("My Third Child").text
+  'My Third Child'
 
 User management
 ---------------

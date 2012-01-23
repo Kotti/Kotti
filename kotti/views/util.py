@@ -1,3 +1,4 @@
+from collections import defaultdict
 from datetime import datetime
 import hashlib
 import urllib
@@ -12,6 +13,7 @@ from pyramid.location import inside
 from pyramid.location import lineage
 from pyramid.renderers import get_renderer
 from pyramid.renderers import render
+from pyramid.threadlocal import get_current_request
 from pyramid.url import resource_url
 from pyramid.view import render_view_to_response
 from deform import ValidationFailure
@@ -21,6 +23,7 @@ from kotti import DBSession
 from kotti.util import title_to_name
 from kotti.events import objectevent_listeners
 from kotti.resources import Node
+from kotti.resources import Content
 from kotti.security import get_user
 from kotti.security import has_permission
 from kotti.security import view_permitted
@@ -297,6 +300,27 @@ def ensure_view_selector(func):
         return func(context, request)
     wrapper.__doc__ = func.__doc__
     return wrapper
+
+def _fill_nodes_tree(tree, item_to_children):
+    children = sorted(item_to_children[tree['item'].id],
+                      key=lambda item: item.position)
+    for child in children:
+        entry = {'item': child, 'children': []}
+        tree['children'].append(entry)
+        _fill_nodes_tree(entry, item_to_children)
+
+def nodes_tree(request):
+    item_to_children = defaultdict(lambda: [])
+    for node in DBSession.query(Content).with_polymorphic(Content).filter(
+        Content.in_navigation == True):
+        if has_permission('view', node, request):
+            item_to_children[node.parent_id].append(node)
+
+    tree = {'item': item_to_children[None][0], 'children': []}
+    _fill_nodes_tree(tree, item_to_children)
+    return dict(
+        tree=tree,
+        )
 
 class FormController(object):
     add = None
