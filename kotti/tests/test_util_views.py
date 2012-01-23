@@ -394,7 +394,7 @@ class TestNodesTree(UnitTestBase):
         from kotti.views.util import nodes_tree
 
         a, aa, ab, ac, aca, acb = create_contents()
-        tree = nodes_tree(DummyRequest())['tree']
+        tree = nodes_tree(DummyRequest())
         assert tree['item'] == a.__parent__
         assert [ch['item'] for ch in tree['children']] == [a]
         assert [ch['item'] for ch in tree[

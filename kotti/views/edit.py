@@ -204,7 +204,7 @@ def make_generic_add(schema, add, title, **kwargs):
     return view
 
 def render_tree_navigation(context, request):
-    tree = nodes_tree(request)['tree']
+    tree = nodes_tree(request)
     return {
         'tree': {
             'item': None,

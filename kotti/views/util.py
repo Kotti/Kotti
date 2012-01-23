@@ -318,9 +318,7 @@ def nodes_tree(request):
 
     tree = {'item': item_to_children[None][0], 'children': []}
     _fill_nodes_tree(tree, item_to_children)
-    return dict(
-        tree=tree,
-        )
+    return tree
 
 class FormController(object):
     add = None

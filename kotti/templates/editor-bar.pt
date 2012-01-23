@@ -23,7 +23,7 @@
 
         <ul class="nav secondary-nav">
           <li class="dropdown">
-            <a href="#" class="dropdown-toggle user-dropdown">
+            <a href="#" class="dropdown-toggle">
               <img src="${api.avatar_url(default_image='mm')}" />
               ${api.user.title}
             </a>

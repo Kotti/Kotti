@@ -1,6 +1,8 @@
 /** Put here CSS that should apply to editor screens only. **/
 
-body { padding-top: 40px; }
+body {
+    padding-top: 60px;
+}
 
 .input, input, textarea, select {
     width: 400px;

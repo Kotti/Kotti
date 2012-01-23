@@ -6,6 +6,9 @@ History
 
 - Move Kotti's default user interface to use Twitter Bootstrap.
 
+- Add a separate navigation screen that replaces the former
+  intelligent breadcrumbs menu.
+
 0.4.5 - 2012-01-19
 ------------------
 
