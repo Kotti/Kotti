@@ -165,16 +165,6 @@ class TemplateAPI(object):
                     children.append(child)
         return children
 
-    def list_children_go_up(self, context=None, permission='view'):
-        if context is None:
-            context = self.context
-        parent = context
-        children = self.list_children(context, permission)
-        if not children and context.__parent__ is not None:
-            parent = context.__parent__
-            children = self.list_children(parent)
-        return (parent, children)
-
     inside = staticmethod(inside)
 
     def avatar_url(self, user=None, size="20", default_image='identicon'):

@@ -46,6 +46,7 @@ from pyramid.renderers import render
 
 from kotti.events import ObjectEvent
 from kotti.events import objectevent_listeners
+from kotti.security import has_permission
 
 def register(slot, objtype, renderer):
     """Register a new slot renderer.
@@ -87,14 +88,24 @@ slot_events = [
     ]
 
 def render_local_navigation(context, request):
-    from kotti.views.util import template_api
-    api = template_api(context, request)
-    parent, children = api.list_children_go_up()
-    children = [c for c in children if c.in_navigation]
-    if parent != api.root and children:
-        return render('kotti:templates/view/local-navigation.pt',
-                      dict(parent=parent, children=children, api=api),
-                      request)
+    from kotti.resources import get_root
+
+    def ch(node):
+        return [child for child in node.values()
+                if child.in_navigation and
+                has_permission('view', child, request)]
+
+    parent = context
+    children = ch(context)
+    if not children and context.__parent__ is not None:
+        parent = context.__parent__
+        children = ch(parent)
+    if len(children) and parent != get_root():
+        return render(
+            'kotti:templates/view/local-navigation.pt',
+            dict(parent=parent, children=children),
+            request,
+            )
 
 def includeme(config):
     register(RenderRightSlot, None, render_local_navigation)
