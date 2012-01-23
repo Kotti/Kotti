@@ -51,7 +51,7 @@
           </tr>
         </table>
 
-        <div class="actions">
+        <div class="actions" tal:condition="entries">
           <button type="submit" name="apply" class="btn primary">
             Apply changes
           </button>
