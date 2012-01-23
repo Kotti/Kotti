@@ -15,3 +15,15 @@ form.login label {
 form.login div.input {
     margin-left: 220px;
 }
+
+/* deform workarounds while we wait for deform_bootstrap to become perfect */
+form.deform ul {
+    list-style: none;
+    margin-left: 0;
+}
+
+form.deform div.input label {
+    padding-top: 0;
+    margin-right: 5px;
+}
+
