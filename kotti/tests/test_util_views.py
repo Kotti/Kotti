@@ -103,7 +103,6 @@ class TestTemplateAPI(UnitTestBase):
             ViewLink('add'),
             ViewLink('move'),
             ViewLink('share'),
-            ViewLink('navigate'),
             ])
 
         # Edit links are controlled through

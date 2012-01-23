@@ -13,6 +13,10 @@
             ${link.title}
           </a>
         </li>
+        <li tal:define="url api.url(context, '@@navigate')"
+            class="${url == request.url and 'active' or None}">
+          <a href="${url}">Navigate</a>
+        </li>
       </ul>
 
       <div class="pull-right" tal:condition="api.user is not None">

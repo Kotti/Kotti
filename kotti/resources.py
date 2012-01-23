@@ -179,7 +179,6 @@ class Content(Node):
             ViewLink('add'),
             ViewLink('move'),
             ViewLink('share'),
-            ViewLink('navigate'),
             ],
         )
 
