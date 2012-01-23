@@ -5,7 +5,7 @@
        title="${getattr(child, 'description', None)}">
       ${child.title}
     </a>
-    <ul tal:replace="structure api.render_template(
+    <ul tal:replace="api.render_template(
                          'kotti:templates/edit/nav-tree.pt',
                          tree=child)" />
   </li>

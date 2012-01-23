@@ -38,24 +38,24 @@
                view-${request.view_name or 'default'}
                ${api.body_css_class}">
     <div tal:condition="api.user is not None"
-         tal:replace="structure api.render_template('kotti:templates/editor-bar.pt')" />
+         tal:replace="api.render_template('kotti:templates/editor-bar.pt')" />
 
     <div class="container">
       <div class="content">
-        <div tal:replace="structure api.render_template('kotti:templates/view/page-header.pt')" />
+        <div tal:replace="api.render_template('kotti:templates/view/page-header.pt')" />
         <div class="row">
           <div class="span4 left-column"
                tal:condition="page_slots.left"
-               tal:content="structure api.render_template('kotti:templates/render_column_slot.pt', slot=page_slots.left)">
+               tal:content="api.render_template('kotti:templates/render_column_slot.pt', slot=page_slots.left)">
           </div>
 
           <div tal:define="span 16 - int(bool(page_slots.left)) * 4 - int(bool(page_slots.right)) * 4" class="span${span}">
             <div class="above-content"
                  tal:condition="page_slots.abovecontent"
-                 tal:content="structure api.render_template('kotti:templates/render_content_slot.pt', slot=page_slots.abovecontent)">
+                 tal:content="api.render_template('kotti:templates/render_content_slot.pt', slot=page_slots.abovecontent)">
             </div>
 
-            <div tal:replace="structure api.render_template('kotti:templates/messages.pt')" />
+            <div tal:replace="api.render_template('kotti:templates/messages.pt')" />
 
             <div class="inner-content">
               <div metal:define-slot="content">
@@ -65,18 +65,18 @@
 
             <div class="below-content" 
                  tal:condition="page_slots.belowcontent"
-                 tal:content="structure api.render_template('kotti:templates/render_content_slot.pt', slot=page_slots.belowcontent)">
+                 tal:content="api.render_template('kotti:templates/render_content_slot.pt', slot=page_slots.belowcontent)">
             </div>
           </div>
 
           <div class="span4 right-column"
                tal:condition="page_slots.right"
-               tal:content="structure api.render_template('kotti:templates/render_column_slot.pt', slot=page_slots.right)">
+               tal:content="api.render_template('kotti:templates/render_column_slot.pt', slot=page_slots.right)">
           </div>
         </div>
       </div>
 
-      <footer tal:replace="structure api.render_template('kotti:templates/view/footer.pt')">
+      <footer tal:replace="api.render_template('kotti:templates/view/footer.pt')">
       </footer>
 
     </div>

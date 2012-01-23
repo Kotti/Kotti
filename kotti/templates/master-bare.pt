@@ -4,7 +4,7 @@
 <html tal:omit-tag=""
       metal:define-macro="main">
 
-  <div tal:replace="structure api.render_template('kotti:templates/messages.pt')"
+  <div tal:replace="api.render_template('kotti:templates/messages.pt')"
        tal:condition="request.is_xhr" />
 
   <div metal:define-slot="content">

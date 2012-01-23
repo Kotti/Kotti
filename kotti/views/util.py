@@ -43,6 +43,17 @@ def add_renderer_globals(event):
             api = template_api(event['context'], event['request'])
         event['api'] = api
 
+class TemplateStructure(object):
+    def __init__(self, html):
+        self.html = html
+
+    def __html__(self):
+        return self.html
+    __unicode__ = __html__
+
+    def __getattr__(self, key):
+        return getattr(self.html, key)
+
 class Slots(object):
     def __init__(self, context, request):
         self.context = context
@@ -151,10 +162,10 @@ class TemplateAPI(object):
             context = self.context
         if request is None:
             request = self.request
-        return render_view(context, request, name, secure)
+        return TemplateStructure(render_view(context, request, name, secure))
 
     def render_template(self, renderer, **kwargs):
-        return render(renderer, kwargs, self.request)
+        return TemplateStructure(render(renderer, kwargs, self.request))
 
     def list_children(self, context=None, permission='view'):
         if context is None:

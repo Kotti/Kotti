@@ -284,10 +284,10 @@ class TestTemplateAPI(UnitTestBase):
         self.config.add_view(first_view, name='')
         self.config.add_view(second_view, name='second')
         api = self.make()
-        self.assertEqual(api.render_view(), u'first')
-        self.assertEqual(api.render_view('second'), u'second')
-        self.assertEqual(
-            api.render_view(context=api.context, request=api.request), u'first')
+        self.assertEqual(api.render_view().__unicode__(), u'first')
+        self.assertEqual(api.render_view('second').__unicode__(), u'second')
+        self.assertEqual(api.render_view(
+            context=api.context, request=api.request).__unicode__(), u'first')
 
     def test_render_template(self):
         renderer = MagicMock()
@@ -399,3 +399,10 @@ class TestNodesTree(UnitTestBase):
         assert [ch.name for ch in tree.children] == [a.name]
         assert [ch.id for ch in tree.children[0].children] == [
             aa.id, ab.id, ac.id]
+
+class TestTemplateStructure(UnitTestBase):
+    def test_getattr(self):
+        from kotti.views.util import TemplateStructure
+
+        item = TemplateStructure(u'123')
+        assert item.split('2') == [u'1', u'3']

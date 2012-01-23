@@ -51,14 +51,14 @@
 
   <body class="view-${request.view_name or 'default'} ${api.body_css_class}">
     <div tal:condition="api.user is not None"
-         tal:replace="structure api.render_template('kotti:templates/editor-bar.pt')" />
+         tal:replace="api.render_template('kotti:templates/editor-bar.pt')" />
 
     <div class="container">
       <div class="content">
         <div class="row">
           <div class="span16">
-            <div tal:replace="structure api.render_template('kotti:templates/edit/breadcrumbs.pt')" />
-            <div tal:replace="structure api.render_template('kotti:templates/messages.pt')" />
+            <div tal:replace="api.render_template('kotti:templates/edit/breadcrumbs.pt')" />
+            <div tal:replace="api.render_template('kotti:templates/messages.pt')" />
             <div class="inner-content">
               <div metal:define-slot="content">
                 <h1>${api.context.title}</h1>
@@ -69,7 +69,7 @@
         </div>
       </div>
 
-      <footer tal:replace="structure api.render_template('kotti:templates/edit/footer.pt')">
+      <footer tal:replace="api.render_template('kotti:templates/edit/footer.pt')">
       </footer>
 
     </div>
