@@ -207,7 +207,6 @@ def render_tree_navigation(context, request):
     tree = nodes_tree(request)
     return {
         'tree': {
-            'item': None,
             'children': [tree],
             },
         }

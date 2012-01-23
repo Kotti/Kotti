@@ -13,7 +13,6 @@ from pyramid.location import inside
 from pyramid.location import lineage
 from pyramid.renderers import get_renderer
 from pyramid.renderers import render
-from pyramid.threadlocal import get_current_request
 from pyramid.url import resource_url
 from pyramid.view import render_view_to_response
 from deform import ValidationFailure
@@ -301,24 +300,43 @@ def ensure_view_selector(func):
     wrapper.__doc__ = func.__doc__
     return wrapper
 
-def _fill_nodes_tree(tree, item_to_children):
-    children = sorted(item_to_children[tree['item'].id],
-                      key=lambda item: item.position)
-    for child in children:
-        entry = {'item': child, 'children': []}
-        tree['children'].append(entry)
-        _fill_nodes_tree(entry, item_to_children)
+class NavigationNodeWrapper(object):
+    def __init__(self, node, request, item_mapping, item_to_children):
+        self._node = node
+        self._request = request
+        self._item_mapping = item_mapping
+        self._item_to_children = item_to_children
+
+    @property
+    def __parent__(self):
+        if self.parent_id:
+            return self._item_mapping[self.parent_id]
+
+    @property
+    def children(self):
+        return [NavigationNodeWrapper(
+            child, self._request, self._item_mapping, self._item_to_children)
+                for child in self._item_to_children[self.id]
+                if has_permission('view', child, self._request)]
+
+    def __getattr__(self, name):
+        return getattr(self._node, name)
 
 def nodes_tree(request):
+    item_mapping = {}
     item_to_children = defaultdict(lambda: [])
     for node in DBSession.query(Content).with_polymorphic(Content).filter(
         Content.in_navigation == True):
+        item_mapping[node.id] = node
         if has_permission('view', node, request):
             item_to_children[node.parent_id].append(node)
 
-    tree = {'item': item_to_children[None][0], 'children': []}
-    _fill_nodes_tree(tree, item_to_children)
-    return tree
+    return NavigationNodeWrapper(
+        item_to_children[None][0],
+        request,
+        item_mapping,
+        item_to_children,
+        )
 
 class FormController(object):
     add = None

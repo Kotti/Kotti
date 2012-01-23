@@ -205,6 +205,11 @@ class PersistentACLMixin(object):
             (Allow, 'role:admin', ALL_PERMISSIONS),
             ]
 
+def _cachekey_list_groups_raw(name, context):
+    context_id = context is not None and getattr(context, 'id', id(context))
+    return (name, context_id)
+
+@request_cache(_cachekey_list_groups_raw)
 def list_groups_raw(name, context):
     """A set of group names in given ``context`` for ``name``.
 

@@ -395,9 +395,7 @@ class TestNodesTree(UnitTestBase):
 
         a, aa, ab, ac, aca, acb = create_contents()
         tree = nodes_tree(DummyRequest())
-        assert tree['item'] == a.__parent__
-        assert [ch['item'] for ch in tree['children']] == [a]
-        assert [ch['item'] for ch in tree[
-            'children'][0]['children']] == [aa, ab, ac]
-        assert [ch['item'] for ch in tree[
-            'children'][0]['children'][2]['children']] == [aca, acb]
+        assert tree.id == a.__parent__.id
+        assert [ch.name for ch in tree.children] == [a.name]
+        assert [ch.id for ch in tree.children[0].children] == [
+            aa.id, ab.id, ac.id]
