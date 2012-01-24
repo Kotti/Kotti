@@ -329,7 +329,7 @@ Use a valid username now.  Note how the checkbox to send a password
 registration link is ticked:
 
   >>> ctrl("Name", index=0).value = u"bob"
-  >>> ctrl("Send password registration link").selected
+  >>> ctrl("Send password registration link", index=0).selected
   True
   >>> ctrl(name="add_user").click()
   >>> "Bob Dabolina added" in browser.contents

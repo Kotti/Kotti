@@ -428,6 +428,20 @@ class TestBaseFormView(TestCase):
         assert view.schema == schema.bind.return_value
         schema.bind.assert_called_with(request=view.request)
 
+    def test_use_csrf_token(self):
+        view = self.make()
+        schema = view.schema = MagicMock()
+        view.__call__()
+        assert schema.children.append.called
+        assert schema.children.append.call_args[0][0].name == 'csrf_token'
+
+    def test_use_csrf_token_not(self):
+        view = self.make()
+        view.use_csrf_token = False
+        schema = view.schema = MagicMock()
+        view.__call__()
+        assert not schema.children.append.called
+
 class TestEditFormView(TestCase):
     def make(self):
         from kotti.views.util import EditFormView

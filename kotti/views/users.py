@@ -215,8 +215,8 @@ def user_schema(base=PrincipalFull()):
         has_password = False
     if has_password:
         schema['password'].description = (
-            u"Leave this empty and provide an email address below "
-            u"to send the user an email to set their own password."
+            u"Leave this empty and tick the 'Send password registration' box"
+            u"below to have the user set their own password."
             )
     schema['title'].title = u"Full name"
     return schema
@@ -270,6 +270,7 @@ class UserAddFormView(AddFormView):
         return schema
 
     def add_user_success(self, appstruct):
+        appstruct.pop('csrf_token', None)
         _massage_groups_in(appstruct)
         name = appstruct['name'].lower()
         send_email = appstruct.pop('send_email', False)

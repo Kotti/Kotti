@@ -8,7 +8,6 @@ from babel.dates import format_datetime
 from babel.dates import format_time
 import colander
 import deform
-from deform import ValidationFailure
 from pyramid.decorator import reify
 from pyramid.httpexceptions import HTTPFound
 from pyramid.i18n import get_locale_name
@@ -19,6 +18,7 @@ from pyramid.renderers import render
 from pyramid.url import resource_url
 from pyramid.view import render_view_to_response
 from pyramid_deform import FormView
+from pyramid_deform import CSRFSchema
 
 from kotti import get_settings
 from kotti import DBSession
@@ -368,6 +368,7 @@ class BaseFormView(FormView):
     success_message = u"Your changes have been saved."
     success_url = None
     schema_factory = None
+    use_csrf_token = True
 
     def __init__(self, context, request, **kwargs):
         super(BaseFormView, self).__init__(request)
@@ -377,6 +378,8 @@ class BaseFormView(FormView):
     def __call__(self):
         if self.schema_factory is not None:
             self.schema = self.schema_factory()
+        if self.use_csrf_token and 'csrf_token' not in self.schema:
+            self.schema.children.append(CSRFSchema()['csrf_token'])
         return super(BaseFormView, self).__call__()
 
 class EditFormView(BaseFormView):
@@ -384,6 +387,7 @@ class EditFormView(BaseFormView):
         form.appstruct = self.context.__dict__.copy()
 
     def save_success(self, appstruct):
+        appstruct.pop('csrf_token', None)
         self.edit(**appstruct)
         self.request.session.flash(self.success_message, 'success')
         location = self.success_url or self.request.url
@@ -397,6 +401,7 @@ class AddFormView(BaseFormView):
     success_message = u"Successfully added item."
 
     def save_success(self, appstruct):
+        appstruct.pop('csrf_token', None)
         name = self.find_name(appstruct)
         new_item = self.context[name] = self.add(**appstruct)
         self.request.session.flash(self.success_message, 'success')
