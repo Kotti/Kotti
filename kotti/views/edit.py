@@ -13,7 +13,8 @@ from kotti import DBSession
 from kotti.resources import Node
 from kotti.resources import Document
 from kotti.security import view_permitted
-from kotti.views.util import FormController
+from kotti.views.util import EditFormView
+from kotti.views.util import AddFormView
 from kotti.views.util import addable_types
 from kotti.views.util import disambiguate_name
 from kotti.views.util import ensure_view_selector
@@ -160,36 +161,33 @@ def move_node(context, request):
 
     return {}
 
-def generic_edit(context, request, schema, form_factory=Form, **kwargs):
+def generic_edit(context, request, schema, **kwargs):
     api = template_api(context, request)
     api.first_heading=u'<h1>Edit <em>%s</em></h1>' % context.title
     api.page_title = u'Edit %s - %s' % (context.title, api.site_title)
 
-    form = form_factory(schema, buttons=('save', 'cancel'), action=request.url)
-    rendered = FormController(form, **kwargs)(context, request)
+    rendered = EditFormView(context, request, schema=schema, **kwargs)()
     if request.is_response(rendered):
         return rendered
 
     return {
         'api': api,
-        'form': rendered,
+        'form': rendered['form'],
         }
 
-def generic_add(context, request, schema, add, title, form_factory=Form,
-                **kwargs):
+def generic_add(context, request, schema, add, title, **kwargs):
     api = template_api(context, request)
     api.first_heading = u'<h1>Add %s to <em>%s</em></h1>' % (
         title, context.title)
     api.page_title=u'Add %s to %s - %s' % (title, context.title, api.site_title)
 
-    form = form_factory(schema, buttons=('save', 'cancel'), action=request.url)
-    rendered = FormController(form, add=add, **kwargs)(context, request)
+    rendered = AddFormView(context, request, schema=schema, add=add, **kwargs)()
     if request.is_response(rendered):
         return rendered
 
     return {
         'api': api,
-        'form': rendered,
+        'form': rendered['form'],
         }
 
 def make_generic_edit(schema, **kwargs):
