@@ -24,6 +24,7 @@ install_requires = [
     'py-bcrypt',
     'pyramid>=1.2',
     'pyramid_debugtoolbar',
+    'pyramid_deform',
     'pyramid_mailer',
     'pyramid_tm',
     'repoze.lru',
@@ -82,6 +83,7 @@ setup(name='Kotti',
       #tests_require=tests_require,
       dependency_links = [
           "http://www.voidspace.org.uk/downloads/mock-0.8.0beta4.tar.gz",
+          "https://github.com/Pylons/pyramid_deform/zipball/0.1.6#egg=pyramid_deform-0.1.6",
       ],
       entry_points = """\
       [paste.app_factory]

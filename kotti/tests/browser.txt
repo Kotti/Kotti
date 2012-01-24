@@ -308,7 +308,7 @@ We add Bob's Group and assign the ``Viewer`` role:
   >>> ctrl("Name", index=1).value = "bobsgroup"
   >>> ctrl("Title", index=1).value = "Bob's Group"
   >>> ctrl("Viewer", index=1).click()
-  >>> ctrl(name="add-group").click()
+  >>> ctrl(name="add_group").click()
   >>> "Bob's Group added" in browser.contents
   True
   >>> ctrl(name="role::group:bobsgroup::role:viewer").value
@@ -321,7 +321,7 @@ And a Bob.  Only alphanumeric characters are allowed for the name:
   >>> ctrl("Password", index=0).value = "secret"
   >>> ctrl("Confirm Password", index=0).value = "secret"
   >>> ctrl("Email", index=0).value = "bob@dabolina.com"
-  >>> ctrl(name="add-user").click()
+  >>> ctrl(name="add_user").click()
   >>> "There was a problem" in browser.contents
   True
 
@@ -331,7 +331,7 @@ registration link is ticked:
   >>> ctrl("Name", index=0).value = u"bob"
   >>> ctrl("Send password registration link").selected
   True
-  >>> ctrl(name="add-user").click()
+  >>> ctrl(name="add_user").click()
   >>> "Bob Dabolina added" in browser.contents
   True
 
@@ -342,7 +342,7 @@ We cannot add Bob twice:
   >>> ctrl("Email", index=0).value = "bob@gmail.com"
   >>> ctrl("Password", index=0).value = "secret"
   >>> ctrl("Confirm Password", index=0).value = "secret"
-  >>> ctrl(name="add-user").click()
+  >>> ctrl(name="add_user").click()
   >>> "A user with that name already exists" in browser.contents
   True
 

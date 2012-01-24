@@ -1,8 +1,10 @@
 import time
+from unittest import TestCase
 
 from mock import patch
 from mock import MagicMock
 
+from kotti.testing import Dummy
 from kotti.testing import DummyRequest
 from kotti.testing import UnitTestBase
 
@@ -407,3 +409,100 @@ class TestTemplateStructure(UnitTestBase):
 
         item = TemplateStructure(u'123')
         assert item.split('2') == [u'1', u'3']
+
+class TestBaseFormView(TestCase):
+    def make(self):
+        from kotti.views.util import BaseFormView
+        return BaseFormView(Dummy(), DummyRequest())
+
+    def test_init(self):
+        from kotti.views.util import BaseFormView
+        view = BaseFormView(Dummy(), DummyRequest(), more='args')
+        assert view.more == 'args'
+
+    def test_schema_factory_bind(self):
+        view = self.make()
+        schema = MagicMock()
+        view.schema_factory = lambda: schema
+        view.__call__()
+        assert view.schema == schema.bind.return_value
+        schema.bind.assert_called_with(request=view.request)
+
+class TestEditFormView(TestCase):
+    def make(self):
+        from kotti.views.util import EditFormView
+        return EditFormView(Dummy(), DummyRequest())
+
+    def test_before(self):
+        view = self.make()
+        view.context.three = 3
+        form = Dummy()
+        view.before(form)
+        assert form.appstruct == {'three': 3}
+
+    def test_save_success_calls_edit(self):
+        view = self.make()
+        view.edit = MagicMock()
+        view.save_success({'three': 3})
+        view.edit.assert_called_with(three=3)
+
+    def test_save_success_redirects(self):
+        view = self.make()
+        result = view.save_success({'three': 3})
+        assert result.status == '302 Found'
+        assert result.location == view.request.url
+
+    def test_save_success_redirects_custom_url(self):
+        view = self.make()
+        view.success_url = 'there'
+        result = view.save_success({'three': 3})
+        assert result.status == '302 Found'
+        assert result.location == 'there'
+
+class TestAddFormView(TestCase):
+    def make(self):
+        from kotti.views.util import AddFormView
+        return AddFormView(Dummy(), DummyRequest())
+
+    @patch('kotti.views.util.resource_url')
+    def test_save_success_calls_add(self, resource_url):
+        view = self.make()
+        view.add = MagicMock()
+        view.find_name = lambda appstruct: 'somename'
+        view.save_success({'three': 3})
+        view.add.assert_called_with(three=3)
+        assert view.add.return_value == view.context['somename']
+
+    @patch('kotti.views.util.resource_url')
+    def test_save_success_redirects(self, resource_url):
+        resource_url.return_value = 'someurl'
+        view = self.make()
+        view.add = MagicMock()
+        view.find_name = lambda appstruct: 'somename'
+        result = view.save_success({'three': 3})
+        assert result.status == '302 Found'
+        assert result.location == 'someurl'
+
+    def test_save_success_redirects_custom_url(self):
+        view = self.make()
+        view.add = MagicMock()
+        view.success_url = 'there'
+        view.find_name = lambda appstruct: 'somename'
+        result = view.save_success({'three': 3})
+        assert result.status == '302 Found'
+        assert result.location == 'there'
+
+    @patch('kotti.views.util.title_to_name')
+    def test_find_name_uses_title_to_name(self, title_to_name):
+        view = self.make()
+        title_to_name.return_value = 'cafe'
+        assert view.find_name({'title': 'Bar'}) == 'cafe'
+        title_to_name.assert_called_with('Bar')
+
+    @patch('kotti.views.util.disambiguate_name')
+    def test_find_name_uses_disambiguate_name(self, disambiguate_name):
+        view = self.make()
+        view.context['bar'] = Dummy()
+        disambiguate_name.return_value = 'othername'
+        assert view.find_name({'title': 'Bar'}) == 'othername'
+        disambiguate_name.assert_called_with('bar')

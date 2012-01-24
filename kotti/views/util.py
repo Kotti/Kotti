@@ -6,6 +6,9 @@ import urllib
 from babel.dates import format_date
 from babel.dates import format_datetime
 from babel.dates import format_time
+import colander
+import deform
+from deform import ValidationFailure
 from pyramid.decorator import reify
 from pyramid.httpexceptions import HTTPFound
 from pyramid.i18n import get_locale_name
@@ -15,7 +18,7 @@ from pyramid.renderers import get_renderer
 from pyramid.renderers import render
 from pyramid.url import resource_url
 from pyramid.view import render_view_to_response
-from deform import ValidationFailure
+from pyramid_deform import FormView
 
 from kotti import get_settings
 from kotti import DBSession
@@ -42,6 +45,9 @@ def add_renderer_globals(event):
         if api is None:
             api = template_api(event['context'], event['request'])
         event['api'] = api
+
+def is_root(context, request):
+    return context is TemplateAPI(context, request).root
 
 class TemplateStructure(object):
     def __init__(self, html):
@@ -348,6 +354,64 @@ def nodes_tree(request):
         item_to_children,
         )
 
+class Form(deform.Form):
+    """A Form that allows 'appstruct' to be set on the instance.
+    """
+    def render(self, appstruct=None, readonly=False):
+        if appstruct is None:
+            appstruct = getattr(self, 'appstruct', colander.null)
+        return super(Form, self).render(appstruct, readonly)
+
+class BaseFormView(FormView):
+    form_class = Form
+    buttons = ('save', 'cancel')
+    success_message = u"Your changes have been saved."
+    success_url = None
+    schema_factory = None
+
+    def __init__(self, context, request, **kwargs):
+        super(BaseFormView, self).__init__(request)
+        self.context = context
+        self.__dict__.update(kwargs)
+
+    def __call__(self):
+        if self.schema_factory is not None:
+            self.schema = self.schema_factory()
+        return super(BaseFormView, self).__call__()
+
+class EditFormView(BaseFormView):
+    def before(self, form):
+        form.appstruct = self.context.__dict__.copy()
+
+    def save_success(self, appstruct):
+        self.edit(**appstruct)
+        self.request.session.flash(self.success_message, 'success')
+        location = self.success_url or self.request.url
+        return HTTPFound(location=location)
+
+    def edit(self, **appstruct):
+        for key, value in appstruct.items():
+            setattr(self.context, key, value)
+
+class AddFormView(BaseFormView):
+    success_message = u"Successfully added item."
+
+    def save_success(self, appstruct):
+        name = self.find_name(appstruct)
+        new_item = self.context[name] = self.add(**appstruct)
+        self.request.session.flash(self.success_message, 'success')
+        location = self.success_url or resource_url(
+            new_item, self.request, '@@edit')
+        return HTTPFound(location=location)
+
+    def find_name(self, appstruct):
+        name = appstruct.get('name')
+        if name is None:
+            name = title_to_name(appstruct['title'])
+            while name in self.context.keys():
+                name = disambiguate_name(name)
+        return name
+
 class FormController(object):
     add = None
     post_key = 'save'
@@ -394,7 +458,7 @@ class FormController(object):
         request.session.flash(self.edit_success_msg, 'success')
         try:
             location = resource_url(context, request) + self.success_path
-        except AttributeError:
+        except AttributeError: # pragma: no coverage
             location = request.url
         return HTTPFound(location=location)
         
@@ -408,6 +472,3 @@ class FormController(object):
         request.session.flash(self.add_success_msg, 'success')
         location = resource_url(item, request) + self.success_path
         return HTTPFound(location=location)
-
-def is_root(context, request):
-    return context is TemplateAPI(context, request).root
