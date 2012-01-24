@@ -336,8 +336,7 @@ class NavigationNodeWrapper(object):
 def nodes_tree(request):
     item_mapping = {}
     item_to_children = defaultdict(lambda: [])
-    for node in DBSession.query(Content).with_polymorphic(Content).filter(
-        Content.in_navigation == True):
+    for node in DBSession.query(Content).with_polymorphic(Content):
         item_mapping[node.id] = node
         if has_permission('view', node, request):
             item_to_children[node.parent_id].append(node)
