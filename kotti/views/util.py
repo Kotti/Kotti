@@ -347,6 +347,9 @@ def nodes_tree(request):
         if has_permission('view', node, request):
             item_to_children[node.parent_id].append(node)
 
+    for children in item_to_children.values():
+        children.sort(key=lambda ch:ch.position)
+
     return NavigationNodeWrapper(
         item_to_children[None][0],
         request,

@@ -6,7 +6,7 @@ History
 
 - Move Kotti's default user interface to use Twitter Bootstrap.
 
-- Add CSRF protection to all forms.
+- Add CSRF protection to some forms.
 
 - Remove Kotti's ``FormController`` in favor of using ``pyramid_deform``.
 

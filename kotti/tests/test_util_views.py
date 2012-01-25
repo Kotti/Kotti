@@ -403,6 +403,17 @@ class TestNodesTree(UnitTestBase):
         assert [ch.id for ch in tree.children[0].children] == [
             aa.id, ab.id, ac.id]
 
+    def test_ordering(self):
+        from kotti.views.util import nodes_tree
+
+        a, aa, ab, ac, aca, acb = create_contents()
+        a.children.insert(1, a.children.pop(0))
+        tree = nodes_tree(DummyRequest())
+        assert [ch.position for ch in tree.children[0].children] == [
+            0, 1, 2]
+        assert [ch.id for ch in tree.children[0].children] == [
+            ab.id, aa.id, ac.id]
+
 class TestTemplateStructure(UnitTestBase):
     def test_getattr(self):
         from kotti.views.util import TemplateStructure
