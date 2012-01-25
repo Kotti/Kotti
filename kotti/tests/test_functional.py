@@ -1,3 +1,5 @@
+from StringIO import StringIO
+
 from mock import patch
 
 from kotti.testing import FunctionalTestBase
@@ -24,3 +26,35 @@ class TestForbidden(FunctionalTestBase):
         userid.return_value = "foo"
         res = self.test_app.get('/@@edit', status=302)
         assert res.location == 'http://localhost/@@forbidden'
+
+class TestUploadFile(FunctionalTestBase):
+    def add_file(self, browser, contents='ABC'):
+        file_ctrl = browser.getControl("File").mech_control
+        file_ctrl.add_file(StringIO(contents), filename='my_image.gif')
+
+    def test_it(self):
+        browser = self.login_testbrowser()
+        browser.open(self.BASE_URL + '/@@add_file')
+        self.add_file(browser)
+        browser.getControl('save').click()
+        assert "Successfully added item" in browser.contents
+        return browser
+
+    def test_view_uploaded_file(self):
+        browser = self.test_it()
+        browser.getLink("View").click()
+        browser.getLink("Download file").click()
+        assert browser.contents == 'ABC'
+
+    def test_tempstorage(self):
+        browser = self.test_it()
+        browser.getControl("Title").value = '' # the error
+        self.add_file(browser, contents='DEF')
+        browser.getControl('save').click()
+        assert "Your changes have been saved" not in browser.contents
+        browser.getControl("Title").value = 'A title'
+        browser.getControl('save').click()
+        assert "Your changes have been saved" in browser.contents
+        browser.getLink("View").click()
+        browser.getLink("Download file").click()
+        assert browser.contents == 'DEF'

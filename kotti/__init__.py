@@ -45,7 +45,7 @@ conf_defaults = {
     'kotti.use_tables': '',
     'kotti.root_factory': 'kotti.resources.default_get_root',
     'kotti.populators': 'kotti.populate.populate',
-    'kotti.available_types': 'kotti.resources.Document',
+    'kotti.available_types': 'kotti.resources.Document kotti.resources.File',
     'kotti.authn_policy_factory': 'kotti.authtkt_factory',
     'kotti.authz_policy_factory': 'kotti.acl_factory',
     'kotti.session_factory': 'kotti.cookie_session_factory',

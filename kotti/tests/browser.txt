@@ -66,6 +66,9 @@ Add a document
   >>> browser.open(testing.BASE_URL)
   >>> browser.getLink("Edit").click()
   >>> browser.getLink("Add").click()
+  >>> ctrl("Document").selected
+  True
+  >>> ctrl("Continue").click()
   >>> ctrl("Title").value = "Child One"
   >>> ctrl("save").click()
   >>> "Successfully added item" in browser.contents

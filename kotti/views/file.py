@@ -1,21 +1,42 @@
+from StringIO import StringIO
+from UserDict import DictMixin
+
 from colander import MappingSchema
 from colander import SchemaNode
 from colander import String
 from colander import null
-from colander import required
 from deform import FileData
+from deform.widget import FileUploadWidget
 from pyramid.response import Response
 
 from kotti.resources import File
 from kotti.views.util import EditFormView
 from kotti.views.util import AddFormView
 
-def FileSchema():
-    class FileSchema(MappingSchema):
-        title = SchemaNode(String(), missing=u'')
-        description = SchemaNode(String(), missing=u'')
-        file = SchemaNode(FileData())
-    return FileSchema()
+class FileUploadTempStore(DictMixin):
+    def __init__(self, request):
+        self.session = request.session
+
+    def keys(self):
+        return [k for k in self.session.keys() if not k.startswith('_')]
+
+    def __setitem__(self, name, value):
+        value = value.copy()
+        fp = value.pop('fp')
+        value['file_contents'] = fp.read()
+        fp.seek(0)
+        self.session[name] = value
+
+    def __getitem__(self, name):
+        value = self.session[name].copy()
+        value['fp'] = StringIO(value.pop('file_contents'))
+        return value
+
+    def __delitem__(self, name):
+        del self.session[name]
+
+    def preview_url(self, name):
+        return None
 
 def inline_view(context, request, disposition='inline'):
     res = Response(
@@ -33,9 +54,14 @@ def attachment_view(context, request):
     return inline_view(context, request, 'attachment')
 
 class EditFileFormView(EditFormView):
-    schema = FileSchema()
-    schema['title'].missing = required
-    schema['file'].missing = null
+    def schema_factory(self):
+        tmpstore = FileUploadTempStore(self.request)
+        class FileSchema(MappingSchema):
+            title = SchemaNode(String())
+            description = SchemaNode(String(), missing=u'')
+            file = SchemaNode(FileData(), missing=null,
+                              widget=FileUploadWidget(tmpstore))
+        return FileSchema()
 
     def edit(self, **appstruct):
         self.context.title = appstruct['title']
@@ -48,12 +74,19 @@ class EditFileFormView(EditFormView):
             self.context.size = len(buf)
 
 class AddFileFormView(AddFormView):
-    schema = FileSchema()
+    def schema_factory(self):
+        tmpstore = FileUploadTempStore(self.request)
+        class FileSchema(MappingSchema):
+            title = SchemaNode(String(), missing=u'')
+            description = SchemaNode(String(), missing=u'')
+            file = SchemaNode(FileData(),
+                              widget=FileUploadWidget(tmpstore))
+        return FileSchema()
     
     def save_success(self, appstruct):
         if not appstruct['title']:
             appstruct['title'] = appstruct['file']['filename']
-        super(AddFileFormView, self).save_success(appstruct)
+        return super(AddFileFormView, self).save_success(appstruct)
 
     def add(self, **appstruct):
         buf = appstruct['file']['fp'].read()
@@ -79,6 +112,13 @@ def includeme(config):
         context=File,
         name='attachment-view',
         permission='view',
+        )
+
+    config.add_view(
+        context=File,
+        name='view',
+        permission='view',
+        renderer='kotti:templates/view/file.pt',
         )
 
     config.add_view(

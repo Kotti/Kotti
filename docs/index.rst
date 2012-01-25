@@ -285,16 +285,16 @@ types available.  The default configuration here is:
 
 .. code-block:: ini
 
-  kotti.available_types = kotti.resources.Document
+  kotti.available_types = kotti.resources.Document kotti.resources.File
 
-An example that adds two content types:
+An example that removes ``File`` and adds two content types:
 
 .. code-block:: ini
 
   kotti.available_types =
       kotti.resources.Document
-      mypackage.resources.Calendar
-      mypackage.resources.Event
+      kotti_calendar.resources.Calendar
+      kotti_calendar.resources.Event
 
 Configuring authentication and authorization
 --------------------------------------------

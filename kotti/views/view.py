@@ -22,14 +22,10 @@ def view_content_default(context, request):
         raise NotFound()
     return response
 
-def view_node(context, request):
-    return {}
-
 def includeme(config):
     config.add_view('kotti.views.view.view_content_default', context=IContent)
 
     config.add_view(
-        view_node,
         context=Document,
         name='view',
         permission='view',

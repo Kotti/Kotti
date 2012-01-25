@@ -115,3 +115,20 @@ class TestAddFileFormView(TestCase):
                 mimetype=u'image/png',
                 ),
             ))
+
+class TestFileUploadTempStore(TestCase):
+    def make_one(self):
+        from kotti.views.file import FileUploadTempStore
+        return FileUploadTempStore(DummyRequest())
+    
+    def test_keys(self):
+        tmpstore = self.make_one()
+        tmpstore.session['important'] = 3
+        tmpstore.session['_secret'] = 4
+        assert tmpstore.keys() == ['important']
+
+    def test_delitem(self):
+        tmpstore = self.make_one()
+        tmpstore.session['important'] = 3
+        del tmpstore['important']
+        assert 'important' not in tmpstore.session
