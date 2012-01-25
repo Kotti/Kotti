@@ -7,9 +7,11 @@ from colander import String
 from colander import null
 from deform import FileData
 from deform.widget import FileUploadWidget
+from deform.widget import TextAreaWidget
 from pyramid.response import Response
 
 from kotti.resources import File
+from kotti.views.edit import ContentSchema
 from kotti.views.util import EditFormView
 from kotti.views.util import AddFormView
 
@@ -56,11 +58,12 @@ def attachment_view(context, request):
 class EditFileFormView(EditFormView):
     def schema_factory(self):
         tmpstore = FileUploadTempStore(self.request)
-        class FileSchema(MappingSchema):
-            title = SchemaNode(String())
-            description = SchemaNode(String(), missing=u'')
-            file = SchemaNode(FileData(), missing=null,
-                              widget=FileUploadWidget(tmpstore))
+        class FileSchema(ContentSchema):
+            file = SchemaNode(
+                FileData(),
+                missing=null,
+                widget=FileUploadWidget(tmpstore),
+                )
         return FileSchema()
 
     def edit(self, **appstruct):
@@ -78,9 +81,15 @@ class AddFileFormView(AddFormView):
         tmpstore = FileUploadTempStore(self.request)
         class FileSchema(MappingSchema):
             title = SchemaNode(String(), missing=u'')
-            description = SchemaNode(String(), missing=u'')
-            file = SchemaNode(FileData(),
-                              widget=FileUploadWidget(tmpstore))
+            description = SchemaNode(
+                String(),
+                missing=u"",
+                widget=TextAreaWidget(cols=40, rows=5),
+                )
+            file = SchemaNode(
+                FileData(),
+                widget=FileUploadWidget(tmpstore),
+                )
         return FileSchema()
     
     def save_success(self, appstruct):
