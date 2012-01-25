@@ -22,6 +22,9 @@ def view_content_default(context, request):
         raise NotFound()
     return response
 
+def view_node(context, request): # pragma: no coverage
+    return {} # BBB
+
 def includeme(config):
     config.add_view('kotti.views.view.view_content_default', context=IContent)
 
