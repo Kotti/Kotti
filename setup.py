@@ -59,7 +59,7 @@ class PyTest(Command):
         raise SystemExit(errno)
 
 setup(name='Kotti',
-      version='0.5.0a2',
+      version='0.5.0a3',
       description="A user-friendly, light-weight and extensible web content management system.  Written in Python, based on Pyramid and SQLAlchemy.",
       long_description=README + '\n\n' +  CHANGES,
       classifiers=[
