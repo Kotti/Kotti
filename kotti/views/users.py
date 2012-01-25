@@ -8,7 +8,6 @@ from pyramid.httpexceptions import HTTPFound
 from pyramid.exceptions import Forbidden
 import colander
 import deform
-from deform import Form
 from deform import Button
 from deform.widget import AutocompleteInputWidget
 from deform.widget import CheckedPasswordWidget

@@ -371,8 +371,8 @@ class BaseFormView(FormView):
     use_csrf_token = True
 
     def __init__(self, context, request, **kwargs):
-        super(BaseFormView, self).__init__(request)
         self.context = context
+        self.request = request
         self.__dict__.update(kwargs)
 
     def __call__(self):
