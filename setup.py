@@ -23,6 +23,7 @@ install_requires = [
     'formencode',
     'py-bcrypt',
     'pyramid>=1.2',
+    'pyramid_beaker',
     'pyramid_debugtoolbar',
     'pyramid_deform',
     'pyramid_mailer',

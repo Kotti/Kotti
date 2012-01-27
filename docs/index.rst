@@ -84,6 +84,13 @@ Writing add-ons
 
   add-ons.rst
 
+Cookbook
+========
+
+.. toctree::
+
+  cookbook.rst
+
 Contact us
 ==========
 

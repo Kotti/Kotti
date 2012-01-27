@@ -204,8 +204,8 @@ Sessions
 --------
 
 The ``kotti.session_factory`` configuration variable allows the
-overriding of the default session factory, which is
-`pyramid.session.UnencryptedCookieSessionFactoryConfig`_.
+overriding of the default session factory.  By default, Kotti uses
+``pyramid_beaker`` for sessions.
 
 .. _repoze.tm2: http://pypi.python.org/pypi/repoze.tm2
 .. _SQLAlchemy database URL: http://www.sqlalchemy.org/docs/core/engines.html#database-urls
