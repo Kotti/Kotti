@@ -136,11 +136,10 @@ class TemplateAPI(object):
     def first_heading(self):
         return u'<h1>%s</h1>' % self.page_title
 
-    def url(self, context=None, *elements):
+    def url(self, context=None, *elements, **kwargs):
         if context is None:
             context = self.context
-        rhs = '/'.join(elements)
-        return resource_url(context, self.request) + rhs
+        return self.request.resource_url(context, *elements, **kwargs)
 
     @reify
     def root(self):

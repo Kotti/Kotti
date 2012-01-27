@@ -161,6 +161,25 @@ class TestTemplateAPI(UnitTestBase):
         get_renderer.assert_called_with('mypackage:mytemplate.pt')
         assert get_renderer().implementation().macros['main'] == macro
 
+    def test_url_without_context(self):
+        context, request = object(), MagicMock()
+        api = self.make(context=context, request=request)
+        api.url()
+        request.resource_url.assert_called_with(context)
+
+    def test_url_with_context(self):
+        context, request = object(), MagicMock()
+        api = self.make(request=request)
+        api.url(context)
+        request.resource_url.assert_called_with(context)
+
+    def test_url_with_context_and_elements(self):
+        context, request = object(), MagicMock()
+        api = self.make(request=request)
+        api.url(context, 'first', second='second')
+        request.resource_url.assert_called_with(
+            context, 'first', second='second')
+
     def test_bare(self):
         # By default, no "bare" templates are used:
         api = self.make()
