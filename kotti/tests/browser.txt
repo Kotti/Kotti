@@ -103,6 +103,19 @@ And now force a validation error:
   >>> "First Child" in browser.contents
   True
 
+And now click the 'Cancel' button:
+
+  >>> browser.getLink("Edit").click()
+  >>> ctrl("Title").value = "Firstborn"
+  >>> ctrl("cancel").click()
+  >>> "Your changes have been saved" in browser.contents
+  False
+  >>> ctrl("Title").value
+  'First Child'
+  >>> browser.getLink("View").click()
+  >>> "Firstborn" in browser.contents
+  False
+
 Add two more documents, at different levels
 -------------------------------------------
 

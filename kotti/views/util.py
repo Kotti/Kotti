@@ -384,6 +384,9 @@ class BaseFormView(FormView):
             self.schema.children.append(CSRFSchema()['csrf_token'])
         return super(BaseFormView, self).__call__()
 
+    def cancel_success(self, appstruct):
+        return HTTPFound(location=self.request.url)
+
 class EditFormView(BaseFormView):
     def before(self, form):
         form.appstruct = self.context.__dict__.copy()
