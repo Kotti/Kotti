@@ -1,6 +1,7 @@
-<div class="topbar" data-dropdown="dropdown">
-  <div class="fill">
+<div class="navbar navbar-fixed-top">
+  <div class="navbar-inner">
     <div class="container">
+
       <span class="brand">Kotti</span>
 
       <ul class="nav">
@@ -21,11 +22,12 @@
 
       <div class="pull-right" tal:condition="api.user is not None">
 
-        <ul class="nav secondary-nav">
+        <ul class="nav">
           <li class="dropdown">
-            <a href="#" class="dropdown-toggle">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
               <img src="${api.avatar_url(default_image='mm')}" />
               ${api.user.title}
+              <b class="caret"></b>
             </a>
             <ul class="dropdown-menu">
               <li tal:condition="api.has_permission('admin', api.root)">
