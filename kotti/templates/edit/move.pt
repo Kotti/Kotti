@@ -27,7 +27,7 @@
       <div class="active" id="copyandpaste">
         <form action="${request.url}" method="post"
             class="ajax ${('copy' in request.POST or 'cut' in request.POST or 'paste' in request.POST) and 'ajax-replace' or ''}" id="form-move-1">
-          <div class="actions">
+          <div class="form-actions">
             <button type="submit" name="copy" value="${context.id}" 
                     class="btn">Copy ${context.title}</button>
             <button type="submit" name="cut" value="${context.id}"
@@ -49,16 +49,16 @@
             <legend>
               Are you sure you want to delete <em>${api.context.title}</em>?
             </legend>
-            <div class="clearfix">
-              <label for="delete-checkbox">Yes</label>
-              <div class="input">
+            <div class="control-group">
+              <label class="control-label" for="delete-checkbox">Yes</label>
+              <div class="controls">
                 <input id="delete-checkbox" type="checkbox"
                        name="delete-confirm" value="Yes" />
               </div>
             </div>
-            <div class="actions">
+            <div class="form-actions">
               <button type="submit" name="delete" value="delete" 
-                      class="btn primary">Delete</button>
+                      class="btn btn-danger">Delete</button>
             </div>
           </fieldset>
         </form>
@@ -67,23 +67,23 @@
       <!-- Rename starts here -->
       <div id="rename" tal:condition="context is not api.root">
         <form action="${request.url}" method="post" id="form-move-3">
-          <div class="clearfix">
-            <label for="move-new-name" class="desc">New name</label>
-            <div class="input">
+          <div class="control-group">
+            <label class="control-label desc" for="move-new-name">New name</label>
+            <div class="controls">
               <input type="text" name="name" id="move-new-name"
                      value="${request.POST.get('name') or context.name}" />
             </div>
           </div>
-          <div class="clearfix">         
-            <label for="move-new-title" class="desc">New title</label>
-            <div class="input">
+          <div class="control-group">         
+            <label class="control-label desc" for="move-new-title">New title</label>
+            <div class="controls">
               <input type="text" name="title" id="move-new-title"
                      value="${request.POST.get('title') or context.title}" />
             </div>
           </div>
-          <div class="actions">
+          <div class="form-actions">
             <button type="submit" name="rename" value="rename" 
-                    class="btn primary">Rename</button>
+                    class="btn btn-warning">Rename</button>
           </div>
         </form>    
       </div>
@@ -93,7 +93,7 @@
          tal:condition="len(children) &gt; 1">
         <form action="${request.url}" method="post"
               class="ajax ${('order-up' in request.POST or 'order-down' in request.POST) and 'ajax-replace' or ''}" id="form-move-4">
-          <div class="actions" tal:repeat="item children">
+          <div class="form-actions" tal:repeat="item children">
               <button type="submit" name="order-up" value="${item.id}"
                       title="Move ${item.title} up"
                       id="order-up-${item.id}"

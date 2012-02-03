@@ -8,23 +8,23 @@
     <h1>Login</h1>
     
     <form class="login" action="${url}" method="post">
-      <div class="clearfix">
-        <label for="form-login">Username or email</label>
-        <div class="input">
+      <div class="control-group">
+        <label class="control-label" for="form-login">Username or email</label>
+        <div class="controls">
           <input type="text" name="login" id="form-login"
                  class="span4" value="${login}" />
         </div>
       </div>
-      <div class="clearfix">
-        <label for="form-password">Password</label>
-        <div class="input">
+      <div class="control-group">
+        <label class="control-label" for="form-password">Password</label>
+        <div class="controls">
           <input type="password" name="password" id="form-password"
                  class="span4" value="${password}" />
         </div>
       </div>
-      <div class="actions">
+      <div class="form-actions">
         <input type="hidden" name="came_from" value="${came_from}" />
-        <button type="submit" name="submit" class="btn primary">
+        <button type="submit" name="submit" class="btn btn-primary">
           Log in
         </button>
       </div>
@@ -38,8 +38,8 @@
             password</em> below to receive an email with a link to
             reset your password.
           </div>
-          <div class="actions">
-            <button type="submit" name="reset-password" class="btn primary">
+          <div class="form-actions">
+            <button type="submit" name="reset-password" class="btn btn-primary">
               Reset password
             </button>
           </div>

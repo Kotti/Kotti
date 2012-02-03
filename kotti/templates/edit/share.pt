@@ -9,22 +9,23 @@
       <fieldset>
         <legend>Assign local roles</legend>
 
-        <div class="clearfix">
-          <label for="search-query">Search users and groups</label>
-          <div class="input">
+        <div class="control-group">
+          <label class="control-label"
+                 for="search-query">Search users and groups</label>
+          <div class="controls">
             <input type="text" name="query" id="search-query"
                    value="${request.params.get('query')}"
                    placeholder="Search users and groups"
                    />
           </div>
         </div>
-        <div class="actions">
+        <div class="form-actions">
           <button type="submit" name="search" class="btn primary">
             Search
           </button>
         </div>
 
-        <table tal:condition="entries" class="users-matrix">
+        <table tal:condition="entries" class="table table-bordered">
           <tr>
             <th>Name</th>
             <th tal:repeat="role available_roles">
@@ -37,7 +38,7 @@
               <img src="${api.avatar_url(entry[0])}" alt="Gravatar" />
               ${entry[0].title}
             </td>
-            <td tal:repeat="role available_roles" class="checkbox">
+            <td tal:repeat="role available_roles">
               <input type="checkbox"
                      name="role::${entry[0].name}::${role.name}"
                      checked="${role.name in entry[1][0] and 'checked' or None}"
@@ -51,8 +52,8 @@
           </tr>
         </table>
 
-        <div class="actions" tal:condition="entries">
-          <button type="submit" name="apply" class="btn primary">
+        <div class="form-actions" tal:condition="entries">
+          <button type="submit" name="apply" class="btn btn-primary">
             Apply changes
           </button>
         </div>

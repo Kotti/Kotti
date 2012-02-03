@@ -5,15 +5,16 @@
   <div metal:fill-slot="content">
     <h1>Add item</h1>
 
-      <form action="${request.url}" method="post">
+      <form action="${request.url}" method="post"
+            class="form-horizontal">
         <fieldset tal:condition="len(possible_types) &gt; 1">
           <legend>What do you want to add?</legend>
-          <div class="clearfix" tal:repeat="type possible_types">
+          <div class="control-group" tal:repeat="type possible_types">
             <tal:define tal:define="type_name type['factory'].type_info.name">
-              <label for="what-to-add-${type_name}">
+              <label class="control-label" for="what-to-add-${type_name}">
                 ${type_name}
               </label>
-              <div class="input">
+              <div class="controls">
                 <input type="radio" name="what"
                        value="${type_name}"
                        checked="${type == possible_types[0] and 'checked' or None}"
@@ -30,12 +31,13 @@
 
         <fieldset tal:condition="len(possible_parents) &gt; 1">
           <legend>Which folder do you want to add to?</legend>
-          <div class="clearfix" tal:repeat="parent possible_parents[:2]">
-            <label for="where-to-add-${parent['node'].id}"
+          <div class="control-group" tal:repeat="parent possible_parents[:2]">
+            <label class="control-label"
+                   for="where-to-add-${parent['node'].id}"
                    tal:define="url api.url(parent['node'])">
               Add to <em>${parent['node'].title}</em>
             </label>
-            <div class="input">
+            <div class="controls">
               <input type="radio" name="where" value="${parent['node'].id}"
                      checked="${parent == possible_parents[0] and 'checked' or None}"
                      id="where-to-add-${parent['node'].id}" />
@@ -48,8 +50,8 @@
                tal:condition="len(possible_parents) == 1" />
         </div>
 
-        <div class="actions">
-          <input type="submit" value="Continue" class="btn primary" />
+        <div class="form-actions">
+          <input type="submit" value="Continue" class="btn btn-primary" />
         </div>
       </form>
     </div>
