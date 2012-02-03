@@ -12,7 +12,8 @@
         <![endif]-->
 
     <!-- Styles -->
-    <link href="${request.static_url('kotti:static/bootstrap-1.4.0.min.css')}" rel="stylesheet" />
+    <link href="${request.static_url('kotti:static/bootstrap-2.0.0.min.css')}" rel="stylesheet" />
+    <link href="${request.static_url('kotti:static/bootstrap-responsive-2.0.0.min.css')}" rel="stylesheet" />
     <link href="${request.static_url('kotti:static/base.css')}" rel="stylesheet" />
     <link href="${request.static_url('kotti:static/edit.css')}" rel="stylesheet" />
 
@@ -22,7 +23,7 @@
     <!-- Scripts -->
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
     <script src="${request.static_url('kotti:static/bootstrap-dropdown.js')}" type="text/javascript"></script>
-    <script src="${request.static_url('kotti:static/bootstrap-tabs.js')}" type="text/javascript"></script>
+    <script src="${request.static_url('kotti:static/bootstrap-tab.js')}" type="text/javascript"></script>
     <script src="${request.static_url('kotti:static/kotti.js')}" type="text/javascript"></script>
 
     <!-- Form scripts -->
