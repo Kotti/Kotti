@@ -19,7 +19,7 @@ install_requires = [
     'PasteDeploy',
     'colander>=0.9.3',
     'deform>=0.9.2', # Chameleon 2
-    'deform_bootstrap',
+    'deform_bootstrap>=0.1a3', # Bootstrap 2
     'formencode',
     'py-bcrypt',
     'pyramid>=1.2',
@@ -35,7 +35,7 @@ install_requires = [
 
 tests_require = [
     'WebTest',
-    'mock', # XXX >=0.8.0
+    'mock',
     'pytest',
     'pytest-cov',
     'pytest-xdist',
