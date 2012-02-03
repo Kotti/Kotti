@@ -7,25 +7,3 @@ body {
 body.logged-in {
     padding-top: 60px;
 }
-
-#local-navigation ul {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    width: 100%;
-}
-
-#local-navigation li {
-    padding: 0.5em 0.2em;
-}
-
-#local-navigation li.active {
-    font-weight: bold;
-}
-
-#local-navigation a {
-    display: block;
-    white-space: nowrap;
-    text-decoration: none;
-}
-

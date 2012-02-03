@@ -1,11 +1,10 @@
 <div id="local-navigation">
-  <ul>
+  <ul class="nav nav-pills nav-stacked">
     <tal:repeat tal:define="nodes [parent] + children"
                 tal:repeat="item nodes">
       <li tal:define="active item == api.context and 'active' or ''"
           class="${active}">
-        <a tal:omit-tag="active"
-           href="${api.url(item)}"
+        <a href="${api.url(item)}"
            title="${getattr(item, 'description', None)}">
           ${item.title}
         </a>
