@@ -110,8 +110,6 @@ var kotti = {
             kotti.dom_changed_handlers.push(func);
         });
         kotti.dom_changed(node);
-        
-        $('.tabs').tab();
     };
 
  })(jQuery);

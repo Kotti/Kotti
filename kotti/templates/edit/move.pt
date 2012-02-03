@@ -5,26 +5,26 @@
   <div metal:fill-slot="content">
     <h1>Move <em>${api.context.title}</em></h1>
 
-    <ul class="tabs" data-tabs="tabs">
+    <ul class="nav nav-tabs">
       <li class="active">
-        <a href="#copyandpaste">Copy and Paste</a>
+        <a href="#copyandpaste" data-toggle="tab">Copy and Paste</a>
       </li>
       <li tal:condition="context is not api.root">
-        <a href="#delete">Delete</a>
+        <a href="#delete" data-toggle="tab">Delete</a>
       </li>
       <li tal:condition="context is not api.root">
-        <a href="#rename">Rename</a>
+        <a href="#rename" data-toggle="tab">Rename</a>
       </li>
       <li tal:define="children api.list_children()"
           tal:condition="len(children) &gt; 1">
-        <a href="#order">Order</a>
+        <a href="#order" data-toggle="tab">Order</a>
       </li>
     </ul>
 
-    <div class="pill-content">
+    <div class="tab-content">
 
       <!-- Copy and paste starts here -->
-      <div class="active" id="copyandpaste">
+      <div class="tab-pane active" id="copyandpaste">
         <form action="${request.url}" method="post"
             class="ajax ${('copy' in request.POST or 'cut' in request.POST or 'paste' in request.POST) and 'ajax-replace' or ''}" id="form-move-1">
           <div class="form-actions">
@@ -33,7 +33,7 @@
             <button type="submit" name="cut" value="${context.id}"
                     class="btn">Cut ${context.title}</button>
             <button type="submit" name="paste" value="${paste_item.id}"
-                    class="btn"
+                    class="btn btn-success"
                     tal:define="paste_item api.get_paste_item()"
                     tal:condition="paste_item is not None">
               Paste ${paste_item.title} into ${context.title}
@@ -43,7 +43,7 @@
       </div>
 
       <!-- Delete starts here -->
-      <div id="delete" tal:condition="context is not api.root">
+      <div class="tab-pane" id="delete" tal:condition="context is not api.root">
         <form action="${request.url}" method="post" id="form-move-2">
           <fieldset>
             <legend>
@@ -65,7 +65,7 @@
       </div>
 
       <!-- Rename starts here -->
-      <div id="rename" tal:condition="context is not api.root">
+      <div class="tab-pane" id="rename" tal:condition="context is not api.root">
         <form action="${request.url}" method="post" id="form-move-3">
           <div class="control-group">
             <label class="control-label desc" for="move-new-name">New name</label>
@@ -89,7 +89,7 @@
       </div>
 
       <!-- Order starts here -->
-      <div id="order" tal:define="children api.list_children()"
+      <div class="tab-pane" id="order" tal:define="children api.list_children()"
          tal:condition="len(children) &gt; 1">
         <form action="${request.url}" method="post"
               class="ajax ${('order-up' in request.POST or 'order-down' in request.POST) and 'ajax-replace' or ''}" id="form-move-4">
