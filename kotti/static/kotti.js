@@ -111,7 +111,7 @@ var kotti = {
         });
         kotti.dom_changed(node);
         
-        $('.tabs').tabs();
+        $('.tabs').tab();
     };
 
  })(jQuery);
