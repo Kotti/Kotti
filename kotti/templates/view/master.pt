@@ -46,12 +46,12 @@
       <div class="content">
         <div tal:replace="api.render_template('kotti:templates/view/page-header.pt')" />
         <div class="row">
-          <div class="span4 left-column"
+          <div class="span3 left-column"
                tal:condition="page_slots.left"
                tal:content="api.render_template('kotti:templates/render_column_slot.pt', slot=page_slots.left)">
           </div>
 
-          <div tal:define="span 16 - int(bool(page_slots.left)) * 4 - int(bool(page_slots.right)) * 4" class="span${span}">
+          <div tal:define="span 12 - int(bool(page_slots.left)) * 3 - int(bool(page_slots.right)) * 3" class="span${span}">
             <div class="above-content"
                  tal:condition="page_slots.abovecontent"
                  tal:content="api.render_template('kotti:templates/render_content_slot.pt', slot=page_slots.abovecontent)">
@@ -71,7 +71,7 @@
             </div>
           </div>
 
-          <div class="span4 right-column"
+          <div class="span3 right-column"
                tal:condition="page_slots.right"
                tal:content="api.render_template('kotti:templates/render_column_slot.pt', slot=page_slots.right)">
           </div>

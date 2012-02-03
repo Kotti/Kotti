@@ -57,7 +57,7 @@
     <div class="container">
       <div class="content">
         <div class="row">
-          <div class="span16">
+          <div class="span12">
             <div tal:replace="api.render_template('kotti:templates/edit/breadcrumbs.pt')" />
             <div tal:replace="api.render_template('kotti:templates/messages.pt')" />
             <div class="inner-content">
