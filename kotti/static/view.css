@@ -1,9 +1,5 @@
 /** Put here CSS that should apply to public screens only. **/
 
-body {
-    padding-top: 40px;
-}
-
 body.logged-in {
     padding-top: 60px;
 }
