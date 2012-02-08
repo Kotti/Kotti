@@ -48,7 +48,7 @@
                tal:replace="structure snippet" />
   </head>
 
-  <body class="view-${request.view_name or 'default'} ${api.body_css_class}">
+  <body class="view-${request.view_name or 'default'} ${api.body_css_class} logged-in">
     <div tal:condition="api.user is not None"
          tal:replace="api.render_template('kotti:templates/editor-bar.pt')" />
     <div class="container">
