@@ -1,10 +1,8 @@
-from pkg_resources import resource_filename
 from pyramid.exceptions import Forbidden
 from pyramid.httpexceptions import HTTPFound
 from pyramid.security import has_permission
 from pyramid.url import resource_url
 import colander
-from deform import Form
 from deform.widget import RichTextWidget
 from deform.widget import TextAreaWidget
 
@@ -21,11 +19,6 @@ from kotti.views.util import ensure_view_selector
 from kotti.views.util import nodes_tree
 from kotti.views.util import template_api
 from kotti.views.util import title_to_name
-
-deform_templates = resource_filename('deform', 'templates')
-kotti_templates = resource_filename('kotti', 'templates/edit/widgets')
-search_path = (kotti_templates, deform_templates)
-Form.set_zpt_renderer(search_path)
 
 class ContentSchema(colander.MappingSchema):
     title = colander.SchemaNode(colander.String())
