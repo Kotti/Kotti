@@ -1,6 +1,7 @@
 /** Put here CSS that should apply to public screens only. **/
 
 header h1 {
-    margin-bottom: .5em;
+    margin-bottom: 18px;
     font-size: 72px;
+    line-height: 1;
 }
