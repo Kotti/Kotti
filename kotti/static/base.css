@@ -9,3 +9,9 @@ body.logged-in {
         padding-top: 0px;
     }
 }
+
+header h1 {
+    margin-bottom: .5em;
+    font-size: 72px;
+}
+
