@@ -1,10 +1,8 @@
-<div class="page-header">
+<header>
   <h1>
     ${api.site_title}
   </h1>
-</div>
 
-<div class="row">
   <ul class="nav nav-tabs">
     <li class="${api.root == api.context and 'active'}">
       <a href="${request.application_url}">Home</a>
@@ -15,4 +13,4 @@
       <a href="${api.url(item)}" title="${item.description}">${item.title}</a>
     </li>
   </ul>
-</div>
+</header>

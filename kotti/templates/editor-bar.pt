@@ -1,28 +1,29 @@
 <div class="navbar navbar-fixed-top">
   <div class="navbar-inner">
     <div class="container">
-
+      <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </a>
       <span class="brand">Kotti</span>
-
-      <ul class="nav">
-        <li class="${api.url() == request.url and 'active' or None}">
-          <a href="${api.url()}">View</a>
-        </li>
-        <li tal:repeat="link api.edit_links"
-            class="${link.selected(context, request) and 'active' or None}">
-          <a href="${link.url(context, request)}">
-            ${link.title}
-          </a>
-        </li>
-        <li tal:define="url api.url(context, '@@navigate')"
-            class="${url == request.url and 'active' or None}">
-          <a href="${url}">Navigate</a>
-        </li>
-      </ul>
-
-      <div class="pull-right" tal:condition="api.user is not None">
-
+      <div class="nav-collapse">
         <ul class="nav">
+          <li class="${api.url() == request.url and 'active' or None}">
+            <a href="${api.url()}">View</a>
+          </li>
+          <li tal:repeat="link api.edit_links"
+              class="${link.selected(context, request) and 'active' or None}">
+            <a href="${link.url(context, request)}">
+              ${link.title}
+            </a>
+          </li>
+          <li tal:define="url api.url(context, '@@navigate')"
+              class="${url == request.url and 'active' or None}">
+            <a href="${url}">Navigate</a>
+          </li>
+        </ul>
+        <ul tal:condition="api.user is not None" class="nav pull-right">
           <li class="dropdown">
             <a href="#" class="dropdown-toggle" data-toggle="dropdown">
               <img src="${api.avatar_url(default_image='mm')}" />
@@ -42,7 +43,6 @@
             </ul>
           </li>
         </ul>
-
       </div>
 
     </div>
