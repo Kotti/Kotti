@@ -1,9 +1,5 @@
 /** Put here CSS that should apply to editor screens only. **/
 
-body {
-    padding-top: 60px;
-}
-
 .input, input, textarea, select {
     width: 400px;
 }
@@ -26,4 +22,3 @@ form.deform div.input label {
     padding-top: 0;
     margin-right: 5px;
 }
-

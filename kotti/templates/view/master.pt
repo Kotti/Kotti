@@ -13,8 +13,7 @@
         <![endif]-->
 
     <!-- Styles -->
-    <link href="${request.static_url('kotti:static/bootstrap-2.0.0.min.css')}" rel="stylesheet" />
-    <link href="${request.static_url('kotti:static/bootstrap-responsive-2.0.0.min.css')}" rel="stylesheet" />
+    <link href="${request.static_url('kotti:static/bootstrap/css/bootstrap.min.css')}" rel="stylesheet" />
 
 	<link href="${request.static_url('kotti:static/base.css')}" rel="stylesheet" />
 	<link href="${request.static_url('kotti:static/view.css')}" rel="stylesheet" />
@@ -24,7 +23,7 @@
 
     <!-- Scripts -->
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
-    <script src="${request.static_url('kotti:static/bootstrap-dropdown.js')}" type="text/javascript"></script>
+    <script src="${request.static_url('kotti:static/bootstrap/js/bootstrap.min.js')}" type="text/javascript"></script>
 
     <more tal:omit-tag="" metal:define-slot="head-more"></more>
 
@@ -36,6 +35,8 @@
                tal:replace="structure snippet" />
   </head>
 
+
+
   <body class="${api.user is not None and 'logged-in'}
                view-${request.view_name or 'default'}
                ${api.body_css_class}">
@@ -43,7 +44,6 @@
          tal:replace="api.render_template('kotti:templates/editor-bar.pt')" />
 
     <div class="container">
-      <div class="content">
         <div tal:replace="api.render_template('kotti:templates/view/page-header.pt')" />
         <div class="row">
           <div class="span3 left-column"
@@ -76,7 +76,6 @@
                tal:content="api.render_template('kotti:templates/render_column_slot.pt', slot=page_slots.right)">
           </div>
         </div>
-      </div>
 
       <footer tal:replace="api.render_template('kotti:templates/view/footer.pt')">
       </footer>
