@@ -52,19 +52,16 @@
     <div tal:condition="api.user is not None"
          tal:replace="api.render_template('kotti:templates/editor-bar.pt')" />
     <div class="container">
-      <div class="content">
-        <div class="row">
-          <div class="span12">
-            <div tal:replace="api.render_template('kotti:templates/edit/breadcrumbs.pt')" />
-            <div tal:replace="api.render_template('kotti:templates/messages.pt')" />
-            <div class="inner-content">
-              <div metal:define-slot="content">
-                <h1>${api.context.title}</h1>
-              </div>
+      <div class="row">
+        <div class="span12">
+          <div tal:replace="api.render_template('kotti:templates/edit/breadcrumbs.pt')" />
+          <div tal:replace="api.render_template('kotti:templates/messages.pt')" />
+          <div class="inner-content">
+            <div metal:define-slot="content">
+              <h1>${api.context.title}</h1>
             </div>
           </div>
-
-        </div>
+          </div>
       </div>
 
       <footer tal:replace="api.render_template('kotti:templates/edit/footer.pt')">
