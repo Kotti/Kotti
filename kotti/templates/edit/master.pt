@@ -12,8 +12,7 @@
         <![endif]-->
 
     <!-- Styles -->
-    <link href="${request.static_url('kotti:static/bootstrap-2.0.0.min.css')}" rel="stylesheet" />
-    <link href="${request.static_url('kotti:static/bootstrap-responsive-2.0.0.min.css')}" rel="stylesheet" />
+    <link href="${request.static_url('kotti:static/bootstrap/css/bootstrap.min.css')}" rel="stylesheet" />
     <link href="${request.static_url('kotti:static/base.css')}" rel="stylesheet" />
     <link href="${request.static_url('kotti:static/edit.css')}" rel="stylesheet" />
 
@@ -22,8 +21,7 @@
 
     <!-- Scripts -->
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
-    <script src="${request.static_url('kotti:static/bootstrap-dropdown.js')}" type="text/javascript"></script>
-    <script src="${request.static_url('kotti:static/bootstrap-tab.js')}" type="text/javascript"></script>
+    <script src="${request.static_url('kotti:static/bootstrap/js/bootstrap.min.js')}" type="text/javascript"></script>
     <script src="${request.static_url('kotti:static/kotti.js')}" type="text/javascript"></script>
 
     <!-- Form scripts -->
@@ -53,7 +51,6 @@
   <body class="view-${request.view_name or 'default'} ${api.body_css_class}">
     <div tal:condition="api.user is not None"
          tal:replace="api.render_template('kotti:templates/editor-bar.pt')" />
-
     <div class="container">
       <div class="content">
         <div class="row">
