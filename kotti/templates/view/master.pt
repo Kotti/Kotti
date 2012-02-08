@@ -42,7 +42,6 @@
          tal:replace="api.render_template('kotti:templates/editor-bar.pt')" />
 
     <div class="container">
-      <div class="content">
         <div tal:replace="api.render_template('kotti:templates/view/page-header.pt')" />
         <div class="row">
           <div class="span3 left-column"
@@ -75,7 +74,6 @@
                tal:content="api.render_template('kotti:templates/render_column_slot.pt', slot=page_slots.right)">
           </div>
         </div>
-      </div>
 
       <footer tal:replace="api.render_template('kotti:templates/view/footer.pt')">
       </footer>

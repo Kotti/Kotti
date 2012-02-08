@@ -1,8 +1,8 @@
-<div class="page-header">
+<header>
   <h1>
     ${api.site_title}
   </h1>
-</div>
+</header>
 
 <div class="row">
   <ul class="nav nav-tabs">
