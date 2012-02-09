@@ -15,9 +15,11 @@ def translator(term):
 def includeme(config):
     config.add_static_view('static-deform', 'deform:static')
     config.add_static_view('static-kotti', 'kotti:static')
-    config.include('deform_bootstrap')
 
-    deform_templates = resource_filename('deform', 'templates')
-    kotti_templates = resource_filename('kotti', 'templates/edit/widgets')
+    # deform stuff
+    config.include('deform_bootstrap')
+    search_path = (
+        resource_filename('kotti', 'templates/edit/widgets'),
+        ) + Form.default_renderer.loader.search_path
     Form.default_renderer = ZPTRendererFactory(
-        (kotti_templates, deform_templates), translator=translator)
+        search_path, translator=translator)
