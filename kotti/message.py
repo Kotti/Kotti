@@ -1,5 +1,4 @@
 import hashlib
-from string import Template
 import time
 import urllib
 
@@ -9,24 +8,24 @@ from pyramid_mailer.mailer import Mailer
 from kotti import get_settings
 
 
-SET_PASSWORD_SUBJECT = u"Your registration for ${site_title}"
-SET_PASSWORD_BODY = u"""Hello, ${user_title}!
+SET_PASSWORD_SUBJECT = u"Your registration for %(site_title)s"
+SET_PASSWORD_BODY = u"""Hello, %(user_title)s!
 
-You've just been invited to join ${site_title}.  Click here to set
-your password and log in: ${url}
+You've just been invited to join %(site_title)s.  Click here to set
+your password and log in: %(url)s
 """
 
-RESET_PASSWORD_SUBJECT = u"Reset your password for ${site_title}"
-RESET_PASSWORD_BODY = u"""Hello, ${user_title}!
+RESET_PASSWORD_SUBJECT = u"Reset your password for %(site_title)s"
+RESET_PASSWORD_BODY = u"""Hello, %(user_title)s!
 
-Click this link to reset your password at ${site_title}: ${url}
+Click this link to reset your password at %(site_title)s: %(url)s
 """
 
 message_templates = {
-    'set-password': dict(subject=Template(SET_PASSWORD_SUBJECT),
-                         body=Template(SET_PASSWORD_BODY)),
-    'reset-password': dict(subject=Template(RESET_PASSWORD_SUBJECT),
-                           body=Template(RESET_PASSWORD_BODY)),
+    'set-password': dict(
+        subject=SET_PASSWORD_SUBJECT, body=SET_PASSWORD_BODY),
+    'reset-password': dict(
+        subject=RESET_PASSWORD_SUBJECT, body=RESET_PASSWORD_BODY),
     }
 
 _inject_mailer = []
@@ -92,13 +91,13 @@ def send_set_password(user, request, templates='set-password', add_query=None):
         site_title=site_title,
         url=url,
         )
-    templates = message_templates[templates]
-    subject = templates['subject'].substitute(variables)
-    body = templates['body'].substitute(variables)
+
+    if isinstance(templates, str):
+        templates = message_templates[templates]
     message = Message(
         recipients=[u'"%s" <%s>' % (user.title, user.email)], # XXX naive?
-        subject=subject,
-        body=body,
+        subject=templates['subject'] % variables,
+        body=templates['body'] % variables,
         )
     mailer = get_mailer()
     mailer.send(message)

@@ -19,6 +19,8 @@ History
 
 - Use ``pyramid_beaker`` as the default session factory.
 
+- Make ``kotti.messages.send_set_password`` a bit more flexible.
+
 0.4.5 - 2012-01-19
 ------------------
 
