@@ -1,7 +1,7 @@
-<header>
-  <h1>
+<nav id="nav">
+  <a href="${request.application_url}" title="Home" class="site-title">
     ${api.site_title}
-  </h1>
+  </a>
 
   <ul class="nav nav-tabs">
     <li class="${api.root == api.context and 'active'}">
@@ -13,4 +13,4 @@
       <a href="${api.url(item)}" title="${item.description}">${item.title}</a>
     </li>
   </ul>
-</header>
+</nav>

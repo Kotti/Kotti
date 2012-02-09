@@ -1,7 +1,11 @@
 /** Put here CSS that should apply to public screens only. **/
 
-header h1 {
-    margin-bottom: 18px;
-    font-size: 72px;
+a.site-title {
+    padding-bottom: 18px;
+    font-size: 54px;
+    display: block;
+    color: #333;
+    text-decoration: none;
     line-height: 1;
+    letter-spacing: -1px;
 }
