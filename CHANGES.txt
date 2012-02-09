@@ -12,6 +12,8 @@ History
 
 - Remove Kotti's ``FormController`` in favor of using ``pyramid_deform``.
 
+- Use plone.i18n to normalize titles to URL parts.
+
 - Add a separate navigation screen that replaces the former
   intelligent breadcrumbs menu.
 

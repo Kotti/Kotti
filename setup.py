@@ -21,6 +21,7 @@ install_requires = [
     'deform>=0.9.2', # Chameleon 2
     'deform_bootstrap>=0.1a4', # search path
     'formencode',
+    'plone.i18n<2.0', # >= 2.0 adds a huge number of dependencies
     'py-bcrypt',
     'pyramid>=1.2',
     'pyramid_beaker',

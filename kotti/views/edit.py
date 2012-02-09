@@ -18,7 +18,7 @@ from kotti.views.util import disambiguate_name
 from kotti.views.util import ensure_view_selector
 from kotti.views.util import nodes_tree
 from kotti.views.util import template_api
-from kotti.views.util import title_to_name
+from kotti.util import title_to_name
 
 class ContentSchema(colander.MappingSchema):
     title = colander.SchemaNode(colander.String())

@@ -1,10 +1,11 @@
 from pyramid.compat import json
-import string
 import urllib
 
-from repoze.lru import LRUCache
+from plone.i18n.normalizer import urlnormalizer
+from pyramid.i18n import get_locale_name
 from pyramid.threadlocal import get_current_request
 from pyramid.url import resource_url
+from repoze.lru import LRUCache
 from sqlalchemy.types import TypeDecorator, VARCHAR
 from sqlalchemy.ext.mutable import Mutable
 
@@ -224,7 +225,9 @@ def extract_from_settings(prefix, settings=None):
     return extracted
 
 def title_to_name(title):
-    okay = string.letters + string.digits + '-'
-    name = u'-'.join(title.lower().split())
-    name = u''.join(ch for ch in name if ch in okay)
-    return name
+    request = get_current_request()
+    if request is not None:
+        locale_name = get_locale_name(request)
+    else:
+        locale_name = 'en'
+    return unicode(urlnormalizer.normalize(title, locale_name))
