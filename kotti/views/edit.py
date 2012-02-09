@@ -154,34 +154,25 @@ def move_node(context, request):
 
     return {}
 
+# XXX These and the make_generic_edit functions below can probably be
+# simplified quite a bit.
 def generic_edit(context, request, schema, **kwargs):
-    api = template_api(context, request)
-    api.first_heading=u'<h1>Edit <em>%s</em></h1>' % context.title
-    api.page_title = u'Edit %s - %s' % (context.title, api.site_title)
-
-    rendered = EditFormView(context, request, schema=schema, **kwargs)()
-    if request.is_response(rendered):
-        return rendered
-
-    return {
-        'api': api,
-        'form': rendered['form'],
-        }
+    return EditFormView(
+        context,
+        request,
+        schema=schema,
+        **kwargs
+        )()
 
 def generic_add(context, request, schema, add, title, **kwargs):
-    api = template_api(context, request)
-    api.first_heading = u'<h1>Add %s to <em>%s</em></h1>' % (
-        title, context.title)
-    api.page_title=u'Add %s to %s - %s' % (title, context.title, api.site_title)
-
-    rendered = AddFormView(context, request, schema=schema, add=add, **kwargs)()
-    if request.is_response(rendered):
-        return rendered
-
-    return {
-        'api': api,
-        'form': rendered['form'],
-        }
+    return AddFormView(
+        context,
+        request,
+        schema=schema,
+        add=add,
+        item_type=title,
+        **kwargs
+        )()
 
 def make_generic_edit(schema, **kwargs):
     @ensure_view_selector

@@ -69,6 +69,8 @@ Add a document
   >>> ctrl("Document").selected
   True
   >>> ctrl("Continue").click()
+  >>> "Add document to <em>Welcome to Kotti!</em>" in browser.contents
+  True
   >>> ctrl("Title").value = "Child One"
   >>> ctrl("save").click()
   >>> "Successfully added item" in browser.contents
@@ -80,6 +82,8 @@ Edit the document
 -----------------
 
   >>> browser.getLink("Edit").click()
+  >>> "Edit <em>Child One</em>" in browser.contents
+  True
   >>> ctrl("Title").value = "First Child"
   >>> ctrl("save").click()
   >>> "Your changes have been saved" in browser.contents

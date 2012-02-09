@@ -77,6 +77,8 @@ class EditFileFormView(EditFormView):
             self.context.size = len(buf)
 
 class AddFileFormView(AddFormView):
+    item_type = u"file"
+
     def schema_factory(self):
         tmpstore = FileUploadTempStore(self.request)
         class FileSchema(MappingSchema):

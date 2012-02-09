@@ -132,10 +132,6 @@ class TemplateAPI(object):
         view_title += self.context.title
         return u'%s - %s' % (view_title, self.site_title)
 
-    @reify
-    def first_heading(self):
-        return u'<h1>%s</h1>' % self.page_title
-
     def url(self, context=None, *elements, **kwargs):
         if context is None:
             context = self.context
@@ -371,6 +367,7 @@ class BaseFormView(FormView):
     success_url = None
     schema_factory = None
     use_csrf_token = True
+    add_template_vars = ()
 
     def __init__(self, context, request, **kwargs):
         self.context = context
@@ -382,12 +379,23 @@ class BaseFormView(FormView):
             self.schema = self.schema_factory()
         if self.use_csrf_token and 'csrf_token' not in self.schema:
             self.schema.children.append(CSRFSchema()['csrf_token'])
-        return super(BaseFormView, self).__call__()
+        result = super(BaseFormView, self).__call__()
+        if isinstance(result, dict):
+            result.update(self.more_template_vars())
+        return result
 
     def cancel_success(self, appstruct):
         return HTTPFound(location=self.request.url)
 
+    def more_template_vars(self):
+        result = {}
+        for name in self.add_template_vars:
+            result[name] = getattr(self, name)
+        return result
+
 class EditFormView(BaseFormView):
+    add_template_vars = ('first_heading',)
+
     def before(self, form):
         form.appstruct = self.context.__dict__.copy()
 
@@ -402,8 +410,14 @@ class EditFormView(BaseFormView):
         for key, value in appstruct.items():
             setattr(self.context, key, value)
 
+    @reify
+    def first_heading(self):
+        return u'<h1>Edit <em>%s</em></h1>' % self.request.context.title
+
 class AddFormView(BaseFormView):
     success_message = u"Successfully added item."
+    item_type = u'item'
+    add_template_vars = ('first_heading',)
 
     def save_success(self, appstruct):
         appstruct.pop('csrf_token', None)
@@ -421,3 +435,12 @@ class AddFormView(BaseFormView):
             while name in self.context.keys():
                 name = disambiguate_name(name)
         return name
+
+    @reify
+    def first_heading(self):
+        context_title = getattr(self.request.context, 'title', None)
+        if context_title:
+            return u'<h1>Add %s to <em>%s</em></h1>' % (
+                self.item_type, context_title)
+        else:
+            return u'<h1>Add %s</h1>' % self.item_type
