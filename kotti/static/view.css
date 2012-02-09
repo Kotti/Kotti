@@ -9,3 +9,9 @@ a.site-title {
     line-height: 1;
     letter-spacing: -1px;
 }
+
+@media (max-width: 980px) {
+    a.site-title {
+        font-size: 30px;
+    }
+}
