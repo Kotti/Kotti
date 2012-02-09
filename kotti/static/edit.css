@@ -4,12 +4,8 @@
     width: 400px;
 }
 
-form.login label {
-    width: 200px;
-}
-
-form.login div.input {
-    margin-left: 220px;
+form {
+    margin-top: 16px;
 }
 
 /* deform workarounds while we wait for deform_bootstrap to become perfect */
