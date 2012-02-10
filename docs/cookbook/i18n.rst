@@ -11,7 +11,7 @@ you have to configure the package `plone.i18n` which is used by Kotti
 for the normalization task.
 
 To configure `plone.i18n`, you have to use ZCML. Fortunately,
-plone.i18n comes with normalizers for many different locales, so you
+`plone.i18n` comes with normalizers for many different locales, so you
 often don't have to implement one by yourself. You simply have to
 activate them by loading `plone.i18n`'s main ZCML file.
 
@@ -27,7 +27,10 @@ To install the packages in a ``virtualenv``:
   bin/pip install pyramid_zcml
   bin/pip install zope.browserresource
 
-You can load ``plone.i18n``'s configuration via your own ZCML
+Alternatively, list these as dependencies in your package's
+``setup.py``.
+
+You can then load `plone.i18n`'s configuration via your own ZCML
 file. For this, create a package which contains a ``configure.zcml``
 like this:
 
@@ -54,5 +57,5 @@ your INI file:
 
 .. code-block:: ini
 
-  kotti.locale = de
-  kotti.includes = foobar.config.includeme
+  pyramid.default_locale_name = de
+  pyramid.includes = mypackage.config.includeme
