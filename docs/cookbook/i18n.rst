@@ -27,28 +27,32 @@ To install the packages in a ``virtualenv``:
   bin/pip install pyramid_zcml
   bin/pip install zope.browserresource
 
-You can load `plone.i18n`'s configuration via your own ZCML file. For
-this, create a package which contains a ``configure.zcml`` like this:
+You can load ``plone.i18n``'s configuration via your own ZCML
+file. For this, create a package which contains a ``configure.zcml``
+like this:
 
 .. code-block:: xml
-<configure xmlns="http://pylonshq.com/pyramid">
-  <include package="pyramid_zcml" />
-  <include package="zope.browserresource" file="meta.zcml" />
-  <include package="zope.browserresource" />
-  <include package="plone.i18n" />
-</configure>
+
+  <configure xmlns="http://pylonshq.com/pyramid">
+    <include package="pyramid_zcml" />
+    <include package="zope.browserresource" file="meta.zcml" />
+    <include package="zope.browserresource" />
+    <include package="plone.i18n" />
+  </configure>
 
 To load your ``configure.zcml`` on startup, you have to add a startup
 hook. For example, add a config.py to your package:
 
 .. code-block:: python
-def includeme(config):
-    config.include('pyramid_zcml')
-    config.load_zcml('configure.zcml')
+
+  def includeme(config):
+      config.include('pyramid_zcml')
+      config.load_zcml('configure.zcml')
 
 Setup your locale and the hook with the following settings in
 your INI file:
 
 .. code-block:: ini
-kotti.locale = de
-kotti.includes = foobar.config.includeme
+
+  kotti.locale = de
+  kotti.includes = foobar.config.includeme
