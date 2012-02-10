@@ -89,7 +89,7 @@ Cookbook
 
 .. toctree::
 
-  cookbook.rst
+  cookbook/i18n.rst
 
 Contact us
 ==========
