@@ -16,7 +16,6 @@ except IOError:
 install_requires = [
     'Babel',
     'Chameleon>=2',
-    'PasteDeploy',
     'colander>=0.9.3',
     'deform>=0.9.2', # Chameleon 2
     'deform_bootstrap>=0.1a4', # search path
@@ -31,6 +30,7 @@ install_requires = [
     'pyramid_tm',
     'repoze.lru',
     'sqlalchemy>=0.7',
+    'waitress',
     'zope.sqlalchemy',
     ]
 
