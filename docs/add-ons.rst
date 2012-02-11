@@ -37,7 +37,7 @@ Document content type serves as an example here:
   mapper(Document, documents, inherits=Content, polymorphic_identity='document')
 
 You can configure the list of active content types in Kotti by
-modifying the `kotti.available_types`_ setting.
+modifying the :ref:`kotti.available_types` setting.
 
 Using kotti.populators to create your own root object
 `````````````````````````````````````````````````````
@@ -62,9 +62,9 @@ the parent is None.
 Configuring custom views, subscribers and more
 ----------------------------------------------
 
-`kotti.includes`_ allows you to hook ``includeme`` functions that
+ref:`kotti.includes` allows you to hook ``includeme`` functions that
 configure your custom views, subscribers and more.  An ``includeme``
-function takes the `Pyramid Configurator API`_ object as its sole
+function takes the ref:`Pyramid Configurator API` object as its sole
 argument.  An example:
 
 .. code-block:: python
@@ -77,8 +77,8 @@ argument.  An example:
       config.add_view(my_view)
 
 By adding the *dotted name string* of your ``includeme`` function to
-the `kotti.includes`_ setting, you ask Kotti to call it on application
-start-up.  An example:
+the ref:`kotti.includes` setting, you ask Kotti to call it on
+application start-up.  An example:
 
 .. code-block:: ini
 

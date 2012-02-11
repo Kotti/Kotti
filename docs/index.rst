@@ -63,6 +63,8 @@ libraries as much as possible, thus:
 .. _SQLAlchemy: http://www.sqlalchemy.org/
 .. _continuous testing: http://jenkins.danielnouri.org/job/Kotti/
 
+.. _installation:
+
 Installation
 ============
 
