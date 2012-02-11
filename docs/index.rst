@@ -90,6 +90,7 @@ Cookbook
 .. toctree::
 
   cookbook/i18n.rst
+  cookbook/as-a-library.rst
 
 Contact us
 ==========
