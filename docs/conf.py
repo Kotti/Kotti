@@ -44,7 +44,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = u'Kotti'
-copyright = u'2012, Daniel Nouri and Mike Orr'
+copyright = u'2012, Daniel Nouri and contributors'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -92,18 +92,11 @@ pygments_style = 'sphinx'
 
 # -- Options for HTML output ---------------------------------------------------
 
-# The theme to use for HTML and HTML Help pages.  See the documentation for
-# a list of builtin themes.
-html_theme = 'pylons'
-
-# Theme options are theme-specific and customize the look and feel of a theme
-# further.  For a list of options available for each theme, see the
-# documentation.
-#html_theme_options = {}
-
-# Add any paths that contain custom themes here, relative to this directory.
-html_theme_path = ['_themes']
+# Add and use Pylons theme
 sys.path.append(os.path.abspath('_themes'))
+html_theme_path = ['_themes']
+html_theme = 'pylons'
+html_theme_options = dict(github_url='https://github.com/Pylons/Kotti')
 
 # The name for this set of Sphinx documents.  If None, it defaults to
 # "<project> v<release> documentation".
