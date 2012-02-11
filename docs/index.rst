@@ -1,8 +1,8 @@
 .. _index:
 
-=========
-Kotti CMS
-=========
+=====
+Kotti
+=====
 
 Kotti is a light-weight, user-friendly and extensible web content
 management system.  It is licensed under a `BSD-like license
