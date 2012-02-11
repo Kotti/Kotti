@@ -2,7 +2,7 @@ INI File
 --------
 
 Kotti is configured using an INI configuration file.  The
-ref:`installation` section explains how to get hold of a sample
+:ref:`installation` section explains how to get hold of a sample
 configuration file.  The ``[app:main]`` section in it might look like
 this:
 
@@ -128,8 +128,8 @@ kotti.includes
 
 ``kotti.includes`` defines a list of hooks that will be called by
 Kotti when it starts up.  This gives the opportunity to third party
-packages to add registrations to the ref:`Pyramid Configurator API` in
-order to configure views and more.
+packages to add registrations to the :ref:`Pyramid Configurator API`
+in order to configure views and more.
 
 As an example, we'll add the `kotti_twitter`_ extension to add a
 Twitter profile widget to the right column of all pages.  First we

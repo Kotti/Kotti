@@ -62,9 +62,9 @@ the parent is None.
 Configuring custom views, subscribers and more
 ----------------------------------------------
 
-ref:`kotti.includes` allows you to hook ``includeme`` functions that
+:ref:`kotti.includes` allows you to hook ``includeme`` functions that
 configure your custom views, subscribers and more.  An ``includeme``
-function takes the ref:`Pyramid Configurator API` object as its sole
+function takes the :ref:`Pyramid Configurator API` object as its sole
 argument.  An example:
 
 .. code-block:: python
@@ -77,7 +77,7 @@ argument.  An example:
       config.add_view(my_view)
 
 By adding the *dotted name string* of your ``includeme`` function to
-the ref:`kotti.includes` setting, you ask Kotti to call it on
+the :ref:`kotti.includes` setting, you ask Kotti to call it on
 application start-up.  An example:
 
 .. code-block:: ini
