@@ -51,20 +51,6 @@ var kotti = {
         });
     };
 
-    kotti.dropdowns = function(node) {
-        node.find2(".dropdown-trigger").click(function () {
-            var target = $($(this).attr("href"));
-            // move the dropdown to the correct position
-            target.css("left", $(this).position().left);
-            $("body").click(function() {
-                target.hide();
-                $(this).unbind("click");
-            });
-            target.toggle();
-            return false;
-        });
-    };
-
     kotti.collapse = function(node) {
         node.find2(".collapse").each(function() {
             $(this).find(".collapseme").hide();
