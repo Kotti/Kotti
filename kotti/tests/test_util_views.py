@@ -101,10 +101,10 @@ class TestTemplateAPI(UnitTestBase):
 
         api = self.make()
         self.assertEqual(api.edit_links, [
-            ViewLink('edit'),
-            ViewLink('add'),
-            ViewLink('move'),
-            ViewLink('share'),
+            ViewLink('edit', u'Edit'),
+            ViewLink('add', u'Add'),
+            ViewLink('move', u'Move'),
+            ViewLink('share', u'Share'),
             ])
 
         # Edit links are controlled through
