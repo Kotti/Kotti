@@ -89,7 +89,7 @@ var kotti = {
         if (!handlers) {
             handlers = [
                 kotti.ajax_forms, //kotti.dirty_forms,
-                kotti.dropdowns, kotti.collapse, kotti.hover_link_enable
+                kotti.collapse, kotti.hover_link_enable
             ];
         }
         $.each(handlers, function(index, func) {
