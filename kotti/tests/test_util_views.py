@@ -478,7 +478,8 @@ class TestBaseFormView(TestCase):
 class TestEditFormView(TestCase):
     def make(self):
         from kotti.views.util import EditFormView
-        return EditFormView(Dummy(), DummyRequest())
+        return EditFormView(
+            Dummy(), DummyRequest(), success_url='http://localhost')
 
     def test_before(self):
         view = self.make()
@@ -497,14 +498,15 @@ class TestEditFormView(TestCase):
         view = self.make()
         result = view.save_success({'three': 3})
         assert result.status == '302 Found'
-        assert result.location == view.request.url
+        assert result.location == view.success_url
 
-    def test_save_success_redirects_custom_url(self):
+    def test_save_success_redirects_to_resource_url(self):
         view = self.make()
-        view.success_url = 'there'
+        view.success_url = None
+        view.request.resource_url = lambda context: context.__class__.__name__
         result = view.save_success({'three': 3})
         assert result.status == '302 Found'
-        assert result.location == 'there'
+        assert result.location == 'Dummy'
 
 class TestAddFormView(TestCase):
     def make(self):
