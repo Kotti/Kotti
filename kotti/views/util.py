@@ -403,7 +403,7 @@ class EditFormView(BaseFormView):
         appstruct.pop('csrf_token', None)
         self.edit(**appstruct)
         self.request.session.flash(self.success_message, 'success')
-        location = self.success_url or self.request.url
+        location = self.success_url or self.request.resource_url(self.context)
         return HTTPFound(location=location)
 
     def edit(self, **appstruct):

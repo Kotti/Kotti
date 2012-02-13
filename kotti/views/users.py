@@ -343,6 +343,10 @@ def users_manage(context, request):
         }
 
 class UserEditFormView(EditFormView):
+    @property
+    def success_url(self):
+        return self.request.url
+
     def schema_factory(self):
         return user_schema(PrincipalBasic())
 
