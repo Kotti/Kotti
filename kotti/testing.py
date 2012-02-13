@@ -64,14 +64,18 @@ def setUp(init_db=True, **kwargs):
     return config
 
 def tearDown():
-    from kotti.events import clear
+    from kotti import events
+    from kotti import security
     from kotti.message import _inject_mailer
 
+    # These should arguable use the configurator, so they don't need
+    # to be torn down separately:
+    events.clear()
+    security.reset()
+
     _inject_mailer[:] = []
-    clear()
     transaction.abort()
     testing.tearDown()
-
 
 class UnitTestBase(TestCase):
     def setUp(self, **kwargs):

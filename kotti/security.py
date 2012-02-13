@@ -148,10 +148,13 @@ ROLES = {
     u'role:owner': Principal(u'role:owner', title=u'Owner'),
     u'role:admin': Principal(u'role:admin', title=u'Admin'),
     }
+_DEFAULT_ROLES = ROLES.copy()
 
 # These roles are visible in the sharing tab
 SHARING_ROLES = [u'role:viewer', u'role:editor', u'role:owner']
 USER_MANAGEMENT_ROLES = SHARING_ROLES + ['role:admin']
+_DEFAULT_SHARING_ROLES = SHARING_ROLES[:]
+_DEFAULT_USER_MANAGEMENT_ROLES = USER_MANAGEMENT_ROLES[:]
 
 # This is the ACL that gets set on the site root on creation.
 SITE_ACL = [
@@ -160,6 +163,31 @@ SITE_ACL = [
     ['Allow', 'role:editor', ['view', 'add', 'edit']],
     ['Allow', 'role:owner', ['view', 'add', 'edit', 'manage']],
     ]
+
+def set_roles(roles_dict):
+    ROLES.clear()
+    ROLES.update(roles_dict)
+
+def set_sharing_roles(role_names):
+    SHARING_ROLES[:] = role_names
+
+def set_user_management_roles(role_names):
+    USER_MANAGEMENT_ROLES[:] = role_names
+
+def reset_roles():
+    ROLES.clear()
+    ROLES.update(_DEFAULT_ROLES)
+
+def reset_sharing_roles():
+    SHARING_ROLES[:] = _DEFAULT_SHARING_ROLES
+
+def reset_user_management_roles():
+    USER_MANAGEMENT_ROLES[:] = _DEFAULT_USER_MANAGEMENT_ROLES
+
+def reset():
+    reset_roles()
+    reset_sharing_roles()
+    reset_user_management_roles()
 
 class PersistentACLMixin(object):
     """Manages access to ``self._acl`` which is a JSON- serialized
