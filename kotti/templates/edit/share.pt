@@ -1,34 +1,30 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xml:lang="en"
-      xmlns:tal="http://xml.zope.org/namespaces/tal"
-      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
-      i18n:domain="Kotti"
       metal:use-macro="api.macro('kotti:templates/edit/master.pt')">
 
   <div metal:fill-slot="content">
-    <h1><span tal:omit-tag=""
-              i18n:translate="">Share</span> <em>${api.context.title}</em></h1>
+    <h1 i18n:translate="">Share <em i18n:name="title">${api.context.title}</em></h1>
 
-    <div class="form">
-      <form action="${request.url}" method="post">
-        <h2 i18n:translate="">Assign local roles</h2>
-        <ul>
-          <li>
-            <label for="search-query"
-                   i18n:translate="">Search users and groups</label><br />
+    <form action="${request.url}" method="post">
+      <fieldset>
+        <legend i18n:translate="">Assign local roles</legend>
+
+        <div class="control-group">
+          <div class="controls">
             <input type="text" name="query" id="search-query"
                    value="${request.params.get('query')}"
                    placeholder="Search users and groups"
                    i18n:attributes="placeholder"
                    />
-            <button type="submit" name="search" i18n:translate="">
-              Search
-            </button>
-          </li>
-        </ul>
+          </div>
+        </div>
+        <div class="form-actions">
+          <button type="submit" name="search" class="btn primary" i18n:translate="">
+            Search
+          </button>
+        </div>
 
-        <table tal:condition="entries" class="users-matrix">
+        <table tal:condition="entries" class="table table-bordered">
           <tr>
             <th i18n:translate="">Name</th>
             <th tal:repeat="role available_roles">
@@ -38,12 +34,11 @@
           <tr tal:repeat="entry entries"
               class="entry ${repeat.entry.even and 'even' or 'odd'}">
             <td>
-              <div class="username"
-                   style="background-image: url(${api.avatar_url(entry[0])})">
-                ${entry[0].title}
-              </div>
+              <img src="${api.avatar_url(entry[0])}" alt="Gravatar"
+                   i18n:attributes="alt"/>
+              ${entry[0].title}
             </td>
-            <td tal:repeat="role available_roles" class="checkbox">
+            <td tal:repeat="role available_roles">
               <input type="checkbox"
                      name="role::${entry[0].name}::${role.name}"
                      checked="${role.name in entry[1][0] and 'checked' or None}"
@@ -57,16 +52,14 @@
           </tr>
         </table>
 
-        <ul>
-          <li>
-            <button type="submit" name="apply" i18n:translate="">
-              Apply changes
-            </button>
-          </li>
-        </ul>
-
+        <div class="form-actions" tal:condition="entries">
+          <button type="submit" name="apply" class="btn btn-primary"
+                  i18n:translate="">
+            Apply changes
+          </button>
+        </div>
+      </fieldset>
       </form>
     </div>
-  </div>
 
 </html>

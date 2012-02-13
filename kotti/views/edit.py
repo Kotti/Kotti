@@ -1,11 +1,8 @@
-from pkg_resources import resource_filename
 from pyramid.exceptions import Forbidden
 from pyramid.httpexceptions import HTTPFound
 from pyramid.security import has_permission
 from pyramid.url import resource_url
 import colander
-from deform import Button
-from deform import Form
 from deform.widget import RichTextWidget
 from deform.widget import TextAreaWidget
 
@@ -15,23 +12,22 @@ from kotti.resources import Node
 from kotti.resources import Document
 from kotti.security import view_permitted
 from kotti.util import _
-from kotti.views.util import template_api
+from kotti.views.util import EditFormView
+from kotti.views.util import AddFormView
 from kotti.views.util import addable_types
-from kotti.views.util import title_to_name
 from kotti.views.util import disambiguate_name
 from kotti.views.util import ensure_view_selector
-from kotti.views.util import FormController
-
-deform_templates = resource_filename('deform', 'templates')
-kotti_templates = resource_filename('kotti', 'templates/edit/widgets')
-search_path = (kotti_templates, deform_templates)
-Form.set_zpt_renderer(search_path)
+from kotti.views.util import nodes_tree
+from kotti.views.util import template_api
+from kotti.util import title_to_name
 
 class ContentSchema(colander.MappingSchema):
-    title = colander.SchemaNode(colander.String(), title=_(u'Title'))
+    title = colander.SchemaNode(
+        colander.String(),
+        title=_(u'Title'))
     description = colander.SchemaNode(
         colander.String(),
-        title=_(u'Description'),
+        title=_('Description'),
         widget=TextAreaWidget(cols=40, rows=5),
         missing=u"",
         )
@@ -40,7 +36,7 @@ class DocumentSchema(ContentSchema):
     body = colander.SchemaNode(
         colander.String(),
         title=_(u'Body'),
-        widget=RichTextWidget(theme='advanced'),
+        widget=RichTextWidget(theme='advanced', width=790, height=500),
         missing=u"",
         )
 
@@ -133,12 +129,12 @@ def move_node(context, request):
         if up is not None:
             mod = -1
         else: # pragma: no cover
-            mod = +1
+            mod = 1
 
         child = session.query(Node).get(id)
         index = context.children.index(child)
         context.children.pop(index)
-        context.children.insert(index+mod, child)
+        context.children.insert(index + mod, child)
         request.session.flash(_(u'${title} moved.',
                                 mapping=dict(title=child.title)), 'success')
         if not request.is_xhr:
@@ -168,49 +164,25 @@ def move_node(context, request):
 
     return {}
 
-def generic_edit(context, request, schema, form_factory=Form, **kwargs):
-    api = template_api(context, request)
-    emphasized_title = '<em>%s</em>' % context.title
-    api.first_heading = '<h1>%s</h1>' % (
-        _(u'Edit ${title}', mapping=dict(title=emphasized_title)))
-    api.page_title = _(u'Edit ${title} - ${site_title}',
-                       mapping=dict(title=context.title,
-                                    site_title=api.site_title))
+# XXX These and the make_generic_edit functions below can probably be
+# simplified quite a bit.
+def generic_edit(context, request, schema, **kwargs):
+    return EditFormView(
+        context,
+        request,
+        schema=schema,
+        **kwargs
+        )()
 
-    form = form_factory(schema,
-                        buttons=(Button('save', _(u'Save')),
-                                 Button('cancel', _(u'Cancel'))),
-                        action=request.url)
-    rendered = FormController(form, **kwargs)(context, request)
-    if request.is_response(rendered):
-        return rendered
-
-    return {
-        'api': api,
-        'form': rendered,
-        }
-
-def generic_add(context, request, schema, add, title, form_factory=Form,
-                **kwargs):
-    api = template_api(context, request)
-    emphasized_title = '<em>%s</em>' % context.title
-    api.first_heading = u'<h1>%s</em></h1>' % (
-        _(u'Add ${title} to ${context_title} - ${site_title}',
-          mapping=dict(title=title,
-                       context_title=emphasized_title,
-                       site_title=api.site_title)))
-    form = form_factory(schema,
-                        buttons=(Button('save', _(u'Save')),
-                                 Button('cancel', _(u'Cancel'))),
-                        action=request.url)
-    rendered = FormController(form, add=add, **kwargs)(context, request)
-    if request.is_response(rendered):
-        return rendered
-
-    return {
-        'api': api,
-        'form': rendered,
-        }
+def generic_add(context, request, schema, add, title, **kwargs):
+    return AddFormView(
+        context,
+        request,
+        schema=schema,
+        add=add,
+        item_type=title,
+        **kwargs
+        )()
 
 def make_generic_edit(schema, **kwargs):
     @ensure_view_selector
@@ -223,7 +195,17 @@ def make_generic_add(schema, add, title, **kwargs):
         return generic_add(context, request, schema, add, title, **kwargs)
     return view
 
+def render_tree_navigation(context, request):
+    tree = nodes_tree(request)
+    return {
+        'tree': {
+            'children': [tree],
+            },
+        }
+
 def includeme(config):
+    nodes_includeme(config)
+
     config.add_view(
         make_generic_edit(DocumentSchema()),
         context=Document,
@@ -237,4 +219,32 @@ def includeme(config):
         name=Document.type_info.add_view,
         permission='add',
         renderer='kotti:templates/edit/node.pt',
+        )
+
+    config.add_view(
+        render_tree_navigation,
+        name='render_tree_navigation',
+        permission='view',
+        renderer='kotti:templates/edit/nav-tree.pt',
+        )
+
+    config.add_view(
+        render_tree_navigation,
+        name='navigate',
+        permission='view',
+        renderer='kotti:templates/edit/nav-tree-view.pt',
+        )
+
+def nodes_includeme(config):
+    config.add_view(
+        'kotti.views.edit.add_node',
+        name='add',
+        permission='add',
+        renderer='kotti:templates/edit/add.pt',
+        )
+    config.add_view(
+        'kotti.views.edit.move_node',
+        name='move',
+        permission='edit',
+        renderer='kotti:templates/edit/move.pt',
         )

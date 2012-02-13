@@ -1,13 +1,14 @@
 from pyramid.compat import json
-import string
 import urllib
 
-from repoze.lru import LRUCache
-from pyramid.i18n import TranslationStringFactory
+from plone.i18n.normalizer import urlnormalizer
+from pyramid.i18n import get_locale_name
 from pyramid.i18n import get_localizer
+from pyramid.i18n import TranslationStringFactory
 from pyramid.threadlocal import get_current_request
 from pyramid.url import resource_url
-from sqlalchemy.types import TypeDecorator, VARCHAR
+from repoze.lru import LRUCache
+from sqlalchemy.types import TypeDecorator, TEXT
 from sqlalchemy.ext.mutable import Mutable
 
 def dump_default(obj):
@@ -19,7 +20,7 @@ def dump_default(obj):
 class JsonType(TypeDecorator):
     """http://www.sqlalchemy.org/docs/core/types.html#marshal-json-strings
     """
-    impl = VARCHAR
+    impl = TEXT
 
     def process_bind_param(self, value, dialect):
         if value is not None:
@@ -135,7 +136,7 @@ class ViewLink(object):
         self.path = path
         if title is None:
             title = path.replace('-', ' ').replace('_', ' ').title()
-        self.title = isinstance(title, unicode) and title or unicode(title)
+        self.title = title
 
     def url(self, context, request):
         return resource_url(context, request) + '@@' + self.path
@@ -226,10 +227,12 @@ def extract_from_settings(prefix, settings=None):
     return extracted
 
 def title_to_name(title):
-    okay = string.letters + string.digits + '-'
-    name = u'-'.join(title.lower().split())
-    name = u''.join(ch for ch in name if ch in okay)
-    return name
+    request = get_current_request()
+    if request is not None:
+        locale_name = get_locale_name(request)
+    else:
+        locale_name = 'en'
+    return unicode(urlnormalizer.normalize(title, locale_name))
 
 class Translator(object):
     def __init__(self, request=None):

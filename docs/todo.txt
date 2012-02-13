@@ -1,10 +1,9 @@
+- Add image uploads and a small media library.  Probably as an add-on.
+
 - Use declarative for SQLAlchemy models.
 
 - To allow for easier integration with 'repoze.workflow', add a
-  'status' attribute to the Content class.
-
-- Use 'pyramid_deform' instead of our own Form class.  Also, implement
-  CSRF protection.
+  'state' attribute to the Content class.
 
 - Add an item to control panel that integrates with 'pyramid_exclog'.
 

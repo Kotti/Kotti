@@ -34,30 +34,6 @@ var kotti = {
         });
     };
 
-    kotti.messages = function(node) {
-        node.find2("#messages").hide();
-        node.find2(".message").each(function() {
-            var type = "notice";
-            var msg = $(this);
-            var text = msg.html();
-            var stayTime = 3000;
-
-            if (msg.hasClass("success"))
-                type = "success";
-            else if (msg.hasClass("error")) {
-                type = "error";
-                stayTime = 6000;
-            }
-
-            $().toastmessage('showToast', {
-                text: text,
-                type: type,
-                stayTime: stayTime
-            });
-
-        });
-    };
-
     kotti.dirty_forms = function(node) {
         var forms = $("form").not("[class~=dirty-ignore]");
         $(window).unbind('beforeunload');
@@ -75,34 +51,11 @@ var kotti = {
         });
     };
 
-    kotti.dropdowns = function(node) {
-        node.find2(".dropdown-trigger").click(function () {
-            var target = $($(this).attr("href"));
-            // move the dropdown to the correct position
-            target.css("left", $(this).position().left);
-            $("body").click(function() {
-                target.hide();
-                $(this).unbind("click");
-            });
-            target.toggle();
-            return false;
-        });
-    };
-
     kotti.collapse = function(node) {
         node.find2(".collapse").each(function() {
-            $(this).find("ul").hide();
-            $(this).addClass("collapsed");
+            $(this).find(".collapseme").hide();
             function show() {
-                $(this).removeClass("collapsed");
-                var child = $(this).find("ul:hidden");
-                if (child.length != 0) {
-                    $(this).find("ul").show(400);
-                    $("body").animate(
-                        {scrollTop: $(this).offset().top - 15}, 400);
-                    $(this).unbind("click");
-                    $(this).unbind("hover");
-                }
+              $(this).find(".collapseme").show();
             };
             $(this).click(show);
             $(this).hover(show);
@@ -135,8 +88,8 @@ var kotti = {
         var node = $('html');
         if (!handlers) {
             handlers = [
-                kotti.messages, kotti.ajax_forms, kotti.dirty_forms,
-                kotti.dropdowns, kotti.collapse, kotti.hover_link_enable
+                kotti.ajax_forms, //kotti.dirty_forms,
+                kotti.collapse, kotti.hover_link_enable
             ];
         }
         $.each(handlers, function(index, func) {

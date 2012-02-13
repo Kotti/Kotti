@@ -4,6 +4,23 @@ History
 0.5.0 - Unreleased
 ------------------
 
+- Move Kotti's default user interface to use Twitter Bootstrap 2.
+
+- Add a new 'File' content type.
+
+- Add CSRF protection to some forms.
+
+- Remove Kotti's ``FormController`` in favor of using ``pyramid_deform``.
+
+- Use plone.i18n to normalize titles to URL parts.
+
+- Add a separate navigation screen that replaces the former
+  intelligent breadcrumbs menu.
+
+- Use ``pyramid_beaker`` as the default session factory.
+
+- Make ``kotti.messages.send_set_password`` a bit more flexible.
+
 0.4.5 - 2012-01-19
 ------------------
 

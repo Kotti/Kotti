@@ -8,7 +8,7 @@ import transaction
 
 BASE_URL = 'http://localhost:6543'
 
-class Dummy(object):
+class Dummy(dict):
     def __init__(self, **kwargs):
         self.__dict__.update(kwargs)
 
@@ -108,6 +108,8 @@ def setUpFunctional(global_config=None, **settings):
         )
 
 class FunctionalTestBase(TestCase):
+    BASE_URL = BASE_URL
+
     def setUp(self, **kwargs):
         self.__dict__.update(setUpFunctional(**kwargs))
 
@@ -120,6 +122,14 @@ class FunctionalTestBase(TestCase):
             {'login': login, 'password': password, 'submit': 'submit'},
             status=302,
             )
+
+    def login_testbrowser(self, login=u'admin', password=u'secret'):
+        browser = self.Browser()
+        browser.open(BASE_URL + '/edit')
+        browser.getControl("Username or email").value = login
+        browser.getControl("Password").value = password
+        browser.getControl(name="submit").click()
+        return browser
 
 class TestingRootFactory(dict):
     __name__ = '' # root is required to have an empty name!

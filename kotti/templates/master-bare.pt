@@ -1,12 +1,10 @@
 <!--
     This template is used for XHR requests and when content is rendered inline.
 -->
-<html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:tal="http://xml.zope.org/namespaces/tal"
-      tal:omit-tag=""
+<html tal:omit-tag=""
       metal:define-macro="main">
 
-  <div tal:replace="structure api.render_template('kotti:templates/messages.pt')"
+  <div tal:replace="api.render_template('kotti:templates/messages.pt')"
        tal:condition="request.is_xhr" />
 
   <div metal:define-slot="content">

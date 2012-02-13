@@ -41,7 +41,8 @@ def login(context, request):
     api = template_api(root, request)
     principals = get_principals()
 
-    came_from = request.params.get('came_from', request.url)
+    came_from = request.params.get(
+        'came_from', request.resource_url(context))
     login, password = u'', u''
 
     if 'submit' in request.POST:

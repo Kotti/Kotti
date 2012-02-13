@@ -1,5 +1,6 @@
 <textarea id="${field.oid}"
-          name="${field.name}">${cstruct}</textarea>
+          name="${field.name}"
+          cols="40" rows="10">${cstruct}</textarea>
 <script language="javascript"
 	type="text/javascript">
   deform.addCallback(

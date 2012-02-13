@@ -1,18 +1,25 @@
-def includeme(config):
-    from kotti.resources import IContent
+from pkg_resources import resource_filename
 
+from deform import Form
+from deform import ZPTRendererFactory
+from pyramid.i18n import get_localizer
+from pyramid.threadlocal import get_current_request
+
+def translator(term):
+    request = get_current_request()
+    if request is not None:
+        return get_localizer(request).translate(term)
+    else:
+        return term.interpolate() if hasattr(term, 'interpolate') else term
+
+def includeme(config):
     config.add_static_view('static-deform', 'deform:static')
     config.add_static_view('static-kotti', 'kotti:static')
-    config.add_view('kotti.views.view.view_content_default', context=IContent)
-    config.add_view(
-        'kotti.views.edit.add_node',
-        name='add',
-        permission='add',
-        renderer='kotti:templates/edit/add.pt',
-        )
-    config.add_view(
-        'kotti.views.edit.move_node',
-        name='move',
-        permission='edit',
-        renderer='kotti:templates/edit/move.pt',
-        )
+
+    # deform stuff
+    config.include('deform_bootstrap')
+    search_path = (
+        resource_filename('kotti', 'templates/edit/widgets'),
+        ) + Form.default_renderer.loader.search_path
+    Form.default_renderer = ZPTRendererFactory(
+        search_path, translator=translator)

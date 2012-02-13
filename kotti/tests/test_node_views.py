@@ -46,8 +46,9 @@ class TestAddableTypes(UnitTestBase):
 
     def test_multiple_types(self):
         from kotti.resources import get_root
-        from kotti.resources import Document
         from kotti.resources import Content
+        from kotti.resources import Document
+        from kotti.resources import File
         from kotti.views.util import addable_types
         
         # Test a scenario where we may add multiple types to a folder:
@@ -55,22 +56,25 @@ class TestAddableTypes(UnitTestBase):
         request = DummyRequest()
 
         with contents_addable():
-            # We should be able to add both Nodes and Documents now:
+            # We should be able to add these three types now:
             possible_parents, possible_types = addable_types(root, request)
             self.assertEqual(len(possible_parents), 1)
             self.assertEqual(possible_parents[0]['factories'],
-                             [Document, Content])
+                             [Document, File, Content])
 
-            document_info, node_info = possible_types
+            document_info, file_info, content_info = possible_types
             self.assertEqual(document_info['factory'], Document)
-            self.assertEqual(node_info['factory'], Content)
+            self.assertEqual(file_info['factory'], File)
+            self.assertEqual(content_info['factory'], Content)
             self.assertEqual(document_info['nodes'], [root])
-            self.assertEqual(node_info['nodes'], [root])
+            self.assertEqual(file_info['nodes'], [root])
+            self.assertEqual(content_info['nodes'], [root])
 
     def test_multiple_parents_and_types(self):
         from kotti.resources import get_root
         from kotti.resources import Content
         from kotti.resources import Document
+        from kotti.resources import File
         from kotti.views.util import addable_types
         
         # A scenario where we can add multiple types to multiple folders:
@@ -84,17 +88,22 @@ class TestAddableTypes(UnitTestBase):
             child_parent, root_parent = possible_parents
             self.assertEqual(child_parent['node'], child)
             self.assertEqual(root_parent['node'], root)
-            self.assertEqual(child_parent['factories'], [Document, Content])
-            self.assertEqual(root_parent['factories'], [Document, Content])
+            self.assertEqual(child_parent['factories'],
+                             [Document, File, Content])
+            self.assertEqual(root_parent['factories'],
+                             [Document, File, Content])
 
-            document_info, node_info = possible_types
+            document_info, file_info, node_info = possible_types
             self.assertEqual(document_info['factory'], Document)
+            self.assertEqual(file_info['factory'], File)
             self.assertEqual(node_info['factory'], Content)
             self.assertEqual(document_info['nodes'], [child, root])
+            self.assertEqual(file_info['nodes'], [child, root])
             self.assertEqual(node_info['nodes'], [child, root])
 
 class TestNodeEdit(UnitTestBase):
     def test_single_choice(self):
+        from kotti import get_settings
         from kotti.resources import get_root
         from kotti.views.edit import add_node
 
@@ -103,10 +112,14 @@ class TestNodeEdit(UnitTestBase):
         root = get_root()
         request = DummyRequest()
         
-        response = add_node(root, request)
-        self.assertEqual(response.status, '302 Found')
-        self.assertEqual(response.location,
-                         'http://example.com/@@add_document')
+        file_type = get_settings()['kotti.available_types'].pop()
+        try:
+            response = add_node(root, request)
+            self.assertEqual(response.status, '302 Found')
+            self.assertEqual(response.location,
+                             'http://example.com/@@add_document')
+        finally:
+            get_settings()['kotti.available_types'].append(file_type)
 
     def test_order_of_addable_parents(self):
         from kotti.resources import get_root
@@ -238,7 +251,7 @@ class TestNodeShare(UnitTestBase):
         self.assertEqual(len(entries), 1)
         self.assertEqual(entries[0][0], P[u'bob'])
         self.assertEqual(entries[0][1], ([u'role:editor'], []))
-        self.assertEqual(request.session.pop_flash('notice'),
+        self.assertEqual(request.session.pop_flash('info'),
                          [u'No users or groups found.'])
 
         # It does not, however, include entries that have local group
@@ -261,7 +274,7 @@ class TestNodeShare(UnitTestBase):
 
         request.params['apply'] = u''
         share_node(root, request)
-        self.assertEqual(request.session.pop_flash('notice'),
+        self.assertEqual(request.session.pop_flash('info'),
                          [u'No changes made.'])
         self.assertEqual(list_groups('bob', root), [])
         set_groups('bob', root, ['role:special'])

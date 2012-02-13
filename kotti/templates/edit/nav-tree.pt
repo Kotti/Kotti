@@ -1,0 +1,12 @@
+<ul>
+  <li tal:repeat="child tree.children"
+      class="${child.id == context.id and 'active' or ''}">
+    <a href="${api.url(child, '@@' + api.find_edit_view(child))}"
+       title="${getattr(child, 'description', None)}">
+      ${child.title}
+    </a>
+    <ul tal:replace="api.render_template(
+                         'kotti:templates/edit/nav-tree.pt',
+                         tree=child)" />
+  </li>
+</ul>

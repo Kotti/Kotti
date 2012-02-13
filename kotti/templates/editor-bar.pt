@@ -1,0 +1,50 @@
+<div class="navbar navbar-fixed-top">
+  <div class="navbar-inner">
+    <div class="container">
+      <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </a>
+      <span class="brand">Kotti</span>
+      <div class="nav-collapse">
+        <ul class="nav">
+          <li class="${api.url() == request.url and 'active' or None}">
+            <a href="${api.url()}">View</a>
+          </li>
+          <li tal:repeat="link api.edit_links"
+              class="${link.selected(context, request) and 'active' or None}">
+            <a href="${link.url(context, request)}">
+              ${link.title}
+            </a>
+          </li>
+          <li tal:define="url api.url(context, '@@navigate')"
+              class="${url == request.url and 'active' or None}">
+            <a href="${url}">Navigate</a>
+          </li>
+        </ul>
+        <ul tal:condition="api.user is not None" class="nav pull-right">
+          <li class="dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+              <img src="${api.avatar_url(default_image='mm')}" />
+              ${api.user.title}
+              <b class="caret"></b>
+            </a>
+            <ul class="dropdown-menu">
+              <li tal:condition="api.has_permission('admin', api.root)">
+                <a href="${api.url(api.root, '@@setup')}">Site Setup</a>
+              </li>
+              <li>
+                <a href="${api.url(api.root, '@@prefs')}">Preferences</a>
+              </li>
+              <li>
+                <a href="${request.application_url}/@@logout?came_from=${request.url}">Logout</a>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+
+    </div>
+  </div>
+</div>

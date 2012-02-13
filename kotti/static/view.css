@@ -1,66 +1,17 @@
-/** Put here CSS that should apply to VIEW SCREENS ONLY. **/
+/** Put here CSS that should apply to public screens only. **/
 
-#main {
-    margin: 2em;
-    margin-left: 4em;
-}
-
-.has-leftcol {
-    margin-left: 13em;
-}
-
-.has-rightcol {
-    margin-right: 17em;
-}
-
-.right-column {
-    float: right;
-    width: 12em;
-}
-
-.left-column {
-    float: left;
-    width: 12em;
-}
-
-#footer {
-    clear: both;
-}
-
-.slot {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-}
-
-.slot > li {
-    margin-bottom: 2em;
-}
-
-#local-navigation ul {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    width: 100%;
-}
-
-#local-navigation li {
-    padding: 0.5em 0.2em;
-}
-
-#local-navigation a {
+a.site-title {
+    padding-bottom: 18px;
+    font-size: 54px;
     display: block;
-    white-space: nowrap;
-    text-decoration: none;
-    font-weight: bold;
     color: #333;
+    text-decoration: none;
+    line-height: 1;
+    letter-spacing: -1px;
 }
 
-#local-navigation a.selected {
-    font-style: italic;
+@media (max-width: 980px) {
+    a.site-title {
+        font-size: 30px;
+    }
 }
-
-.content .description {
-    font-weight: bold;
-}
-

@@ -1,3 +1,4 @@
+from collections import defaultdict
 from datetime import datetime
 import hashlib
 import urllib
@@ -5,6 +6,9 @@ import urllib
 from babel.dates import format_date
 from babel.dates import format_datetime
 from babel.dates import format_time
+import colander
+import deform
+from deform import Button
 from pyramid.decorator import reify
 from pyramid.httpexceptions import HTTPFound
 from pyramid.i18n import get_locale_name
@@ -14,7 +18,8 @@ from pyramid.renderers import get_renderer
 from pyramid.renderers import render
 from pyramid.url import resource_url
 from pyramid.view import render_view_to_response
-from deform import ValidationFailure
+from pyramid_deform import FormView
+from pyramid_deform import CSRFSchema
 
 from kotti import get_settings
 from kotti import DBSession
@@ -22,6 +27,7 @@ from kotti.util import _
 from kotti.util import title_to_name
 from kotti.events import objectevent_listeners
 from kotti.resources import Node
+from kotti.resources import Content
 from kotti.security import get_user
 from kotti.security import has_permission
 from kotti.security import view_permitted
@@ -42,11 +48,25 @@ def add_renderer_globals(event):
             api = template_api(event['context'], event['request'])
         event['api'] = api
 
+def is_root(context, request):
+    return context is TemplateAPI(context, request).root
+
+class TemplateStructure(object):
+    def __init__(self, html):
+        self.html = html
+
+    def __html__(self):
+        return self.html
+    __unicode__ = __html__
+
+    def __getattr__(self, key):
+        return getattr(self.html, key)
+
 class Slots(object):
     def __init__(self, context, request):
         self.context = context
         self.request = request
-
+    
     def __getattr__(self, name):
         for event_type in slot_events:
             if event_type.name == name:
@@ -77,6 +97,8 @@ class TemplateAPI(object):
     VIEW_MASTER = 'kotti:templates/view/master.pt'
     EDIT_MASTER = 'kotti:templates/edit/master.pt'
     SITE_SETUP_MASTER = 'kotti:templates/site-setup/master.pt'
+
+    body_css_class = ''
 
     def __init__(self, context, request, bare=None, **kwargs):
         self.context, self.request = context, request
@@ -112,15 +134,10 @@ class TemplateAPI(object):
         view_title += self.context.title
         return u'%s - %s' % (view_title, self.site_title)
 
-    @reify
-    def first_heading(self):
-        return u'<h1>%s</h1>' % self.page_title
-
-    def url(self, context=None, *elements):
+    def url(self, context=None, *elements, **kwargs):
         if context is None:
             context = self.context
-        rhs = '/'.join(elements)
-        return resource_url(context, self.request) + rhs
+        return self.request.resource_url(context, *elements, **kwargs)
 
     @reify
     def root(self):
@@ -131,9 +148,13 @@ class TemplateAPI(object):
         return list(lineage(self.context))
 
     @reify
+    def breadcrumbs(self):
+        return reversed(self.lineage)
+
+    @reify
     def user(self):
         return get_user(self.request)
-
+    
     def has_permission(self, permission, context=None):
         if context is None:
             context = self.context
@@ -144,10 +165,10 @@ class TemplateAPI(object):
             context = self.context
         if request is None:
             request = self.request
-        return render_view(context, request, name, secure)
+        return TemplateStructure(render_view(context, request, name, secure))
 
     def render_template(self, renderer, **kwargs):
-        return render(renderer, kwargs, self.request)
+        return TemplateStructure(render(renderer, kwargs, self.request))
 
     def list_children(self, context=None, permission='view'):
         if context is None:
@@ -159,16 +180,6 @@ class TemplateAPI(object):
                     has_permission(permission, child, self.request)):
                     children.append(child)
         return children
-
-    def list_children_go_up(self, context=None, permission='view'):
-        if context is None:
-            context = self.context
-        parent = context
-        children = self.list_children(context, permission)
-        if not children and context.__parent__ is not None:
-            parent = context.__parent__
-            children = self.list_children(parent)
-        return (parent, children)
 
     inside = staticmethod(inside)
 
@@ -210,42 +221,13 @@ class TemplateAPI(object):
             if class_.type_info.name == name:
                 return class_
 
-    def _find_edit_view(self, item):
+    def find_edit_view(self, item):
         view_name = self.request.view_name
         if not view_permitted(item, self.request, view_name):
             view_name = u'edit'
         if not view_permitted(item, self.request, view_name):
             view_name = u''
         return view_name
-
-    def _make_links(self, items):
-        links = []
-        for item in items:
-            view_name = self._find_edit_view(item)
-            view_name = view_name and '@@' + view_name
-            url = resource_url(item, self.request) + view_name
-            links.append(dict(
-                url=url,
-                name=getattr(item, 'title', item.__name__),
-                is_edit_link=view_name != '',
-                node=item,
-                is_context=item == self.context,
-                ))
-        return links
-
-    @reify
-    def breadcrumbs(self):
-        return self._make_links(tuple(reversed(self.lineage)))
-
-    @reify
-    def context_links(self):
-        siblings = []
-        if self.context.__parent__ is not None:
-            siblings = self._make_links(
-                self.list_children(self.context.__parent__))
-            siblings = filter(lambda l: not l['is_context'], siblings)
-        children = self._make_links(self.list_children(self.context))
-        return siblings, children
 
     @reify
     def edit_links(self):
@@ -332,69 +314,139 @@ def ensure_view_selector(func):
     wrapper.__doc__ = func.__doc__
     return wrapper
 
-class FormController(object):
-    add = None
-    post_key = 'save'
-    edit_success_msg = _(u"Your changes have been saved.")
-    add_success_msg = _(u"Successfully added item.")
-    error_msg = _(u"There was a problem with your submission.\n"
-                  u"Errors have been highlighted.")
-    success_path = '@@edit'
+class NavigationNodeWrapper(object):
+    def __init__(self, node, request, item_mapping, item_to_children):
+        self._node = node
+        self._request = request
+        self._item_mapping = item_mapping
+        self._item_to_children = item_to_children
 
-    def __init__(self, form, **kwargs):
-        self.form = form
-        for key, value in kwargs.items():
-            if key in self.__class__.__dict__:
-                setattr(self, key, value)
-            else: # pragma: no coverage
-                raise TypeError("Unknown argument %r" % key)
+    @property
+    def __parent__(self):
+        if self.parent_id:
+            return self._item_mapping[self.parent_id]
 
-    def __call__(self, context, request):
-        if self.post_key in request.POST:
-            controls = request.POST.items()
-            try:
-                appstruct = self.form.validate(controls)
-            except ValidationFailure, e:
-                request.session.flash(self.error_msg, 'error')
-                return e.render()
-            else:
-                if self.add is None: # edit
-                    return self.edit_item(context, request, appstruct)
-                else: # add
-                    return self.add_item(context, request, appstruct)
-        else: # no post means less action
-            if self.add is None:
-                appstruct = self.appstruct(context)
-                return self.form.render(appstruct)
-            else:
-                return self.form.render()
+    @property
+    def children(self):
+        return [NavigationNodeWrapper(
+            child, self._request, self._item_mapping, self._item_to_children)
+                for child in self._item_to_children[self.id]
+                if has_permission('view', child, self._request)]
 
-    def appstruct(self, item):
-        return item.__dict__.copy()
+    def __getattr__(self, name):
+        return getattr(self._node, name)
 
-    def edit(self, item, **appstruct):
-        for key, value in appstruct.items():
-            setattr(item, key, value)
+def nodes_tree(request):
+    item_mapping = {}
+    item_to_children = defaultdict(lambda: [])
+    for node in DBSession.query(Content).with_polymorphic(Content):
+        item_mapping[node.id] = node
+        if has_permission('view', node, request):
+            item_to_children[node.parent_id].append(node)
 
-    def edit_item(self, context, request, appstruct):
-        self.edit(context, **appstruct)
-        request.session.flash(self.edit_success_msg, 'success')
-        try:
-            location = resource_url(context, request) + self.success_path
-        except AttributeError:
-            location = request.url
+    for children in item_to_children.values():
+        children.sort(key=lambda ch:ch.position)
+
+    return NavigationNodeWrapper(
+        item_to_children[None][0],
+        request,
+        item_mapping,
+        item_to_children,
+        )
+
+class Form(deform.Form):
+    """A Form that allows 'appstruct' to be set on the instance.
+    """
+    def render(self, appstruct=None, readonly=False):
+        if appstruct is None:
+            appstruct = getattr(self, 'appstruct', colander.null)
+        return super(Form, self).render(appstruct, readonly)
+
+class BaseFormView(FormView):
+    form_class = Form
+    buttons = (Button('save', _(u'Save')), Button('cancel', _(u'Cancel')))
+    success_message = _(u"Your changes have been saved.")
+    success_url = None
+    schema_factory = None
+    use_csrf_token = True
+    add_template_vars = ()
+
+    def __init__(self, context, request, **kwargs):
+        self.context = context
+        self.request = request
+        self.__dict__.update(kwargs)
+
+    def __call__(self):
+        if self.schema_factory is not None:
+            self.schema = self.schema_factory()
+        if self.use_csrf_token and 'csrf_token' not in self.schema:
+            self.schema.children.append(CSRFSchema()['csrf_token'])
+        result = super(BaseFormView, self).__call__()
+        if isinstance(result, dict):
+            result.update(self.more_template_vars())
+        return result
+
+    def cancel_success(self, appstruct):
+        return HTTPFound(location=self.request.url)
+
+    def more_template_vars(self):
+        result = {}
+        for name in self.add_template_vars:
+            result[name] = getattr(self, name)
+        return result
+
+class EditFormView(BaseFormView):
+    add_template_vars = ('first_heading',)
+
+    def before(self, form):
+        form.appstruct = self.context.__dict__.copy()
+
+    def save_success(self, appstruct):
+        appstruct.pop('csrf_token', None)
+        self.edit(**appstruct)
+        self.request.session.flash(self.success_message, 'success')
+        location = self.success_url or self.request.url
         return HTTPFound(location=location)
-        
-    def add_item(self, context, request, appstruct):
+
+    def edit(self, **appstruct):
+        for key, value in appstruct.items():
+            setattr(self.context, key, value)
+
+    @reify
+    def first_heading(self):
+        heading = _(u'Edit <em>${title}</em>',
+                    mapping=dict(title=self.request.context.title))
+        return u'<h1>%s</h1>' % heading
+
+class AddFormView(BaseFormView):
+    success_message = _(u"Successfully added item.")
+    item_type = u'item'
+    add_template_vars = ('first_heading',)
+
+    def save_success(self, appstruct):
+        appstruct.pop('csrf_token', None)
+        name = self.find_name(appstruct)
+        new_item = self.context[name] = self.add(**appstruct)
+        self.request.session.flash(self.success_message, 'success')
+        location = self.success_url or resource_url(
+            new_item, self.request, '@@edit')
+        return HTTPFound(location=location)
+
+    def find_name(self, appstruct):
         name = appstruct.get('name')
         if name is None:
             name = title_to_name(appstruct['title'])
-            while name in context.keys():
+            while name in self.context.keys():
                 name = disambiguate_name(name)
-        item = context[name] = self.add(**appstruct)
-        request.session.flash(self.add_success_msg, 'success')
-        location = resource_url(item, request) + self.success_path
-        return HTTPFound(location=location)
+        return name
 
-def is_root(context, request):
-    return context is TemplateAPI(context, request).root
+    @reify
+    def first_heading(self):
+        context_title = getattr(self.request.context, 'title', None)
+        if context_title:
+            return u'<h1>%s</h1>' % _(u'Add ${type} to <em>${title}</em>',
+                                      mapping=dict(type=self.item_type,
+                                                   title=context_title))
+        else:
+            return u'<h1>%s</h1>' % _(u'Add ${type}',
+                                      mapping=dict(type=self.item_type))

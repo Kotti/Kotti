@@ -17,6 +17,7 @@ from sqlalchemy import ForeignKey
 from sqlalchemy import Boolean
 from sqlalchemy import DateTime
 from sqlalchemy import Integer
+from sqlalchemy import LargeBinary
 from sqlalchemy import String
 from sqlalchemy import Unicode
 from sqlalchemy import UnicodeText
@@ -209,6 +210,21 @@ class Document(Content):
         self.body = body
         self.mime_type = mime_type
 
+class File(Content):
+    type_info = Content.type_info.copy(
+        name=u'File',
+        add_view=u'add_file',
+        addable_to=[u'Document'],
+        )
+
+    def __init__(self, data=None, filename=None, mimetype=None, size=None,
+                 **kwargs):
+        super(File, self).__init__(**kwargs)
+        self.data = data
+        self.filename = filename
+        self.mimetype = mimetype
+        self.size = size
+
 nodes = Table('nodes', metadata,
     Column('id', Integer, primary_key=True),
     Column('type', String(30), nullable=False),
@@ -249,6 +265,14 @@ documents = Table('documents', metadata,
     Column('mime_type', String(30)),
 )
 
+files = Table('files', metadata,
+    Column('id', Integer, ForeignKey('contents.id'), primary_key=True),
+    Column('data', LargeBinary()),
+    Column('filename', Unicode(100)),
+    Column('mimetype', String(100)),
+    Column('size', Integer()),
+    )
+
 mapper(
     Node,
     nodes,
@@ -274,9 +298,8 @@ mapper(
 mapper(LocalGroup, local_groups_table)
 
 mapper(Content, contents, inherits=Node, polymorphic_identity='content')
-       
 mapper(Document, documents, inherits=Content, polymorphic_identity='document')
-
+mapper(File, files, inherits=Content, polymorphic_identity='file')
 
 class Settings(object):
     def __init__(self, data):

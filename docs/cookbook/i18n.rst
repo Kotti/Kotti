@@ -1,0 +1,61 @@
+Internationalization
+====================
+
+Locale-specific normalization of titles to URLs
++++++++++++++++++++++++++++++++++++++++++++++++
+
+Kotti normalizes document titles to URLs by stripping away language
+specific characters like umlauts or accented characters. This is often
+undesirable. If you want a locale-specific normalization of titles,
+you have to configure the package `plone.i18n` which is used by Kotti
+for the normalization task.
+
+To configure `plone.i18n`, you have to use ZCML. Fortunately,
+`plone.i18n` comes with normalizers for many different locales, so you
+often don't have to implement one by yourself. You simply have to
+activate them by loading `plone.i18n`'s main ZCML file.
+
+ZCML configuration is not supported out of the box, you first have to
+install the `pyramid_zcml` package. To load `plone.i18n`'s
+configuration, you also have to install the package
+`zope.browserresource`.
+
+To install the packages in a ``virtualenv``:
+
+.. code-block:: bash
+
+  bin/pip install pyramid_zcml
+  bin/pip install zope.browserresource
+
+Alternatively, list these as dependencies in your package's
+``setup.py``.
+
+You can then load `plone.i18n`'s configuration via your own ZCML
+file. For this, create a package which contains a ``configure.zcml``
+like this:
+
+.. code-block:: xml
+
+  <configure xmlns="http://pylonshq.com/pyramid">
+    <include package="pyramid_zcml" />
+    <include package="zope.browserresource" file="meta.zcml" />
+    <include package="zope.browserresource" />
+    <include package="plone.i18n" />
+  </configure>
+
+To load your ``configure.zcml`` on startup, you have to add a startup
+hook. For example, add a config.py to your package:
+
+.. code-block:: python
+
+  def includeme(config):
+      config.include('pyramid_zcml')
+      config.load_zcml('configure.zcml')
+
+Setup your locale and the hook with the following settings in
+your INI file:
+
+.. code-block:: ini
+
+  pyramid.default_locale_name = de
+  pyramid.includes = mypackage.config.includeme

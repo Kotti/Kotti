@@ -1,114 +1,84 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:tal="http://xml.zope.org/namespaces/tal"
-      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
-      i18n:domain="Kotti"
+      tal:define="page_slots api.slots"
       metal:define-macro="main">
 
   <head>
-	<title metal:define-slot="page-title">${api.page_title | api.site_title}</title>
-	<meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/>
-	<meta name="description" content="${api.context.description | ''}" />
-	<link rel="shortcut icon" href="${request.static_url('kotti:static/favicon.ico')}" />
-	<link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Neuton|Nobile:regular,i,b,bi&amp;subset=latin" type="text/css" media="screen" charset="utf-8" />
-	<link rel="stylesheet" href="${request.static_url('kotti:static/base.css')}" type="text/css" media="screen" charset="utf-8" />
-	<link rel="stylesheet" href="${request.static_url('kotti:static/view.css')}" type="text/css" media="screen" charset="utf-8" />
+    <meta charset="utf-8" />
+	  <title metal:define-slot="page-title">${api.page_title | api.site_title}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="${api.context.description | ''}" />
 
-    <script type="text/javascript" src="${request.static_url('deform:static/scripts/jquery-1.4.2.min.js')}"></script>
+    <!-- HTML5 shim, for IE6-8 support of HTML elements -->
+    <!--[if lt IE 9]>
+        <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
+
+    <!-- Styles -->
+    <link href="${request.static_url('kotti:static/bootstrap/css/bootstrap.min.css')}" rel="stylesheet" />
+
+	  <link href="${request.static_url('kotti:static/base.css')}" rel="stylesheet" />
+	  <link href="${request.static_url('kotti:static/view.css')}" rel="stylesheet" />
+
+    <!-- Fav icons -->
+	  <link rel="shortcut icon" href="${request.static_url('kotti:static/favicon.ico')}" />
+
+    <!-- Scripts -->
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
+    <script src="${request.static_url('kotti:static/bootstrap/js/bootstrap.min.js')}" type="text/javascript"></script>
 
     <more tal:omit-tag="" metal:define-slot="head-more"></more>
 
-    <!-- head: slots -->
-    <headslots tal:omit-tag=""
-        tal:define="snippets api.slots.inhead" tal:condition="snippets">
-      <snip tal:repeat="snippet snippets" tal:replace="structure snippet">
-      </snip>
-    </headslots>
+    <!-- 'inhead' slots: support third party injection of things that
+         go into the head -->
+    <tal:slots tal:define="snippets page_slots.inhead"
+               tal:condition="snippets"
+               tal:repeat="snippet snippets"
+               tal:replace="structure snippet" />
   </head>
 
-  <body class="view-view" tal:define="page_slots api.slots">
-    <div id="skiplinks" class="hidden">
-      <ul>
-        <li><a href="#start-navigation" i18n:translate="">Skip to navigation</a></li>
-        <li><a href="#start-content" i18n:translate="">Skip to content</a></li>
-      </ul>
-    </div>
+  <body class="${api.user is not None and 'logged-in'}
+               view-${request.view_name or 'default'}
+               ${api.body_css_class}">
+    <div tal:condition="api.user is not None"
+         tal:replace="api.render_template('kotti:templates/editor-bar.pt')" />
 
-    <!-- The tab to switch modes  -->
-    <div id="switch-mode-box" class="vertical-text round-corners-top"
-         tal:condition="api.has_permission('edit')">
-      <a href="${api.url(context, '@@edit')}" i18n:translate="">Edit</a>
-    </div>
+    <div class="container">
+        <nav tal:replace="api.render_template('kotti:templates/view/nav.pt')" />
+        <div class="row">
+          <div class="span3 left-column"
+               tal:condition="page_slots.left"
+               tal:content="api.render_template('kotti:templates/render_column_slot.pt', slot=page_slots.left)">
+          </div>
 
-    <div id="header">
-      <nav id="site-navigation" class="top-navigation">
-        <a id="start-navigation" name="start-navigation"></a>
-        <div class="tabs1">
-          <h2 class="hidden" i18n:translate="">Site navigation</h2>
-          <ul>
-            <li><a href="${request.application_url}" class="${api.root == api.context and 'selected'}" i18n:translate="">Home</a></li>
-            <li tal:define="items [i for i in api.list_children(api.root) if i.in_navigation]"
-                tal:repeat="item items">
-              <a href="${api.url(item)}"
-                 class="${api.inside(api.context, item) and 'selected'}"
-                 title="${item.description}">${item.title}</a>
-            </li>
-          </ul>
-        </div>
-        <div class="clear"></div>
-      </nav>
-    </div>
+          <div tal:define="span 12 - int(bool(page_slots.left)) * 3 - int(bool(page_slots.right)) * 3" class="span${span}">
+            <div class="above-content"
+                 tal:condition="page_slots.abovecontent"
+                 tal:content="api.render_template('kotti:templates/render_content_slot.pt', slot=page_slots.abovecontent)">
+            </div>
 
-    <!-- The main div -->
-    <div id="main">
+            <div tal:replace="api.render_template('kotti:templates/messages.pt')" />
 
-      <!-- left column -->
-      <ul id="left-slot" class="left-column slot"
-          tal:define="snippets page_slots.left" tal:condition="snippets">
-        <li tal:repeat="snippet snippets" tal:content="structure snippet">
-        </li>
-      </ul>
+            <div class="inner-content">
+              <div metal:define-slot="content">
+                <h1>${api.context.title}</h1>
+              </div>
+            </div>
 
-      <!-- right column -->
-      <ul id="right-slot" class="right-column slot"
-          tal:define="snippets page_slots.right" tal:condition="snippets">
-        <li tal:repeat="snippet snippets" tal:content="structure snippet">
-        </li>
-      </ul>
-      
-      <!-- main column -->
-      <div class="main-column ${page_slots.left and 'has-leftcol' or ''} ${page_slots.right and 'has-rightcol' or ''}">
-        <div tal:replace="structure api.render_template('kotti:templates/messages.pt')" />
+            <div class="below-content" 
+                 tal:condition="page_slots.belowcontent"
+                 tal:content="api.render_template('kotti:templates/render_content_slot.pt', slot=page_slots.belowcontent)">
+            </div>
+          </div>
 
-        <ul id="abovecontent-slot" class="slot"
-            tal:define="snippets page_slots.abovecontent"
-            tal:condition="snippets">
-          <li tal:repeat="snippet snippets" tal:content="structure snippet"></li>
-        </ul>
-
-        <a id="start-content" name="start-content"></a>
-        <div id="main-content">
-          <div metal:define-slot="content">
-            <h1>${api.context.title}</h1>
+          <div class="span3 right-column"
+               tal:condition="page_slots.right"
+               tal:content="api.render_template('kotti:templates/render_column_slot.pt', slot=page_slots.right)">
           </div>
         </div>
 
-        <ul id="belowcontent-slot" class="slot"
-            tal:define="snippets page_slots.belowcontent"
-            tal:condition="snippets">
-          <li tal:repeat="snippet snippets" tal:content="structure snippet"></li>
-        </ul>
-      </div>
+      <footer tal:replace="api.render_template('kotti:templates/view/footer.pt')">
+      </footer>
+
     </div>
-
-    <div id="footer">
-    </div>
-
-    <!-- before body end slots -->
-    <beforebodyendslots tal:omit-tag=""
-        tal:define="snippets api.slots.beforebodyend" tal:condition="snippets">
-      <snip tal:repeat="snippet snippets" tal:replace="structure snippet">
-      </snip>
-    </beforebodyendslots>
-
   </body>
 </html>

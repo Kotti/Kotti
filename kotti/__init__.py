@@ -10,9 +10,9 @@ from pyramid.authentication import AuthTktAuthenticationPolicy
 from pyramid.authorization import ACLAuthorizationPolicy
 from pyramid.config import Configurator
 from pyramid.events import BeforeRender
-from pyramid.session import UnencryptedCookieSessionFactoryConfig
 from pyramid.threadlocal import get_current_registry
 from pyramid.util import DottedNameResolver
+from pyramid_beaker import session_factory_from_settings
 
 import kotti.patches; kotti.patches
 from kotti.util import request_cache
@@ -28,9 +28,8 @@ def authtkt_factory(**settings):
 def acl_factory(**settings):
     return ACLAuthorizationPolicy()
 
-def cookie_session_factory(**settings):
-    secret = settings['kotti.secret2']
-    return UnencryptedCookieSessionFactoryConfig(secret)
+def beaker_session_factory(**settings):
+    return session_factory_from_settings(settings)
 
 def none_factory(**kwargs): # pragma: no cover
     return None
@@ -39,16 +38,16 @@ def none_factory(**kwargs): # pragma: no cover
 conf_defaults = {
     'kotti.templates.api': 'kotti.views.util.TemplateAPI',
     'kotti.configurators': '',
-    'kotti.base_includes': 'kotti kotti.events kotti.views kotti.views.view kotti.views.edit kotti.views.login kotti.views.users kotti.views.site_setup kotti.views.slots',
+    'kotti.base_includes': 'kotti kotti.events kotti.views kotti.views.view kotti.views.edit kotti.views.login kotti.views.file kotti.views.users kotti.views.site_setup kotti.views.slots',
     'kotti.includes': '',
     'kotti.asset_overrides': '',
     'kotti.use_tables': '',
     'kotti.root_factory': 'kotti.resources.default_get_root',
     'kotti.populators': 'kotti.populate.populate',
-    'kotti.available_types': 'kotti.resources.Document',
+    'kotti.available_types': 'kotti.resources.Document kotti.resources.File',
     'kotti.authn_policy_factory': 'kotti.authtkt_factory',
     'kotti.authz_policy_factory': 'kotti.acl_factory',
-    'kotti.session_factory': 'kotti.cookie_session_factory',
+    'kotti.session_factory': 'kotti.beaker_session_factory',
     'kotti.principals_factory': 'kotti.security.principals_factory',
     'kotti.date_format': 'medium',
     'kotti.datetime_format': 'medium',

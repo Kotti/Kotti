@@ -8,7 +8,6 @@ from pyramid.httpexceptions import HTTPFound
 from pyramid.exceptions import Forbidden
 import colander
 import deform
-from deform import Form
 from deform import Button
 from deform.widget import AutocompleteInputWidget
 from deform.widget import CheckedPasswordWidget
@@ -28,11 +27,12 @@ from kotti.util import _
 from kotti.views.site_setup import CONTROL_PANEL_LINKS
 from kotti.views.util import template_api
 from kotti.views.util import is_root
-from kotti.views.util import FormController
+from kotti.views.util import AddFormView
+from kotti.views.util import EditFormView
 
 def roles_form_handler(context, request, available_role_names, groups_lister):
     changed = []
-
+    
     if 'apply' in request.POST:
         p_to_r = {}
         for name in request.params:
@@ -64,7 +64,7 @@ def roles_form_handler(context, request, available_role_names, groups_lister):
             request.session.flash(
                 _(u'Your changes have been saved.'), 'success')
         else:
-            request.session.flash(_(u'No changes made.'), 'notice')
+            request.session.flash(_(u'No changes made.'), 'info')
 
     return changed
 
@@ -90,7 +90,7 @@ def search_principals(request, context=None, ignore=None, extra=()):
             if p.name not in ignore:
                 entries.append((p, list_groups_ext(p.name, context)))
         if not found:
-            flash(_(u'No users or groups found.'), 'notice')
+            flash(_(u'No users or groups found.'), 'info')
 
     return entries
 
@@ -223,9 +223,8 @@ def user_schema(base=PrincipalFull()):
         has_password = False
     if has_password:
         schema['password'].description = _(
-            u"Leave this empty and provide an email address below "
-            u"to send the user an email to set their own password."
-            )
+            u"Leave this empty and tick the 'Send password registration' box"
+            u"below to have the user set their own password.")
     schema['title'].title = _(u"Full name")
     return schema
 
@@ -263,6 +262,49 @@ def _massage_groups_out(appstruct):
     d['roles'] = roles
     return d
 
+class UserAddFormView(AddFormView):
+    buttons = (Button('add_user', _(u'Add User')),
+               Button('cancel', _(u'Cancel')))
+
+    def schema_factory(self):
+        schema = user_schema()
+        del schema['active']
+        schema.add(colander.SchemaNode(
+            colander.Boolean(),
+            name=u'send_email',
+            title=_(u'Send password registration link'),
+            default=True,
+            ))
+        return schema
+
+    def add_user_success(self, appstruct):
+        appstruct.pop('csrf_token', None)
+        _massage_groups_in(appstruct)
+        name = appstruct['name'].lower()
+        send_email = appstruct.pop('send_email', False)
+        get_principals()[name] = appstruct
+        if send_email:
+            send_set_password(get_principals()[name], self.request)
+        self.request.session.flash(_(u'${title} added.',
+                                     mapping=dict(title=appstruct['title'])),
+                                     'success')
+        location = self.request.url.split('?')[0] + '?' + urlencode(
+            {'extra': name})
+        return HTTPFound(location=location)
+
+class GroupAddFormView(UserAddFormView):
+    buttons = (Button('add_group', _(u'Add Group')),
+               Button('cancel', _(u'Cancel')))
+
+    def schema_factory(self):
+        schema = group_schema()
+        del schema['active']
+        return schema
+
+    def add_group_success(self, appstruct):
+        appstruct['name'] = u'group:%s' % appstruct['name']
+        return self.add_user_success(appstruct)
+
 def users_manage(context, request):
     api = template_api(
         context, request,
@@ -296,65 +338,11 @@ def users_manage(context, request):
     available_roles = [ROLES[role_name] for role_name in USER_MANAGEMENT_ROLES]
 
     # Add forms:
-
-    # These are callbacks that we pass to the form controller.  They
-    # take control as soon as the data validates and are responsible
-    # for adding the actual principals and redirect:
-    def add_user(context, request, appstruct):
-        _massage_groups_in(appstruct)
-        name = appstruct['name'].lower()
-        send_email = appstruct.pop('send_email', False)
-        get_principals()[name] = appstruct
-        if send_email:
-            send_set_password(get_principals()[name], request)
-        request.session.flash(_(u'${title} added.',
-                                mapping=dict(title=appstruct['title'])),
-                              'success')
-        location = request.url.split('?')[0] + '?' + urlencode({'extra': name})
-        return HTTPFound(location=location)
-
-    def add_group(context, request, appstruct):
-        appstruct['name'] = u'group:%s' % appstruct['name']
-        return add_user(context, request, appstruct)
-
-    # The actual add forms:
-    uschema = user_schema()
-    del uschema['active']
-    uschema.add(colander.SchemaNode(
-        colander.Boolean(),
-        name=u'send_email',
-        title=_(u'Send password registration link'),
-        default=True,
-        ))
-    user_form = Form(
-        uschema,
-        buttons=(Button('add-user', _(u'Add User')),
-                 Button('cancel', _(u'Cancel'))),
-        )
-    user_fc = FormController(
-        user_form,
-        add=True,
-        add_item=add_user,
-        post_key='add-user',
-        )
-    user_addform = user_fc(context, request)
+    user_addform = UserAddFormView(context, request)()
     if request.is_response(user_addform):
         return user_addform
 
-    gschema = group_schema()
-    del gschema['active']
-    group_form = Form(
-        gschema,
-        buttons=(Button('add-group', _(u'Add Group')),
-                 Button('cancel', _(u'Cancel'))),
-        )
-    group_fc = FormController(
-        group_form,
-        add=True,
-        add_item=add_group,
-        post_key='add-group',
-        )
-    group_addform = group_fc(context, request)
+    group_addform = GroupAddFormView(context, request)()
     if request.is_response(group_addform):
         return group_addform
 
@@ -362,9 +350,27 @@ def users_manage(context, request):
         'api': api,
         'entries': search_entries,
         'available_roles': available_roles,
-        'user_addform': user_addform,
-        'group_addform': group_addform,
+        'user_addform': user_addform['form'],
+        'group_addform': group_addform['form'],
         }
+
+class UserEditFormView(EditFormView):
+    def schema_factory(self):
+        return user_schema(PrincipalBasic())
+
+class UserManageFormView(UserEditFormView):
+    def schema_factory(self):
+        schema = user_schema()
+        del schema['name']
+        del schema['password']
+        return schema
+
+    def before(self, form):
+        form.appstruct = _massage_groups_out(self.context.__dict__.copy())
+
+    def save_success(self, appstruct):
+        _massage_groups_in(appstruct)
+        return super(UserEditFormView, self).save_success(appstruct)
 
 def user_manage(context, request):
     username = request.params['name']
@@ -378,49 +384,28 @@ def user_manage(context, request):
         principal=principal,
         )
 
-    def edit_principal(context, request, appstruct):
-        _massage_groups_in(appstruct)
-        for key, value in appstruct.items():
-            setattr(context, key, value)
-        request.session.flash(_(u"Your changes have been saved."), 'success')
-        return HTTPFound(location=request.url)
-
-    uschema = user_schema()
-    del uschema['name']
-    del uschema['password']
-    user_form = Form(
-        uschema,
-        buttons=(Button('save', _(u'Save')), Button('cancel', _(u'Cancel'))),
-        )
-    user_fc = FormController(
-        user_form,
-        appstruct=lambda p: _massage_groups_out(p.__dict__.copy()),
-        edit_item=edit_principal,
-        )
-    form = user_fc(principal, request)
+    form = UserManageFormView(principal, request)()
     if request.is_response(form):
         return form
 
     return {
         'api': api,
-        'form': form,
+        'form': form['form'],
         }
 
 def preferences(context, request):
     api = template_api(context, request)
-    api.page_title=u"My preferences - %s" % api.site_title
+    api.page_title = _(u"My preferences - ${title}",
+                       mapping=dict(title=api.site_title))
     user = api.user
-    uschema = user_schema(PrincipalBasic())
-    user_form = Form(uschema, buttons=(Button('save', _(u'Save')),
-                                       Button('cancel', _(u'Cancel'))),)
-    user_fc = FormController(user_form)
-    form = user_fc(user, request)
+
+    form = UserEditFormView(user, request)()
     if request.is_response(form):
         return form
 
     return {
         'api': api,
-        'form': form,
+        'form': form['form'],
         }
 
 def includeme(config):

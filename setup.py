@@ -16,24 +16,27 @@ except IOError:
 install_requires = [
     'Babel',
     'Chameleon>=2',
-    'PasteDeploy',
     'colander>=0.9.3',
     'deform>=0.9.2', # Chameleon 2
+    'deform_bootstrap>=0.1a4', # search path
     'formencode',
+    'plone.i18n<2.0', # >= 2.0 adds a huge number of dependencies
     'py-bcrypt',
     'pyramid>=1.2',
+    'pyramid_beaker',
     'pyramid_debugtoolbar',
+    'pyramid_deform',
     'pyramid_mailer',
     'pyramid_tm',
     'repoze.lru',
     'sqlalchemy>=0.7',
+    'waitress',
     'zope.sqlalchemy',
-    'lingua>=1.2dev',
     ]
 
 tests_require = [
     'WebTest',
-    'mock>=0.8.0beta4',
+    'mock',
     'pytest',
     'pytest-cov',
     'pytest-xdist',
@@ -58,7 +61,7 @@ class PyTest(Command):
         raise SystemExit(errno)
 
 setup(name='Kotti',
-      version='0.5.0dev1',
+      version='0.5.0a8',
       description="A user-friendly, light-weight and extensible web content management system.  Written in Python, based on Pyramid and SQLAlchemy.",
       long_description=README + '\n\n' +  CHANGES,
       classifiers=[
@@ -72,7 +75,7 @@ setup(name='Kotti',
       author='Daniel Nouri and contributors',
       author_email='kotti@googlegroups.com',
       url='https://github.com/Pylons/Kotti',
-      keywords='web kotti cms wcms pylons pyramid',
+      keywords='kotti web cms wcms pylons pyramid sqlalchemy bootstrap',
       license="BSD-derived (http://www.repoze.org/LICENSE.txt)",
       packages=find_packages(),
       include_package_data=True,
@@ -80,8 +83,7 @@ setup(name='Kotti',
       cmdclass={'test': PyTest},
       install_requires=install_requires + tests_require,
       #tests_require=tests_require,
-      dependency_links = [
-          "http://www.voidspace.org.uk/downloads/mock-0.8.0beta4.tar.gz",
+      dependency_links=[
           "http://github.com/teixas/lingua/tarball/master#egg=lingua-1.2dev",
       ],
       entry_points = """\
