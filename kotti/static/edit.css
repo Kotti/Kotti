@@ -1,13 +1,5 @@
 /** Put here CSS that should apply to editor screens only. **/
 
-.input, input, textarea, select {
-    width: 400px;
-}
-
-form {
-    margin-top: 16px;
-}
-
 /* deform workarounds while we wait for deform_bootstrap to become perfect */
 form.deform ul {
     list-style: none;
