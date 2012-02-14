@@ -44,12 +44,13 @@ def inline_view(context, request, disposition='inline'):
     res = Response(
         headerlist=[
             ('Content-Disposition', '%s;filename="%s"' % (
-                disposition, context.filename)),
-            ('Content-Length', context.size),
-            ('Content-Type', context.mimetype),
+                disposition, context.filename.encode('ascii', 'ignore'))),
+            ('Content-Length', str(context.size)),
+            ('Content-Type', str(context.mimetype)),
             ],
         app_iter=context.data,
         )
+    
     return res
 
 def attachment_view(context, request):
