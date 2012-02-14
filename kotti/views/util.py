@@ -415,7 +415,8 @@ class EditFormView(BaseFormView):
     @reify
     def first_heading(self):
         heading = _(u'Edit <em>${title}</em>',
-                    mapping=dict(title=self.request.context.title))
+                    mapping=dict(title=self.request.context.title)
+                    ).interpolate()
         return u'<h1>%s</h1>' % heading
 
 class AddFormView(BaseFormView):
@@ -446,7 +447,9 @@ class AddFormView(BaseFormView):
         if context_title:
             return u'<h1>%s</h1>' % _(u'Add ${type} to <em>${title}</em>',
                                       mapping=dict(type=self.item_type,
-                                                   title=context_title))
+                                                   title=context_title)
+                                      ).interpolate()
         else:
             return u'<h1>%s</h1>' % _(u'Add ${type}',
-                                      mapping=dict(type=self.item_type))
+                                      mapping=dict(type=self.item_type)
+                                      ).interpolate()
