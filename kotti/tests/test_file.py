@@ -11,16 +11,21 @@ from kotti.testing import UnitTestBase
 class TestFileViews(UnitTestBase):
     def setUp(self):
         from kotti.resources import File
-        self.file = File("file contents", "myfile.png", "image/png", 46578)
+        self.file = File("file contents", u"myf\xfcle.png", u"image/png", 46578)
+
+    def _test_common_headers(self, headers):
+        for name in ('Content-Disposition', 'Content-Length', 'Content-Type'):
+            assert type(headers[name]) == str
+        assert headers["Content-Length"] == "46578"
+        assert headers["Content-Type"] == "image/png"
 
     def test_inline_view(self):
         from kotti.views.file import inline_view
         res = inline_view(self.file, None)
         headers = res.headers
 
-        assert headers["Content-Disposition"] == 'inline;filename="myfile.png"'
-        assert headers["Content-Length"] == 46578
-        assert headers["Content-Type"] == "image/png"
+        self._test_common_headers(headers)
+        assert headers["Content-Disposition"] == 'inline;filename="myfle.png"'
         assert res.app_iter == 'file contents'
         
     def test_attachment_view(self):
@@ -28,10 +33,9 @@ class TestFileViews(UnitTestBase):
         res = attachment_view(self.file, None)
         headers = res.headers
 
+        self._test_common_headers(headers)
         assert headers["Content-Disposition"] == (
-            'attachment;filename="myfile.png"')
-        assert headers["Content-Length"] == 46578
-        assert headers["Content-Type"] == "image/png"
+            'attachment;filename="myfle.png"')
         assert res.app_iter == 'file contents'
 
 class TestEditFileFormView(TestCase):

@@ -10,7 +10,7 @@
 
     <!-- HTML5 shim, for IE6-8 support of HTML elements -->
     <!--[if lt IE 9]>
-        <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+        <script src="https://html5shim.googlecode.com/svn/trunk/html5.js"></script>
         <![endif]-->
 
     <!-- Styles -->
@@ -23,7 +23,7 @@
 	  <link rel="shortcut icon" href="${request.static_url('kotti:static/favicon.ico')}" />
 
     <!-- Scripts -->
-    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
     <script src="${request.static_url('kotti:static/bootstrap/js/bootstrap.min.js')}" type="text/javascript"></script>
 
     <more tal:omit-tag="" metal:define-slot="head-more"></more>
