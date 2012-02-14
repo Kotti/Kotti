@@ -540,8 +540,9 @@ class TestPrincipals(UnitTestBase):
         self.assertEqual(bob.last_login_date, None)
         result = login(None, request)
         self.assertEqual(result.status, '302 Found')
-        self.assertEqual(request.session.pop_flash('success'),
-                         [u'Welcome, Bob Dabolina!'])
+        self.assertEqual(
+            [request.session.pop_flash('success')[0].interpolate()],
+            [u'Welcome, Bob Dabolina!'])
         last_login_date = bob.last_login_date
         self.assertNotEqual(last_login_date, None)
         self.assertEqual(request.session.pop_flash('error'), [])
