@@ -235,17 +235,11 @@ def title_to_name(title):
     return unicode(urlnormalizer.normalize(title, locale_name))
 
 class Translator(object):
-    def __init__(self, request=None):
-        class dummy_request(object):
-            _LOCALE_ = 'en'
-
-        if request is None:
-            request = dummy_request
+    def __init__(self, request):
         self.localizer = get_localizer(request)
 
     def __call__(self, msgid, default=None, mapping=None):
         return self.localizer.translate(
-            TranslationStringFactory('Kotti')(
-                msgid, default=default, mapping=mapping))
-translator = Translator()
-_ = translator
+            _(msgid, default=default, mapping=mapping))
+
+_ = TranslationStringFactory('Kotti')
