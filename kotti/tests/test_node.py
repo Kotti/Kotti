@@ -140,6 +140,21 @@ class TestNode(UnitTestBase):
         self.assertEqual(copy_of_root.name, u'copy_of_root')
         self.assertEqual(root.name, u'')
 
+    def test_node_copy_more(self):
+        from kotti import DBSession
+        from kotti.resources import get_root
+        from kotti.resources import Node
+
+        child1 = Node(name=u'child1')
+        child2 = get_root()['child2'] = Node()
+        child2.children.append(child1.copy())
+        DBSession.flush()
+
+        assert DBSession.query(Node).filter(Node.name==u'child1').length() == 1
+        assert child2['child1'].id != child1.id
+        assert len(get_root().children) == 1
+        assert len(child2.children) == 1
+
     def test_annotations_mutable(self):
         from kotti import DBSession
         from kotti.resources import get_root
