@@ -24,14 +24,18 @@ distribution:
 
   wget https://github.com/Pylons/Kotti/raw/master/development.ini
 
-Finally, to run the application:
+Finally, to run the application under Pyramid 1.3 and better:
 
 .. code-block:: bash
 
-  bin/paster serve development.ini
+  bin/pserve development.ini
 
-Should the ``bin/paster`` script not be available in your environment,
-install it first using ``bin/pip install PasteScript``.
+Or alternatively, with older versions of Pyramid:
+
+.. code-block:: bash
+
+  bin/pip install PasteScript
+  bin/paster serve development.ini
 
 .. _other SQL databases: http://www.sqlalchemy.org/docs/core/engines.html#supported-databases
 .. _variety of web servers: http://wsgi.org/wsgi/Servers

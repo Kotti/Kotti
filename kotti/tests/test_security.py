@@ -615,3 +615,37 @@ class TestHasPermission(TestCase):
             has_permission(permission, context, request)
 
         assert args == [(permission, context, request)]
+
+class TestRolesSetters(UnitTestBase):
+    def test_set_roles(self):
+        from kotti.security import ROLES
+        from kotti.security import set_roles
+        from kotti.security import reset_roles
+
+        before = ROLES.copy()
+        set_roles({'role:admin': ROLES['role:admin']})
+        assert ROLES == {'role:admin': ROLES['role:admin']}
+        reset_roles()
+        assert ROLES == before
+
+    def test_set_sharing_roles(self):
+        from kotti.security import SHARING_ROLES
+        from kotti.security import set_sharing_roles
+        from kotti.security import reset_sharing_roles
+
+        before = SHARING_ROLES[:]
+        set_sharing_roles(['role:admin'])
+        assert SHARING_ROLES == ['role:admin']
+        reset_sharing_roles()
+        assert SHARING_ROLES == before
+
+    def test_set_user_management_roles(self):
+        from kotti.security import USER_MANAGEMENT_ROLES
+        from kotti.security import set_user_management_roles
+        from kotti.security import reset_user_management_roles
+
+        before = USER_MANAGEMENT_ROLES[:]
+        set_user_management_roles(['role:admin'])
+        assert USER_MANAGEMENT_ROLES == ['role:admin']
+        reset_user_management_roles()
+        assert USER_MANAGEMENT_ROLES == before

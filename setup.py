@@ -16,7 +16,6 @@ except IOError:
 install_requires = [
     'Babel',
     'Chameleon>=2',
-    'PasteDeploy',
     'colander>=0.9.3',
     'deform>=0.9.2', # Chameleon 2
     'deform_bootstrap>=0.1a4', # search path
@@ -31,6 +30,7 @@ install_requires = [
     'pyramid_tm',
     'repoze.lru',
     'sqlalchemy>=0.7',
+    'waitress',
     'zope.sqlalchemy',
     ]
 
@@ -61,7 +61,7 @@ class PyTest(Command):
         raise SystemExit(errno)
 
 setup(name='Kotti',
-      version='0.5.0a8',
+      version='0.5.0rc3',
       description="A user-friendly, light-weight and extensible web content management system.  Written in Python, based on Pyramid and SQLAlchemy.",
       long_description=README + '\n\n' +  CHANGES,
       classifiers=[
