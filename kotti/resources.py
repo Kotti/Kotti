@@ -134,8 +134,6 @@ class Node(ContainerMixin, PersistentACLMixin):
             setattr(copy, key, value)
         for child in children:
             copy.children.append(child.copy())
-        for group in self.local_groups:
-            group.copy(node=copy)
         return copy
 
 class LocalGroup(object):

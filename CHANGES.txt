@@ -4,7 +4,7 @@ History
 0.5.1 - Unreleased
 ------------------
 
-- Refine ``Node.copy``.
+- Refine ``Node.copy``.  No longer copy over local roles per default.
 
 0.5.0 - 2011-02-15
 ------------------

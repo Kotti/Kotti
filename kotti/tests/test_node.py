@@ -166,12 +166,7 @@ class TestNode(UnitTestBase):
 
         child2 = root['child2'] = child1.copy()
         DBSession.flush()
-        [child2_lg] = child2.local_groups
-        assert child2_lg.id != child1.local_groups[0].id
-        
-        assert child2_lg.node is child2
-        assert child2_lg.principal_name == u'joe'
-        assert child2_lg.group_name == u'role:admin'
+        assert child2.local_groups == []
 
     def test_annotations_mutable(self):
         from kotti import DBSession
