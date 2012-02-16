@@ -224,3 +224,17 @@ class TestNode(UnitTestBase):
 
         root = get_root()
         self.assertRaises(ValueError, setattr, root, 'annotations', [])
+
+
+class TestLocalGroup(UnitTestBase):
+    def test_copy(self):
+        from kotti.resources import get_root
+        from kotti.resources import LocalGroup
+
+        node, principal_name, group_name = get_root(), 'p', 'g'
+        lg = LocalGroup(node, principal_name, group_name)
+        lg2 = lg.copy()
+        assert lg2 is not lg
+        assert lg.node is lg2.node
+        assert lg.principal_name == lg2.principal_name
+        assert lg.group_name == lg2.group_name
