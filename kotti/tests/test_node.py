@@ -139,6 +139,30 @@ class TestNode(UnitTestBase):
         self.assertEqual(copy_of_root.name, u'copy_of_root')
         self.assertEqual(root.name, u'')
 
+    def test_node_copy_variants(self):
+        from kotti.resources import get_root
+        from kotti.resources import Node
+
+        root = get_root()
+        child1 = root['child1'] = Node()
+        child1['grandchild'] = Node()
+        child2 = root['child2'] = Node()
+
+        # first way; circumventing the Container API
+        child2.children.append(child1.copy())
+
+        # second way; canonical way
+        child2['child2'] = child1.copy()
+
+        # third way; this is necessary in cases when copy() will
+        # attempt to put the new node into the db already, e.g. when
+        # the copy is already being back-referenced by some other
+        # object in the db.
+        child1.copy(parent=child2, name=u'child3')
+
+        assert [child.name for child in child2.children] == [
+            'child1', 'child2', 'child3']
+
     def test_node_copy_parent_id(self):
         from kotti import DBSession
         from kotti.resources import get_root
