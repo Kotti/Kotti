@@ -131,29 +131,47 @@ class TestNode(UnitTestBase):
         root[u'child4'] = child44
         self.assertRaises(SQLAlchemyError, session.flush)
         
-    def test_node_copy(self):
+    def test_node_copy_name(self):
         from kotti.resources import get_root
         
-        # Test some of Node's container methods:
         root = get_root()
         copy_of_root = root.copy(name=u'copy_of_root')
         self.assertEqual(copy_of_root.name, u'copy_of_root')
         self.assertEqual(root.name, u'')
 
-    def test_node_copy_more(self):
+    def test_node_copy_parent_id(self):
         from kotti import DBSession
         from kotti.resources import get_root
         from kotti.resources import Node
 
-        child1 = Node(name=u'child1')
-        child2 = get_root()['child2'] = Node()
-        child2.children.append(child1.copy())
+        root = get_root()
+        child1 = root['child1'] = Node()
+        grandchild1 = child1['grandchild1'] = Node()
+        DBSession.flush()
+        grandchild2 = grandchild1.copy()
+        assert grandchild2.parent_id is None
+        assert grandchild2.parent is None
+
+    def test_node_copy_with_local_groups(self):
+        from kotti import DBSession
+        from kotti.resources import get_root
+        from kotti.resources import Node
+        from kotti.resources import LocalGroup
+
+        root = get_root()
+        child1 = root['child1'] = Node()
+        local_group1 = LocalGroup(child1, u'joe', u'role:admin')
+        DBSession.add(local_group1)
         DBSession.flush()
 
-        assert DBSession.query(Node).filter(Node.name==u'child1').length() == 1
-        assert child2['child1'].id != child1.id
-        assert len(get_root().children) == 1
-        assert len(child2.children) == 1
+        child2 = root['child2'] = child1.copy()
+        DBSession.flush()
+        [child2_lg] = child2.local_groups
+        assert child2_lg.id != child1.local_groups[0].id
+        
+        assert child2_lg.node is child2
+        assert child2_lg.principal_name == u'joe'
+        assert child2_lg.group_name == u'role:admin'
 
     def test_annotations_mutable(self):
         from kotti import DBSession
