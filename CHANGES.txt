@@ -1,7 +1,12 @@
 History
 =======
 
-0.5.0 - Unreleased
+0.5.1 - Unreleased
+------------------
+
+- Refine ``Node.copy``.  No longer copy over local roles per default.
+
+0.5.0 - 2011-02-15
 ------------------
 
 - Move Kotti's default user interface to use Twitter Bootstrap 2.

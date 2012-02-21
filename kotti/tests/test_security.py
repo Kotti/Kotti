@@ -325,13 +325,13 @@ class TestGroups(UnitTestBase):
             set(['bob', 'group:bobsgroup', 'group:franksgroup'])
             )
 
-        # We make a copy of 'child', and we expect the local roles to
-        # be copied over:
+        # We make a copy of 'child', and we expect the local roles set
+        # on 'child' to not be copied over:
         child2 = root['child2'] = child.copy()
         DBSession.flush()
         self.assertEqual(
             set(principals_with_local_roles(child2)),
-            set(['bob', 'group:bobsgroup', 'group:franksgroup'])
+            set([u'bob', u'group:franksgroup']),
             )
         self.assertEqual(len(principals_with_local_roles(child)), 3)
 
@@ -339,7 +339,7 @@ class TestGroups(UnitTestBase):
         # unaffected:
         set_groups('group:bobsgroup', child, [])
         self.assertEqual(len(principals_with_local_roles(child)), 2)
-        self.assertEqual(len(principals_with_local_roles(child2)), 3)
+        self.assertEqual(len(principals_with_local_roles(child2)), 2)
 
     def test_map_principals_with_local_roles(self):
         from kotti.resources import get_root

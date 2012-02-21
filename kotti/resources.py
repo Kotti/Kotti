@@ -123,18 +123,18 @@ class Node(ContainerMixin, PersistentACLMixin):
     def __ne__(self, other):
         return not self == other
 
+    copy_properties_blacklist = (
+        'id', 'parent', 'parent_id', 'children', 'local_groups')
     def copy(self, **kwargs):
+        children = list(self.children)
         copy = self.__class__()
         for prop in object_mapper(self).iterate_properties:
-            if prop.key not in ('id', 'parent', 'children', 'local_groups'):
+            if prop.key not in self.copy_properties_blacklist:
                 setattr(copy, prop.key, getattr(self, prop.key))
         for key, value in kwargs.items():
             setattr(copy, key, value)
-        children = list(self.children)
         for child in children:
             copy.children.append(child.copy())
-        for group in self.local_groups:
-            group.copy(node=copy)
         return copy
 
 class LocalGroup(object):
