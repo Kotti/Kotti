@@ -11,6 +11,7 @@ from deform.widget import TextAreaWidget
 from pyramid.response import Response
 
 from kotti.resources import File
+from kotti.util import _
 from kotti.views.edit import ContentSchema
 from kotti.views.util import EditFormView
 from kotti.views.util import AddFormView
@@ -62,6 +63,7 @@ class EditFileFormView(EditFormView):
         class FileSchema(ContentSchema):
             file = SchemaNode(
                 FileData(),
+                title=_(u'File'),
                 missing=null,
                 widget=FileUploadWidget(tmpstore),
                 )
@@ -83,14 +85,16 @@ class AddFileFormView(AddFormView):
     def schema_factory(self):
         tmpstore = FileUploadTempStore(self.request)
         class FileSchema(MappingSchema):
-            title = SchemaNode(String(), missing=u'')
+            title = SchemaNode(String(), title=_(u'Title'), missing=u'')
             description = SchemaNode(
                 String(),
+                title=_('Description'),
                 missing=u"",
                 widget=TextAreaWidget(cols=40, rows=5),
                 )
             file = SchemaNode(
                 FileData(),
+                title=_(u'File'),
                 widget=FileUploadWidget(tmpstore),
                 )
         return FileSchema()
