@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Kotti 0.4.4\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2012-02-21 19:22+0000\n"
+"POT-Creation-Date: 2012-02-21 20:14+0000\n"
 "PO-Revision-Date: 2012-01-16 12:02+0000\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: en <LL@li.org>\n"
@@ -49,7 +49,7 @@ msgstr ""
 msgid "Document"
 msgstr ""
 
-#: kotti/resources.py:217
+#: kotti/resources.py:217 kotti/views/file.py:66 kotti/views/file.py:97
 msgid "File"
 msgstr ""
 
@@ -139,11 +139,11 @@ msgstr ""
 msgid "Continue"
 msgstr ""
 
-#: kotti/templates/edit/breadcrumbs.pt:2
+#: kotti/templates/edit/breadcrumbs.pt:4
 msgid "You are here:"
 msgstr ""
 
-#: kotti/templates/edit/breadcrumbs.pt:10
+#: kotti/templates/edit/breadcrumbs.pt:12
 msgid "Home"
 msgstr ""
 
@@ -252,11 +252,11 @@ msgstr ""
 msgid "Welcome, you are not logged in."
 msgstr ""
 
-#: kotti/views/edit.py:27 kotti/views/users.py:161
+#: kotti/views/edit.py:27 kotti/views/file.py:88 kotti/views/users.py:161
 msgid "Title"
 msgstr ""
 
-#: kotti/views/edit.py:30
+#: kotti/views/edit.py:30 kotti/views/file.py:91
 msgid "Description"
 msgstr ""
 
@@ -451,11 +451,4 @@ msgstr ""
 #: kotti/views/util.py:452
 msgid "Add ${type}"
 msgstr ""
-
-#~ msgid ""
-#~ "Leave this empty and tick the "
-#~ "'Send password registration' boxbelow to "
-#~ "have the user set their own "
-#~ "password."
-#~ msgstr ""
 
