@@ -416,10 +416,9 @@ class EditFormView(BaseFormView):
 
     @reify
     def first_heading(self):
-        heading = _(u'Edit <em>${title}</em>',
-                    mapping=dict(title=self.request.context.title)
-                    ).interpolate()
-        return u'<h1>%s</h1>' % heading
+        return _(u'Edit <em>${title}</em>',
+                 mapping=dict(title=self.request.context.title)
+                 )
 
 class AddFormView(BaseFormView):
     success_message = _(u"Successfully added item.")
@@ -447,11 +446,7 @@ class AddFormView(BaseFormView):
     def first_heading(self):
         context_title = getattr(self.request.context, 'title', None)
         if context_title:
-            return u'<h1>%s</h1>' % _(u'Add ${type} to <em>${title}</em>',
-                                      mapping=dict(type=self.item_type,
-                                                   title=context_title)
-                                      ).interpolate()
+            return _(u'Add ${type} to <em>${title}</em>',
+                     mapping=dict(type=self.item_type, title=context_title))
         else:
-            return u'<h1>%s</h1>' % _(u'Add ${type}',
-                                      mapping=dict(type=self.item_type)
-                                      ).interpolate()
+            return _(u'Add ${type}', mapping=dict(type=self.item_type))
