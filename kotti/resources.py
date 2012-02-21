@@ -201,6 +201,7 @@ class Content(Node):
 class Document(Content):
     type_info = Content.type_info.copy(
         name=u'Document',
+        title=_(u'Document'),
         add_view=u'add_document',
         addable_to=[u'Document'],
         )
@@ -213,6 +214,7 @@ class Document(Content):
 class File(Content):
     type_info = Content.type_info.copy(
         name=u'File',
+        title=_(u'File'),
         add_view=u'add_file',
         addable_to=[u'Document'],
         )
