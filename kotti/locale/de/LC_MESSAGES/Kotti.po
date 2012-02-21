@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Kotti 0.4.4\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2012-02-14 15:43+0000\n"
+"POT-Creation-Date: 2012-02-21 19:22+0000\n"
 "PO-Revision-Date: 2012-01-16 12:02+0000\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: de <LL@li.org>\n"
@@ -45,6 +45,14 @@ msgstr ""
 msgid "Share"
 msgstr ""
 
+#: kotti/resources.py:204
+msgid "Document"
+msgstr ""
+
+#: kotti/resources.py:217
+msgid "File"
+msgstr ""
+
 #: kotti/security.py:147
 msgid "Viewer"
 msgstr ""
@@ -59,6 +67,26 @@ msgstr ""
 
 #: kotti/security.py:150
 msgid "Admin"
+msgstr ""
+
+#: kotti/templates/editor-bar.pt:15
+msgid "View"
+msgstr ""
+
+#: kotti/templates/editor-bar.pt:25
+msgid "Navigate"
+msgstr ""
+
+#: kotti/templates/editor-bar.pt:37
+msgid "Site Setup"
+msgstr ""
+
+#: kotti/templates/editor-bar.pt:41
+msgid "Preferences"
+msgstr ""
+
+#: kotti/templates/editor-bar.pt:45
+msgid "Logout"
 msgstr ""
 
 #: kotti/templates/login.pt:10
@@ -99,15 +127,15 @@ msgstr ""
 msgid "What do you want to add?"
 msgstr ""
 
-#: kotti/templates/edit/add.pt:36
+#: kotti/templates/edit/add.pt:37
 msgid "Which folder do you want to add to?"
 msgstr ""
 
-#: kotti/templates/edit/add.pt:38
+#: kotti/templates/edit/add.pt:39
 msgid "Add to ${title}"
 msgstr ""
 
-#: kotti/templates/edit/add.pt:58
+#: kotti/templates/edit/add.pt:59
 msgid "Continue"
 msgstr ""
 
@@ -139,6 +167,18 @@ msgstr ""
 msgid "Order"
 msgstr ""
 
+#: kotti/templates/edit/move.pt:33
+msgid "Copy ${title}"
+msgstr ""
+
+#: kotti/templates/edit/move.pt:35
+msgid "Cut ${title}"
+msgstr ""
+
+#: kotti/templates/edit/move.pt:37
+msgid "Paste ${from_title} into ${to_title}"
+msgstr ""
+
 #: kotti/templates/edit/move.pt:51
 msgid "Are you sure you want to delete ${title}?"
 msgstr ""
@@ -155,24 +195,32 @@ msgstr ""
 msgid "New title"
 msgstr ""
 
-#: kotti/templates/edit/share.pt:6
+#: kotti/templates/edit/share.pt:8
 msgid "Share ${title}"
 msgstr ""
 
-#: kotti/templates/edit/share.pt:10
+#: kotti/templates/edit/share.pt:12
 msgid "Assign local roles"
 msgstr ""
 
-#: kotti/templates/edit/share.pt:22 kotti/templates/site-setup/users.pt:24
+#: kotti/templates/edit/share.pt:16 kotti/templates/site-setup/users.pt:16
+msgid "Search users and groups"
+msgstr ""
+
+#: kotti/templates/edit/share.pt:24 kotti/templates/site-setup/users.pt:24
 msgid "Search"
 msgstr ""
 
-#: kotti/templates/edit/share.pt:29 kotti/templates/site-setup/users.pt:32
+#: kotti/templates/edit/share.pt:31 kotti/templates/site-setup/users.pt:32
 #: kotti/views/users.py:167
 msgid "Name"
 msgstr ""
 
-#: kotti/templates/edit/share.pt:56 kotti/templates/site-setup/users.pt:60
+#: kotti/templates/edit/share.pt:39 kotti/templates/site-setup/users.pt:40
+msgid "Gravatar"
+msgstr ""
+
+#: kotti/templates/edit/share.pt:58 kotti/templates/site-setup/users.pt:60
 msgid "Apply changes"
 msgstr ""
 
@@ -186,14 +234,6 @@ msgstr ""
 
 #: kotti/templates/site-setup/users.pt:12
 msgid "Search and modify users"
-msgstr ""
-
-#: kotti/templates/site-setup/users.pt:16
-msgid "Search users and groups"
-msgstr ""
-
-#: kotti/templates/site-setup/users.pt:40
-msgid "Gravatar"
 msgstr ""
 
 #: kotti/templates/site-setup/users.pt:71
@@ -352,43 +392,43 @@ msgstr ""
 
 #: kotti/views/users.py:225
 msgid ""
-"Leave this empty and tick the 'Send password registration' boxbelow to "
+"Leave this empty and tick the 'Send password registration' box below to "
 "have the user set their own password."
 msgstr ""
 
-#: kotti/views/users.py:228
+#: kotti/views/users.py:227
 msgid "Full name"
 msgstr ""
 
-#: kotti/views/users.py:266
+#: kotti/views/users.py:265
 msgid "Add User"
 msgstr ""
 
-#: kotti/views/users.py:267 kotti/views/users.py:297 kotti/views/util.py:369
+#: kotti/views/users.py:266 kotti/views/users.py:296 kotti/views/util.py:369
 msgid "Cancel"
 msgstr ""
 
-#: kotti/views/users.py:275
+#: kotti/views/users.py:274
 msgid "Send password registration link"
 msgstr ""
 
-#: kotti/views/users.py:288
+#: kotti/views/users.py:287
 msgid "${title} added."
 msgstr ""
 
-#: kotti/views/users.py:296
+#: kotti/views/users.py:295
 msgid "Add Group"
 msgstr ""
 
-#: kotti/views/users.py:313
+#: kotti/views/users.py:312
 msgid "User Management - ${title}"
 msgstr ""
 
-#: kotti/views/users.py:385
+#: kotti/views/users.py:384
 msgid "Edit User - ${title}"
 msgstr ""
 
-#: kotti/views/users.py:402
+#: kotti/views/users.py:401
 msgid "My preferences - ${title}"
 msgstr ""
 
@@ -400,88 +440,22 @@ msgstr ""
 msgid "Edit <em>${title}</em>"
 msgstr ""
 
-#: kotti/views/util.py:425
+#: kotti/views/util.py:424
 msgid "Successfully added item."
 msgstr ""
 
-#: kotti/views/util.py:450
+#: kotti/views/util.py:449
 msgid "Add ${type} to <em>${title}</em>"
 msgstr ""
 
-#: kotti/views/util.py:455
+#: kotti/views/util.py:452
 msgid "Add ${type}"
 msgstr ""
 
 #~ msgid ""
-#~ "Fill out your username or email "
-#~ "above and click Reset password below "
-#~ "to receive an email with a link"
-#~ " to reset your password."
-#~ msgstr ""
-
-#~ msgid "Site Setup"
-#~ msgstr ""
-
-#~ msgid "Preferences"
-#~ msgstr ""
-
-#~ msgid "Logout"
-#~ msgstr ""
-
-#~ msgid "Add to"
-#~ msgstr ""
-
-#~ msgid "Items in"
-#~ msgstr ""
-
-#~ msgid "Skip to navigation"
-#~ msgstr ""
-
-#~ msgid "Skip to tools menu"
-#~ msgstr ""
-
-#~ msgid "Skip to content"
-#~ msgstr ""
-
-#~ msgid "View"
-#~ msgstr ""
-
-#~ msgid "Copy ${title}"
-#~ msgstr ""
-
-#~ msgid "Cut ${title}"
-#~ msgstr ""
-
-#~ msgid "Paste ${from} into ${to}"
-#~ msgstr ""
-
-#~ msgid "delete"
-#~ msgstr ""
-
-#~ msgid "Order contained items"
-#~ msgstr ""
-
-#~ msgid "Site navigation"
-#~ msgstr ""
-
-#~ msgid "Local navigation"
-#~ msgstr ""
-
-#~ msgid "Edit ${title} - ${site_title}"
-#~ msgstr ""
-
-#~ msgid "Add ${title} to ${context_title} - ${site_title}"
-#~ msgstr ""
-
-#~ msgid ""
-#~ "Leave this empty and provide an "
-#~ "email address below to send the "
-#~ "user an email to set their own "
+#~ "Leave this empty and tick the "
+#~ "'Send password registration' boxbelow to "
+#~ "have the user set their own "
 #~ "password."
-#~ msgstr ""
-
-#~ msgid ""
-#~ "There was a problem with your submission.\n"
-#~ "Errors have been highlighted."
 #~ msgstr ""
 
