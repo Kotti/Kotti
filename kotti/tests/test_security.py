@@ -551,8 +551,9 @@ class TestPrincipals(UnitTestBase):
         request.params['login'] = u'bob@dabolina.com'
         result = login(None, request)
         self.assertEqual(result.status, '302 Found')
-        self.assertEqual(request.session.pop_flash('success'),
-                         [u'Welcome, Bob Dabolina!'])
+        self.assertEqual(
+            [request.session.pop_flash('success')[0].interpolate()],
+            [u'Welcome, Bob Dabolina!'])
         self.assertTrue(last_login_date < bob.last_login_date)
 
         # Deactive Bob, logging in is no longer possible:
@@ -567,8 +568,9 @@ class TestPrincipals(UnitTestBase):
         bob.confirm_token = u'token'
         result = login(None, request)
         self.assertEqual(result.status, '302 Found')
-        self.assertEqual(request.session.pop_flash('success'),
-                         [u'Welcome, Bob Dabolina!'])
+        self.assertEqual(
+            [request.session.pop_flash('success')[0].interpolate()],
+            [u'Welcome, Bob Dabolina!'])
 
 class TestAuthzContextManager(TestCase):
     def test_basic(self):
