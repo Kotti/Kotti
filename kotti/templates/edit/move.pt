@@ -31,14 +31,14 @@
             class="ajax ${('copy' in request.POST or 'cut' in request.POST or 'paste' in request.POST) and 'ajax-replace' or ''}" id="form-move-1">
           <div class="form-actions">
             <button type="submit" name="copy" value="${context.id}" 
-                    class="btn">Copy ${context.title}</button>
+                    class="btn" i18n:translate="">Copy <span tal:omit-tag="" i18n:name="title">${context.title}</span></button>
             <button type="submit" name="cut" value="${context.id}"
-                    class="btn">Cut ${context.title}</button>
+                    class="btn" i18n:translate="">Cut <span tal:omit-tag="" i18n:name="title">${context.title}</span></button>
             <button type="submit" name="paste" value="${paste_item.id}"
                     class="btn btn-success"
                     tal:define="paste_item api.get_paste_item()"
-                    tal:condition="paste_item is not None">
-              Paste ${paste_item.title} into ${context.title}
+                    tal:condition="paste_item is not None"
+                    i18n:translate="">Paste <span tal:omit-tag="" i18n:name="from_title">${paste_item.title}</span> into <span tal:omit-tag="" i18n:name="to_title">${context.title}</span>
             </button>
           </div>
         </form>

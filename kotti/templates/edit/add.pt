@@ -13,9 +13,10 @@
         <fieldset tal:condition="len(possible_types) &gt; 1">
           <legend  i18n:translate="">What do you want to add?</legend>
           <div class="control-group" tal:repeat="type possible_types">
-            <tal:define tal:define="type_name type['factory'].type_info.name">
+            <tal:define tal:define="type_name type['factory'].type_info.name;
+                                    type_title type['factory'].type_info.title">
               <label class="control-label" for="what-to-add-${type_name}">
-                ${type_name}
+                ${type_title}
               </label>
               <div class="controls">
                 <input type="radio" name="what"
