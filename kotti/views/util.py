@@ -181,7 +181,7 @@ class TemplateAPI(object):
 
     inside = staticmethod(inside)
 
-    def avatar_url(self, user=None, size="20", default_image='identicon'):
+    def avatar_url(self, user=None, size="14", default_image='identicon'):
         if user is None:
             user = self.user
         email = user.email
