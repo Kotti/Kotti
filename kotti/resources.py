@@ -178,7 +178,6 @@ class Content(Node):
         addable_to=[],
         edit_links=[
             ViewLink('edit', title=_(u'Edit')),
-            ViewLink('add', title=_(u'Add')),
             ViewLink('move', title=_(u'Move')),
             ViewLink('share', title=_(u'Share')),
             ],

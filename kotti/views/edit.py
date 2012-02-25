@@ -14,12 +14,11 @@ from kotti.security import view_permitted
 from kotti.util import _
 from kotti.views.util import EditFormView
 from kotti.views.util import AddFormView
-from kotti.views.util import addable_types
 from kotti.views.util import disambiguate_name
 from kotti.views.util import ensure_view_selector
 from kotti.views.util import nodes_tree
-from kotti.views.util import template_api
 from kotti.util import title_to_name
+
 
 class ContentSchema(colander.MappingSchema):
     title = colander.SchemaNode(
@@ -32,6 +31,7 @@ class ContentSchema(colander.MappingSchema):
         missing=u"",
         )
 
+
 class DocumentSchema(ContentSchema):
     body = colander.SchemaNode(
         colander.String(),
@@ -40,44 +40,16 @@ class DocumentSchema(ContentSchema):
         missing=u"",
         )
 
-def add_node(context, request):
-    """This view's responsibility is to present the user with a form
-    where they can choose between locations to add to, and types of
-    nodes to add, and redirect to the actual add form based on this
-    information.
+def content_type_factories(context, request):
+    """ Drop down menu for Add button.
     """
     all_types = get_settings()['kotti.available_types']
-    
-    if request.POST:
-        what, where = request.POST['what'], request.POST['where']
-        session = DBSession()
-        what = [t for t in all_types if t.type_info.name == what][0]
-        where = session.query(Node).get(int(where))
-        location = resource_url(where, request) + '@@' + what.type_info.add_view
-        return HTTPFound(location=location)
+    factories = []
+    for factory in all_types:
+        if factory.type_info.addable(context, request):
+            factories.append(factory)
+    return {'factories': factories}
 
-    possible_parents, possible_types = addable_types(context, request)
-    if len(possible_parents) == 1 and len(possible_parents[0]['factories']) == 1:
-        # Redirect to the add form straight away if there's only one
-        # choice of parents and addable types:
-        parent = possible_parents[0]
-        add_view = parent['factories'][0].type_info.add_view
-        location = resource_url(parent['node'], request) + '@@' + add_view
-        return HTTPFound(location=location)
-
-    # Swap first and second possible parents if there's no content in
-    # 'possible_parents[0]' yet.  This makes the parent then the
-    # default choice in the form:
-    api = template_api(context, request)
-    if not api.list_children() and len(possible_parents) > 1:
-        possible_parents[0], possible_parents[1] = (
-            possible_parents[1], possible_parents[0])
-
-    return {
-        'api': api,
-        'possible_parents': possible_parents,
-        'possible_types': possible_types,
-        }
 
 def move_node(context, request):
     """This view allows copying, cutting, pasting, deleting of
@@ -235,13 +207,15 @@ def includeme(config):
         renderer='kotti:templates/edit/nav-tree-view.pt',
         )
 
-def nodes_includeme(config):
     config.add_view(
-        'kotti.views.edit.add_node',
-        name='add',
+        content_type_factories,
+        name='add-dropdown',
         permission='add',
-        renderer='kotti:templates/edit/add.pt',
+        renderer='kotti:templates/add-dropdown.pt',
         )
+
+
+def nodes_includeme(config):
     config.add_view(
         'kotti.views.edit.move_node',
         name='move',
