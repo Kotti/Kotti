@@ -20,6 +20,7 @@ install_requires = [
     'deform>=0.9.2', # Chameleon 2
     'deform_bootstrap>=0.1a5', # search path
     'formencode',
+    'lingua>=1.3',
     'plone.i18n<2.0', # >= 2.0 adds a huge number of dependencies
     'py-bcrypt',
     'pyramid>=1.2',
@@ -83,8 +84,15 @@ setup(name='Kotti',
       cmdclass={'test': PyTest},
       install_requires=install_requires + tests_require,
       #tests_require=tests_require,
+      dependency_links=[
+      ],
       entry_points = """\
       [paste.app_factory]
       main = kotti:main
       """,
+      message_extractors={'kotti': [
+            ('**.py', 'lingua_python', None),
+            ('**.zcml', 'lingua_xml', None),
+            ('**.pt', 'lingua_xml', None),
+            ]},
       )

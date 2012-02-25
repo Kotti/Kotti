@@ -23,6 +23,7 @@ from kotti.security import map_principals_with_local_roles
 from kotti.security import list_groups_raw
 from kotti.security import list_groups_ext
 from kotti.security import set_groups
+from kotti.util import _
 from kotti.views.site_setup import CONTROL_PANEL_LINKS
 from kotti.views.util import template_api
 from kotti.views.util import is_root
@@ -60,9 +61,10 @@ def roles_form_handler(context, request, available_role_names, groups_lister):
                 changed.append((principal_name, context, final_role_names))
 
         if changed:
-            request.session.flash(u'Your changes have been saved.', 'success')
+            request.session.flash(
+                _(u'Your changes have been saved.'), 'success')
         else:
-            request.session.flash(u'No changes made.', 'info')
+            request.session.flash(_(u'No changes made.'), 'info')
 
     return changed
 
@@ -88,7 +90,7 @@ def search_principals(request, context=None, ignore=None, extra=()):
             if p.name not in ignore:
                 entries.append((p, list_groups_ext(p.name, context)))
         if not found:
-            flash(u'No users or groups found.', 'info')
+            flash(_(u'No users or groups found.'), 'info')
 
     return entries
 
@@ -129,11 +131,12 @@ def name_pattern_validator(node, value):
     """
     valid_pattern = re.compile(r"^[a-zA-Z0-9_\-\.]+$")
     if not valid_pattern.match(value):
-        raise colander.Invalid(node, u"Invalid value")
+        raise colander.Invalid(node, _(u"Invalid value"))
 
 def name_new_validator(node, value):
     if get_principals().get(value.lower()) is not None:
-        raise colander.Invalid(node, u"A user with that name already exists.")
+        raise colander.Invalid(
+            node, _(u"A user with that name already exists."))
 
 def roleset_validator(node, value):
     oneof = colander.OneOf(USER_MANAGEMENT_ROLES)
@@ -142,43 +145,49 @@ def roleset_validator(node, value):
 def group_validator(node, value):
     principals = get_principals()
     if principals.get('group:' + value) is None:
-        raise colander.Invalid(node, u"No such group: %s" % value)
+        raise colander.Invalid(node, _(u"No such group: ${group}",
+                                       mapping=dict(group=value)))
 
 class Groups(colander.SequenceSchema):
     group = colander.SchemaNode(
         colander.String(),
+        title=_(u'Group'),
         validator=group_validator,
         missing=None,
         widget=AutocompleteInputWidget(),
         )
 
 class PrincipalBasic(colander.MappingSchema):
-    title = colander.SchemaNode(colander.String())
-    email = colander.SchemaNode(colander.String())
+    title = colander.SchemaNode(colander.String(), title=_(u'Title'))
+    email = colander.SchemaNode(colander.String(), title=_(u'Email'))
 
 class PrincipalFull(PrincipalBasic):
     name = colander.SchemaNode(
         colander.String(),
+        title=_(u'Name'),
         validator=colander.All(name_pattern_validator, name_new_validator),
         )
     password = colander.SchemaNode(
         colander.String(),
+        title=_(u'Password'),
         validator=colander.Length(min=5),
         missing=None,
         widget=CheckedPasswordWidget(),
         )
     active = colander.SchemaNode(
         colander.Boolean(),
-        description=u"Untick this to deactivate the account.",
+        title=_(u'Active'),
+        description=_(u"Untick this to deactivate the account."),
         )
     roles = colander.SchemaNode(
         deform.Set(allow_empty=True),
         validator=roleset_validator,
         missing=[],
-        title=u"Global roles",
+        title=_(u"Global roles"),
         widget=CheckboxChoiceWidget(),
         )
     groups = Groups(
+        title=_(u'Groups'),
         missing=[],
         # XXX min_len doesn't really do what we want here.  We'd like
         # the close buttons to appear nevertheless (maybe the now
@@ -213,11 +222,9 @@ def user_schema(base=PrincipalFull()):
     except KeyError:
         has_password = False
     if has_password:
-        schema['password'].description = (
-            u"Leave this empty and tick the 'Send password registration' box"
-            u"below to have the user set their own password."
-            )
-    schema['title'].title = u"Full name"
+        schema['password'].description = _(
+            u"Leave this empty and tick the 'Send password registration' box below to have the user set their own password.")
+    schema['title'].title = _(u"Full name")
     return schema
 
 def group_schema(base=PrincipalFull()):
@@ -255,7 +262,8 @@ def _massage_groups_out(appstruct):
     return d
 
 class UserAddFormView(AddFormView):
-    buttons = (Button('add_user', u'Add User'), 'cancel')
+    buttons = (Button('add_user', _(u'Add User')),
+               Button('cancel', _(u'Cancel')))
 
     def schema_factory(self):
         schema = user_schema()
@@ -263,7 +271,7 @@ class UserAddFormView(AddFormView):
         schema.add(colander.SchemaNode(
             colander.Boolean(),
             name=u'send_email',
-            title=u'Send password registration link',
+            title=_(u'Send password registration link'),
             default=True,
             ))
         return schema
@@ -276,14 +284,16 @@ class UserAddFormView(AddFormView):
         get_principals()[name] = appstruct
         if send_email:
             send_set_password(get_principals()[name], self.request)
-        self.request.session.flash(
-            u'%s added.' % appstruct['title'], 'success')
+        self.request.session.flash(_(u'${title} added.',
+                                     mapping=dict(title=appstruct['title'])),
+                                     'success')
         location = self.request.url.split('?')[0] + '?' + urlencode(
             {'extra': name})
         return HTTPFound(location=location)
 
 class GroupAddFormView(UserAddFormView):
-    buttons = (Button('add_group', u'Add Group'), 'cancel')
+    buttons = (Button('add_group', _(u'Add Group')),
+               Button('cancel', _(u'Cancel')))
 
     def schema_factory(self):
         schema = group_schema()
@@ -299,7 +309,8 @@ def users_manage(context, request):
         context, request,
         cp_links=CONTROL_PANEL_LINKS,
         )
-    api.page_title = u"User Management - %s" % api.site_title
+    api.page_title = _(u"User Management - ${title}",
+                       mapping=dict(title=api.site_title))
 
     principals = get_principals()
 
@@ -370,7 +381,8 @@ def user_manage(context, request):
 
     api = template_api(
         context, request,
-        page_title=u"Edit User - %s" % context.title,
+        page_title=_(u"Edit User - ${title}",
+                     mapping=dict(title=context.title)),
         cp_links=CONTROL_PANEL_LINKS,
         principal=principal,
         )
@@ -386,7 +398,8 @@ def user_manage(context, request):
 
 def preferences(context, request):
     api = template_api(context, request)
-    api.page_title=u"My preferences - %s" % api.site_title
+    api.page_title = _(u"My preferences - ${title}",
+                       mapping=dict(title=api.site_title))
     user = api.user
 
     form = UserEditFormView(user, request)()

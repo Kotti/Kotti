@@ -1,31 +1,34 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      i18n:domain="Kotti"
       metal:use-macro="api.macro('kotti:templates/edit/master.pt')">
 
   <div metal:fill-slot="content">
-    <h1>Share <em>${api.context.title}</em></h1>
+    <h1 i18n:translate="">Share <em i18n:name="title">${api.context.title}</em></h1>
 
     <form action="${request.url}" method="post">
       <fieldset>
-        <legend>Assign local roles</legend>
+        <legend i18n:translate="">Assign local roles</legend>
 
         <div class="control-group">
           <div class="controls">
             <input type="text" name="query" id="search-query"
                    value="${request.params.get('query')}"
                    placeholder="Search users and groups"
+                   i18n:attributes="placeholder"
                    />
           </div>
         </div>
         <div class="form-actions">
-          <button type="submit" name="search" class="btn primary">
+          <button type="submit" name="search" class="btn primary" i18n:translate="">
             Search
           </button>
         </div>
 
         <table tal:condition="entries" class="table table-bordered">
           <tr>
-            <th>Name</th>
+            <th i18n:translate="">Name</th>
             <th tal:repeat="role available_roles">
               ${role.title}
             </th>
@@ -33,7 +36,8 @@
           <tr tal:repeat="entry entries"
               class="entry ${repeat.entry.even and 'even' or 'odd'}">
             <td>
-              <img src="${api.avatar_url(entry[0])}" alt="Gravatar" />
+              <img src="${api.avatar_url(entry[0])}" alt="Gravatar"
+                   i18n:attributes="alt"/>
               ${entry[0].title}
             </td>
             <td tal:repeat="role available_roles">
@@ -51,7 +55,8 @@
         </table>
 
         <div class="form-actions" tal:condition="entries">
-          <button type="submit" name="apply" class="btn btn-primary">
+          <button type="submit" name="apply" class="btn btn-primary"
+                  i18n:translate="">
             Apply changes
           </button>
         </div>

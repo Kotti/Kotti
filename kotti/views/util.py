@@ -8,6 +8,7 @@ from babel.dates import format_datetime
 from babel.dates import format_time
 import colander
 import deform
+from deform import Button
 from pyramid.decorator import reify
 from pyramid.httpexceptions import HTTPFound
 from pyramid.i18n import get_locale_name
@@ -22,6 +23,8 @@ from pyramid_deform import CSRFSchema
 
 from kotti import get_settings
 from kotti import DBSession
+from kotti.util import _
+from kotti.util import Translator
 from kotti.util import title_to_name
 from kotti.events import objectevent_listeners
 from kotti.resources import Node
@@ -45,6 +48,7 @@ def add_renderer_globals(event):
         if api is None:
             api = template_api(event['context'], event['request'])
         event['api'] = api
+        event['_'] = Translator(event['request'])
 
 def is_root(context, request):
     return context is TemplateAPI(context, request).root
@@ -362,8 +366,8 @@ class Form(deform.Form):
 
 class BaseFormView(FormView):
     form_class = Form
-    buttons = ('save', 'cancel')
-    success_message = u"Your changes have been saved."
+    buttons = (Button('save', _(u'Save')), Button('cancel', _(u'Cancel')))
+    success_message = _(u"Your changes have been saved.")
     success_url = None
     schema_factory = None
     use_csrf_token = True
@@ -412,10 +416,12 @@ class EditFormView(BaseFormView):
 
     @reify
     def first_heading(self):
-        return u'<h1>Edit <em>%s</em></h1>' % self.request.context.title
+        return _(u'Edit <em>${title}</em>',
+                 mapping=dict(title=self.request.context.title)
+                 )
 
 class AddFormView(BaseFormView):
-    success_message = u"Successfully added item."
+    success_message = _(u"Successfully added item.")
     item_type = u'item'
     add_template_vars = ('first_heading',)
 
@@ -440,7 +446,7 @@ class AddFormView(BaseFormView):
     def first_heading(self):
         context_title = getattr(self.request.context, 'title', None)
         if context_title:
-            return u'<h1>Add %s to <em>%s</em></h1>' % (
-                self.item_type, context_title)
+            return _(u'Add ${type} to <em>${title}</em>',
+                     mapping=dict(type=self.item_type, title=context_title))
         else:
-            return u'<h1>Add %s</h1>' % self.item_type
+            return _(u'Add ${type}', mapping=dict(type=self.item_type))
