@@ -3,7 +3,7 @@
       metal:use-macro="api.macro('kotti:templates/edit/master.pt')">
 
   <div metal:fill-slot="content">
-    <h1 tal:replace="structure first_heading | default">${api.page_title}</h1>
+    <h1 tal:content="structure first_heading | default">${api.page_title}</h1>
     <form tal:replace="structure form" />
   </div>
 </html>

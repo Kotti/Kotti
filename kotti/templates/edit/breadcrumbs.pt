@@ -1,5 +1,7 @@
-<ul class="breadcrumb">
-  You are here:
+<ul class="breadcrumb"
+    xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+    i18n:domain="Kotti">
+  <span tal:omit-tag="" i18n:translate="">You are here:</span>
   <tal:repeat tal:repeat="item api.breadcrumbs">
     <li tal:define="first repeat.item.start; last repeat.item.end"
         class="${last and 'active' or None}">
@@ -7,7 +9,7 @@
       <a tal:define="view_name api.find_edit_view(item)"
          tal:omit-tag="not view_name or last"
          href="${api.url(item, '@@' + view_name)}">
-        <span tal:condition="first">Home</span>
+        <span tal:condition="first" i18n:translate="">Home</span>
         <span tal:condition="not first">${item.title}</span>
       </a>
 

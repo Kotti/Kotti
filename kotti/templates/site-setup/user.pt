@@ -1,16 +1,18 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      i18n:domain="Kotti"
       metal:use-macro="api.macro('kotti:templates/site-setup/master.pt')">
 
   <div metal:fill-slot="content">
-    <div><a href="./@@setup-users?extra=${api.principal.name}">&larr; Back to User Management</a></div>
+    <div><a href="./@@setup-users?extra=${api.principal.name}">&larr; <span tal:omit-tag="" i18n:translate="">Back to User Management</span></a></div>
     <h1>${api.page_title}</h1>
 
       <img src="${api.avatar_url(api.principal, size=40)}"
            alt="${api.principal.title}"
            style="float: right" />
-      <h2>
-        Edit <em>${api.principal.title}</em>
+      <h2 i18n:translate="">
+        Edit <em i18n:name="title">${api.principal.title}</em>
       </h2>
       <form tal:replace="structure form" />
 

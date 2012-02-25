@@ -1,5 +1,7 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      i18n:domain="Kotti"
       metal:use-macro="api.macro('kotti:templates/site-setup/master.pt')">
 
   <div metal:fill-slot="content">
@@ -7,25 +9,27 @@
 
     <form action="${request.url}" method="post">
       <fieldset>
-        <legend>Search and modify users</legend>
+        <legend i18n:translate="">Search and modify users</legend>
 
         <div class="control-group">
           <div class="controls">
             <input type="text" name="query" id="search-query"
                    value="${request.params.get('query')}"
-                   placeholder="Search users and groups" />
+                   placeholder="Search users and groups"
+                   i18n:attributes="placeholder" />
           </div>
         </div>
 
         <div class="form-actions">
-          <button type="submit" name="search" class="btn btn-primary">
+          <button type="submit" name="search" class="btn btn-primary"
+                  i18n:translate="">
             Search
           </button>
         </div>
 
         <table tal:condition="entries" class="table table-bordered">
           <tr>
-            <th>Name</th>
+            <th i18n:translate="">Name</th>
             <th tal:repeat="role available_roles">
               ${role.title}
             </th>
@@ -33,7 +37,8 @@
           <tr tal:repeat="entry entries"
               class="entry ${repeat.entry.even and 'even' or 'odd'}">
             <td class="hover-link-enable">
-              <img src="${api.avatar_url(entry[0])}" alt="Gravatar" />
+              <img src="${api.avatar_url(entry[0])}" alt="Gravatar"
+                   i18n:attributes="alt"/>
               <a href="./setup-user?name=${entry[0].name}">${entry[0].title}</a>
               <span tal:condition="entry[0].email">&lt;${entry[0].email}&gt;</span>
             </td>
@@ -52,7 +57,8 @@
         </table>
 
         <div class="form-actions" tal:condition="entries">
-          <button type="submit" name="apply" class="btn btn-primary">
+          <button type="submit" name="apply" class="btn btn-primary"
+                  i18n:translate="">
             Apply changes
           </button>
         </div>
@@ -62,10 +68,10 @@
 
     <ul class="nav nav-tabs">
       <li class="active">
-        <a href="#add-user-tab" data-toggle="tab">Add user</a>
+        <a href="#add-user-tab" data-toggle="tab" i18n:translate="">Add user</a>
       </li>
       <li>
-        <a href="#add-group-tab" data-toggle="tab">Add group</a>
+        <a href="#add-group-tab" data-toggle="tab" i18n:translate="">Add group</a>
       </li>
     </ul>
 

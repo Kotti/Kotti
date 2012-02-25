@@ -11,6 +11,7 @@ from kotti import DBSession
 from kotti.resources import Node
 from kotti.resources import Document
 from kotti.security import view_permitted
+from kotti.util import _
 from kotti.views.util import EditFormView
 from kotti.views.util import AddFormView
 from kotti.views.util import addable_types
@@ -21,9 +22,12 @@ from kotti.views.util import template_api
 from kotti.util import title_to_name
 
 class ContentSchema(colander.MappingSchema):
-    title = colander.SchemaNode(colander.String())
+    title = colander.SchemaNode(
+        colander.String(),
+        title=_(u'Title'))
     description = colander.SchemaNode(
         colander.String(),
+        title=_('Description'),
         widget=TextAreaWidget(cols=40, rows=5),
         missing=u"",
         )
@@ -31,6 +35,7 @@ class ContentSchema(colander.MappingSchema):
 class DocumentSchema(ContentSchema):
     body = colander.SchemaNode(
         colander.String(),
+        title=_(u'Body'),
         widget=RichTextWidget(theme='advanced', width=790, height=500),
         missing=u"",
         )
@@ -83,13 +88,15 @@ def move_node(context, request):
 
     if 'copy' in P:
         request.session['kotti.paste'] = (context.id, 'copy')
-        request.session.flash(u'%s copied.' % context.title, 'success')
+        request.session.flash(_(u'${title} copied.',
+                                mapping=dict(title=context.title)), 'success')
         if not request.is_xhr:
             return HTTPFound(location=request.url)
 
     if 'cut' in P:
         request.session['kotti.paste'] = (context.id, 'cut')
-        request.session.flash(u'%s cut.' % context.title, 'success')
+        request.session.flash(_(u'${title} cut.',
+                                mapping=dict(title=context.title)), 'success')
         if not request.is_xhr:
             return HTTPFound(location=request.url)
 
@@ -111,7 +118,8 @@ def move_node(context, request):
                 name = disambiguate_name(name)
             copy.name = name
             context.children.append(copy)
-        request.session.flash(u'%s pasted.' % item.title, 'success')
+        request.session.flash(_(u'${title} pasted.',
+                                mapping=dict(title=item.title)), 'success')
         if not request.is_xhr:
             return HTTPFound(location=request.url)
 
@@ -121,19 +129,21 @@ def move_node(context, request):
         if up is not None:
             mod = -1
         else: # pragma: no cover
-            mod = +1
+            mod = 1
 
         child = session.query(Node).get(id)
         index = context.children.index(child)
         context.children.pop(index)
-        context.children.insert(index+mod, child)
-        request.session.flash(u'%s moved.' % child.title, 'success')
+        context.children.insert(index + mod, child)
+        request.session.flash(_(u'${title} moved.',
+                                mapping=dict(title=child.title)), 'success')
         if not request.is_xhr:
             return HTTPFound(location=request.url)
 
     if 'delete' in P and 'delete-confirm' in P:
         parent = context.__parent__
-        request.session.flash(u'%s deleted.' % context.title, 'success')
+        request.session.flash(_(u'${title} deleted.',
+                                mapping=dict(title=context.title)), 'success')
         parent.children.remove(context)
         location = resource_url(parent, request)
         if view_permitted(parent, request, 'edit'):
@@ -144,11 +154,11 @@ def move_node(context, request):
         name = P['name']
         title = P['title']
         if not name or not title:
-            request.session.flash(u'Name and title are required.', 'error')
+            request.session.flash(_(u'Name and title are required.'), 'error')
         else:
             context.name = name
             context.title = title
-            request.session.flash(u'Item renamed', 'success')
+            request.session.flash(_(u'Item renamed'), 'success')
             location = resource_url(context, request) + '@@move'
             return HTTPFound(location=location)
 
