@@ -3,13 +3,14 @@ import urllib
 
 from plone.i18n.normalizer import urlnormalizer
 from pyramid.i18n import get_locale_name
-from pyramid.i18n import get_localizer
 from pyramid.i18n import TranslationStringFactory
 from pyramid.threadlocal import get_current_request
 from pyramid.url import resource_url
 from repoze.lru import LRUCache
 from sqlalchemy.types import TypeDecorator, TEXT
 from sqlalchemy.ext.mutable import Mutable
+
+_ = TranslationStringFactory('Kotti')
 
 def dump_default(obj):
     if isinstance(obj, MutationDict):
@@ -233,13 +234,3 @@ def title_to_name(title):
     else:
         locale_name = 'en'
     return unicode(urlnormalizer.normalize(title, locale_name))
-
-class Translator(object):
-    def __init__(self, request):
-        self.localizer = get_localizer(request)
-
-    def __call__(self, msgid, default=None, mapping=None):
-        return self.localizer.translate(
-            _(msgid, default=default, mapping=mapping))
-
-_ = TranslationStringFactory('Kotti')
