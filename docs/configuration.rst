@@ -128,8 +128,8 @@ kotti.includes
 
 ``kotti.includes`` defines a list of hooks that will be called by
 Kotti when it starts up.  This gives the opportunity to third party
-packages to add registrations to the :ref:`Pyramid Configurator API`
-in order to configure views and more.
+packages to add registrations to the *Pyramid Configurator API* in
+order to configure views and more.
 
 As an example, we'll add the `kotti_twitter`_ extension to add a
 Twitter profile widget to the right column of all pages.  First we
@@ -169,6 +169,34 @@ profile widget:
       kotti_twitter.include_profile_widget
 
 .. _kotti.available_types:
+
+kotti.populators
+````````````````
+
+The default configuration here is:
+
+.. code-block:: ini
+
+  kotti.populators = kotti.populate.populate
+
+An example populator that configures the site to be viewable only by
+logged in users might look like this:
+
+.. code-block:: python
+
+  from transaction import commit
+  from kotti.resources import get_root
+
+  SITE_ACL = [
+   (u'Allow', u'role:viewer', [u'view']),
+   (u'Allow', u'role:editor', [u'view', u'add', u'edit']),
+   (u'Allow', u'role:owner', [u'view', u'add', u'edit', u'manage']),
+  ]
+
+  def populate():
+      site = get_root()
+      site.__acl__ = SITE_ACL
+      commit()
 
 kotti.available_types
 `````````````````````
