@@ -1,0 +1,14 @@
+<ul class="nav"
+       i18n:domain="Kotti">
+  <li class="dropdown">
+    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+      <span i18n:translate="">Add</span>
+      <b class="caret"></b>
+    </a>
+    <ul class="dropdown-menu">
+      <li tal:repeat="factory factories">
+        <a href="${api.url(context, factory.type_info.add_view)}">${factory.type_info.name}</a>
+      </li>
+    </ul>
+  </li>
+</ul>

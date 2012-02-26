@@ -33,13 +33,17 @@ from kotti.security import has_permission
 from kotti.security import view_permitted
 from kotti.views.slots import slot_events
 
+
 def template_api(context, request, **kwargs):
     return get_settings()['kotti.templates.api'][0](
         context, request, **kwargs)
 
+
 def render_view(context, request, name='', secure=True):
     response = render_view_to_response(context, request, name, secure)
-    return response.ubody
+    if response is not None:
+        return response.ubody
+
 
 def add_renderer_globals(event):
     if event['renderer_name'] != 'json':
@@ -253,42 +257,6 @@ class TemplateAPI(object):
                 return
             return item
 
-def addable_types(context, request):
-    all_types = get_settings()['kotti.available_types']
-
-    # 'possible_parents' is a list of dicts with 'node' and 'factories',
-    # where 'node' is the context to add to and 'factories' is the list
-    # of factories that can be applied in the contetx:
-    possible_parents = []
-    parent = context
-    while parent is not None:
-        possible_parents.append({'node': parent, 'factories': []})
-        parent = parent.__parent__
-
-    for entry in possible_parents:
-        parent = entry['node']
-        for factory in all_types:
-            if factory.type_info.addable(parent, request):
-                entry['factories'].append(factory)
-
-    possible_parents = filter(lambda e: e['factories'], possible_parents)
-
-    _possible_types = {}
-    for entry in possible_parents:
-        for factory in entry['factories']:
-            name = factory.type_info.name
-            pt = _possible_types.get(
-                name, {'factory': factory, 'nodes': []})
-            pt['nodes'].append(entry['node'])
-            _possible_types[name] = pt
-
-    possible_types = []
-    for t in all_types:
-        entry = _possible_types.get(t.type_info.name)
-        if entry:
-            possible_types.append(entry)
-
-    return possible_parents, possible_types
 
 def disambiguate_name(name):
     parts = name.split(u'-')
@@ -298,7 +266,7 @@ def disambiguate_name(name):
         except ValueError:
             parts.append(u'1')
         else:
-            parts[-1] = unicode(index+1)
+            parts[-1] = unicode(index + 1)
     else:
         parts.append(u'1')
     return u'-'.join(parts)
