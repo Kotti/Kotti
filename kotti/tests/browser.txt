@@ -65,10 +65,7 @@ Add a document
 
   >>> browser.open(testing.BASE_URL)
   >>> browser.getLink("Edit").click()
-  >>> browser.getLink("Add").click()
-  >>> ctrl("Document").selected
-  True
-  >>> ctrl("Continue").click()
+  >>> browser.open(testing.BASE_URL + '/@@add_document')
   >>> "Add document to <em>Welcome to Kotti!</em>" in browser.contents
   True
   >>> ctrl("Title").value = "Child One"
@@ -123,11 +120,8 @@ And now click the 'Cancel' button:
 
 Add two more documents, at different levels
 -------------------------------------------
-
-  >>> browser.getLink("Edit").click()
-  >>> browser.getLink("Add").click()
-  >>> ctrl("Add to Welcome to Kotti!").selected = True
-  >>> ctrl("Continue").click()
+  
+  >>> browser.open(testing.BASE_URL + '/@@add_document')
   >>> ctrl("Title").value = "Second Child"
   >>> ctrl("save").click()
   >>> "Successfully added item" in browser.contents
@@ -135,9 +129,8 @@ Add two more documents, at different levels
   >>> browser.url == testing.BASE_URL + '/second-child/@@edit'
   True
 
-  >>> browser.getLink("Add").click()
-  >>> ctrl("Add to Second Child").selected = True
-  >>> ctrl("Continue").click()
+  >>> browser.getLink("View").click()
+  >>> browser.open(browser.url + '/@@add_document')
   >>> ctrl("Title").value = "Grandchild"
   >>> ctrl("save").click()
   >>> browser.url == testing.BASE_URL + '/second-child/grandchild/@@edit'
@@ -151,10 +144,8 @@ Add two more documents, at different levels
 
 Add another grandchild with the same name:
 
-  >>> browser.open(testing.BASE_URL + '/second-child/@@edit')
-  >>> browser.getLink("Add").click()
-  >>> ctrl("Add to Second Child").selected = True
-  >>> ctrl("Continue").click()
+  >>> browser.open(testing.BASE_URL + '/second-child')
+  >>> browser.open(browser.url + '/@@add_document')
   >>> ctrl("Title").value = "Grandchild"
   >>> ctrl("save").click()
   >>> browser.url == testing.BASE_URL + '/second-child/grandchild-1/@@edit'
