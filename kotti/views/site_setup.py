@@ -15,8 +15,6 @@ def main(context, request):
         )
     api.page_title = _(u"Site Setup - ${title}",
                        mapping=dict(title=api.site_title))
-
-
     return {'api': api}
 
 def includeme(config):

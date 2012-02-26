@@ -17,7 +17,6 @@ from pyramid.url import resource_url
 
 from kotti.message import validate_token
 from kotti.message import send_set_password
-from kotti.resources import get_root
 from kotti.security import get_principals
 from kotti.util import _
 from kotti.views.util import template_api
@@ -37,8 +36,6 @@ def _find_user(login):
                 return p
 
 def login(context, request):
-    root = get_root(request)
-    api = template_api(root, request)
     principals = get_principals()
 
     came_from = request.params.get(
@@ -73,7 +70,6 @@ def login(context, request):
                 _(u"That username or email is not known to us."), 'error')
 
     return {
-        'api': api,
         'url': request.application_url + '/@@login',
         'came_from': came_from,
         'login': login,
