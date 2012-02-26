@@ -1,18 +1,12 @@
 Using Kotti as a library
 ========================
 
-Kotti may be used as a library instead of as a framework.  That is,
-instead of extending Kotti through hooks such as ``kotti.includes``,
-your application may take full control and use Kotti in a more
-library-like fashion.
+Instead of taking control of your application, and delegating to your
+extension, you may use Kotti in applications where you define the
+``main`` *entry point* yourself.
 
-Using this approach it is well possible to use Kotti's individual
-subsystems in a very customized application that has only little in
-common with Kotti's own built-in CMS.
-
-Kotti will need some initial set up though for some of its components
-to be able to work meaningfully.  You'll typically call
-``kotti.base_configure`` from your code to take care of that:
+You'll anyway still need to call ``kotti.base_configure`` from your
+code to set up essential parts of Kotti:
 
 .. code-block:: python
 

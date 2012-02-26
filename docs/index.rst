@@ -1,66 +1,87 @@
 .. _index:
 
-=====
-Kotti
-=====
+========================================
+Kotti: Web Application Framework and CMS
+========================================
 
-Kotti is a light-weight, user-friendly and extensible web content
-management system.  It is licensed under a `BSD-like license
-<http://repoze.org/license.html>`_
+Kotti is a high-level, *Pythonic* web application framework.  It
+includes a small and extensible CMS application called the **Kotti
+CMS**.
 
-Features
-========
+Kotti is most useful when you are developing applications that
 
-- **User-friendly**: a simple edit interface hides advanced
-  functionality from less experienced users
+- have complex security requirements,
+- use workflows, and/or
+- work with hierarchical data.
 
-- **WYSIWYG editor**: includes a rich text editor that lets you edit
-  content like in office applications
+Built on top of a number of *best-of-breed* software components, most
+notably Pyramid_ and SQLAlchemy_, Kotti introduces only a few concepts
+itself, thus hopefully keeping the learning curve flat for the
+developer.
 
-- **Security**: advanced user, groups and user roles management; uses
-  `access control lists`_ (ACL) to control access to different parts
-  of the site
-
-- **Templating**: extend Kotti with your own look & feel with very
-  little programming required
-
-- **Customizable**: Many aspects of Kotti are configured through a
-  simple INI file
-
-- **Add-ons**: a plug-in system allows third party software to greatly
-  extend Kotti
-
-- **Pluggable authentication**: allows authentication of users through
-  LDAP or other existing user databases
-
-- **Open**: built on top of well-documented, open source components,
-  such as Python_, Pyramid_ and SQLAlchemy_
-
-- **Tested**: `continuous testing`_ with a test coverage of 100%
-  guarantees Kotti's stability
-
-Try it out
-==========
-
-You can try out Kotti on `Kotti's demo site`_.
-
-Under the hood
-==============
-
-Kotti is written in Python_ and builds upon on the two excellent
-libraries Pyramid_ and SQLAlchemy_.  Kotti tries to leverage these
-libraries as much as possible, thus:
-
-- minimizing the amount of code and extra concepts, and
-
-- allowing users familiar with Pyramid and SQLAlchemy to feel right at
-  home since Kotti's API is mostly that of Pyramid and SQLAlchemy.
-
-.. _access control lists: http://en.wikipedia.org/wiki/Access_control_list
-.. _Kotti's demo site: http://kottidemo.danielnouri.org/
-.. _Python: http://www.python.org/
 .. _Pyramid: http://docs.pylonsproject.org/projects/pyramid/dev/
 .. _SQLAlchemy: http://www.sqlalchemy.org/
+
+Kotti CMS
+=========
+
+You can **try out the built-in CMS** on `Kotti's demo page`_.
+
+The Kotti CMS is a content management system that's heavily inspired
+by Plone_.  Its **main features** are:
+
+- **User-friendliness**: editors can edit content where it appears;
+  thus the edit interface is contextual and intuitive
+
+- **WYSIWYG editor**: includes a rich text editor
+
+- **Responsive design**: Kotti builds on `Twitter Bootstrap`_, which
+  looks good both on desktop and mobile
+
+- **Templating**: you can extend the CMS with your own look & feel
+  with almost no programming required (see :ref:`adjust_look_feel`)
+
+- **Add-ons**: install a variety of add-ons and customize them as well
+  as many aspects of the built-in CMS by use of an INI configuration
+  file (see :ref:`configuration`)
+
+- **Security**: the advanced user and permissions management is
+  intuitive and scales to fit the requirements of large organizations
+
+.. _Kotti's demo page: http://kottidemo.danielnouri.org/
+.. _Plone: http://plone.org/
+.. _Twitter Bootstrap: http://twitter.github.com/bootstrap/
+
+For Developers
+==============
+
+For developers, Kotti delivers a strong foundation for building
+different types of web applications that either extend or replace the
+built-in CMS.
+
+Developers can add and modify through a well-defined API:
+
+- views,
+- templates and layout (both via Pyramid_),
+- :ref:`content-types`,
+- portlets (see :ref:`slots`),
+- access control and the user database (see :ref:`develop-security`),
+- workflows (via `repoze.workflow`_),
+- and much more.
+
+Kotti has a **down-to-earth** API.  Developers working with Kotti will
+most of the time make direct use of the Pyramid_ and SQLAlchemy_
+libraries.  Other notable components used but not enforced by Kotti
+are Colander_ and Deform_ for forms, and Chameleon_ for templating.
+
+`Continuous testing`_ against different versions of Python and with
+both *PostgreSQL* and *SQLite* and a complete test coverage make Kotti
+a **stable** platform to work with.
+
+.. _repoze.workflow: http://docs.repoze.org/workflow/
+.. _Chameleon: http://chameleon.repoze.org/
+.. _Colander: http://docs.pylonsproject.org/projects/colander/en/latest/
+.. _Deform: http://docs.pylonsproject.org/projects/deform/en/latest/
 .. _continuous testing: http://jenkins.danielnouri.org/job/Kotti/
 
 .. _installation:
@@ -68,47 +89,61 @@ libraries as much as possible, thus:
 Installation
 ============
 
+You can download Kotti from the `Python Package Index`_, it takes only
+a few moments to install.
+
 .. toctree::
 
    installation.rst
 
-Configuration and customization
-===============================
+.. _Python Package Index: http://pypi.python.org/pypi/Kotti
+
+Configuration
+=============
 
 .. toctree::
 
-  configuration.rst
+   configuration.rst
 
-Writing add-ons
-===============
+Developer manual
+================
 
 .. toctree::
 
-  add-ons.rst
+   developer-manual.rst
 
 Cookbook
 ========
 
 .. toctree::
 
+  cookbook/close-for-anonymous.rst
+  cookbook/frontpage-different-template.rst
   cookbook/i18n.rst
   cookbook/as-a-library.rst
 
-Contact us
-==========
+Support and Development
+=======================
 
-Kotti itself is `developed on Github`_.  The `issue tracker`_ also lives
-there.
+Please report any bugs that you find to the `issue tracker`_.
 
-Have a question or a suggestion?  Write to `Kotti's mailing list`_ or
-find us on IRC on irc.freenode.net in channel ``#kotti``.
+If you've got questions that aren't answered by this documentation,
+contact the `Kotti mailing list`_ or join the `#kotti IRC channel`_.
 
-.. _developed on Github: https://github.com/Pylons/Kotti
+Kotti itself is `developed on Github`_.  You can check out Kotti's
+source code via its GitHub repostiory.  Use this command:
+
+.. code-block:: bash
+
+  git clone git@github.com:Pylons/Kotti
+
 .. _issue tracker: https://github.com/Pylons/Kotti/issues
-.. _Kotti's mailing list: http://groups.google.com/group/kotti
+.. _Kotti mailing list: http://groups.google.com/group/kotti
+.. _#kotti IRC channel: irc://irc.freenode.net/#kotti
+.. _developed on Github: https://github.com/Pylons/Kotti
 
-Tests
-=====
+Automated tests
+===============
 
 To run Kotti's automated test suite, do:
 
@@ -116,26 +151,18 @@ To run Kotti's automated test suite, do:
 
   bin/py.test
 
-Or alternatively:
+Or, alternatively:
 
 .. code-block:: bash
 
   bin/python setup.py test
 
-You can also run the tests against a different database using the
-``KOTTI_TEST_DB_STRING`` environment variable.  By default, Kotti uses
-an in-memory SQLite database.  An example:
-
-.. code-block:: bash
-
-  KOTTI_TEST_DB_STRING=postgresql://kotti:kotti@localhost:5432/kotti-testing bin/python setup.py test
-
-**Important**: Never use this feature against a production
-database. It will destroy your data.
-
-API
-===
+Detailed Change History
+=======================
 
 .. toctree::
+   :maxdepth: 1
 
-   api
+   changes.rst
+
+.. include:: ../THANKS.txt

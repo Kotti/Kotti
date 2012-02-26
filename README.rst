@@ -1,61 +1,63 @@
-Kotti is a user-friendly, light-weight and extensible `web content
-management system`_.  It is licensed under a `BSD-like license
-<http://repoze.org/license.html>`_
+=====
+Kotti
+=====
 
-Features
-========
+Kotti is a high-level, *Pythonic* web application framework.  It
+includes a small and extensible CMS application called the **Kotti
+CMS**.
 
-- **User-friendly**: a simple edit interface hides advanced
-  functionality from less experienced users
+Kotti is most useful when you are developing applications that
 
-- **WYSIWYG editor**: includes a rich text editor that lets you edit
-  content like in office applications
+- have complex security requirements,
+- use workflows, and/or
+- work with hierarchical data.
 
-- **Security**: advanced user, groups and user roles management; uses
-  `access control lists`_ (ACL) to control access to different parts
-  of the site
+Built on top of a number of *best-of-breed* software components, most
+notably Pyramid_ and SQLAlchemy_, Kotti introduces only a few concepts
+itself, thus hopefully keeping the learning curve flat for the
+developer.
 
-- **Templating**: extend Kotti with your own look & feel with very
-  little programming required
-
-- **Customizable**: Many aspects of Kotti are configured through a
-  simple INI file
-
-- **Add-ons**: a plug-in system allows third party software to greatly
-  extend Kotti
-
-- **Pluggable authentication**: allows authentication of users through
-  LDAP or other existing user databases
-
-- **Open**: built on top of well-documented, open source components,
-  such as Python_, Pyramid_ and SQLAlchemy_
-
-- **Tested**: `continuous testing`_ with a test coverage of 100%
-  guarantees Kotti's stability
-
-Documentation
-=============
-
-`Click here to access Kotti's documentation
-<http://kotti.readthedocs.org/>`_
-
-Try it out
-==========
-
-You can try out Kotti on `Kotti's demo site`_.
-
-Thanks
-======
-
-Kotti thanks the `University of Coimbra`_ for their involvement and
-support in the initial phase of the project.
-
-
-.. _web content management system: http://en.wikipedia.org/wiki/Web_content_management_system
-.. _access control lists: http://en.wikipedia.org/wiki/Access_control_list
-.. _Python: http://www.python.org/
 .. _Pyramid: http://docs.pylonsproject.org/projects/pyramid/dev/
 .. _SQLAlchemy: http://www.sqlalchemy.org/
-.. _continuous testing: http://jenkins.danielnouri.org/job/Kotti/
-.. _Kotti's demo site: http://kottidemo.danielnouri.org/
-.. _University of Coimbra: http://uc.pt/
+
+Kotti CMS
+=========
+
+You can **try out the built-in CMS** on `Kotti's demo page`_.
+
+The Kotti CMS is a content management system that's heavily inspired
+by Plone_.  Its **main features** are:
+
+- **User-friendliness**: editors can edit content where it appears;
+  thus the edit interface is contextual and intuitive
+
+- **WYSIWYG editor**: includes a rich text editor
+
+- **Responsive design**: Kotti builds on `Twitter Bootstrap`_, which
+  looks good both on desktop and mobile
+
+- **Templating**: you can extend the CMS with your own look & feel
+  with almost no programming required
+
+- **Add-ons**: install a variety of add-ons and customize them as well
+  as many aspects of the built-in CMS by use of an INI configuration
+  file
+
+- **Security**: the advanced user and permissions management is
+  intuitive and scales to fit the requirements of large organizations
+
+.. _Kotti's demo page: http://kottidemo.danielnouri.org/
+.. _Plone: http://plone.org/
+.. _Twitter Bootstrap: http://twitter.github.com/bootstrap/
+
+Support and Documentation
+=========================
+
+`Click here to access Kotti's full documentation
+<http://kotti.readthedocs.org/>`_
+
+License
+=======
+
+Kotti is offered under the BSD-derived `Repoze Public License
+<http://repoze.org/license.html>`_.

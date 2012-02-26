@@ -1,3 +1,10 @@
+.. _configuration:
+
+Configuration
+=============
+
+.. contents::
+
 INI File
 --------
 
@@ -36,7 +43,7 @@ configuration file.
 Setting                      Description                            
 ===========================  ===================================================
 **kotti.site_title**         The title of your site
-**kotti.secret**             Secret token used as initial admin password
+**kotti.secret**             Secret token used for the initial admin password
 kotti.secret2                Secret token used for email password reset token
 
 **sqlalchemy.url**           `SQLAlchemy database URL`_
@@ -50,8 +57,8 @@ kotti.configurators          List of advanced functions for config
 kotti.root_factory           Override Kotti's default Pyramid *root factory*
 kotti.populators             List of functions to fill initial database
 
-kotti.templates.api          Override ``api`` used by all templates
 kotti.asset_overrides        Override Kotti's templates, CSS files and images.
+kotti.templates.api          Override ``api`` used by all templates
 
 kotti.authn_policy_factory   Component used for authentication
 kotti.authz_policy_factory   Component used for authorization
@@ -60,34 +67,41 @@ kotti.session_factory        Component used for sessions
 kotti.date_format            Date format to use, default: ``medium``
 kotti.datetime_format        Datetime format to use, default: ``medium``
 kotti.time_format            Time format to use, default: ``medium``
+
+pyramid.default_locale_name  Set the user interface language, default ``en``
 ===========================  ===================================================
 
 Only the settings in bold letters required.  The rest has defaults.
+
+Do take a look at the required settings (in bold) and adjust them in
+your site's configuration.  A few of the settings are less important,
+and sometimes only used by developers, not integrators.
 
 kotti.secret and kotti.secret2
 ------------------------------
 
 The value of ``kotti.secret`` will define the initial password of the
-``admin`` user.  This is the initial user that Kotti creates in the
-user database.  So if you put *mysecret* here, use *mysecret* as the
-password when you log in as ``admin``.  You may then change the
-``admin`` user's password through the web interface.
+``admin`` user.  Thus, if you define ``kotti.secret = mysecret``, the
+admin password will be ``mysecret``.  Log in and change the password
+at any time through the web interface.
 
 The ``kotti.secret`` token is also used for signing browser session
-cookies.
+cookies.  The ``kotti.secret2`` token is used for signing the password
+reset token.
 
-The ``kotti.secret2`` token is used for signing the password reset
-token.
-
-Here's an example.  Make sure you use different values though!
+Here's an example:
 
 .. code-block:: ini
 
   kotti.secret = myadminspassword
   kotti.secret2 = $2a$12$VVpW/i1MA2wUUIUHwY6v8O
 
-Adjusting the look & feel with ``kotti.override_assets``
---------------------------------------------------------
+.. note:: Do not use the same values in your site
+
+.. _adjust_look_feel:
+
+Adjust the look & feel (``kotti.override_assets``)
+--------------------------------------------------
 
 In your settings file, set ``kotti.override_assets`` to a list of
 *asset specifications*.  This allows you to set up a directory in your
@@ -109,8 +123,8 @@ We can then register our ``kotti-overrides`` directory by use of the
 
   kotti.asset_overrides = mypackage:kotti-overrides/
 
-Using add-ons
--------------
+Use add-ons
+-----------
 
 Add-ons will usually include in their installation instructions which
 settings one should modify to activate them.  Configuration settings
@@ -170,34 +184,6 @@ profile widget:
 
 .. _kotti.available_types:
 
-kotti.populators
-````````````````
-
-The default configuration here is:
-
-.. code-block:: ini
-
-  kotti.populators = kotti.populate.populate
-
-An example populator that configures the site to be viewable only by
-logged in users might look like this:
-
-.. code-block:: python
-
-  from transaction import commit
-  from kotti.resources import get_root
-
-  SITE_ACL = [
-   (u'Allow', u'role:viewer', [u'view']),
-   (u'Allow', u'role:editor', [u'view', u'add', u'edit']),
-   (u'Allow', u'role:owner', [u'view', u'add', u'edit', u'manage']),
-  ]
-
-  def populate():
-      site = get_root()
-      site.__acl__ = SITE_ACL
-      commit()
-
 kotti.available_types
 `````````````````````
 
@@ -217,8 +203,36 @@ An example that removes ``File`` and adds two content types:
       kotti_calendar.resources.Calendar
       kotti_calendar.resources.Event
 
-Configuring authentication and authorization
---------------------------------------------
+.. _kotti.populators:
+
+kotti.populators
+````````````````
+
+The default configuration here is:
+
+.. code-block:: ini
+
+  kotti.populators = kotti.populate.populate
+
+Populators are functions with no arguments that get called on system
+startup.  They may then make automatic changes to the database (before
+calling ``transaction.commit()``).
+
+Configure the user interface language
+-------------------------------------
+
+By default, Kotti will display its user interface in English.  The
+default configuration is:
+
+.. code-block:: ini
+
+  pyramid.default_locale_name = en
+
+The list of available languages is `here
+<https://github.com/Pylons/Kotti/tree/master/kotti/locale>`_.
+
+Configure authentication and authorization
+------------------------------------------
 
 You can override the authentication and authorization policy that
 Kotti uses.  By default, Kotti uses these factories:

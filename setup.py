@@ -9,9 +9,10 @@ from setuptools import Command
 here = os.path.abspath(os.path.dirname(__file__))
 try:
     README = open(os.path.join(here, 'README.rst')).read()
+    THANKS = open(os.path.join(here, 'THANKS.txt')).read()
     CHANGES = open(os.path.join(here, 'CHANGES.txt')).read()
 except IOError:
-    README = CHANGES = ''
+    README = THANKS = CHANGES = ''
 
 install_requires = [
     'Babel',
@@ -63,8 +64,8 @@ class PyTest(Command):
 
 setup(name='Kotti',
       version='0.5.1',
-      description="A user-friendly, light-weight and extensible web content management system.  Written in Python, based on Pyramid and SQLAlchemy.",
-      long_description=README + '\n\n' +  CHANGES,
+      description="Kotti is a high-level, 'Pythonic' web application framework. It includes a small and extensible CMS application called the Kotti CMS.",
+      long_description='\n\n'.join([README, THANKS, CHANGES]),
       classifiers=[
         "Programming Language :: Python",
         "Framework :: Pylons",

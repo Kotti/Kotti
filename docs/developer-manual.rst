@@ -1,5 +1,13 @@
-Screencast
-----------
+Developer manual
+================
+
+Read the :ref:`Configuration` section first to understand which hooks
+both integrators and developers can use to customize and extend Kotti.
+
+.. contents::
+
+Screencast tutorial
+-------------------
 
 Here's a screencast that guides you through the process of creating a
 simple Kotti add-on for visitor comments:
@@ -7,6 +15,8 @@ simple Kotti add-on for visitor comments:
 .. raw:: html
 
    <iframe width="640" height="480" src="http://www.youtube-nocookie.com/embed/GC3tw6Tli54?rel=0" frameborder="0" allowfullscreen></iframe>
+
+.. _content-types:
 
 Content types
 -------------
@@ -39,33 +49,14 @@ Document content type serves as an example here:
 You can configure the list of active content types in Kotti by
 modifying the :ref:`kotti.available_types` setting.
 
-Using kotti.populators to create your own root object
-`````````````````````````````````````````````````````
-
-If you were to totally customize Kotti, and not even include the stock Document type,
-you would need to follow the template provided by Document, with some attention to
-detail for configuration and for instantiating a resource hierarchy, especially the 
-root object. For example, let's say that you replace Document with a custom type called 
-Project (updating available types configuration as needed). In your design, under the 
-Project custom type, you might have a hierarchy of other types, the relationships 
-determined by how the type_info.addable_to setup is done, and how the parent property 
-is set for each record on instantiation. When you instantiate the root Project object, 
-the code in the populate() method of resources.py would be something like:
-
-.. code-block:: python
-
-  root = Project(name="", title="Mother Project", propertyOne="Something", parent=None)
-
-NOTE: So, the details are that the root object must have an empty name (name="") and 
-the parent is None.
-
 Configuring custom views, subscribers and more
 ----------------------------------------------
 
 :ref:`kotti.includes` allows you to hook ``includeme`` functions that
 configure your custom views, subscribers and more.  An ``includeme``
-function takes the :ref:`Pyramid Configurator API` object as its sole
-argument.  An example:
+function takes the *Pyramid Configurator API* object as its sole
+argument.  An example that overrides the default view for all
+``Document`` content types:
 
 .. code-block:: python
 
@@ -83,6 +74,41 @@ application start-up.  An example:
 .. code-block:: ini
 
   kotti.includes = mypackage.views.includeme
+
+The Node API
+------------
+
+One of Kotti's core abstractions is the *Node API*, which is a
+*(ordered) dict-like* API for manipulation of objects and their parent/child
+relationships.
+
+An example:
+
+.. code-block:: python
+
+  # Get the root node and set its title:
+  from kotti.resources import get_root
+  root = get_root()
+  root.title = u'A new title'
+
+  # Add two pages:
+  from kotti.resources import Document  
+  root['first'] = Document(title=u'First page')
+  root['second'] = Document(title=u'Second page')
+
+  # Make a copy of the second page and move it into the first page:
+  root['first']['copy-of-second'] = root['second'].copy()
+
+  # Delete the original second page:
+  del root['first']['second']
+
+  # List all children names and nodes:
+  root.keys()
+  ['first']
+  root.values()
+  [<Document at /first>]
+
+.. _slots:
 
 :mod:`kotti.views.slots`
 ------------------------
@@ -118,13 +144,16 @@ And this is how your users would hook it up in their INI file:
   
   kotti.configurators = mypackage.kotti_configure
 
+.. _develop-security:
+
 Security
 --------
 
-Kotti builds mostly on `Pyramid's security API`_ and uses its
+Kotti uses `Pyramid's security API`_, most notably its support
 `inherited access control lists`_ support.  On top of that, Kotti
 defines *roles* and *groups* support: Users may be collected in
-groups, and groups may be given roles that define permissions.
+groups, and groups may be given roles, which in turn define
+permissions.
 
 The site root's ACL defines the default mapping of roles to their
 permissions:
@@ -156,6 +185,14 @@ a different factory.  The default setting here is:
 .. code-block:: ini
 
   kotti.principals_factory = kotti.security.principals_factory
+
+API
+---
+
+.. toctree::
+
+   api.rst
+
 
 .. _Pyramid's security API: http://docs.pylonsproject.org/projects/pyramid/dev/api/security.html
 .. _inherited access control lists: http://www.pylonsproject.org/projects/pyramid/dev/narr/security.html#acl-inheritance-and-location-awareness

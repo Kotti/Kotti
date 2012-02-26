@@ -1,8 +1,13 @@
-History
-=======
+Change History
+==============
 
 0.5.1 - Unreleased
 ------------------
+
+- Internationalize user interface.  Add Portuguese translation.
+
+- A new add menu allows for a more intuitive adding of items in the
+  CMS.
 
 - Refine ``Node.copy``.  No longer copy over local roles per default.
 
