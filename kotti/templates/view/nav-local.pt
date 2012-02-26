@@ -2,7 +2,7 @@
   <ul class="nav nav-pills nav-stacked">
     <tal:repeat tal:define="nodes [parent] + children"
                 tal:repeat="item nodes">
-      <li tal:define="active item == api.context and 'active' or ''"
+      <li tal:define="active item == context and 'active' or ''"
           class="${active}">
         <a href="${api.url(item)}"
            title="${getattr(item, 'description', None)}">

@@ -4,12 +4,12 @@
   </a>
 
   <ul class="nav nav-tabs">
-    <li class="${api.root == api.context and 'active'}">
+    <li class="${api.root == context and 'active'}">
       <a href="${request.application_url}">Home</a>
     </li>
     <li tal:define="items [i for i in api.list_children(api.root) if i.in_navigation]"
         tal:repeat="item items"
-        class="${api.inside(api.context, item) and 'active' or None}">
+        class="${api.inside(context, item) and 'active' or None}">
       <a href="${api.url(item)}" title="${item.description}">${item.title}</a>
     </li>
   </ul>

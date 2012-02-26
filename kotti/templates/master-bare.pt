@@ -8,7 +8,7 @@
        tal:condition="request.is_xhr" />
 
   <div metal:define-slot="content">
-    <h1>${api.context.title}</h1>
+    <h1>${context.title}</h1>
   </div>
 
 </html>
