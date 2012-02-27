@@ -161,7 +161,7 @@ Detailed Change History
 =======================
 
 .. toctree::
-   :maxdepth: 1
+   :maxdepth: 2
 
    changes.rst
 
