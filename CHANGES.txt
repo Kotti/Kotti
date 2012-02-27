@@ -1,10 +1,11 @@
 Change History
 ==============
 
-0.5.1 - Unreleased
+0.5.1 - 2011-02-27
 ------------------
 
-- Internationalize user interface.  Add Portuguese translation.
+- Internationalize user interface.  Add Portuguese as the first
+  translation.
 
 - A new add menu allows for a more intuitive adding of items in the
   CMS.
