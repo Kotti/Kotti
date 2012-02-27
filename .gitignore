@@ -4,6 +4,7 @@ bin/
 build/
 develop-eggs/
 dist/
+docs/_themes/
 eggs/
 include/
 lib/
