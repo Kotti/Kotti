@@ -66,7 +66,7 @@ Add a document
   >>> browser.open(testing.BASE_URL)
   >>> browser.getLink("Edit").click()
   >>> browser.open(testing.BASE_URL + '/@@add_document')
-  >>> "Add document to <em>Welcome to Kotti!</em>" in browser.contents
+  >>> "Add document to <em>Welcome to Kotti</em>" in browser.contents
   True
   >>> ctrl("Title").value = "Child One"
   >>> ctrl("save").click()
@@ -223,11 +223,11 @@ site:
 
   >>> browser.open(testing.BASE_URL + '/@@move')
   >>> ctrl(name="copy").click()
-  >>> "Welcome to Kotti! copied" in browser.contents
+  >>> "Welcome to Kotti copied" in browser.contents
   True
   >>> browser.open(testing.BASE_URL + '/second-child/@@move')
   >>> ctrl(name="paste").click()
-  >>> "Welcome to Kotti! pasted" in browser.contents
+  >>> "Welcome to Kotti pasted" in browser.contents
   True
   >>> browser.open(
   ...     testing.BASE_URL + '/second-child/welcome-to-kotti/')
