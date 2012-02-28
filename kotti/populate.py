@@ -1,8 +1,6 @@
 from pkg_resources import resource_string
 import os
 
-import transaction
-
 from kotti import get_settings
 from kotti import get_version
 from kotti.resources import DBSession
@@ -31,8 +29,6 @@ def populate_users():
             'title': _(u"Administrator"),
             'groups': [u'role:admin'],
             }
-        DBSession.flush()
-        transaction.commit()
 
 def populate():
     nodecount = DBSession.query(Node).count()
@@ -48,5 +44,3 @@ def populate():
         DBSession.add(settings)
 
     populate_users()
-    DBSession.flush()
-    transaction.commit()

@@ -11,13 +11,11 @@ populator (see :ref:`kotti.populators`), we write this:
 
 .. code-block:: python
 
-  from transaction import commit
   from kotti.resources import get_root
 
   def populate():
       site = get_root()
       site.default_view = 'front-page'
-      commit()
 
 What's left is to register the ``front-page`` view:
 

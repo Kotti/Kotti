@@ -21,6 +21,7 @@ from sqlalchemy import LargeBinary
 from sqlalchemy import String
 from sqlalchemy import Unicode
 from sqlalchemy import UnicodeText
+from transaction import commit
 from zope.interface import implements
 from zope.interface import Interface
 
@@ -344,6 +345,7 @@ def initialize_sql(engine, drop_all=False):
     metadata.create_all(engine, tables=tables)
     for populate in get_settings()['kotti.populators']:
         populate()
+    commit()
 
     return DBSession()
 

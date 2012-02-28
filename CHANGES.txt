@@ -4,6 +4,9 @@ Change History
 0.5.2 - Unreleased
 ------------------
 
+- Populators no longer need to call ``transaction.commit()``
+  themselves.
+
 0.5.1 - 2011-02-27
 ------------------
 

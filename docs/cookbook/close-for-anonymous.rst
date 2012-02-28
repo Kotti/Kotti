@@ -13,7 +13,6 @@ have to restrict the ``view`` permission to the ``viewer`` role:
 
 .. code-block:: python
 
-  from transaction import commit
   from kotti.resources import get_root
 
   SITE_ACL = [
@@ -24,4 +23,3 @@ have to restrict the ``view`` permission to the ``viewer`` role:
   def populate():
       site = get_root()
       site.__acl__ = SITE_ACL
-      commit()
