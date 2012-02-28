@@ -5,7 +5,7 @@ Setup
 -----
 
    >>> from kotti import testing, DBSession
-   >>> from kotti.resources import Node, Document
+   >>> from kotti.resources import Node, Document, File
 
 Get a handle for some useful objects:
 
@@ -15,10 +15,17 @@ Get a handle for some useful objects:
    >>> session = DBSession()
    >>> root = session.query(Node).get(1)
    >>> mailer = testing.registerDummyMailer()
+   >>> save_addable_document = Document.type_info.addable_to
+   >>> save_addable_file = File.type_info.addable_to
 
 Open the frontpage:
 
    >>> browser.open(testing.BASE_URL)
+
+Dump the content to make coverage happy:
+
+   >>> testing.dc(browser.contents)
+
 
 Login
 -----
@@ -151,6 +158,21 @@ Add another grandchild with the same name:
   >>> browser.url == testing.BASE_URL + '/second-child/grandchild-1/@@edit'
   True
 
+
+If it's not possible to add something, the add menu is disabled:
+
+  >>> browser.open(testing.BASE_URL + '/second-child/grandchild-1')
+  >>> 'class="disabled"' in browser.contents
+  False
+  >>> Document.type_info.addable_to = ()
+  >>> File.type_info.addable_to = ()
+  >>> browser.reload()
+  >>> 'class="disabled"' in browser.contents
+  True
+  >>> Document.type_info.addable_to = save_addable_document
+  >>> File.type_info.addable_to = save_addable_file
+
+
 Reorder documents
 -----------------
 
@@ -267,13 +289,12 @@ property:
   >>> browser.open(testing.BASE_URL + '/child-one/second-child/@@move')
   >>> ctrl(name="paste")
   <SubmitControl name='paste' type='submitbutton'>
-  >>> save_addable = Document.type_info.addable_to
   >>> Document.type_info.addable_to = ()
   >>> browser.reload()
   >>> ctrl(name="paste")
   Traceback (most recent call last):
   LookupError: name 'paste'
-  >>> Document.type_info.addable_to = save_addable
+  >>> Document.type_info.addable_to = save_addable_document
 
 We can rename an item:
 
