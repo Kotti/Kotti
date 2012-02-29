@@ -32,7 +32,7 @@ def populate():
     populate_users()
 
 _ROOT_ATTRS = dict(
-    name='', # (at the time of writing) root must have empty name!
+    name=u'', # (at the time of writing) root must have empty name!
     title=u'Welcome to Kotti',
     description=u'Congratulations! You have successfully installed Kotti.',
     body=u"""
