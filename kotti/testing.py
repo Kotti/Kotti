@@ -184,10 +184,3 @@ def registerDummyMailer():
     mailer = DummyMailer()
     _inject_mailer.append(mailer)
     return mailer
-
-
-def dc(content, filename='/tmp/test_content.html'):
-    """ Dumps the given something into a file. """
-    handle = open(filename, 'w')
-    handle.write(content)
-    handle.close()

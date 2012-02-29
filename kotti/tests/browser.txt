@@ -22,10 +22,6 @@ Open the frontpage:
 
    >>> browser.open(testing.BASE_URL)
 
-Dump the content to make coverage happy:
-
-   >>> testing.dc(browser.contents)
-
 
 Login
 -----
