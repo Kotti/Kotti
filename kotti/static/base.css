@@ -13,3 +13,7 @@ body.logged-in {
         padding-top: 0;
     }
 }
+
+.navbar .nav > li.disabled > a:hover {
+    color: #999;
+}
