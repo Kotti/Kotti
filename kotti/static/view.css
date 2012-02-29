@@ -15,7 +15,3 @@ a.site-title {
         font-size: 30px;
     }
 }
-
-.navbar .nav > li.disabled > a:hover {
-    color: #999;
-}
