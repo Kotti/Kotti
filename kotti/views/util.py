@@ -128,7 +128,7 @@ class TemplateAPI(object):
         value = get_settings().get('kotti.site_title')
         if not value:
             value = self.root.title
-        return value.decode('utf-8')
+        return value
 
     @reify
     def page_title(self):
