@@ -109,6 +109,10 @@ def base_configure(global_config, **settings):
     for key, value in conf_defaults.items():
         settings.setdefault(key, value)
 
+    for key, value in settings.items():
+        if isinstance(settings[key], basestring):
+            settings[key] = unicode(value, 'utf8')
+
     # Allow extending packages to change 'settings' w/ Python:
     _resolve_dotted(settings, keys=('kotti.configurators',))
     for func in settings['kotti.configurators']:
