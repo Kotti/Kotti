@@ -4,6 +4,9 @@ Change History
 0.5.2 - Unreleased
 ------------------
 
+- A new 'Actions' menu makes copy, paste, delete and rename of items
+  more accessible.
+
 - Populators no longer need to call ``transaction.commit()``
   themselves.
 
@@ -13,8 +16,8 @@ Change History
 - Internationalize user interface.  Add Portuguese as the first
   translation.
 
-- A new add menu allows for a more intuitive adding of items in the
-  CMS.
+- A new 'Add' menu in the editor toolbar allows for a more intuitive
+  adding of items in the CMS.
 
 - Refine ``Node.copy``.  No longer copy over local roles per default.
 
