@@ -10,28 +10,32 @@
       </a>
       <span class="brand">Kotti</span>
       <div class="nav-collapse">
+
         <ul class="nav">
           <li class="${api.url() == request.url and 'active' or None}">
             <a href="${api.url()}" i18n:translate="">View</a>
           </li>
-        </ul>
 
-        <tal:condition tal:condition="api.has_permission('add')">
-          <ul tal:replace="api.render_view('add-dropdown')" />
-        </tal:condition>
-
-        <ul class="nav">
           <li tal:repeat="link api.edit_links"
               class="${link.selected(context, request) and 'active' or None}">
             <a href="${link.url(context, request)}">
               ${link.title}
             </a>
           </li>
+
           <li tal:define="url api.url(context, '@@navigate')"
               class="${url == request.url and 'active' or None}">
             <a href="${url}" i18n:translate="">Navigate</a>
           </li>
         </ul>
+
+        <tal:condition tal:condition="api.has_permission('edit')">
+          <ul tal:replace="api.render_view('actions-dropdown')" />
+        </tal:condition>
+
+        <tal:condition tal:condition="api.has_permission('add')">
+          <ul tal:replace="api.render_view('add-dropdown')" />
+        </tal:condition>
         
         <ul tal:condition="api.user is not None" class="nav pull-right">
           <li class="dropdown">

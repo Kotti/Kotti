@@ -51,56 +51,68 @@ def content_type_factories(context, request):
     return {'factories': factories}
 
 
-def move_node(context, request):
-    """This view allows copying, cutting, pasting, deleting of
-    'context' and reordering of children of 'context'.
+def copy_node(context, request):
+    """ copy item
+    """
+    request.session['kotti.paste'] = (context.id, 'copy')
+    request.session.flash(_(u'${title} copied.',
+                            mapping=dict(title=context.title)), 'success')
+    if not request.is_xhr:
+        location = resource_url(context, request)
+        return HTTPFound(location=location)
+
+
+def cut_node(context, request):
+    """ cut item
+    """
+    request.session['kotti.paste'] = (context.id, 'cut')
+    request.session.flash(_(u'${title} cut.',
+                            mapping=dict(title=context.title)), 'success')
+    if not request.is_xhr:
+        location = resource_url(context, request)
+        return HTTPFound(location=location)
+
+
+def paste_node(context, request):
+    """ paste item
+    """
+    session = DBSession()
+    id, action = request.session['kotti.paste']
+    item = session.query(Node).get(id)
+    if action == 'cut':
+        if not has_permission('edit', item, request):
+            raise Forbidden()
+        item.__parent__.children.remove(item)
+        context.children.append(item)
+        del request.session['kotti.paste']
+    elif action == 'copy':
+        copy = item.copy()
+        name = copy.name
+        if not name:  # for root
+            name = title_to_name(copy.title)
+        while name in context.keys():
+            name = disambiguate_name(name)
+        copy.name = name
+        context.children.append(copy)
+    request.session.flash(_(u'${title} pasted.',
+                            mapping=dict(title=item.title)), 'success')
+    if not request.is_xhr:
+        location = resource_url(context, request)
+        return HTTPFound(location=location)
+
+
+def order_node(context, request):
+    """ order children
     """
     P = request.POST
     session = DBSession()
-
-    if 'copy' in P:
-        request.session['kotti.paste'] = (context.id, 'copy')
-        request.session.flash(_(u'${title} copied.',
-                                mapping=dict(title=context.title)), 'success')
-        if not request.is_xhr:
-            return HTTPFound(location=request.url)
-
-    if 'cut' in P:
-        request.session['kotti.paste'] = (context.id, 'cut')
-        request.session.flash(_(u'${title} cut.',
-                                mapping=dict(title=context.title)), 'success')
-        if not request.is_xhr:
-            return HTTPFound(location=request.url)
-
-    if 'paste' in P:
-        id, action = request.session['kotti.paste']
-        item = session.query(Node).get(id)
-        if action == 'cut':
-            if not has_permission('edit', item, request):
-                raise Forbidden()
-            item.__parent__.children.remove(item)
-            context.children.append(item)
-            del request.session['kotti.paste']
-        elif action == 'copy':
-            copy = item.copy()
-            name = copy.name
-            if not name: # for root
-                name = title_to_name(copy.title)
-            while name in context.keys():
-                name = disambiguate_name(name)
-            copy.name = name
-            context.children.append(copy)
-        request.session.flash(_(u'${title} pasted.',
-                                mapping=dict(title=item.title)), 'success')
-        if not request.is_xhr:
-            return HTTPFound(location=request.url)
 
     if 'order-up' in P or 'order-down' in P:
         up, down = P.get('order-up'), P.get('order-down')
         id = int(down or up)
         if up is not None:
             mod = -1
-        else: # pragma: no cover
+        else:  # pragma: no cover
             mod = 1
 
         child = session.query(Node).get(id)
@@ -112,15 +124,26 @@ def move_node(context, request):
         if not request.is_xhr:
             return HTTPFound(location=request.url)
 
-    if 'delete' in P and 'delete-confirm' in P:
+    return {}
+
+
+def delete_node(context, request):
+    """ delete item
+    """
+    if 'delete-confirm' in request.POST:
         parent = context.__parent__
         request.session.flash(_(u'${title} deleted.',
                                 mapping=dict(title=context.title)), 'success')
         parent.children.remove(context)
         location = resource_url(parent, request)
-        if view_permitted(parent, request, 'edit'):
-            location += '@@edit'
         return HTTPFound(location=location)
+    return {}
+
+
+def rename_node(context, request):
+    """ rename item
+    """
+    P = request.POST
 
     if 'rename' in P:
         name = P['name']
@@ -131,9 +154,8 @@ def move_node(context, request):
             context.name = name
             context.title = title
             request.session.flash(_(u'Item renamed'), 'success')
-            location = resource_url(context, request) + '@@move'
+            location = resource_url(context, request)
             return HTTPFound(location=location)
-
     return {}
 
 # XXX These and the make_generic_edit functions below can probably be
@@ -214,11 +236,50 @@ def includeme(config):
         renderer='kotti:templates/add-dropdown.pt',
         )
 
+    config.add_view(
+        content_type_factories,
+        name='actions-dropdown',
+        permission='view',
+        renderer='kotti:templates/actions-dropdown.pt',
+        )
+
 
 def nodes_includeme(config):
     config.add_view(
-        'kotti.views.edit.move_node',
-        name='move',
+        'kotti.views.edit.copy_node',
+        name='copy',
         permission='edit',
-        renderer='kotti:templates/edit/move.pt',
+        )
+
+    config.add_view(
+        'kotti.views.edit.cut_node',
+        name='cut',
+        permission='edit',
+        )
+
+    config.add_view(
+        'kotti.views.edit.paste_node',
+        name='paste',
+        permission='edit',
+        )
+
+    config.add_view(
+        'kotti.views.edit.order_node',
+        name='order',
+        permission='edit',
+        renderer='kotti:templates/edit/order.pt',
+        )
+
+    config.add_view(
+        'kotti.views.edit.delete_node',
+        name='delete',
+        permission='edit',
+        renderer='kotti:templates/edit/delete.pt',
+        )
+
+    config.add_view(
+        'kotti.views.edit.rename_node',
+        name='rename',
+        permission='edit',
+        renderer='kotti:templates/edit/rename.pt',
         )

@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      i18n:domain="Kotti"
+      metal:use-macro="api.macro('kotti:templates/edit/master.pt')">
+
+  <div metal:fill-slot="content">
+    <h1 i18n:translate="">Rename <em i18n:name="title">${context.title}</em></h1>
+
+    <div class="tab-pane" id="rename" tal:condition="context is not api.root">
+      <form action="${request.url}" method="post" id="form-move-3">
+        <div class="control-group">
+          <label class="control-label desc" for="move-new-name" i18n:translate="">New name</label>
+          <div class="controls">
+            <input type="text" name="name" id="move-new-name"
+                   value="${request.POST.get('name') or context.name}" />
+          </div>
+        </div>
+        <div class="control-group">         
+          <label class="control-label desc" for="move-new-title" i18n:translate="">New title</label>
+          <div class="controls">
+            <input type="text" name="title" id="move-new-title"
+                   value="${request.POST.get('title') or context.title}" />
+          </div>
+        </div>
+        <div class="form-actions">
+          <button type="submit" name="rename" value="rename" 
+                  class="btn btn-warning" i18n:translate="">Rename</button>
+        </div>
+      </form>    
+    </div>
+  </div>
+</html>

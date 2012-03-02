@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      i18n:domain="Kotti"
+      metal:use-macro="api.macro('kotti:templates/edit/master.pt')">
+
+  <div metal:fill-slot="content">
+
+    <h1 i18n:translate="">Delete <em i18n:name="title">${context.title}</em></h1>
+
+    <!-- if submit without checkbox checked, give
+         a message that x is not deleted and redirect
+         to view -->
+
+    <div class="tab-pane" id="delete" tal:condition="context is not api.root">
+      <form action="${request.url}" method="post" id="form-move-2">
+        <fieldset>
+          <legend i18n:translate="">
+            Are you sure you want to delete <em i18n:name="title">${context.title}</em>?
+          </legend>
+          <div class="control-group">
+            <label class="control-label" for="delete-checkbox" i18n:translate="">Yes</label>
+            <div class="controls">
+              <input id="delete-checkbox" type="checkbox"
+                     name="delete-confirm" value="Yes" i18n:attributes="value" />
+            </div>
+          </div>
+          <div class="form-actions">
+            <button type="submit" name="delete" value="delete" 
+                    class="btn btn-danger" i18n:translate="">Delete</button>
+          </div>
+        </fieldset>
+      </form>
+    </div>
+
+  </div>
+</html>

@@ -176,8 +176,10 @@ Reorder documents
   >>> index = browser.contents.index
   >>> index("First Child") > index("Second Child")
   False
-  >>> browser.getLink("Edit").click()
-  >>> browser.getLink("Move").click()
+  >>> browser.open(testing.BASE_URL)
+  >>> "/@@order" in browser.contents
+  True
+  >>> browser.getLink('Order').click()
   >>> ctrl(name="order-up", index=1).click()
   >>> "Second Child moved" in browser.contents
   True
@@ -189,24 +191,25 @@ Reorder documents
 Delete a document
 -----------------
 
-  >>> browser.open(testing.BASE_URL + '/second-child/grandchild/@@move')
+  >>> browser.open(testing.BASE_URL + '/second-child/grandchild')
+  >>> browser.getLink('Delete').click()
   >>> ctrl(name="delete-confirm").displayValue = ['Yes']
   >>> ctrl("delete").click()
   >>> "Grandchild deleted" in browser.contents
   True
-  >>> browser.url == testing.BASE_URL + '/second-child/@@edit'
+  >>> browser.url == testing.BASE_URL + '/second-child/'
   True
 
 Copy and paste
 --------------
 
-  >>> browser.open(testing.BASE_URL + '/second-child/@@move')
-  >>> ctrl(name="cut").click()
+  >>> browser.open(testing.BASE_URL + '/second-child')
+  >>> browser.getLink('Cut').click()  
   >>> "Second Child cut" in browser.contents
   True
 
-  >>> browser.open(testing.BASE_URL + '/child-one/@@move')
-  >>> ctrl(name="paste").click()
+  >>> browser.open(testing.BASE_URL + '/child-one')
+  >>> browser.getLink('Paste').click()  
   >>> "Second Child pasted" in browser.contents
   True
 
@@ -215,18 +218,18 @@ Copy and paste
   Traceback (most recent call last):
   HTTPError: HTTP Error 404: Not Found
 
-  >>> browser.open(testing.BASE_URL + '/child-one/second-child/@@move')
-  >>> ctrl(name="copy").click()
+  >>> browser.open(testing.BASE_URL + '/child-one/second-child')
+  >>> browser.getLink('Copy').click()  
   >>> "Second Child copied" in browser.contents
   True
-  >>> browser.open(testing.BASE_URL + '/@@move')
-  >>> ctrl(name="paste").click()
+  >>> browser.open(testing.BASE_URL)
+  >>> browser.getLink('Paste').click()  
   >>> "Second Child pasted" in browser.contents
   True
 
 We can paste twice since we copied:
 
-  >>> ctrl(name="paste").click()
+  >>> browser.getLink('Paste').click()  
   >>> "Second Child pasted" in browser.contents
   True
   >>> browser.open(testing.BASE_URL + '/second-child/')
@@ -239,12 +242,12 @@ We can paste twice since we copied:
 We can also copy and paste items that contain children, like the whole
 site:
 
-  >>> browser.open(testing.BASE_URL + '/@@move')
-  >>> ctrl(name="copy").click()
+  >>> browser.open(testing.BASE_URL)
+  >>> browser.getLink('Copy').click()  
   >>> "Welcome to Kotti copied" in browser.contents
   True
-  >>> browser.open(testing.BASE_URL + '/second-child/@@move')
-  >>> ctrl(name="paste").click()
+  >>> browser.open(testing.BASE_URL + '/second-child')
+  >>> browser.getLink('Paste').click()  
   >>> "Welcome to Kotti pasted" in browser.contents
   True
   >>> browser.open(
@@ -254,10 +257,10 @@ site:
 
 And finally cut and paste a tree:
 
-  >>> browser.open(testing.BASE_URL + '/second-child/@@move')
-  >>> ctrl(name="cut").click()
-  >>> browser.open(testing.BASE_URL + '/child-one/second-child/@@move')
-  >>> ctrl(name="paste").click()
+  >>> browser.open(testing.BASE_URL + '/second-child')
+  >>> browser.getLink('Cut').click()  
+  >>> browser.open(testing.BASE_URL + '/child-one/second-child')
+  >>> browser.getLink('Paste').click()
   >>> "Second Child pasted" in browser.contents
   True
   >>> browser.open(testing.BASE_URL + '/second-child/')
@@ -267,34 +270,34 @@ And finally cut and paste a tree:
 
 Note how we can't cut and paste an item into itself:
 
-  >>> browser.open(testing.BASE_URL + '/child-one/@@move')
-  >>> ctrl(name="cut").click()
-  >>> ctrl(name="paste")
+  >>> browser.open(testing.BASE_URL + '/child-one')
+  >>> browser.getLink('Cut').click()
+  >>> browser.getLink('Paste').click()
   Traceback (most recent call last):
-  LookupError: name 'paste'
-  >>> browser.open(testing.BASE_URL + '/child-one/second-child/@@move')
-  >>> ctrl(name="paste")
+  LinkNotFoundError
+  >>> browser.open(testing.BASE_URL + '/child-one/second-child')
+  >>> browser.getLink('Paste').click()
   Traceback (most recent call last):
-  LookupError: name 'paste'
+  LinkNotFoundError
 
 Whether we can paste or not also depends on the 'type_info.addable'
 property:
 
-  >>> browser.open(testing.BASE_URL + '/child-one/@@move')
-  >>> ctrl(name="copy").click()
-  >>> browser.open(testing.BASE_URL + '/child-one/second-child/@@move')
-  >>> ctrl(name="paste")
-  <SubmitControl name='paste' type='submitbutton'>
+  >>> browser.open(testing.BASE_URL + '/child-one')
+  >>> browser.getLink('Copy').click()
+  >>> browser.open(testing.BASE_URL + '/child-one/second-child')
+  >>> browser.getLink('Paste').click()  
   >>> Document.type_info.addable_to = ()
   >>> browser.reload()
-  >>> ctrl(name="paste")
+  >>> browser.getLink('Paste')
   Traceback (most recent call last):
-  LookupError: name 'paste'
+  LinkNotFoundError
   >>> Document.type_info.addable_to = save_addable_document
 
 We can rename an item:
 
-  >>> browser.open(testing.BASE_URL + '/child-one/second-child/@@move')
+  >>> browser.open(testing.BASE_URL + '/child-one/second-child')
+  >>> browser.getLink('Rename').click()
   >>> ctrl("New name").value
   'second-child'
   >>> ctrl("New title").value
@@ -304,7 +307,7 @@ We can rename an item:
   >>> ctrl(name="rename").click()
   >>> "Item renamed" in browser.contents
   True
-  >>> browser.url == testing.BASE_URL + '/child-one/third-child/@@move'
+  >>> browser.url == testing.BASE_URL + '/child-one/third-child/'
   True
   >>> browser.getLink("View").click()
   >>> "My Third Child" in browser.contents
@@ -312,10 +315,10 @@ We can rename an item:
 
 We cannot rename the root:
 
-  >>> browser.open(testing.BASE_URL + '/@@move')
-  >>> ctrl("New name")
+  >>> browser.open(testing.BASE_URL)
+  >>> browser.getLink('Rename').click()
   Traceback (most recent call last):
-  LookupError: label 'New name'
+  LinkNotFoundError
 
 Navigation
 ----------

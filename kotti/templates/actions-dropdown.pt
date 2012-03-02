@@ -1,0 +1,18 @@
+<ul class="nav">
+  <li class="disabled" tal:condition="not:api.actions">
+    <a><span i18n:translate="">Actions</span></a>
+  </li>
+  <li class="dropdown" tal:condition="api.actions">
+    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+      <span i18n:translate="">Actions</span>
+      <b class="caret"></b>
+    </a>
+    <ul class="dropdown-menu">
+      <li tal:repeat="link api.actions">
+        <a href="${link.url(context, request)}">
+          ${link.title}
+        </a>
+      </li>
+    </ul>
+  </li>
+</ul>

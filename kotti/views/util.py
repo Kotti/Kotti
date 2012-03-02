@@ -25,6 +25,7 @@ from kotti import get_settings
 from kotti import DBSession
 from kotti.util import _
 from kotti.util import title_to_name
+from kotti.util import ViewLink
 from kotti.events import objectevent_listeners
 from kotti.resources import Node
 from kotti.resources import Content
@@ -239,6 +240,24 @@ class TemplateAPI(object):
             return []
         return [l for l in self.context.type_info.edit_links
                 if l.permitted(self.context, self.request)]
+
+    @reify
+    def actions(self):
+        # TODO: no actions on setting panels
+        actions = [
+            ViewLink('copy', title=_(u'Copy')),
+            ViewLink('cut', title=_(u'Cut')),
+            ]
+        if self.get_paste_item() is not None:
+            actions.append(ViewLink('paste', title=_(u'Paste')))
+        if self.context is not self.root:
+            actions.append(ViewLink('rename', title=_(u'Rename')))
+            actions.append(ViewLink('delete', title=_(u'Delete')))
+        if len(self.list_children()) > 1:
+            actions.append(ViewLink('order', title=_(u'Order')))
+        return [action for action in actions
+                if action.permitted(self.context, self.request)]
+
 
     def more_links(self, name):
         return [l for l in getattr(self, name)

@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      i18n:domain="Kotti"
+      metal:use-macro="api.macro('kotti:templates/edit/master.pt')">
+
+  <div metal:fill-slot="content">
+
+    <h1 i18n:translate="">Order <em i18n:name="title">${context.title}</em></h1>
+
+    <div class="tab-pane" id="order" tal:define="children api.list_children()"
+       tal:condition="len(children) &gt; 1">
+      <form action="${request.url}" method="post"
+            class="ajax ${('order-up' in request.POST or 'order-down' in request.POST) and 'ajax-replace' or ''}" id="form-move-4">
+        <div class="form-actions" tal:repeat="item children">
+            <button type="submit" name="order-up" value="${item.id}"
+                    title="Move ${item.title} up"
+                    id="order-up-${item.id}"
+                    disabled="${item.position==0 and 'disabled' or None}"
+                    class="btn">
+              ↑
+            </button>
+            <button type="submit" name="order-down" value="${item.id}"
+                    title="Move ${item.title} down"
+                    id="order-down-${item.id}"
+                    disabled="${item.position+1 == len(children) and 'disabled' or None}"
+                    class="btn">
+              ↓
+            </button>
+            <label for="order-down-${item.id}">
+              ${item.title}
+            </label>
+        </div>
+      </form> 
+    </div>
+  </div>
+</html>

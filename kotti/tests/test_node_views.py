@@ -28,11 +28,13 @@ class TestAddableTypes(UnitTestBase):
         self.assertEquals(Document.type_info.addable(root, request), False)
 
 
-class TestNodeMove(UnitTestBase):
+class TestNodePaste(UnitTestBase):
     def test_paste_without_edit_permission(self):
         from kotti import DBSession
         from kotti.resources import Node
-        from kotti.views.edit import move_node
+        from kotti.views.edit import (
+            paste_node,
+        )
 
         root = DBSession().query(Node).get(1)
         request = DummyRequest()
@@ -42,18 +44,21 @@ class TestNodeMove(UnitTestBase):
         # We need to have the 'edit' permission on the original object
         # to be able to cut and paste:
         request.session['kotti.paste'] = (1, 'cut')
-        self.assertRaises(Forbidden, move_node, root, request)
+        self.assertRaises(Forbidden, paste_node, root, request)
 
         # We don't need 'edit' permission if we're just copying:
         request.session['kotti.paste'] = (1, 'copy')
-        response = move_node(root, request)
+        response = paste_node(root, request)
         self.assertEqual(response.status, '302 Found')
+
+
+class TestNodeRename(UnitTestBase):
 
     def test_rename_to_empty_name(self):
         from kotti import DBSession
         from kotti.resources import Node
         from kotti.resources import Document
-        from kotti.views.edit import move_node
+        from kotti.views.edit import rename_node
 
         root = DBSession().query(Node).get(1)
         child = root['child'] = Document(title=u"Child")
@@ -61,9 +66,10 @@ class TestNodeMove(UnitTestBase):
         request.params['rename'] = u'on'
         request.params['name'] = u''
         request.params['title'] = u'foo'
-        move_node(child, request)
+        rename_node(child, request)
         self.assertEqual(request.session.pop_flash('error'),
                          [u'Name and title are required.'])
+
 
 class TestNodeShare(UnitTestBase):
     @staticmethod
