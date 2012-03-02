@@ -58,6 +58,12 @@ class TestTemplateAPI(UnitTestBase):
         api = self.make()
         self.assertEqual(api.site_title, u'This is it.')
 
+    @patch('kotti.views.util.get_settings')
+    def test_site_title_with_non_ascii_characters(self, get_settings):
+        get_settings.return_value = {'kotti.site_title': 'K\xc3\xb6tti'}#Kötti
+        api = self.make()
+        self.assertEqual(api.site_title, u'K\xf6tti')
+
     @patch('kotti.views.util.has_permission')
     def test_list_children(self, has_permission):
         has_permission.return_value = True
