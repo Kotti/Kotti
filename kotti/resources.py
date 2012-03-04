@@ -154,6 +154,7 @@ class TypeInfo(object):
     addable_to = ()
 
     def __init__(self, **kwargs):
+        kwargs.setdefault('title', kwargs['name']) # BBB
         self.__dict__.update(kwargs)
 
     def copy(self, **kwargs):
