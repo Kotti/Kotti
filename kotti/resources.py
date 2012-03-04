@@ -233,8 +233,7 @@ nodes = Table('nodes', metadata,
     Column('parent_id', ForeignKey('nodes.id')),
     Column('position', Integer),
     Column('_acl', MutationList.as_mutable(JsonType)),
-
-    Column('name', Unicode(50), nullable=False),
+    Column('name', Unicode(110), nullable=False),
     Column('title', Unicode(100)),
     Column('annotations', NestedMutationDict.as_mutable(JsonType)),
 

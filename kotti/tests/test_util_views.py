@@ -355,8 +355,11 @@ class TestViewUtil(UnitTestBase):
 
 class TestUtil(UnitTestBase):
     def test_title_to_name(self):
+        from kotti import resources
+        max_length = resources.nodes.c.name.type.length
         from kotti.views.util import title_to_name
         self.assertEqual(title_to_name(u'Foo Bar'), u'foo-bar')
+        self.assertEqual(title_to_name(u'_'*max_length+'cut'), u'_'*max_length)
 
     def test_disambiguate_name(self):
         from kotti.views.util import disambiguate_name
