@@ -147,3 +147,13 @@ class TestApp(UnitTestBase):
         settings = self.required_settings()
         settings['kotti.includes'] = (self._includeme_layout,)
         return self.test_render_master_edit_template_with_minimal_root(settings)
+
+    def test_setting_values_as_unicode(self):
+        from kotti import get_settings
+        from kotti import main
+
+        settings = self.required_settings()
+        settings['kotti.site_title'] = 'K\xc3\xb6tti' # Kötti
+
+        main({}, **settings)
+        self.assertEqual(get_settings()['kotti.site_title'], u'K\xf6tti')
