@@ -9,7 +9,7 @@ from pyramid.url import resource_url
 from repoze.lru import LRUCache
 from sqlalchemy.types import TypeDecorator, TEXT
 from sqlalchemy.ext.mutable import Mutable
-from kotti import resources
+
 
 _ = TranslationStringFactory('Kotti')
 
@@ -229,6 +229,7 @@ def extract_from_settings(prefix, settings=None):
     return extracted
 
 def title_to_name(title):
+    from kotti import resources
     max_length = resources.nodes.c.name.type.length
     request = get_current_request()
     if request is not None:
