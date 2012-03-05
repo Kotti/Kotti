@@ -246,8 +246,9 @@ class TemplateAPI(object):
         # TODO: no actions on setting panels
         actions = [
             ViewLink('copy', title=_(u'Copy')),
-            ViewLink('cut', title=_(u'Cut')),
             ]
+        if self.context is not self.root:
+            actions.append(ViewLink('cut', title=_(u'Cut')))
         if self.get_paste_item() is not None:
             actions.append(ViewLink('paste', title=_(u'Paste')))
         if self.context is not self.root:

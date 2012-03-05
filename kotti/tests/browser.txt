@@ -294,6 +294,18 @@ property:
   LinkNotFoundError
   >>> Document.type_info.addable_to = save_addable_document
 
+
+You can't cut the root of a site:
+
+  >>> browser.open(testing.BASE_URL + '/child-one')
+  >>> browser.getLink('Cut')
+  <Link text='Cut' url='http://localhost:6543/child-one/@@cut'>
+  >>> browser.open(testing.BASE_URL)
+  >>> browser.getLink('Cut')
+  Traceback (most recent call last):
+  LinkNotFoundError
+
+
 We can rename an item:
 
   >>> browser.open(testing.BASE_URL + '/child-one/second-child')
