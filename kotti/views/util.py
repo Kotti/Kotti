@@ -243,11 +243,16 @@ class TemplateAPI(object):
 
     @reify
     def actions(self):
-        # TODO: no actions on setting panels
+        """ Links for the actions menu.
+        """
+        if self.request.url in self.administration_links():
+            return []
+
         actions = [
             ViewLink('copy', title=_(u'Copy')),
-            ViewLink('cut', title=_(u'Cut')),
             ]
+        if self.context is not self.root:
+            actions.append(ViewLink('cut', title=_(u'Cut')))
         if self.get_paste_item() is not None:
             actions.append(ViewLink('paste', title=_(u'Paste')))
         if self.context is not self.root:
@@ -258,6 +263,11 @@ class TemplateAPI(object):
         return [action for action in actions
                 if action.permitted(self.context, self.request)]
 
+    def administration_links(self):
+        return [
+            self.url(self.root, '@@setup'),
+            self.url(self.root, '@@prefs'),
+            ]
 
     def more_links(self, name):
         return [l for l in getattr(self, name)

@@ -32,9 +32,7 @@ class TestNodePaste(UnitTestBase):
     def test_paste_without_edit_permission(self):
         from kotti import DBSession
         from kotti.resources import Node
-        from kotti.views.edit import (
-            paste_node,
-        )
+        from kotti.views.edit import paste_node
 
         root = DBSession().query(Node).get(1)
         request = DummyRequest()
