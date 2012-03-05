@@ -154,7 +154,6 @@ class TypeInfo(object):
     addable_to = ()
 
     def __init__(self, **kwargs):
-        kwargs.setdefault('title', kwargs['name']) # BBB
         self.__dict__.update(kwargs)
 
     def copy(self, **kwargs):
@@ -176,6 +175,7 @@ class Content(Node):
 
     type_info = TypeInfo(
         name=u'Content',
+        title=u'type_info title missing', # BBB
         add_view=None,
         addable_to=[],
         edit_links=[
