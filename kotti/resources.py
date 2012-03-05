@@ -52,6 +52,10 @@ class ContainerMixin(object, DictMixin):
     def keys(self):
         return [child.name for child in self.children]
 
+    def clear(self):
+        for name in self.keys():
+            del self[name]
+
     def __getitem__(self, path):
         session = DBSession()
         session._autoflush()
