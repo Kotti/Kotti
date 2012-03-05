@@ -324,7 +324,7 @@ def get_root(request=None):
     return get_settings()['kotti.root_factory'][0](request)
 
 def default_get_root(request=None):
-    return DBSession.query(Node).filter(Node.parent_id==None).first()
+    return DBSession.query(Node).filter(Node.parent_id==None).one()
 
 def initialize_sql(engine, drop_all=False):
     DBSession.registry.clear()

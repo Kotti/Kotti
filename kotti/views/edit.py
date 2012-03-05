@@ -10,7 +10,6 @@ from kotti import get_settings
 from kotti import DBSession
 from kotti.resources import Node
 from kotti.resources import Document
-from kotti.security import view_permitted
 from kotti.util import _
 from kotti.views.util import EditFormView
 from kotti.views.util import AddFormView
@@ -52,8 +51,6 @@ def content_type_factories(context, request):
 
 
 def copy_node(context, request):
-    """ copy item
-    """
     request.session['kotti.paste'] = (context.id, 'copy')
     request.session.flash(_(u'${title} copied.',
                             mapping=dict(title=context.title)), 'success')
@@ -63,8 +60,6 @@ def copy_node(context, request):
 
 
 def cut_node(context, request):
-    """ cut item
-    """
     request.session['kotti.paste'] = (context.id, 'cut')
     request.session.flash(_(u'${title} cut.',
                             mapping=dict(title=context.title)), 'success')
@@ -74,8 +69,6 @@ def cut_node(context, request):
 
 
 def paste_node(context, request):
-    """ paste item
-    """
     session = DBSession()
     id, action = request.session['kotti.paste']
     item = session.query(Node).get(id)
@@ -102,8 +95,6 @@ def paste_node(context, request):
 
 
 def order_node(context, request):
-    """ order children
-    """
     P = request.POST
     session = DBSession()
 
@@ -128,26 +119,20 @@ def order_node(context, request):
 
 
 def delete_node(context, request):
-    """ delete item
-    """
     if 'delete-confirm' in request.POST:
         parent = context.__parent__
         request.session.flash(_(u'${title} deleted.',
                                 mapping=dict(title=context.title)), 'success')
-        parent.children.remove(context)
+        del parent[context.name]
         location = resource_url(parent, request)
         return HTTPFound(location=location)
     return {}
 
 
 def rename_node(context, request):
-    """ rename item
-    """
-    P = request.POST
-
-    if 'rename' in P:
-        name = P['name']
-        title = P['title']
+    if 'rename' in request.POST:
+        name = request.POST['name']
+        title = request.POST['title']
         if not name or not title:
             request.session.flash(_(u'Name and title are required.'), 'error')
         else:
