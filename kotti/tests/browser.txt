@@ -152,20 +152,21 @@ Add another grandchild with the same name:
   >>> browser.url == testing.BASE_URL + '/second-child/grandchild-1/'
   True
 
-If it's not possible to add something, the add menu is disabled:
+There's no Add link if nothing can be added:
 
-  >>> browser.open(testing.BASE_URL + '/second-child/grandchild-1')
-  >>> 'class="disabled"' in browser.contents
-  False
+  >>> browser.open(testing.BASE_URL + '/second-child/grandchild-1/')
+  >>> browser.getLink("Add").text
+  'Add'
   >>> try:
   ...     Document.type_info.addable_to = ()
   ...     File.type_info.addable_to = ()
   ...     browser.reload()
-  ...     'class="disabled"' in browser.contents
+  ...     browser.getLink("Add")
   ... finally:
   ...     Document.type_info.addable_to = save_addable_document
   ...     File.type_info.addable_to = save_addable_file
-  True
+  Traceback (most recent call last):
+  LinkNotFoundError
 
 Reorder documents
 -----------------
