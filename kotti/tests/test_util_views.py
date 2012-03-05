@@ -511,24 +511,23 @@ class TestAddFormView(TestCase):
         from kotti.views.util import AddFormView
         return AddFormView(Dummy(), DummyRequest())
 
-    @patch('kotti.views.util.resource_url')
-    def test_save_success_calls_add(self, resource_url):
+    def test_save_success_calls_add(self):
         view = self.make()
         view.add = MagicMock()
         view.find_name = lambda appstruct: 'somename'
+        view.request.resource_url = lambda context: u''
         view.save_success({'three': 3})
         view.add.assert_called_with(three=3)
         assert view.add.return_value == view.context['somename']
 
-    @patch('kotti.views.util.resource_url')
-    def test_save_success_redirects(self, resource_url):
-        resource_url.return_value = 'someurl'
+    def test_save_success_redirects(self):
         view = self.make()
         view.add = MagicMock()
         view.find_name = lambda appstruct: 'somename'
+        view.request.resource_url = lambda context: u'MagicMock'
         result = view.save_success({'three': 3})
         assert result.status == '302 Found'
-        assert result.location == 'someurl'
+        assert result.location == 'MagicMock'
 
     def test_save_success_redirects_custom_url(self):
         view = self.make()

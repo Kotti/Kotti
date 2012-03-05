@@ -16,7 +16,6 @@ from pyramid.location import inside
 from pyramid.location import lineage
 from pyramid.renderers import get_renderer
 from pyramid.renderers import render
-from pyramid.url import resource_url
 from pyramid.view import render_view_to_response
 from pyramid_deform import FormView
 from pyramid_deform import CSRFSchema
@@ -415,8 +414,7 @@ class AddFormView(BaseFormView):
         name = self.find_name(appstruct)
         new_item = self.context[name] = self.add(**appstruct)
         self.request.session.flash(self.success_message, 'success')
-        location = self.success_url or resource_url(
-            new_item, self.request, '@@edit')
+        location = self.success_url or self.request.resource_url(new_item)
         return HTTPFound(location=location)
 
     def find_name(self, appstruct):
