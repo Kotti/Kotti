@@ -48,6 +48,7 @@ class TestUploadFile(FunctionalTestBase):
 
     def test_tempstorage(self):
         browser = self.test_it()
+        browser.getLink("Edit").click()
         browser.getControl("Title").value = '' # the error
         self.add_file(browser, contents='DEF')
         browser.getControl('save').click()

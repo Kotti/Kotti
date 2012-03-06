@@ -1,8 +1,5 @@
 <ul class="nav"
        i18n:domain="Kotti">
-  <li class="disabled" tal:condition="not:factories">
-    <a><span i18n:translate="">Add</span></a>
-  </li>
   <li class="dropdown" tal:condition="factories">
     <a href="#" class="dropdown-toggle" data-toggle="dropdown">
       <span i18n:translate="">Add</span>

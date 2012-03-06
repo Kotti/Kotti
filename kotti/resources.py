@@ -154,7 +154,6 @@ class TypeInfo(object):
     addable_to = ()
 
     def __init__(self, **kwargs):
-        kwargs.setdefault('title', kwargs['name']) # BBB
         self.__dict__.update(kwargs)
 
     def copy(self, **kwargs):
@@ -176,6 +175,7 @@ class Content(Node):
 
     type_info = TypeInfo(
         name=u'Content',
+        title=u'type_info title missing', # BBB
         add_view=None,
         addable_to=[],
         edit_links=[
@@ -323,7 +323,7 @@ def get_root(request=None):
     return get_settings()['kotti.root_factory'][0](request)
 
 def default_get_root(request=None):
-    return DBSession.query(Node).filter(Node.parent_id==None).first()
+    return DBSession.query(Node).filter(Node.parent_id==None).one()
 
 def initialize_sql(engine, drop_all=False):
     DBSession.registry.clear()

@@ -66,16 +66,15 @@ Log in again, this time force an error:
 Add a document
 --------------
 
-  >>> browser.open(testing.BASE_URL)
-  >>> browser.getLink("Edit").click()
-  >>> browser.open(testing.BASE_URL + '/@@add_document')
+  >>> browser.getLink("Add").click()
+  >>> browser.getLink("Document").click()
   >>> "Add document to <em>Welcome to Kotti</em>" in browser.contents
   True
   >>> ctrl("Title").value = "Child One"
   >>> ctrl("save").click()
   >>> "Successfully added item" in browser.contents
   True
-  >>> browser.url == testing.BASE_URL + '/child-one/@@edit'
+  >>> browser.url == testing.BASE_URL + '/child-one/'
   True
 
 Edit the document
@@ -124,50 +123,50 @@ And now click the 'Cancel' button:
 Add two more documents, at different levels
 -------------------------------------------
   
-  >>> browser.open(testing.BASE_URL + '/@@add_document')
+  >>> browser.open(testing.BASE_URL + '/')
+  >>> browser.getLink("Add").click()
+  >>> browser.getLink("Document").click()
   >>> ctrl("Title").value = "Second Child"
   >>> ctrl("save").click()
   >>> "Successfully added item" in browser.contents
   True
-  >>> browser.url == testing.BASE_URL + '/second-child/@@edit'
+  >>> browser.url == testing.BASE_URL + '/second-child/'
   True
 
-  >>> browser.getLink("View").click()
-  >>> browser.open(browser.url + '/@@add_document')
+  >>> browser.getLink("Add").click()
+  >>> browser.getLink("Document").click()
   >>> ctrl("Title").value = "Grandchild"
   >>> ctrl("save").click()
-  >>> browser.url == testing.BASE_URL + '/second-child/grandchild/@@edit'
-  True
-
-  >>> browser.getLink("View").click()
-  >>> "Grandchild" in browser.contents
-  True
   >>> browser.url == testing.BASE_URL + '/second-child/grandchild/'
+  True
+  >>> "Grandchild" in browser.contents
   True
 
 Add another grandchild with the same name:
 
   >>> browser.open(testing.BASE_URL + '/second-child')
-  >>> browser.open(browser.url + '/@@add_document')
+  >>> browser.getLink("Add").click()
+  >>> browser.getLink("Document").click()
   >>> ctrl("Title").value = "Grandchild"
   >>> ctrl("save").click()
-  >>> browser.url == testing.BASE_URL + '/second-child/grandchild-1/@@edit'
+  >>> browser.url == testing.BASE_URL + '/second-child/grandchild-1/'
   True
 
+There's no Add link if nothing can be added:
 
-If it's not possible to add something, the add menu is disabled:
-
-  >>> browser.open(testing.BASE_URL + '/second-child/grandchild-1')
-  >>> 'class="disabled"' in browser.contents
-  False
-  >>> Document.type_info.addable_to = ()
-  >>> File.type_info.addable_to = ()
-  >>> browser.reload()
-  >>> 'class="disabled"' in browser.contents
-  True
-  >>> Document.type_info.addable_to = save_addable_document
-  >>> File.type_info.addable_to = save_addable_file
-
+  >>> browser.open(testing.BASE_URL + '/second-child/grandchild-1/')
+  >>> browser.getLink("Add").text
+  'Add'
+  >>> try:
+  ...     Document.type_info.addable_to = ()
+  ...     File.type_info.addable_to = ()
+  ...     browser.reload()
+  ...     browser.getLink("Add")
+  ... finally:
+  ...     Document.type_info.addable_to = save_addable_document
+  ...     File.type_info.addable_to = save_addable_file
+  Traceback (most recent call last):
+  LinkNotFoundError
 
 Reorder documents
 -----------------
@@ -288,11 +287,25 @@ property:
   >>> browser.open(testing.BASE_URL + '/child-one/second-child')
   >>> browser.getLink('Paste').click()  
   >>> Document.type_info.addable_to = ()
-  >>> browser.reload()
-  >>> browser.getLink('Paste')
+  >>> try:
+  ...     browser.reload()
+  ...     browser.getLink('Paste')
+  ... finally:
+  ...     Document.type_info.addable_to = save_addable_document
   Traceback (most recent call last):
   LinkNotFoundError
-  >>> Document.type_info.addable_to = save_addable_document
+
+
+You can't cut the root of a site:
+
+  >>> browser.open(testing.BASE_URL + '/child-one')
+  >>> browser.getLink('Cut')
+  <Link text='Cut' url='http://localhost:6543/child-one/@@cut'>
+  >>> browser.open(testing.BASE_URL)
+  >>> browser.getLink('Cut')
+  Traceback (most recent call last):
+  LinkNotFoundError
+
 
 We can rename an item:
 
@@ -319,6 +332,22 @@ We cannot rename the root:
   >>> browser.getLink('Rename').click()
   Traceback (most recent call last):
   LinkNotFoundError
+
+
+On setup pages we can't use the actions:
+
+  >>> browser.open(testing.BASE_URL)
+  >>> browser.getLink('Site Setup').click()
+  >>> browser.getLink('Copy').click()
+  Traceback (most recent call last):
+  LinkNotFoundError
+  >>> browser.getLink('Preferences').click()
+  >>> browser.getLink('Copy').click()
+  Traceback (most recent call last):
+  LinkNotFoundError
+  >>> 'class="disabled"' in browser.contents
+  True
+
 
 Navigation
 ----------

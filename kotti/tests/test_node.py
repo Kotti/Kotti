@@ -192,6 +192,17 @@ class TestNode(UnitTestBase):
         DBSession.flush()
         assert child2.local_groups == []
 
+    def test_clear(self):
+        from kotti import DBSession
+        from kotti.resources import get_root
+        from kotti.resources import Node
+
+        child = get_root()['child'] = Node()
+        assert DBSession.query(Node).filter(Node.name == u'child').all() == [
+            child]
+        get_root().clear()
+        assert DBSession.query(Node).filter(Node.name == u'child').all() == []
+
     def test_annotations_mutable(self):
         from kotti import DBSession
         from kotti.resources import get_root
