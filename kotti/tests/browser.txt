@@ -295,6 +295,18 @@ property:
   Traceback (most recent call last):
   LinkNotFoundError
 
+
+You can't cut the root of a site:
+
+  >>> browser.open(testing.BASE_URL + '/child-one')
+  >>> browser.getLink('Cut')
+  <Link text='Cut' url='http://localhost:6543/child-one/@@cut'>
+  >>> browser.open(testing.BASE_URL)
+  >>> browser.getLink('Cut')
+  Traceback (most recent call last):
+  LinkNotFoundError
+
+
 We can rename an item:
 
   >>> browser.open(testing.BASE_URL + '/child-one/second-child')
@@ -320,6 +332,22 @@ We cannot rename the root:
   >>> browser.getLink('Rename').click()
   Traceback (most recent call last):
   LinkNotFoundError
+
+
+On setup pages we can't use the actions:
+
+  >>> browser.open(testing.BASE_URL)
+  >>> browser.getLink('Site Setup').click()
+  >>> browser.getLink('Copy').click()
+  Traceback (most recent call last):
+  LinkNotFoundError
+  >>> browser.getLink('Preferences').click()
+  >>> browser.getLink('Copy').click()
+  Traceback (most recent call last):
+  LinkNotFoundError
+  >>> 'class="disabled"' in browser.contents
+  True
+
 
 Navigation
 ----------
