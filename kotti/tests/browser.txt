@@ -345,8 +345,6 @@ On setup pages we can't use the actions:
   >>> browser.getLink('Copy').click()
   Traceback (most recent call last):
   LinkNotFoundError
-  >>> 'class="disabled"' in browser.contents
-  True
 
 
 Navigation

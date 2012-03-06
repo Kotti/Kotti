@@ -409,6 +409,7 @@ def preferences(context, request):
     return {
         'api': api,
         'form': form['form'],
+        'macro': api.macro('kotti:templates/site-setup/master.pt'),
         }
 
 def includeme(config):

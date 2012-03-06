@@ -1,5 +1,6 @@
 from pyramid.exceptions import Forbidden
 from pyramid.httpexceptions import HTTPFound
+from pyramid.location import inside
 from pyramid.security import has_permission
 from pyramid.url import resource_url
 import colander
@@ -10,7 +11,9 @@ from kotti import get_settings
 from kotti import DBSession
 from kotti.resources import Node
 from kotti.resources import Document
+from kotti.resources import get_root
 from kotti.util import _
+from kotti.util import ViewLink
 from kotti.views.util import EditFormView
 from kotti.views.util import AddFormView
 from kotti.views.util import disambiguate_name
@@ -40,7 +43,7 @@ class DocumentSchema(ContentSchema):
         )
 
 def content_type_factories(context, request):
-    """ Drop down menu for Add button.
+    """Drop down menu for Add button in editor bar.
     """
     all_types = get_settings()['kotti.available_types']
     factories = []
@@ -48,6 +51,39 @@ def content_type_factories(context, request):
         if factory.type_info.addable(context, request):
             factories.append(factory)
     return {'factories': factories}
+
+
+def get_paste_item(context, request):
+    info = request.session.get('kotti.paste')
+    if info:
+        id, action = info
+        item = DBSession().query(Node).get(id)
+        if not item.type_info.addable(context, request):
+            return
+        if action == 'cut' and inside(context, item):
+            return
+        if context == item:
+            return
+        return item
+
+
+def actions(context, request):
+    """Drop down menu for Actions button in editor bar.
+    """
+    root = get_root()
+    actions = [ViewLink('copy', title=_(u'Copy'))]
+    is_root = context is root
+    if not is_root:
+        actions.append(ViewLink('cut', title=_(u'Cut')))
+    if get_paste_item(context, request) is not None:
+        actions.append(ViewLink('paste', title=_(u'Paste')))
+    if not is_root:
+        actions.append(ViewLink('rename', title=_(u'Rename')))
+        actions.append(ViewLink('delete', title=_(u'Delete')))
+    if len(context.children) > 1:
+        actions.append(ViewLink('order', title=_(u'Order')))
+    return {'actions': [action for action in actions
+                        if action.permitted(context, request)]}
 
 
 def copy_node(context, request):
@@ -222,7 +258,7 @@ def includeme(config):
         )
 
     config.add_view(
-        content_type_factories,
+        actions,
         name='actions-dropdown',
         permission='view',
         renderer='kotti:templates/actions-dropdown.pt',
