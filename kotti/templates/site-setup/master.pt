@@ -1,4 +1,9 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       metal:extend-macro="api.macro('kotti:templates/edit/master.pt')"
       metal:define-macro="main">
+
+    <div metal:fill-slot="editor-bar"
+         tal:condition="api.user is not None"
+         tal:replace="api.render_template('kotti:templates/editor-bar.pt', disable_context_links=True)" />
+
 </html>

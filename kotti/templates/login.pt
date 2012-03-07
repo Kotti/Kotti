@@ -34,22 +34,20 @@
         </button>
       </div>
 
-      <div class="collapse">
+      <div>
         <h3 class="forgot-password" i18n:translate="">Forgot your password?</h3>
 
-        <div class="collapseme">
           <div i18n:translate="">
             Fill out your username or email above and click <em>Reset
             password</em> below to receive an email with a link to
             reset your password.
           </div>
           <div class="form-actions">
-            <button type="submit" name="reset-password" class="btn btn-primary"
+            <button type="submit" name="reset-password" class="btn"
                     i18n:translate="">
               Reset password
             </button>
           </div>
-        </div>
 
       </div>
     </form>

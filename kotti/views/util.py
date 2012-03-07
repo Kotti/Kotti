@@ -24,9 +24,7 @@ from kotti import get_settings
 from kotti import DBSession
 from kotti.util import _
 from kotti.util import title_to_name
-from kotti.util import ViewLink
 from kotti.events import objectevent_listeners
-from kotti.resources import Node
 from kotti.resources import Content
 from kotti.security import get_user
 from kotti.security import has_permission
@@ -240,50 +238,9 @@ class TemplateAPI(object):
         return [l for l in self.context.type_info.edit_links
                 if l.permitted(self.context, self.request)]
 
-    @reify
-    def actions(self):
-        """ Links for the actions menu.
-        """
-        if self.request.url in self.administration_links():
-            return []
-
-        actions = [
-            ViewLink('copy', title=_(u'Copy')),
-            ]
-        if self.context is not self.root:
-            actions.append(ViewLink('cut', title=_(u'Cut')))
-        if self.get_paste_item() is not None:
-            actions.append(ViewLink('paste', title=_(u'Paste')))
-        if self.context is not self.root:
-            actions.append(ViewLink('rename', title=_(u'Rename')))
-            actions.append(ViewLink('delete', title=_(u'Delete')))
-        if len(self.list_children()) > 1:
-            actions.append(ViewLink('order', title=_(u'Order')))
-        return [action for action in actions
-                if action.permitted(self.context, self.request)]
-
-    def administration_links(self):
-        return [
-            self.url(self.root, '@@setup'),
-            self.url(self.root, '@@prefs'),
-            ]
-
     def more_links(self, name):
         return [l for l in getattr(self, name)
                 if l.permitted(self.context, self.request)]
-
-    def get_paste_item(self):
-        info = self.request.session.get('kotti.paste')
-        if info:
-            id, action = info
-            item = DBSession().query(Node).get(id)
-            if not item.type_info.addable(self.context, self.request):
-                return
-            if action == 'cut' and self.inside(self.context, item):
-                return
-            if self.context == item:
-                return
-            return item
 
 
 def disambiguate_name(name):

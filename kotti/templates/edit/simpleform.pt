@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
-      metal:use-macro="api.macro('kotti:templates/edit/master.pt')">
+      metal:use-macro="macro | api.macro('kotti:templates/edit/master.pt')">
 
   <div metal:fill-slot="content">
     <h1 tal:content="structure first_heading | default">${api.page_title}</h1>
