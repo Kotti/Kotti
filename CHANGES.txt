@@ -10,7 +10,7 @@ Change History
 - Populators no longer need to call ``transaction.commit()``
   themselves.
 
-0.5.1 - 2011-02-27
+0.5.1 - 2012-02-27
 ------------------
 
 - Internationalize user interface.  Add Portuguese as the first
@@ -21,7 +21,7 @@ Change History
 
 - Refine ``Node.copy``.  No longer copy over local roles per default.
 
-0.5.0 - 2011-02-15
+0.5.0 - 2012-02-15
 ------------------
 
 - Move Kotti's default user interface to use Twitter Bootstrap 2.
