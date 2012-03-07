@@ -15,7 +15,8 @@
             <a href="${api.url()}" i18n:translate="">View</a>
           </li>
 
-          <li tal:repeat="link api.edit_links"
+          <li tal:condition="not disable_context_links"
+              tal:repeat="link api.edit_links"
               class="${link.selected(context, request) and 'active' or None}">
             <a href="${link.url(context, request)}">
               ${link.title}
