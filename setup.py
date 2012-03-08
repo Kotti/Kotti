@@ -18,8 +18,8 @@ install_requires = [
     'Babel',
     'Chameleon>=2',
     'colander>=0.9.3',
-    'deform>=0.9.2', # Chameleon 2
-    'deform_bootstrap>=0.1a5', # search path
+    'deform>=0.9.4', # deform_bootstrap (needs fixing there)
+    'deform_bootstrap>=0.1', # checked_input widget
     'formencode',
     'lingua>=1.3',
     'plone.i18n<2.0', # >= 2.0 adds a huge number of dependencies
