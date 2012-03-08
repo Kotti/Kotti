@@ -378,7 +378,7 @@ And a Bob.  Only alphanumeric characters are allowed for the name:
   >>> ctrl("Name", index=0).value = "bob:"
   >>> ctrl("Full name", index=0).value = "Bob Dabolina"
   >>> ctrl("Password", index=0).value = "secret"
-  >>> ctrl("Confirm Password", index=0).value = "secret"
+  >>> ctrl(name='password-confirm').value = "secret"
   >>> ctrl("Email", index=0).value = "bob@dabolina.com"
   >>> ctrl(name="add_user").click()
   >>> "There was a problem" in browser.contents
@@ -400,7 +400,7 @@ We cannot add Bob twice:
   >>> ctrl("Full name", index=0).value = "Bobby Brown"
   >>> ctrl("Email", index=0).value = "bob@gmail.com"
   >>> ctrl("Password", index=0).value = "secret"
-  >>> ctrl("Confirm Password", index=0).value = "secret"
+  >>> ctrl(name='password-confirm').value = "secret"
   >>> ctrl(name="add_user").click()
   >>> "A user with that name already exists" in browser.contents
   True
@@ -467,11 +467,11 @@ We'll use that link to set our password:
   >>> link = email.body[email.body.index('http://localhost'):].split()[0]
   >>> browser.open(link)
   >>> ctrl("Password", index=0).value = "newpassword"
-  >>> ctrl("Confirm Password").value = "newpasswoops" # a silly error
+  >>> ctrl(name='password-confirm').value = "newpasswoops" # a silly error
   >>> ctrl(name="submit").click()
   >>> "There was an error" in browser.contents
   True
-  >>> ctrl("Confirm Password").value = "newpassword"
+  >>> ctrl(name='password-confirm').value = "newpassword"
   >>> ctrl(name="submit").click()
   >>> "You've reset your password successfully" in browser.contents
   True
@@ -481,7 +481,7 @@ We cannot use that link again:
 
   >>> browser.open(link)
   >>> ctrl("Password", index=0).value = "wontwork"
-  >>> ctrl("Confirm Password").value = "wontwork"
+  >>> ctrl(name='password-confirm').value = "wontwork"
   >>> ctrl(name="submit").click()
   >>> "Your password reset token may have expired" in browser.contents
   True
