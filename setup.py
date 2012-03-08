@@ -32,6 +32,7 @@ install_requires = [
     'pyramid_tm',
     'repoze.lru',
     'sqlalchemy>=0.7',
+    'transaction>=1.1.0',
     'waitress',
     'zope.sqlalchemy',
     ]
