@@ -34,7 +34,8 @@
     <script src="${request.static_url('deform:static/scripts/jquery-ui-timepicker-addon.js')}" type="text/javascript"></script>
     <script src="${request.static_url('deform:static/scripts/jquery.form.js')}" type="text/javascript"></script>
     <script src="${request.static_url('deform:static/tinymce/jscripts/tiny_mce/tiny_mce.js')}" type="text/javascript"></script>
-    <script src="${request.static_url('deform:static/scripts/deform.js')}" type="text/javascript"></script>    
+    <script src="${request.static_url('deform:static/scripts/deform.js')}" type="text/javascript"></script>
+    <script src="${request.static_url('deform_bootstrap:static/deform_bootstrap.js')}" type="text/javascript"></script>
 
     <script type="text/javascript">
       $(document).ready(function() {
