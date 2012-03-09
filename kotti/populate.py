@@ -14,7 +14,7 @@ def populate_users():
         principals[u'admin'] = {
             'name': u'admin',
             'password': get_settings()['kotti.secret'],
-            'title': _(u"Administrator"),
+            'title': u"Administrator",
             'groups': [u'role:admin'],
             }
 
