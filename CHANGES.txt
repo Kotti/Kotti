@@ -1,11 +1,13 @@
 Change History
 ==============
 
-0.5.2 - Unreleased
+0.5.2 - 2012-03-10
 ------------------
 
 - A new 'Actions' menu makes copy, paste, delete and rename of items
   more accessible.
+
+- Add German translation.
 
 - Populators no longer need to call ``transaction.commit()``
   themselves.
