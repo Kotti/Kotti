@@ -26,9 +26,12 @@ Document content type serves as an example here:
 
 .. code-block:: python
 
+  from kotti.resources import Content
+
   class Document(Content):
       type_info = Content.type_info.copy(
           name=u'Document',
+          title=u'Document',
           add_view=u'add_document',
           addable_to=[u'Document'],
           )
