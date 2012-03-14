@@ -1,8 +1,10 @@
 Change History
 ==============
 
-0.5.3 - Unreleased
+0.6.0 - Unreleased
 ------------------
+
+- Use declarative style instead of class mapper for SQLAlchemy resources.
 
 0.5.2 - 2012-03-10
 ------------------
