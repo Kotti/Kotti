@@ -9,7 +9,6 @@ from sqlalchemy.orm import backref
 from sqlalchemy.orm import object_mapper
 from sqlalchemy.orm import relation
 from sqlalchemy.util import classproperty
-from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.ext.orderinglist import ordering_list
 from sqlalchemy import Column
@@ -27,8 +26,9 @@ from zope.interface import implements
 from zope.interface import Interface
 
 from kotti import get_settings
-from kotti import DBSession
 from kotti import metadata
+from kotti import DBSession
+from kotti import Base
 from kotti.util import _
 from kotti.util import ViewLink
 from kotti.util import JsonType
@@ -36,10 +36,6 @@ from kotti.util import MutationList
 from kotti.util import NestedMutationDict
 from kotti.security import PersistentACLMixin
 from kotti.security import view_permitted
-
-
-Base = declarative_base()
-Base.metadata = metadata
 
 
 class ContainerMixin(object, DictMixin):

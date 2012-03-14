@@ -8,11 +8,9 @@ from sqlalchemy import Column
 from sqlalchemy import Boolean
 from sqlalchemy import Integer
 from sqlalchemy import DateTime
-from sqlalchemy import Table
 from sqlalchemy import Unicode
 from sqlalchemy import func
 from sqlalchemy.sql.expression import or_
-from sqlalchemy.orm import mapper
 from sqlalchemy.orm.exc import NoResultFound
 from pyramid.location import lineage
 from pyramid.security import Allow
@@ -23,7 +21,7 @@ from pyramid.security import view_execution_permitted
 
 from kotti import get_settings
 from kotti import DBSession
-from kotti import metadata
+from kotti import Base
 from kotti.util import _
 from kotti.util import JsonType
 from kotti.util import request_cache
@@ -40,7 +38,7 @@ def has_permission(permission, context, request):
     with authz_context(context, request):
         return base_has_permission(permission, context, request)
 
-class Principal(object):
+class Principal(Base):
     """A minimal 'Principal' implementation.
 
     The attributes on this object correspond to what one ought to
@@ -59,6 +57,22 @@ class Principal(object):
         receiver of the email.  This attribute should be set to
         'None' once confirmation has succeeded.
     """
+    __tablename__ = 'principals'
+    __mapper_args__ = dict(
+        order_by='principals.name',
+        )
+
+    id = Column(Integer, primary_key=True)
+    name = Column(Unicode(100), unique=True)
+    password = Column(Unicode(100))
+    active = Column(Boolean)
+    confirm_token = Column(Unicode(100))
+    title = Column(Unicode(100), nullable=False)
+    email = Column(Unicode(100), unique=True)
+    groups = Column(JsonType(), nullable=False)
+    creation_date = Column(DateTime(), nullable=False)
+    last_login_date = Column(DateTime())
+
     def __init__(self, name, password=None, active=True, confirm_token=None,
                  title=u"", email=None, groups=()):
         self.name = name
@@ -464,18 +478,3 @@ class Principals(DictMixin):
 
 def principals_factory():
     return Principals()
-
-principals_table = Table('principals', metadata,
-    Column('id', Integer, primary_key=True),
-    Column('name', Unicode(100), unique=True),
-    Column('password', Unicode(100)),
-    Column('active', Boolean),
-    Column('confirm_token', Unicode(100)),
-    Column('title', Unicode(100), nullable=False),
-    Column('email', Unicode(100), unique=True),
-    Column('groups', JsonType(), nullable=False),
-    Column('creation_date', DateTime(), nullable=False),
-    Column('last_login_date', DateTime()),
-)
-
-mapper(Principal, principals_table, order_by=principals_table.c.name)

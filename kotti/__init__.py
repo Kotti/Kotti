@@ -2,6 +2,7 @@ import pkg_resources
 
 from sqlalchemy import engine_from_config
 from sqlalchemy import MetaData
+from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.sql.expression import desc
 from sqlalchemy.orm import scoped_session
 from sqlalchemy.orm import sessionmaker
@@ -19,6 +20,8 @@ from kotti.util import request_cache
 
 metadata = MetaData()
 DBSession = scoped_session(sessionmaker(extension=ZopeTransactionExtension()))
+Base = declarative_base()
+Base.metadata = metadata
 
 def authtkt_factory(**settings):
     from kotti.security import list_groups_callback
