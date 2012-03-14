@@ -33,6 +33,7 @@ registered.
 from collections import defaultdict
 try:
     from collections import OrderedDict
+    OrderedDict     # make pyflakes happy... :p
 except ImportError: # pragma: no cover
     from ordereddict import OrderedDict
 from datetime import datetime

@@ -44,6 +44,7 @@ def setUp(init_db=True, **kwargs):
     # turn all warnings into errors, but let the `ImportWarning`
     # produced by Babel's `localedata.py` vs `localedata/` show up once...
     from babel import localedata
+    localedata  # make pyflakes happy... :p
     from warnings import filterwarnings
     filterwarnings("error")
 
