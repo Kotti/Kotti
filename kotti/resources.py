@@ -146,16 +146,19 @@ class Node(Base, ContainerMixin, PersistentACLMixin):
     title = Column(Unicode(100))
     annotations = Column(NestedMutationDict.as_mutable(JsonType))
 
-    _children = relation('Node',
-            collection_class=ordering_list('position'),
-            order_by=[position],
-            backref=backref('parent', remote_side=[id]),
-            cascade='all')
+    _children = relation(
+        'Node',
+        collection_class=ordering_list('position'),
+        order_by=[position],
+        backref=backref('parent', remote_side=[id]),
+        cascade='all',
+        )
 
     local_groups = relation(
-            LocalGroup,
-            backref=backref('node'),
-            cascade='all')
+        LocalGroup,
+        backref=backref('node'),
+        cascade='all',
+        )
 
     def __init__(self, name=None, parent=None, title=u"", annotations=None):
         if annotations is None:
