@@ -6,12 +6,11 @@ from pyramid.traversal import resource_path
 from sqlalchemy.sql import and_
 from sqlalchemy.sql import select
 from sqlalchemy.orm import backref
-from sqlalchemy.orm import mapper
 from sqlalchemy.orm import object_mapper
 from sqlalchemy.orm import relation
+from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.ext.orderinglist import ordering_list
-from sqlalchemy import Table
 from sqlalchemy import Column
 from sqlalchemy import UniqueConstraint
 from sqlalchemy import ForeignKey
@@ -36,6 +35,7 @@ from kotti.util import MutationList
 from kotti.util import NestedMutationDict
 from kotti.security import PersistentACLMixin
 from kotti.security import view_permitted
+
 
 class ContainerMixin(object, DictMixin):
     """Containers form the API of a Node that's used for subitem
@@ -75,12 +75,13 @@ class ContainerMixin(object, DictMixin):
 
         # Using the ORM interface here in a loop would join over all
         # polymorphic tables, so we'll use a 'handmade' select instead:
-        conditions = [nodes.c.id==self.id]
+        nodes = metadata.tables['nodes']
+        conditions = [nodes.c.id == self.id]
         alias = nodes
         for name in path:
             alias, old_alias = nodes.alias(), alias
-            conditions.append(alias.c.parent_id==old_alias.c.id)
-            conditions.append(alias.c.name==unicode(name))
+            conditions.append(alias.c.parent_id == old_alias.c.id)
+            conditions.append(alias.c.name == unicode(name))
         expr = select([alias.c.id], and_(*conditions))
         row = session.execute(expr).fetchone()
         if row is None:
@@ -91,18 +92,74 @@ class ContainerMixin(object, DictMixin):
     def children(self):
         return self._children
 
+
 class INode(Interface):
     pass
+
 
 class IContent(Interface):
     pass
 
-class Node(ContainerMixin, PersistentACLMixin):
+
+Base = declarative_base()
+Base.metadata = metadata
+
+
+class LocalGroup(Base):
+
+    __tablename__ = 'local_groups'
+    __table_args__ = (UniqueConstraint('node_id', 'principal_name', 'group_name'), {})
+
+    id = Column(Integer(), primary_key=True)
+    node_id = Column(ForeignKey('nodes.id'))
+    principal_name = Column(Unicode(100))
+    group_name = Column(Unicode(100))
+
+    def __init__(self, node, principal_name, group_name):
+        self.node = node
+        self.principal_name = principal_name
+        self.group_name = group_name
+
+    def copy(self, **kwargs):
+        kwargs.setdefault('node', self.node)
+        kwargs.setdefault('principal_name', self.principal_name)
+        kwargs.setdefault('group_name', self.group_name)
+        return self.__class__(**kwargs)
+
+
+class Node(Base, ContainerMixin, PersistentACLMixin):
     implements(INode)
 
-    id = None
-    in_navigation = False
-    
+    __tablename__ = 'nodes'
+    __table_args__ = (UniqueConstraint('parent_id', 'name'), {})
+
+    id = Column(Integer(), primary_key=True)
+    type = Column(String(30), nullable=False)
+    __mapper_args__ = dict(polymorphic_on=type,
+        polymorphic_identity='node', with_polymorphic='*')
+
+    parent_id = Column(ForeignKey('nodes.id'))
+    position = Column(Integer())
+    _acl = Column(MutationList.as_mutable(JsonType))
+
+    name = Column(Unicode(50), nullable=False)
+    title = Column(Unicode(100))
+    annotations = Column(NestedMutationDict.as_mutable(JsonType))
+
+    _children = relation(
+        'Node',
+        collection_class=ordering_list('position'),
+        order_by=[position],
+        backref=backref('parent', remote_side=[id]),
+        cascade='all',
+        )
+
+    local_groups = relation(
+        LocalGroup,
+        backref=backref('node'),
+        cascade='all',
+        )
+
     def __init__(self, name=None, parent=None, title=u"", annotations=None):
         if annotations is None:
             annotations = {}
@@ -146,17 +203,6 @@ class Node(ContainerMixin, PersistentACLMixin):
             copy.children.append(child.copy())
         return copy
 
-class LocalGroup(object):
-    def __init__(self, node, principal_name, group_name):
-        self.node = node
-        self.principal_name = principal_name
-        self.group_name = group_name
-
-    def copy(self, **kwargs):
-        kwargs.setdefault('node', self.node)
-        kwargs.setdefault('principal_name', self.principal_name)
-        kwargs.setdefault('group_name', self.group_name)
-        return self.__class__(**kwargs)
 
 class TypeInfo(object):
     addable_to = ()
@@ -178,12 +224,16 @@ class TypeInfo(object):
         else:
             return False
 
+
 class Content(Node):
     implements(IContent)
 
+    __tablename__ = 'contents'
+    __mapper_args__ = dict(polymorphic_identity='content')
+
     type_info = TypeInfo(
         name=u'Content',
-        title=u'type_info title missing', # BBB
+        title=u'type_info title missing',   # BBB
         add_view=None,
         addable_to=[],
         edit_links=[
@@ -191,6 +241,15 @@ class Content(Node):
             ViewLink('share', title=_(u'Share')),
             ],
         )
+
+    id = Column('id', Integer, ForeignKey('nodes.id'), primary_key=True)
+    default_view = Column(String(50))
+    description = Column(UnicodeText())
+    language = Column(Unicode(10))
+    owner = Column(Unicode(100))
+    creation_date = Column(DateTime())
+    modification_date = Column(DateTime())
+    in_navigation = Column(Boolean())
 
     def __init__(self, name=None, parent=None, title=u"", annotations=None,
                  default_view=None, description=u"", language=None,
@@ -206,7 +265,12 @@ class Content(Node):
         self.creation_date = creation_date
         self.modification_date = modification_date
 
+
 class Document(Content):
+
+    __tablename__ = 'documents'
+    __mapper_args__ = dict(polymorphic_identity='document')
+
     type_info = Content.type_info.copy(
         name=u'Document',
         title=_(u'Document'),
@@ -214,18 +278,33 @@ class Document(Content):
         addable_to=[u'Document'],
         )
 
+    id = Column(Integer(), ForeignKey('contents.id'), primary_key=True)
+    body = Column(UnicodeText())
+    mime_type = Column(String(30))
+
     def __init__(self, body=u"", mime_type='text/html', **kwargs):
         super(Document, self).__init__(**kwargs)
         self.body = body
         self.mime_type = mime_type
 
+
 class File(Content):
+
+    __tablename__ = 'files'
+    __mapper_args__ = dict(polymorphic_identity='file')
+
     type_info = Content.type_info.copy(
         name=u'File',
         title=_(u'File'),
         add_view=u'add_file',
         addable_to=[u'Document'],
         )
+
+    id = Column(Integer(), ForeignKey('contents.id'), primary_key=True)
+    data = Column(LargeBinary())
+    filename = Column(Unicode(100))
+    mimetype = Column(String(100))
+    size = Column(Integer())
 
     def __init__(self, data=None, filename=None, mimetype=None, size=None,
                  **kwargs):
@@ -235,83 +314,14 @@ class File(Content):
         self.mimetype = mimetype
         self.size = size
 
-nodes = Table('nodes', metadata,
-    Column('id', Integer, primary_key=True),
-    Column('type', String(30), nullable=False),
-    Column('parent_id', ForeignKey('nodes.id')),
-    Column('position', Integer),
-    Column('_acl', MutationList.as_mutable(JsonType)),
 
-    Column('name', Unicode(50), nullable=False),
-    Column('title', Unicode(100)),
-    Column('annotations', NestedMutationDict.as_mutable(JsonType)),
+class Settings(Base):
 
-    UniqueConstraint('parent_id', 'name'),
-)
+    __tablename__ = 'settings'
 
-local_groups_table = Table('local_groups', metadata,
-    Column('id', Integer, primary_key=True),
-    Column('node_id', ForeignKey('nodes.id')),
-    Column('principal_name', Unicode(100)),
-    Column('group_name', Unicode(100)),
+    id = Column(Integer(), primary_key=True)
+    data = Column(JsonType())
 
-    UniqueConstraint('node_id', 'principal_name', 'group_name'),
-)
-
-contents = Table('contents', metadata,
-    Column('id', Integer, ForeignKey('nodes.id'), primary_key=True),
-    Column('default_view', String(50)),
-    Column('description', UnicodeText()),
-    Column('language', Unicode(10)),
-    Column('owner', Unicode(100)),
-    Column('creation_date', DateTime()),
-    Column('modification_date', DateTime()),
-    Column('in_navigation', Boolean()),
-)
-
-documents = Table('documents', metadata,
-    Column('id', Integer, ForeignKey('contents.id'), primary_key=True),
-    Column('body', UnicodeText()),
-    Column('mime_type', String(30)),
-)
-
-files = Table('files', metadata,
-    Column('id', Integer, ForeignKey('contents.id'), primary_key=True),
-    Column('data', LargeBinary()),
-    Column('filename', Unicode(100)),
-    Column('mimetype', String(100)),
-    Column('size', Integer()),
-    )
-
-mapper(
-    Node,
-    nodes,
-    polymorphic_on=nodes.c.type,
-    polymorphic_identity='node',
-    with_polymorphic='*',
-    properties={
-        '_children': relation(
-            Node,
-            collection_class=ordering_list('position'),
-            order_by=[nodes.c.position],
-            backref=backref('parent', remote_side=[nodes.c.id]),
-            cascade='all',
-            ),
-        'local_groups': relation(
-            LocalGroup,
-            backref=backref('node'),
-            cascade='all',
-            )
-        },
-    )
-
-mapper(LocalGroup, local_groups_table)
-
-mapper(Content, contents, inherits=Node, polymorphic_identity='content')
-mapper(Document, documents, inherits=Content, polymorphic_identity='document')
-mapper(File, files, inherits=Content, polymorphic_identity='file')
-
-class Settings(object):
     def __init__(self, data):
         self.data = data
 
@@ -321,18 +331,14 @@ class Settings(object):
         copy = self.__class__(data)
         return copy
 
-settings = Table('settings', metadata,
-    Column('id', Integer, primary_key=True),
-    Column('data', JsonType()),
-    )
-
-mapper(Settings, settings)
 
 def get_root(request=None):
     return get_settings()['kotti.root_factory'][0](request)
 
+
 def default_get_root(request=None):
-    return DBSession.query(Node).filter(Node.parent_id==None).one()
+    return DBSession.query(Node).filter(Node.parent_id == None).one()
+
 
 def initialize_sql(engine, drop_all=False):
     DBSession.registry.clear()
@@ -356,6 +362,7 @@ def initialize_sql(engine, drop_all=False):
     commit()
 
     return DBSession()
+
 
 def appmaker(engine):
     initialize_sql(engine)
