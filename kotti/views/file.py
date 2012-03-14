@@ -51,7 +51,7 @@ def inline_view(context, request, disposition='inline'):
             ],
         app_iter=context.data,
         )
-    
+
     return res
 
 def attachment_view(context, request):

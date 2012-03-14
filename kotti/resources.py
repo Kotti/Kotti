@@ -135,8 +135,11 @@ class Node(Base, ContainerMixin, PersistentACLMixin):
 
     id = Column(Integer(), primary_key=True)
     type = Column(String(30), nullable=False)
-    __mapper_args__ = dict(polymorphic_on=type,
-        polymorphic_identity='node', with_polymorphic='*')
+    __mapper_args__ = dict(
+        polymorphic_on=type,
+        polymorphic_identity='node',
+        with_polymorphic='*',
+        )
 
     parent_id = Column(ForeignKey('nodes.id'))
     position = Column(Integer())
@@ -231,6 +234,15 @@ class Content(Node):
     __tablename__ = 'contents'
     __mapper_args__ = dict(polymorphic_identity='content')
 
+    id = Column('id', Integer, ForeignKey('nodes.id'), primary_key=True)
+    default_view = Column(String(50))
+    description = Column(UnicodeText())
+    language = Column(Unicode(10))
+    owner = Column(Unicode(100))
+    creation_date = Column(DateTime())
+    modification_date = Column(DateTime())
+    in_navigation = Column(Boolean())
+
     type_info = TypeInfo(
         name=u'Content',
         title=u'type_info title missing',   # BBB
@@ -241,15 +253,6 @@ class Content(Node):
             ViewLink('share', title=_(u'Share')),
             ],
         )
-
-    id = Column('id', Integer, ForeignKey('nodes.id'), primary_key=True)
-    default_view = Column(String(50))
-    description = Column(UnicodeText())
-    language = Column(Unicode(10))
-    owner = Column(Unicode(100))
-    creation_date = Column(DateTime())
-    modification_date = Column(DateTime())
-    in_navigation = Column(Boolean())
 
     def __init__(self, name=None, parent=None, title=u"", annotations=None,
                  default_view=None, description=u"", language=None,
@@ -267,9 +270,12 @@ class Content(Node):
 
 
 class Document(Content):
-
     __tablename__ = 'documents'
     __mapper_args__ = dict(polymorphic_identity='document')
+
+    id = Column(Integer(), ForeignKey('contents.id'), primary_key=True)
+    body = Column(UnicodeText())
+    mime_type = Column(String(30))
 
     type_info = Content.type_info.copy(
         name=u'Document',
@@ -278,10 +284,6 @@ class Document(Content):
         addable_to=[u'Document'],
         )
 
-    id = Column(Integer(), ForeignKey('contents.id'), primary_key=True)
-    body = Column(UnicodeText())
-    mime_type = Column(String(30))
-
     def __init__(self, body=u"", mime_type='text/html', **kwargs):
         super(Document, self).__init__(**kwargs)
         self.body = body
@@ -289,9 +291,14 @@ class Document(Content):
 
 
 class File(Content):
-
     __tablename__ = 'files'
     __mapper_args__ = dict(polymorphic_identity='file')
+
+    id = Column(Integer(), ForeignKey('contents.id'), primary_key=True)
+    data = Column(LargeBinary())
+    filename = Column(Unicode(100))
+    mimetype = Column(String(100))
+    size = Column(Integer())
 
     type_info = Content.type_info.copy(
         name=u'File',
@@ -299,12 +306,6 @@ class File(Content):
         add_view=u'add_file',
         addable_to=[u'Document'],
         )
-
-    id = Column(Integer(), ForeignKey('contents.id'), primary_key=True)
-    data = Column(LargeBinary())
-    filename = Column(Unicode(100))
-    mimetype = Column(String(100))
-    size = Column(Integer())
 
     def __init__(self, data=None, filename=None, mimetype=None, size=None,
                  **kwargs):

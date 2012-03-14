@@ -29,9 +29,16 @@ Document content type serves as an example here:
   from kotti.resources import Content
 
   class Document(Content):
+      __tablename__ = 'documents'
+      __mapper_args__ = dict(polymorphic_identity='document')
+
+      id = Column(Integer(), ForeignKey('contents.id'), primary_key=True)
+      body = Column(UnicodeText())
+      mime_type = Column(String(30))
+
       type_info = Content.type_info.copy(
           name=u'Document',
-          title=u'Document',
+          title=_(u'Document'),
           add_view=u'add_document',
           addable_to=[u'Document'],
           )
@@ -40,14 +47,6 @@ Document content type serves as an example here:
           super(Document, self).__init__(**kwargs)
           self.body = body
           self.mime_type = mime_type
-
-  documents = Table('documents', metadata,
-      Column('id', Integer, ForeignKey('contents.id'), primary_key=True),
-      Column('body', UnicodeText()),
-      Column('mime_type', String(30)),
-  )
-
-  mapper(Document, documents, inherits=Content, polymorphic_identity='document')
 
 You can configure the list of active content types in Kotti by
 modifying the :ref:`kotti.available_types` setting.
