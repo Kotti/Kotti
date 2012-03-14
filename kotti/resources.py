@@ -37,6 +37,7 @@ from kotti.util import NestedMutationDict
 from kotti.security import PersistentACLMixin
 from kotti.security import view_permitted
 
+
 class ContainerMixin(object, DictMixin):
     """Containers form the API of a Node that's used for subitem
     access and in traversal.
@@ -75,12 +76,12 @@ class ContainerMixin(object, DictMixin):
 
         # Using the ORM interface here in a loop would join over all
         # polymorphic tables, so we'll use a 'handmade' select instead:
-        conditions = [nodes.c.id==self.id]
+        conditions = [nodes.c.id == self.id]
         alias = nodes
         for name in path:
             alias, old_alias = nodes.alias(), alias
-            conditions.append(alias.c.parent_id==old_alias.c.id)
-            conditions.append(alias.c.name==unicode(name))
+            conditions.append(alias.c.parent_id == old_alias.c.id)
+            conditions.append(alias.c.name == unicode(name))
         expr = select([alias.c.id], and_(*conditions))
         row = session.execute(expr).fetchone()
         if row is None:
@@ -91,18 +92,21 @@ class ContainerMixin(object, DictMixin):
     def children(self):
         return self._children
 
+
 class INode(Interface):
     pass
 
+
 class IContent(Interface):
     pass
+
 
 class Node(ContainerMixin, PersistentACLMixin):
     implements(INode)
 
     id = None
     in_navigation = False
-    
+
     def __init__(self, name=None, parent=None, title=u"", annotations=None):
         if annotations is None:
             annotations = {}
@@ -146,6 +150,7 @@ class Node(ContainerMixin, PersistentACLMixin):
             copy.children.append(child.copy())
         return copy
 
+
 class LocalGroup(object):
     def __init__(self, node, principal_name, group_name):
         self.node = node
@@ -157,6 +162,7 @@ class LocalGroup(object):
         kwargs.setdefault('principal_name', self.principal_name)
         kwargs.setdefault('group_name', self.group_name)
         return self.__class__(**kwargs)
+
 
 class TypeInfo(object):
     addable_to = ()
@@ -178,12 +184,13 @@ class TypeInfo(object):
         else:
             return False
 
+
 class Content(Node):
     implements(IContent)
 
     type_info = TypeInfo(
         name=u'Content',
-        title=u'type_info title missing', # BBB
+        title=u'type_info title missing',   # BBB
         add_view=None,
         addable_to=[],
         edit_links=[
@@ -206,6 +213,7 @@ class Content(Node):
         self.creation_date = creation_date
         self.modification_date = modification_date
 
+
 class Document(Content):
     type_info = Content.type_info.copy(
         name=u'Document',
@@ -218,6 +226,7 @@ class Document(Content):
         super(Document, self).__init__(**kwargs)
         self.body = body
         self.mime_type = mime_type
+
 
 class File(Content):
     type_info = Content.type_info.copy(
@@ -311,6 +320,7 @@ mapper(Content, contents, inherits=Node, polymorphic_identity='content')
 mapper(Document, documents, inherits=Content, polymorphic_identity='document')
 mapper(File, files, inherits=Content, polymorphic_identity='file')
 
+
 class Settings(object):
     def __init__(self, data):
         self.data = data
@@ -328,11 +338,14 @@ settings = Table('settings', metadata,
 
 mapper(Settings, settings)
 
+
 def get_root(request=None):
     return get_settings()['kotti.root_factory'][0](request)
 
+
 def default_get_root(request=None):
-    return DBSession.query(Node).filter(Node.parent_id==None).one()
+    return DBSession.query(Node).filter(Node.parent_id == None).one()
+
 
 def initialize_sql(engine, drop_all=False):
     DBSession.registry.clear()
@@ -356,6 +369,7 @@ def initialize_sql(engine, drop_all=False):
     commit()
 
     return DBSession()
+
 
 def appmaker(engine):
     initialize_sql(engine)
