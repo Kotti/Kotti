@@ -2,6 +2,8 @@
 
 - Use declarative for SQLAlchemy models.
 
+- Deprecate 'kotti.includes' in favour of 'pyramid.includes'.
+
 - To allow for easier integration with 'repoze.workflow', add a
   'state' attribute to the Content class.
 

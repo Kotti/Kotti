@@ -52,23 +52,31 @@ Document content type serves as an example here:
 You can configure the list of active content types in Kotti by
 modifying the :ref:`kotti.available_types` setting.
 
-Configuring custom views, subscribers and more
-----------------------------------------------
+Add views, subscribers and more
+-------------------------------
 
 :ref:`kotti.includes` allows you to hook ``includeme`` functions that
-configure your custom views, subscribers and more.  An ``includeme``
-function takes the *Pyramid Configurator API* object as its sole
-argument.  An example that overrides the default view for all
-``Document`` content types:
+you can use to add views, subscribers, and configure other aspects of
+Kotti and more.  An ``includeme`` function takes the *Pyramid
+Configurator API* object as its sole argument.
+
+Here's an example that'll override the default view for Files:
 
 .. code-block:: python
 
-  def my_view(request):
-      from pyramid.response import Response
-      return Response('OK')
+  def my_file_view(request):
+      return {...}
 
   def includeme(config):
-      config.add_view(my_view)
+      config.add_view(
+          my_file_view,
+          name='view',
+          permission='view',
+          context=File,
+          )
+
+To find out more about views and view registrations, please refer to
+the `Pyramid documentation`_.
 
 By adding the *dotted name string* of your ``includeme`` function to
 the :ref:`kotti.includes` setting, you ask Kotti to call it on
@@ -78,38 +86,14 @@ application start-up.  An example:
 
   kotti.includes = mypackage.views.includeme
 
-The Node API
-------------
+.. _Pyramid documentation: http://docs.pylonsproject.org/projects/pyramid/en/latest/
 
-One of Kotti's core abstractions is the *Node API*, which is a
-*(ordered) dict-like* API for manipulation of objects and their parent/child
-relationships.
+Working with content objects
+----------------------------
 
-An example:
-
-.. code-block:: python
-
-  # Get the root node and set its title:
-  from kotti.resources import get_root
-  root = get_root()
-  root.title = u'A new title'
-
-  # Add two pages:
-  from kotti.resources import Document  
-  root['first'] = Document(title=u'First page')
-  root['second'] = Document(title=u'Second page')
-
-  # Make a copy of the second page and move it into the first page:
-  root['first']['copy-of-second'] = root['second'].copy()
-
-  # Delete the original second page:
-  del root['first']['second']
-
-  # List all children names and nodes:
-  root.keys()
-  ['first']
-  root.values()
-  [<Document at /first>]
+.. include:: ../kotti/tests/nodes.txt
+  :start-after: # end of setup
+  :end-before: # start of teardown
 
 .. _slots:
 
