@@ -59,11 +59,12 @@ class ContainerMixin(object, DictMixin):
         if not hasattr(path, '__iter__'):
             path = (path,)
 
-        if 'children' in self.__dict__:
+        if '_children' in self.__dict__:
             # If children are already in memory, don't query the database:
             first, rest = path[0], path[1:]
             try:
-                [v] = [child for child in self.children if child.name == path[0]]
+                [v] = [child for child in self._children
+                       if child.name == path[0]]
             except ValueError:
                 raise KeyError(path)
             if rest:
@@ -84,6 +85,10 @@ class ContainerMixin(object, DictMixin):
         if row is None:
             raise KeyError(path)
         return session.query(Node).get(row.id)
+
+    @property
+    def children(self):
+        return self._children
 
 class INode(Interface):
     pass
@@ -110,11 +115,13 @@ class Node(ContainerMixin, PersistentACLMixin):
     def __name__(self):
         return self.name
 
-    @property
-    def __parent__(self):
+    def get___parent__(self):
         return self.parent
+    def set___parent__(self, value):
+        self.parent = value
+    __parent__ = property(get___parent__, set___parent__)
 
-    def __repr__(self): # pragma: no cover
+    def __repr__(self):
         return '<%s %s at %s>' % (
             self.__class__.__name__, self.id, resource_path(self))
 
@@ -125,7 +132,7 @@ class Node(ContainerMixin, PersistentACLMixin):
         return not self == other
 
     copy_properties_blacklist = (
-        'id', 'parent', 'parent_id', 'children', 'local_groups')
+        'id', 'parent', 'parent_id', '_children', 'local_groups')
     def copy(self, **kwargs):
         children = list(self.children)
         copy = self.__class__()
@@ -282,7 +289,7 @@ mapper(
     polymorphic_identity='node',
     with_polymorphic='*',
     properties={
-        'children': relation(
+        '_children': relation(
             Node,
             collection_class=ordering_list('position'),
             order_by=[nodes.c.position],
