@@ -74,6 +74,8 @@ You can move a node by setting its ``parent``:
 
 .. code-block:: python
 
+  >>> third.parent
+  <Document 1 at />
   >>> third.parent = first
   >>> root.keys()
   [u'first']
@@ -85,7 +87,7 @@ delete them the database.  For this, you should use the ``del``
 operator as above, or issue a call to ``DBSession.delete(thatchild)``
 directly.
 
-  >>> del third.__parent__[third.name] # or just del root[third.name]
+  >>> del third.__parent__[third.name] # or just del first[third.name]
   >>> from kotti import DBSession
   >>> DBSession.delete(first)
 
