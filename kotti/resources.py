@@ -8,6 +8,7 @@ from sqlalchemy.sql import select
 from sqlalchemy.orm import backref
 from sqlalchemy.orm import object_mapper
 from sqlalchemy.orm import relation
+from sqlalchemy.util import classproperty
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.ext.orderinglist import ordering_list
@@ -35,6 +36,10 @@ from kotti.util import MutationList
 from kotti.util import NestedMutationDict
 from kotti.security import PersistentACLMixin
 from kotti.security import view_permitted
+
+
+Base = declarative_base()
+Base.metadata = metadata
 
 
 class ContainerMixin(object, DictMixin):
@@ -101,14 +106,10 @@ class IContent(Interface):
     pass
 
 
-Base = declarative_base()
-Base.metadata = metadata
-
-
 class LocalGroup(Base):
-
     __tablename__ = 'local_groups'
-    __table_args__ = (UniqueConstraint('node_id', 'principal_name', 'group_name'), {})
+    __table_args__ = (
+        UniqueConstraint('node_id', 'principal_name', 'group_name'), {})
 
     id = Column(Integer(), primary_key=True)
     node_id = Column(ForeignKey('nodes.id'))
@@ -130,7 +131,10 @@ class LocalGroup(Base):
 class Node(Base, ContainerMixin, PersistentACLMixin):
     implements(INode)
 
-    __tablename__ = 'nodes'
+    @classproperty
+    def __tablename__(cls):
+        return '{}s'.format(cls.__name__.lower())
+
     __table_args__ = (UniqueConstraint('parent_id', 'name'), {})
 
     id = Column(Integer(), primary_key=True)
@@ -231,8 +235,9 @@ class TypeInfo(object):
 class Content(Node):
     implements(IContent)
 
-    __tablename__ = 'contents'
-    __mapper_args__ = dict(polymorphic_identity='content')
+    @classproperty
+    def __mapper_args__(cls):
+        return dict(polymorphic_identity=cls.__name__.lower())
 
     id = Column('id', Integer, ForeignKey('nodes.id'), primary_key=True)
     default_view = Column(String(50))
@@ -270,9 +275,6 @@ class Content(Node):
 
 
 class Document(Content):
-    __tablename__ = 'documents'
-    __mapper_args__ = dict(polymorphic_identity='document')
-
     id = Column(Integer(), ForeignKey('contents.id'), primary_key=True)
     body = Column(UnicodeText())
     mime_type = Column(String(30))
@@ -291,9 +293,6 @@ class Document(Content):
 
 
 class File(Content):
-    __tablename__ = 'files'
-    __mapper_args__ = dict(polymorphic_identity='file')
-
     id = Column(Integer(), ForeignKey('contents.id'), primary_key=True)
     data = Column(LargeBinary())
     filename = Column(Unicode(100))
@@ -317,7 +316,6 @@ class File(Content):
 
 
 class Settings(Base):
-
     __tablename__ = 'settings'
 
     id = Column(Integer(), primary_key=True)
