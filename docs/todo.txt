@@ -1,12 +1,12 @@
-- Add image uploads and a small media library.  Probably as an add-on.
+- Add image uploads and a small media library.  Probably as an
+  add-on. (iElectric)
 
-- Use declarative for SQLAlchemy models.
-
-- Deprecate 'kotti.includes' in favour of 'pyramid.includes'.
+- Deprecate 'kotti.includes' in favour of 'pyramid.includes'. (teixas)
 
 - To allow for easier integration with 'repoze.workflow', add a
   'state' attribute to the Content class.
 
 - Add an item to control panel that integrates with 'pyramid_exclog'.
 
-- Move navigation related functionality out of TemplateAPI and into snippets.
+- Move more navigation related functionality out of TemplateAPI and
+  into snippets.
