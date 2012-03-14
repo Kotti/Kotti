@@ -9,6 +9,7 @@ from sqlalchemy.orm import backref
 from sqlalchemy.orm import mapper
 from sqlalchemy.orm import object_mapper
 from sqlalchemy.orm import relation
+from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.ext.orderinglist import ordering_list
 from sqlalchemy import Table
 from sqlalchemy import Column
@@ -86,7 +87,7 @@ class ContainerMixin(object, DictMixin):
             raise KeyError(path)
         return session.query(Node).get(row.id)
 
-    @property
+    @hybrid_property
     def children(self):
         return self._children
 
