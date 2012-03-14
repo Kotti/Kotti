@@ -51,7 +51,7 @@ copyright = u'2012, Daniel Nouri and contributors'
 # built documents.
 #
 # The short X.Y version.
-version = '0.5'
+version = '0.6'
 # The full version, including alpha/beta/rc tags.
 release = version
 
