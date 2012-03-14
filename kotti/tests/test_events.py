@@ -23,7 +23,7 @@ class TestEvents(UnitTestBase):
         from kotti.util import clear_cache
 
         session = DBSession()
-        self.config.testing_securitypolicy(userid=u'bob')
+        self.config.testing_securitypolicy(userid='bob')
         root = get_root()
         child = root[u'child'] = Content()
         session.flush()
