@@ -132,20 +132,20 @@ class Node(Base, ContainerMixin, PersistentACLMixin):
     def __tablename__(cls):
         return '{0}s'.format(cls.__name__.lower())
 
-    __table_args__ = (UniqueConstraint('parent_id', 'name'), {})
-
-    id = Column(Integer(), primary_key=True)
-    type = Column(String(30), nullable=False)
+    __table_args__ = (
+        UniqueConstraint('parent_id', 'name'),
+        )
     __mapper_args__ = dict(
-        polymorphic_on=type,
+        polymorphic_on='type',
         polymorphic_identity='node',
         with_polymorphic='*',
         )
 
+    id = Column(Integer(), primary_key=True)
+    type = Column(String(30), nullable=False)
     parent_id = Column(ForeignKey('nodes.id'))
     position = Column(Integer())
     _acl = Column(MutationList.as_mutable(JsonType))
-
     name = Column(Unicode(50), nullable=False)
     title = Column(Unicode(100))
     annotations = Column(NestedMutationDict.as_mutable(JsonType))

@@ -34,7 +34,7 @@ from collections import defaultdict
 try: # pragma: no cover
     from collections import OrderedDict
     OrderedDict # pyflakes
-except ImportError: 
+except ImportError: # pragma: no cover
     from ordereddict import OrderedDict
 from datetime import datetime
 
