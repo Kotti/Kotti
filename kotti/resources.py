@@ -105,7 +105,8 @@ class IContent(Interface):
 class LocalGroup(Base):
     __tablename__ = 'local_groups'
     __table_args__ = (
-        UniqueConstraint('node_id', 'principal_name', 'group_name'), {})
+        UniqueConstraint('node_id', 'principal_name', 'group_name'),
+        )
 
     id = Column(Integer(), primary_key=True)
     node_id = Column(ForeignKey('nodes.id'))
