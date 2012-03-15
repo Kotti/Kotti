@@ -31,10 +31,10 @@ registered.
 """
 
 from collections import defaultdict
-try:
+try: # pragma: no cover
     from collections import OrderedDict
-    OrderedDict     # make pyflakes happy... :p
-except ImportError: # pragma: no cover
+    OrderedDict # pyflakes
+except ImportError: 
     from ordereddict import OrderedDict
 from datetime import datetime
 

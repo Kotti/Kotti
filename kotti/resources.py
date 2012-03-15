@@ -130,7 +130,7 @@ class Node(Base, ContainerMixin, PersistentACLMixin):
 
     @classproperty
     def __tablename__(cls):
-        return '{}s'.format(cls.__name__.lower())
+        return '{0}s'.format(cls.__name__.lower())
 
     __table_args__ = (UniqueConstraint('parent_id', 'name'), {})
 
