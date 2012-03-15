@@ -56,7 +56,7 @@ The lists of keys and values are ordered:
   >>> first.keys()
   [u'copy-of-second']
   >>> root.values()
-  [<Document 2 at /first>, <Document 4 at /third>]
+  [<Document ... at /first>, <Document ... at /third>]
 
 There's the ``node.children`` attribute should you ever need to change
 the order of the child nodes.  ``node.children`` is a SQLAlchmey
@@ -65,10 +65,10 @@ the order of the child nodes.  ``node.children`` is a SQLAlchmey
 .. code-block:: python
 
   >>> root.children
-  [<Document 2 at /first>, <Document 4 at /third>]
+  [<Document ... at /first>, <Document ... at /third>]
   >>> root.children[:] = [root.values()[-1], root.values()[0]]
   >>> root.values()
-  [<Document 4 at /third>, <Document 2 at /first>]
+  [<Document ... at /third>, <Document ... at /first>]
 
 .. note::
 
@@ -81,7 +81,7 @@ You can move a node by setting its ``__parent__``:
 .. code-block:: python
 
   >>> third.__parent__
-  <Document 1 at />
+  <Document ... at />
   >>> third.__parent__ = first
   >>> root.keys()
   [u'first']
