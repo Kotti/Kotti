@@ -40,13 +40,16 @@ def _populator():
         DBSession.delete(doc)
     transaction.commit()
 
-def setUp(init_db=True, **kwargs):
+def _turn_warnings_into_errors():
     # turn all warnings into errors, but let the `ImportWarning`
     # produced by Babel's `localedata.py` vs `localedata/` show up once...
     from babel import localedata
     localedata  # make pyflakes happy... :p
     from warnings import filterwarnings
     filterwarnings("error")
+
+def setUp(init_db=True, **kwargs):
+    #_turn_warnings_into_errors()
 
     from kotti import _resolve_dotted
     from kotti import conf_defaults
