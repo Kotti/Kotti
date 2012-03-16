@@ -1,8 +1,8 @@
 Change History
 ==============
 
-0.6.0 - Unreleased
-------------------
+0.6.0b2 - 2012-03-16
+--------------------
 
 - Make the 'item_type' attribute of AddForm optional.  Fixes #41.
 
@@ -15,8 +15,9 @@ Change History
 - Use declarative style instead of class mapper for SQLAlchemy resources.
 
   Unfortunately, this change is backwards incompatible with existing
-  content types.  Updating your types is however simple.  See
-  kotti_calendar for an example:
+  content types (not with existing databases however).  Updating your
+  types to use Declarative is simple.  See kotti_calendar for an
+  example:
   https://github.com/dnouri/kotti_calendar/commit/509d46bd596ff338e0a88f481339882de72e49e0#diff-1
 
 0.5.2 - 2012-03-10
