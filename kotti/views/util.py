@@ -373,7 +373,7 @@ class EditFormView(BaseFormView):
 
 class AddFormView(BaseFormView):
     success_message = _(u"Successfully added item.")
-    item_type = u'item'
+    item_type = None
     add_template_vars = ('first_heading',)
 
     def save_success(self, appstruct):
@@ -395,8 +395,9 @@ class AddFormView(BaseFormView):
     @reify
     def first_heading(self):
         context_title = getattr(self.request.context, 'title', None)
+        type_title = self.item_type or self.add.type_info.title
         if context_title:
             return _(u'Add ${type} to <em>${title}</em>',
-                     mapping=dict(type=self.item_type, title=context_title))
+                     mapping=dict(type=type_title, title=context_title))
         else:
-            return _(u'Add ${type}', mapping=dict(type=self.item_type))
+            return _(u'Add ${type}', mapping=dict(type=type_title))

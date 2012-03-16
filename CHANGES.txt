@@ -4,6 +4,8 @@ Change History
 0.6.0 - Unreleased
 ------------------
 
+- Make the 'item_type' attribute of AddForm optional.  Fixes #41.
+
 0.6.0b1 - 2012-03-15
 --------------------
 

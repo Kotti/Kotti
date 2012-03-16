@@ -68,7 +68,7 @@ Add a document
 
   >>> browser.getLink("Add").click()
   >>> browser.getLink("Document").click()
-  >>> "Add document to <em>Welcome to Kotti</em>" in browser.contents
+  >>> "Add Document to <em>Welcome to Kotti</em>" in browser.contents
   True
   >>> ctrl("Title").value = "Child One"
   >>> ctrl("save").click()

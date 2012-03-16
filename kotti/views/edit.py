@@ -205,7 +205,7 @@ def make_generic_edit(schema, **kwargs):
         return generic_edit(context, request, schema, **kwargs)
     return view
 
-def make_generic_add(schema, add, title, **kwargs):
+def make_generic_add(schema, add, title=None, **kwargs):
     def view(context, request):
         return generic_add(context, request, schema, add, title, **kwargs)
     return view
@@ -230,7 +230,7 @@ def includeme(config):
         )
 
     config.add_view(
-        make_generic_add(DocumentSchema(), Document, u'document'),
+        make_generic_add(DocumentSchema(), Document),
         name=Document.type_info.add_view,
         permission='add',
         renderer='kotti:templates/edit/node.pt',

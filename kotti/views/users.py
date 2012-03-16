@@ -262,6 +262,7 @@ def _massage_groups_out(appstruct):
     return d
 
 class UserAddFormView(AddFormView):
+    item_type = _(u'User')
     buttons = (Button('add_user', _(u'Add User')),
                Button('cancel', _(u'Cancel')))
 

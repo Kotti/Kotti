@@ -40,7 +40,7 @@ def _populator():
         DBSession.delete(doc)
     transaction.commit()
 
-def _turn_warnings_into_errors():
+def _turn_warnings_into_errors(): # pragma: no cover
     # turn all warnings into errors, but let the `ImportWarning`
     # produced by Babel's `localedata.py` vs `localedata/` show up once...
     from babel import localedata
