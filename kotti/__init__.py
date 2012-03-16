@@ -1,4 +1,5 @@
 import pkg_resources
+import warnings
 
 from sqlalchemy import engine_from_config
 from sqlalchemy import MetaData
@@ -105,7 +106,6 @@ def base_configure(global_config, **settings):
     """Resolve dotted names in settings, include plug-ins and create a
     Configurator.
     """
-    import warnings
     from kotti.resources import appmaker
 
     for key, value in conf_defaults.items():
@@ -124,6 +124,17 @@ def base_configure(global_config, **settings):
     secret1 = settings['kotti.secret']
     settings.setdefault('kotti.secret2', secret1)
 
+    # Check for existence of deprecated ``kotti.includes`` setting
+    if 'kotti.includes' in settings:
+        warnings.warn(
+            'Usage of ``kotti.includes`` setting is deprecated. '
+            'Please set on ``pyramid.includes`` to include your package.',
+            DeprecationWarning)
+        if settings.get('pyramid.includes') is None: # BBB
+            settings['pyramid.includes'] = settings['kotti.includes']
+        else:
+            settings['pyramid.includes'] += ' ' + settings['kotti.includes']
+
     config = Configurator(
         settings=settings,
         )
@@ -133,14 +144,6 @@ def base_configure(global_config, **settings):
     for module in settings['kotti.base_includes']:
         config.include(module)
     config.commit()
-
-    # Check for existence of deprecated ``kotti.includes`` setting
-    if 'kotti.includes' in settings:
-        warnings.simplefilter('always')
-        warnings.warn(
-            'Usage of ``kotti.includes`` setting is deprecated. '
-            'Please set on ``pyramid.includes`` to include your package.',
-            DeprecationWarning)
 
     engine = engine_from_config(settings, 'sqlalchemy.')
     config._set_root_factory(appmaker(engine))
