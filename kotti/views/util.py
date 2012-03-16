@@ -11,11 +11,16 @@ import deform
 from deform import Button
 from pyramid.decorator import reify
 from pyramid.httpexceptions import HTTPFound
+from pyramid.i18n import get_localizer
 from pyramid.i18n import get_locale_name
+from pyramid.i18n import make_localizer
+from pyramid.interfaces import ITranslationDirectories
 from pyramid.location import inside
 from pyramid.location import lineage
 from pyramid.renderers import get_renderer
 from pyramid.renderers import render
+from pyramid.threadlocal import get_current_registry
+from pyramid.threadlocal import get_current_request
 from pyramid.view import render_view_to_response
 from pyramid_deform import FormView
 from pyramid_deform import CSRFSchema
@@ -50,8 +55,25 @@ def add_renderer_globals(event):
             api = template_api(event['context'], event['request'])
         event['api'] = api
 
+
 def is_root(context, request):
     return context is TemplateAPI(context, request).root
+
+
+def get_localizer_for_locale_name(locale_name):
+    registry = get_current_registry()
+    tdirs = registry.queryUtility(ITranslationDirectories, default=[])
+    return make_localizer(locale_name, tdirs)
+
+
+def translate(*args, **kwargs):
+    request = get_current_request()
+    if request is None:
+        localizer = get_localizer_for_locale_name('en')
+    else:
+        localizer = get_localizer(request)
+    return localizer.translate(*args, **kwargs)
+
 
 class TemplateStructure(object):
     def __init__(self, html):
@@ -397,7 +419,8 @@ class AddFormView(BaseFormView):
         context_title = getattr(self.request.context, 'title', None)
         type_title = self.item_type or self.add.type_info.title
         if context_title:
-            return _(u'Add ${type} to <em>${title}</em>',
-                     mapping=dict(type=type_title, title=context_title))
+            return _(
+                u'Add ${type} to <em>${title}</em>',
+                mapping=dict(type=translate(type_title), title=context_title))
         else:
-            return _(u'Add ${type}', mapping=dict(type=type_title))
+            return _(u'Add ${type}', mapping=dict(type=translate(type_title)))
