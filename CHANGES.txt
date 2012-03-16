@@ -6,6 +6,9 @@ Change History
 
 - Make the 'item_type' attribute of AddForm optional.  Fixes #41.
 
+- `kotti.util.title_to_name` will now return a name with a maximum
+  length of 40.  Fixes #31.
+
 0.6.0b1 - 2012-03-15
 --------------------
 

@@ -129,9 +129,17 @@ class TestRequestCache(UnitTestBase):
         my_fun(1, 2)
         self.assertEqual(len(called), 2)
 
+
 class TestLRUCache(TestRequestCache):
     def setUp(self):
         from kotti.util import lru_cache
         
         super(TestLRUCache, self).setUp()
         self.cache_decorator = lru_cache
+
+
+class TestTitleToName(TestCase):
+    def test_max_length(self):
+        from kotti.util import title_to_name
+
+        assert len(title_to_name(u'a' * 50)) == 40

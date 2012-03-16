@@ -233,4 +233,4 @@ def title_to_name(title):
         locale_name = get_locale_name(request)
     else:
         locale_name = 'en'
-    return unicode(urlnormalizer.normalize(title, locale_name))
+    return unicode(urlnormalizer.normalize(title, locale_name, max_length=40))
