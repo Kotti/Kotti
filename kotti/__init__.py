@@ -42,7 +42,6 @@ conf_defaults = {
     'kotti.templates.api': 'kotti.views.util.TemplateAPI',
     'kotti.configurators': '',
     'kotti.base_includes': 'kotti kotti.events kotti.views kotti.views.view kotti.views.edit kotti.views.login kotti.views.file kotti.views.users kotti.views.site_setup kotti.views.slots',
-    'kotti.includes': '',
     'kotti.asset_overrides': '',
     'kotti.use_tables': '',
     'kotti.root_factory': 'kotti.resources.default_get_root',
@@ -61,7 +60,6 @@ conf_dotted = set([
     'kotti.templates.api',
     'kotti.configurators',
     'kotti.base_includes',
-    'kotti.includes',
     'kotti.root_factory',
     'kotti.populators',
     'kotti.available_types',
@@ -107,6 +105,7 @@ def base_configure(global_config, **settings):
     """Resolve dotted names in settings, include plug-ins and create a
     Configurator.
     """
+    import warnings
     from kotti.resources import appmaker
 
     for key, value in conf_defaults.items():
@@ -130,13 +129,18 @@ def base_configure(global_config, **settings):
         )
     config.begin()
 
-    # Include modules listed in 'kotti.base_includes' and 'kotti.includes':
+    # Include modules listed in 'kotti.base_includes':
     for module in settings['kotti.base_includes']:
         config.include(module)
     config.commit()
-    for module in settings['kotti.includes']:
-        config.include(module)
-    config.commit()
+
+    # Check for existence of deprecated ``kotti.includes`` setting
+    if 'kotti.includes' in settings:
+        warnings.simplefilter('always')
+        warnings.warn(
+            'Usage of ``kotti.includes`` setting is deprecated. '
+            'Please set on ``pyramid.includes`` to include your package.',
+            DeprecationWarning)
 
     engine = engine_from_config(settings, 'sqlalchemy.')
     config._set_root_factory(appmaker(engine))

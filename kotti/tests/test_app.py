@@ -98,11 +98,27 @@ class TestApp(UnitTestBase):
             renderer='kotti:templates/login.pt',
             )
 
-    def test_includes_overrides(self):
+    def test_kotti_includes_deprecation_warning(self):
+        import warnings
+
         from kotti import main
 
         settings = self.required_settings()
         settings['kotti.includes'] = (self._includeme_login,)
+
+        with warnings.catch_warnings(record=True) as w:
+            warnings.simplefilter('always')
+            main({}, **settings)
+            assert len(w) == 1
+            assert issubclass(w[-1].category, DeprecationWarning)
+            assert 'Please set on ``pyramid.includes``' in str(w[-1].message)
+
+    def test_includes_overrides(self):
+        from kotti import main
+
+        settings = self.required_settings()
+        settings['pyramid.includes'] = (
+            'kotti.tests.test_app.TestApp._includeme_login')
         main({}, **settings)
 
     def test_use_tables(self):
@@ -145,7 +161,8 @@ class TestApp(UnitTestBase):
 
     def test_render_master_view_template_with_minimal_root(self):
         settings = self.required_settings()
-        settings['kotti.includes'] = (self._includeme_layout,)
+        settings['pyramid.includes'] = (
+            'kotti.tests.test_app.TestApp._includeme_layout')
         return self.test_render_master_edit_template_with_minimal_root(settings)
 
     def test_setting_values_as_unicode(self):
