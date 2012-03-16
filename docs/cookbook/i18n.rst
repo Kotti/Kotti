@@ -1,3 +1,5 @@
+.. _cookbook i18n:
+
 Internationalization
 ====================
 

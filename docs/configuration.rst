@@ -218,6 +218,8 @@ Populators are functions with no arguments that get called on system
 startup.  They may then make automatic changes to the database (before
 calling ``transaction.commit()``).
 
+.. _user interface language:
+
 Configure the user interface language
 -------------------------------------
 
@@ -227,6 +229,12 @@ default configuration is:
 .. code-block:: ini
 
   pyramid.default_locale_name = en
+
+You can configure Kotti to serve a German user interface by saying:
+
+.. code-block:: ini
+
+  pyramid.default_locale_name = de_DE
 
 The list of available languages is `here
 <https://github.com/Pylons/Kotti/tree/master/kotti/locale>`_.
