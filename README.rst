@@ -46,6 +46,9 @@ by Plone_.  Its **main features** are:
 - **Security**: the advanced user and permissions management is
   intuitive and scales to fit the requirements of large organizations
 
+- **Internationalized**: the user interface is fully translatable,
+  Unicode is used everywhere to store data
+
 .. _Kotti's demo page: http://kottidemo.danielnouri.org/
 .. _Plone: http://plone.org/
 .. _Twitter Bootstrap: http://twitter.github.com/bootstrap/

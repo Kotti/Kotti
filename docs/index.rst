@@ -48,6 +48,9 @@ by Plone_.  Its **main features** are:
 - **Security**: the advanced user and permissions management is
   intuitive and scales to fit the requirements of large organizations
 
+- **Internationalized**: the user interface is fully translatable,
+  Unicode is used everywhere to store data (see :ref:`translations`)
+
 .. _Kotti's demo page: http://kottidemo.danielnouri.org/
 .. _Plone: http://plone.org/
 .. _Twitter Bootstrap: http://twitter.github.com/bootstrap/
@@ -145,7 +148,10 @@ source code via its GitHub repostiory.  Use this command:
 Automated tests
 ===============
 
-To run Kotti's automated test suite, do:
+Kotti uses `pytest`_, `zope.testbrowser`_ and WebTest_ for automated
+testing.
+
+To run Kotti's test suite, do:
 
 .. code-block:: bash
 
@@ -156,6 +162,33 @@ Or, alternatively:
 .. code-block:: bash
 
   bin/python setup.py test
+
+.. _pytest: http://pytest.org
+.. _zope.testbrowser: http://pypi.python.org/pypi/zope.testbrowser
+.. _WebTest: http://webtest.pythonpaste.org
+
+.. _translations:
+
+Translations
+============
+
+You can `find the list of Kotti's translations here`_.  Kotti uses
+`GNU gettext`_ and .po files for internationalization.
+
+In order to compile your .po files to .mo files, do:
+
+.. code-block:: bash
+
+  bin/python setup.py compile_catalog
+
+To extract messages and update the existing .pot and .po files, do:
+
+.. code-block:: bash
+
+  bin/python setup.py extract_messages update_catalog
+
+.. _find the list of Kotti's translations here: https://github.com/Pylons/Kotti/tree/master/kotti/locale
+.. _GNU gettext: http://www.gnu.org/software/gettext/
 
 Detailed Change History
 =======================
