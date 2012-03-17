@@ -114,11 +114,15 @@ class TestNode(UnitTestBase):
         root[u'child3'] = Node()
         subchild33 = Node(name=u'subchild33', parent=root[u'child3'])
         session.add(subchild33)
-        del root.__dict__['_children']
+        del root.__dict__['_children'] # force a different code path
         self.assertTrue(
             root[u'child3', u'subchild33'] is root[u'child3'][u'subchild33'])
         self.assertTrue(
             root[(u'child3', u'subchild33')] is subchild33)
+        self.assertTrue(
+            root[(u'child3', u'subchild33')] is subchild33)
+        self.assertRaises(KeyError, root.__getitem__, (u'child3', u'bad-name'))
+        root.children # force a different code path
         self.assertRaises(KeyError, root.__getitem__, (u'child3', u'bad-name'))
         del root[u'child3']
 
