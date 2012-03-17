@@ -3,12 +3,12 @@ python:
   - "2.6"
   - "2.7"
 env:
-  - KOTTI_TEST_DB_STRING=postgresql://postgres@localhost:5432/kotti-testing
+  - KOTTI_TEST_DB_STRING=postgresql://postgres@localhost:5432/kotti_testing
   - KOTTI_TEST_DB_STRING=sqlite://
 install:
   - python setup.py develop; pip install psycopg
 before_script:
-  - psql -c 'create database kotti-testing;' -U postgres
+  - psql -c 'create database kotti_testing;' -U postgres
 script: py.test
 notifications:
   irc:
