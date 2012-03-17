@@ -114,6 +114,7 @@ class TestNode(UnitTestBase):
         root[u'child3'] = Node()
         subchild33 = Node(name=u'subchild33', parent=root[u'child3'])
         session.add(subchild33)
+        del root.__dict__['_children']
         self.assertTrue(
             root[u'child3', u'subchild33'] is root[u'child3'][u'subchild33'])
         self.assertTrue(

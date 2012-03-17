@@ -8,6 +8,7 @@ from sqlalchemy.sql import select
 from sqlalchemy.orm import backref
 from sqlalchemy.orm import object_mapper
 from sqlalchemy.orm import relation
+from sqlalchemy.orm.exc import NoResultFound
 from sqlalchemy.util import classproperty
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.ext.orderinglist import ordering_list
@@ -62,22 +63,28 @@ class ContainerMixin(object, DictMixin):
         if not hasattr(path, '__iter__'):
             path = (path,)
 
+        # Optimization: don't query children if self._children is already there:
         if '_children' in self.__dict__:
-            # If children are already in memory, don't query the database:
             first, rest = path[0], path[1:]
             try:
-                [v] = [child for child in self._children
-                       if child.name == path[0]]
+                [child] = filter(lambda ch: ch.name == path[0], self._children)
             except ValueError:
                 raise KeyError(path)
             if rest:
-                return v[rest]
+                return child[rest]
             else:
-                return v
+                return child
 
-        # Using the ORM interface here in a loop would join over all
-        # polymorphic tables, so we'll use a 'handmade' select instead:
-        nodes = metadata.tables['nodes']
+        if len(path) == 1:
+            try:
+                return DBSession.query(Node).filter_by(
+                    name=path[0], parent=self).one()
+            except NoResultFound:
+                raise KeyError(path)
+
+        # We have a path with more than one element, so let's be a
+        # little clever about fetching the requested node:
+        nodes = Node.__table__
         conditions = [nodes.c.id == self.id]
         alias = nodes
         for name in path:
