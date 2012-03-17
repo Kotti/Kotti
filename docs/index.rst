@@ -16,7 +16,7 @@ Kotti is most useful when you are developing applications that
 
 Built on top of a number of *best-of-breed* software components, most
 notably Pyramid_ and SQLAlchemy_, Kotti introduces only a few concepts
-itself, thus hopefully keeping the learning curve flat for the
+of its own, thus hopefully keeping the learning curve flat for the
 developer.
 
 .. _Pyramid: http://docs.pylonsproject.org/projects/pyramid/dev/
