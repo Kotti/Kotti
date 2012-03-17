@@ -78,14 +78,14 @@ libraries.  Other notable components used but not enforced by Kotti
 are Colander_ and Deform_ for forms, and Chameleon_ for templating.
 
 `Continuous testing`_ against different versions of Python and with
-both *PostgreSQL* and *SQLite* and a complete test coverage make Kotti
-a **stable** platform to work with.
+*PostgreSQL*, *MySQL* and *SQLite* and a complete test coverage make
+Kotti a **stable** platform to work with.
 
 .. _repoze.workflow: http://docs.repoze.org/workflow/
 .. _Chameleon: http://chameleon.repoze.org/
 .. _Colander: http://docs.pylonsproject.org/projects/colander/en/latest/
 .. _Deform: http://docs.pylonsproject.org/projects/deform/en/latest/
-.. _continuous testing: http://jenkins.danielnouri.org/job/Kotti/
+.. _continuous testing: http://travis-ci.org/Pylons/Kotti
 
 .. _installation:
 

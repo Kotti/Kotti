@@ -7,8 +7,8 @@ Requirements
 ------------
 
 - Runs on Python versions 2.6 and 2.7.
-- Support for PostgreSQL and SQLite (tested regularly), and a list of
-  `other SQL databases`_
+- Support for PostgreSQL, MySQL and SQLite (tested regularly), and a
+  list of `other SQL databases`_
 - Support for WSGI and a `variety of web servers`_, including Apache
 
 Installation using ``virtualenv``
