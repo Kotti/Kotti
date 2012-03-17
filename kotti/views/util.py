@@ -50,8 +50,9 @@ def render_view(context, request, name='', secure=True):
 
 def add_renderer_globals(event):
     if event['renderer_name'] != 'json':
-        api = getattr(event['request'], 'template_api', None)
-        if api is None:
+        request = event['request']
+        api = getattr(request, 'template_api', None)
+        if api is None and request is not None:
             api = template_api(event['context'], event['request'])
         event['api'] = api
 
