@@ -81,5 +81,10 @@
       </footer>
 
     </div>
+
+    <tal:slots tal:define="snippets page_slots.beforebodyend"
+               tal:condition="snippets"
+               tal:repeat="snippet snippets"
+               tal:replace="structure snippet" />
   </body>
 </html>
