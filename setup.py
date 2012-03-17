@@ -64,7 +64,7 @@ class PyTest(Command):
         raise SystemExit(errno)
 
 setup(name='Kotti',
-      version='0.6.0',
+      version='0.6.0b3',
       description="Kotti is a high-level, 'Pythonic' web application framework. It includes a small and extensible CMS application called the Kotti CMS.",
       long_description='\n\n'.join([README, THANKS, CHANGES]),
       classifiers=[

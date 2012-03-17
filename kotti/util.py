@@ -89,6 +89,7 @@ for wrapper_class in (MutationDict, MutationList):
         ('__delitem__', True),
         ('append', True),
         ('insert', True),
+        ('pop', True),
         ('setdefault', True),
         ):
         setattr(
@@ -234,3 +235,26 @@ def title_to_name(title):
     else:
         locale_name = 'en'
     return unicode(urlnormalizer.normalize(title, locale_name, max_length=40))
+
+def camel_case_to_name(text):
+    """
+      >>> camel_case_to_name('FooBar')
+      'foo_bar'
+      >>> camel_case_to_name('TXTFile')
+      'txt_file'
+      >>> camel_case_to_name ('MyTXTFile')
+      'my_txt_file'
+      >>> camel_case_to_name('froBOZ')
+      'fro_boz'
+      >>> camel_case_to_name('f')
+      'f'
+    """
+    value = text[0]
+    for char in text[1:]:
+        if char.isupper() and not value[-1].isupper():
+            value += '_'
+        elif (char.islower() and len(value) > 1
+              and value[-1].isupper() and value[-2].isupper()):
+            value = value[:-1] + '_' + value[-1]
+        value += char
+    return value.lower()

@@ -1,8 +1,13 @@
 Change History
 ==============
 
-0.6.0 - Unreleased
-------------------
+0.6.0b3 - Unreleased
+--------------------
+
+- Have the automatic ``__tablename__`` and ``polymorphic_identity``
+  for CamelCase class names use underscores, so a class
+  'MyFancyDocument' gets a table name of 'my_fancy_documents' and a
+  type of 'my_fancy_document'.
 
 0.6.0b2 - 2012-03-16
 --------------------

@@ -30,6 +30,7 @@ from kotti import metadata
 from kotti import DBSession
 from kotti import Base
 from kotti.util import _
+from kotti.util import camel_case_to_name
 from kotti.util import ViewLink
 from kotti.util import JsonType
 from kotti.util import MutationList
@@ -130,7 +131,7 @@ class Node(Base, ContainerMixin, PersistentACLMixin):
 
     @classproperty
     def __tablename__(cls):
-        return '{0}s'.format(cls.__name__.lower())
+        return '{0}s'.format(camel_case_to_name(cls.__name__))
 
     __table_args__ = (
         UniqueConstraint('parent_id', 'name'),
@@ -234,7 +235,7 @@ class Content(Node):
 
     @classproperty
     def __mapper_args__(cls):
-        return dict(polymorphic_identity=cls.__name__.lower())
+        return dict(polymorphic_identity=camel_case_to_name(cls.__name__))
 
     id = Column('id', Integer, ForeignKey('nodes.id'), primary_key=True)
     default_view = Column(String(50))
