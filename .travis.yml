@@ -3,3 +3,4 @@ python:
   - "2.6"
   - "2.7"
 script: py.test
+
