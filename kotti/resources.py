@@ -62,6 +62,7 @@ class ContainerMixin(object, DictMixin):
 
         if not hasattr(path, '__iter__'):
             path = (path,)
+        path = [unicode(p) for p in path]
 
         # Optimization: don't query children if self._children is already there:
         if '_children' in self.__dict__:
@@ -90,7 +91,7 @@ class ContainerMixin(object, DictMixin):
         for name in path:
             alias, old_alias = nodes.alias(), alias
             conditions.append(alias.c.parent_id == old_alias.c.id)
-            conditions.append(alias.c.name == unicode(name))
+            conditions.append(alias.c.name == name)
         expr = select([alias.c.id], and_(*conditions))
         row = session.execute(expr).fetchone()
         if row is None:
