@@ -379,7 +379,7 @@ And a Bob.  Only alphanumeric characters are allowed for the name:
   >>> ctrl("Full name", index=0).value = "Bob Dabolina"
   >>> ctrl("Password", index=0).value = "secret"
   >>> ctrl(name='password-confirm').value = "secret"
-  >>> ctrl("Email", index=0).value = "bob@dabolina.com"
+  >>> ctrl("Email", index=0).value = "bob@DABOLINA.com"
   >>> ctrl(name="add_user").click()
   >>> "There was a problem" in browser.contents
   True

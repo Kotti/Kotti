@@ -281,6 +281,7 @@ class UserAddFormView(AddFormView):
         appstruct.pop('csrf_token', None)
         _massage_groups_in(appstruct)
         name = appstruct['name'] = appstruct['name'].lower()
+        appstruct['email'] = appstruct['email'] and appstruct['email'].lower()
         send_email = appstruct.pop('send_email', False)
         get_principals()[name] = appstruct
         if send_email:
@@ -302,7 +303,7 @@ class GroupAddFormView(UserAddFormView):
         return schema
 
     def add_group_success(self, appstruct):
-        appstruct['name'] = u'group:%s' % appstruct['name']
+        appstruct['name'] = u'group:%s' % appstruct['name'].lower()
         return self.add_user_success(appstruct)
 
 def users_manage(context, request):
