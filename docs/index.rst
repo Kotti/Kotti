@@ -79,14 +79,15 @@ are Colander_ and Deform_ for forms, and Chameleon_ for templating.
 
 `Continuous testing`_ against different versions of Python and with
 *PostgreSQL*, *MySQL* and *SQLite* and a complete test coverage make
-Kotti a **stable** platform to work with.
+Kotti a **stable** platform to work with.  |build status|_
 
 .. _repoze.workflow: http://docs.repoze.org/workflow/
 .. _Chameleon: http://chameleon.repoze.org/
 .. _Colander: http://docs.pylonsproject.org/projects/colander/en/latest/
 .. _Deform: http://docs.pylonsproject.org/projects/deform/en/latest/
 .. _continuous testing: http://travis-ci.org/Pylons/Kotti
-
+.. |build status| image:: https://secure.travis-ci.org/Pylons/Kotti.png?branch=master
+.. _build status: http://travis-ci.org/Pylons/Kotti
 .. _installation:
 
 Installation
