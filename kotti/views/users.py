@@ -280,7 +280,7 @@ class UserAddFormView(AddFormView):
     def add_user_success(self, appstruct):
         appstruct.pop('csrf_token', None)
         _massage_groups_in(appstruct)
-        name = appstruct['name'].lower()
+        name = appstruct['name'] = appstruct['name'].lower()
         send_email = appstruct.pop('send_email', False)
         get_principals()[name] = appstruct
         if send_email:

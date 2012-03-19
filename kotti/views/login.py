@@ -43,7 +43,7 @@ def login(context, request):
     login, password = u'', u''
 
     if 'submit' in request.POST:
-        login = request.params['login']
+        login = request.params['login'].lower()
         password = request.params['password']
         user = _find_user(login)
 

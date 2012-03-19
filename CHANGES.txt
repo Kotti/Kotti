@@ -4,6 +4,8 @@ Change History
 0.6.0 - Unreleased
 ------------------
 
+- Enforce lowercase user names everywhere.
+
 0.6.0b3 - Unreleased
 --------------------
 

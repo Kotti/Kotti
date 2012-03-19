@@ -387,7 +387,7 @@ And a Bob.  Only alphanumeric characters are allowed for the name:
 Use a valid username now.  Note how the checkbox to send a password
 registration link is ticked:
 
-  >>> ctrl("Name", index=0).value = u"bob"
+  >>> ctrl("Name", index=0).value = u"Bob"
   >>> ctrl("Send password registration link", index=0).selected
   True
   >>> ctrl(name="add_user").click()
@@ -396,7 +396,7 @@ registration link is ticked:
 
 We cannot add Bob twice:
 
-  >>> ctrl("Name", index=0).value = "Bob"
+  >>> ctrl("Name", index=0).value = "bob"
   >>> ctrl("Full name", index=0).value = "Bobby Brown"
   >>> ctrl("Email", index=0).value = "bob@gmail.com"
   >>> ctrl("Password", index=0).value = "secret"
@@ -489,7 +489,7 @@ We cannot use that link again:
 Log in as Bob with the new password:
 
   >>> browser.open(testing.BASE_URL + '/@@edit')
-  >>> ctrl("Username or email").value = "bob"
+  >>> ctrl("Username or email").value = "bOB"
   >>> ctrl("Password").value = "newpassword"
   >>> ctrl(name="submit").click()
   >>> "Welcome, Bob Dabolina" in browser.contents
