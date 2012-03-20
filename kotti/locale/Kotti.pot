@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Kotti 0.6.0\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2012-03-10 14:07+0100\n"
+"POT-Creation-Date: 2012-03-20 11:58+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,19 +17,19 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 0.9.6\n"
 
-#: kotti/resources.py:254
+#: kotti/resources.py:263
 msgid "Edit"
 msgstr ""
 
-#: kotti/resources.py:255
+#: kotti/resources.py:264
 msgid "Share"
 msgstr ""
 
-#: kotti/resources.py:281
+#: kotti/resources.py:290
 msgid "Document"
 msgstr ""
 
-#: kotti/resources.py:301 kotti/views/file.py:66 kotti/views/file.py:83
+#: kotti/resources.py:310 kotti/views/file.py:66 kotti/views/file.py:83
 #: kotti/views/file.py:97
 msgid "File"
 msgstr ""
@@ -98,14 +98,14 @@ msgstr ""
 msgid "Forgot your password?"
 msgstr ""
 
-#: kotti/templates/login.pt:40
-msgid ""
-"Fill out your username or email above and click <dynamic element> below to "
-"receive an email with a link to reset your password."
+#: kotti/templates/login.pt:42 kotti/templates/login.pt:48
+msgid "Reset password"
 msgstr ""
 
-#: kotti/templates/login.pt:46
-msgid "Reset password"
+#: kotti/templates/login.pt:40
+msgid ""
+"Fill out your username or email above and click ${reset_password} below to "
+"receive an email with a link to reset your password."
 msgstr ""
 
 #: kotti/templates/edit/breadcrumbs.pt:4
@@ -317,7 +317,7 @@ msgstr ""
 msgid "Site Setup - ${title}"
 msgstr ""
 
-#: kotti/views/users.py:65 kotti/views/util.py:321
+#: kotti/views/users.py:65 kotti/views/util.py:344
 msgid "Your changes have been saved."
 msgstr ""
 
@@ -379,7 +379,7 @@ msgstr ""
 msgid "Add User"
 msgstr ""
 
-#: kotti/views/users.py:267 kotti/views/users.py:297 kotti/views/util.py:320
+#: kotti/views/users.py:267 kotti/views/users.py:298 kotti/views/util.py:343
 msgid "Cancel"
 msgstr ""
 
@@ -387,43 +387,43 @@ msgstr ""
 msgid "Send password registration link"
 msgstr ""
 
-#: kotti/views/users.py:288
+#: kotti/views/users.py:289
 msgid "${title} added."
 msgstr ""
 
-#: kotti/views/users.py:296
+#: kotti/views/users.py:297
 msgid "Add Group"
 msgstr ""
 
-#: kotti/views/users.py:313
+#: kotti/views/users.py:314
 msgid "User Management - ${title}"
 msgstr ""
 
-#: kotti/views/users.py:385
+#: kotti/views/users.py:386
 msgid "Edit User - ${title}"
 msgstr ""
 
-#: kotti/views/users.py:402
+#: kotti/views/users.py:403
 msgid "My preferences - ${title}"
 msgstr ""
 
-#: kotti/views/util.py:320
+#: kotti/views/util.py:343
 msgid "Save"
 msgstr ""
 
-#: kotti/views/util.py:370
+#: kotti/views/util.py:393
 msgid "Edit <em>${title}</em>"
 msgstr ""
 
-#: kotti/views/util.py:375
+#: kotti/views/util.py:398
 msgid "Successfully added item."
 msgstr ""
 
-#: kotti/views/util.py:400
+#: kotti/views/util.py:423
 msgid "Add ${type} to <em>${title}</em>"
 msgstr ""
 
-#: kotti/views/util.py:403
+#: kotti/views/util.py:427
 msgid "Add ${type}"
 msgstr ""
 
