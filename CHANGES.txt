@@ -4,6 +4,8 @@ Change History
 0.6.0 - Unreleased
 ------------------
 
+- Add Japanese translation.
+
 - Enforce lowercase user names and email with registration and login.
 
 0.6.0b3 - Unreleased

@@ -6,6 +6,7 @@ Thanks to the following people for support, code, patches etc:
   - Andreas Kaiser
   - Andreas Zeidler
   - Christian Neumann
+  - Gouji OCHIAI
   - Jeff Pittman
   - Mike Orr
   - Marco Scheidhuber
