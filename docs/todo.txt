@@ -1,12 +1,32 @@
-- Add image uploads and a small media library.  Probably as an
-  add-on. (iElectric)
+- Image and file uploads through TinyMCE, and a browsable folder for
+  media (ideas?).  (iElectric)
 
-- Deprecate 'kotti.includes' in favour of 'pyramid.includes'. (teixas)
+- A pluggable settings screen for content items for things like 'allow
+  discussion', 'default page'.
+
+- Content tagging.  See
+  https://groups.google.com/d/topic/kotti/UynUSpwahPA/discussion
+
+- Create add-ons kotti_disqus, kotti_feed (RSS), kotti_blog that make
+  use of some of the features above.
+
+- Allow in-page macros for things like 'table of contents' (for
+  listing all contained pages in a TOC style).  See
+  https://groups.google.com/d/msg/kotti/Kck0kYK3EkQ/YCu45JsJbI8J
+
+- Add an item to the control panel that lists all application
+  exceptions.  Possibly other introspectable features, like version
+  numbers etc.
+
+- Deprecate 'kotti.includes' in favour of 'pyramid.includes'.  See
+  https://github.com/Pylons/Kotti/pull/44  (teixas)
 
 - To allow for easier integration with 'repoze.workflow', add a
-  'state' attribute to the Content class.
-
-- Add an item to control panel that integrates with 'pyramid_exclog'.
+  'state' attribute to the Content class.  Write a cookbook entry for
+  using 'repoze.workflow'.
 
 - Move more navigation related functionality out of TemplateAPI and
   into snippets.
+
+Have an idea for this list?  Discuss at
+http://groups.google.com/group/kotti or #kotti on IRC.
