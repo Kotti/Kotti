@@ -1,4 +1,5 @@
 from pyramid.security import ALL_PERMISSIONS
+from pyramid.security import Allow
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.exc import SQLAlchemyError
 
@@ -17,10 +18,12 @@ class TestNode(UnitTestBase):
                 ('Allow', 'role:editor', ['view', 'add', 'edit']),
                 ('Allow', 'role:owner', ['view', 'add', 'edit', 'manage']),
                 ])
-        # Note how the first ACE is class-defined.  Users of the
-        # 'admin' role will always have all permissions.  This is to
-        # prevent lock-out.
-        self.assertEquals(root.__acl__[:1], root._default_acl())
+
+        # The first ACE is here to preven lock-out:
+        self.assertEquals(
+            root.__acl__[0],
+            (Allow, 'role:admin', ALL_PERMISSIONS),
+            )
 
     def test_set_and_get_acl(self):
         from kotti import DBSession
@@ -33,12 +36,9 @@ class TestNode(UnitTestBase):
         del root.__acl__
         self.assertRaises(AttributeError, root._get_acl)
 
-        root.__acl__ = [['Allow', 'system.Authenticated', ['edit']]]
+        root.__acl__ = [('Allow', 'system.Authenticated', ['edit'])]
         self.assertEquals(
-            root.__acl__, [
-                ('Allow', 'role:admin', ALL_PERMISSIONS),
-                ('Allow', 'system.Authenticated', ['edit']),
-                ])
+            root.__acl__, [('Allow', 'system.Authenticated', ['edit'])])
 
         root.__acl__ = [
             ('Allow', 'system.Authenticated', ['view']),
@@ -47,26 +47,29 @@ class TestNode(UnitTestBase):
         
         self.assertEquals(
             root.__acl__, [
-                ('Allow', 'role:admin', ALL_PERMISSIONS),
                 ('Allow', 'system.Authenticated', ['view']),
                 ('Deny', 'system.Authenticated', ALL_PERMISSIONS),
                 ])
 
-        # We can reorder the ACL:
-        first, second = root.__acl__[1:]
-        root.__acl__ = [second, first]
+        # We can append to the ACL, and it'll be persisted fine:
+        root.__acl__.append(('Allow', 'system.Authenticated', ['edit']))
+        self.assertEquals(
+            root.__acl__, [
+                ('Allow', 'system.Authenticated', ['view']),
+                ('Deny', 'system.Authenticated', ALL_PERMISSIONS),
+                ('Allow', 'system.Authenticated', ['edit']),
+                ])
+        
+        DBSession.flush()
+        DBSession.expire_all()
+
         self.assertEquals(
             root.__acl__, [
                 ('Allow', 'role:admin', ALL_PERMISSIONS),
-                ('Deny', 'system.Authenticated', ALL_PERMISSIONS),
                 ('Allow', 'system.Authenticated', ['view']),
+                ('Deny', 'system.Authenticated', ALL_PERMISSIONS),
+                ('Allow', 'system.Authenticated', ['edit']),
                 ])
-        DBSession.flush()
-        DBSession.expire_all()
-        self.assertEquals(root.__acl__[1:], [second, first])
-
-        root._del_acl()
-        self.assertRaises(AttributeError, root._del_acl)
 
     def test_unique_constraint(self):
         from kotti import DBSession

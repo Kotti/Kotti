@@ -8,6 +8,11 @@ Change History
 
 - Enforce lowercase user names and email with registration and login.
 
+- Moved SQLAlchemy related stuff from kotti.util into kotti.sqla.
+
+- You can also append to 'Node.__acl__' now in addition to setting the
+  attribute.
+
 0.6.0b3 - Unreleased
 --------------------
 

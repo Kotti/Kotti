@@ -1,4 +1,3 @@
-from pyramid.compat import json
 import re
 import urllib
 
@@ -8,131 +7,9 @@ from pyramid.i18n import TranslationStringFactory
 from pyramid.threadlocal import get_current_request
 from pyramid.url import resource_url
 from repoze.lru import LRUCache
-from sqlalchemy.types import TypeDecorator, TEXT
-from sqlalchemy.ext.mutable import Mutable
+from zope.deprecation import deprecated
 
 _ = TranslationStringFactory('Kotti')
-
-def dump_default(obj):
-    if isinstance(obj, MutationDict):
-        return obj._d
-    elif isinstance(obj, MutationList):
-        return obj._d
-
-class JsonType(TypeDecorator):
-    """http://www.sqlalchemy.org/docs/core/types.html#marshal-json-strings
-    """
-    impl = TEXT
-
-    def process_bind_param(self, value, dialect):
-        if value is not None:
-            value = json.dumps(value, default=dump_default)
-        return value
-
-    def process_result_value(self, value, dialect):
-        if value is not None:
-            value = json.loads(value)
-        return value
-
-class MutationDict(Mutable):
-    """http://www.sqlalchemy.org/docs/orm/extensions/mutable.html
-    """
-    def __init__(self, data):
-        self._d = data
-        super(MutationDict, self).__init__()
-
-    @classmethod
-    def coerce(cls, key, value):
-        if not isinstance(value, MutationDict):
-            if isinstance(value, dict):
-                return cls(value)
-            return Mutable.coerce(key, value)
-        else:
-            return value
-
-class MutationList(Mutable):
-    def __init__(self, data):
-        self._d = data
-        super(MutationList, self).__init__()
-
-    @classmethod
-    def coerce(cls, key, value):
-        if not isinstance(value, MutationList):
-            if isinstance(value, list):
-                return cls(value)
-            return Mutable.coerce(key, value)
-        else:
-            return value
-
-    def __radd__(self, other):
-        return other + self._d
-
-def _make_mutable_method_wrapper(wrapper_class, methodname, mutates):
-    def replacer(self, *args, **kwargs):
-        method = getattr(self._d, methodname)
-        value = method(*args, **kwargs)
-        if mutates:
-            self.changed()
-        return value
-    replacer.__name__ = methodname
-    return replacer
-
-for wrapper_class in (MutationDict, MutationList):
-    for methodname, mutates in (
-        ('__iter__', False),
-        ('__len__', False),
-        ('__eq__', False),
-        ('__add__', False),
-        ('get', False),
-        ('keys', False),
-
-        ('__setitem__', True),
-        ('__delitem__', True),
-        ('append', True),
-        ('insert', True),
-        ('pop', True),
-        ('setdefault', True),
-        ):
-        setattr(
-            wrapper_class, methodname,
-            _make_mutable_method_wrapper(
-                wrapper_class, methodname, mutates),
-            )
-
-class NestedMixin(object):
-    __parent__ = None
-    
-    def __init__(self, *args, **kwargs):
-        self.__parent__ = kwargs.pop('__parent__', None)
-        super(NestedMixin, self).__init__(*args, **kwargs)
-
-    def __getitem__(self, key):
-        value = self._d.__getitem__(key)
-        return self.try_wrap(value)
-
-    def changed(self):
-        if self.__parent__ is not None:
-            self.__parent__.changed()
-        else:
-            super(NestedMixin, self).changed()
-
-    def try_wrap(self, value):
-        for typ, wrapper in MUTATION_WRAPPERS.items():
-            if isinstance(value, typ):
-                value = wrapper(value, __parent__=self)
-                break
-        return value
-
-class NestedMutationDict(NestedMixin, MutationDict):
-    pass
-
-class NestedMutationList(NestedMixin, MutationList):
-    pass
-
-MUTATION_WRAPPERS = {
-    dict: NestedMutationDict,
-    list: NestedMutationList,
-    }
 
 class ViewLink(object):
     def __init__(self, path, title=None):
@@ -252,3 +129,20 @@ def camel_case_to_name(text):
     """
     return re.sub(
         r'((?<=[a-z])[A-Z]|(?<!\A)[A-Z](?=[a-z]))', r'_\1', text).lower()
+
+
+from kotti.sqla import JsonType
+from kotti.sqla import MutationDict
+from kotti.sqla import MutationList
+from kotti.sqla import NestedMixin
+from kotti.sqla import NestedMutationDict
+from kotti.sqla import NestedMutationList
+
+
+for name in ('JsonType', 'MutationDict', 'MutationList', 'NestedMixin',
+             'NestedMutationDict', 'NestedMutationList'):
+    deprecated(
+        name,
+        'kotti.util.{0} has been moved to the kotti.sqla '
+        'module as of Kotti 0.6.  Use kotti.sqla.{0} instead'.format(name)
+        )

@@ -30,12 +30,13 @@ from kotti import get_settings
 from kotti import metadata
 from kotti import DBSession
 from kotti import Base
+from kotti.sqla import ACLType
 from kotti.util import _
 from kotti.util import camel_case_to_name
-from kotti.util import ViewLink
 from kotti.util import JsonType
 from kotti.util import MutationList
 from kotti.util import NestedMutationDict
+from kotti.util import ViewLink
 from kotti.security import PersistentACLMixin
 from kotti.security import view_permitted
 
@@ -154,7 +155,7 @@ class Node(Base, ContainerMixin, PersistentACLMixin):
     type = Column(String(30), nullable=False)
     parent_id = Column(ForeignKey('nodes.id'))
     position = Column(Integer())
-    _acl = Column(MutationList.as_mutable(JsonType))
+    _acl = Column(MutationList.as_mutable(ACLType))
     name = Column(Unicode(50), nullable=False)
     title = Column(Unicode(100))
     annotations = Column(NestedMutationDict.as_mutable(JsonType))

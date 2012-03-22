@@ -13,8 +13,6 @@ from sqlalchemy import func
 from sqlalchemy.sql.expression import or_
 from sqlalchemy.orm.exc import NoResultFound
 from pyramid.location import lineage
-from pyramid.security import Allow
-from pyramid.security import ALL_PERMISSIONS
 from pyramid.security import authenticated_userid
 from pyramid.security import has_permission as base_has_permission
 from pyramid.security import view_execution_permitted
@@ -205,48 +203,18 @@ def reset():
     reset_user_management_roles()
 
 class PersistentACLMixin(object):
-    """Manages access to ``self._acl`` which is a JSON- serialized
-    representation of ``self.__acl__``.
-    """
-    ALL_PERMISSIONS_SERIALIZED = '__ALL_PERMISSIONS__'
-
-    @staticmethod
-    def _deserialize_ace(ace):
-        ace = list(ace)
-        if ace[2] == PersistentACLMixin.ALL_PERMISSIONS_SERIALIZED:
-            ace[2] = ALL_PERMISSIONS
-        return tuple(ace)
-
-    @staticmethod
-    def _serialize_ace(ace):
-        ace = list(ace)
-        if ace[2] == ALL_PERMISSIONS:
-            ace[2] = PersistentACLMixin.ALL_PERMISSIONS_SERIALIZED
-        return ace
-
     def _get_acl(self):
-        if self._acl is not None:
-            acl = self._default_acl() + self._acl
-            return [self._deserialize_ace(ace) for ace in acl]
-        else:
+        if self._acl is None:
             raise AttributeError('__acl__')
+        return self._acl
 
-    def _set_acl(self, acl):
-        self._acl = [self._serialize_ace(ace) for ace in acl]
+    def _set_acl(self, value):
+        self._acl = value
 
     def _del_acl(self):
-        if self._acl is not None:
-            self._acl = None
-        else:
-            raise AttributeError('__acl__')
+        self._acl = None
 
     __acl__ = property(_get_acl, _set_acl, _del_acl)
-
-    def _default_acl(self):
-        # ACEs that will be put on top, no matter what
-        return [
-            (Allow, 'role:admin', ALL_PERMISSIONS),
-            ]
 
 def _cachekey_list_groups_raw(name, context):
     context_id = context is not None and getattr(context, 'id', id(context))
