@@ -1,7 +1,7 @@
 Change History
 ==============
 
-0.6.0 - Unreleased
+0.6.0 - 2012-03-22
 ------------------
 
 - Add Japanese translation.
@@ -13,7 +13,7 @@ Change History
 - You can also append to 'Node.__acl__' now in addition to setting the
   attribute.
 
-0.6.0b3 - Unreleased
+0.6.0b3 - 2012-03-17
 --------------------
 
 - Have the automatic ``__tablename__`` and ``polymorphic_identity``
