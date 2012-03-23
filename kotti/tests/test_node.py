@@ -71,6 +71,27 @@ class TestNode(UnitTestBase):
                 ('Allow', 'system.Authenticated', ['edit']),
                 ])
 
+    def test_append_to_empty_acl(self):
+        from kotti import DBSession
+        from kotti.resources import get_root
+        from kotti.resources import Node
+        
+        root = get_root()
+        node = root['child'] = Node()
+        node.__acl__ = []
+
+        DBSession.flush()
+        DBSession.expire_all()
+
+        node.__acl__.append(('Allow', 'system.Authenticated', ['edit']))
+        DBSession.flush()
+        DBSession.expire_all()
+
+        assert node.__acl__ == [
+            ('Allow', 'role:admin', ALL_PERMISSIONS),
+            ('Allow', 'system.Authenticated', ['edit']),
+            ]
+        
     def test_unique_constraint(self):
         from kotti import DBSession
         from kotti.resources import get_root

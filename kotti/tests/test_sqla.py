@@ -48,7 +48,11 @@ class TestACLType(TestCase):
     def test_process_bind_param_with_default_permissions(self):
         acl = [('Allow', 'role:admin', ALL_PERMISSIONS)]
         value = self.make().process_bind_param(acl, None)
-        assert value == None
+        assert value == '[]'
+
+    def test_process_bind_param_with_empty_list(self):
+        value = self.make().process_bind_param([], None)
+        assert value == '[]'
 
     def test_process_bind_param_with_default_permissions_and_others(self):
         acl = [

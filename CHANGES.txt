@@ -4,6 +4,9 @@ Change History
 0.6.1 - unreleased
 ------------------
 
+- Setting 'Node.__acl__' to the empty list will now persist the empty
+  list instead of setting 'None'.
+
 0.6.0 - 2012-03-22
 ------------------
 

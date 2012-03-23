@@ -35,12 +35,9 @@ class ACLType(JsonType):
     def process_bind_param(self, value, dialect):
         if value is not None:
             value = [list(ace) for ace in value if ace != self.DEFAULT_ACE]
-            if value:
-                for ace in value:
-                    if ace[2] == ALL_PERMISSIONS:
-                        ace[2] = self.ALL_PERMISSIONS_SERIALIZED
-            else:
-                value = None
+            for ace in value:
+                if ace[2] == ALL_PERMISSIONS:
+                    ace[2] = self.ALL_PERMISSIONS_SERIALIZED
         return super(ACLType, self).process_bind_param(value, dialect)
 
     def process_result_value(self, value, dialect):
