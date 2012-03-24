@@ -6,9 +6,9 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: Kotti 0.6.0\n"
+"Project-Id-Version: Kotti 0.6.1dev\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2012-03-20 11:58+0000\n"
+"POT-Creation-Date: 2012-03-24 09:24+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,36 +17,36 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 0.9.6\n"
 
-#: kotti/resources.py:263
+#: kotti/resources.py:264
 msgid "Edit"
 msgstr ""
 
-#: kotti/resources.py:264
+#: kotti/resources.py:265
 msgid "Share"
 msgstr ""
 
-#: kotti/resources.py:290
+#: kotti/resources.py:291
 msgid "Document"
 msgstr ""
 
-#: kotti/resources.py:310 kotti/views/file.py:66 kotti/views/file.py:83
+#: kotti/resources.py:311 kotti/views/file.py:66 kotti/views/file.py:83
 #: kotti/views/file.py:97
 msgid "File"
 msgstr ""
 
-#: kotti/security.py:161
+#: kotti/security.py:159
 msgid "Viewer"
 msgstr ""
 
-#: kotti/security.py:162
+#: kotti/security.py:160
 msgid "Editor"
 msgstr ""
 
-#: kotti/security.py:163
+#: kotti/security.py:161
 msgid "Owner"
 msgstr ""
 
-#: kotti/security.py:164
+#: kotti/security.py:162
 msgid "Admin"
 msgstr ""
 
@@ -134,6 +134,22 @@ msgstr ""
 
 #: kotti/templates/edit/order.pt:9
 msgid "Order ${title}"
+msgstr ""
+
+#: kotti/templates/edit/order.pt:30
+msgid "Toggle visibility of this item"
+msgstr ""
+
+#: kotti/templates/edit/order.pt:36
+msgid "Hide"
+msgstr ""
+
+#: kotti/templates/edit/order.pt:37
+msgid "Show"
+msgstr ""
+
+#: kotti/templates/edit/order.pt:40
+msgid "Hidden"
 msgstr ""
 
 #: kotti/templates/edit/rename.pt:8
@@ -249,19 +265,27 @@ msgstr ""
 msgid "${title} pasted."
 msgstr ""
 
+#: kotti/views/edit.py:147
+msgid "${title} is now visible in the navigation."
+msgstr ""
+
 #: kotti/views/edit.py:149
-msgid "${title} moved."
+msgid "${title} is no longer visible in the navigation."
 msgstr ""
 
 #: kotti/views/edit.py:160
+msgid "${title} moved."
+msgstr ""
+
+#: kotti/views/edit.py:171
 msgid "${title} deleted."
 msgstr ""
 
-#: kotti/views/edit.py:173
+#: kotti/views/edit.py:184
 msgid "Name and title are required."
 msgstr ""
 
-#: kotti/views/edit.py:177
+#: kotti/views/edit.py:188
 msgid "Item renamed"
 msgstr ""
 

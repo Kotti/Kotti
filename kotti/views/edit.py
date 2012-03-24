@@ -80,7 +80,7 @@ def actions(context, request):
     if not is_root:
         actions.append(ViewLink('rename', title=_(u'Rename')))
         actions.append(ViewLink('delete', title=_(u'Delete')))
-    if len(context.children) > 1:
+    if len(context.children) >= 1:
         actions.append(ViewLink('order', title=_(u'Order')))
     return {'actions': [action for action in actions
                         if action.permitted(context, request)]}
@@ -134,20 +134,31 @@ def order_node(context, request):
     P = request.POST
     session = DBSession()
 
-    if 'order-up' in P or 'order-down' in P:
+    if 'order-up' in P or 'order-down' in P or 'toggle-visibility' in P:
         up, down = P.get('order-up'), P.get('order-down')
-        id = int(down or up)
-        if up is not None:
-            mod = -1
-        else:  # pragma: no cover
-            mod = 1
-
+        visibility = P.get('toggle-visibility')
+        id = int(down or up or visibility)
         child = session.query(Node).get(id)
-        index = context.children.index(child)
-        context.children.pop(index)
-        context.children.insert(index + mod, child)
-        request.session.flash(_(u'${title} moved.',
-                                mapping=dict(title=child.title)), 'success')
+        if visibility is not None:
+            pass
+            child.in_navigation ^= True
+            mapping = dict(title=child.title)
+            if child.in_navigation:
+                msg = _(u'${title} is now visible in the navigation.', mapping=mapping)
+            else:
+                msg = _(u'${title} is no longer visible in the navigation.', mapping=mapping)
+            request.session.flash(msg, 'success')
+        elif up is not None or down is not None:
+            if up is not None:
+                mod = -1
+            else:  # pragma: no cover
+                mod = 1
+
+            index = context.children.index(child)
+            context.children.pop(index)
+            context.children.insert(index + mod, child)
+            request.session.flash(_(u'${title} moved.',
+                                    mapping=dict(title=child.title)), 'success')
         if not request.is_xhr:
             return HTTPFound(location=request.url)
 
