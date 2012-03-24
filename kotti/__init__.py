@@ -42,6 +42,7 @@ def none_factory(**kwargs): # pragma: no cover
 conf_defaults = {
     'kotti.templates.api': 'kotti.views.util.TemplateAPI',
     'kotti.configurators': '',
+    'kotti.includes': '', # BBB
     'kotti.base_includes': 'kotti kotti.events kotti.views kotti.views.view kotti.views.edit kotti.views.login kotti.views.file kotti.views.users kotti.views.site_setup kotti.views.slots',
     'kotti.asset_overrides': '',
     'kotti.use_tables': '',
@@ -125,7 +126,7 @@ def base_configure(global_config, **settings):
     settings.setdefault('kotti.secret2', secret1)
 
     # BBB: Merge ``kotti.includes`` into pyramid.includes.
-    if 'kotti.includes' in settings:
+    if settings['kotti.includes']:
         warnings.warn(
             "The 'kotti.includes' setting has been deprecated as of "
             "Kotti 0.6.1.  Use 'pyramid.includes' instead.",
