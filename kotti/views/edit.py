@@ -140,7 +140,6 @@ def order_node(context, request):
         id = int(down or up or visibility)
         child = session.query(Node).get(id)
         if visibility is not None:
-            pass
             child.in_navigation ^= True
             mapping = dict(title=child.title)
             if child.in_navigation:
