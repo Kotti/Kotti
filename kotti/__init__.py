@@ -42,6 +42,7 @@ def none_factory(**kwargs): # pragma: no cover
 conf_defaults = {
     'kotti.templates.api': 'kotti.views.util.TemplateAPI',
     'kotti.configurators': '',
+    'pyramid.includes': '',
     'kotti.includes': '', # BBB
     'kotti.base_includes': 'kotti kotti.events kotti.views kotti.views.view kotti.views.edit kotti.views.login kotti.views.file kotti.views.users kotti.views.site_setup kotti.views.slots',
     'kotti.asset_overrides': '',
