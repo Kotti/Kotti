@@ -178,7 +178,7 @@ def setUpFunctionalStrippedDownApp(global_config=None, **settings):
             'kotti.views.users'),
         'kotti.use_tables': 'principals',
         'kotti.populators': 'kotti.populate.populate_users',
-        'kotti.includes': 'kotti.testing.include_testing_view',
+        'pyramid.includes': 'kotti.testing.include_testing_view',
         'kotti.root_factory': 'kotti.testing.TestingRootFactory',
         'kotti.site_title': 'My Stripped Down Kotti',
         }

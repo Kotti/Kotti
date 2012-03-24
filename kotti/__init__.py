@@ -1,4 +1,5 @@
 import pkg_resources
+import warnings
 
 from sqlalchemy import engine_from_config
 from sqlalchemy import MetaData
@@ -42,7 +43,6 @@ conf_defaults = {
     'kotti.templates.api': 'kotti.views.util.TemplateAPI',
     'kotti.configurators': '',
     'kotti.base_includes': 'kotti kotti.events kotti.views kotti.views.view kotti.views.edit kotti.views.login kotti.views.file kotti.views.users kotti.views.site_setup kotti.views.slots',
-    'kotti.includes': '',
     'kotti.asset_overrides': '',
     'kotti.use_tables': '',
     'kotti.root_factory': 'kotti.resources.default_get_root',
@@ -61,7 +61,6 @@ conf_dotted = set([
     'kotti.templates.api',
     'kotti.configurators',
     'kotti.base_includes',
-    'kotti.includes',
     'kotti.root_factory',
     'kotti.populators',
     'kotti.available_types',
@@ -125,16 +124,24 @@ def base_configure(global_config, **settings):
     secret1 = settings['kotti.secret']
     settings.setdefault('kotti.secret2', secret1)
 
+    # Check for existence of deprecated ``kotti.includes`` setting
+    if 'kotti.includes' in settings:
+        warnings.warn(
+            'Usage of ``kotti.includes`` setting is deprecated. '
+            'Please set on ``pyramid.includes`` to include your package.',
+            DeprecationWarning)
+        if settings.get('pyramid.includes') is None: # BBB
+            settings['pyramid.includes'] = settings['kotti.includes']
+        else:
+            settings['pyramid.includes'] += ' ' + settings['kotti.includes']
+
     config = Configurator(
         settings=settings,
         )
     config.begin()
 
-    # Include modules listed in 'kotti.base_includes' and 'kotti.includes':
+    # Include modules listed in 'kotti.base_includes':
     for module in settings['kotti.base_includes']:
-        config.include(module)
-    config.commit()
-    for module in settings['kotti.includes']:
         config.include(module)
     config.commit()
 
