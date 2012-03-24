@@ -1,3 +1,6 @@
+Bigger tasks
+============
+
 - Image and file uploads through TinyMCE, and a browsable folder for
   media (ideas?).  (iElectric)
 
@@ -21,6 +24,12 @@
 - Deprecate 'kotti.includes' in favour of 'pyramid.includes'.  See
   https://github.com/Pylons/Kotti/pull/44  (teixas)
 
+Have an idea for this list?  Discuss at
+http://groups.google.com/group/kotti or #kotti on IRC.
+
+Smaller tasks
+=============
+
 - To allow for easier integration with 'repoze.workflow', add a
   'state' attribute to the Content class.  Write a cookbook entry for
   using 'repoze.workflow'.
@@ -28,5 +37,12 @@
 - Move more navigation related functionality out of TemplateAPI and
   into snippets.
 
-Have an idea for this list?  Discuss at
-http://groups.google.com/group/kotti or #kotti on IRC.
+- Many of the templates used in 'kotti/views/edit.py' have some legacy
+  cruft in them.  Clean up.
+
+- Clean up tests to consistently use 'assert' instead of
+  'self.assertEquals'.  Create unit tests for some of the edit views;
+  some of these are currently only tested in browser.txt.
+
+- Clean up code to use 'DBSession' directly instead of instantiating
+  a 'session = DBSession()' before use.

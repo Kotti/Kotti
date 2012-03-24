@@ -4,6 +4,8 @@ Change History
 0.6.1 - unreleased
 ------------------
 
+- Added button to show/hide nodes from navigation in the order screen.
+
 - Setting 'Node.__acl__' to the empty list will now persist the empty
   list instead of setting 'None'.
 

@@ -188,7 +188,7 @@ Reorder documents
   True
 
 Hide and show documents
---------------
+-----------------------
 
   >>> browser.open(testing.BASE_URL)
   >>> "First Child" in browser.contents

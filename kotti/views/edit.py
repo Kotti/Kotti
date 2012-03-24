@@ -132,32 +132,33 @@ def paste_node(context, request):
 
 def order_node(context, request):
     P = request.POST
-    session = DBSession()
 
-    if 'order-up' in P or 'order-down' in P or 'toggle-visibility' in P:
+    if 'order-up' in P or 'order-down' in P:
         up, down = P.get('order-up'), P.get('order-down')
-        visibility = P.get('toggle-visibility')
-        id = int(down or up or visibility)
-        child = session.query(Node).get(id)
-        if visibility is not None:
-            child.in_navigation ^= True
-            mapping = dict(title=child.title)
-            if child.in_navigation:
-                msg = _(u'${title} is now visible in the navigation.', mapping=mapping)
-            else:
-                msg = _(u'${title} is no longer visible in the navigation.', mapping=mapping)
-            request.session.flash(msg, 'success')
-        elif up is not None or down is not None:
-            if up is not None:
-                mod = -1
-            else:  # pragma: no cover
-                mod = 1
+        child = DBSession.query(Node).get(int(down or up))
+        if up is not None:
+            mod = -1
+        else:  # pragma: no cover
+            mod = 1
+        index = context.children.index(child)
+        context.children.pop(index)
+        context.children.insert(index + mod, child)
+        request.session.flash(_(u'${title} moved.',
+                                mapping=dict(title=child.title)), 'success')
+        if not request.is_xhr:
+            return HTTPFound(location=request.url)
 
-            index = context.children.index(child)
-            context.children.pop(index)
-            context.children.insert(index + mod, child)
-            request.session.flash(_(u'${title} moved.',
-                                    mapping=dict(title=child.title)), 'success')
+    elif 'toggle-visibility' in P:
+        child = DBSession.query(Node).get(int(P['toggle-visibility']))
+        child.in_navigation ^= True
+        mapping = dict(title=child.title)
+        if child.in_navigation:
+            msg = _(u'${title} is now visible in the navigation.',
+                    mapping=mapping)
+        else:
+            msg = _(u'${title} is no longer visible in the navigation.',
+                    mapping=mapping)
+        request.session.flash(msg, 'success')
         if not request.is_xhr:
             return HTTPFound(location=request.url)
 
@@ -277,39 +278,39 @@ def includeme(config):
 
 def nodes_includeme(config):
     config.add_view(
-        'kotti.views.edit.copy_node',
+        copy_node,
         name='copy',
         permission='edit',
         )
 
     config.add_view(
-        'kotti.views.edit.cut_node',
+        cut_node,
         name='cut',
         permission='edit',
         )
 
     config.add_view(
-        'kotti.views.edit.paste_node',
+        paste_node,
         name='paste',
         permission='edit',
         )
 
     config.add_view(
-        'kotti.views.edit.order_node',
+        order_node,
         name='order',
         permission='edit',
         renderer='kotti:templates/edit/order.pt',
         )
 
     config.add_view(
-        'kotti.views.edit.delete_node',
+        delete_node,
         name='delete',
         permission='edit',
         renderer='kotti:templates/edit/delete.pt',
         )
 
     config.add_view(
-        'kotti.views.edit.rename_node',
+        rename_node,
         name='rename',
         permission='edit',
         renderer='kotti:templates/edit/rename.pt',
