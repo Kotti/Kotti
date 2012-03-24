@@ -1,10 +1,8 @@
 import os
-import subprocess
 import sys
 
 from setuptools import setup
 from setuptools import find_packages
-from setuptools import Command
 
 here = os.path.abspath(os.path.dirname(__file__))
 try:
@@ -50,19 +48,6 @@ tests_require = [
 if sys.version_info[:3] < (2,7,0):
     install_requires.append('ordereddict')
 
-class PyTest(Command):
-    user_options = []
-    initialize_options = finalize_options = lambda self: None
-    errno = 1
-
-    def run(self):
-        script = os.path.join(os.path.dirname(sys.executable), 'py.test')
-        if not os.path.exists(script):
-            print "Could not find 'py.test' script.  Please run it by hand."
-            sys.exit(1)
-        errno = subprocess.call([sys.executable, script])
-        raise SystemExit(errno)
-
 setup(name='Kotti',
       version='0.6.1dev',
       description="Kotti is a high-level, 'Pythonic' web application framework. It includes a small and extensible CMS application called the Kotti CMS.",
@@ -83,15 +68,17 @@ setup(name='Kotti',
       packages=find_packages(),
       include_package_data=True,
       zip_safe=False,
-      cmdclass={'test': PyTest},
-      install_requires=install_requires + tests_require,
-      #tests_require=tests_require,
+      install_requires=install_requires,
+      tests_require=tests_require,
       dependency_links=[
       ],
       entry_points = """\
       [paste.app_factory]
       main = kotti:main
       """,
+      extras_require = {
+          'testing': tests_require,
+          },
       message_extractors={'kotti': [
             ('**.py', 'lingua_python', None),
             ('**.zcml', 'lingua_xml', None),
