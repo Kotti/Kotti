@@ -187,6 +187,31 @@ Reorder documents
   >>> index("First Child") > index("Second Child")
   True
 
+Hide and show documents
+--------------
+
+  >>> browser.open(testing.BASE_URL)
+  >>> "First Child" in browser.contents
+  True
+  >>> browser.open(testing.BASE_URL)
+  >>> "/@@order" in browser.contents
+  True
+  >>> browser.getLink('Order').click()
+  >>> ctrl(name="toggle-visibility", index=1).click()
+  >>> "First Child is no longer visible in the navigation" in browser.contents
+  True
+  >>> browser.getLink("View").click()
+  >>> "First Child" in browser.contents
+  False
+  >>> browser.getLink('Order').click()
+  >>> ctrl(name="toggle-visibility", index=1).click()
+  >>> "First Child is now visible in the navigation" in browser.contents
+  True
+  >>> browser.getLink("View").click()
+  >>> "First Child" in browser.contents
+  True
+
+
 Delete a document
 -----------------
 

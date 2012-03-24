@@ -11,7 +11,7 @@
     <div class="tab-pane" id="order" tal:define="children api.list_children()"
        tal:condition="len(children) &gt; 1">
       <form action="${request.url}" method="post"
-            class="ajax ${('order-up' in request.POST or 'order-down' in request.POST) and 'ajax-replace' or ''}" id="form-move-4">
+            class="ajax ${('order-up' in request.POST or 'order-down' in request.POST or 'toggle-visibility' in request.POST) and 'ajax-replace' or ''}" id="form-move-4">
         <div class="form-actions" tal:repeat="item children">
             <button type="submit" name="order-up" value="${item.id}"
                     title="Move ${item.title} up"
@@ -27,6 +27,17 @@
                     class="btn">
               ↓
             </button>
+            <button type="submit" name="toggle-visibility" value="${item.id}"
+                    title="Toggle visibility of this item"
+		    i18n:attributes="title"
+                    id="set-visibility-${item.id}"
+                    class="btn">
+	      <div tal:omit-tag="" tal:switch="item.in_navigation">
+		<span tal:omit-tag="" tal:case="True"><i class="icon-eye-close"></i> <span i18n:translate="">Hide</span></span>
+		<span tal:omit-tag="" tal:case="False"><i class="icon-eye-open"></i> <span i18n:translate="">Show</span></span>
+	      </div>
+            </button>
+	    <span tal:condition="not item.in_navigation" i18n:translate="" class="label label-important">Hidden</span> 
             <label for="order-down-${item.id}">
               ${item.title}
             </label>
