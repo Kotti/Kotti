@@ -1,3 +1,5 @@
+import warnings
+
 from webob import Request
 
 from kotti.testing import TestingRootFactory
@@ -98,11 +100,46 @@ class TestApp(UnitTestBase):
             renderer='kotti:templates/login.pt',
             )
 
+    def test_kotti_includes_deprecation_warning(self):
+        from kotti import main
+
+        settings = self.required_settings()
+        settings['kotti.includes'] = (
+            'kotti.tests.test_app.TestApp._includeme_layout')
+        with warnings.catch_warnings(record=True) as w:
+            warnings.simplefilter('always')
+            main({}, **settings)
+            assert len(w) == 1
+            assert issubclass(w[-1].category, DeprecationWarning)
+            assert 'Please set on ``pyramid.includes``' in str(w[-1].message)
+
+    def test_kotti_includes_merged_to_pyramid_includes(self):
+        from kotti import get_settings
+        from kotti import main
+
+        settings = self.required_settings()
+        settings['kotti.includes'] = (
+            'kotti.tests.test_app.TestApp._includeme_login')
+
+        assert settings.get('pyramid.includes') is None
+        main({}, **settings)
+        assert get_settings()['pyramid.includes'] == settings['kotti.includes']
+
+        settings = self.required_settings()
+        settings['pyramid.includes'] = (
+            'kotti.tests.test_app.TestApp._includeme_layout')
+        settings['kotti.includes'] = (
+            'kotti.tests.test_app.TestApp._includeme_login')
+        main({}, **settings)
+        assert len(get_settings()['pyramid.includes'].split(' ')) == 2
+        assert settings['kotti.includes'] in get_settings()['pyramid.includes']
+
     def test_includes_overrides(self):
         from kotti import main
 
         settings = self.required_settings()
-        settings['kotti.includes'] = (self._includeme_login,)
+        settings['pyramid.includes'] = (
+            'kotti.tests.test_app.TestApp._includeme_login')
         main({}, **settings)
 
     def test_use_tables(self):
@@ -145,7 +182,8 @@ class TestApp(UnitTestBase):
 
     def test_render_master_view_template_with_minimal_root(self):
         settings = self.required_settings()
-        settings['kotti.includes'] = (self._includeme_layout,)
+        settings['pyramid.includes'] = (
+            'kotti.tests.test_app.TestApp._includeme_layout')
         return self.test_render_master_edit_template_with_minimal_root(settings)
 
     def test_setting_values_as_unicode(self):
