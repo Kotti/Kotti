@@ -50,7 +50,7 @@ kotti.secret2                Secret token used for email password reset token
 **mail.default_sender**      Sender address for outgoing email
 mail.host                    Email host to send from
 
-kotti.includes               List of Python configuration hooks
+pyramid.includes             List of Python configuration hooks
 kotti.available_types        List of active content types
 kotti.base_includes          List of base Python configuration hooks
 kotti.configurators          List of advanced functions for config
@@ -96,7 +96,7 @@ Here's an example:
   kotti.secret = myadminspassword
   kotti.secret2 = $2a$12$VVpW/i1MA2wUUIUHwY6v8O
 
-.. note:: Do not use the same values in your site
+.. note:: Do not use these values in your site
 
 .. _adjust_look_feel:
 
@@ -130,36 +130,36 @@ Add-ons will usually include in their installation instructions which
 settings one should modify to activate them.  Configuration settings
 that are used to activate add-ons are:
 
-- ``kotti.includes``
+- ``pyramid.includes``
 - ``kotti.available_types``
 - ``kotti.base_includes``
 - ``kotti.configurators``
 
-.. _kotti.includes:
+.. _pyramid.includes:
 
-kotti.includes
-``````````````
+pyramid.includes
+````````````````
 
-``kotti.includes`` defines a list of hooks that will be called by
-Kotti when it starts up.  This gives the opportunity to third party
+``pyramid.includes`` defines a list of hooks that will be called when
+your Kotti app starts up.  This gives the opportunity to third party
 packages to add registrations to the *Pyramid Configurator API* in
 order to configure views and more.
 
-As an example, we'll add the `kotti_twitter`_ extension to add a
-Twitter profile widget to the right column of all pages.  First we
-install the package from PyPI:
+Here's an example.  Let's install the `kotti_twitter`_ extension and
+add a Twitter profile widget to the right column of all pages.  First
+we install the package from PyPI:
 
 .. code-block:: bash
 
   bin/pip install kotti_twitter
 
 Then we activate the add-on in our site by editing the
-``kotti.includes`` setting in the ``[app:main]`` section of our INI
-file.  (If a line with ``kotti.includes`` does not exist, add it.)
+``pyramid.includes`` setting in the ``[app:main]`` section of our INI
+file.  (If a line with ``pyramid.includes`` does not exist, add it.)
 
 .. code-block:: ini
 
-  kotti.includes = kotti_twitter.include_profile_widget
+  pyramid.includes = kotti_twitter.include_profile_widget
 
 kotti_twitter also asks us to configure the Twitter widget itself, so
 we add some more lines right where we were:
@@ -171,16 +171,20 @@ we add some more lines right where we were:
 
 The order in which the includes are listed matters.  For example, when
 you add two slots on the right hand side, the order in which you list
-them here will control the order in which they will appear.
-
-With this configuration, the search widget is displayed on top of the
-profile widget:
+them in ``pyramid.includes`` will control the order in which they will
+appear.  As an example, here's a configuration with which the search
+widget will be displayed above the profile widget:
 
 .. code-block:: ini
 
-  kotti.includes =
+  pyramid.includes =
       kotti_twitter.include_search_widget
       kotti_twitter.include_profile_widget
+
+Read more about `including packages using 'pyramid.includes'`_ in
+the Pyramid documentation.
+
+.. _including packages using 'pyramid.includes': http://readthedocs.org/docs/pyramid/en/1.3-branch/narr/environment.html#including-packages
 
 .. _kotti.available_types:
 

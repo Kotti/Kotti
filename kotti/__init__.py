@@ -124,25 +124,33 @@ def base_configure(global_config, **settings):
     secret1 = settings['kotti.secret']
     settings.setdefault('kotti.secret2', secret1)
 
-    # Check for existence of deprecated ``kotti.includes`` setting
+    # BBB: Merge ``kotti.includes`` into pyramid.includes.
     if 'kotti.includes' in settings:
         warnings.warn(
-            'Usage of ``kotti.includes`` setting is deprecated. '
-            'Please set on ``pyramid.includes`` to include your package.',
+            "The 'kotti.includes' setting has been deprecated as of "
+            "Kotti 0.6.1.  Use 'pyramid.includes' instead.",
             DeprecationWarning)
-        if settings.get('pyramid.includes') is None: # BBB
-            settings['pyramid.includes'] = settings['kotti.includes']
-        else:
-            settings['pyramid.includes'] += ' ' + settings['kotti.includes']
+        settings.setdefault('pyramid.includes', '')
+        settings['pyramid.includes'] += ' ' + settings['kotti.includes']
 
-    config = Configurator(
-        settings=settings,
-        )
+    # We'll process ``pyramid_includes`` later by hand, to allow
+    # overrides of configuration from ``kotti.base_includes``:
+    pyramid_includes = settings.pop('pyramid.includes', '')
+
+    config = Configurator(settings=settings)
     config.begin()
+
+    config.registry.settings['pyramid.includes'] = pyramid_includes
 
     # Include modules listed in 'kotti.base_includes':
     for module in settings['kotti.base_includes']:
         config.include(module)
+    config.commit()
+
+    # Modules in 'pyramid.includes' may override 'kotti.base_includes':
+    if pyramid_includes:
+        for module in pyramid_includes.split():
+            config.include(module)
     config.commit()
 
     engine = engine_from_config(settings, 'sqlalchemy.')

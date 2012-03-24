@@ -11,10 +11,10 @@ code to set up essential parts of Kotti:
 .. code-block:: python
 
   default_settings = {
+      'pyramid.includes': 'myapp myapp.views',
       'kotti.authn_policy_factory': 'myapp.authn_policy_factory',
       'kotti.base_includes': (
           'kotti kotti.views kotti.views.login kotti.views.users'),
-      'kotti.includes': 'myapp myapp.views',
       'kotti.use_tables': 'orders principals',
       'kotti.populators': 'myapp.resources.populate',
       'kotti.principals_factory': 'myapp.security.Principals',

@@ -143,6 +143,6 @@ for name in ('JsonType', 'MutationDict', 'MutationList', 'NestedMixin',
              'NestedMutationDict', 'NestedMutationList'):
     deprecated(
         name,
-        'kotti.util.{0} has been moved to the kotti.sqla '
-        'module as of Kotti 0.6.  Use kotti.sqla.{0} instead'.format(name)
+        "kotti.util.{0} has been moved to the kotti.sqla "
+        "module as of Kotti 0.6.0.  Use kotti.sqla.{0} instead".format(name)
         )

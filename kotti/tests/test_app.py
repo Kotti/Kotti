@@ -1,9 +1,33 @@
 import warnings
 
-from webob import Request
+from mock import patch
+from pyramid.interfaces import IAuthenticationPolicy
+from pyramid.interfaces import IAuthorizationPolicy
+from pyramid.interfaces import IView
+from pyramid.interfaces import IViewClassifier
+from pyramid.request import Request
+from pyramid.threadlocal import get_current_registry
+from zope.interface import implementedBy
+from zope.interface import providedBy
 
 from kotti.testing import TestingRootFactory
 from kotti.testing import UnitTestBase
+
+def _includeme_login(config):
+    config.add_view(
+        _login_view,
+        name='login',
+        renderer='kotti:templates/login.pt',
+        )
+
+def _includeme_layout(config):
+    # override edit master layout with view master layout
+    config.override_asset(
+        to_override='kotti:templates/edit/master.pt',
+        override_with='kotti:templates/view/master.pt',
+        ) 
+
+def _login_view(request): return {}
 
 class TestApp(UnitTestBase):
     def required_settings(self):
@@ -29,9 +53,6 @@ class TestApp(UnitTestBase):
         self.assertEqual(get_settings()['kotti.available_types'], [MyType])
 
     def test_auth_policies_no_override(self):
-        from pyramid.interfaces import IAuthenticationPolicy
-        from pyramid.interfaces import IAuthorizationPolicy
-        from pyramid.threadlocal import get_current_registry
         from kotti import main
 
         settings = self.required_settings()
@@ -42,9 +63,6 @@ class TestApp(UnitTestBase):
         assert registry.queryUtility(IAuthorizationPolicy) != None
 
     def test_auth_policies_override(self):
-        from pyramid.interfaces import IAuthenticationPolicy
-        from pyramid.interfaces import IAuthorizationPolicy
-        from pyramid.threadlocal import get_current_registry
         from kotti import main
 
         settings = self.required_settings()
@@ -88,59 +106,57 @@ class TestApp(UnitTestBase):
         settings['kotti.asset_overrides'] = 'pyramid:scaffold/ pyramid.fixers'
         main({}, **settings)
 
-    @staticmethod
-    def _includeme_login(config):
-        from kotti.resources import Node
-        from kotti.views.login import login
-
-        config.add_view(
-            login,
-            name='login',
-            context=Node,
-            renderer='kotti:templates/login.pt',
-            )
-
     def test_kotti_includes_deprecation_warning(self):
         from kotti import main
 
         settings = self.required_settings()
         settings['kotti.includes'] = (
-            'kotti.tests.test_app.TestApp._includeme_layout')
+            'kotti.tests.test_app._includeme_layout')
         with warnings.catch_warnings(record=True) as w:
             warnings.simplefilter('always')
             main({}, **settings)
             assert len(w) == 1
             assert issubclass(w[-1].category, DeprecationWarning)
-            assert 'Please set on ``pyramid.includes``' in str(w[-1].message)
+            msg = str(w[-1].message)
+            assert "The 'kotti.includes' setting has been deprecated" in msg
 
     def test_kotti_includes_merged_to_pyramid_includes(self):
-        from kotti import get_settings
         from kotti import main
 
         settings = self.required_settings()
         settings['kotti.includes'] = (
-            'kotti.tests.test_app.TestApp._includeme_login')
+            'kotti.tests.test_app._includeme_login')
 
-        assert settings.get('pyramid.includes') is None
-        main({}, **settings)
-        assert get_settings()['pyramid.includes'] == settings['kotti.includes']
+        app = main({}, **settings)
+        assert (app.registry.settings['pyramid.includes'].strip() ==
+                'kotti.tests.test_app._includeme_login')
 
         settings = self.required_settings()
         settings['pyramid.includes'] = (
-            'kotti.tests.test_app.TestApp._includeme_layout')
+            'kotti.tests.test_app._includeme_layout')
         settings['kotti.includes'] = (
-            'kotti.tests.test_app.TestApp._includeme_login')
-        main({}, **settings)
-        assert len(get_settings()['pyramid.includes'].split(' ')) == 2
-        assert settings['kotti.includes'] in get_settings()['pyramid.includes']
+            'kotti.tests.test_app._includeme_login')
+        app = main({}, **settings)
+        regsettings = app.registry.settings
+        assert len(regsettings['pyramid.includes'].split()) == 2
+        assert settings['kotti.includes'] in regsettings['pyramid.includes']
 
-    def test_includes_overrides(self):
+    def test_pyramid_includes_overrides_base_includes(self):
         from kotti import main
+        from kotti.resources import get_root
 
         settings = self.required_settings()
         settings['pyramid.includes'] = (
-            'kotti.tests.test_app.TestApp._includeme_login')
-        main({}, **settings)
+            'kotti.tests.test_app._includeme_login')
+        app = main({}, **settings)
+
+        provides = [
+            IViewClassifier,
+            implementedBy(Request),
+            providedBy(get_root()),
+            ]
+        view = app.registry.adapters.lookup(provides, IView, name='login')
+        assert view.__module__ == __name__
 
     def test_use_tables(self):
         from kotti import main
@@ -172,18 +188,10 @@ class TestApp(UnitTestBase):
         (status, headers, response) = request.call_application(app)
         assert status == '200 OK'
 
-    @staticmethod
-    def _includeme_layout(config):
-        # override edit master layout with view master layout
-        config.override_asset(
-            to_override='kotti:templates/edit/master.pt',
-            override_with='kotti:templates/view/master.pt',
-            ) 
-
     def test_render_master_view_template_with_minimal_root(self):
         settings = self.required_settings()
         settings['pyramid.includes'] = (
-            'kotti.tests.test_app.TestApp._includeme_layout')
+            'kotti.tests.test_app._includeme_layout')
         return self.test_render_master_edit_template_with_minimal_root(settings)
 
     def test_setting_values_as_unicode(self):

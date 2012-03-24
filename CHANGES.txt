@@ -9,6 +9,9 @@ Change History
 - Separated out testing dependencies.  Run ``bin/python setup.py dev``
   to install Kotti with extra dependencies for testing.
 
+- Deprecate 'kotti.includes' setting.  Use the standard
+  'pyramid.includes' instead.
+
 - Setting 'Node.__acl__' to the empty list will now persist the empty
   list instead of setting 'None'.
 

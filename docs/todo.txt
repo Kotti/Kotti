@@ -21,9 +21,6 @@ Bigger tasks
   exceptions.  Possibly other introspectable features, like version
   numbers etc.
 
-- Deprecate 'kotti.includes' in favour of 'pyramid.includes'.  See
-  https://github.com/Pylons/Kotti/pull/44  (teixas)
-
 Have an idea for this list?  Discuss at
 http://groups.google.com/group/kotti or #kotti on IRC.
 
