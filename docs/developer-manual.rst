@@ -48,6 +48,20 @@ Document content type serves as an example here:
 You can configure the list of active content types in Kotti by
 modifying the :ref:`kotti.available_types` setting.
 
+Note that when adding a relationship from your content type to another
+Node, you will need to add a ``primaryjoin`` parameter to your
+relationship.  An example:
+
+.. code-block:: python
+
+  from sqlalchemy.orm import relationship
+
+  class DocumentWithRelation(Document):
+    id = Column(Integer, ForeignKey('documents.id'), primary_key=True)
+    related_item_id = Column(Integer, ForeignKey('nodes.id'))
+    related_item = relationship(
+        'Node', primaryjoin='Node.id==DocumentWithRelation.related_item_id')
+
 Add views, subscribers and more
 -------------------------------
 
