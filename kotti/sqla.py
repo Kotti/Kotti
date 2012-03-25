@@ -3,6 +3,8 @@ from pyramid.security import ALL_PERMISSIONS
 from pyramid.security import Allow
 from sqlalchemy.types import TypeDecorator, TEXT
 from sqlalchemy.ext.mutable import Mutable
+from sqlalchemy.ext.declarative import declared_attr
+from sqlalchemy.ext.declarative import DeclarativeMeta
 
 
 def dump_default(obj):
@@ -160,3 +162,10 @@ MUTATION_WRAPPERS = {
     dict: NestedMutationDict,
     list: NestedMutationList,
     }
+
+
+class Base(object):
+    @declared_attr
+    def __tablename__(cls):
+        from kotti.util import camel_case_to_name  # prevent circ import
+        return '{0}s'.format(camel_case_to_name(cls.__name__))

@@ -138,10 +138,6 @@ class LocalGroup(Base):
 class Node(Base, ContainerMixin, PersistentACLMixin):
     implements(INode)
 
-    @classproperty
-    def __tablename__(cls):
-        return '{0}s'.format(camel_case_to_name(cls.__name__))
-
     __table_args__ = (
         UniqueConstraint('parent_id', 'name'),
         )
@@ -246,7 +242,7 @@ class Content(Node):
     def __mapper_args__(cls):
         return dict(polymorphic_identity=camel_case_to_name(cls.__name__))
 
-    id = Column('id', Integer, ForeignKey('nodes.id'), primary_key=True)
+    id = Column(Integer, ForeignKey('nodes.id'), primary_key=True)
     default_view = Column(String(50))
     description = Column(UnicodeText())
     language = Column(Unicode(10))

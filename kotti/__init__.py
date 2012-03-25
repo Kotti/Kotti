@@ -17,11 +17,12 @@ from pyramid.util import DottedNameResolver
 from pyramid_beaker import session_factory_from_settings
 
 import kotti.patches; kotti.patches
+from kotti.sqla import Base as KottiBase
 from kotti.util import request_cache
 
 metadata = MetaData()
 DBSession = scoped_session(sessionmaker(extension=ZopeTransactionExtension()))
-Base = declarative_base()
+Base = declarative_base(cls=KottiBase)
 Base.metadata = metadata
 
 def authtkt_factory(**settings):
