@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Kotti 0.6.1dev\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2012-03-24 09:24+0100\n"
+"POT-Creation-Date: 2012-03-27 02:04+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,19 +17,19 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 0.9.6\n"
 
-#: kotti/resources.py:264
+#: kotti/resources.py:260
 msgid "Edit"
 msgstr ""
 
-#: kotti/resources.py:265
+#: kotti/resources.py:261
 msgid "Share"
 msgstr ""
 
-#: kotti/resources.py:291
+#: kotti/resources.py:287
 msgid "Document"
 msgstr ""
 
-#: kotti/resources.py:311 kotti/views/file.py:66 kotti/views/file.py:83
+#: kotti/resources.py:307 kotti/views/file.py:66 kotti/views/file.py:83
 #: kotti/views/file.py:97
 msgid "File"
 msgstr ""
@@ -136,19 +136,27 @@ msgstr ""
 msgid "Order ${title}"
 msgstr ""
 
-#: kotti/templates/edit/order.pt:30
+#: kotti/templates/edit/order.pt:15
+msgid "Move this item up"
+msgstr ""
+
+#: kotti/templates/edit/order.pt:23
+msgid "Move this item down"
+msgstr ""
+
+#: kotti/templates/edit/order.pt:31
 msgid "Toggle visibility of this item"
 msgstr ""
 
-#: kotti/templates/edit/order.pt:36
+#: kotti/templates/edit/order.pt:39
 msgid "Hide"
 msgstr ""
 
-#: kotti/templates/edit/order.pt:37
+#: kotti/templates/edit/order.pt:43
 msgid "Show"
 msgstr ""
 
-#: kotti/templates/edit/order.pt:40
+#: kotti/templates/edit/order.pt:47
 msgid "Hidden"
 msgstr ""
 
@@ -265,16 +273,16 @@ msgstr ""
 msgid "${title} pasted."
 msgstr ""
 
-#: kotti/views/edit.py:147
+#: kotti/views/edit.py:146
+msgid "${title} moved."
+msgstr ""
+
+#: kotti/views/edit.py:156
 msgid "${title} is now visible in the navigation."
 msgstr ""
 
-#: kotti/views/edit.py:149
+#: kotti/views/edit.py:159
 msgid "${title} is no longer visible in the navigation."
-msgstr ""
-
-#: kotti/views/edit.py:160
-msgid "${title} moved."
 msgstr ""
 
 #: kotti/views/edit.py:171
