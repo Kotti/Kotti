@@ -12,15 +12,17 @@
       <form action="${request.url}" method="post"
             class="ajax ${('order-up' in request.POST or 'order-down' in request.POST or 'toggle-visibility' in request.POST) and 'ajax-replace' or ''}" id="form-move-4">
         <div class="form-actions" tal:repeat="item children">
-          <button type="submit" name="order-up" value="${item.id}"
-                  title="Move ${item.title} up"
+          <button i18n:attributes="title"
+                  type="submit" name="order-up" value="${item.id}"
+                  title="Move this item up"
                   id="order-up-${item.id}"
                   disabled="${item.position==0 and 'disabled' or None}"
                   class="btn">
             ↑
           </button>
-          <button type="submit" name="order-down" value="${item.id}"
-                  title="Move ${item.title} down"
+          <button i18n:attributes="title"
+                  type="submit" name="order-down" value="${item.id}"
+                  title="Move this item down"
                   id="order-down-${item.id}"
                   disabled="${item.position+1 == len(children) and 'disabled' or None}"
                   class="btn">
