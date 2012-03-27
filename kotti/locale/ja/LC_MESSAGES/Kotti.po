@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Kotti 0.6.0\n"
 "Report-Msgid-Bugs-To: kotti@googlegroups.com\n"
-"POT-Creation-Date: 2012-03-10 14:07+0100\n"
+"POT-Creation-Date: 2012-03-27 02:04+0900\n"
 "PO-Revision-Date: 2012-03-18 18:13+0900\n"
 "Last-Translator: OCHIAI, Gouji <gjo.ext@gmail.com>\n"
 "Language-Team: ja <kotti@googlegroups.com>\n"
@@ -17,36 +17,36 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 0.9.6\n"
 
-#: kotti/resources.py:254
+#: kotti/resources.py:260
 msgid "Edit"
 msgstr "編集"
 
-#: kotti/resources.py:255
+#: kotti/resources.py:261
 msgid "Share"
 msgstr "共有"
 
-#: kotti/resources.py:281
+#: kotti/resources.py:287
 msgid "Document"
 msgstr "ドキュメント"
 
-#: kotti/resources.py:301 kotti/views/file.py:66 kotti/views/file.py:83
+#: kotti/resources.py:307 kotti/views/file.py:66 kotti/views/file.py:83
 #: kotti/views/file.py:97
 msgid "File"
 msgstr "ファイル"
 
-#: kotti/security.py:161
+#: kotti/security.py:159
 msgid "Viewer"
 msgstr "閲覧者"
 
-#: kotti/security.py:162
+#: kotti/security.py:160
 msgid "Editor"
 msgstr "編集者"
 
-#: kotti/security.py:163
+#: kotti/security.py:161
 msgid "Owner"
 msgstr "所有者"
 
-#: kotti/security.py:164
+#: kotti/security.py:162
 msgid "Admin"
 msgstr "管理者"
 
@@ -98,22 +98,21 @@ msgstr "ログイン"
 msgid "Forgot your password?"
 msgstr "パスワードを忘れた?"
 
-#: kotti/templates/login.pt:40
-msgid ""
-"Fill out your username or email above and click <dynamic element> below "
-"to receive an email with a link to reset your password."
-msgstr ""
-"上の入力欄のユーザー名かメールアドレスを埋めて、下にある <dynamic element> "
-"をクリックしてください。"
-"パスワードをリセットするためのリンクが書かれたメールが送信されます。"
-
-#: kotti/templates/login.pt:46
+#: kotti/templates/login.pt:42 kotti/templates/login.pt:48
 msgid "Reset password"
 msgstr "パスワードをリセット"
 
+#: kotti/templates/login.pt:40
+msgid ""
+"Fill out your username or email above and click ${reset_password} below "
+"to receive an email with a link to reset your password."
+msgstr ""
+"上の入力欄のユーザー名かメールアドレスを埋めて、下にある ${reset_password} "
+"をクリックしてください。パスワードをリセットするためのリンクが書かれたメールが送信されます。"
+
 #: kotti/templates/edit/breadcrumbs.pt:4
 msgid "You are here:"
-msgstr "今ココ:"
+msgstr "今の場所:"
 
 #: kotti/templates/edit/breadcrumbs.pt:12
 msgid "Home"
@@ -138,6 +137,30 @@ msgstr "削除"
 #: kotti/templates/edit/order.pt:9
 msgid "Order ${title}"
 msgstr "${title} の並べ替え"
+
+#: kotti/templates/edit/order.pt:15
+msgid "Move this item up"
+msgstr "このアイテムを上に移動する"
+
+#: kotti/templates/edit/order.pt:23
+msgid "Move this item down"
+msgstr "このアイテムを下に移動する"
+
+#: kotti/templates/edit/order.pt:31
+msgid "Toggle visibility of this item"
+msgstr "このアイテムの表示・非表示を切り替える"
+
+#: kotti/templates/edit/order.pt:39
+msgid "Hide"
+msgstr "非表示にする"
+
+#: kotti/templates/edit/order.pt:43
+msgid "Show"
+msgstr "表示する"
+
+#: kotti/templates/edit/order.pt:47
+msgid "Hidden"
+msgstr "非表示状態"
 
 #: kotti/templates/edit/rename.pt:8
 msgid "Rename ${title}"
@@ -252,19 +275,27 @@ msgstr "${title} を切り取りました。"
 msgid "${title} pasted."
 msgstr "${title} を貼り付けました。"
 
-#: kotti/views/edit.py:149
+#: kotti/views/edit.py:146
 msgid "${title} moved."
 msgstr "${title} を移動しました。"
 
-#: kotti/views/edit.py:160
+#: kotti/views/edit.py:156
+msgid "${title} is now visible in the navigation."
+msgstr "${title} がナビゲーションに表示されるようになりました。"
+
+#: kotti/views/edit.py:159
+msgid "${title} is no longer visible in the navigation."
+msgstr "${title} がナビゲーションでは非表示になりました。"
+
+#: kotti/views/edit.py:171
 msgid "${title} deleted."
 msgstr "${title} を削除しました。"
 
-#: kotti/views/edit.py:173
+#: kotti/views/edit.py:184
 msgid "Name and title are required."
 msgstr "名称とタイトルは必須です。"
 
-#: kotti/views/edit.py:177
+#: kotti/views/edit.py:188
 msgid "Item renamed"
 msgstr "名称変更しました"
 
@@ -280,9 +311,7 @@ msgstr "ログインに失敗しました。"
 msgid ""
 "You should receive an email with a link to reset your password "
 "momentarily."
-msgstr ""
-"まもなくパスワードをリセットするためのリンクが記載されたメールが"
-"送信されます。"
+msgstr "まもなくパスワードをリセットするためのリンクが記載されたメールが送信されます。"
 
 #: kotti/views/login.py:70
 msgid "That username or email is not known to us."
@@ -324,7 +353,7 @@ msgstr "ユーザー管理"
 msgid "Site Setup - ${title}"
 msgstr "サイト設定 - ${title}"
 
-#: kotti/views/users.py:65 kotti/views/util.py:321
+#: kotti/views/users.py:65 kotti/views/util.py:344
 msgid "Your changes have been saved."
 msgstr "変更内容を保存しました。"
 
@@ -372,9 +401,7 @@ msgstr "グループ"
 msgid ""
 "Leave this empty and tick the 'Send password registration' box below to "
 "have the user set their own password."
-msgstr ""
-"この項目を空にして下の 'パスワード登録を送信する' をチェックすると、"
-"ユーザー自身にパスワードを設定させられます。"
+msgstr "この項目を空にして下の 'パスワード登録を送信する' をチェックすると、ユーザー自身にパスワードを設定させられます。"
 
 #: kotti/views/users.py:227
 msgid "Full name"
@@ -388,7 +415,7 @@ msgstr "ユーザー"
 msgid "Add User"
 msgstr "ユーザーを追加"
 
-#: kotti/views/users.py:267 kotti/views/users.py:297 kotti/views/util.py:320
+#: kotti/views/users.py:267 kotti/views/users.py:298 kotti/views/util.py:343
 msgid "Cancel"
 msgstr "キャンセル"
 
@@ -396,43 +423,43 @@ msgstr "キャンセル"
 msgid "Send password registration link"
 msgstr "パスワード登録を送信する"
 
-#: kotti/views/users.py:288
+#: kotti/views/users.py:289
 msgid "${title} added."
 msgstr "${title} を追加しました。"
 
-#: kotti/views/users.py:296
+#: kotti/views/users.py:297
 msgid "Add Group"
 msgstr "グループ追加"
 
-#: kotti/views/users.py:313
+#: kotti/views/users.py:314
 msgid "User Management - ${title}"
 msgstr "ユーザー管理 - ${title}"
 
-#: kotti/views/users.py:385
+#: kotti/views/users.py:386
 msgid "Edit User - ${title}"
 msgstr "ユーザー編集 - ${title}"
 
-#: kotti/views/users.py:402
+#: kotti/views/users.py:403
 msgid "My preferences - ${title}"
 msgstr "個人設定 - ${title}"
 
-#: kotti/views/util.py:320
+#: kotti/views/util.py:343
 msgid "Save"
 msgstr "保存"
 
-#: kotti/views/util.py:370
+#: kotti/views/util.py:393
 msgid "Edit <em>${title}</em>"
-msgstr "編集 <em>${title}</em>"
+msgstr "<em>${title}</em> を編集"
 
-#: kotti/views/util.py:375
+#: kotti/views/util.py:398
 msgid "Successfully added item."
 msgstr "追加に成功しました。"
 
-#: kotti/views/util.py:400
+#: kotti/views/util.py:423
 msgid "Add ${type} to <em>${title}</em>"
 msgstr "<em>${title}</em> に ${type} を追加"
 
-#: kotti/views/util.py:403
+#: kotti/views/util.py:427
 msgid "Add ${type}"
 msgstr "${type} を追加"
 
