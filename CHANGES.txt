@@ -6,6 +6,8 @@ Change History
 
 - Added button to show/hide nodes from navigation in the order screen.
 
+- Add Dutch translation.
+
 - Separated out testing dependencies.  Run ``bin/python setup.py dev``
   to install Kotti with extra dependencies for testing.
 

@@ -1,7 +1,8 @@
 Thanks
 ======
 
-Thanks to the following people for support, code, patches etc:
+Kotti was created by Daniel Nouri.  Thanks to the following people for
+support, code, patches etc:
 
   - Andreas Kaiser
   - Andreas Zeidler
@@ -13,5 +14,6 @@ Thanks to the following people for support, code, patches etc:
   - Nuno Teixeira
   - Steffen Lindner
   - Tom Lazar
+  - Wim Boucquaert
   - `The University of Coimbra <http://uc.pt/>`_
   - `Consipere <http://www.consipere.com/>`_ 
