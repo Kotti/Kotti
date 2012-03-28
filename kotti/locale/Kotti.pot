@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Kotti 0.6.1dev\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2012-03-27 02:04+0900\n"
+"POT-Creation-Date: 2012-03-28 18:28+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -293,8 +293,12 @@ msgstr ""
 msgid "Name and title are required."
 msgstr ""
 
-#: kotti/views/edit.py:188
+#: kotti/views/edit.py:189
 msgid "Item renamed"
+msgstr ""
+
+#: kotti/views/edit.py:191
+msgid "Item renamed, slashes in name have been removed"
 msgstr ""
 
 #: kotti/views/login.py:54
