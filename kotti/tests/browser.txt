@@ -351,6 +351,26 @@ We can rename an item:
   >>> "My Third Child" in browser.contents
   True
 
+Any slashes will be stripped out of the new name:
+
+  >>> browser.open(testing.BASE_URL + '/child-one/third-child')
+  >>> browser.getLink('Rename').click()
+  >>> ctrl("New name").value = "/slashy/-child"
+  >>> ctrl("New title").value = "My /Slashy/ Child"
+  >>> ctrl(name="rename").click()
+  >>> "Item renamed, slashes in name have been removed" in browser.contents
+  True
+  >>> browser.url == testing.BASE_URL + '/child-one/slashy-child/'
+  True
+  >>> browser.getLink("View").click()
+  >>> "My /Slashy/ Child" in browser.contents
+  True
+  >>> browser.open(testing.BASE_URL + '/child-one/slashy-child')
+  >>> browser.getLink('Rename').click()
+  >>> ctrl("New name").value = "third-child"
+  >>> ctrl("New title").value = "My Third Child"
+  >>> ctrl(name="rename").click()
+
 We cannot rename the root:
 
   >>> browser.open(testing.BASE_URL)
