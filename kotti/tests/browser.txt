@@ -557,7 +557,7 @@ their preferences:
 
   >>> browser.getLink("Preferences").click()
   >>> ctrl("Full name").value = "Mr. Administrator"
-  >>> #ctrl("Email").value # returns 'None'-the-string currently
+  >>> ctrl("Email").value = 'admin@minad.com'
   >>> ctrl(name="save").click()
   >>> "Your changes have been saved" in browser.contents
   True
