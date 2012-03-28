@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Kotti 0.4.4\n"
 "Report-Msgid-Bugs-To: kotti@googlegroups.com\n"
 "POT-Creation-Date: 2012-02-27 14:43+0100\n"
-"PO-Revision-Date: 2012-03-24 09:24+0100\n"
+"PO-Revision-Date: 2012-03-28 19:49+0200\n"
 "Last-Translator: Christian Neumann <cneumann@datenkarussell.de>\n"
 "Language-Team: de <kotti@googlegroups.com>\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
@@ -17,19 +17,19 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 0.9.6\n"
 
-#: kotti/resources.py:264
+#: kotti/resources.py:260
 msgid "Edit"
 msgstr "Bearbeiten"
 
-#: kotti/resources.py:265
+#: kotti/resources.py:261
 msgid "Share"
 msgstr "Teilen"
 
-#: kotti/resources.py:291
+#: kotti/resources.py:287
 msgid "Document"
 msgstr "Dokument"
 
-#: kotti/resources.py:311 kotti/views/file.py:66 kotti/views/file.py:83
+#: kotti/resources.py:307 kotti/views/file.py:66 kotti/views/file.py:83
 #: kotti/views/file.py:97
 msgid "File"
 msgstr "Datei"
@@ -139,19 +139,27 @@ msgstr "Löschen"
 msgid "Order ${title}"
 msgstr "Ordne ${title}"
 
-#: kotti/templates/edit/order.pt:30
+#: kotti/templates/edit/order.pt:15
+msgid "Move this item up"
+msgstr "Nach oben verschieben"
+
+#: kotti/templates/edit/order.pt:23
+msgid "Move this item down"
+msgstr "Nach unten verschieben"
+
+#: kotti/templates/edit/order.pt:31
 msgid "Toggle visibility of this item"
 msgstr "Sichtbarkeit dieses Dokumentes umschalten"
 
-#: kotti/templates/edit/order.pt:36
+#: kotti/templates/edit/order.pt:39
 msgid "Hide"
 msgstr "Verstecken"
 
-#: kotti/templates/edit/order.pt:37
+#: kotti/templates/edit/order.pt:43
 msgid "Show"
 msgstr "Anzeigen"
 
-#: kotti/templates/edit/order.pt:40
+#: kotti/templates/edit/order.pt:47
 msgid "Hidden"
 msgstr "Versteckt"
 
@@ -268,17 +276,17 @@ msgstr "${title} ausgeschnitten."
 msgid "${title} pasted."
 msgstr "${title} eingefügt."
 
-#: kotti/views/edit.py:147
+#: kotti/views/edit.py:146
+msgid "${title} moved."
+msgstr "${title} verschoben."
+
+#: kotti/views/edit.py:156
 msgid "${title} is now visible in the navigation."
 msgstr "${title} wird nun in der Navigation angezeigt."
 
-#: kotti/views/edit.py:149
+#: kotti/views/edit.py:159
 msgid "${title} is no longer visible in the navigation."
 msgstr "${title} wird nun nicht mehr in der Navigation angezeigt."
-
-#: kotti/views/edit.py:160
-msgid "${title} moved."
-msgstr "${title} verschoben."
 
 #: kotti/views/edit.py:171
 msgid "${title} deleted."
