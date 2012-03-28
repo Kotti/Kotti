@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Kotti 0.4.4\n"
 "Report-Msgid-Bugs-To: kotti@googlegroups.com\n"
 "POT-Creation-Date: 2012-02-27 14:43+0100\n"
-"PO-Revision-Date: 2012-03-28 18:28+0200\n"
+"PO-Revision-Date: 2012-03-28 19:49+0200\n"
 "Last-Translator: Christian Neumann <cneumann@datenkarussell.de>\n"
 "Language-Team: de <kotti@googlegroups.com>\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
@@ -296,13 +296,9 @@ msgstr "${title} gelöscht."
 msgid "Name and title are required."
 msgstr "Name und Titel werden benötigt."
 
-#: kotti/views/edit.py:189
+#: kotti/views/edit.py:188
 msgid "Item renamed"
 msgstr "Objekt umbenannt."
-
-#: kotti/views/edit.py:191
-msgid "Item renamed, slashes in name have been removed"
-msgstr "Objekt umbenannt, Schrägstriche wurden aus dem Namen entfernt."
 
 #: kotti/views/login.py:54
 msgid "Welcome, ${user}!"

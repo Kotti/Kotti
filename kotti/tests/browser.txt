@@ -332,7 +332,7 @@ You can't cut the root of a site:
   LinkNotFoundError
 
 
-We can rename an item:
+We can rename an item. Slashes will be stripped out.:
 
   >>> browser.open(testing.BASE_URL + '/child-one/second-child')
   >>> browser.getLink('Rename').click()
@@ -340,7 +340,7 @@ We can rename an item:
   'second-child'
   >>> ctrl("New title").value
   'Second Child'
-  >>> ctrl("New name").value = "third-child"
+  >>> ctrl("New name").value = "thi/rd-ch/ild"
   >>> ctrl("New title").value = "My Third Child"
   >>> ctrl(name="rename").click()
   >>> "Item renamed" in browser.contents
@@ -350,26 +350,6 @@ We can rename an item:
   >>> browser.getLink("View").click()
   >>> "My Third Child" in browser.contents
   True
-
-Any slashes will be stripped out of the new name:
-
-  >>> browser.open(testing.BASE_URL + '/child-one/third-child')
-  >>> browser.getLink('Rename').click()
-  >>> ctrl("New name").value = "/slashy/-child"
-  >>> ctrl("New title").value = "My /Slashy/ Child"
-  >>> ctrl(name="rename").click()
-  >>> "Item renamed, slashes in name have been removed" in browser.contents
-  True
-  >>> browser.url == testing.BASE_URL + '/child-one/slashy-child/'
-  True
-  >>> browser.getLink("View").click()
-  >>> "My /Slashy/ Child" in browser.contents
-  True
-  >>> browser.open(testing.BASE_URL + '/child-one/slashy-child')
-  >>> browser.getLink('Rename').click()
-  >>> ctrl("New name").value = "third-child"
-  >>> ctrl("New title").value = "My Third Child"
-  >>> ctrl(name="rename").click()
 
 We cannot rename the root:
 
