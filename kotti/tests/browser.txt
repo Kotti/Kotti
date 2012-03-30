@@ -168,6 +168,25 @@ There's no Add link if nothing can be added:
   Traceback (most recent call last):
   LinkNotFoundError
 
+
+Add some tags to a document:
+
+  >>> browser.open(testing.BASE_URL + '/second-child')
+  >>> browser.getLink("Add").click()
+  >>> browser.getLink("Document").click()
+  >>> ctrl("Title").value = "Grandchild"
+  >>> ctrl("Tags").value = 'first tag,second tag'
+  >>> ctrl("save").click()
+  >>> browser.open(testing.BASE_URL + '/second-child/grandchild-2/@@edit')
+  >>> 'value="first tag,second tag"' in browser.contents
+  True
+  >>> ctrl("Tags").value = 'first tag,second tag,third'
+  >>> ctrl("save").click()
+  >>> browser.open(testing.BASE_URL + '/second-child/grandchild-2/@@edit')
+  >>> 'value="first tag,second tag,third"' in browser.contents  
+  True
+
+
 Reorder documents
 -----------------
 
