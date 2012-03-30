@@ -4,6 +4,8 @@ Change History
 0.6.1 - unreleased
 ------------------
 
+- The 'Rename' action now strips slashes out of names.
+
 - Added button to show/hide nodes from navigation in the order screen.
 
 - Add Dutch translation.
