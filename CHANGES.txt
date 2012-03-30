@@ -19,6 +19,9 @@ Change History
 - Setting 'Node.__acl__' to the empty list will now persist the empty
   list instead of setting 'None'.
 
+- Let 'pyramid_deform' take care of configuring deform with
+  translation dirs and search paths.
+
 0.6.0 - 2012-03-22
 ------------------
 

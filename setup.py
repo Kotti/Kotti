@@ -25,7 +25,7 @@ install_requires = [
     'pyramid>=1.2',
     'pyramid_beaker',
     'pyramid_debugtoolbar',
-    'pyramid_deform',
+    'pyramid_deform>=0.2a3', # language and template path config includeme
     'pyramid_mailer',
     'pyramid_tm',
     'repoze.lru',
