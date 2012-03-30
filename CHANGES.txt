@@ -1,12 +1,12 @@
 Change History
 ==============
 
-0.6.1 - unreleased
+0.6.1 - 2012-03-30
 ------------------
 
-- The 'Rename' action now strips slashes out of names.
-
 - Added button to show/hide nodes from navigation in the order screen.
+
+- The 'rename' action now strips slashes out of names.  Fixes #53.
 
 - Add Dutch translation.
 
