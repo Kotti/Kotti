@@ -24,6 +24,8 @@ metadata = MetaData()
 DBSession = scoped_session(sessionmaker(extension=ZopeTransactionExtension()))
 Base = declarative_base(cls=KottiBase)
 Base.metadata = metadata
+Base.query = DBSession.query_property()
+
 
 def authtkt_factory(**settings):
     from kotti.security import list_groups_callback

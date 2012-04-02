@@ -1,12 +1,9 @@
-from types import ListType
-from pyramid.threadlocal import get_current_request
-
 import colander
+from pyramid.threadlocal import get_current_request
 from deform.widget import Widget
 
 from kotti import DBSession
 from kotti.resources import Tag
-from kotti.util import _
 
 ADD_VIEWS = [u'add_document', ]
 
@@ -26,22 +23,19 @@ class TagItWidget(Widget):
         if pstruct is colander.null:
             return colander.null
         if isinstance(pstruct, basestring):
-            return (pstruct,)
+            return [item for item in pstruct.split(',')]
         return tuple(pstruct)
 
 
 @colander.deferred
 def deferred_tag_it_widget(node, kw):
-    tags = DBSession.query(Tag).all()
     request = get_current_request()
     context_tags = []
     if request.view_name not in ADD_VIEWS:
-        context_tags = DBSession.query(Tag).filter(Tag.items.contains(request.context)).all()
+        context_tags = request.context.tags
     available_tags = DBSession.query(Tag).all()
-    tags = tags if type(tags) == ListType else (tags, )
-    values = [(tag.id, tag.title) for tag in tags]
-    widget = TagItWidget(values=values,
-                         context_tags=[tag.title for tag in context_tags],
-                         available_tags=[str(tag.title) for tag in available_tags],
+    widget = TagItWidget(values=context_tags,
+                         context_tags=context_tags,
+                         available_tags=[tag.title.encode('utf-8') for tag in available_tags],
                          missing='')
     return widget

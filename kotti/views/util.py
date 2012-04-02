@@ -375,19 +375,6 @@ class BaseFormView(FormView):
         return result
 
 
-def convert_tags(values=[]):
-    tags = []
-    values = list(values)
-    if values:
-        for val in values[0].split(','):
-            val = val.encode('utf-8')
-            tag = DBSession.query(Tag).filter(Tag.title == val).first()
-            if tag is None:
-                tag = Tag(val)
-            tags.append(tag)
-    return tags
-
-
 class EditFormView(BaseFormView):
     add_template_vars = ('first_heading',)
 
@@ -396,8 +383,6 @@ class EditFormView(BaseFormView):
 
     def save_success(self, appstruct):
         appstruct.pop('csrf_token', None)
-        if 'tags' in appstruct:
-            appstruct['tags'] = convert_tags(appstruct['tags'])
         self.edit(**appstruct)
         self.request.session.flash(self.success_message, 'success')
         location = self.success_url or self.request.resource_url(self.context)
@@ -421,8 +406,6 @@ class AddFormView(BaseFormView):
 
     def save_success(self, appstruct):
         appstruct.pop('csrf_token', None)
-        if 'tags' in appstruct:
-            appstruct['tags'] = convert_tags(appstruct['tags'])
         name = self.find_name(appstruct)
         new_item = self.context[name] = self.add(**appstruct)
         self.request.session.flash(self.success_message, 'success')

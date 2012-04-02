@@ -5,7 +5,7 @@ class TestTag(UnitTestBase):
 
     def test_empty(self):
         from kotti.resources import get_root
-        get_root().tags == []
+        assert get_root().tags == []
 
     def test_tags(self):
         from kotti.resources import Tag
@@ -18,20 +18,45 @@ class TestTag(UnitTestBase):
         from kotti.resources import Tag
 
         root = get_root()
-        new_tag = Tag(u'new tag')
-        root.tags = [new_tag]
+        root.tags = [u'adding tag 1', u'adding tag 2']
         result = DBSession.query(Tag).filter(Tag.items.contains(root)).all()
-        assert result == [new_tag]
-        assert new_tag.items == [root]
-        assert root.tags == [new_tag]
+        assert root.tag_items == result
+        assert result[0].items == [root]
+        assert root.tags == [u'adding tag 1', u'adding tag 2']
 
     def test_edit(self):
         from kotti.resources import get_root
-        from kotti.resources import Tag
 
         root = get_root()
-        tag_1 = Tag(u'tag')
-        tag_2 = Tag(u'another tag')
-        root.tags = [tag_1, tag_2]
-        tag_2.title = u'edited another tag'
-        assert root.tags[1].title == u'edited another tag'
+        root.tags = [u'tag 1', u'tag_2']
+        assert root.tag_items[0].title == u'tag 1'
+        root.tags = [u'edited tag', u'tag_2']
+        assert root.tag_items[0].title == u'edited tag'
+
+    def test_proxy(self):
+        from kotti.resources import Content, Tag
+
+        content = Content()
+        content.tags = ['tag 1', 'tag 2', ]
+        assert content.tags == ['tag 1', 'tag 2', ]
+        assert type(content.tag_items[0]) == Tag
+        assert content.tag_items[0].title == 'tag 1'
+        assert content.tag_items[1].title == 'tag 2'
+
+    def test_widget(self):
+        # TODO: test serialze
+        import colander
+        from kotti.views.widget import TagItWidget
+
+        field = DummyField()
+        widget = TagItWidget()
+        result = widget.deserialize(field, colander.null)
+        assert result == colander.null
+        result = widget.deserialize(field, ['a', 'list'])
+        assert result == ('a', 'list')
+        result = widget.deserialize(field, 'a,b and c,d')
+        assert result == ['a', 'b and c', 'd']
+
+
+class DummyField(object):
+    pass

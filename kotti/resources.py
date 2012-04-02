@@ -12,6 +12,7 @@ from sqlalchemy.orm.exc import NoResultFound
 from sqlalchemy.util import classproperty
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.ext.orderinglist import ordering_list
+from sqlalchemy.ext.associationproxy import association_proxy
 from sqlalchemy import Column
 from sqlalchemy import UniqueConstraint
 from sqlalchemy import ForeignKey
@@ -235,9 +236,13 @@ class TypeInfo(object):
             return False
 
 
+class TagsToContents(Base):
+    __tablename__ = 'tags_to_contents'
+    tags_id = Column(Integer, ForeignKey('tags.id'), primary_key=True)
+    contents_id = Column(Integer, ForeignKey('contents.id'), primary_key=True)
+
+
 class Tag(Base):
-    """
-    """
     __tablename__ = 'tags'
     id = Column(Integer, primary_key=True)
     title = Column(String, nullable=False)
@@ -248,11 +253,12 @@ class Tag(Base):
     def __repr__(self):
         return "<Tag ('%s')>" % self.title
 
-
-class TagsToContents(Base):
-    __tablename__ = 'tags_to_contents'
-    tag_id = Column(Integer, ForeignKey('tags.id'), primary_key=True)
-    content_id = Column(Integer, ForeignKey('contents.id'), primary_key=True)
+    @classmethod
+    def _tag_find_or_create(self, title):
+        tag = Tag.query.filter_by(title=title).first()
+        if tag is None:
+            tag = Tag(title)
+        return tag
 
 
 class Content(Node):
@@ -270,9 +276,8 @@ class Content(Node):
     creation_date = Column(DateTime())
     modification_date = Column(DateTime())
     in_navigation = Column(Boolean())
-    tags = relation(Tag,
-                    backref=backref('items'),
-                    secondary='tags_to_contents')
+    tag_items = relation("Tag", backref=backref('items'), secondary="tags_to_contents")
+    tags = association_proxy('tag_items', 'title', creator=Tag._tag_find_or_create)
 
     type_info = TypeInfo(
         name=u'Content',
