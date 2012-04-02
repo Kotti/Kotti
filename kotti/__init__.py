@@ -58,6 +58,7 @@ conf_defaults = {
     'kotti.date_format': 'medium',
     'kotti.datetime_format': 'medium',
     'kotti.time_format': 'medium',
+    'pyramid_deform.template_search_path': 'kotti:templates/deform',
     }
 
 conf_dotted = set([

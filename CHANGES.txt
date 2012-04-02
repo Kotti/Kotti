@@ -1,14 +1,20 @@
 Change History
 ==============
 
-0.6.1 - unreleased
+0.6.2 - unreleased
 ------------------
 
-- The 'Rename' action now strips slashes out of names.
+
+0.6.1 - 2012-03-30
+------------------
 
 - Added button to show/hide nodes from navigation in the order screen.
 
+- The 'rename' action now strips slashes out of names.  Fixes #53.
+
 - Add Dutch translation.
+
+- Allow translation of TinyMCE's UI (starting with deform 0.9.5)
 
 - Separated out testing dependencies.  Run ``bin/python setup.py dev``
   to install Kotti with extra dependencies for testing.
@@ -18,6 +24,9 @@ Change History
 
 - Setting 'Node.__acl__' to the empty list will now persist the empty
   list instead of setting 'None'.
+
+- Let 'pyramid_deform' take care of configuring deform with
+  translation dirs and search paths.
 
 0.6.0 - 2012-03-22
 ------------------
