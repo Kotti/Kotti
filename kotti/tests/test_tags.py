@@ -15,33 +15,49 @@ class TestTag(UnitTestBase):
     def test_add(self):
         from kotti import DBSession
         from kotti.resources import get_root
-        from kotti.resources import Tag
+        from kotti.resources import Tag, TagsToContents
 
         root = get_root()
-        root.tags = [u'adding tag 1', u'adding tag 2']
-        result = DBSession.query(Tag).filter(Tag.items.contains(root)).all()
-        assert root.tag_items == result
+        root.tags = [u'tag 1', u'tag 2']
+        result = DBSession.query(Tag).filter(TagsToContents.items == root).all()
         assert result[0].items == [root]
-        assert root.tags == [u'adding tag 1', u'adding tag 2']
+        assert root.tags == [u'tag 1', u'tag 2']
+        assert len(DBSession.query(Tag).all()) == 2
 
     def test_edit(self):
         from kotti.resources import get_root
 
         root = get_root()
         root.tags = [u'tag 1', u'tag_2']
-        assert root.tag_items[0].title == u'tag 1'
+        assert root._tags[0].tag.title == u'tag 1'
         root.tags = [u'edited tag', u'tag_2']
-        assert root.tag_items[0].title == u'edited tag'
+        assert root._tags[0].tag.title == u'edited tag'
 
-    def test_proxy(self):
-        from kotti.resources import Content, Tag
+    def test_association_proxy(self):
+        from kotti import DBSession
+        from kotti.resources import get_root
+        from kotti.resources import Tag, TagsToContents, Content
 
-        content = Content()
-        content.tags = ['tag 1', 'tag 2', ]
-        assert content.tags == ['tag 1', 'tag 2', ]
-        assert type(content.tag_items[0]) == Tag
-        assert content.tag_items[0].title == 'tag 1'
-        assert content.tag_items[1].title == 'tag 2'
+        root = get_root()
+        root[u'content_1'] = Content()
+        root[u'content_1'].tags = ['tag 1', 'tag 2', ]
+        assert root[u'content_1'].tags == ['tag 1', 'tag 2', ]
+        assert type(root[u'content_1']._tags[0]) == TagsToContents
+        assert type(root[u'content_1']._tags[0].tag) == Tag
+        assert root[u'content_1']._tags[0].tag.title == u'tag 1'
+        assert root[u'content_1']._tags[0].position == 0
+        assert root[u'content_1']._tags[1].tag.title == u'tag 2'
+        assert root[u'content_1']._tags[1].position == 1
+        assert len(root[u'content_1']._tags) == 2
+
+        root[u'content_2'] = Content()
+        root[u'content_2'].tags = [u'tag 1', u'tag 3']
+        assert len(root[u'content_2']._tags) == 2
+        assert root[u'content_2']._tags[0].tag.title == u'tag 1'
+        assert root[u'content_2']._tags[0].position == 0
+        assert root[u'content_2']._tags[1].tag.title == u'tag 3'
+        assert root[u'content_2']._tags[1].position == 1
+        assert len(DBSession.query(Tag).all()) == 3
 
     def test_widget(self):
         # TODO: test serialze

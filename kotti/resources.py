@@ -236,16 +236,14 @@ class TypeInfo(object):
             return False
 
 
-class TagsToContents(Base):
-    __tablename__ = 'tags_to_contents'
-    tags_id = Column(Integer, ForeignKey('tags.id'), primary_key=True)
-    contents_id = Column(Integer, ForeignKey('contents.id'), primary_key=True)
-
-
 class Tag(Base):
-    __tablename__ = 'tags'
+
+    @classproperty
+    def __mapper_args__(cls):
+        return dict(polymorphic_identity=camel_case_to_name(cls.__name__))
+
     id = Column(Integer, primary_key=True)
-    title = Column(String, nullable=False)
+    title = Column(String, unique=True, nullable=False)
 
     def __init__(self, title):
         self.title = title
@@ -253,12 +251,39 @@ class Tag(Base):
     def __repr__(self):
         return "<Tag ('%s')>" % self.title
 
+    @property
+    def items(self):
+        if getattr(self, 'content_tags', None) is not None:
+            return [content_tag.items for content_tag in self.content_tags]
+
+
+class TagsToContents(Base):
+
+    @classproperty
+    def __mapper_args__(cls):
+        return dict(polymorphic_identity=camel_case_to_name(cls.__name__))
+
+    tags_id = Column(Integer, ForeignKey('tags.id'), primary_key=True)
+    contents_id = Column(Integer, ForeignKey('contents.id'), primary_key=True)
+    tag = relation(Tag, backref=backref('content_tags'))
+    position = Column(Integer, nullable=False)
+
+    def __init__(self, tag=None, **kw):
+            if tag is not None:
+                kw['tag'] = tag
+            Base.__init__(self, **kw)
+
+    @property
+    def tag_title(self):
+        return self.tag.title
+
     @classmethod
     def _tag_find_or_create(self, title):
-        tag = Tag.query.filter_by(title=title).first()
+        with DBSession.no_autoflush:
+            tag = DBSession.query(Tag).filter_by(title=title).first()
         if tag is None:
             tag = Tag(title)
-        return tag
+        return self(tag)
 
 
 class Content(Node):
@@ -276,8 +301,13 @@ class Content(Node):
     creation_date = Column(DateTime())
     modification_date = Column(DateTime())
     in_navigation = Column(Boolean())
-    tag_items = relation("Tag", backref=backref('items'), secondary="tags_to_contents")
-    tags = association_proxy('tag_items', 'title', creator=Tag._tag_find_or_create)
+    _tags = relation(TagsToContents,
+                     backref=backref('items', cascade='all', uselist=False),
+                     order_by=[TagsToContents.position],
+                     collection_class=ordering_list("position"),
+                     cascade='all, delete-orphan',
+                     )
+    tags = association_proxy('_tags', 'tag_title', creator=TagsToContents._tag_find_or_create)
 
     type_info = TypeInfo(
         name=u'Content',

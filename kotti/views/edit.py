@@ -4,7 +4,6 @@ from pyramid.location import inside
 from pyramid.security import has_permission
 from pyramid.url import resource_url
 import colander
-import deform
 from deform.widget import RichTextWidget
 from deform.widget import TextAreaWidget
 
@@ -21,7 +20,10 @@ from kotti.views.util import disambiguate_name
 from kotti.views.util import ensure_view_selector
 from kotti.views.util import nodes_tree
 from kotti.util import title_to_name
-from kotti.views.widget import deferred_tag_it_widget
+from kotti.views.widget import (
+    deferred_tag_it_widget,
+    TagHolder,
+)
 
 
 class ContentSchema(colander.MappingSchema):
@@ -35,7 +37,7 @@ class ContentSchema(colander.MappingSchema):
         missing=u"",
         )
     tags = colander.SchemaNode(
-        deform.Set(allow_empty=True),
+        TagHolder(),
         title=_('Tags'),
         widget=deferred_tag_it_widget,
         missing=[],

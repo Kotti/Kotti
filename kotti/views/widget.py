@@ -2,20 +2,31 @@ import colander
 from pyramid.threadlocal import get_current_request
 from deform.widget import Widget
 
-from kotti import DBSession
 from kotti.resources import Tag
 
 ADD_VIEWS = [u'add_document', ]
 
 
+class TagHolder(object):
+    """ A type leaving the value untouched.
+    """
+    def serialize(self, node, value):
+        return value
+
+    def deserialize(self, node, value):
+        return value
+
+
 class TagItWidget(Widget):
     template = 'tag_it'
-    values = ()
-    size = 1
 
     def serialize(self, field, cstruct, readonly=False):
         if cstruct in (colander.null, None):
-            cstruct = ()
+            cstruct = ''
+        request = get_current_request()
+        if request.view_name not in ADD_VIEWS:
+            if getattr(request.context, 'tags', None) is not None:
+                cstruct = ','.join(request.context.tags)
         template = readonly and self.readonly_template or self.template
         return field.renderer(template, field=field, cstruct=cstruct)
 
@@ -23,19 +34,14 @@ class TagItWidget(Widget):
         if pstruct is colander.null:
             return colander.null
         if isinstance(pstruct, basestring):
-            return [item for item in pstruct.split(',')]
+            return [item.strip() for item in pstruct.split(',') if item]
         return tuple(pstruct)
 
 
 @colander.deferred
 def deferred_tag_it_widget(node, kw):
-    request = get_current_request()
-    context_tags = []
-    if request.view_name not in ADD_VIEWS:
-        context_tags = request.context.tags
-    available_tags = DBSession.query(Tag).all()
-    widget = TagItWidget(values=context_tags,
-                         context_tags=context_tags,
-                         available_tags=[tag.title.encode('utf-8') for tag in available_tags],
+    all_tags = Tag.query.all()
+    available_tags = [tag.title.encode('utf-8') for tag in all_tags]
+    widget = TagItWidget(available_tags=available_tags,
                          missing='')
     return widget

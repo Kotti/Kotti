@@ -1,4 +1,4 @@
-<input name="tags" id="${field.oid}" type="text" tal:attributes="value python: ','.join(field.widget.context_tags)" />
+<input name="${field.name}" id="${field.oid}" type="text" tal:attributes="value cstruct" />
 <script type="text/javascript"
   >
   deform.addCallback(
