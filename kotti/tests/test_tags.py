@@ -1,7 +1,20 @@
-from kotti.testing import UnitTestBase
+from kotti.testing import (
+    UnitTestBase,
+    DummyRequest,
+)
 
 
-class TestTag(UnitTestBase):
+class DummyContext(object):
+    view_name = u'view_name'
+    tags = [u'tag 1', u'tag 2', u'tag 3', ]
+
+
+class TestTags(UnitTestBase):
+
+    def setUp(self):
+        request = DummyRequest()
+        request.context = DummyContext()
+        super(TestTags, self).setUp(request=request)
 
     def test_empty(self):
         from kotti.resources import get_root
@@ -59,12 +72,22 @@ class TestTag(UnitTestBase):
         assert root[u'content_2']._tags[1].position == 1
         assert len(DBSession.query(Tag).all()) == 3
 
-    def test_widget(self):
-        # TODO: test serialze
+    def test_widget_serialize(self):
         import colander
         from kotti.views.widget import TagItWidget
+        renderer = DummyRenderer()
+        field = DummyField(renderer=renderer)
+        widget = TagItWidget()
+        widget.serialize(field, colander.null)
+        assert renderer.template == 'tag_it'
+        assert  renderer.kw['field'] == field
+        assert renderer.kw['cstruct'] == u'tag 1,tag 2,tag 3'
 
-        field = DummyField()
+    def test_widget_deserialize(self):
+        import colander
+        from kotti.views.widget import TagItWidget
+        renderer = DummyRenderer()
+        field = DummyField(renderer=renderer)
         widget = TagItWidget()
         result = widget.deserialize(field, colander.null)
         assert result == colander.null
@@ -74,5 +97,17 @@ class TestTag(UnitTestBase):
         assert result == ['a', 'b and c', 'd']
 
 
+class DummyRenderer(object):
+    def __init__(self, result=''):
+        self.result = result
+
+    def __call__(self, template, **kw):
+        self.template = template
+        self.kw = kw
+        return self.result
+
+
 class DummyField(object):
-    pass
+
+    def __init__(self, renderer):
+        self.renderer = renderer
