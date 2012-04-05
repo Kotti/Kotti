@@ -243,7 +243,7 @@ class Tag(Base):
         return dict(polymorphic_identity=camel_case_to_name(cls.__name__))
 
     id = Column(Integer, primary_key=True)
-    title = Column(String, unique=True, nullable=False)
+    title = Column(Unicode(100), unique=True, nullable=False)
 
     def __init__(self, title):
         self.title = title
