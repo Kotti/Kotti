@@ -53,8 +53,8 @@ class TestTags(UnitTestBase):
 
         root = get_root()
         root[u'content_1'] = Content()
-        root[u'content_1'].tags = ['tag 1', 'tag 2', ]
-        assert root[u'content_1'].tags == ['tag 1', 'tag 2', ]
+        root[u'content_1'].tags = [u'tag 1', u'tag 2', ]
+        assert root[u'content_1'].tags == [u'tag 1', u'tag 2', ]
         assert type(root[u'content_1']._tags[0]) == TagsToContents
         assert type(root[u'content_1']._tags[0].tag) == Tag
         assert root[u'content_1']._tags[0].tag.title == u'tag 1'
