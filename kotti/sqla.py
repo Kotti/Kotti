@@ -4,7 +4,6 @@ from pyramid.security import Allow
 from sqlalchemy.types import TypeDecorator, TEXT
 from sqlalchemy.ext.mutable import Mutable
 from sqlalchemy.ext.declarative import declared_attr
-from sqlalchemy.ext.declarative import DeclarativeMeta
 
 
 def dump_default(obj):
@@ -151,7 +150,12 @@ class NestedMixin(object):
 
 
 class NestedMutationDict(NestedMixin, MutationDict):
-    pass
+    def setdefault(self, key, default):
+        if isinstance(default, list):
+            default = NestedMutationList(default)
+        elif isinstance(default, dict):
+            default = NestedMutationDict(default)
+        return super(NestedMutationDict, self).setdefault(key, default)
 
 
 class NestedMutationList(NestedMixin, MutationList):
