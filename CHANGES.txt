@@ -4,6 +4,10 @@ Change History
 0.6.2 - unreleased
 ------------------
 
+- Links in Navigation view lead to node view. Added edit links
+  to view the node's edit form.
+
+- Hitting 'Cancel' now returns to the context node for add/edit views
 
 0.6.1 - 2012-03-30
 ------------------
