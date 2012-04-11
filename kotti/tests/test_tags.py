@@ -1,3 +1,4 @@
+
 from kotti.testing import (
     UnitTestBase,
     DummyRequest,
@@ -10,12 +11,6 @@ class DummyContext(object):
 
 
 class TestTags(UnitTestBase):
-
-    def setUp(self):
-        request = DummyRequest()
-        request.context = DummyContext()
-        super(TestTags, self).setUp(request=request)
-
     def test_empty(self):
         from kotti.resources import get_root
         assert get_root().tags == []
@@ -71,6 +66,58 @@ class TestTags(UnitTestBase):
         assert root[u'content_2']._tags[1].tag.title == u'tag 3'
         assert root[u'content_2']._tags[1].position == 1
         assert len(DBSession.query(Tag).all()) == 3
+
+    def test_delete_content_deletes_orphaned_tags(self):
+        from kotti import DBSession
+        from kotti.resources import get_root
+        from kotti.resources import Tag, Content
+
+        root = get_root()
+        root[u'content_1'] = Content()
+        root[u'content_2'] = Content()
+        root[u'content_1'].tags = [u'tag 1', u'tag 2']
+        root[u'content_2'].tags = [u'tag 2']
+
+        assert DBSession.query(Tag).count() == 2
+        del root[u'content_1']
+        assert DBSession.query(Tag).one().title == u'tag 2'
+
+    def test_delete_tag_doesnt_touch_content(self):
+        from kotti import DBSession
+        from kotti.resources import get_root
+        from kotti.resources import Tag, Content
+
+        root = get_root()
+        root[u'content_1'] = Content()
+        root[u'content_1'].tags = [u'my tag']
+
+        ses = DBSession
+        assert ses.query(Content).filter_by(name=u'content_1').count() == 1
+        ses.delete(ses.query(Tag).filter_by(title=u'my tag').one())
+        assert ses.query(Content).filter_by(name=u'content_1').count() == 1
+
+    def test_delete_tag_assignment_doesnt_touch_either(self):
+        from kotti import DBSession
+        from kotti.resources import get_root
+        from kotti.resources import Tag, TagsToContents, Content
+
+        root = get_root()
+        root[u'content_1'] = Content()
+        root[u'content_1'].tags = [u'my tag']
+
+        ses = DBSession
+        assert ses.query(Tag).count() == 1
+        assert ses.query(Content).filter_by(name=u'content_1').count() == 1
+        ses.delete(ses.query(TagsToContents).one())
+        assert ses.query(Tag).count() == 1
+        assert ses.query(Content).filter_by(name=u'content_1').count() == 1
+
+
+class TestWidget(UnitTestBase):
+    def setUp(self):
+        request = DummyRequest()
+        request.context = DummyContext()
+        super(TestWidget, self).setUp(request=request)
 
     def test_widget_serialize(self):
         import colander
