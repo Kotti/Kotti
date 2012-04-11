@@ -4,6 +4,7 @@ Kotti browser tests
 Setup
 -----
 
+   >>> import pytest
    >>> from kotti import testing, DBSession
    >>> from kotti.resources import Node, Document, File
 
@@ -112,11 +113,16 @@ And now click the 'Cancel' button:
   >>> browser.getLink("Edit").click()
   >>> ctrl("Title").value = "Firstborn"
   >>> ctrl("cancel").click()
-  >>> "Your changes have been saved" in browser.contents
+  >>> with pytest.raises(LookupError): ctrl("Title")
+  >>> "Firstborn" in browser.contents
   False
-  >>> ctrl("Title").value
-  'First Child'
-  >>> browser.getLink("View").click()
+
+Now click the 'Cancel' button for an invalid form entry:
+
+  >>> browser.getLink("Edit").click()
+  >>> ctrl("Title").value = ""
+  >>> ctrl("cancel").click()
+  >>> with pytest.raises(LookupError): ctrl("Title")
   >>> "Firstborn" in browser.contents
   False
 
@@ -376,8 +382,9 @@ Navigation
 ----------
 
   >>> browser.getLink("Navigate").click()
-  >>> browser.getLink("My Third Child").text
-  'My Third Child'
+  >>> browser.getLink("My Third Child").click()
+  >>> browser.url == testing.BASE_URL + '/child-one/third-child/'
+  True
 
 User management
 ---------------

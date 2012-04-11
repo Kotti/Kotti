@@ -1,10 +1,13 @@
-<ul>
+<ul i18n:domain="Kotti">
   <li tal:repeat="child tree.children"
       class="${child.id == context.id and 'active' or ''}">
-    <a href="${api.url(child, '@@' + api.find_edit_view(child))}"
+    <a href="${api.url(child)}"
        title="${getattr(child, 'description', None)}">
       ${child.title}
     </a>
+    <a tal:condition="api.find_edit_view(child)"
+       href="${api.url(child, '@@edit')}"
+       title="Edit" i18n:attributes="title"><i class="icon-edit"></i></a>
     <ul tal:replace="api.render_template(
                          'kotti:templates/edit/nav-tree.pt',
                          tree=child)" />

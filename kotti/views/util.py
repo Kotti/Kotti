@@ -363,7 +363,9 @@ class BaseFormView(FormView):
         return result
 
     def cancel_success(self, appstruct):
-        return HTTPFound(location=self.request.url)
+        location = self.request.resource_url(self.context)
+        return HTTPFound(location=location)
+    cancel_failure = cancel_success
 
     def more_template_vars(self):
         result = {}
