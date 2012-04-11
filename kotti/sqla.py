@@ -152,9 +152,9 @@ class NestedMixin(object):
 class NestedMutationDict(NestedMixin, MutationDict):
     def setdefault(self, key, default):
         if isinstance(default, list):
-            default = NestedMutationList(default)
+            default = NestedMutationList(default, __parent__=self)
         elif isinstance(default, dict):
-            default = NestedMutationDict(default)
+            default = NestedMutationDict(default, __parent__=self)
         return super(NestedMutationDict, self).setdefault(key, default)
 
 

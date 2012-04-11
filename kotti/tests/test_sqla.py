@@ -92,3 +92,8 @@ class TestNestedMutationDict(TestCase):
         from kotti.sqla import NestedMutationList
         mdict = NestedMutationDict({})
         assert isinstance(mdict.setdefault('bar', []), NestedMutationList)
+
+    def test_setdefault_parent(self):
+        from kotti.sqla import NestedMutationDict
+        mdict = NestedMutationDict({})
+        assert mdict.setdefault('bar', []).__parent__ is mdict
