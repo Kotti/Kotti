@@ -23,6 +23,8 @@ from sqlalchemy import LargeBinary
 from sqlalchemy import String
 from sqlalchemy import Unicode
 from sqlalchemy import UnicodeText
+from sqlalchemy import event
+from sqlalchemy.exc import OperationalError
 from transaction import commit
 from zope.interface import implements
 from zope.interface import Interface
@@ -265,7 +267,7 @@ class TagsToContents(Base):
 
     tags_id = Column(Integer, ForeignKey('tags.id'), primary_key=True)
     contents_id = Column(Integer, ForeignKey('contents.id'), primary_key=True)
-    tag = relation(Tag, backref=backref('content_tags'))
+    tag = relation(Tag, backref=backref('content_tags', cascade='all'))
     position = Column(Integer, nullable=False)
 
     def __init__(self, tag=None, **kw):
@@ -286,6 +288,18 @@ class TagsToContents(Base):
         return self(tag)
 
 
+# delete orphaned tags from the tags table
+@event.listens_for(DBSession, 'after_flush')
+def delete_tag_orphans(session, ctx):
+    try:
+        session.query(Tag).\
+            filter(~Tag.content_tags.any()).\
+            delete(synchronize_session=False)
+    except OperationalError:
+        # fail silently, table tags may not be exists intesting scenarios
+        pass
+
+
 class Content(Node):
     implements(IContent)
 
@@ -302,7 +316,7 @@ class Content(Node):
     modification_date = Column(DateTime())
     in_navigation = Column(Boolean())
     _tags = relation(TagsToContents,
-                     backref=backref('items', cascade='all', uselist=False),
+                     backref=backref('items'),
                      order_by=[TagsToContents.position],
                      collection_class=ordering_list("position"),
                      cascade='all, delete-orphan',

@@ -109,7 +109,7 @@ class TestTags(UnitTestBase):
         assert ses.query(Tag).count() == 1
         assert ses.query(Content).filter_by(name=u'content_1').count() == 1
         ses.delete(ses.query(TagsToContents).one())
-        assert ses.query(Tag).count() == 1
+        assert ses.query(Tag).count() == 0
         assert ses.query(Content).filter_by(name=u'content_1').count() == 1
 
 
