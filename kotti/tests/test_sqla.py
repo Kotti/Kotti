@@ -80,3 +80,15 @@ class TestMutationList(TestCase):
         from kotti.sqla import MutationList
         mlist = MutationList(['foo'])
         assert ['bar'] + mlist == ['bar', 'foo']
+
+class TestNestedMutationDict(TestCase):
+    def test_setdefault_dict(self):
+        from kotti.sqla import NestedMutationDict
+        mdict = NestedMutationDict({})
+        assert isinstance(mdict.setdefault('bar', {}), NestedMutationDict)
+
+    def test_setdefault_list(self):
+        from kotti.sqla import NestedMutationDict
+        from kotti.sqla import NestedMutationList
+        mdict = NestedMutationDict({})
+        assert isinstance(mdict.setdefault('bar', []), NestedMutationList)
