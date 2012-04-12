@@ -242,16 +242,8 @@ class TypeInfo(object):
 
 
 class Tag(Base):
-
-    @classproperty
-    def __mapper_args__(cls):
-        return dict(polymorphic_identity=camel_case_to_name(cls.__name__))
-
     id = Column(Integer, primary_key=True)
     title = Column(Unicode(100), unique=True, nullable=False)
-
-    def __init__(self, title):
-        self.title = title
 
     def __repr__(self):
         return "<Tag ('%s')>" % self.title
@@ -263,20 +255,10 @@ class Tag(Base):
 
 
 class TagsToContents(Base):
-
-    @classproperty
-    def __mapper_args__(cls):
-        return dict(polymorphic_identity=camel_case_to_name(cls.__name__))
-
     tags_id = Column(Integer, ForeignKey('tags.id'), primary_key=True)
     contents_id = Column(Integer, ForeignKey('contents.id'), primary_key=True)
     tag = relation(Tag, backref=backref('content_tags', cascade='all'))
     position = Column(Integer, nullable=False)
-
-    def __init__(self, tag=None, **kw):
-            if tag is not None:
-                kw['tag'] = tag
-            Base.__init__(self, **kw)
 
     @property
     def tag_title(self):
@@ -287,8 +269,8 @@ class TagsToContents(Base):
         with DBSession.no_autoflush:
             tag = DBSession.query(Tag).filter_by(title=title).first()
         if tag is None:
-            tag = Tag(title)
-        return self(tag)
+            tag = Tag(title=title)
+        return self(tag=tag)
 
 
 # delete orphaned tags from the tags table

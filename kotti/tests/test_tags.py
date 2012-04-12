@@ -17,7 +17,7 @@ class TestTags(UnitTestBase):
 
     def test_tags(self):
         from kotti.resources import Tag
-        new_tag = Tag(u"test tag")
+        new_tag = Tag(title=u"test tag")
         assert str(new_tag) == "<Tag ('test tag')>"
 
     def test_add(self):
