@@ -96,7 +96,7 @@ class TestTags(UnitTestBase):
         ses.delete(ses.query(Tag).filter_by(title=u'my tag').one())
         assert ses.query(Content).filter_by(name=u'content_1').count() == 1
 
-    def test_delete_tag_assignment_doesnt_touch_either(self):
+    def test_delete_tag_assignment_doesnt_touch_content(self):
         from kotti import DBSession
         from kotti.resources import get_root
         from kotti.resources import Tag, TagsToContents, Content
@@ -109,8 +109,108 @@ class TestTags(UnitTestBase):
         assert ses.query(Tag).count() == 1
         assert ses.query(Content).filter_by(name=u'content_1').count() == 1
         ses.delete(ses.query(TagsToContents).one())
-        assert ses.query(Tag).count() == 0
         assert ses.query(Content).filter_by(name=u'content_1').count() == 1
+
+    def test_delete_tag_assignment_delete_tag(self):
+        from kotti import DBSession
+        from kotti.resources import get_root
+        from kotti.resources import Tag, TagsToContents, Content
+
+        root = get_root()
+        root[u'content_1'] = Content()
+        root[u'content_1'].tags = [u'my tag']
+
+        ses = DBSession
+        assert ses.query(Tag).count() == 1
+        ses.delete(ses.query(TagsToContents).one())
+        assert ses.query(Tag).count() == 0
+
+    def test_copy_content_copy_tags(self):
+        from kotti import DBSession
+        from kotti.resources import get_root
+        from kotti.resources import Tag, TagsToContents, Content
+
+        ses = DBSession
+        root = get_root()
+        root[u'content_1'] = Content()
+        root[u'content_1'].tags = [u'my tag']
+        assert ses.query(Tag).count() == 1
+        assert ses.query(TagsToContents).count() == 1
+
+        root[u'content_2'] = root[u'content_1'].copy()
+        DBSession.flush()
+        assert root[u'content_1'].tags == [u'my tag']
+        assert root[u'content_2'].tags == [u'my tag']
+        assert ses.query(Tag).count() == 1
+        assert ses.query(TagsToContents).count() == 2
+
+    def test_cut_and_paste_content_copy_tags(self):
+        from kotti import DBSession
+        from kotti.resources import get_root
+        from kotti.resources import Tag, TagsToContents, Content
+        from kotti.views.edit import paste_node
+
+        ses = DBSession
+        root = get_root()
+        root[u'folder_1'] = Content()
+        root[u'content_1'] = Content()
+        root[u'content_1'].tags = [u'my tag']
+        assert ses.query(Tag).count() == 1
+        assert ses.query(TagsToContents).count() == 1
+
+        request = DummyRequest()
+        request.params['paste'] = u'on'
+        request.session['kotti.paste'] = (root[u'content_1'].id, 'cut')
+        paste_node(root[u'folder_1'], request)
+        assert root[u'folder_1'][u'content_1'].tags == [u'my tag']
+        assert ses.query(Tag).count() == 1
+        assert ses.query(TagsToContents).count() == 1
+
+    def test_copy_and_paste_content_copy_tags(self):
+        from kotti import DBSession
+        from kotti.resources import get_root
+        from kotti.resources import Tag, TagsToContents, Content
+        from kotti.views.edit import paste_node
+
+        ses = DBSession
+        root = get_root()
+        root[u'folder_1'] = Content()
+        root[u'content_1'] = Content()
+        root[u'content_1'].tags = [u'my tag']
+        assert ses.query(Tag).count() == 1
+        assert ses.query(TagsToContents).count() == 1
+
+        request = DummyRequest()
+        request.params['paste'] = u'on'
+        request.session['kotti.paste'] = (root[u'content_1'].id, 'copy')
+        paste_node(root[u'folder_1'], request)
+        assert root[u'content_1'].tags == [u'my tag']
+        assert root[u'folder_1'][u'content_1'].tags == [u'my tag']
+        assert ses.query(Tag).count() == 1
+        assert ses.query(TagsToContents).count() == 2
+
+    def test_delete_content_delete_tags_and_assignments(self):
+        from kotti import DBSession
+        from kotti.resources import get_root
+        from kotti.resources import Tag, TagsToContents, Content
+        from kotti.views.edit import delete_node
+
+        ses = DBSession
+        root = get_root()
+        root[u'folder_1'] = Content()
+        root[u'folder_1'].tags = [u'first tag']
+        root[u'folder_1'][u'content_1'] = Content()
+        root[u'folder_1'][u'content_1'].tags = [u'second tag']
+        root[u'folder_1'][u'content_2'] = Content()
+        root[u'folder_1'][u'content_2'].tags = [u'third tag']
+        assert ses.query(Tag).count() == 3
+        assert ses.query(TagsToContents).count() == 3
+
+        request = DummyRequest()
+        request.POST['delete-confirm'] = 'on'
+        delete_node(root[u'folder_1'], request)
+        assert ses.query(Tag).count() == 0
+        assert ses.query(TagsToContents).count() == 0
 
 
 class TestWidget(UnitTestBase):
