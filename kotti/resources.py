@@ -24,7 +24,10 @@ from sqlalchemy import String
 from sqlalchemy import Unicode
 from sqlalchemy import UnicodeText
 from sqlalchemy import event
-from sqlalchemy.exc import OperationalError
+from sqlalchemy.exc import (
+    OperationalError,
+    ProgrammingError,
+)
 from transaction import commit
 from zope.interface import implements
 from zope.interface import Interface
@@ -203,7 +206,7 @@ class Node(Base, ContainerMixin, PersistentACLMixin):
         return not self == other
 
     copy_properties_blacklist = (
-        'id', 'parent', 'parent_id', '_children', 'local_groups')
+        'id', 'parent', 'parent_id', '_children', 'local_groups', '_tags')
     def copy(self, **kwargs):
         children = list(self.children)
         copy = self.__class__()
@@ -295,8 +298,8 @@ def delete_tag_orphans(session, ctx):
         session.query(Tag).\
             filter(~Tag.content_tags.any()).\
             delete(synchronize_session=False)
-    except OperationalError:
-        # fail silently, table tags may not be exists intesting scenarios
+    except (OperationalError, ProgrammingError):  # pragma: no cover
+        # fail silently, table tags may not exists in testing scenarios
         pass
 
 
@@ -348,6 +351,11 @@ class Content(Node):
         self.creation_date = creation_date
         self.modification_date = modification_date
         self.tags = tags
+
+    def copy(self, **kwargs):
+        tags = getattr(self, 'tags', None)
+        kwargs['tags'] = tags
+        return super(Content, self).copy(**kwargs)
 
 
 class Document(Content):
