@@ -12,6 +12,7 @@ from sqlalchemy.orm.exc import NoResultFound
 from sqlalchemy.util import classproperty
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.ext.orderinglist import ordering_list
+from sqlalchemy.ext.associationproxy import association_proxy
 from sqlalchemy import Column
 from sqlalchemy import UniqueConstraint
 from sqlalchemy import ForeignKey
@@ -22,6 +23,11 @@ from sqlalchemy import LargeBinary
 from sqlalchemy import String
 from sqlalchemy import Unicode
 from sqlalchemy import UnicodeText
+from sqlalchemy import event
+from sqlalchemy.exc import (
+    OperationalError,
+    ProgrammingError,
+)
 from transaction import commit
 from zope.interface import implements
 from zope.interface import Interface
@@ -200,7 +206,7 @@ class Node(Base, ContainerMixin, PersistentACLMixin):
         return not self == other
 
     copy_properties_blacklist = (
-        'id', 'parent', 'parent_id', '_children', 'local_groups')
+        'id', 'parent', 'parent_id', '_children', 'local_groups', '_tags')
     def copy(self, **kwargs):
         children = list(self.children)
         copy = self.__class__()
@@ -235,6 +241,68 @@ class TypeInfo(object):
             return False
 
 
+class Tag(Base):
+
+    @classproperty
+    def __mapper_args__(cls):
+        return dict(polymorphic_identity=camel_case_to_name(cls.__name__))
+
+    id = Column(Integer, primary_key=True)
+    title = Column(Unicode(100), unique=True, nullable=False)
+
+    def __init__(self, title):
+        self.title = title
+
+    def __repr__(self):
+        return "<Tag ('%s')>" % self.title
+
+    @property
+    def items(self):
+        if getattr(self, 'content_tags', None) is not None:
+            return [content_tag.items for content_tag in self.content_tags]
+
+
+class TagsToContents(Base):
+
+    @classproperty
+    def __mapper_args__(cls):
+        return dict(polymorphic_identity=camel_case_to_name(cls.__name__))
+
+    tags_id = Column(Integer, ForeignKey('tags.id'), primary_key=True)
+    contents_id = Column(Integer, ForeignKey('contents.id'), primary_key=True)
+    tag = relation(Tag, backref=backref('content_tags', cascade='all'))
+    position = Column(Integer, nullable=False)
+
+    def __init__(self, tag=None, **kw):
+            if tag is not None:
+                kw['tag'] = tag
+            Base.__init__(self, **kw)
+
+    @property
+    def tag_title(self):
+        return self.tag.title
+
+    @classmethod
+    def _tag_find_or_create(self, title):
+        with DBSession.no_autoflush:
+            tag = DBSession.query(Tag).filter_by(title=title).first()
+        if tag is None:
+            tag = Tag(title)
+        return self(tag)
+
+
+# delete orphaned tags from the tags table
+@event.listens_for(DBSession, 'after_flush')
+def delete_tag_orphans(session, ctx):
+    try:
+        session.query(Tag).\
+            filter(~Tag.content_tags.any()).\
+            delete(synchronize_session=False)
+    except (OperationalError, ProgrammingError):  # pragma: no cover
+        # fail silently, table tags may not exists in testing scenarios
+        pass
+
+
 class Content(Node):
     implements(IContent)
 
@@ -250,6 +318,13 @@ class Content(Node):
     creation_date = Column(DateTime())
     modification_date = Column(DateTime())
     in_navigation = Column(Boolean())
+    _tags = relation(TagsToContents,
+                     backref=backref('items'),
+                     order_by=[TagsToContents.position],
+                     collection_class=ordering_list("position"),
+                     cascade='all, delete-orphan',
+                     )
+    tags = association_proxy('_tags', 'tag_title', creator=TagsToContents._tag_find_or_create)
 
     type_info = TypeInfo(
         name=u'Content',
@@ -265,7 +340,7 @@ class Content(Node):
     def __init__(self, name=None, parent=None, title=u"", annotations=None,
                  default_view=None, description=u"", language=None,
                  owner=None, creation_date=None, modification_date=None,
-                 in_navigation=True):
+                 in_navigation=True, tags=[]):
         super(Content, self).__init__(name, parent, title, annotations)
         self.default_view = default_view
         self.description = description
@@ -275,6 +350,12 @@ class Content(Node):
         # These are set by events if not defined at this point:
         self.creation_date = creation_date
         self.modification_date = modification_date
+        self.tags = tags
+
+    def copy(self, **kwargs):
+        tags = getattr(self, 'tags', None)
+        kwargs['tags'] = tags
+        return super(Content, self).copy(**kwargs)
 
 
 class Document(Content):

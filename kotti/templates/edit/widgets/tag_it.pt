@@ -1,0 +1,14 @@
+<input name="tags" id="${field.oid}" type="text" tal:attributes="value python: ','.join(field.widget.context_tags)" />
+<script type="text/javascript"
+  >
+  deform.addCallback(
+    '${field.oid}',
+    function(oid) {
+      console.log($('#' + oid));
+      $('#' + oid).tagit({
+          availableTags: ${field.widget.available_tags},
+          allowSpaces: true
+      });
+    }
+  )
+</script>

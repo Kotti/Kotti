@@ -30,7 +30,10 @@ from kotti import DBSession
 from kotti.util import _
 from kotti.util import title_to_name
 from kotti.events import objectevent_listeners
-from kotti.resources import Content
+from kotti.resources import (
+    Content,
+    Tag,
+)
 from kotti.security import get_user
 from kotti.security import has_permission
 from kotti.security import view_permitted
@@ -373,6 +376,7 @@ class BaseFormView(FormView):
             result[name] = getattr(self, name)
         return result
 
+
 class EditFormView(BaseFormView):
     add_template_vars = ('first_heading',)
 
@@ -395,6 +399,7 @@ class EditFormView(BaseFormView):
         return _(u'Edit <em>${title}</em>',
                  mapping=dict(title=self.request.context.title)
                  )
+
 
 class AddFormView(BaseFormView):
     success_message = _(u"Successfully added item.")
