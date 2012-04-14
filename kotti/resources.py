@@ -250,13 +250,14 @@ class Tag(Base):
 
     @property
     def items(self):
-        if getattr(self, 'content_tags', None) is not None:
-            return [content_tag.items for content_tag in self.content_tags]
+        return [rel.item for rel in self.content_tags]
 
 
 class TagsToContents(Base):
-    tags_id = Column(Integer, ForeignKey('tags.id'), primary_key=True)
-    contents_id = Column(Integer, ForeignKey('contents.id'), primary_key=True)
+    __tablename__ = 'tags_to_contents'
+
+    tag_id = Column(Integer, ForeignKey('tags.id'), primary_key=True)
+    content_id = Column(Integer, ForeignKey('contents.id'), primary_key=True)
     tag = relation(Tag, backref=backref('content_tags', cascade='all'))
     position = Column(Integer, nullable=False)
 
@@ -300,13 +301,18 @@ class Content(Node):
     creation_date = Column(DateTime())
     modification_date = Column(DateTime())
     in_navigation = Column(Boolean())
-    _tags = relation(TagsToContents,
-                     backref=backref('items'),
-                     order_by=[TagsToContents.position],
-                     collection_class=ordering_list("position"),
-                     cascade='all, delete-orphan',
-                     )
-    tags = association_proxy('_tags', 'tag_title', creator=TagsToContents._tag_find_or_create)
+    _tags = relation(
+        TagsToContents,
+        backref=backref('item'),
+        order_by=[TagsToContents.position],
+        collection_class=ordering_list("position"),
+        cascade='all, delete-orphan',
+        )
+    tags = association_proxy(
+        '_tags',
+        'tag_title',
+        creator=TagsToContents._tag_find_or_create,
+        )
 
     type_info = TypeInfo(
         name=u'Content',
