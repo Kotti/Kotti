@@ -17,7 +17,7 @@ class TestTags(UnitTestBase):
 
     def test_tags(self):
         from kotti.resources import Tag
-        new_tag = Tag(u"test tag")
+        new_tag = Tag(title=u"test tag")
         assert str(new_tag) == "<Tag ('test tag')>"
 
     def test_add(self):
@@ -27,7 +27,7 @@ class TestTags(UnitTestBase):
 
         root = get_root()
         root.tags = [u'tag 1', u'tag 2']
-        result = DBSession.query(Tag).filter(TagsToContents.items == root).all()
+        result = DBSession.query(Tag).filter(TagsToContents.item == root).all()
         assert result[0].items == [root]
         assert root.tags == [u'tag 1', u'tag 2']
         assert len(DBSession.query(Tag).all()) == 2

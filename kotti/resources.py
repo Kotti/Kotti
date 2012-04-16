@@ -242,41 +242,24 @@ class TypeInfo(object):
 
 
 class Tag(Base):
-
-    @classproperty
-    def __mapper_args__(cls):
-        return dict(polymorphic_identity=camel_case_to_name(cls.__name__))
-
     id = Column(Integer, primary_key=True)
     title = Column(Unicode(100), unique=True, nullable=False)
-
-    def __init__(self, title):
-        self.title = title
 
     def __repr__(self):
         return "<Tag ('%s')>" % self.title
 
     @property
     def items(self):
-        if getattr(self, 'content_tags', None) is not None:
-            return [content_tag.items for content_tag in self.content_tags]
+        return [rel.item for rel in self.content_tags]
 
 
 class TagsToContents(Base):
+    __tablename__ = 'tags_to_contents'
 
-    @classproperty
-    def __mapper_args__(cls):
-        return dict(polymorphic_identity=camel_case_to_name(cls.__name__))
-
-    tags_id = Column(Integer, ForeignKey('tags.id'), primary_key=True)
-    contents_id = Column(Integer, ForeignKey('contents.id'), primary_key=True)
+    tag_id = Column(Integer, ForeignKey('tags.id'), primary_key=True)
+    content_id = Column(Integer, ForeignKey('contents.id'), primary_key=True)
     tag = relation(Tag, backref=backref('content_tags', cascade='all'))
     position = Column(Integer, nullable=False)
-
-    def __init__(self, tag=None, **kw):
-            if tag is not None:
-                kw['tag'] = tag
-            Base.__init__(self, **kw)
 
     @property
     def tag_title(self):
@@ -287,8 +270,8 @@ class TagsToContents(Base):
         with DBSession.no_autoflush:
             tag = DBSession.query(Tag).filter_by(title=title).first()
         if tag is None:
-            tag = Tag(title)
-        return self(tag)
+            tag = Tag(title=title)
+        return self(tag=tag)
 
 
 # delete orphaned tags from the tags table
@@ -318,13 +301,18 @@ class Content(Node):
     creation_date = Column(DateTime())
     modification_date = Column(DateTime())
     in_navigation = Column(Boolean())
-    _tags = relation(TagsToContents,
-                     backref=backref('items'),
-                     order_by=[TagsToContents.position],
-                     collection_class=ordering_list("position"),
-                     cascade='all, delete-orphan',
-                     )
-    tags = association_proxy('_tags', 'tag_title', creator=TagsToContents._tag_find_or_create)
+    _tags = relation(
+        TagsToContents,
+        backref=backref('item'),
+        order_by=[TagsToContents.position],
+        collection_class=ordering_list("position"),
+        cascade='all, delete-orphan',
+        )
+    tags = association_proxy(
+        '_tags',
+        'tag_title',
+        creator=TagsToContents._tag_find_or_create,
+        )
 
     type_info = TypeInfo(
         name=u'Content',
