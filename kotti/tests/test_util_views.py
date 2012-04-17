@@ -473,6 +473,21 @@ class TestBaseFormView(TestCase):
         view.__call__()
         assert not schema.children.append.called
 
+class TestAppstruct(TestCase):
+    def call(self, *args, **kwargs):
+        from kotti.views.util import appstruct
+        return appstruct(*args, **kwargs)
+
+    def test_schema_has_more_children_than_attrs(self):
+        context = Dummy(first='firstvalue')
+        schema = Dummy(children=[Dummy(name='first'), Dummy(name='second')])
+        assert self.call(context, schema) == {'first': 'firstvalue'}
+
+    def test_schema_has_fewer_children_than_attrs(self):
+        context = Dummy(first='firstvalue', second='secondvalue')
+        schema = Dummy(children=[Dummy(name='first')])
+        assert self.call(context, schema) == {'first': 'firstvalue'}
+
 class TestEditFormView(TestCase):
     def make(self):
         from kotti.views.util import EditFormView
@@ -482,6 +497,8 @@ class TestEditFormView(TestCase):
     def test_before(self):
         view = self.make()
         view.context.three = 3
+        view.schema = Dummy()
+        view.schema.children = [Dummy(name='three')]
         form = Dummy()
         view.before(form)
         assert form.appstruct == {'three': 3}

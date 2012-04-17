@@ -185,12 +185,20 @@ class TemplateAPI(object):
             context = self.context
         return has_permission(permission, context, self.request)
 
-    def render_view(self, name='', context=None, request=None, secure=True):
+    def render_view(self, name='', context=None, request=None, secure=True,
+                    bare=True):
         if context is None:
             context = self.context
         if request is None:
             request = self.request
-        return TemplateStructure(render_view(context, request, name, secure))
+
+        before = self.bare
+        try:
+            self.bare = bare
+            html = render_view(context, request, name, secure)
+        finally:
+            self.bare = before
+        return TemplateStructure(html)
 
     def render_template(self, renderer, **kwargs):
         return TemplateStructure(render(renderer, kwargs, self.request))
@@ -373,11 +381,18 @@ class BaseFormView(FormView):
             result[name] = getattr(self, name)
         return result
 
+def appstruct(context, schema):
+    appstruct = {}
+    for field in schema.children:
+        if hasattr(context, field.name):
+            appstruct[field.name] = getattr(context, field.name)
+    return appstruct
+
 class EditFormView(BaseFormView):
     add_template_vars = ('first_heading',)
 
     def before(self, form):
-        form.appstruct = self.context.__dict__.copy()
+        form.appstruct = appstruct(self.context, self.schema)
 
     def save_success(self, appstruct):
         appstruct.pop('csrf_token', None)
@@ -393,7 +408,7 @@ class EditFormView(BaseFormView):
     @reify
     def first_heading(self):
         return _(u'Edit <em>${title}</em>',
-                 mapping=dict(title=self.request.context.title)
+                 mapping=dict(title=self.context.title)
                  )
 
 class AddFormView(BaseFormView):
