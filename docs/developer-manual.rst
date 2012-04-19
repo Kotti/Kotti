@@ -192,4 +192,4 @@ API
 
 
 .. _Pyramid's security API: http://docs.pylonsproject.org/projects/pyramid/dev/api/security.html
-.. _inherited access control lists: http://www.pylonsproject.org/projects/pyramid/dev/narr/security.html#acl-inheritance-and-location-awareness
+.. _inherited access control lists: http://docs.pylonsproject.org/projects/pyramid/en/latest/narr/security.html#acl-inheritance-and-location-awareness
