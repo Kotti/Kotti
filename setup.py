@@ -32,6 +32,7 @@ install_requires = [
     'sqlalchemy>=0.7.4', # avoid "Table 'local_groups' is already defined" error
     'transaction>=1.1.0', # ask c-neumann :-)
     'waitress',
+    'zope.deprecation',
     'zope.sqlalchemy',
     ]
 

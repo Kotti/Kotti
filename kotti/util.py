@@ -106,13 +106,29 @@ def extract_from_settings(prefix, settings=None):
             extracted[key[len(prefix):]] = value
     return extracted
 
-def title_to_name(title):
+def disambiguate_name(name):
+    parts = name.split(u'-')
+    if len(parts) > 1:
+        try:
+            index = int(parts[-1])
+        except ValueError:
+            parts.append(u'1')
+        else:
+            parts[-1] = unicode(index + 1)
+    else:
+        parts.append(u'1')
+    return u'-'.join(parts)
+
+def title_to_name(title, blacklist=()):
     request = get_current_request()
     if request is not None:
         locale_name = get_locale_name(request)
     else:
         locale_name = 'en'
-    return unicode(urlnormalizer.normalize(title, locale_name, max_length=40))
+    name = unicode(urlnormalizer.normalize(title, locale_name, max_length=40))
+    while name in blacklist:
+        name = disambiguate_name(name)
+    return name
 
 def camel_case_to_name(text):
     """
