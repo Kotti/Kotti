@@ -260,10 +260,7 @@ class TagsToContents(Base):
     content_id = Column(Integer, ForeignKey('contents.id'), primary_key=True)
     tag = relation(Tag, backref=backref('content_tags', cascade='all'))
     position = Column(Integer, nullable=False)
-
-    @property
-    def tag_title(self):
-        return self.tag.title
+    title = association_proxy('tag', 'title')
 
     @classmethod
     def _tag_find_or_create(self, title):
@@ -310,7 +307,7 @@ class Content(Node):
         )
     tags = association_proxy(
         '_tags',
-        'tag_title',
+        'title',
         creator=TagsToContents._tag_find_or_create,
         )
 
@@ -417,6 +414,7 @@ def initialize_sql(engine, drop_all=False):
     metadata.bind = engine
 
     if drop_all or os.environ.get('KOTTI_TEST_DB_STRING'):
+        metadata.reflect()
         metadata.drop_all(engine)
 
     # Allow users of Kotti to cherry pick the tables that they want to use:
