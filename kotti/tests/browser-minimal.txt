@@ -20,8 +20,6 @@ Logging in
   >>> ctrl("Username or email").value = "admin"
   >>> ctrl("Password").value = "secret"
   >>> ctrl(name="submit").click()
-  >>> browser.contents
-  
   >>> "You are logged in" in browser.contents
   True
 
