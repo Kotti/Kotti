@@ -212,6 +212,47 @@ class TestTags(UnitTestBase):
         assert ses.query(Tag).count() == 0
         assert ses.query(TagsToContents).count() == 0
 
+    def test_get_content_items_from_tag(self):
+        from kotti import DBSession
+        from kotti.resources import get_root
+        from kotti.resources import Tag, Content
+
+        ses = DBSession
+        root = get_root()
+        root[u'folder_1'] = Content()
+        root[u'folder_1'].tags = [u'first tag', u'second tag']
+        root[u'folder_1'][u'content_1'] = Content()
+        root[u'folder_1'][u'content_1'].tags = [u'third tag', ]
+        root[u'folder_1'][u'content_2'] = Content()
+        root[u'folder_1'][u'content_2'].tags = [u'first tag', u'third tag']
+        first_tag = ses.query(Tag).filter(Tag.title == u'first tag').one()
+        assert [rel.name for rel in first_tag.items] == [u'folder_1', u'content_2']
+        second_tag = ses.query(Tag).filter(Tag.title == u'second tag').one()
+        assert [rel.name for rel in second_tag.items] == [u'folder_1']
+        third_tag = ses.query(Tag).filter(Tag.title == u'third tag').one()
+        assert [rel.name for rel in third_tag.items] == [u'content_1', u'content_2']
+
+    def test_get_content_items_for_tag_title(self):
+        from kotti import DBSession
+        from kotti.resources import get_root
+        from kotti.resources import Tag, TagsToContents, Content
+
+        ses = DBSession
+        root = get_root()
+        root[u'folder_1'] = Content()
+        root[u'folder_1'].tags = [u'first tag', u'second tag']
+        root[u'folder_1'][u'content_1'] = Content()
+        root[u'folder_1'][u'content_1'].tags = [u'third tag', ]
+        root[u'folder_1'][u'content_2'] = Content()
+        root[u'folder_1'][u'content_2'].tags = [u'first tag', u'third tag']
+
+        result = ses.query(Content).join(TagsToContents).join(Tag).filter(Tag.title == u'first tag').all()
+        assert [res.name for res in result] == [u'folder_1', u'content_2']
+        result = ses.query(Content).join(TagsToContents).join(Tag).filter(Tag.title == u'second tag').all()
+        assert [res.name for res in result] == [u'folder_1']
+        result = ses.query(Content).join(TagsToContents).join(Tag).filter(Tag.title == u'third tag').all()
+        assert [res.name for res in result] == [u'content_1', u'content_2']
+
 
 class TestWidget(UnitTestBase):
     def setUp(self):
