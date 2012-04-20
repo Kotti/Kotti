@@ -11,7 +11,4 @@ install:
 before_script:
   - psql -c 'create database kotti_testing;' -U postgres
   - mysql -e 'create database kotti_testing;'
-script: py.test
-notifications:
-  irc:
-    - "irc.freenode.org#kotti"
+script: py.test --tb=native
