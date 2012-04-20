@@ -30,10 +30,7 @@ from kotti import DBSession
 from kotti.util import _
 from kotti.util import title_to_name
 from kotti.events import objectevent_listeners
-from kotti.resources import (
-    Content,
-    Tag,
-)
+from kotti.resources import Content
 from kotti.security import get_user
 from kotti.security import has_permission
 from kotti.security import view_permitted
@@ -413,7 +410,6 @@ class EditFormView(BaseFormView):
         return _(u'Edit <em>${title}</em>',
                  mapping=dict(title=self.context.title)
                  )
-
 
 class AddFormView(BaseFormView):
     success_message = _(u"Successfully added item.")
