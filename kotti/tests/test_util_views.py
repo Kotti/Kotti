@@ -354,15 +354,6 @@ class TestViewUtil(UnitTestBase):
         self.assertTrue('api' in event)
 
 class TestUtil(UnitTestBase):
-    def test_title_to_name(self):
-        from kotti.views.util import title_to_name
-        self.assertEqual(title_to_name(u'Foo Bar'), u'foo-bar')
-
-    def test_disambiguate_name(self):
-        from kotti.views.util import disambiguate_name
-        self.assertEqual(disambiguate_name(u'foo'), u'foo-1')
-        self.assertEqual(disambiguate_name(u'foo-3'), u'foo-4')
-
     def test_ensure_view_selector(self):
         from kotti.views.util import ensure_view_selector
         wrapper = ensure_view_selector(None)
@@ -560,12 +551,4 @@ class TestAddFormView(TestCase):
         view = self.make()
         title_to_name.return_value = 'cafe'
         assert view.find_name({'title': 'Bar'}) == 'cafe'
-        title_to_name.assert_called_with('Bar')
-
-    @patch('kotti.views.util.disambiguate_name')
-    def test_find_name_uses_disambiguate_name(self, disambiguate_name):
-        view = self.make()
-        view.context['bar'] = Dummy()
-        disambiguate_name.return_value = 'othername'
-        assert view.find_name({'title': 'Bar'}) == 'othername'
-        disambiguate_name.assert_called_with('bar')
+        title_to_name.assert_called_with('Bar', blacklist=[])

@@ -16,7 +16,6 @@ from kotti.util import _
 from kotti.util import ViewLink
 from kotti.views.util import EditFormView
 from kotti.views.util import AddFormView
-from kotti.views.util import disambiguate_name
 from kotti.views.util import ensure_view_selector
 from kotti.views.util import nodes_tree
 from kotti.util import title_to_name
@@ -128,9 +127,8 @@ def paste_node(context, request):
         copy = item.copy()
         name = copy.name
         if not name:  # for root
-            name = title_to_name(copy.title)
-        while name in context.keys():
-            name = disambiguate_name(name)
+            name = copy.title
+        name = title_to_name(name, blacklist=context.keys())
         copy.name = name
         context.children.append(copy)
     request.session.flash(_(u'${title} pasted.',

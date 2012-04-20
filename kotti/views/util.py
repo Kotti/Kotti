@@ -24,10 +24,12 @@ from pyramid.threadlocal import get_current_request
 from pyramid.view import render_view_to_response
 from pyramid_deform import FormView
 from pyramid_deform import CSRFSchema
+from zope.deprecation import deprecated
 
 from kotti import get_settings
 from kotti import DBSession
 from kotti.util import _
+from kotti.util import disambiguate_name; disambiguate_name  # BBB
 from kotti.util import title_to_name
 from kotti.events import objectevent_listeners
 from kotti.resources import Content
@@ -274,19 +276,6 @@ class TemplateAPI(object):
                 if l.permitted(self.context, self.request)]
 
 
-def disambiguate_name(name):
-    parts = name.split(u'-')
-    if len(parts) > 1:
-        try:
-            index = int(parts[-1])
-        except ValueError:
-            parts.append(u'1')
-        else:
-            parts[-1] = unicode(index + 1)
-    else:
-        parts.append(u'1')
-    return u'-'.join(parts)
-
 def ensure_view_selector(func):
     def wrapper(context, request):
         path_els = request.path_info.split(u'/')
@@ -381,12 +370,21 @@ class BaseFormView(FormView):
             result[name] = getattr(self, name)
         return result
 
-def appstruct(context, schema):
+def get_appstruct(context, schema):
     appstruct = {}
     for field in schema.children:
         if hasattr(context, field.name):
             appstruct[field.name] = getattr(context, field.name)
     return appstruct
+
+def appstruct(context, schema):  # pragma: no cover
+    return get_appstruct(context, schema)
+
+deprecated(
+    'appstruct',
+    'appstruct is deprecated as of Kotti 0.6.2.  Use '
+    '``kotti.views.util.get_appstruct`` instead.'
+    )
 
 class EditFormView(BaseFormView):
     add_template_vars = ('first_heading',)
@@ -427,9 +425,8 @@ class AddFormView(BaseFormView):
     def find_name(self, appstruct):
         name = appstruct.get('name')
         if name is None:
-            name = title_to_name(appstruct['title'])
-            while name in self.context.keys():
-                name = disambiguate_name(name)
+            name = title_to_name(
+                appstruct['title'], blacklist=self.context.keys())
         return name
 
     @reify
@@ -442,3 +439,10 @@ class AddFormView(BaseFormView):
                 mapping=dict(type=translate(type_title), title=context_title))
         else:
             return _(u'Add ${type}', mapping=dict(type=translate(type_title)))
+
+
+deprecated(
+    'disambiguate_name',
+    'disambiguate_name is deprecated as of Kotti 0.6.2.  Use '
+    '``kotti.util.disambiguate_name`` instead.'
+    )
