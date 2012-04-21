@@ -1,10 +1,7 @@
 import colander
-from pyramid.threadlocal import get_current_request
 from deform.widget import Widget
 
 from kotti.resources import Tag
-
-ADD_VIEWS = [u'add_document', ]
 
 
 class TagHolder(object):
@@ -22,20 +19,13 @@ class TagItWidget(Widget):
 
     def serialize(self, field, cstruct, readonly=False):
         if cstruct in (colander.null, None):
-            cstruct = ''
-        request = get_current_request()
-        if request.view_name not in ADD_VIEWS:
-            if getattr(request.context, 'tags', None) is not None:
-                cstruct = ','.join(request.context.tags)
-        template = readonly and self.readonly_template or self.template
-        return field.renderer(template, field=field, cstruct=cstruct)
+            cstruct = []
+        return field.renderer(self.template, field=field, cstruct=cstruct)
 
     def deserialize(self, field, pstruct):
         if pstruct is colander.null:
             return colander.null
-        if isinstance(pstruct, basestring):
-            return [item.strip() for item in pstruct.split(',') if item]
-        return tuple(pstruct)
+        return [item.strip() for item in pstruct.split(',') if item]
 
 
 @colander.deferred

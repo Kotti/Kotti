@@ -1,3 +1,5 @@
+import colander
+from mock import Mock
 
 from kotti.testing import (
     UnitTestBase,
@@ -239,48 +241,34 @@ class TestTags(UnitTestBase):
         assert [res.name for res in result] == [u'content_1', u'content_2']
 
 
-class TestWidget(UnitTestBase):
-    def setUp(self):
-        request = DummyRequest()
-        request.context = DummyContext()
-        super(TestWidget, self).setUp(request=request)
+class TestTagItWidget(UnitTestBase):
+    def make_one(self):
+        from kotti.views.widget import TagItWidget
+        return TagItWidget()
+
+    def test_widget_serialize_none(self):
+        field = Mock()
+        widget = self.make_one()
+        widget.serialize(field, None)
+        field.renderer.assert_called_with(
+            widget.template, field=field, cstruct=[])
+        
+    def test_widget_serialize_null(self):
+        field = Mock()
+        widget = self.make_one()
+        widget.serialize(field, colander.null)
+        field.renderer.assert_called_with(
+            widget.template, field=field, cstruct=[])
 
     def test_widget_serialize(self):
-        import colander
-        from kotti.views.widget import TagItWidget
-        renderer = DummyRenderer()
-        field = DummyField(renderer=renderer)
-        widget = TagItWidget()
-        widget.serialize(field, colander.null)
-        assert renderer.template == 'tag_it'
-        assert  renderer.kw['field'] == field
-        assert renderer.kw['cstruct'] == u'tag 1,tag 2,tag 3'
+        field = Mock()
+        widget = self.make_one()
+        widget.serialize(field, ['yes'])
+        field.renderer.assert_called_with(
+            widget.template, field=field, cstruct=['yes'])
+
+    def test_widget_deserialize_null(self):
+        assert self.make_one().deserialize(None, colander.null) == colander.null
 
     def test_widget_deserialize(self):
-        import colander
-        from kotti.views.widget import TagItWidget
-        renderer = DummyRenderer()
-        field = DummyField(renderer=renderer)
-        widget = TagItWidget()
-        result = widget.deserialize(field, colander.null)
-        assert result == colander.null
-        result = widget.deserialize(field, ['a', 'list'])
-        assert result == ('a', 'list')
-        result = widget.deserialize(field, 'a,b and c,d')
-        assert result == ['a', 'b and c', 'd']
-
-
-class DummyRenderer(object):
-    def __init__(self, result=''):
-        self.result = result
-
-    def __call__(self, template, **kw):
-        self.template = template
-        self.kw = kw
-        return self.result
-
-
-class DummyField(object):
-
-    def __init__(self, renderer):
-        self.renderer = renderer
+        assert self.make_one().deserialize(None, 'foo,bar') == ['foo', 'bar']

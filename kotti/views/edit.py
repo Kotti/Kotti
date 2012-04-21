@@ -51,6 +51,7 @@ class DocumentSchema(ContentSchema):
         missing=u"",
         )
 
+
 def content_type_factories(context, request):
     """Drop down menu for Add button in editor bar.
     """
