@@ -23,11 +23,6 @@ from sqlalchemy import LargeBinary
 from sqlalchemy import String
 from sqlalchemy import Unicode
 from sqlalchemy import UnicodeText
-from sqlalchemy import event
-from sqlalchemy.exc import (
-    OperationalError,
-    ProgrammingError,
-)
 from transaction import commit
 from zope.interface import implements
 from zope.interface import Interface
@@ -269,18 +264,6 @@ class TagsToContents(Base):
         if tag is None:
             tag = Tag(title=title)
         return self(tag=tag)
-
-
-# delete orphaned tags from the tags table
-@event.listens_for(DBSession, 'after_flush')
-def delete_tag_orphans(session, ctx):
-    try:
-        session.query(Tag).\
-            filter(~Tag.content_tags.any()).\
-            delete(synchronize_session=False)
-    except (OperationalError, ProgrammingError):  # pragma: no cover
-        # fail silently, table tags may not exists in testing scenarios
-        pass
 
 
 class Content(Node):
