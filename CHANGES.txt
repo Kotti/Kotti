@@ -1,7 +1,7 @@
 Change History
 ==============
 
-0.6.2 - unreleased
+0.6.2 - 2012-04-21
 ------------------
 
 - Links in Navigation view lead to node view. Added edit links
