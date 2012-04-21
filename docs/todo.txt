@@ -40,3 +40,5 @@ Smaller tasks
 
 - Clean up code to use 'DBSession' directly instead of instantiating
   a 'session = DBSession()' before use.
+
+- Make a proper LICENSE.txt file, listing all licenses of components we use.
