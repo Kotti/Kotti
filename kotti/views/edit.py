@@ -5,7 +5,6 @@ from pyramid.security import has_permission
 from pyramid.url import resource_url
 import colander
 from deform.widget import RichTextWidget
-from deform.widget import TextAreaWidget
 
 from kotti import get_settings
 from kotti import DBSession
@@ -13,34 +12,13 @@ from kotti.resources import Node
 from kotti.resources import Document
 from kotti.resources import get_root
 from kotti.util import _
+from kotti.util import title_to_name
 from kotti.util import ViewLink
-from kotti.views.util import EditFormView
-from kotti.views.util import AddFormView
+from kotti.views.form import ContentSchema
+from kotti.views.form import EditFormView
+from kotti.views.form import AddFormView
 from kotti.views.util import ensure_view_selector
 from kotti.views.util import nodes_tree
-from kotti.util import title_to_name
-from kotti.views.widget import (
-    deferred_tag_it_widget,
-    TagHolder,
-)
-
-
-class ContentSchema(colander.MappingSchema):
-    title = colander.SchemaNode(
-        colander.String(),
-        title=_(u'Title'))
-    description = colander.SchemaNode(
-        colander.String(),
-        title=_('Description'),
-        widget=TextAreaWidget(cols=40, rows=5),
-        missing=u"",
-        )
-    tags = colander.SchemaNode(
-        TagHolder(),
-        title=_('Tags'),
-        widget=deferred_tag_it_widget,
-        missing=[],
-        )
 
 
 class DocumentSchema(ContentSchema):

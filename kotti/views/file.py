@@ -12,9 +12,11 @@ from pyramid.response import Response
 
 from kotti.resources import File
 from kotti.util import _
-from kotti.views.edit import ContentSchema
-from kotti.views.util import EditFormView
-from kotti.views.util import AddFormView
+from kotti.views.form import (
+    ContentSchema,
+    EditFormView,
+    AddFormView,
+    )
 
 class FileUploadTempStore(DictMixin):
     def __init__(self, request):

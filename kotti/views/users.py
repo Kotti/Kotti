@@ -24,11 +24,11 @@ from kotti.security import list_groups_raw
 from kotti.security import list_groups_ext
 from kotti.security import set_groups
 from kotti.util import _
+from kotti.views.form import EditFormView
 from kotti.views.site_setup import CONTROL_PANEL_LINKS
 from kotti.views.util import template_api
 from kotti.views.util import is_root
 from kotti.views.util import AddFormView
-from kotti.views.util import EditFormView
 
 def roles_form_handler(context, request, available_role_names, groups_lister):
     changed = []

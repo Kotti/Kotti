@@ -241,10 +241,10 @@ class TestTags(UnitTestBase):
         assert [res.name for res in result] == [u'content_1', u'content_2']
 
 
-class TestTagItWidget(UnitTestBase):
+class TestCommaSeparatedListWidget(UnitTestBase):
     def make_one(self):
-        from kotti.views.widget import TagItWidget
-        return TagItWidget()
+        from kotti.views.form import CommaSeparatedListWidget
+        return CommaSeparatedListWidget(template='')
 
     def test_widget_serialize_none(self):
         field = Mock()

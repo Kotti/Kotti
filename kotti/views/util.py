@@ -6,9 +6,6 @@ import urllib
 from babel.dates import format_date
 from babel.dates import format_datetime
 from babel.dates import format_time
-import colander
-import deform
-from deform import Button
 from pyramid.decorator import reify
 from pyramid.httpexceptions import HTTPFound
 from pyramid.i18n import get_localizer
@@ -22,20 +19,20 @@ from pyramid.renderers import render
 from pyramid.threadlocal import get_current_registry
 from pyramid.threadlocal import get_current_request
 from pyramid.view import render_view_to_response
-from pyramid_deform import FormView
-from pyramid_deform import CSRFSchema
 from zope.deprecation import deprecated
 
 from kotti import get_settings
 from kotti import DBSession
-from kotti.util import _
 from kotti.util import disambiguate_name; disambiguate_name  # BBB
-from kotti.util import title_to_name
 from kotti.events import objectevent_listeners
 from kotti.resources import Content
 from kotti.security import get_user
 from kotti.security import has_permission
 from kotti.security import view_permitted
+from kotti.views.form import get_appstruct
+from kotti.views.form import BaseFormView
+from kotti.views.form import AddFormView
+from kotti.views.form import EditFormView
 from kotti.views.slots import slot_events
 
 
@@ -327,122 +324,36 @@ def nodes_tree(request):
         item_to_children,
         )
 
-class Form(deform.Form):
-    """A Form that allows 'appstruct' to be set on the instance.
-    """
-    def render(self, appstruct=None, readonly=False):
-        if appstruct is None:
-            appstruct = getattr(self, 'appstruct', colander.null)
-        return super(Form, self).render(appstruct, readonly)
+# BBB starts here --- --- --- --- --- --- 
 
-class BaseFormView(FormView):
-    form_class = Form
-    buttons = (Button('save', _(u'Save')), Button('cancel', _(u'Cancel')))
-    success_message = _(u"Your changes have been saved.")
-    success_url = None
-    schema_factory = None
-    use_csrf_token = True
-    add_template_vars = ()
+appstruct = get_appstruct
+BaseFormView = BaseFormView
+AddFormView = AddFormView
+EditFormView = EditFormView
 
-    def __init__(self, context, request, **kwargs):
-        self.context = context
-        self.request = request
-        self.__dict__.update(kwargs)
-
-    def __call__(self):
-        if self.schema_factory is not None:
-            self.schema = self.schema_factory()
-        if self.use_csrf_token and 'csrf_token' not in self.schema:
-            self.schema.children.append(CSRFSchema()['csrf_token'])
-        result = super(BaseFormView, self).__call__()
-        if isinstance(result, dict):
-            result.update(self.more_template_vars())
-        return result
-
-    def cancel_success(self, appstruct):
-        location = self.request.resource_url(self.context)
-        return HTTPFound(location=location)
-    cancel_failure = cancel_success
-
-    def more_template_vars(self):
-        result = {}
-        for name in self.add_template_vars:
-            result[name] = getattr(self, name)
-        return result
-
-def get_appstruct(context, schema):
-    appstruct = {}
-    for field in schema.children:
-        if hasattr(context, field.name):
-            appstruct[field.name] = getattr(context, field.name)
-    return appstruct
-
-def appstruct(context, schema):  # pragma: no cover
-    return get_appstruct(context, schema)
 
 deprecated(
     'appstruct',
     'appstruct is deprecated as of Kotti 0.6.2.  Use '
-    '``kotti.views.util.get_appstruct`` instead.'
+    '``kotti.views.form.get_appstruct`` instead.'
     )
 
-class EditFormView(BaseFormView):
-    add_template_vars = ('first_heading',)
-
-    def before(self, form):
-        form.appstruct = appstruct(self.context, self.schema)
-
-    def save_success(self, appstruct):
-        appstruct.pop('csrf_token', None)
-        self.edit(**appstruct)
-        self.request.session.flash(self.success_message, 'success')
-        location = self.success_url or self.request.resource_url(self.context)
-        return HTTPFound(location=location)
-
-    def edit(self, **appstruct):
-        for key, value in appstruct.items():
-            setattr(self.context, key, value)
-
-    @reify
-    def first_heading(self):
-        return _(u'Edit <em>${title}</em>',
-                 mapping=dict(title=self.context.title)
-                 )
-
-class AddFormView(BaseFormView):
-    success_message = _(u"Successfully added item.")
-    item_type = None
-    add_template_vars = ('first_heading',)
-
-    def save_success(self, appstruct):
-        appstruct.pop('csrf_token', None)
-        name = self.find_name(appstruct)
-        new_item = self.context[name] = self.add(**appstruct)
-        self.request.session.flash(self.success_message, 'success')
-        location = self.success_url or self.request.resource_url(new_item)
-        return HTTPFound(location=location)
-
-    def find_name(self, appstruct):
-        name = appstruct.get('name')
-        if name is None:
-            name = title_to_name(
-                appstruct['title'], blacklist=self.context.keys())
-        return name
-
-    @reify
-    def first_heading(self):
-        context_title = getattr(self.request.context, 'title', None)
-        type_title = self.item_type or self.add.type_info.title
-        if context_title:
-            return _(
-                u'Add ${type} to <em>${title}</em>',
-                mapping=dict(type=translate(type_title), title=context_title))
-        else:
-            return _(u'Add ${type}', mapping=dict(type=translate(type_title)))
-
+deprecated(
+    'get_appstruct',
+    'get_appstruct is deprecated as of Kotti 0.6.3.  Use '
+    '``kotti.views.form.get_appstruct`` instead.'
+    )
 
 deprecated(
     'disambiguate_name',
     'disambiguate_name is deprecated as of Kotti 0.6.2.  Use '
     '``kotti.util.disambiguate_name`` instead.'
     )
+
+for cls in BaseFormView, AddFormView, EditFormView:
+    new_name = 'kotti.views.form.{0}'.format(cls.__name__)
+    deprecated(
+        cls.__name__,
+        '{0} is deprecated as of Kotti 0.6.3.  Use ``{1}`` instead.'.format(
+            cls.__name__, new_name)
+        )
