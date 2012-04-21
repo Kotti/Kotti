@@ -17,14 +17,17 @@
     <link href="${request.static_url('kotti:static/bootstrap/css/bootstrap-responsive.min.css')}" rel="stylesheet" />
     <link href="${request.static_url('kotti:static/base.css')}" rel="stylesheet" />
     <link href="${request.static_url('kotti:static/edit.css')}" rel="stylesheet" />
+    <link href="${request.static_url('kotti:static/tag-it/css/jquery.tagit.css')}" rel="stylesheet" />
 
     <!-- Fav icons -->
     <link rel="shortcut icon" href="${request.static_url('kotti:static/favicon.ico')}" />
 
     <!-- Scripts -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.12/jquery-ui.min.js" type="text/javascript" charset="utf-8"></script>    
     <script src="${request.static_url('kotti:static/bootstrap/js/bootstrap.min.js')}" type="text/javascript"></script>
     <script src="${request.static_url('kotti:static/kotti.js')}" type="text/javascript"></script>
+    <script src="${request.static_url('kotti:static/tag-it/js/tag-it.js')}" type="text/javascript"></script>
 
     <!-- Form scripts and styles -->
     <!-- XXX needs to use form.get_widget_resources() or similar -->
@@ -36,6 +39,7 @@
     <script src="${request.static_url('deform:static/tinymce/jscripts/tiny_mce/tiny_mce.js')}" type="text/javascript"></script>
     <script src="${request.static_url('deform:static/scripts/deform.js')}" type="text/javascript"></script>
     <script src="${request.static_url('deform_bootstrap:static/deform_bootstrap.js')}" type="text/javascript"></script>
+
 
     <script type="text/javascript">
       $(document).ready(function() {
