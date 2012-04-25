@@ -3,6 +3,7 @@ from mock import Mock
 
 from kotti.testing import (
     UnitTestBase,
+    EventTestBase,
     DummyRequest,
 )
 
@@ -12,7 +13,7 @@ class DummyContext(object):
     tags = [u'tag 1', u'tag 2', u'tag 3', ]
 
 
-class TestTags(UnitTestBase):
+class TestTags(EventTestBase, UnitTestBase):
     def test_empty(self):
         from kotti.resources import get_root
         assert get_root().tags == []
@@ -247,11 +248,14 @@ class TestTags(UnitTestBase):
         root[u'folder_1'][u'content_2'] = Content()
         root[u'folder_1'][u'content_2'].tags = [u'first tag', u'third tag']
 
-        result = ses.query(Content).join(TagsToContents).join(Tag).filter(Tag.title == u'first tag').all()
+        result = ses.query(Content).join(TagsToContents).join(Tag).filter(
+            Tag.title == u'first tag').all()
         assert [res.name for res in result] == [u'folder_1', u'content_2']
-        result = ses.query(Content).join(TagsToContents).join(Tag).filter(Tag.title == u'second tag').all()
+        result = ses.query(Content).join(TagsToContents).join(Tag).filter(
+            Tag.title == u'second tag').all()
         assert [res.name for res in result] == [u'folder_1']
-        result = ses.query(Content).join(TagsToContents).join(Tag).filter(Tag.title == u'third tag').all()
+        result = ses.query(Content).join(TagsToContents).join(Tag).filter(
+            Tag.title == u'third tag').all()
         assert [res.name for res in result] == [u'content_1', u'content_2']
 
 

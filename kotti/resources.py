@@ -267,12 +267,6 @@ class TagsToContents(Base):
         return self(tag=tag)
 
 
-def delete_orphaned_tags(mapper, connection, target, **kw):
-    session = DBSession()
-    session.query(Tag).filter(~Tag.content_tags.any()).delete(synchronize_session=False)
-event.listen(TagsToContents, "after_delete", delete_orphaned_tags)
-
-
 class Content(Node):
     implements(IContent)
 

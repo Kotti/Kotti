@@ -94,6 +94,11 @@ class UnitTestBase(TestCase):
     def tearDown(self):
         tearDown()
 
+class EventTestBase(TestCase):
+    def setUp(self, **kwargs):
+        super(EventTestBase, self).setUp(**kwargs)
+        self.config.include('kotti.events')
+
 # Functional ----
 
 def setUpFunctional(global_config=None, **settings):
