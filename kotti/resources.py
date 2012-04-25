@@ -23,6 +23,7 @@ from sqlalchemy import LargeBinary
 from sqlalchemy import String
 from sqlalchemy import Unicode
 from sqlalchemy import UnicodeText
+from sqlalchemy import event
 from transaction import commit
 from zope.interface import implements
 from zope.interface import Interface
@@ -264,6 +265,12 @@ class TagsToContents(Base):
         if tag is None:
             tag = Tag(title=title)
         return self(tag=tag)
+
+
+def delete_orphaned_tags(mapper, connection, target, **kw):
+    session = DBSession()
+    session.query(Tag).filter(~Tag.content_tags.any()).delete(synchronize_session=False)
+event.listen(TagsToContents, "after_delete", delete_orphaned_tags)
 
 
 class Content(Node):

@@ -83,6 +83,20 @@ class TestTags(UnitTestBase):
         ses.delete(ses.query(Tag).filter_by(title=u'my tag').one())
         assert ses.query(Content).filter_by(name=u'content_1').count() == 1
 
+    def test_delete_content_deletes_orphaned_tags(self):
+        from kotti import DBSession
+        from kotti.resources import get_root
+        from kotti.resources import Tag, Content
+
+        root = get_root()
+        root[u'content_1'] = Content()
+        root[u'content_2'] = Content()
+        root[u'content_1'].tags = [u'tag 1', u'tag 2']
+        root[u'content_2'].tags = [u'tag 2']
+        assert DBSession.query(Tag).count() == 2
+        del root[u'content_1']
+        assert DBSession.query(Tag).one().title == u'tag 2'
+
     def test_delete_tag_assignment_doesnt_touch_content(self):
         from kotti import DBSession
         from kotti.resources import get_root
@@ -98,7 +112,7 @@ class TestTags(UnitTestBase):
         ses.delete(ses.query(TagsToContents).one())
         assert ses.query(Content).filter_by(name=u'content_1').count() == 1
 
-    def test_delete_tag_assignment_doesnt_delete_tag(self):
+    def test_delete_tag_assignment_delete_tag(self):
         from kotti import DBSession
         from kotti.resources import get_root
         from kotti.resources import Tag, TagsToContents, Content
@@ -110,7 +124,7 @@ class TestTags(UnitTestBase):
         ses = DBSession
         assert ses.query(Tag).count() == 1
         ses.delete(ses.query(TagsToContents).one())
-        assert ses.query(Tag).count() == 1
+        assert ses.query(Tag).count() == 0
 
     def test_copy_content_copy_tags(self):
         from kotti import DBSession
@@ -176,7 +190,7 @@ class TestTags(UnitTestBase):
         assert ses.query(Tag).count() == 1
         assert ses.query(TagsToContents).count() == 2
 
-    def test_delete_content_delete_assignments_not_tags(self):
+    def test_delete_content_delete_tags_and_assignments(self):
         from kotti import DBSession
         from kotti.resources import get_root
         from kotti.resources import Tag, TagsToContents, Content
@@ -196,7 +210,7 @@ class TestTags(UnitTestBase):
         request = DummyRequest()
         request.POST['delete-confirm'] = 'on'
         delete_node(root[u'folder_1'], request)
-        assert ses.query(Tag).count() == 3
+        assert ses.query(Tag).count() == 0
         assert ses.query(TagsToContents).count() == 0
 
     def test_get_content_items_from_tag(self):
