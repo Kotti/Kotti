@@ -48,7 +48,6 @@ def inline_view(context, request, disposition='inline'):
         headerlist=[
             ('Content-Disposition', '%s;filename="%s"' % (
                 disposition, context.filename.encode('ascii', 'ignore'))),
-            ('Content-Length', str(context.size)),
             ('Content-Type', str(context.mimetype)),
             ]
         )
