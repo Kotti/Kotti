@@ -1,6 +1,5 @@
 import warnings
 
-from mock import patch
 from pyramid.interfaces import IAuthenticationPolicy
 from pyramid.interfaces import IAuthorizationPolicy
 from pyramid.interfaces import IView

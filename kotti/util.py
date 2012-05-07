@@ -155,8 +155,9 @@ from kotti.sqla import NestedMutationDict
 from kotti.sqla import NestedMutationList
 
 
-for name in ('JsonType', 'MutationDict', 'MutationList', 'NestedMixin',
-             'NestedMutationDict', 'NestedMutationList'):
+for cls in (JsonType, MutationDict, MutationList, NestedMixin,
+             NestedMutationDict, NestedMutationList):
+    name = cls.__name__
     deprecated(
         name,
         "kotti.util.{0} has been moved to the kotti.sqla "
