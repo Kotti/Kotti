@@ -50,10 +50,9 @@ def inline_view(context, request, disposition='inline'):
                 disposition, context.filename.encode('ascii', 'ignore'))),
             ('Content-Length', str(context.size)),
             ('Content-Type', str(context.mimetype)),
-            ],
-        app_iter=context.data,
+            ]
         )
-
+    res.body = context.data
     return res
 
 def attachment_view(context, request):
