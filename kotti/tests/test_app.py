@@ -27,7 +27,7 @@ def _includeme_layout(config):
         )
 
 def _login_view(request):
-    return {}
+    return {}  # pragma: no cover
 
 class TestApp(UnitTestBase):
     def required_settings(self):
