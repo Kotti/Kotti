@@ -83,6 +83,7 @@ class EditFileFormView(EditFormView):
 
 class AddFileFormView(AddFormView):
     item_type = _(u"File")
+    item_class = File
 
     def schema_factory(self):
         tmpstore = FileUploadTempStore(self.request)
@@ -108,7 +109,7 @@ class AddFileFormView(AddFormView):
 
     def add(self, **appstruct):
         buf = appstruct['file']['fp'].read()
-        return File(
+        return self.item_class(
             title=appstruct['title'],
             description=appstruct['description'],
             data=buf,
