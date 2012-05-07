@@ -17,8 +17,8 @@ class DummyRequest(testing.DummyRequest):
     POST = dict()
 
     def is_response(self, ob):
-        return ( hasattr(ob, 'app_iter') and hasattr(ob, 'headerlist') and
-                 hasattr(ob, 'status') )
+        return (hasattr(ob, 'app_iter') and hasattr(ob, 'headerlist') and
+                hasattr(ob, 'status'))
 
 def testing_db_url():
     return os.environ.get('KOTTI_TEST_DB_STRING', 'sqlite://')

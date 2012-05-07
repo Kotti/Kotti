@@ -170,9 +170,9 @@ def rename_node(context, request):
         if not name or not title:
             request.session.flash(_(u'Name and title are required.'), 'error')
         else:
-            context.name = name.replace('/','')
+            context.name = name.replace('/', '')
             context.title = title
-            request.session.flash(_(u'Item renamed'),'success')
+            request.session.flash(_(u'Item renamed'), 'success')
             location = resource_url(context, request)
             return HTTPFound(location=location)
     return {}

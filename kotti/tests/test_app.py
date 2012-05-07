@@ -26,7 +26,8 @@ def _includeme_layout(config):
         override_with='kotti:templates/view/master.pt',
         )
 
-def _login_view(request): return {}
+def _login_view(request):
+    return {}
 
 class TestApp(UnitTestBase):
     def required_settings(self):

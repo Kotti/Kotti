@@ -23,7 +23,8 @@ from zope.deprecation import deprecated
 
 from kotti import get_settings
 from kotti import DBSession
-from kotti.util import disambiguate_name; disambiguate_name  # BBB
+from kotti.util import disambiguate_name
+disambiguate_name  # BBB
 from kotti.events import objectevent_listeners
 from kotti.resources import Content
 from kotti.security import get_user
@@ -315,7 +316,7 @@ def nodes_tree(request):
             item_to_children[node.parent_id].append(node)
 
     for children in item_to_children.values():
-        children.sort(key=lambda ch:ch.position)
+        children.sort(key=lambda ch: ch.position)
 
     return NavigationNodeWrapper(
         item_to_children[None][0],
