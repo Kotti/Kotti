@@ -85,7 +85,7 @@ _lru_cache = LRUCacheSetItem(1000)
 def lru_cache(compute_key):
     return cache(compute_key, lambda: _lru_cache)
 
-def clear_cache(): # only useful for tests really
+def clear_cache():  # only useful for tests really
     request = get_current_request()
     if request is not None:
         setattr(request, _CACHE_ATTR, None)
@@ -155,8 +155,9 @@ from kotti.sqla import NestedMutationDict
 from kotti.sqla import NestedMutationList
 
 
-for name in ('JsonType', 'MutationDict', 'MutationList', 'NestedMixin',
-             'NestedMutationDict', 'NestedMutationList'):
+for cls in (JsonType, MutationDict, MutationList, NestedMixin,
+             NestedMutationDict, NestedMutationList):
+    name = cls.__name__
     deprecated(
         name,
         "kotti.util.{0} has been moved to the kotti.sqla "

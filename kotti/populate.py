@@ -32,7 +32,7 @@ def populate():
     populate_users()
 
 _ROOT_ATTRS = dict(
-    name=u'', # (at the time of writing) root must have empty name!
+    name=u'',  # (at the time of writing) root must have empty name!
     title=u'Welcome to Kotti',
     description=u'Congratulations! You have successfully installed Kotti.',
     body=u"""
@@ -110,8 +110,8 @@ _ABOUT_ATTRS = dict(
   <em>Photo credit:</em> "Northern Lights Formation" by FlugKerl2.
   <a href="http://commons.wikimedia.org/wiki/File:Northern_Lights_Formation.jpg">
   Copyright info</a>.
-  Originally published in the 
-  <a href="http://en.wikipedia.org/wiki/Extra_EA-300"> Extra EA-300</a> 
+  Originally published in the
+  <a href="http://en.wikipedia.org/wiki/Extra_EA-300"> Extra EA-300</a>
   article.
 </small></p>
 """)

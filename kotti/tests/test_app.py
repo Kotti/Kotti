@@ -1,6 +1,5 @@
 import warnings
 
-from mock import patch
 from pyramid.interfaces import IAuthenticationPolicy
 from pyramid.interfaces import IAuthorizationPolicy
 from pyramid.interfaces import IView
@@ -25,9 +24,10 @@ def _includeme_layout(config):
     config.override_asset(
         to_override='kotti:templates/edit/master.pt',
         override_with='kotti:templates/view/master.pt',
-        ) 
+        )
 
-def _login_view(request): return {}
+def _login_view(request):
+    return {}  # pragma: no cover
 
 class TestApp(UnitTestBase):
     def required_settings(self):
@@ -37,14 +37,14 @@ class TestApp(UnitTestBase):
     def test_override_settings(self):
         from kotti import main
         from kotti import get_settings
-        
+
         class MyType(object):
             pass
 
         def my_configurator(conf):
             conf['kotti.base_includes'] = ''
             conf['kotti.available_types'] = [MyType]
-            
+
         settings = self.required_settings()
         settings['kotti.configurators'] = [my_configurator]
         main({}, **settings)
@@ -101,7 +101,7 @@ class TestApp(UnitTestBase):
 
     def test_asset_overrides(self):
         from kotti import main
-        
+
         settings = self.required_settings()
         settings['kotti.asset_overrides'] = 'pyramid:scaffold/ pyramid.fixers'
         main({}, **settings)
@@ -183,7 +183,7 @@ class TestApp(UnitTestBase):
         settings['kotti.root_factory'] = (TestingRootFactory,)
         settings['kotti.site_title'] = 'My Site'
         app = main({}, **settings)
-        
+
         request = Request.blank('/@@login')
         (status, headers, response) = request.call_application(app)
         assert status == '200 OK'
@@ -199,7 +199,7 @@ class TestApp(UnitTestBase):
         from kotti import main
 
         settings = self.required_settings()
-        settings['kotti.site_title'] = 'K\xc3\xb6tti' # Kötti
+        settings['kotti.site_title'] = 'K\xc3\xb6tti'  # Kötti
 
         main({}, **settings)
         self.assertEqual(get_settings()['kotti.site_title'], u'K\xf6tti')

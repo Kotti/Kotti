@@ -126,7 +126,7 @@ for wrapper_class in (MutationDict, MutationList):
 
 class NestedMixin(object):
     __parent__ = None
-    
+
     def __init__(self, *args, **kwargs):
         self.__parent__ = kwargs.pop('__parent__', None)
         super(NestedMixin, self).__init__(*args, **kwargs)

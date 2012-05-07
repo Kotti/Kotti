@@ -33,7 +33,7 @@ def get_mailer():
     # Consider that we may have persistent settings
     if _inject_mailer:
         return _inject_mailer[0]
-    return Mailer.from_settings(get_settings()) # pragma: no cover
+    return Mailer.from_settings(get_settings())  # pragma: no cover
 
 def make_token(user, seconds=None):
     secret = get_settings()['kotti.secret2']
@@ -95,7 +95,7 @@ def send_set_password(user, request, templates='set-password', add_query=None):
     if isinstance(templates, str):
         templates = message_templates[templates]
     message = Message(
-        recipients=[u'"%s" <%s>' % (user.title, user.email)], # XXX naive?
+        recipients=[u'"%s" <%s>' % (user.title, user.email)],  # XXX naive?
         subject=templates['subject'] % variables,
         body=templates['body'] % variables,
         )

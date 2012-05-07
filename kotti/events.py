@@ -5,7 +5,7 @@ of specific object types.
 To subscribe to any event, write::
 
   def all_events_handler(event):
-      print event  
+      print event
   kotti.events.listeners[object].append(all_events_handler)
 
 To subscribe only to *ObjectInsert* events of *Document* types,
@@ -31,10 +31,10 @@ registered.
 """
 
 from collections import defaultdict
-try: # pragma: no cover
+try:  # pragma: no cover
     from collections import OrderedDict
-    OrderedDict # pyflakes
-except ImportError: # pragma: no cover
+    OrderedDict  # pyflakes
+except ImportError:  # pragma: no cover
     from ordereddict import OrderedDict
 from datetime import datetime
 
@@ -123,7 +123,7 @@ class ObjectEventDispatcher(DispatcherDict):
       ...     return 'sub'
       >>> def all_listener(event):
       ...     return 'all'
-      
+
       >>> dispatcher = ObjectEventDispatcher()
       >>> dispatcher[(ObjectEvent, BaseObject)].append(base_listener)
       >>> dispatcher[(ObjectInsert, SubObject)].append(subobj_insert_listener)
@@ -197,7 +197,7 @@ def delete_orphaned_tags(event):
         synchronize_session=False)
 
 _WIRED_SQLALCHMEY = False
-def wire_sqlalchemy(): # pragma: no cover
+def wire_sqlalchemy():  # pragma: no cover
     global _WIRED_SQLALCHMEY
     if _WIRED_SQLALCHMEY:
         return

@@ -23,7 +23,8 @@ from zope.deprecation import deprecated
 
 from kotti import get_settings
 from kotti import DBSession
-from kotti.util import disambiguate_name; disambiguate_name  # BBB
+from kotti.util import disambiguate_name
+disambiguate_name  # BBB
 from kotti.events import objectevent_listeners
 from kotti.resources import Content
 from kotti.security import get_user
@@ -90,7 +91,7 @@ class Slots(object):
     def __init__(self, context, request):
         self.context = context
         self.request = request
-    
+
     def __getattr__(self, name):
         for event_type in slot_events:
             if event_type.name == name:
@@ -178,7 +179,7 @@ class TemplateAPI(object):
     @reify
     def user(self):
         return get_user(self.request)
-    
+
     def has_permission(self, permission, context=None):
         if context is None:
             context = self.context
@@ -315,7 +316,7 @@ def nodes_tree(request):
             item_to_children[node.parent_id].append(node)
 
     for children in item_to_children.values():
-        children.sort(key=lambda ch:ch.position)
+        children.sort(key=lambda ch: ch.position)
 
     return NavigationNodeWrapper(
         item_to_children[None][0],
@@ -324,7 +325,7 @@ def nodes_tree(request):
         item_to_children,
         )
 
-# BBB starts here --- --- --- --- --- --- 
+# BBB starts here --- --- --- --- --- ---
 
 appstruct = get_appstruct
 BaseFormView = BaseFormView
