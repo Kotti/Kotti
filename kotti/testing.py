@@ -41,7 +41,7 @@ def _populator():
         DBSession.delete(doc)
     transaction.commit()
 
-def _turn_warnings_into_errors(): # pragma: no cover
+def _turn_warnings_into_errors():  # pragma: no cover
     # turn all warnings into errors, but let the `ImportWarning`
     # produced by Babel's `localedata.py` vs `localedata/` show up once...
     from babel import localedata
@@ -109,7 +109,7 @@ def setUpFunctional(global_config=None, **settings):
     _settings = {
         'sqlalchemy.url': testing_db_url(),
         'kotti.secret': 'secret',
-        'kotti.site_title': 'Website des Kottbusser Tors', # for mailing
+        'kotti.site_title': 'Website des Kottbusser Tors',  # for mailing
         'kotti.populators': 'kotti.testing._populator',
         'mail.default_sender': 'kotti@localhost',
         }
@@ -151,7 +151,7 @@ class FunctionalTestBase(TestCase):
         return browser
 
 class TestingRootFactory(dict):
-    __name__ = '' # root is required to have an empty name!
+    __name__ = ''  # root is required to have an empty name!
     __parent__ = None
     __acl__ = [('Allow', 'role:admin', ALL_PERMISSIONS)]
 

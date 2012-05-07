@@ -16,7 +16,9 @@ from pyramid.threadlocal import get_current_registry
 from pyramid.util import DottedNameResolver
 from pyramid_beaker import session_factory_from_settings
 
-import kotti.patches; kotti.patches
+import kotti.patches
+kotti.patches   # pyflakes
+
 from kotti.sqla import Base as KottiBase
 from kotti.util import request_cache
 
@@ -38,7 +40,7 @@ def acl_factory(**settings):
 def beaker_session_factory(**settings):
     return session_factory_from_settings(settings)
 
-def none_factory(**kwargs): # pragma: no cover
+def none_factory(**kwargs):  # pragma: no cover
     return None
 
 # All of these can be set by passing them in the Paste Deploy settings:
@@ -46,7 +48,7 @@ conf_defaults = {
     'kotti.templates.api': 'kotti.views.util.TemplateAPI',
     'kotti.configurators': '',
     'pyramid.includes': '',
-    'kotti.includes': '', # BBB
+    'kotti.includes': '',  # BBB
     'kotti.base_includes': 'kotti kotti.events kotti.views kotti.views.view kotti.views.edit kotti.views.login kotti.views.file kotti.views.users kotti.views.site_setup kotti.views.slots',
     'kotti.asset_overrides': '',
     'kotti.use_tables': '',

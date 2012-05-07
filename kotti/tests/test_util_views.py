@@ -60,7 +60,7 @@ class TestTemplateAPI(UnitTestBase):
     def test_list_children(self, has_permission):
         has_permission.return_value = True
 
-        api = self.make() # the default context is root
+        api = self.make()  # the default context is root
         root = api.context
         self.assertEquals(len(api.list_children(root)), 0)
 
@@ -405,7 +405,7 @@ class TestNodesTree(UnitTestBase):
         from kotti.views.util import nodes_tree
 
         a, aa, ab, ac, aca, acb = create_contents()
-        aa.in_navigation = False # nodes_tree doesn't care
+        aa.in_navigation = False  # nodes_tree doesn't care
         tree = nodes_tree(DummyRequest())
         assert tree.id == a.__parent__.id
         assert [ch.name for ch in tree.children] == [a.name]

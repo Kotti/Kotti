@@ -198,7 +198,7 @@ class TestApp(UnitTestBase):
         from kotti import main
 
         settings = self.required_settings()
-        settings['kotti.site_title'] = 'K\xc3\xb6tti' # Kötti
+        settings['kotti.site_title'] = 'K\xc3\xb6tti'  # Kötti
 
         main({}, **settings)
         self.assertEqual(get_settings()['kotti.site_title'], u'K\xf6tti')

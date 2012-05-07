@@ -215,7 +215,7 @@ class TestGroups(UnitTestBase):
         auth.callback = list_groups_callback
 
         request.context = root
-        self.assertEqual( # user doesn't exist yet
+        self.assertEqual(  # user doesn't exist yet
             auth.effective_principals(request),
             ['system.Everyone']
             )
