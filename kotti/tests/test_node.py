@@ -28,7 +28,7 @@ class TestNode(UnitTestBase):
     def test_set_and_get_acl(self):
         from kotti import DBSession
         from kotti.resources import get_root
-        
+
         root = get_root()
 
         # The __acl__ attribute of Nodes allows access to the mapped
@@ -44,7 +44,7 @@ class TestNode(UnitTestBase):
             ('Allow', 'system.Authenticated', ['view']),
             ('Deny', 'system.Authenticated', ALL_PERMISSIONS),
             ]
-        
+
         self.assertEquals(
             root.__acl__, [
                 ('Allow', 'system.Authenticated', ['view']),
@@ -59,7 +59,7 @@ class TestNode(UnitTestBase):
                 ('Deny', 'system.Authenticated', ALL_PERMISSIONS),
                 ('Allow', 'system.Authenticated', ['edit']),
                 ])
-        
+
         DBSession.flush()
         DBSession.expire_all()
 
@@ -75,7 +75,7 @@ class TestNode(UnitTestBase):
         from kotti import DBSession
         from kotti.resources import get_root
         from kotti.resources import Node
-        
+
         root = get_root()
         node = root['child'] = Node()
         node.__acl__ = []
@@ -91,7 +91,7 @@ class TestNode(UnitTestBase):
             ('Allow', 'role:admin', ALL_PERMISSIONS),
             ('Allow', 'system.Authenticated', ['edit']),
             ]
-        
+
     def test_unique_constraint(self):
         from kotti import DBSession
         from kotti.resources import get_root
@@ -121,7 +121,7 @@ class TestNode(UnitTestBase):
         self.assertEquals(root[u'child1'], child1)
 
         del root[u'child1']
-        self.assertEquals(root.keys(), [])        
+        self.assertEquals(root.keys(), [])
 
         # When we delete a parent node, all its child nodes will be
         # released as well:
@@ -159,10 +159,10 @@ class TestNode(UnitTestBase):
         session.add(child44)
         root[u'child4'] = child44
         self.assertRaises(SQLAlchemyError, session.flush)
-        
+
     def test_node_copy_name(self):
         from kotti.resources import get_root
-        
+
         root = get_root()
         copy_of_root = root.copy(name=u'copy_of_root')
         self.assertEqual(copy_of_root.name, u'copy_of_root')
@@ -235,7 +235,7 @@ class TestNode(UnitTestBase):
     def test_annotations_mutable(self):
         from kotti import DBSession
         from kotti.resources import get_root
-        
+
         root = get_root()
         root.annotations['foo'] = u'bar'
         self.assertTrue(root in DBSession.dirty)

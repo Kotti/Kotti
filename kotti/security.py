@@ -279,7 +279,7 @@ def list_groups_ext(name, context=None, _seen=None, _inherited=None):
             groups.update(group_names)
             if recursing or idx != 0:
                 _inherited.update(group_names)
-    
+
     new_groups = groups - _seen
     _seen.update(new_groups)
     for group_name in new_groups:

@@ -27,7 +27,7 @@ class TestFileViews(UnitTestBase):
         self._test_common_headers(headers)
         assert headers["Content-Disposition"] == 'inline;filename="myfle.png"'
         assert res.app_iter == 'file contents'
-        
+
     def test_attachment_view(self):
         from kotti.views.file import attachment_view
         res = attachment_view(self.file, None)
@@ -124,7 +124,7 @@ class TestFileUploadTempStore(TestCase):
     def make_one(self):
         from kotti.views.file import FileUploadTempStore
         return FileUploadTempStore(DummyRequest())
-    
+
     def test_keys(self):
         tmpstore = self.make_one()
         tmpstore.session['important'] = 3

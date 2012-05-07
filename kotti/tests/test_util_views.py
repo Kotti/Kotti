@@ -59,7 +59,7 @@ class TestTemplateAPI(UnitTestBase):
     @patch('kotti.views.util.has_permission')
     def test_list_children(self, has_permission):
         has_permission.return_value = True
-        
+
         api = self.make() # the default context is root
         root = api.context
         self.assertEquals(len(api.list_children(root)), 0)
@@ -230,7 +230,7 @@ class TestTemplateAPI(UnitTestBase):
         def render_something(context, request):
             called.append(True)
         register(RenderAboveContent, None, render_something)
-        
+
         api = self.make()
         api.slots.belowcontent
         self.assertFalse(called)
@@ -393,7 +393,7 @@ class TestLocalNavigationSlot(UnitTestBase):
     def test_in_navigation(self):
         from kotti.views.slots import render_local_navigation
         a, aa, ab, ac, aca, acb = create_contents()
-        
+
         assert render_local_navigation(a, DummyRequest()) is not None
         aa.in_navigation = False
         ab.in_navigation = False

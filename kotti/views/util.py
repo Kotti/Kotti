@@ -90,7 +90,7 @@ class Slots(object):
     def __init__(self, context, request):
         self.context = context
         self.request = request
-    
+
     def __getattr__(self, name):
         for event_type in slot_events:
             if event_type.name == name:
@@ -178,7 +178,7 @@ class TemplateAPI(object):
     @reify
     def user(self):
         return get_user(self.request)
-    
+
     def has_permission(self, permission, context=None):
         if context is None:
             context = self.context
@@ -324,7 +324,7 @@ def nodes_tree(request):
         item_to_children,
         )
 
-# BBB starts here --- --- --- --- --- --- 
+# BBB starts here --- --- --- --- --- ---
 
 appstruct = get_appstruct
 BaseFormView = BaseFormView

@@ -5,7 +5,7 @@ of specific object types.
 To subscribe to any event, write::
 
   def all_events_handler(event):
-      print event  
+      print event
   kotti.events.listeners[object].append(all_events_handler)
 
 To subscribe only to *ObjectInsert* events of *Document* types,
@@ -123,7 +123,7 @@ class ObjectEventDispatcher(DispatcherDict):
       ...     return 'sub'
       >>> def all_listener(event):
       ...     return 'all'
-      
+
       >>> dispatcher = ObjectEventDispatcher()
       >>> dispatcher[(ObjectEvent, BaseObject)].append(base_listener)
       >>> dispatcher[(ObjectInsert, SubObject)].append(subobj_insert_listener)

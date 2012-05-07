@@ -38,7 +38,7 @@ class TestGroups(UnitTestBase):
 
     def test_not_a_node(self):
         from kotti.security import list_groups_raw
-        
+
         self.assertEqual(list_groups_raw(u'bob', object()), set())
 
     def test_overwrite_and_delete(self):
@@ -103,7 +103,7 @@ class TestGroups(UnitTestBase):
         child = root[u'child'] = Node()
         grandchild = child[u'grandchild'] = Node()
         DBSession.flush()
-        
+
         # root:
         #   bob               -> group:bobsgroup
         #   frank             -> group:franksgroup
@@ -270,7 +270,7 @@ class TestGroups(UnitTestBase):
         # we're not allowed to authenticate with a group id:
         get_principals()[u'bob'] = dict(name=u'bob')
         get_principals()[u'group:bobsgroup'] = dict(name=u'group:bobsgroup')
-        
+
         request = DummyRequest()
         self.assertEqual(
             list_groups_callback(u'bob', request), [])
@@ -410,7 +410,7 @@ class TestPrincipals(UnitTestBase):
             groups=[u'group:bobsgroup'],
             )
         return users[u'bob']
-    
+
     def _assert_is_bob(self, bob):
         self.assertEqual(bob.name, u'bob')
         self.assertEqual(bob.title, u'Bob Dabolina')
@@ -480,7 +480,7 @@ class TestPrincipals(UnitTestBase):
 
     def test_is_user(self):
         from kotti.security import is_user
-        
+
         bob = self.make_bob()
         self.assertEqual(is_user(bob), True)
         bob.name = u'group:bobsgroup'

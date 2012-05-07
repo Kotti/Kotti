@@ -133,7 +133,7 @@ class TestRequestCache(UnitTestBase):
 class TestLRUCache(TestRequestCache):
     def setUp(self):
         from kotti.util import lru_cache
-        
+
         super(TestLRUCache, self).setUp()
         self.cache_decorator = lru_cache
 

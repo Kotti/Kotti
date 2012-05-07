@@ -32,7 +32,7 @@ from kotti.views.util import AddFormView
 
 def roles_form_handler(context, request, available_role_names, groups_lister):
     changed = []
-    
+
     if 'apply' in request.POST:
         p_to_r = {}
         for name in request.params:

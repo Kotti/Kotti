@@ -100,7 +100,7 @@ class AddFileFormView(AddFormView):
                 widget=FileUploadWidget(tmpstore),
                 )
         return FileSchema()
-    
+
     def save_success(self, appstruct):
         if not appstruct['title']:
             appstruct['title'] = appstruct['file']['filename']
