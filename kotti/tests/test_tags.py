@@ -270,7 +270,7 @@ class TestCommaSeparatedListWidget(UnitTestBase):
         widget.serialize(field, None)
         field.renderer.assert_called_with(
             widget.template, field=field, cstruct=[])
-        
+
     def test_widget_serialize_null(self):
         field = Mock()
         widget = self.make_one()

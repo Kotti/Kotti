@@ -85,7 +85,7 @@ class Principal(Base):
         self.creation_date = datetime.now()
         self.last_login_date = None
 
-    def __repr__(self): # pragma: no cover
+    def __repr__(self):  # pragma: no cover
         return '<Principal %r>' % self.name
 
 class AbstractPrincipals(object):
@@ -233,8 +233,8 @@ def list_groups_raw(name, context):
     if isinstance(context, Node):
         return set(
             r[0] for r in DBSession.query(LocalGroup.group_name).filter(
-            LocalGroup.node_id==context.id).filter(
-            LocalGroup.principal_name==name).all()
+            LocalGroup.node_id == context.id).filter(
+            LocalGroup.principal_name == name).all()
             )
     return set()
 
@@ -279,7 +279,7 @@ def list_groups_ext(name, context=None, _seen=None, _inherited=None):
             groups.update(group_names)
             if recursing or idx != 0:
                 _inherited.update(group_names)
-    
+
     new_groups = groups - _seen
     _seen.update(new_groups)
     for group_name in new_groups:
@@ -298,15 +298,15 @@ def set_groups(name, context, groups_to_set=()):
     from kotti.resources import LocalGroup
     session = DBSession()
     session.query(LocalGroup).filter(
-        LocalGroup.node_id==context.id).filter(
-        LocalGroup.principal_name==name).delete()
+        LocalGroup.node_id == context.id).filter(
+        LocalGroup.principal_name == name).delete()
 
     for group_name in groups_to_set:
         session.add(LocalGroup(context, name, unicode(group_name)))
 
 def list_groups_callback(name, request):
     if not is_user(name):
-        return None # Disallow logging in with groups
+        return None  # Disallow logging in with groups
     if name in get_principals():
         context = request.environ.get(
             'authz_context', getattr(request, 'context', None))
@@ -345,7 +345,7 @@ def principals_with_local_roles(context, inherit=True):
         principals.update(
             r[0] for r in
             session.query(LocalGroup.principal_name).filter(
-                LocalGroup.node_id==item.id).group_by(
+                LocalGroup.node_id == item.id).group_by(
                 LocalGroup.principal_name).all()
             if not r[0].startswith('role:')
             )
@@ -385,7 +385,7 @@ class Principals(DictMixin):
         session = DBSession()
         try:
             return session.query(
-                self.factory).filter(self.factory.name==name).one()
+                self.factory).filter(self.factory.name == name).one()
         except NoResultFound:
             raise KeyError(name)
 
@@ -401,7 +401,7 @@ class Principals(DictMixin):
         session = DBSession()
         try:
             principal = session.query(
-                self.factory).filter(self.factory.name==name).one()
+                self.factory).filter(self.factory.name == name).one()
             session.delete(principal)
         except NoResultFound:
             raise KeyError(name)

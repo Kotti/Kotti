@@ -23,7 +23,6 @@ from sqlalchemy import LargeBinary
 from sqlalchemy import String
 from sqlalchemy import Unicode
 from sqlalchemy import UnicodeText
-from sqlalchemy import event
 from transaction import commit
 from zope.interface import implements
 from zope.interface import Interface

@@ -17,7 +17,7 @@ class TestJsonType(TestCase):
 
     def test_process_bind_param_with_mutationlist(self):
         from kotti.sqla import MutationList
-        
+
         value = self.make().process_bind_param(
             MutationList([{'foo': 'bar'}]), None)
 

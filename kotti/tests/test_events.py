@@ -73,5 +73,5 @@ class TestEvents(EventTestBase, UnitTestBase):
         DBSession.delete(child)
         DBSession.flush()
         assert lengths() == (1, 1, 1, 1)
-        assert delete_events[0].object ==  child
-        assert after_delete_events[0].object ==  child
+        assert delete_events[0].object == child
+        assert after_delete_events[0].object == child

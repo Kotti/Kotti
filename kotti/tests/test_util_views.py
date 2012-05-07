@@ -59,8 +59,8 @@ class TestTemplateAPI(UnitTestBase):
     @patch('kotti.views.util.has_permission')
     def test_list_children(self, has_permission):
         has_permission.return_value = True
-        
-        api = self.make() # the default context is root
+
+        api = self.make()  # the default context is root
         root = api.context
         self.assertEquals(len(api.list_children(root)), 0)
 
@@ -230,7 +230,7 @@ class TestTemplateAPI(UnitTestBase):
         def render_something(context, request):
             called.append(True)
         register(RenderAboveContent, None, render_something)
-        
+
         api = self.make()
         api.slots.belowcontent
         self.assertFalse(called)
@@ -393,7 +393,7 @@ class TestLocalNavigationSlot(UnitTestBase):
     def test_in_navigation(self):
         from kotti.views.slots import render_local_navigation
         a, aa, ab, ac, aca, acb = create_contents()
-        
+
         assert render_local_navigation(a, DummyRequest()) is not None
         aa.in_navigation = False
         ab.in_navigation = False
@@ -405,7 +405,7 @@ class TestNodesTree(UnitTestBase):
         from kotti.views.util import nodes_tree
 
         a, aa, ab, ac, aca, acb = create_contents()
-        aa.in_navigation = False # nodes_tree doesn't care
+        aa.in_navigation = False  # nodes_tree doesn't care
         tree = nodes_tree(DummyRequest())
         assert tree.id == a.__parent__.id
         assert [ch.name for ch in tree.children] == [a.name]
