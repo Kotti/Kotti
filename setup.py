@@ -29,7 +29,7 @@ install_requires = [
     'pyramid_mailer',
     'pyramid_tm',
     'repoze.lru',
-    'sqlalchemy>=0.7.4', # avoid "Table 'local_groups' is already defined" error
+    'sqlalchemy>=0.7.6', # avoid "Table 'local_groups' is already defined" error
     'transaction>=1.1.0', # ask c-neumann :-)
     'waitress',
     'zope.deprecation',
