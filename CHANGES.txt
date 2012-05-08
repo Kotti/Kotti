@@ -1,12 +1,14 @@
 Change History
 ==============
 
-0.6.3 - Unreleased
+0.6.3 - 2012-05-08
 ------------------
 
 - Add tag support.  All content objects now have tags.  They can be
   added in the UI using the "jQuery UI Tag-it!" widget.
   See https://github.com/Pylons/Kotti/pull/55 .
+
+- Fix a bug with file download performance.
 
 0.6.2 - 2012-04-21
 ------------------
