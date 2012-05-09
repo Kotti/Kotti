@@ -100,10 +100,10 @@ Here's an example:
 
 .. _adjust_look_feel:
 
-Adjust the look & feel (``kotti.override_assets``)
+Adjust the look & feel (``kotti.asset_overrides``)
 --------------------------------------------------
 
-In your settings file, set ``kotti.override_assets`` to a list of
+In your settings file, set ``kotti.asset_overrides`` to a list of
 *asset specifications*.  This allows you to set up a directory in your
 package that will mirror Kotti's own and that allows you to override
 Kotti's templates, CSS files and images on a case by case basis.
