@@ -16,7 +16,7 @@ from pyramid.security import forget
 from pyramid.url import resource_url
 
 from kotti.message import validate_token
-from kotti.message import send_set_password
+from kotti.message import email_set_password
 from kotti.security import get_principals
 from kotti.util import _
 from kotti.views.util import template_api
@@ -61,7 +61,9 @@ def login(context, request):
         login = request.params['login']
         user = _find_user(login)
         if user is not None:
-            send_set_password(user, request, templates='reset-password')
+            email_set_password(
+                user, request,
+                template_name='kotti:templates/email-reset-password.pt')
             request.session.flash(_(
                 u"You should receive an email with a link to reset your "
                 u"password momentarily."), 'success')

@@ -4,6 +4,12 @@ Change History
 0.6.4 - Unreleased
 ------------------
 
+- Move email templates into page templates in
+  ``kotti:templates/email-set-password.pt`` and
+  ``kotti:templates/email-reset-password.pt``.  This is to make them
+  easier to translate and customize.  This deprecates
+  ``kotti.message.send_set_password``.
+
 0.6.3 - 2012-05-08
 ------------------
 

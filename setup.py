@@ -19,6 +19,7 @@ install_requires = [
     'deform>=0.9.4',  # deform_bootstrap (needs fixing there)
     'deform_bootstrap>=0.1',  # checked_input widget
     'formencode',
+    'html2text',
     'lingua>=1.3',
     'plone.i18n<2.0',  # >= 2.0 adds a huge number of dependencies
     'py-bcrypt',

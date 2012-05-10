@@ -14,7 +14,7 @@ from deform.widget import CheckedPasswordWidget
 from deform.widget import CheckboxChoiceWidget
 from deform.widget import SequenceWidget
 
-from kotti.message import send_set_password
+from kotti.message import email_set_password
 from kotti.security import USER_MANAGEMENT_ROLES
 from kotti.security import ROLES
 from kotti.security import SHARING_ROLES
@@ -285,7 +285,7 @@ class UserAddFormView(AddFormView):
         send_email = appstruct.pop('send_email', False)
         get_principals()[name] = appstruct
         if send_email:
-            send_set_password(get_principals()[name], self.request)
+            email_set_password(get_principals()[name], self.request)
         self.request.session.flash(_(u'${title} added.',
                                      mapping=dict(title=appstruct['title'])),
                                      'success')
