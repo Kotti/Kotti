@@ -133,7 +133,7 @@ def email_set_password(user, request,
         url=url,
         )
 
-    text = render(template_name, variables)
+    text = render(template_name, variables, request)
     subject, htmlbody = text.strip().split('\n', 1)
     subject = subject.replace('Subject:', '', 1).strip()
     html2text = HTML2Text()
