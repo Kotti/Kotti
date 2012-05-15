@@ -82,9 +82,12 @@ class RenderInHead(ObjectEvent):
 class RenderBeforeBodyEnd(ObjectEvent):
     name = u'beforebodyend'
 
+class RenderEditInHead(ObjectEvent):
+    name = u'edit_inhead'
+
 slot_events = [
     RenderLeftSlot, RenderRightSlot, RenderAboveContent, RenderBelowContent,
-    RenderInHead, RenderBeforeBodyEnd,
+    RenderInHead, RenderBeforeBodyEnd, RenderEditInHead,
     ]
 
 def render_local_navigation(context, request):

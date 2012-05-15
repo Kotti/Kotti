@@ -50,9 +50,9 @@
 
     <more tal:omit-tag="" metal:define-slot="head-more"></more>
 
-    <!-- 'inhead' slots: support third party injection of things that
+    <!-- 'edit_inhead' slots: support third party injection of things that
          go into the head -->
-    <tal:slots tal:define="snippets page_slots.inhead"
+    <tal:slots tal:define="snippets page_slots.edit_inhead"
                tal:condition="snippets"
                tal:repeat="snippet snippets"
                tal:replace="structure snippet" />

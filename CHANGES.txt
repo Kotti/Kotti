@@ -10,6 +10,10 @@ Change History
   easier to translate and customize.  This deprecates
   ``kotti.message.send_set_password``.
 
+- Add a 'edit_inhead' slot for stuff that goes into the edit
+  interface's head.  'inhead' is no longer be used in
+  'edit/master.pt'.
+
 0.6.3 - 2012-05-08
 ------------------
 
