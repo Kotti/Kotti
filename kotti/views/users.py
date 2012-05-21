@@ -380,7 +380,7 @@ class UserManageFormView(UserEditFormView):
 
     def cancel_success(self, appstruct):
         self.request.session.flash(_(u'No changes made.'), 'info')
-        location = "%s/@@setup-users" % self.request.host_url
+        location = "%s/@@setup-users" % self.request.application_url
         return HTTPFound(location=location)
     cancel_failure = cancel_success
 
