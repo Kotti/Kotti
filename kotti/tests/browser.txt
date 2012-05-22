@@ -507,6 +507,14 @@ from Bob's Group:
   >>> ctrl(name="role::bob::role:viewer").disabled
   True
 
+We can click on the Bob's Group entry to edit an email address:
+
+  >>> browser.getLink("Bob's Group").click()
+  >>> ctrl(name="email").value = 'bogsgroup@gmail.com'
+  >>> ctrl(name="save").click()
+  >>> "Your changes have been saved" in browser.contents
+  True
+
 Set password
 ------------
 
