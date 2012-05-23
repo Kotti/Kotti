@@ -6,7 +6,7 @@ Setup
 
    >>> import pytest
    >>> from kotti import testing, DBSession
-   >>> from kotti.resources import Node, Document, File
+   >>> from kotti.resources import Node, Document, File, Image
 
 Get a handle for some useful objects:
 
@@ -128,7 +128,7 @@ Now click the 'Cancel' button for an invalid form entry:
 
 Add two more documents, at different levels
 -------------------------------------------
-  
+
   >>> browser.open(testing.BASE_URL + '/')
   >>> browser.getLink("Add").click()
   >>> browser.getLink("Document").click()
@@ -166,6 +166,7 @@ There's no Add link if nothing can be added:
   >>> try:
   ...     Document.type_info.addable_to = ()
   ...     File.type_info.addable_to = ()
+  ...     Image.type_info.addable_to = ()
   ...     browser.reload()
   ...     browser.getLink("Add")
   ... finally:
@@ -265,12 +266,12 @@ Copy and paste
 --------------
 
   >>> browser.open(testing.BASE_URL + '/second-child')
-  >>> browser.getLink('Cut').click()  
+  >>> browser.getLink('Cut').click()
   >>> "Second Child cut" in browser.contents
   True
 
   >>> browser.open(testing.BASE_URL + '/child-one')
-  >>> browser.getLink('Paste').click()  
+  >>> browser.getLink('Paste').click()
   >>> "Second Child pasted" in browser.contents
   True
 
@@ -280,17 +281,17 @@ Copy and paste
   HTTPError: HTTP Error 404: Not Found
 
   >>> browser.open(testing.BASE_URL + '/child-one/second-child')
-  >>> browser.getLink('Copy').click()  
+  >>> browser.getLink('Copy').click()
   >>> "Second Child copied" in browser.contents
   True
   >>> browser.open(testing.BASE_URL)
-  >>> browser.getLink('Paste').click()  
+  >>> browser.getLink('Paste').click()
   >>> "Second Child pasted" in browser.contents
   True
 
 We can paste twice since we copied:
 
-  >>> browser.getLink('Paste').click()  
+  >>> browser.getLink('Paste').click()
   >>> "Second Child pasted" in browser.contents
   True
   >>> browser.open(testing.BASE_URL + '/second-child/')
@@ -304,11 +305,11 @@ We can also copy and paste items that contain children, like the whole
 site:
 
   >>> browser.open(testing.BASE_URL)
-  >>> browser.getLink('Copy').click()  
+  >>> browser.getLink('Copy').click()
   >>> "Welcome to Kotti copied" in browser.contents
   True
   >>> browser.open(testing.BASE_URL + '/second-child')
-  >>> browser.getLink('Paste').click()  
+  >>> browser.getLink('Paste').click()
   >>> "Welcome to Kotti pasted" in browser.contents
   True
   >>> browser.open(
@@ -319,7 +320,7 @@ site:
 And finally cut and paste a tree:
 
   >>> browser.open(testing.BASE_URL + '/second-child')
-  >>> browser.getLink('Cut').click()  
+  >>> browser.getLink('Cut').click()
   >>> browser.open(testing.BASE_URL + '/child-one/second-child')
   >>> browser.getLink('Paste').click()
   >>> "Second Child pasted" in browser.contents
@@ -347,7 +348,7 @@ property:
   >>> browser.open(testing.BASE_URL + '/child-one')
   >>> browser.getLink('Copy').click()
   >>> browser.open(testing.BASE_URL + '/child-one/second-child')
-  >>> browser.getLink('Paste').click()  
+  >>> browser.getLink('Paste').click()
   >>> Document.type_info.addable_to = ()
   >>> try:
   ...     browser.reload()
