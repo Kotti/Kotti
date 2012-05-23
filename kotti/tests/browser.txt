@@ -493,10 +493,19 @@ to:
   >>> "Your changes have been saved" in browser.contents
   True
 
+If we cancel the edit of the user, we are redirected to the user management
+screen:
+
+  >>> ctrl(name="cancel").click()
+  >>> "No changes made." in browser.contents
+  True
+  >>> browser.url
+  'http://localhost:6543/@@setup-users'
+
+
 Back in user management we can see how Bob's inherited the Viewer role
 from Bob's Group:
 
-  >>> browser.getLink("User Management").click()
   >>> ctrl(name="query").value = "Bob"
   >>> ctrl(name="search").click()
   >>> ctrl(name="role::group:bobsgroup::role:viewer").value

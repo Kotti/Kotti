@@ -15,6 +15,7 @@ from deform.widget import CheckboxChoiceWidget
 from deform.widget import SequenceWidget
 
 from kotti.message import email_set_password
+from kotti.resources import get_root
 from kotti.security import USER_MANAGEMENT_ROLES
 from kotti.security import ROLES
 from kotti.security import SHARING_ROLES
@@ -377,6 +378,13 @@ class UserManageFormView(UserEditFormView):
         _massage_groups_in(appstruct)
         return super(UserEditFormView, self).save_success(appstruct)
 
+    def cancel_success(self, appstruct):
+        self.request.session.flash(_(u'No changes made.'), 'info')
+        location = "%s/@@setup-users" % self.request.application_url
+        return HTTPFound(location=location)
+    cancel_failure = cancel_success
+
+
 class GroupManageFormView(UserManageFormView):
     def schema_factory(self):
         schema = group_schema()
@@ -384,12 +392,13 @@ class GroupManageFormView(UserManageFormView):
         del schema['active']
         return schema
 
+
 def user_manage(context, request):
     user_or_group = request.params['name']
     principal = get_principals()[user_or_group]
 
     is_group = user_or_group.startswith("group:")
-    principal_type = u"Group" if is_group else u"User"
+    principal_type = _(u"Group") if is_group else _(u"User")
 
     api = template_api(
         context, request,

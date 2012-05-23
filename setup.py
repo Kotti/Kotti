@@ -21,7 +21,7 @@ install_requires = [
     'formencode',
     'html2text',
     'lingua>=1.3',
-    'PIL',  # indirect dependency of plone.scale (that doesn't declare this dependency itself)
+    'Pillow',  # indirect dependency of plone.scale (that doesn't declare this dependency itself)
     'plone.i18n<2.0',  # >= 2.0 adds a huge number of dependencies
     'plone.scale',  # needed for image resizing capabilities
     'py-bcrypt',
@@ -54,7 +54,7 @@ if sys.version_info[:3] < (2, 7, 0):
     install_requires.append('ordereddict')
 
 setup(name='Kotti',
-      version='0.6.4dev',
+      version='0.7.0dev',
       description="Kotti is a high-level, 'Pythonic' web application framework. It includes a small and extensible CMS application called the Kotti CMS.",
       long_description='\n\n'.join([README, THANKS, CHANGES]),
       classifiers=[
