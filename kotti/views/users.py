@@ -256,8 +256,8 @@ def _massage_groups_out(appstruct):
     """
     d = appstruct
     groups = [g.split(u'group:')[1] for g in d['groups']
-              if g.startswith(u'group:')]
-    roles = [r for r in d['groups'] if r.startswith(u'role:')]
+              if g and g.startswith(u'group:')]
+    roles = [r for r in d['groups'] if r and r.startswith(u'role:')]
     d['groups'] = groups
     d['roles'] = roles
     return d
@@ -385,19 +385,32 @@ class UserManageFormView(UserEditFormView):
     cancel_failure = cancel_success
 
 
+class GroupManageFormView(UserManageFormView):
+    def schema_factory(self):
+        schema = group_schema()
+        del schema['name']
+        del schema['active']
+        return schema
+
+
 def user_manage(context, request):
-    username = request.params['name']
-    principal = get_principals()[username]
+    user_or_group = request.params['name']
+    principal = get_principals()[user_or_group]
+
+    is_group = user_or_group.startswith("group:")
+    principal_type = u"Group" if is_group else u"User"
 
     api = template_api(
         context, request,
-        page_title=_(u"Edit User - ${title}",
-                     mapping=dict(title=context.title)),
+        page_title=_(u"Edit ${principal_type} - ${title}",
+                     mapping=dict(principal_type=principal_type,
+                                  title=context.title)),
         cp_links=CONTROL_PANEL_LINKS,
         principal=principal,
         )
 
-    form = UserManageFormView(principal, request)()
+    form_view = GroupManageFormView if is_group else UserManageFormView
+    form = form_view(principal, request)()
     if request.is_response(form):
         return form
 
