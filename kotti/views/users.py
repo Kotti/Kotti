@@ -15,7 +15,6 @@ from deform.widget import CheckboxChoiceWidget
 from deform.widget import SequenceWidget
 
 from kotti.message import email_set_password
-from kotti.resources import get_root
 from kotti.security import USER_MANAGEMENT_ROLES
 from kotti.security import ROLES
 from kotti.security import SHARING_ROLES
@@ -25,11 +24,12 @@ from kotti.security import list_groups_raw
 from kotti.security import list_groups_ext
 from kotti.security import set_groups
 from kotti.util import _
+from kotti.views.form import AddFormView
 from kotti.views.form import EditFormView
 from kotti.views.site_setup import CONTROL_PANEL_LINKS
 from kotti.views.util import template_api
 from kotti.views.util import is_root
-from kotti.views.util import AddFormView
+
 
 def roles_form_handler(context, request, available_role_names, groups_lister):
     changed = []
@@ -69,6 +69,7 @@ def roles_form_handler(context, request, available_role_names, groups_lister):
 
     return changed
 
+
 def search_principals(request, context=None, ignore=None, extra=()):
     flash = request.session.flash
     principals = get_principals()
@@ -95,6 +96,7 @@ def search_principals(request, context=None, ignore=None, extra=()):
 
     return entries
 
+
 def share_node(context, request):
     # Allow roles_form_handler to do processing on 'apply':
     changed = roles_form_handler(
@@ -105,9 +107,11 @@ def share_node(context, request):
         return HTTPFound(location=request.url)
 
     existing = map_principals_with_local_roles(context)
+
     def with_roles(entry):
         all_groups = entry[1][0]
         return [g for g in all_groups if g.startswith('role:')]
+
     existing = filter(with_roles, existing)
     seen = set([entry[0].name for entry in existing])
 
@@ -119,6 +123,7 @@ def share_node(context, request):
         'entries': entries,
         'available_roles': available_roles,
         }
+
 
 def name_pattern_validator(node, value):
     """
@@ -134,20 +139,24 @@ def name_pattern_validator(node, value):
     if not valid_pattern.match(value):
         raise colander.Invalid(node, _(u"Invalid value"))
 
+
 def name_new_validator(node, value):
     if get_principals().get(value.lower()) is not None:
         raise colander.Invalid(
             node, _(u"A user with that name already exists."))
 
+
 def roleset_validator(node, value):
     oneof = colander.OneOf(USER_MANAGEMENT_ROLES)
     [oneof(node, item) for item in value]
+
 
 def group_validator(node, value):
     principals = get_principals()
     if principals.get('group:' + value) is None:
         raise colander.Invalid(node, _(u"No such group: ${group}",
                                        mapping=dict(group=value)))
+
 
 class Groups(colander.SequenceSchema):
     group = colander.SchemaNode(
@@ -158,9 +167,11 @@ class Groups(colander.SequenceSchema):
         widget=AutocompleteInputWidget(),
         )
 
+
 class PrincipalBasic(colander.MappingSchema):
     title = colander.SchemaNode(colander.String(), title=_(u'Title'))
     email = colander.SchemaNode(colander.String(), title=_(u'Email'))
+
 
 class PrincipalFull(PrincipalBasic):
     name = colander.SchemaNode(
@@ -196,6 +207,7 @@ class PrincipalFull(PrincipalBasic):
         widget=SequenceWidget(min_len=1),
         )
 
+
 def principal_schema(base=PrincipalFull()):
     principals = get_principals()
     schema = base.clone()
@@ -215,6 +227,7 @@ def principal_schema(base=PrincipalFull()):
             (n, ROLES[n].title) for n in USER_MANAGEMENT_ROLES]
     return schema
 
+
 def user_schema(base=PrincipalFull()):
     schema = principal_schema(base)
     has_password = True
@@ -228,11 +241,13 @@ def user_schema(base=PrincipalFull()):
     schema['title'].title = _(u"Full name")
     return schema
 
+
 def group_schema(base=PrincipalFull()):
     schema = principal_schema(base)
     del schema['password']
     schema['email'].missing = None
     return schema
+
 
 def _massage_groups_in(appstruct):
     """Manipulate appstruct received from form so that it's suitable
@@ -250,6 +265,7 @@ def _massage_groups_in(appstruct):
     del appstruct['roles']
     appstruct['groups'] = all_groups
 
+
 def _massage_groups_out(appstruct):
     """Opposite of '_massage_groups_in': remove 'groups:' prefix and
     split 'groups' into 'roles' and 'groups'.
@@ -261,6 +277,7 @@ def _massage_groups_out(appstruct):
     d['groups'] = groups
     d['roles'] = roles
     return d
+
 
 class UserAddFormView(AddFormView):
     item_type = _(u'User')
@@ -294,6 +311,7 @@ class UserAddFormView(AddFormView):
             {'extra': name})
         return HTTPFound(location=location)
 
+
 class GroupAddFormView(UserAddFormView):
     buttons = (Button('add_group', _(u'Add Group')),
                Button('cancel', _(u'Cancel')))
@@ -306,6 +324,7 @@ class GroupAddFormView(UserAddFormView):
     def add_group_success(self, appstruct):
         appstruct['name'] = u'group:%s' % appstruct['name'].lower()
         return self.add_user_success(appstruct)
+
 
 def users_manage(context, request):
     api = template_api(
@@ -356,6 +375,7 @@ def users_manage(context, request):
         'group_addform': group_addform['form'],
         }
 
+
 class UserEditFormView(EditFormView):
     @property
     def success_url(self):
@@ -363,6 +383,7 @@ class UserEditFormView(EditFormView):
 
     def schema_factory(self):
         return user_schema(PrincipalBasic())
+
 
 class UserManageFormView(UserEditFormView):
     def schema_factory(self):
@@ -419,6 +440,7 @@ def user_manage(context, request):
         'form': form['form'],
         }
 
+
 def preferences(context, request):
     api = template_api(context, request)
     api.page_title = _(u"My preferences - ${title}",
@@ -434,6 +456,7 @@ def preferences(context, request):
         'form': form['form'],
         'macro': api.macro('kotti:templates/site-setup/master.pt'),
         }
+
 
 def includeme(config):
     config.add_view(
