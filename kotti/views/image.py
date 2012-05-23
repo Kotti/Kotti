@@ -119,12 +119,17 @@ class ImageView(object):
         return res
 
 
-def includeme(config):
+def _load_image_scales(settings):
 
-    image_scale_strings = extract_from_settings('kotti.image_scales.', config.registry.settings)
+    image_scale_strings = extract_from_settings('kotti.image_scales.', settings)
 
     for k in image_scale_strings.keys():
         image_scales[k] = [int(x) for x in image_scale_strings[k].split("x")]
+
+
+def includeme(config):
+
+    _load_image_scales(config.registry.settings)
 
     config.scan("kotti.views.image")
     config.add_view(AddImageFormView,
