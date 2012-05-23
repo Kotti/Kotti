@@ -21,7 +21,9 @@ install_requires = [
     'formencode',
     'html2text',
     'lingua>=1.3',
+    'PIL',  # indirect dependency of plone.scale (that doesn't declare this dependency itself)
     'plone.i18n<2.0',  # >= 2.0 adds a huge number of dependencies
+    'plone.scale',  # needed for image resizing capabilities
     'py-bcrypt',
     'pyramid>=1.2',
     'pyramid_beaker',

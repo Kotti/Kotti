@@ -367,6 +367,17 @@ class File(Content):
         self.size = size
 
 
+class Image(File):
+
+    id = Column(Integer(), ForeignKey('files.id'), primary_key=True)
+
+    type_info = File.type_info.copy(
+        name=u'Image',
+        title=_(u'Image'),
+        add_view=u'add_image',
+        addable_to=[u'Document', ], )
+
+
 class Settings(Base):
     __tablename__ = 'settings'
 
