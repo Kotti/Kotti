@@ -419,7 +419,7 @@ def initialize_sql(engine, drop_all=False):
             tables += ' settings'
         tables = [metadata.tables[name] for name in tables.split()]
 
-    if engine.dialect.name == 'mysql':
+    if engine.dialect.name == 'mysql':  # pragma: no cover
         from sqlalchemy.dialects.mysql.base import LONGBLOB
         File.__table__.c.data.type = LONGBLOB()
 
