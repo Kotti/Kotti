@@ -419,6 +419,10 @@ def initialize_sql(engine, drop_all=False):
             tables += ' settings'
         tables = [metadata.tables[name] for name in tables.split()]
 
+    if engine.dialect.name == 'mysql':
+        from sqlalchemy.dialects.mysql.base import LONGBLOB
+        File.__table__.c.data.type = LONGBLOB()
+
     metadata.create_all(engine, tables=tables)
     for populate in get_settings()['kotti.populators']:
         populate()
