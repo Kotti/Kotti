@@ -389,7 +389,7 @@ def user_manage(context, request):
     principal = get_principals()[user_or_group]
 
     is_group = user_or_group.startswith("group:")
-    principal_type = u"Group" if is_group else u"User"
+    principal_type = _(u"Group") if is_group else _(u"User")
 
     api = template_api(
         context, request,

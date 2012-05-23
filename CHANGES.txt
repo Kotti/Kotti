@@ -4,6 +4,9 @@ Change History
 0.6.4 - Unreleased
 ------------------
 
+- Fix bug with group edit views.
+  See https://github.com/Pylons/Kotti/pull/61
+
 - Move email templates into page templates in
   ``kotti:templates/email-set-password.pt`` and
   ``kotti:templates/email-reset-password.pt``.  This is to make them
