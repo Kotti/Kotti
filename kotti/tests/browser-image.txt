@@ -124,8 +124,8 @@ Thumb
   >>> browser.open(testing.BASE_URL + '/my-gallery/image-1/image/thumb')
   >>> browser.headers["content-type"]
   'image/jpeg'
-  >>> browser.headers["content-length"]
-  '6231'
+  >>> 6000 < int(browser.headers["content-length"]) < 7000
+  True
   >>> browser.headers["content-disposition"].lower()
   'inline;filename="sendeschluss.jpg"'
 
@@ -134,8 +134,8 @@ Thumb, attachment
   >>> browser.open(testing.BASE_URL + '/my-gallery/image-1/image/thumb/download')
   >>> browser.headers["content-type"]
   'image/jpeg'
-  >>> browser.headers["content-length"]
-  '6231'
+  >>> 6000 < int(browser.headers["content-length"]) < 7000
+  True
   >>> browser.headers["content-disposition"].lower()
   'attachment;filename="sendeschluss.jpg"'
 
@@ -144,8 +144,8 @@ Carousel
   >>> browser.open(testing.BASE_URL + '/my-gallery/image-1/image/carousel')
   >>> browser.headers["content-type"]
   'image/jpeg'
-  >>> browser.headers["content-length"]
-  '45463'
+  >>> 40000 < int(browser.headers["content-length"]) < 50000
+  True
   >>> browser.headers["content-disposition"].lower()
   'inline;filename="sendeschluss.jpg"'
 
@@ -154,8 +154,8 @@ Carousel, attachment
   >>> browser.open(testing.BASE_URL + '/my-gallery/image-1/image/carousel/download')
   >>> browser.headers["content-type"]
   'image/jpeg'
-  >>> browser.headers["content-length"]
-  '45463'
+  >>> 40000 < int(browser.headers["content-length"]) < 50000
+  True
   >>> browser.headers["content-disposition"].lower()
   'attachment;filename="sendeschluss.jpg"'
 
@@ -164,8 +164,8 @@ Carousel, attachment
   >>> browser.open(testing.BASE_URL + '/my-gallery/image-1/image/300x200')
   >>> browser.headers["content-type"]
   'image/jpeg'
-  >>> browser.headers["content-length"]
-  '19056'
+  >>> 15000 < int(browser.headers["content-length"]) < 25000
+  True
   >>> browser.headers["content-disposition"].lower()
   'inline;filename="sendeschluss.jpg"'
 
@@ -174,8 +174,8 @@ Carousel, attachment
   >>> browser.open(testing.BASE_URL + '/my-gallery/image-1/image/300x200/download')
   >>> browser.headers["content-type"]
   'image/jpeg'
-  >>> browser.headers["content-length"]
-  '19056'
+  >>> 15000 < int(browser.headers["content-length"]) < 25000
+  True
   >>> browser.headers["content-disposition"].lower()
   'attachment;filename="sendeschluss.jpg"'
 
@@ -184,8 +184,8 @@ Carousel, attachment
   >>> browser.open(testing.BASE_URL + '/my-gallery/image-1/image/300/200')
   >>> browser.headers["content-type"]
   'image/jpeg'
-  >>> browser.headers["content-length"]
-  '19056'
+  >>> 15000 < int(browser.headers["content-length"]) < 25000
+  True
   >>> browser.headers["content-disposition"].lower()
   'inline;filename="sendeschluss.jpg"'
 
@@ -194,8 +194,8 @@ Carousel, attachment
   >>> browser.open(testing.BASE_URL + '/my-gallery/image-1/image/300/200/download')
   >>> browser.headers["content-type"]
   'image/jpeg'
-  >>> browser.headers["content-length"]
-  '19056'
+  >>> 15000 < int(browser.headers["content-length"]) < 25000
+  True
   >>> browser.headers["content-disposition"].lower()
   'attachment;filename="sendeschluss.jpg"'
 
