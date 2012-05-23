@@ -7,6 +7,7 @@ from pyramid.security import authenticated_userid
 
 CACHE_POLICY_HEADER = 'x-caching-policy'
 
+
 def set_max_age(response, delta, cache_ctrl=None):
     """Sets max-age and expires headers based on the timedelta `delta`.
 
@@ -17,7 +18,7 @@ def set_max_age(response, delta, cache_ctrl=None):
     """
     if cache_ctrl is None:
         cache_ctrl = {}
-    
+
     seconds = delta.seconds + delta.days * 24 * 60 * 60
     if seconds < 0:
         seconds = 0
@@ -43,7 +44,7 @@ def set_max_age(response, delta, cache_ctrl=None):
         else:
             cache_control_header.append('%s=%s' % (key, value))
     cache_control_header = ','.join(cache_control_header)
-    response.headers['cache-control'] =  cache_control_header
+    response.headers['cache-control'] = cache_control_header
 
     response.headers['expires'] = (now + delta).strftime(
         "%a, %d %b %Y %H:%M:%S GMT")
@@ -67,6 +68,7 @@ caching_policies = {
     lambda response: set_max_age(response, datetime.timedelta(days=-1)),
 }
 
+
 def choose_caching_policy(context, request, response):
     authenticated = authenticated_userid(request) is not None
     if request.method != 'GET':
@@ -79,6 +81,7 @@ def choose_caching_policy(context, request, response):
         return 'Cache HTML'
     else:
         return 'Cache Media Content'
+
 
 @subscriber(NewResponse)
 def set_cache_headers(event):
@@ -96,6 +99,7 @@ def set_cache_headers(event):
     # And here we'll set the headers for the caching policy:
     if caching_policy:
         caching_policies[caching_policy](response)
+
 
 def includeme(config):
     config.scan('kotti.views.cache')
