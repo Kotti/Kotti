@@ -11,6 +11,7 @@ from zope.interface import providedBy
 
 from kotti.testing import TestingRootFactory
 from kotti.testing import UnitTestBase
+from kotti.testing import testing_db_url
 
 def _includeme_login(config):
     config.add_view(
@@ -31,7 +32,7 @@ def _login_view(request):
 
 class TestApp(UnitTestBase):
     def required_settings(self):
-        return {'sqlalchemy.url': 'sqlite://',
+        return {'sqlalchemy.url': testing_db_url(),
                 'kotti.secret': 'dude'}
 
     def test_override_settings(self):
