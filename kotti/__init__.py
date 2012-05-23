@@ -49,7 +49,7 @@ conf_defaults = {
     'kotti.configurators': '',
     'pyramid.includes': '',
     'kotti.includes': '',  # BBB
-    'kotti.base_includes': 'kotti kotti.events kotti.views kotti.views.view kotti.views.edit kotti.views.login kotti.views.file kotti.views.image kotti.views.users kotti.views.site_setup kotti.views.slots',
+    'kotti.base_includes': 'kotti kotti.events kotti.views kotti.views.cache kotti.views.view kotti.views.edit kotti.views.login kotti.views.file kotti.views.image kotti.views.users kotti.views.site_setup kotti.views.slots',
     'kotti.asset_overrides': '',
     'kotti.use_tables': '',
     'kotti.root_factory': 'kotti.resources.default_get_root',

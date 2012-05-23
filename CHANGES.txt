@@ -10,6 +10,8 @@ Change History
 - Fix bug with group edit views.
   See https://github.com/Pylons/Kotti/pull/61
 
+- Add subscriber to set cache headers based on caching rules.
+
 - Move email templates into page templates in
   ``kotti:templates/email-set-password.pt`` and
   ``kotti:templates/email-reset-password.pt``.  This is to make them
