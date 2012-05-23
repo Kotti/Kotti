@@ -123,6 +123,7 @@ Cookbook
 
   cookbook/close-for-anonymous.rst
   cookbook/frontpage-different-template.rst
+  cookbook/images.rst
   cookbook/i18n.rst
   cookbook/as-a-library.rst
 
