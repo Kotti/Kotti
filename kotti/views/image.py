@@ -2,7 +2,7 @@
 
 import PIL
 from kotti.util import _
-# from kotti.util import extract_from_settings
+from kotti.util import extract_from_settings
 from kotti.views.file import AddFileFormView, EditFileFormView
 from kotti.resources import Image
 from plone.scale.scale import scaleImage
@@ -13,8 +13,19 @@ PIL.ImageFile.MAXBLOCK = 33554432
 
 # default image scales
 image_scales = {
-    'thumb': [160, 120],
-    'carousel': [560, 420]}
+    'span1': [60, 120],
+    'span2': [160, 320],
+    'span3': [260, 520],
+    'span4': [360, 720],
+    'span5': [460, 920],
+    'span6': [560, 1120],
+    'span7': [660, 1320],
+    'span8': [760, 1520],
+    'span9': [860, 1720],
+    'span10': [960, 1920],
+    'span11': [1060, 2120],
+    'span12': [1160, 2320],
+    }
 
 
 class EditImageFormView(EditFileFormView):
@@ -109,8 +120,11 @@ class ImageView(object):
 
 
 def includeme(config):
-    # TODO: load predefined scales from .ini
-    # image_scales = extract_from_settings('kotti.image_scale.', config)
+
+    image_scale_strings = extract_from_settings('kotti.image_scales.', config.registry.settings)
+
+    for k in image_scale_strings.keys():
+        image_scales[k] = [int(x) for x in image_scale_strings[k].split("x")]
 
     config.scan("kotti.views.image")
     config.add_view(AddImageFormView,
