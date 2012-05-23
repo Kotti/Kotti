@@ -4,10 +4,10 @@ from datetime import datetime
 from UserDict import DictMixin
 
 import bcrypt
-from sqlalchemy import Column
 from sqlalchemy import Boolean
-from sqlalchemy import Integer
+from sqlalchemy import Column
 from sqlalchemy import DateTime
+from sqlalchemy import Integer
 from sqlalchemy import Unicode
 from sqlalchemy import func
 from sqlalchemy.sql.expression import or_
@@ -20,21 +20,25 @@ from pyramid.security import view_execution_permitted
 from kotti import get_settings
 from kotti import DBSession
 from kotti import Base
+from kotti.sqla import JsonType
 from kotti.util import _
-from kotti.util import JsonType
 from kotti.util import request_cache
 from kotti.util import DontCache
 
+
 def get_principals():
     return get_settings()['kotti.principals_factory'][0]()
+
 
 def get_user(request):
     userid = authenticated_userid(request)
     return get_principals().get(userid)
 
+
 def has_permission(permission, context, request):
     with authz_context(context, request):
         return base_has_permission(permission, context, request)
+
 
 class Principal(Base):
     """A minimal 'Principal' implementation.
@@ -87,6 +91,7 @@ class Principal(Base):
 
     def __repr__(self):  # pragma: no cover
         return '<Principal %r>' % self.name
+
 
 class AbstractPrincipals(object):
     """This class serves as documentation and defines what methods are
@@ -177,30 +182,38 @@ SITE_ACL = [
     ['Allow', 'role:owner', ['view', 'add', 'edit', 'manage']],
     ]
 
+
 def set_roles(roles_dict):
     ROLES.clear()
     ROLES.update(roles_dict)
 
+
 def set_sharing_roles(role_names):
     SHARING_ROLES[:] = role_names
 
+
 def set_user_management_roles(role_names):
     USER_MANAGEMENT_ROLES[:] = role_names
+
 
 def reset_roles():
     ROLES.clear()
     ROLES.update(_DEFAULT_ROLES)
 
+
 def reset_sharing_roles():
     SHARING_ROLES[:] = _DEFAULT_SHARING_ROLES
 
+
 def reset_user_management_roles():
     USER_MANAGEMENT_ROLES[:] = _DEFAULT_USER_MANAGEMENT_ROLES
+
 
 def reset():
     reset_roles()
     reset_sharing_roles()
     reset_user_management_roles()
+
 
 class PersistentACLMixin(object):
     def _get_acl(self):
@@ -216,9 +229,11 @@ class PersistentACLMixin(object):
 
     __acl__ = property(_get_acl, _set_acl, _del_acl)
 
+
 def _cachekey_list_groups_raw(name, context):
     context_id = context is not None and getattr(context, 'id', id(context))
     return (name, context_id)
+
 
 @request_cache(_cachekey_list_groups_raw)
 def list_groups_raw(name, context):
@@ -238,6 +253,7 @@ def list_groups_raw(name, context):
             )
     return set()
 
+
 def list_groups(name, context=None):
     """List groups for principal with a given ``name``.
 
@@ -246,12 +262,14 @@ def list_groups(name, context=None):
     """
     return list_groups_ext(name, context)[0]
 
+
 def _cachekey_list_groups_ext(name, context=None, _seen=None, _inherited=None):
     if _seen is not None or _inherited is not None:
         raise DontCache
     else:
         context_id = context is not None and getattr(context, 'id', id(context))
         return (name, context_id)
+
 
 @request_cache(_cachekey_list_groups_ext)
 def list_groups_ext(name, context=None, _seen=None, _inherited=None):
@@ -290,6 +308,7 @@ def list_groups_ext(name, context=None, _seen=None, _inherited=None):
 
     return list(groups), list(_inherited)
 
+
 def set_groups(name, context, groups_to_set=()):
     """Set the list of groups for principal with given ``name`` and in
     given ``context``.
@@ -304,6 +323,7 @@ def set_groups(name, context, groups_to_set=()):
     for group_name in groups_to_set:
         session.add(LocalGroup(context, name, unicode(group_name)))
 
+
 def list_groups_callback(name, request):
     if not is_user(name):
         return None  # Disallow logging in with groups
@@ -316,6 +336,7 @@ def list_groups_callback(name, request):
             context = get_root(request)
         return list_groups(name, context)
 
+
 @contextmanager
 def authz_context(context, request):
     before = request.environ.pop('authz_context', None)
@@ -327,9 +348,11 @@ def authz_context(context, request):
         if before is not None:
             request.environ['authz_context'] = before
 
+
 def view_permitted(context, request, name=''):
     with authz_context(context, request):
         return view_execution_permitted(context, request, name)
+
 
 def principals_with_local_roles(context, inherit=True):
     """Return a list of principal names that have local roles in the
@@ -351,6 +374,7 @@ def principals_with_local_roles(context, inherit=True):
             )
     return list(principals)
 
+
 def map_principals_with_local_roles(context):
     principals = get_principals()
     value = []
@@ -364,10 +388,12 @@ def map_principals_with_local_roles(context):
             value.append((principal, (all, inherited)))
     return sorted(value, key=lambda t: t[0].name)
 
+
 def is_user(principal):
     if not isinstance(principal, basestring):
         principal = principal.name
     return ':' not in principal
+
 
 class Principals(DictMixin):
     """Kotti's default principal database.
@@ -433,6 +459,7 @@ class Principals(DictMixin):
         return query
 
     log_rounds = 10
+
     def hash_password(self, password, hashed=None):
         if hashed is None:
             hashed = bcrypt.gensalt(self.log_rounds)
@@ -443,6 +470,7 @@ class Principals(DictMixin):
             return self.hash_password(clear, hashed) == hashed
         except ValueError:
             return False
+
 
 def principals_factory():
     return Principals()
