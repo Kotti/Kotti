@@ -1,8 +1,11 @@
 Change History
 ==============
 
-0.6.4 - Unreleased
+0.7.0 - Unreleased
 ------------------
+
+- Add a new 'Image' content type and image scaling, originally from
+  kotti_image_gallery add-on.
 
 - Fix bug with group edit views.
   See https://github.com/Pylons/Kotti/pull/61
