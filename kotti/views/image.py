@@ -70,6 +70,7 @@ class ImageView(object):
     def image(self):
         """return the image in a specific scale, either inline (default) or as attachment"""
 
+        width, height = (None, None)
         subpath = list(self.request.subpath)
 
         if (len(subpath) > 0) and (subpath[-1] == "download"):
@@ -83,23 +84,6 @@ class ImageView(object):
             if scale in image_scales:
                 # /path/to/image/scale/thumb
                 width, height = image_scales[scale]
-            else:
-                # /path/to/image/scale/160x120
-                try:
-                    width, height = [int(v) for v in scale.split("x")]
-                except ValueError:
-                    width, height = (None, None)
-
-        elif len(subpath) == 2:
-            # /path/to/image/scale/160/120
-            try:
-                width, height = [int(v) for v in subpath]
-            except ValueError:
-                width, height = (None, None)
-
-        else:
-            # don't scale at all
-            width, height = (None, None)
 
         if width and height:
             image, format, size = scaleImage(self.context.data,
