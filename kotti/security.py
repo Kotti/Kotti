@@ -30,6 +30,7 @@ def get_principals():
     return get_settings()['kotti.principals_factory'][0]()
 
 
+@request_cache(lambda request: None)
 def get_user(request):
     userid = authenticated_userid(request)
     return get_principals().get(userid)

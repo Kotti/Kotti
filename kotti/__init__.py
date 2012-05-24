@@ -34,11 +34,14 @@ def authtkt_factory(**settings):
     return AuthTktAuthenticationPolicy(
         secret=settings['kotti.secret2'], callback=list_groups_callback)
 
+
 def acl_factory(**settings):
     return ACLAuthorizationPolicy()
 
+
 def beaker_session_factory(**settings):
     return session_factory_from_settings(settings)
+
 
 def none_factory(**kwargs):  # pragma: no cover
     return None
@@ -80,8 +83,10 @@ conf_dotted = set([
     'kotti.caching_policy_chooser',
     ])
 
+
 def get_version():
     return pkg_resources.require("Kotti")[0].version
+
 
 @request_cache(lambda: None)
 def get_settings():
@@ -95,6 +100,7 @@ def get_settings():
     else:
         return get_current_registry().settings
 
+
 def _resolve_dotted(d, keys=conf_dotted):
     for key in keys:
         value = d[key]
@@ -105,12 +111,14 @@ def _resolve_dotted(d, keys=conf_dotted):
             new_value.append(DottedNameResolver(None).resolve(dottedname))
         d[key] = new_value
 
+
 def main(global_config, **settings):
     """ This function is a 'paste.app_factory' and returns a WSGI
     application.
     """
     config = base_configure(global_config, **settings)
     return config.make_wsgi_app()
+
 
 def base_configure(global_config, **settings):
     """Resolve dotted names in settings, include plug-ins and create a
@@ -166,7 +174,12 @@ def base_configure(global_config, **settings):
     engine = engine_from_config(settings, 'sqlalchemy.')
     config._set_root_factory(appmaker(engine))
 
+    # add the authenticated user to the request object
+    from kotti.security import get_user
+    config.set_request_property(get_user, name="user", reify=True)
+
     return config
+
 
 def includeme(config):
     import kotti.views.util
