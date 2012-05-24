@@ -31,8 +31,7 @@ Add some documents
   >>> browser.url == testing.BASE_URL + '/document-1/'
   True
 
-  >>> browser.open(testing.BASE_URL + '/document-1/')
-  >>> browser.getLink("Add").click()
+  >>> browser.open(testing.BASE_URL)
   >>> browser.getLink("Document").click()
 
   >>> ctrl("Title").value = u'Document 2'
@@ -50,32 +49,40 @@ Search the documents
   >>> ctrl(name='search').click()
   >>> browser.url
   'http://localhost:6543/@@search-results'
-  >>> u'<span>Document 1</span>' in browser.contents
+
+
+  >>> u'http://localhost:6543/document-1/' in browser.contents
   True
-  >>> u'<span>Document 2</span>' in browser.contents
+  >>> u'Document 1' in browser.contents
+  True
+  >>> u'http://localhost:6543/document-2/' in browser.contents
+  False
+  >>> u'Document 2' in browser.contents
   False
 
   >>> browser.open(testing.BASE_URL)
   >>> ctrl(name='search-term').value = u'Document 2'
   >>> ctrl(name='search').click()
-  >>> u'<span>Document 1</span>' in browser.contents
+  >>> u'http://localhost:6543/document-1' in browser.contents
   False
-  >>> u'<span>Document 2</span>' in browser.contents
+  >>> u'http://localhost:6543/document-2' in browser.contents
   True
+  >>> 'Document to search for' in browser.contents
+  True
+
 
   >>> browser.open(testing.BASE_URL)
   >>> ctrl(name='search-term').value = u'Document'
   >>> ctrl(name='search').click()
-  >>> u'<span>Document 1</span>' in browser.contents
+  >>> u'http://localhost:6543/document-1' in browser.contents
   True
-  >>> u'<span>Document 2</span>' in browser.contents
+  >>> u'http://localhost:6543/document-2' in browser.contents
   True
 
   >>> browser.open(testing.BASE_URL)
   >>> ctrl(name='search-term').value = u'to search for'
   >>> ctrl(name='search').click()
-  >>> u'<span>Document 1</span>' in browser.contents
+  >>> u'http://localhost:6543/document-1' in browser.contents
   False
-  >>> u'<span>Document 2</span>' in browser.contents
+  >>> u'http://localhost:6543/document-2' in browser.contents
   True
-
