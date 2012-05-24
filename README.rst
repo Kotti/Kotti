@@ -4,7 +4,7 @@ Kotti
 
 Kotti is a high-level, *Pythonic* web application framework.  It
 includes a small and extensible CMS application called the **Kotti
-CMS**.
+CMS**.  |build status|_
 
 Kotti is most useful when you are developing applications that
 
@@ -14,9 +14,11 @@ Kotti is most useful when you are developing applications that
 
 Built on top of a number of *best-of-breed* software components, most
 notably Pyramid_ and SQLAlchemy_, Kotti introduces only a few concepts
-itself, thus hopefully keeping the learning curve flat for the
+of its own, thus hopefully keeping the learning curve flat for the
 developer.
 
+.. |build status| image:: https://secure.travis-ci.org/Pylons/Kotti.png?branch=master
+.. _build status: http://travis-ci.org/Pylons/Kotti
 .. _Pyramid: http://docs.pylonsproject.org/projects/pyramid/dev/
 .. _SQLAlchemy: http://www.sqlalchemy.org/
 
@@ -45,6 +47,9 @@ by Plone_.  Its **main features** are:
 
 - **Security**: the advanced user and permissions management is
   intuitive and scales to fit the requirements of large organizations
+
+- **Internationalized**: the user interface is fully translatable,
+  Unicode is used everywhere to store data
 
 .. _Kotti's demo page: http://kottidemo.danielnouri.org/
 .. _Plone: http://plone.org/

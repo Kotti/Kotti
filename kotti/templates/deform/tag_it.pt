@@ -1,0 +1,13 @@
+<input name="${field.name}" id="${field.oid}" type="text" tal:attributes="value ','.join(cstruct)" />
+<script type="text/javascript"
+  >
+  deform.addCallback(
+    '${field.oid}',
+    function(oid) {
+      $('#' + oid).tagit({
+          availableTags: ${field.widget.available_tags},
+          allowSpaces: true
+      });
+    }
+  )
+</script>

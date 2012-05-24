@@ -4,8 +4,9 @@ Kotti browser tests
 Setup
 -----
 
+   >>> import pytest
    >>> from kotti import testing, DBSession
-   >>> from kotti.resources import Node, Document, File
+   >>> from kotti.resources import Node, Document, File, Image
 
 Get a handle for some useful objects:
 
@@ -68,7 +69,7 @@ Add a document
 
   >>> browser.getLink("Add").click()
   >>> browser.getLink("Document").click()
-  >>> "Add document to <em>Welcome to Kotti</em>" in browser.contents
+  >>> "Add Document to <em>Welcome to Kotti</em>" in browser.contents
   True
   >>> ctrl("Title").value = "Child One"
   >>> ctrl("save").click()
@@ -112,17 +113,22 @@ And now click the 'Cancel' button:
   >>> browser.getLink("Edit").click()
   >>> ctrl("Title").value = "Firstborn"
   >>> ctrl("cancel").click()
-  >>> "Your changes have been saved" in browser.contents
+  >>> with pytest.raises(LookupError): ctrl("Title")
+  >>> "Firstborn" in browser.contents
   False
-  >>> ctrl("Title").value
-  'First Child'
-  >>> browser.getLink("View").click()
+
+Now click the 'Cancel' button for an invalid form entry:
+
+  >>> browser.getLink("Edit").click()
+  >>> ctrl("Title").value = ""
+  >>> ctrl("cancel").click()
+  >>> with pytest.raises(LookupError): ctrl("Title")
   >>> "Firstborn" in browser.contents
   False
 
 Add two more documents, at different levels
 -------------------------------------------
-  
+
   >>> browser.open(testing.BASE_URL + '/')
   >>> browser.getLink("Add").click()
   >>> browser.getLink("Document").click()
@@ -160,6 +166,7 @@ There's no Add link if nothing can be added:
   >>> try:
   ...     Document.type_info.addable_to = ()
   ...     File.type_info.addable_to = ()
+  ...     Image.type_info.addable_to = ()
   ...     browser.reload()
   ...     browser.getLink("Add")
   ... finally:
@@ -167,6 +174,37 @@ There's no Add link if nothing can be added:
   ...     File.type_info.addable_to = save_addable_file
   Traceback (most recent call last):
   LinkNotFoundError
+
+
+Add tags to a document:
+-----------------------
+
+  >>> browser.open(testing.BASE_URL + '/second-child')
+  >>> browser.getLink("Add").click()
+  >>> browser.getLink("Document").click()
+  >>> ctrl("Title").value = "Grandchild"
+  >>> ctrl("Tags").value = ''
+  >>> ctrl("save").click()
+
+  >>> browser.open(testing.BASE_URL + '/second-child')
+  >>> browser.getLink("Add").click()
+  >>> browser.getLink("Document").click()
+  >>> ctrl("Title").value = "Grandchild"
+  >>> ctrl("Tags").value = 'tag 1, tag 2,tag 3'
+  >>> ctrl("save").click()
+  >>> browser.open(testing.BASE_URL + '/second-child/grandchild-2/@@edit')
+  >>> "tag 1" in browser.contents
+  True
+  >>> "tag 2" in browser.contents
+  True
+  >>> "tag 3" in browser.contents
+  True
+  >>> ctrl("Tags").value = 'tag 1, tag 4, tag 5,tag 6, tag 7, übertag'
+  >>> ctrl("save").click()
+  >>> browser.open(testing.BASE_URL + '/second-child/grandchild-2/@@edit')
+  >>> 'value="tag 1,tag 4,tag 5,tag 6,tag 7,übertag"' in browser.contents
+  True
+
 
 Reorder documents
 -----------------
@@ -187,6 +225,31 @@ Reorder documents
   >>> index("First Child") > index("Second Child")
   True
 
+Hide and show documents
+-----------------------
+
+  >>> browser.open(testing.BASE_URL)
+  >>> "First Child" in browser.contents
+  True
+  >>> browser.open(testing.BASE_URL)
+  >>> "/@@order" in browser.contents
+  True
+  >>> browser.getLink('Order').click()
+  >>> ctrl(name="toggle-visibility", index=1).click()
+  >>> "First Child is no longer visible in the navigation" in browser.contents
+  True
+  >>> browser.getLink("View").click()
+  >>> "First Child" in browser.contents
+  False
+  >>> browser.getLink('Order').click()
+  >>> ctrl(name="toggle-visibility", index=1).click()
+  >>> "First Child is now visible in the navigation" in browser.contents
+  True
+  >>> browser.getLink("View").click()
+  >>> "First Child" in browser.contents
+  True
+
+
 Delete a document
 -----------------
 
@@ -203,12 +266,12 @@ Copy and paste
 --------------
 
   >>> browser.open(testing.BASE_URL + '/second-child')
-  >>> browser.getLink('Cut').click()  
+  >>> browser.getLink('Cut').click()
   >>> "Second Child cut" in browser.contents
   True
 
   >>> browser.open(testing.BASE_URL + '/child-one')
-  >>> browser.getLink('Paste').click()  
+  >>> browser.getLink('Paste').click()
   >>> "Second Child pasted" in browser.contents
   True
 
@@ -218,17 +281,17 @@ Copy and paste
   HTTPError: HTTP Error 404: Not Found
 
   >>> browser.open(testing.BASE_URL + '/child-one/second-child')
-  >>> browser.getLink('Copy').click()  
+  >>> browser.getLink('Copy').click()
   >>> "Second Child copied" in browser.contents
   True
   >>> browser.open(testing.BASE_URL)
-  >>> browser.getLink('Paste').click()  
+  >>> browser.getLink('Paste').click()
   >>> "Second Child pasted" in browser.contents
   True
 
 We can paste twice since we copied:
 
-  >>> browser.getLink('Paste').click()  
+  >>> browser.getLink('Paste').click()
   >>> "Second Child pasted" in browser.contents
   True
   >>> browser.open(testing.BASE_URL + '/second-child/')
@@ -242,11 +305,11 @@ We can also copy and paste items that contain children, like the whole
 site:
 
   >>> browser.open(testing.BASE_URL)
-  >>> browser.getLink('Copy').click()  
+  >>> browser.getLink('Copy').click()
   >>> "Welcome to Kotti copied" in browser.contents
   True
   >>> browser.open(testing.BASE_URL + '/second-child')
-  >>> browser.getLink('Paste').click()  
+  >>> browser.getLink('Paste').click()
   >>> "Welcome to Kotti pasted" in browser.contents
   True
   >>> browser.open(
@@ -257,7 +320,7 @@ site:
 And finally cut and paste a tree:
 
   >>> browser.open(testing.BASE_URL + '/second-child')
-  >>> browser.getLink('Cut').click()  
+  >>> browser.getLink('Cut').click()
   >>> browser.open(testing.BASE_URL + '/child-one/second-child')
   >>> browser.getLink('Paste').click()
   >>> "Second Child pasted" in browser.contents
@@ -285,7 +348,7 @@ property:
   >>> browser.open(testing.BASE_URL + '/child-one')
   >>> browser.getLink('Copy').click()
   >>> browser.open(testing.BASE_URL + '/child-one/second-child')
-  >>> browser.getLink('Paste').click()  
+  >>> browser.getLink('Paste').click()
   >>> Document.type_info.addable_to = ()
   >>> try:
   ...     browser.reload()
@@ -307,7 +370,7 @@ You can't cut the root of a site:
   LinkNotFoundError
 
 
-We can rename an item:
+We can rename an item. Slashes will be stripped out.:
 
   >>> browser.open(testing.BASE_URL + '/child-one/second-child')
   >>> browser.getLink('Rename').click()
@@ -315,7 +378,7 @@ We can rename an item:
   'second-child'
   >>> ctrl("New title").value
   'Second Child'
-  >>> ctrl("New name").value = "third-child"
+  >>> ctrl("New name").value = "thi/rd-ch/ild"
   >>> ctrl("New title").value = "My Third Child"
   >>> ctrl(name="rename").click()
   >>> "Item renamed" in browser.contents
@@ -351,8 +414,9 @@ Navigation
 ----------
 
   >>> browser.getLink("Navigate").click()
-  >>> browser.getLink("My Third Child").text
-  'My Third Child'
+  >>> browser.getLink("My Third Child").click()
+  >>> browser.url == testing.BASE_URL + '/child-one/third-child/'
+  True
 
 User management
 ---------------
@@ -378,8 +442,8 @@ And a Bob.  Only alphanumeric characters are allowed for the name:
   >>> ctrl("Name", index=0).value = "bob:"
   >>> ctrl("Full name", index=0).value = "Bob Dabolina"
   >>> ctrl("Password", index=0).value = "secret"
-  >>> ctrl("Confirm Password", index=0).value = "secret"
-  >>> ctrl("Email", index=0).value = "bob@dabolina.com"
+  >>> ctrl(name='password-confirm').value = "secret"
+  >>> ctrl("Email", index=0).value = "bob@DABOLINA.com"
   >>> ctrl(name="add_user").click()
   >>> "There was a problem" in browser.contents
   True
@@ -387,7 +451,7 @@ And a Bob.  Only alphanumeric characters are allowed for the name:
 Use a valid username now.  Note how the checkbox to send a password
 registration link is ticked:
 
-  >>> ctrl("Name", index=0).value = u"bob"
+  >>> ctrl("Name", index=0).value = u"Bob"
   >>> ctrl("Send password registration link", index=0).selected
   True
   >>> ctrl(name="add_user").click()
@@ -396,11 +460,11 @@ registration link is ticked:
 
 We cannot add Bob twice:
 
-  >>> ctrl("Name", index=0).value = "Bob"
+  >>> ctrl("Name", index=0).value = "bob"
   >>> ctrl("Full name", index=0).value = "Bobby Brown"
   >>> ctrl("Email", index=0).value = "bob@gmail.com"
   >>> ctrl("Password", index=0).value = "secret"
-  >>> ctrl("Confirm Password", index=0).value = "secret"
+  >>> ctrl(name='password-confirm').value = "secret"
   >>> ctrl(name="add_user").click()
   >>> "A user with that name already exists" in browser.contents
   True
@@ -429,10 +493,19 @@ to:
   >>> "Your changes have been saved" in browser.contents
   True
 
+If we cancel the edit of the user, we are redirected to the user management
+screen:
+
+  >>> ctrl(name="cancel").click()
+  >>> "No changes made." in browser.contents
+  True
+  >>> browser.url
+  'http://localhost:6543/@@setup-users'
+
+
 Back in user management we can see how Bob's inherited the Viewer role
 from Bob's Group:
 
-  >>> browser.getLink("User Management").click()
   >>> ctrl(name="query").value = "Bob"
   >>> ctrl(name="search").click()
   >>> ctrl(name="role::group:bobsgroup::role:viewer").value
@@ -442,6 +515,14 @@ from Bob's Group:
   >>> ctrl(name="role::bob::role:viewer").value
   True
   >>> ctrl(name="role::bob::role:viewer").disabled
+  True
+
+We can click on the Bob's Group entry to edit an email address:
+
+  >>> browser.getLink("Bob's Group").click()
+  >>> ctrl(name="email").value = 'bogsgroup@gmail.com'
+  >>> ctrl(name="save").click()
+  >>> "Your changes have been saved" in browser.contents
   True
 
 Set password
@@ -467,11 +548,11 @@ We'll use that link to set our password:
   >>> link = email.body[email.body.index('http://localhost'):].split()[0]
   >>> browser.open(link)
   >>> ctrl("Password", index=0).value = "newpassword"
-  >>> ctrl("Confirm Password").value = "newpasswoops" # a silly error
+  >>> ctrl(name='password-confirm').value = "newpasswoops" # a silly error
   >>> ctrl(name="submit").click()
   >>> "There was an error" in browser.contents
   True
-  >>> ctrl("Confirm Password").value = "newpassword"
+  >>> ctrl(name='password-confirm').value = "newpassword"
   >>> ctrl(name="submit").click()
   >>> "You've reset your password successfully" in browser.contents
   True
@@ -481,7 +562,7 @@ We cannot use that link again:
 
   >>> browser.open(link)
   >>> ctrl("Password", index=0).value = "wontwork"
-  >>> ctrl("Confirm Password").value = "wontwork"
+  >>> ctrl(name='password-confirm').value = "wontwork"
   >>> ctrl(name="submit").click()
   >>> "Your password reset token may have expired" in browser.contents
   True
@@ -489,7 +570,7 @@ We cannot use that link again:
 Log in as Bob with the new password:
 
   >>> browser.open(testing.BASE_URL + '/@@edit')
-  >>> ctrl("Username or email").value = "bob"
+  >>> ctrl("Username or email").value = "bOB"
   >>> ctrl("Password").value = "newpassword"
   >>> ctrl(name="submit").click()
   >>> "Welcome, Bob Dabolina" in browser.contents
@@ -532,7 +613,7 @@ their preferences:
 
   >>> browser.getLink("Preferences").click()
   >>> ctrl("Full name").value = "Mr. Administrator"
-  >>> #ctrl("Email").value # returns 'None'-the-string currently
+  >>> ctrl("Email").value = 'admin@minad.com'
   >>> ctrl(name="save").click()
   >>> "Your changes have been saved" in browser.contents
   True

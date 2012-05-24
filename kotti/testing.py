@@ -14,10 +14,11 @@ class Dummy(dict):
 
 class DummyRequest(testing.DummyRequest):
     is_xhr = False
+    POST = dict()
 
     def is_response(self, ob):
-        return ( hasattr(ob, 'app_iter') and hasattr(ob, 'headerlist') and
-                 hasattr(ob, 'status') )
+        return (hasattr(ob, 'app_iter') and hasattr(ob, 'headerlist') and
+                hasattr(ob, 'status'))
 
 def testing_db_url():
     return os.environ.get('KOTTI_TEST_DB_STRING', 'sqlite://')
@@ -40,11 +41,20 @@ def _populator():
         DBSession.delete(doc)
     transaction.commit()
 
+def _turn_warnings_into_errors():  # pragma: no cover
+    # turn all warnings into errors, but let the `ImportWarning`
+    # produced by Babel's `localedata.py` vs `localedata/` show up once...
+    from babel import localedata
+    localedata  # make pyflakes happy... :p
+    from warnings import filterwarnings
+    filterwarnings("error")
+
 def setUp(init_db=True, **kwargs):
+    #_turn_warnings_into_errors()
+
     from kotti import _resolve_dotted
     from kotti import conf_defaults
 
-    # import warnings; warnings.filterwarnings("error")
     tearDown()
     settings = conf_defaults.copy()
     settings['kotti.secret'] = 'secret'
@@ -84,6 +94,11 @@ class UnitTestBase(TestCase):
     def tearDown(self):
         tearDown()
 
+class EventTestBase(TestCase):
+    def setUp(self, **kwargs):
+        super(EventTestBase, self).setUp(**kwargs)
+        self.config.include('kotti.events')
+
 # Functional ----
 
 def setUpFunctional(global_config=None, **settings):
@@ -94,7 +109,7 @@ def setUpFunctional(global_config=None, **settings):
     _settings = {
         'sqlalchemy.url': testing_db_url(),
         'kotti.secret': 'secret',
-        'kotti.site_title': 'Website des Kottbusser Tors', # for mailing
+        'kotti.site_title': 'Website des Kottbusser Tors',  # for mailing
         'kotti.populators': 'kotti.testing._populator',
         'mail.default_sender': 'kotti@localhost',
         }
@@ -136,7 +151,7 @@ class FunctionalTestBase(TestCase):
         return browser
 
 class TestingRootFactory(dict):
-    __name__ = '' # root is required to have an empty name!
+    __name__ = ''  # root is required to have an empty name!
     __parent__ = None
     __acl__ = [('Allow', 'role:admin', ALL_PERMISSIONS)]
 
@@ -169,7 +184,7 @@ def setUpFunctionalStrippedDownApp(global_config=None, **settings):
             'kotti.views.users'),
         'kotti.use_tables': 'principals',
         'kotti.populators': 'kotti.populate.populate_users',
-        'kotti.includes': 'kotti.testing.include_testing_view',
+        'pyramid.includes': 'kotti.testing.include_testing_view',
         'kotti.root_factory': 'kotti.testing.TestingRootFactory',
         'kotti.site_title': 'My Stripped Down Kotti',
         }

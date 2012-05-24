@@ -16,7 +16,7 @@ Kotti is most useful when you are developing applications that
 
 Built on top of a number of *best-of-breed* software components, most
 notably Pyramid_ and SQLAlchemy_, Kotti introduces only a few concepts
-itself, thus hopefully keeping the learning curve flat for the
+of its own, thus hopefully keeping the learning curve flat for the
 developer.
 
 .. _Pyramid: http://docs.pylonsproject.org/projects/pyramid/dev/
@@ -48,6 +48,9 @@ by Plone_.  Its **main features** are:
 - **Security**: the advanced user and permissions management is
   intuitive and scales to fit the requirements of large organizations
 
+- **Internationalized**: the user interface is fully translatable,
+  Unicode is used everywhere to store data (see :ref:`translations`)
+
 .. _Kotti's demo page: http://kottidemo.danielnouri.org/
 .. _Plone: http://plone.org/
 .. _Twitter Bootstrap: http://twitter.github.com/bootstrap/
@@ -75,15 +78,16 @@ libraries.  Other notable components used but not enforced by Kotti
 are Colander_ and Deform_ for forms, and Chameleon_ for templating.
 
 `Continuous testing`_ against different versions of Python and with
-both *PostgreSQL* and *SQLite* and a complete test coverage make Kotti
-a **stable** platform to work with.
+*PostgreSQL*, *MySQL* and *SQLite* and a complete test coverage make
+Kotti a **stable** platform to work with.  |build status|_
 
 .. _repoze.workflow: http://docs.repoze.org/workflow/
 .. _Chameleon: http://chameleon.repoze.org/
 .. _Colander: http://docs.pylonsproject.org/projects/colander/en/latest/
 .. _Deform: http://docs.pylonsproject.org/projects/deform/en/latest/
-.. _continuous testing: http://jenkins.danielnouri.org/job/Kotti/
-
+.. _continuous testing: http://travis-ci.org/Pylons/Kotti
+.. |build status| image:: https://secure.travis-ci.org/Pylons/Kotti.png?branch=master
+.. _build status: http://travis-ci.org/Pylons/Kotti
 .. _installation:
 
 Installation
@@ -119,6 +123,7 @@ Cookbook
 
   cookbook/close-for-anonymous.rst
   cookbook/frontpage-different-template.rst
+  cookbook/images.rst
   cookbook/i18n.rst
   cookbook/as-a-library.rst
 
@@ -145,17 +150,54 @@ source code via its GitHub repostiory.  Use this command:
 Automated tests
 ===============
 
-To run Kotti's automated test suite, do:
+Kotti uses `pytest`_, `zope.testbrowser`_ and WebTest_ for automated
+testing.
+
+Before you can run the tests, you must install Kotti's 'testing'
+extras.  Inside your Kotti checkout directory, do:
+
+.. code-block:: bash
+
+  bin/python setup.py dev
+
+To then run Kotti's test suite, do:
 
 .. code-block:: bash
 
   bin/py.test
 
-Or, alternatively:
+.. _pytest: http://pytest.org
+.. _zope.testbrowser: http://pypi.python.org/pypi/zope.testbrowser
+.. _WebTest: http://webtest.pythonpaste.org
+
+.. _translations:
+
+Translations
+============
+
+You can `find the list of Kotti's translations here`_.  Kotti uses
+`GNU gettext`_ and .po files for internationalization.
+
+You can set the ``pyramid.default_locale_name`` in your configuration
+file to choose which language Kotti should serve the user interface
+(see :ref:`user interface language`).
+
+In order to compile your .po files to .mo files, do:
 
 .. code-block:: bash
 
-  bin/python setup.py test
+  bin/python setup.py compile_catalog
+
+To extract messages and update the existing .pot and .po files, do:
+
+.. code-block:: bash
+
+  bin/python setup.py extract_messages update_catalog
+
+See also :ref:`cookbook i18n` from the Cookbook.
+
+.. _find the list of Kotti's translations here: https://github.com/Pylons/Kotti/tree/master/kotti/locale
+.. _GNU gettext: http://www.gnu.org/software/gettext/
 
 Detailed Change History
 =======================

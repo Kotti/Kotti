@@ -6,7 +6,7 @@ from webob.request import BaseRequest
 
 PATH_SAFE = '/:@&+$,'
 
-class BaseRequestPatches(object): # pragma: no cover
+class BaseRequestPatches(object):  # pragma: no cover
     """See https://bitbucket.org/dnouri/webob/changeset/bb042d67bca1
     """
     @property

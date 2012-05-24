@@ -1,3 +1,5 @@
+.. _cookbook i18n:
+
 Internationalization
 ====================
 
@@ -20,18 +22,14 @@ install the `pyramid_zcml` package. To load `plone.i18n`'s
 configuration, you also have to install the package
 `zope.browserresource`.
 
-To install the packages in a ``virtualenv``:
+Let's assume that you put all your project's configurations,
+overridden templates, static files, and so on in a distinct package,
+which generally is good practice. Add both required packages to the
+dependencies in you ``setup.py``, which should also include Kotti and
+extensions you want to use.
 
-.. code-block:: bash
-
-  bin/pip install pyramid_zcml
-  bin/pip install zope.browserresource
-
-Alternatively, list these as dependencies in your package's
-``setup.py``.
-
-You can then load `plone.i18n`'s configuration via your own ZCML
-file. For this, create a package which contains a ``configure.zcml``
+You can then load `plone.i18n`'s configuration via a ZCML file. For
+this, create a file ``configure.zcml`` (or whatever name you prefer)
 like this:
 
 .. code-block:: xml
@@ -44,7 +42,8 @@ like this:
   </configure>
 
 To load your ``configure.zcml`` on startup, you have to add a startup
-hook. For example, add a config.py to your package:
+hook. For example, simply add the following function to your package's
+__init__.py module:
 
 .. code-block:: python
 
@@ -57,5 +56,5 @@ your INI file:
 
 .. code-block:: ini
 
-  pyramid.default_locale_name = de
-  pyramid.includes = mypackage.config.includeme
+  pyramid.default_locale_name = de_DE
+  pyramid.includes = mypackage.includeme

@@ -1,11 +1,113 @@
 Change History
 ==============
 
-0.5.2 - Unreleased
+0.7.0 - Unreleased
+------------------
+
+- Add a new 'Image' content type and image scaling, originally from
+  kotti_image_gallery add-on.
+
+- Fix bug with group edit views.
+  See https://github.com/Pylons/Kotti/pull/61
+
+- Add subscriber to set cache headers based on caching rules.
+
+- Move email templates into page templates in
+  ``kotti:templates/email-set-password.pt`` and
+  ``kotti:templates/email-reset-password.pt``.  This is to make them
+  easier to translate and customize.  This deprecates
+  ``kotti.message.send_set_password``.
+
+- Add a 'edit_inhead' slot for stuff that goes into the edit
+  interface's head.  'inhead' is no longer be used in
+  'edit/master.pt'.
+
+0.6.3 - 2012-05-08
+------------------
+
+- Add tag support.  All content objects now have tags.  They can be
+  added in the UI using the "jQuery UI Tag-it!" widget.
+  See https://github.com/Pylons/Kotti/pull/55 .
+
+- Fix a bug with file download performance.
+
+0.6.2 - 2012-04-21
+------------------
+
+- Links in Navigation view lead to node view. Added edit links
+  to view the node's edit form.
+
+- Hitting 'Cancel' now returns to the context node for add/edit views
+
+0.6.1 - 2012-03-30
+------------------
+
+- Added button to show/hide nodes from navigation in the order screen.
+
+- The 'rename' action now strips slashes out of names.  Fixes #53.
+
+- Add Dutch translation.
+
+- Allow translation of TinyMCE's UI (starting with deform 0.9.5)
+
+- Separated out testing dependencies.  Run ``bin/python setup.py dev``
+  to install Kotti with extra dependencies for testing.
+
+- Deprecate 'kotti.includes' setting.  Use the standard
+  'pyramid.includes' instead.
+
+- Setting 'Node.__acl__' to the empty list will now persist the empty
+  list instead of setting 'None'.
+
+- Let 'pyramid_deform' take care of configuring deform with
+  translation dirs and search paths.
+
+0.6.0 - 2012-03-22
+------------------
+
+- Add Japanese translation.
+
+- Enforce lowercase user names and email with registration and login.
+
+- Moved SQLAlchemy related stuff from kotti.util into kotti.sqla.
+
+- You can also append to 'Node.__acl__' now in addition to setting the
+  attribute.
+
+0.6.0b3 - 2012-03-17
+--------------------
+
+- Have the automatic ``__tablename__`` and ``polymorphic_identity``
+  for CamelCase class names use underscores, so a class
+  'MyFancyDocument' gets a table name of 'my_fancy_documents' and a
+  type of 'my_fancy_document'.
+
+0.6.0b2 - 2012-03-16
+--------------------
+
+- Make the 'item_type' attribute of AddForm optional.  Fixes #41.
+
+- ``kotti.util.title_to_name`` will now return a name with a maximum
+  length of 40.  Fixes #31.
+
+0.6.0b1 - 2012-03-15
+--------------------
+
+- Use declarative style instead of class mapper for SQLAlchemy resources.
+
+  Unfortunately, this change is backwards incompatible with existing
+  content types (not with existing databases however).  Updating your
+  types to use Declarative is simple.  See kotti_calendar for an
+  example:
+  https://github.com/dnouri/kotti_calendar/commit/509d46bd596ff338e0a88f481339882de72e49e0#diff-1
+
+0.5.2 - 2012-03-10
 ------------------
 
 - A new 'Actions' menu makes copy, paste, delete and rename of items
   more accessible.
+
+- Add German translation.
 
 - Populators no longer need to call ``transaction.commit()``
   themselves.

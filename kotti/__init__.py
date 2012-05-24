@@ -1,7 +1,9 @@
 import pkg_resources
+import warnings
 
 from sqlalchemy import engine_from_config
 from sqlalchemy import MetaData
+from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.sql.expression import desc
 from sqlalchemy.orm import scoped_session
 from sqlalchemy.orm import sessionmaker
@@ -14,11 +16,18 @@ from pyramid.threadlocal import get_current_registry
 from pyramid.util import DottedNameResolver
 from pyramid_beaker import session_factory_from_settings
 
-import kotti.patches; kotti.patches
+import kotti.patches
+kotti.patches   # pyflakes
+
+from kotti.sqla import Base as KottiBase
 from kotti.util import request_cache
 
 metadata = MetaData()
 DBSession = scoped_session(sessionmaker(extension=ZopeTransactionExtension()))
+Base = declarative_base(cls=KottiBase)
+Base.metadata = metadata
+Base.query = DBSession.query_property()
+
 
 def authtkt_factory(**settings):
     from kotti.security import list_groups_callback
@@ -31,20 +40,21 @@ def acl_factory(**settings):
 def beaker_session_factory(**settings):
     return session_factory_from_settings(settings)
 
-def none_factory(**kwargs): # pragma: no cover
+def none_factory(**kwargs):  # pragma: no cover
     return None
 
 # All of these can be set by passing them in the Paste Deploy settings:
 conf_defaults = {
     'kotti.templates.api': 'kotti.views.util.TemplateAPI',
     'kotti.configurators': '',
-    'kotti.base_includes': 'kotti kotti.events kotti.views kotti.views.view kotti.views.edit kotti.views.login kotti.views.file kotti.views.users kotti.views.site_setup kotti.views.slots',
-    'kotti.includes': '',
+    'pyramid.includes': '',
+    'kotti.includes': '',  # BBB
+    'kotti.base_includes': 'kotti kotti.events kotti.views kotti.views.cache kotti.views.view kotti.views.edit kotti.views.login kotti.views.file kotti.views.image kotti.views.users kotti.views.site_setup kotti.views.slots',
     'kotti.asset_overrides': '',
     'kotti.use_tables': '',
     'kotti.root_factory': 'kotti.resources.default_get_root',
     'kotti.populators': 'kotti.populate.populate',
-    'kotti.available_types': 'kotti.resources.Document kotti.resources.File',
+    'kotti.available_types': 'kotti.resources.Document kotti.resources.File kotti.resources.Image',
     'kotti.authn_policy_factory': 'kotti.authtkt_factory',
     'kotti.authz_policy_factory': 'kotti.acl_factory',
     'kotti.session_factory': 'kotti.beaker_session_factory',
@@ -52,13 +62,13 @@ conf_defaults = {
     'kotti.date_format': 'medium',
     'kotti.datetime_format': 'medium',
     'kotti.time_format': 'medium',
+    'pyramid_deform.template_search_path': 'kotti:templates/deform',
     }
 
 conf_dotted = set([
     'kotti.templates.api',
     'kotti.configurators',
     'kotti.base_includes',
-    'kotti.includes',
     'kotti.root_factory',
     'kotti.populators',
     'kotti.available_types',
@@ -122,17 +132,33 @@ def base_configure(global_config, **settings):
     secret1 = settings['kotti.secret']
     settings.setdefault('kotti.secret2', secret1)
 
-    config = Configurator(
-        settings=settings,
-        )
+    # BBB: Merge ``kotti.includes`` into pyramid.includes.
+    if settings['kotti.includes']:
+        warnings.warn(
+            "The 'kotti.includes' setting has been deprecated as of "
+            "Kotti 0.6.1.  Use 'pyramid.includes' instead.",
+            DeprecationWarning)
+        settings.setdefault('pyramid.includes', '')
+        settings['pyramid.includes'] += ' ' + settings['kotti.includes']
+
+    # We'll process ``pyramid_includes`` later by hand, to allow
+    # overrides of configuration from ``kotti.base_includes``:
+    pyramid_includes = settings.pop('pyramid.includes', '')
+
+    config = Configurator(settings=settings)
     config.begin()
 
-    # Include modules listed in 'kotti.base_includes' and 'kotti.includes':
+    config.registry.settings['pyramid.includes'] = pyramid_includes
+
+    # Include modules listed in 'kotti.base_includes':
     for module in settings['kotti.base_includes']:
         config.include(module)
     config.commit()
-    for module in settings['kotti.includes']:
-        config.include(module)
+
+    # Modules in 'pyramid.includes' may override 'kotti.base_includes':
+    if pyramid_includes:
+        for module in pyramid_includes.split():
+            config.include(module)
     config.commit()
 
     engine = engine_from_config(settings, 'sqlalchemy.')

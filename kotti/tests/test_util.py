@@ -129,9 +129,25 @@ class TestRequestCache(UnitTestBase):
         my_fun(1, 2)
         self.assertEqual(len(called), 2)
 
+
 class TestLRUCache(TestRequestCache):
     def setUp(self):
         from kotti.util import lru_cache
-        
+
         super(TestLRUCache, self).setUp()
         self.cache_decorator = lru_cache
+
+
+class TestTitleToName(TestCase):
+    def test_max_length(self):
+        from kotti.util import title_to_name
+        assert len(title_to_name(u'a' * 50)) == 40
+
+    def test_normal(self):
+        from kotti.util import title_to_name
+        assert title_to_name(u'Foo Bar') == u'foo-bar'
+
+    def test_disambiguate_name(self):
+        from kotti.util import disambiguate_name
+        assert disambiguate_name(u'foo') == u'foo-1'
+        assert disambiguate_name(u'foo-3') == u'foo-4'

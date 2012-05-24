@@ -6,29 +6,34 @@ import urllib
 from babel.dates import format_date
 from babel.dates import format_datetime
 from babel.dates import format_time
-import colander
-import deform
-from deform import Button
 from pyramid.decorator import reify
 from pyramid.httpexceptions import HTTPFound
+from pyramid.i18n import get_localizer
 from pyramid.i18n import get_locale_name
+from pyramid.i18n import make_localizer
+from pyramid.interfaces import ITranslationDirectories
 from pyramid.location import inside
 from pyramid.location import lineage
 from pyramid.renderers import get_renderer
 from pyramid.renderers import render
+from pyramid.threadlocal import get_current_registry
+from pyramid.threadlocal import get_current_request
 from pyramid.view import render_view_to_response
-from pyramid_deform import FormView
-from pyramid_deform import CSRFSchema
+from zope.deprecation import deprecated
 
 from kotti import get_settings
 from kotti import DBSession
-from kotti.util import _
-from kotti.util import title_to_name
+from kotti.util import disambiguate_name
+disambiguate_name  # BBB
 from kotti.events import objectevent_listeners
 from kotti.resources import Content
 from kotti.security import get_user
 from kotti.security import has_permission
 from kotti.security import view_permitted
+from kotti.views.form import get_appstruct
+from kotti.views.form import BaseFormView
+from kotti.views.form import AddFormView
+from kotti.views.form import EditFormView
 from kotti.views.slots import slot_events
 
 
@@ -45,13 +50,31 @@ def render_view(context, request, name='', secure=True):
 
 def add_renderer_globals(event):
     if event['renderer_name'] != 'json':
-        api = getattr(event['request'], 'template_api', None)
-        if api is None:
+        request = event['request']
+        api = getattr(request, 'template_api', None)
+        if api is None and request is not None:
             api = template_api(event['context'], event['request'])
         event['api'] = api
 
+
 def is_root(context, request):
     return context is TemplateAPI(context, request).root
+
+
+def get_localizer_for_locale_name(locale_name):
+    registry = get_current_registry()
+    tdirs = registry.queryUtility(ITranslationDirectories, default=[])
+    return make_localizer(locale_name, tdirs)
+
+
+def translate(*args, **kwargs):
+    request = get_current_request()
+    if request is None:
+        localizer = get_localizer_for_locale_name('en')
+    else:
+        localizer = get_localizer(request)
+    return localizer.translate(*args, **kwargs)
+
 
 class TemplateStructure(object):
     def __init__(self, html):
@@ -68,7 +91,7 @@ class Slots(object):
     def __init__(self, context, request):
         self.context = context
         self.request = request
-    
+
     def __getattr__(self, name):
         for event_type in slot_events:
             if event_type.name == name:
@@ -156,18 +179,26 @@ class TemplateAPI(object):
     @reify
     def user(self):
         return get_user(self.request)
-    
+
     def has_permission(self, permission, context=None):
         if context is None:
             context = self.context
         return has_permission(permission, context, self.request)
 
-    def render_view(self, name='', context=None, request=None, secure=True):
+    def render_view(self, name='', context=None, request=None, secure=True,
+                    bare=True):
         if context is None:
             context = self.context
         if request is None:
             request = self.request
-        return TemplateStructure(render_view(context, request, name, secure))
+
+        before = self.bare
+        try:
+            self.bare = bare
+            html = render_view(context, request, name, secure)
+        finally:
+            self.bare = before
+        return TemplateStructure(html)
 
     def render_template(self, renderer, **kwargs):
         return TemplateStructure(render(renderer, kwargs, self.request))
@@ -243,19 +274,6 @@ class TemplateAPI(object):
                 if l.permitted(self.context, self.request)]
 
 
-def disambiguate_name(name):
-    parts = name.split(u'-')
-    if len(parts) > 1:
-        try:
-            index = int(parts[-1])
-        except ValueError:
-            parts.append(u'1')
-        else:
-            parts[-1] = unicode(index + 1)
-    else:
-        parts.append(u'1')
-    return u'-'.join(parts)
-
 def ensure_view_selector(func):
     def wrapper(context, request):
         path_els = request.path_info.split(u'/')
@@ -298,7 +316,7 @@ def nodes_tree(request):
             item_to_children[node.parent_id].append(node)
 
     for children in item_to_children.values():
-        children.sort(key=lambda ch:ch.position)
+        children.sort(key=lambda ch: ch.position)
 
     return NavigationNodeWrapper(
         item_to_children[None][0],
@@ -307,96 +325,36 @@ def nodes_tree(request):
         item_to_children,
         )
 
-class Form(deform.Form):
-    """A Form that allows 'appstruct' to be set on the instance.
-    """
-    def render(self, appstruct=None, readonly=False):
-        if appstruct is None:
-            appstruct = getattr(self, 'appstruct', colander.null)
-        return super(Form, self).render(appstruct, readonly)
+# BBB starts here --- --- --- --- --- ---
 
-class BaseFormView(FormView):
-    form_class = Form
-    buttons = (Button('save', _(u'Save')), Button('cancel', _(u'Cancel')))
-    success_message = _(u"Your changes have been saved.")
-    success_url = None
-    schema_factory = None
-    use_csrf_token = True
-    add_template_vars = ()
+appstruct = get_appstruct
+BaseFormView = BaseFormView
+AddFormView = AddFormView
+EditFormView = EditFormView
 
-    def __init__(self, context, request, **kwargs):
-        self.context = context
-        self.request = request
-        self.__dict__.update(kwargs)
 
-    def __call__(self):
-        if self.schema_factory is not None:
-            self.schema = self.schema_factory()
-        if self.use_csrf_token and 'csrf_token' not in self.schema:
-            self.schema.children.append(CSRFSchema()['csrf_token'])
-        result = super(BaseFormView, self).__call__()
-        if isinstance(result, dict):
-            result.update(self.more_template_vars())
-        return result
+deprecated(
+    'appstruct',
+    'appstruct is deprecated as of Kotti 0.6.2.  Use '
+    '``kotti.views.form.get_appstruct`` instead.'
+    )
 
-    def cancel_success(self, appstruct):
-        return HTTPFound(location=self.request.url)
+deprecated(
+    'get_appstruct',
+    'get_appstruct is deprecated as of Kotti 0.6.3.  Use '
+    '``kotti.views.form.get_appstruct`` instead.'
+    )
 
-    def more_template_vars(self):
-        result = {}
-        for name in self.add_template_vars:
-            result[name] = getattr(self, name)
-        return result
+deprecated(
+    'disambiguate_name',
+    'disambiguate_name is deprecated as of Kotti 0.6.2.  Use '
+    '``kotti.util.disambiguate_name`` instead.'
+    )
 
-class EditFormView(BaseFormView):
-    add_template_vars = ('first_heading',)
-
-    def before(self, form):
-        form.appstruct = self.context.__dict__.copy()
-
-    def save_success(self, appstruct):
-        appstruct.pop('csrf_token', None)
-        self.edit(**appstruct)
-        self.request.session.flash(self.success_message, 'success')
-        location = self.success_url or self.request.resource_url(self.context)
-        return HTTPFound(location=location)
-
-    def edit(self, **appstruct):
-        for key, value in appstruct.items():
-            setattr(self.context, key, value)
-
-    @reify
-    def first_heading(self):
-        return _(u'Edit <em>${title}</em>',
-                 mapping=dict(title=self.request.context.title)
-                 )
-
-class AddFormView(BaseFormView):
-    success_message = _(u"Successfully added item.")
-    item_type = u'item'
-    add_template_vars = ('first_heading',)
-
-    def save_success(self, appstruct):
-        appstruct.pop('csrf_token', None)
-        name = self.find_name(appstruct)
-        new_item = self.context[name] = self.add(**appstruct)
-        self.request.session.flash(self.success_message, 'success')
-        location = self.success_url or self.request.resource_url(new_item)
-        return HTTPFound(location=location)
-
-    def find_name(self, appstruct):
-        name = appstruct.get('name')
-        if name is None:
-            name = title_to_name(appstruct['title'])
-            while name in self.context.keys():
-                name = disambiguate_name(name)
-        return name
-
-    @reify
-    def first_heading(self):
-        context_title = getattr(self.request.context, 'title', None)
-        if context_title:
-            return _(u'Add ${type} to <em>${title}</em>',
-                     mapping=dict(type=self.item_type, title=context_title))
-        else:
-            return _(u'Add ${type}', mapping=dict(type=self.item_type))
+for cls in BaseFormView, AddFormView, EditFormView:
+    new_name = 'kotti.views.form.{0}'.format(cls.__name__)
+    deprecated(
+        cls.__name__,
+        '{0} is deprecated as of Kotti 0.6.3.  Use ``{1}`` instead.'.format(
+            cls.__name__, new_name)
+        )

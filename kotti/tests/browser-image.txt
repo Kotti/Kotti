@@ -1,0 +1,159 @@
+kotti image browser tests
+=========================
+
+Setup and Login
+---------------
+  >>> from kotti import testing
+  >>> tools = testing.setUpFunctional(
+  ...     **{})
+  >>> browser = tools['Browser']()
+  >>> ctrl = browser.getControl
+
+  >>> browser.open(testing.BASE_URL + '/edit')
+  >>> "Log in" in browser.contents
+  True
+  >>> ctrl("Username or email").value = "admin"
+  >>> ctrl("Password").value = "secret"
+  >>> ctrl(name="submit").click()
+  >>> "Welcome, Administrator" in browser.contents
+  True
+
+Add a document as parent node for all images
+--------------------------------------------
+
+  >>> browser.getLink("Add").click()
+  >>> browser.getLink("Document").click()
+  >>> ctrl("Title").value = "My Gallery"
+  >>> ctrl("save").click()
+  >>> "Successfully added item" in browser.contents
+  True
+  >>> browser.url == testing.BASE_URL + '/my-gallery/'
+  True
+
+Add images
+----------
+
+  >>> import os
+  >>> from kotti import tests
+  >>> image = open(os.sep.join((os.path.dirname(tests.__file__), "sendeschluss.jpg"))).read()
+
+Image 1
+
+  >>> browser.open(testing.BASE_URL + '/my-gallery/')
+  >>> browser.getLink("Add").click()
+  >>> browser.getLink("Image").click()
+
+  >>> ctrl("Title").value = "Image 1"
+  >>> ctrl("Description").value = "A beautiful image"
+  >>> ctrl("File").add_file(image, 'image/jpeg', 'sendeschluss.jpg')
+
+  >>> ctrl("save").click()
+  >>> "Successfully added item" in browser.contents
+  True
+
+Image 2
+
+  >>> browser.open(testing.BASE_URL + '/my-gallery/')
+  >>> browser.getLink("Add").click()
+  >>> browser.getLink("Image").click()
+
+  >>> ctrl("Title").value = "Image 2"
+  >>> ctrl("Description").value = "An even more beautiful image"
+  >>> ctrl("File").add_file(image, 'image/jpeg', 'sendeschluss.jpg')
+
+  >>> ctrl("save").click()
+  >>> "Successfully added item" in browser.contents
+  True
+
+Image without file should show error message
+
+  >>> browser.open(testing.BASE_URL + '/my-gallery/')
+  >>> browser.getLink("Add").click()
+  >>> browser.getLink("Image").click()
+
+  >>> ctrl("Title").value = "Image 3"
+  >>> ctrl("Description").value = "An even more beautiful image"
+  >>> ctrl("save").click()
+  >>> "There was a problem with your submission" in browser.contents
+  True
+  >>> "Required" in browser.contents
+  True
+
+View gallery and images
+-----------------------
+
+  >>> browser.open(testing.BASE_URL + '/my-gallery/')
+  >>> pos = browser.contents.index
+  >>> pos("Image 1") < pos("Image 2")
+  True
+  >>> "A beautiful image" in browser.contents
+  True
+  >>> browser.getLink("Image 2").click()
+  >>> "An even more beautiful image" in browser.contents
+  True
+
+  >>> browser.open(testing.BASE_URL + '/my-gallery/image-1')
+  >>> browser.headers["content-type"].lower()
+  'text/html; charset=utf-8'
+
+View image scales
+-----------------
+
+Default scale
+
+  >>> browser.open(testing.BASE_URL + '/my-gallery/image-1/image')
+  >>> browser.headers["content-type"]
+  'image/jpeg'
+  >>> browser.headers["content-length"]
+  '107341'
+  >>> browser.headers["content-disposition"].lower()
+  'inline;filename="sendeschluss.jpg"'
+
+Default scale, attachment
+
+  >>> browser.open(testing.BASE_URL + '/my-gallery/image-1/image/download')
+  >>> browser.headers["content-type"]
+  'image/jpeg'
+  >>> browser.headers["content-length"]
+  '107341'
+  >>> browser.headers["content-disposition"].lower()
+  'attachment;filename="sendeschluss.jpg"'
+
+Span1
+
+  >>> browser.open(testing.BASE_URL + '/my-gallery/image-1/image/span1')
+  >>> browser.headers["content-type"]
+  'image/jpeg'
+  >>> 1000 < int(browser.headers["content-length"]) < 2000
+  True
+  >>> browser.headers["content-disposition"].lower()
+  'inline;filename="sendeschluss.jpg"'
+
+Span1, attachment
+
+  >>> browser.open(testing.BASE_URL + '/my-gallery/image-1/image/span1/download')
+  >>> browser.headers["content-type"]
+  'image/jpeg'
+  >>> browser.headers["content-disposition"].lower()
+  'attachment;filename="sendeschluss.jpg"'
+
+Invalid predefined scale (should return original size)
+
+  >>> browser.open(testing.BASE_URL + '/my-gallery/image-1/image/invalid_scale')
+  >>> browser.headers["content-type"]
+  'image/jpeg'
+  >>> browser.headers["content-length"]
+  '107341'
+  >>> browser.headers["content-disposition"].lower()
+  'inline;filename="sendeschluss.jpg"'
+
+Invalid predefined scale (should return original size), attachment
+
+  >>> browser.open(testing.BASE_URL + '/my-gallery/image-1/image/invalid_scale/download')
+  >>> browser.headers["content-type"]
+  'image/jpeg'
+  >>> browser.headers["content-length"]
+  '107341'
+  >>> browser.headers["content-disposition"].lower()
+  'attachment;filename="sendeschluss.jpg"'
+

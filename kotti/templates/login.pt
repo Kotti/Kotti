@@ -38,9 +38,11 @@
         <h3 class="forgot-password" i18n:translate="">Forgot your password?</h3>
 
           <div i18n:translate="">
-            Fill out your username or email above and click <em>Reset
-            password</em> below to receive an email with a link to
-            reset your password.
+            Fill out your username or email above and click
+            <em i18n:name="reset_password" i18n:translate="">
+              Reset password
+            </em>
+            below to receive an email with a link to reset your password.
           </div>
           <div class="form-actions">
             <button type="submit" name="reset-password" class="btn"

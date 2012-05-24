@@ -1,4 +1,5 @@
 from pyramid.security import ALL_PERMISSIONS
+from pyramid.security import Allow
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.exc import SQLAlchemyError
 
@@ -17,15 +18,17 @@ class TestNode(UnitTestBase):
                 ('Allow', 'role:editor', ['view', 'add', 'edit']),
                 ('Allow', 'role:owner', ['view', 'add', 'edit', 'manage']),
                 ])
-        # Note how the first ACE is class-defined.  Users of the
-        # 'admin' role will always have all permissions.  This is to
-        # prevent lock-out.
-        self.assertEquals(root.__acl__[:1], root._default_acl())
+
+        # The first ACE is here to preven lock-out:
+        self.assertEquals(
+            root.__acl__[0],
+            (Allow, 'role:admin', ALL_PERMISSIONS),
+            )
 
     def test_set_and_get_acl(self):
         from kotti import DBSession
         from kotti.resources import get_root
-        
+
         root = get_root()
 
         # The __acl__ attribute of Nodes allows access to the mapped
@@ -33,40 +36,61 @@ class TestNode(UnitTestBase):
         del root.__acl__
         self.assertRaises(AttributeError, root._get_acl)
 
-        root.__acl__ = [['Allow', 'system.Authenticated', ['edit']]]
+        root.__acl__ = [('Allow', 'system.Authenticated', ['edit'])]
         self.assertEquals(
-            root.__acl__, [
-                ('Allow', 'role:admin', ALL_PERMISSIONS),
-                ('Allow', 'system.Authenticated', ['edit']),
-                ])
+            root.__acl__, [('Allow', 'system.Authenticated', ['edit'])])
 
         root.__acl__ = [
             ('Allow', 'system.Authenticated', ['view']),
             ('Deny', 'system.Authenticated', ALL_PERMISSIONS),
             ]
-        
+
         self.assertEquals(
             root.__acl__, [
-                ('Allow', 'role:admin', ALL_PERMISSIONS),
                 ('Allow', 'system.Authenticated', ['view']),
                 ('Deny', 'system.Authenticated', ALL_PERMISSIONS),
                 ])
 
-        # We can reorder the ACL:
-        first, second = root.__acl__[1:]
-        root.__acl__ = [second, first]
+        # We can append to the ACL, and it'll be persisted fine:
+        root.__acl__.append(('Allow', 'system.Authenticated', ['edit']))
         self.assertEquals(
             root.__acl__, [
-                ('Allow', 'role:admin', ALL_PERMISSIONS),
-                ('Deny', 'system.Authenticated', ALL_PERMISSIONS),
                 ('Allow', 'system.Authenticated', ['view']),
+                ('Deny', 'system.Authenticated', ALL_PERMISSIONS),
+                ('Allow', 'system.Authenticated', ['edit']),
                 ])
+
         DBSession.flush()
         DBSession.expire_all()
-        self.assertEquals(root.__acl__[1:], [second, first])
 
-        root._del_acl()
-        self.assertRaises(AttributeError, root._del_acl)
+        self.assertEquals(
+            root.__acl__, [
+                ('Allow', 'role:admin', ALL_PERMISSIONS),
+                ('Allow', 'system.Authenticated', ['view']),
+                ('Deny', 'system.Authenticated', ALL_PERMISSIONS),
+                ('Allow', 'system.Authenticated', ['edit']),
+                ])
+
+    def test_append_to_empty_acl(self):
+        from kotti import DBSession
+        from kotti.resources import get_root
+        from kotti.resources import Node
+
+        root = get_root()
+        node = root['child'] = Node()
+        node.__acl__ = []
+
+        DBSession.flush()
+        DBSession.expire_all()
+
+        node.__acl__.append(('Allow', 'system.Authenticated', ['edit']))
+        DBSession.flush()
+        DBSession.expire_all()
+
+        assert node.__acl__ == [
+            ('Allow', 'role:admin', ALL_PERMISSIONS),
+            ('Allow', 'system.Authenticated', ['edit']),
+            ]
 
     def test_unique_constraint(self):
         from kotti import DBSession
@@ -97,7 +121,7 @@ class TestNode(UnitTestBase):
         self.assertEquals(root[u'child1'], child1)
 
         del root[u'child1']
-        self.assertEquals(root.keys(), [])        
+        self.assertEquals(root.keys(), [])
 
         # When we delete a parent node, all its child nodes will be
         # released as well:
@@ -114,10 +138,15 @@ class TestNode(UnitTestBase):
         root[u'child3'] = Node()
         subchild33 = Node(name=u'subchild33', parent=root[u'child3'])
         session.add(subchild33)
+        del root.__dict__['_children']  # force a different code path
         self.assertTrue(
             root[u'child3', u'subchild33'] is root[u'child3'][u'subchild33'])
         self.assertTrue(
             root[(u'child3', u'subchild33')] is subchild33)
+        self.assertTrue(
+            root[(u'child3', u'subchild33')] is subchild33)
+        self.assertRaises(KeyError, root.__getitem__, (u'child3', u'bad-name'))
+        root.children  # force a different code path
         self.assertRaises(KeyError, root.__getitem__, (u'child3', u'bad-name'))
         del root[u'child3']
 
@@ -130,10 +159,10 @@ class TestNode(UnitTestBase):
         session.add(child44)
         root[u'child4'] = child44
         self.assertRaises(SQLAlchemyError, session.flush)
-        
+
     def test_node_copy_name(self):
         from kotti.resources import get_root
-        
+
         root = get_root()
         copy_of_root = root.copy(name=u'copy_of_root')
         self.assertEqual(copy_of_root.name, u'copy_of_root')
@@ -206,7 +235,7 @@ class TestNode(UnitTestBase):
     def test_annotations_mutable(self):
         from kotti import DBSession
         from kotti.resources import get_root
-        
+
         root = get_root()
         root.annotations['foo'] = u'bar'
         self.assertTrue(root in DBSession.dirty)

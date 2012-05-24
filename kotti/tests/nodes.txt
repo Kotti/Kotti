@@ -1,0 +1,94 @@
+  >>> from kotti.testing import setUp
+  >>> ignore = setUp()
+
+# end of setup
+
+Every content node in the database (be it a document, a file...) is
+also a container for other nodes.  You can access, add and delete
+child nodes of a node through a dict-like interface.  A node's parent
+may be accessed through the ``node.__parent__`` property.
+
+``kotti.resources.get_root`` gives us the root node:
+
+.. code-block:: python
+
+  >>> from kotti.resources import get_root
+  >>> root = get_root()
+  >>> root.__parent__ is None
+  True
+  >>> root.title = u'A new title'
+
+Let us add three documents to our root:
+
+.. code-block:: python
+
+  >>> from kotti.resources import Document  
+  >>> root['first'] = Document(title=u'First page')
+  >>> root['second'] = Document(title=u'Second page')
+  >>> root['third'] = Document(title=u'Third page')
+
+Note how the keys in the dict correspond to the ``name`` of child
+nodes:
+
+.. code-block:: python
+
+  >>> first = root['first']
+  >>> first.name
+  u'first'
+  >>> first.__parent__ == root
+  True
+  >>> third = root['third']
+
+We can make a copy of a node by using the ``node.copy()`` method.  We
+can delete child nodes from the database using the ``del`` operator:
+
+.. code-block:: python
+
+  >>> first['copy-of-second'] = root['second'].copy()
+  >>> del root['second']
+
+The lists of keys and values are ordered:
+
+.. code-block:: python
+
+  >>> root.keys()
+  [u'first', u'third']
+  >>> first.keys()
+  [u'copy-of-second']
+  >>> root.values()
+  [<Document ... at /first>, <Document ... at /third>]
+
+There's the ``node.children`` attribute should you ever need to change
+the order of the child nodes.  ``node.children`` is a SQLAlchmey
+``ordered_list`` which keeps track of the order of child nodes for us:
+
+.. code-block:: python
+
+  >>> root.children
+  [<Document ... at /first>, <Document ... at /third>]
+  >>> root.children[:] = [root.values()[-1], root.values()[0]]
+  >>> root.values()
+  [<Document ... at /third>, <Document ... at /first>]
+
+.. note::
+
+  Removing an element from the ``nodes.children`` list will not delete
+  the child node from the database.  Use ``del node[child_name]`` as
+  above for that.
+
+You can move a node by setting its ``__parent__``:
+
+.. code-block:: python
+
+  >>> third.__parent__
+  <Document ... at />
+  >>> third.__parent__ = first
+  >>> root.keys()
+  [u'first']
+  >>> first.keys()
+  [u'copy-of-second', u'third']
+
+# start of teardown
+
+  >>> from kotti.testing import tearDown
+  >>> tearDown()

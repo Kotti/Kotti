@@ -12,9 +12,11 @@ from pyramid.response import Response
 
 from kotti.resources import File
 from kotti.util import _
-from kotti.views.edit import ContentSchema
-from kotti.views.util import EditFormView
-from kotti.views.util import AddFormView
+from kotti.views.form import (
+    ContentSchema,
+    EditFormView,
+    AddFormView,
+    )
 
 class FileUploadTempStore(DictMixin):
     def __init__(self, request):
@@ -46,12 +48,10 @@ def inline_view(context, request, disposition='inline'):
         headerlist=[
             ('Content-Disposition', '%s;filename="%s"' % (
                 disposition, context.filename.encode('ascii', 'ignore'))),
-            ('Content-Length', str(context.size)),
             ('Content-Type', str(context.mimetype)),
-            ],
-        app_iter=context.data,
+            ]
         )
-    
+    res.body = context.data
     return res
 
 def attachment_view(context, request):
@@ -80,7 +80,8 @@ class EditFileFormView(EditFormView):
             self.context.size = len(buf)
 
 class AddFileFormView(AddFormView):
-    item_type = u"file"
+    item_type = _(u"File")
+    item_class = File
 
     def schema_factory(self):
         tmpstore = FileUploadTempStore(self.request)
@@ -98,7 +99,7 @@ class AddFileFormView(AddFormView):
                 widget=FileUploadWidget(tmpstore),
                 )
         return FileSchema()
-    
+
     def save_success(self, appstruct):
         if not appstruct['title']:
             appstruct['title'] = appstruct['file']['filename']
@@ -106,7 +107,7 @@ class AddFileFormView(AddFormView):
 
     def add(self, **appstruct):
         buf = appstruct['file']['fp'].read()
-        return File(
+        return self.item_class(
             title=appstruct['title'],
             description=appstruct['description'],
             data=buf,

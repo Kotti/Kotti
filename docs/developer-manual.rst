@@ -26,9 +26,16 @@ Document content type serves as an example here:
 
 .. code-block:: python
 
+  from kotti.resources import Content
+
   class Document(Content):
+      id = Column(Integer(), ForeignKey('contents.id'), primary_key=True)
+      body = Column(UnicodeText())
+      mime_type = Column(String(30))
+
       type_info = Content.type_info.copy(
           name=u'Document',
+          title=_(u'Document'),
           add_view=u'add_document',
           addable_to=[u'Document'],
           )
@@ -38,75 +45,65 @@ Document content type serves as an example here:
           self.body = body
           self.mime_type = mime_type
 
-  documents = Table('documents', metadata,
-      Column('id', Integer, ForeignKey('contents.id'), primary_key=True),
-      Column('body', UnicodeText()),
-      Column('mime_type', String(30)),
-  )
-
-  mapper(Document, documents, inherits=Content, polymorphic_identity='document')
-
 You can configure the list of active content types in Kotti by
 modifying the :ref:`kotti.available_types` setting.
 
-Configuring custom views, subscribers and more
-----------------------------------------------
-
-:ref:`kotti.includes` allows you to hook ``includeme`` functions that
-configure your custom views, subscribers and more.  An ``includeme``
-function takes the *Pyramid Configurator API* object as its sole
-argument.  An example that overrides the default view for all
-``Document`` content types:
+Note that when adding a relationship from your content type to another
+Node, you will need to add a ``primaryjoin`` parameter to your
+relationship.  An example:
 
 .. code-block:: python
 
-  def my_view(request):
-      from pyramid.response import Response
-      return Response('OK')
+  from sqlalchemy.orm import relationship
+
+  class DocumentWithRelation(Document):
+    id = Column(Integer, ForeignKey('documents.id'), primary_key=True)
+    related_item_id = Column(Integer, ForeignKey('nodes.id'))
+    related_item = relationship(
+        'Node', primaryjoin='Node.id==DocumentWithRelation.related_item_id')
+
+Add views, subscribers and more
+-------------------------------
+
+:ref:`pyramid.includes` allows you to hook ``includeme`` functions
+that you can use to add views, subscribers, and more aspects of Kotti.
+An ``includeme`` function takes the *Pyramid Configurator API* object
+as its sole argument.
+
+Here's an example that'll override the default view for Files:
+
+.. code-block:: python
+
+  def my_file_view(request):
+      return {...}
 
   def includeme(config):
-      config.add_view(my_view)
+      config.add_view(
+          my_file_view,
+          name='view',
+          permission='view',
+          context=File,
+          )
+
+To find out more about views and view registrations, please refer to
+the `Pyramid documentation`_.
 
 By adding the *dotted name string* of your ``includeme`` function to
-the :ref:`kotti.includes` setting, you ask Kotti to call it on
+the :ref:`pyramid.includes` setting, you ask Kotti to call it on
 application start-up.  An example:
 
 .. code-block:: ini
 
-  kotti.includes = mypackage.views.includeme
+  pyramid.includes = mypackage.views.includeme
 
-The Node API
-------------
+.. _Pyramid documentation: http://docs.pylonsproject.org/projects/pyramid/en/latest/
 
-One of Kotti's core abstractions is the *Node API*, which is a
-*(ordered) dict-like* API for manipulation of objects and their parent/child
-relationships.
+Working with content objects
+----------------------------
 
-An example:
-
-.. code-block:: python
-
-  # Get the root node and set its title:
-  from kotti.resources import get_root
-  root = get_root()
-  root.title = u'A new title'
-
-  # Add two pages:
-  from kotti.resources import Document  
-  root['first'] = Document(title=u'First page')
-  root['second'] = Document(title=u'Second page')
-
-  # Make a copy of the second page and move it into the first page:
-  root['first']['copy-of-second'] = root['second'].copy()
-
-  # Delete the original second page:
-  del root['first']['second']
-
-  # List all children names and nodes:
-  root.keys()
-  ['first']
-  root.values()
-  [<Document at /first>]
+.. include:: ../kotti/tests/nodes.txt
+  :start-after: # end of setup
+  :end-before: # start of teardown
 
 .. _slots:
 
@@ -195,4 +192,4 @@ API
 
 
 .. _Pyramid's security API: http://docs.pylonsproject.org/projects/pyramid/dev/api/security.html
-.. _inherited access control lists: http://www.pylonsproject.org/projects/pyramid/dev/narr/security.html#acl-inheritance-and-location-awareness
+.. _inherited access control lists: http://docs.pylonsproject.org/projects/pyramid/en/latest/narr/security.html#acl-inheritance-and-location-awareness

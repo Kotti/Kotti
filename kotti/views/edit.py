@@ -5,7 +5,6 @@ from pyramid.security import has_permission
 from pyramid.url import resource_url
 import colander
 from deform.widget import RichTextWidget
-from deform.widget import TextAreaWidget
 
 from kotti import get_settings
 from kotti import DBSession
@@ -13,25 +12,13 @@ from kotti.resources import Node
 from kotti.resources import Document
 from kotti.resources import get_root
 from kotti.util import _
+from kotti.util import title_to_name
 from kotti.util import ViewLink
-from kotti.views.util import EditFormView
-from kotti.views.util import AddFormView
-from kotti.views.util import disambiguate_name
+from kotti.views.form import ContentSchema
+from kotti.views.form import EditFormView
+from kotti.views.form import AddFormView
 from kotti.views.util import ensure_view_selector
 from kotti.views.util import nodes_tree
-from kotti.util import title_to_name
-
-
-class ContentSchema(colander.MappingSchema):
-    title = colander.SchemaNode(
-        colander.String(),
-        title=_(u'Title'))
-    description = colander.SchemaNode(
-        colander.String(),
-        title=_('Description'),
-        widget=TextAreaWidget(cols=40, rows=5),
-        missing=u"",
-        )
 
 
 class DocumentSchema(ContentSchema):
@@ -41,6 +28,7 @@ class DocumentSchema(ContentSchema):
         widget=RichTextWidget(theme='advanced', width=790, height=500),
         missing=u"",
         )
+
 
 def content_type_factories(context, request):
     """Drop down menu for Add button in editor bar.
@@ -80,7 +68,7 @@ def actions(context, request):
     if not is_root:
         actions.append(ViewLink('rename', title=_(u'Rename')))
         actions.append(ViewLink('delete', title=_(u'Delete')))
-    if len(context.children) > 1:
+    if len(context.children) >= 1:
         actions.append(ViewLink('order', title=_(u'Order')))
     return {'actions': [action for action in actions
                         if action.permitted(context, request)]}
@@ -118,9 +106,8 @@ def paste_node(context, request):
         copy = item.copy()
         name = copy.name
         if not name:  # for root
-            name = title_to_name(copy.title)
-        while name in context.keys():
-            name = disambiguate_name(name)
+            name = copy.title
+        name = title_to_name(name, blacklist=context.keys())
         copy.name = name
         context.children.append(copy)
     request.session.flash(_(u'${title} pasted.',
@@ -132,22 +119,33 @@ def paste_node(context, request):
 
 def order_node(context, request):
     P = request.POST
-    session = DBSession()
 
     if 'order-up' in P or 'order-down' in P:
         up, down = P.get('order-up'), P.get('order-down')
-        id = int(down or up)
+        child = DBSession.query(Node).get(int(down or up))
         if up is not None:
             mod = -1
         else:  # pragma: no cover
             mod = 1
-
-        child = session.query(Node).get(id)
         index = context.children.index(child)
         context.children.pop(index)
         context.children.insert(index + mod, child)
         request.session.flash(_(u'${title} moved.',
                                 mapping=dict(title=child.title)), 'success')
+        if not request.is_xhr:
+            return HTTPFound(location=request.url)
+
+    elif 'toggle-visibility' in P:
+        child = DBSession.query(Node).get(int(P['toggle-visibility']))
+        child.in_navigation ^= True
+        mapping = dict(title=child.title)
+        if child.in_navigation:
+            msg = _(u'${title} is now visible in the navigation.',
+                    mapping=mapping)
+        else:
+            msg = _(u'${title} is no longer visible in the navigation.',
+                    mapping=mapping)
+        request.session.flash(msg, 'success')
         if not request.is_xhr:
             return HTTPFound(location=request.url)
 
@@ -172,7 +170,7 @@ def rename_node(context, request):
         if not name or not title:
             request.session.flash(_(u'Name and title are required.'), 'error')
         else:
-            context.name = name
+            context.name = name.replace('/', '')
             context.title = title
             request.session.flash(_(u'Item renamed'), 'success')
             location = resource_url(context, request)
@@ -205,7 +203,7 @@ def make_generic_edit(schema, **kwargs):
         return generic_edit(context, request, schema, **kwargs)
     return view
 
-def make_generic_add(schema, add, title, **kwargs):
+def make_generic_add(schema, add, title=None, **kwargs):
     def view(context, request):
         return generic_add(context, request, schema, add, title, **kwargs)
     return view
@@ -230,7 +228,7 @@ def includeme(config):
         )
 
     config.add_view(
-        make_generic_add(DocumentSchema(), Document, u'document'),
+        make_generic_add(DocumentSchema(), Document),
         name=Document.type_info.add_view,
         permission='add',
         renderer='kotti:templates/edit/node.pt',
@@ -267,39 +265,39 @@ def includeme(config):
 
 def nodes_includeme(config):
     config.add_view(
-        'kotti.views.edit.copy_node',
+        copy_node,
         name='copy',
         permission='edit',
         )
 
     config.add_view(
-        'kotti.views.edit.cut_node',
+        cut_node,
         name='cut',
         permission='edit',
         )
 
     config.add_view(
-        'kotti.views.edit.paste_node',
+        paste_node,
         name='paste',
         permission='edit',
         )
 
     config.add_view(
-        'kotti.views.edit.order_node',
+        order_node,
         name='order',
         permission='edit',
         renderer='kotti:templates/edit/order.pt',
         )
 
     config.add_view(
-        'kotti.views.edit.delete_node',
+        delete_node,
         name='delete',
         permission='edit',
         renderer='kotti:templates/edit/delete.pt',
         )
 
     config.add_view(
-        'kotti.views.edit.rename_node',
+        rename_node,
         name='rename',
         permission='edit',
         renderer='kotti:templates/edit/rename.pt',

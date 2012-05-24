@@ -4,43 +4,43 @@ from datetime import datetime
 from UserDict import DictMixin
 
 import bcrypt
-from sqlalchemy import Column
 from sqlalchemy import Boolean
-from sqlalchemy import Integer
+from sqlalchemy import Column
 from sqlalchemy import DateTime
-from sqlalchemy import Table
+from sqlalchemy import Integer
 from sqlalchemy import Unicode
 from sqlalchemy import func
 from sqlalchemy.sql.expression import or_
-from sqlalchemy.orm import mapper
 from sqlalchemy.orm.exc import NoResultFound
 from pyramid.location import lineage
-from pyramid.security import Allow
-from pyramid.security import ALL_PERMISSIONS
 from pyramid.security import authenticated_userid
 from pyramid.security import has_permission as base_has_permission
 from pyramid.security import view_execution_permitted
 
 from kotti import get_settings
 from kotti import DBSession
-from kotti import metadata
+from kotti import Base
+from kotti.sqla import JsonType
 from kotti.util import _
-from kotti.util import JsonType
 from kotti.util import request_cache
 from kotti.util import DontCache
 
+
 def get_principals():
     return get_settings()['kotti.principals_factory'][0]()
+
 
 def get_user(request):
     userid = authenticated_userid(request)
     return get_principals().get(userid)
 
+
 def has_permission(permission, context, request):
     with authz_context(context, request):
         return base_has_permission(permission, context, request)
 
-class Principal(object):
+
+class Principal(Base):
     """A minimal 'Principal' implementation.
 
     The attributes on this object correspond to what one ought to
@@ -59,6 +59,22 @@ class Principal(object):
         receiver of the email.  This attribute should be set to
         'None' once confirmation has succeeded.
     """
+    __tablename__ = 'principals'
+    __mapper_args__ = dict(
+        order_by='principals.name',
+        )
+
+    id = Column(Integer, primary_key=True)
+    name = Column(Unicode(100), unique=True)
+    password = Column(Unicode(100))
+    active = Column(Boolean)
+    confirm_token = Column(Unicode(100))
+    title = Column(Unicode(100), nullable=False)
+    email = Column(Unicode(100), unique=True)
+    groups = Column(JsonType(), nullable=False)
+    creation_date = Column(DateTime(), nullable=False)
+    last_login_date = Column(DateTime())
+
     def __init__(self, name, password=None, active=True, confirm_token=None,
                  title=u"", email=None, groups=()):
         self.name = name
@@ -73,8 +89,9 @@ class Principal(object):
         self.creation_date = datetime.now()
         self.last_login_date = None
 
-    def __repr__(self): # pragma: no cover
+    def __repr__(self):  # pragma: no cover
         return '<Principal %r>' % self.name
+
 
 class AbstractPrincipals(object):
     """This class serves as documentation and defines what methods are
@@ -165,78 +182,58 @@ SITE_ACL = [
     ['Allow', 'role:owner', ['view', 'add', 'edit', 'manage']],
     ]
 
+
 def set_roles(roles_dict):
     ROLES.clear()
     ROLES.update(roles_dict)
 
+
 def set_sharing_roles(role_names):
     SHARING_ROLES[:] = role_names
 
+
 def set_user_management_roles(role_names):
     USER_MANAGEMENT_ROLES[:] = role_names
+
 
 def reset_roles():
     ROLES.clear()
     ROLES.update(_DEFAULT_ROLES)
 
+
 def reset_sharing_roles():
     SHARING_ROLES[:] = _DEFAULT_SHARING_ROLES
 
+
 def reset_user_management_roles():
     USER_MANAGEMENT_ROLES[:] = _DEFAULT_USER_MANAGEMENT_ROLES
+
 
 def reset():
     reset_roles()
     reset_sharing_roles()
     reset_user_management_roles()
 
+
 class PersistentACLMixin(object):
-    """Manages access to ``self._acl`` which is a JSON- serialized
-    representation of ``self.__acl__``.
-    """
-    ALL_PERMISSIONS_SERIALIZED = '__ALL_PERMISSIONS__'
-
-    @staticmethod
-    def _deserialize_ace(ace):
-        ace = list(ace)
-        if ace[2] == PersistentACLMixin.ALL_PERMISSIONS_SERIALIZED:
-            ace[2] = ALL_PERMISSIONS
-        return tuple(ace)
-
-    @staticmethod
-    def _serialize_ace(ace):
-        ace = list(ace)
-        if ace[2] == ALL_PERMISSIONS:
-            ace[2] = PersistentACLMixin.ALL_PERMISSIONS_SERIALIZED
-        return ace
-
     def _get_acl(self):
-        if self._acl is not None:
-            acl = self._default_acl() + self._acl
-            return [self._deserialize_ace(ace) for ace in acl]
-        else:
+        if self._acl is None:
             raise AttributeError('__acl__')
+        return self._acl
 
-    def _set_acl(self, acl):
-        self._acl = [self._serialize_ace(ace) for ace in acl]
+    def _set_acl(self, value):
+        self._acl = value
 
     def _del_acl(self):
-        if self._acl is not None:
-            self._acl = None
-        else:
-            raise AttributeError('__acl__')
+        self._acl = None
 
     __acl__ = property(_get_acl, _set_acl, _del_acl)
 
-    def _default_acl(self):
-        # ACEs that will be put on top, no matter what
-        return [
-            (Allow, 'role:admin', ALL_PERMISSIONS),
-            ]
 
 def _cachekey_list_groups_raw(name, context):
     context_id = context is not None and getattr(context, 'id', id(context))
     return (name, context_id)
+
 
 @request_cache(_cachekey_list_groups_raw)
 def list_groups_raw(name, context):
@@ -251,10 +248,11 @@ def list_groups_raw(name, context):
     if isinstance(context, Node):
         return set(
             r[0] for r in DBSession.query(LocalGroup.group_name).filter(
-            LocalGroup.node_id==context.id).filter(
-            LocalGroup.principal_name==name).all()
+            LocalGroup.node_id == context.id).filter(
+            LocalGroup.principal_name == name).all()
             )
     return set()
+
 
 def list_groups(name, context=None):
     """List groups for principal with a given ``name``.
@@ -264,12 +262,14 @@ def list_groups(name, context=None):
     """
     return list_groups_ext(name, context)[0]
 
+
 def _cachekey_list_groups_ext(name, context=None, _seen=None, _inherited=None):
     if _seen is not None or _inherited is not None:
         raise DontCache
     else:
         context_id = context is not None and getattr(context, 'id', id(context))
         return (name, context_id)
+
 
 @request_cache(_cachekey_list_groups_ext)
 def list_groups_ext(name, context=None, _seen=None, _inherited=None):
@@ -297,7 +297,7 @@ def list_groups_ext(name, context=None, _seen=None, _inherited=None):
             groups.update(group_names)
             if recursing or idx != 0:
                 _inherited.update(group_names)
-    
+
     new_groups = groups - _seen
     _seen.update(new_groups)
     for group_name in new_groups:
@@ -308,6 +308,7 @@ def list_groups_ext(name, context=None, _seen=None, _inherited=None):
 
     return list(groups), list(_inherited)
 
+
 def set_groups(name, context, groups_to_set=()):
     """Set the list of groups for principal with given ``name`` and in
     given ``context``.
@@ -316,15 +317,16 @@ def set_groups(name, context, groups_to_set=()):
     from kotti.resources import LocalGroup
     session = DBSession()
     session.query(LocalGroup).filter(
-        LocalGroup.node_id==context.id).filter(
-        LocalGroup.principal_name==name).delete()
+        LocalGroup.node_id == context.id).filter(
+        LocalGroup.principal_name == name).delete()
 
     for group_name in groups_to_set:
         session.add(LocalGroup(context, name, unicode(group_name)))
 
+
 def list_groups_callback(name, request):
     if not is_user(name):
-        return None # Disallow logging in with groups
+        return None  # Disallow logging in with groups
     if name in get_principals():
         context = request.environ.get(
             'authz_context', getattr(request, 'context', None))
@@ -333,6 +335,7 @@ def list_groups_callback(name, request):
             from kotti.resources import get_root
             context = get_root(request)
         return list_groups(name, context)
+
 
 @contextmanager
 def authz_context(context, request):
@@ -345,9 +348,11 @@ def authz_context(context, request):
         if before is not None:
             request.environ['authz_context'] = before
 
+
 def view_permitted(context, request, name=''):
     with authz_context(context, request):
         return view_execution_permitted(context, request, name)
+
 
 def principals_with_local_roles(context, inherit=True):
     """Return a list of principal names that have local roles in the
@@ -363,11 +368,12 @@ def principals_with_local_roles(context, inherit=True):
         principals.update(
             r[0] for r in
             session.query(LocalGroup.principal_name).filter(
-                LocalGroup.node_id==item.id).group_by(
+                LocalGroup.node_id == item.id).group_by(
                 LocalGroup.principal_name).all()
             if not r[0].startswith('role:')
             )
     return list(principals)
+
 
 def map_principals_with_local_roles(context):
     principals = get_principals()
@@ -382,10 +388,12 @@ def map_principals_with_local_roles(context):
             value.append((principal, (all, inherited)))
     return sorted(value, key=lambda t: t[0].name)
 
+
 def is_user(principal):
     if not isinstance(principal, basestring):
         principal = principal.name
     return ':' not in principal
+
 
 class Principals(DictMixin):
     """Kotti's default principal database.
@@ -403,7 +411,7 @@ class Principals(DictMixin):
         session = DBSession()
         try:
             return session.query(
-                self.factory).filter(self.factory.name==name).one()
+                self.factory).filter(self.factory.name == name).one()
         except NoResultFound:
             raise KeyError(name)
 
@@ -419,7 +427,7 @@ class Principals(DictMixin):
         session = DBSession()
         try:
             principal = session.query(
-                self.factory).filter(self.factory.name==name).one()
+                self.factory).filter(self.factory.name == name).one()
             session.delete(principal)
         except NoResultFound:
             raise KeyError(name)
@@ -451,6 +459,7 @@ class Principals(DictMixin):
         return query
 
     log_rounds = 10
+
     def hash_password(self, password, hashed=None):
         if hashed is None:
             hashed = bcrypt.gensalt(self.log_rounds)
@@ -462,20 +471,6 @@ class Principals(DictMixin):
         except ValueError:
             return False
 
+
 def principals_factory():
     return Principals()
-
-principals_table = Table('principals', metadata,
-    Column('id', Integer, primary_key=True),
-    Column('name', Unicode(100), unique=True),
-    Column('password', Unicode(100)),
-    Column('active', Boolean),
-    Column('confirm_token', Unicode(100)),
-    Column('title', Unicode(100), nullable=False),
-    Column('email', Unicode(100), unique=True),
-    Column('groups', JsonType(), nullable=False),
-    Column('creation_date', DateTime(), nullable=False),
-    Column('last_login_date', DateTime()),
-)
-
-mapper(Principal, principals_table, order_by=principals_table.c.name)

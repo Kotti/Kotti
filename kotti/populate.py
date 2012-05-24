@@ -6,7 +6,7 @@ from kotti.resources import Document
 from kotti.resources import Settings
 from kotti.security import get_principals
 from kotti.security import SITE_ACL
-from kotti.util import _
+
 
 def populate_users():
     principals = get_principals()
@@ -14,7 +14,7 @@ def populate_users():
         principals[u'admin'] = {
             'name': u'admin',
             'password': get_settings()['kotti.secret'],
-            'title': _(u"Administrator"),
+            'title': u"Administrator",
             'groups': [u'role:admin'],
             }
 
@@ -32,7 +32,7 @@ def populate():
     populate_users()
 
 _ROOT_ATTRS = dict(
-    name=u'', # (at the time of writing) root must have empty name!
+    name=u'',  # (at the time of writing) root must have empty name!
     title=u'Welcome to Kotti',
     description=u'Congratulations! You have successfully installed Kotti.',
     body=u"""
@@ -110,8 +110,8 @@ _ABOUT_ATTRS = dict(
   <em>Photo credit:</em> "Northern Lights Formation" by FlugKerl2.
   <a href="http://commons.wikimedia.org/wiki/File:Northern_Lights_Formation.jpg">
   Copyright info</a>.
-  Originally published in the 
-  <a href="http://en.wikipedia.org/wiki/Extra_EA-300"> Extra EA-300</a> 
+  Originally published in the
+  <a href="http://en.wikipedia.org/wiki/Extra_EA-300"> Extra EA-300</a>
   article.
 </small></p>
 """)
