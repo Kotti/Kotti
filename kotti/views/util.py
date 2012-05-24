@@ -20,6 +20,7 @@ from pyramid.threadlocal import get_current_registry
 from pyramid.threadlocal import get_current_request
 from pyramid.view import render_view_to_response
 from zope.deprecation import deprecated
+from sqlalchemy import or_
 
 from kotti import get_settings
 from kotti import DBSession
@@ -326,14 +327,13 @@ def nodes_tree(request):
         )
 
 
-# do we have to pass the request here?
 def search_content(search=u'', request=None):
-    from sqlalchemy import or_
     searchstring = u'%%%s%%' % search
-    results = DBSession.query(Content).filter(or_(Content.name.like(searchstring),
-                                                  Content.title.like(searchstring),
-                                                  Content.description.like(searchstring),
-                                                  ))
+    results = DBSession.query(Content).filter(
+                or_(Content.name.like(searchstring),
+                    Content.title.like(searchstring),
+                    Content.description.like(searchstring),
+                   ))
     result_dict = []
     for result in results.all():
         result_dict.append({
@@ -343,6 +343,7 @@ def search_content(search=u'', request=None):
             'path': request.resource_path(result),
         })
     return result_dict
+
 
 # BBB starts here --- --- --- --- --- ---
 
