@@ -30,6 +30,9 @@ def _includeme_layout(config):
 def _login_view(request):
     return {}  # pragma: no cover
 
+def _dummy_search(search_term, request):
+    return u"Not found. Sorry!"
+
 class TestApp(UnitTestBase):
     def required_settings(self):
         return {'sqlalchemy.url': testing_db_url(),
@@ -207,7 +210,9 @@ class TestApp(UnitTestBase):
 
     def test_search_content(self):
         from kotti import main
+        from kotti.views.util import search_content
 
         settings = self.required_settings()
-        settings['kotti.search_content'] = 'kotti.views.util.default_search_content'
+        settings['kotti.search_content'] = 'kotti.tests.test_app._dummy_search'
         main({}, **settings)
+        assert search_content(u"Nuno") == u"Not found. Sorry!"
