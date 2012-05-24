@@ -72,12 +72,11 @@ caching_policies = {
 
 
 def default_caching_policy_chooser(context, request, response):
-    authenticated = authenticated_userid(request) is not None
     if request.method != 'GET' or response.status_int != 200:
         return None
     elif isinstance(response, FileResponse):
         return 'Cache Resource'
-    elif authenticated:
+    elif authenticated_userid(request) is not None:
         return 'No Cache'
     elif response.headers['content-type'].startswith('text/html'):
         return 'Cache HTML'
