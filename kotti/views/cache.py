@@ -1,4 +1,5 @@
 import datetime
+from logging import getLogger
 
 from pyramid.events import subscriber
 from pyramid.events import NewResponse
@@ -8,6 +9,8 @@ from pyramid.security import authenticated_userid
 from kotti import get_settings
 
 CACHE_POLICY_HEADER = 'x-caching-policy'
+
+logger = getLogger(__name__)
 
 
 def set_max_age(response, delta, cache_ctrl=None):
@@ -98,7 +101,13 @@ def set_cache_headers(event):
     # CACHE_POLICY_HEADER header), we'll choose one at this point:
     caching_policy = response.headers.get(CACHE_POLICY_HEADER)
     if caching_policy is None:
-        caching_policy = caching_policy_chooser(context, request, response)
+        try:
+            caching_policy = caching_policy_chooser(context, request, response)
+        except:
+            # We don't want to screw up the response if the
+            # caching_policy_chooser raises an exception.
+            logger.exception("{0} raised an exception.".format(
+                caching_policy_chooser))
     if caching_policy is not None:
         response.headers[CACHE_POLICY_HEADER] = caching_policy
 
