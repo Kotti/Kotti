@@ -2,7 +2,7 @@ from pyramid.exceptions import Forbidden
 
 from kotti.testing import DummyRequest
 from kotti.testing import UnitTestBase
-
+from mock import patch
 
 class TestAddableTypes(UnitTestBase):
     def test_view_permitted_yes(self):
@@ -29,6 +29,32 @@ class TestAddableTypes(UnitTestBase):
 
 
 class TestNodePaste(UnitTestBase):
+
+    def test_get_non_existing_paste_item(self):
+        from kotti import DBSession
+        from kotti.resources import Node
+        from kotti.views.edit import get_paste_item
+
+        root = DBSession().query(Node).get(1)
+        request = DummyRequest()
+        request.session['kotti.paste'] = (1701, 'copy')
+        item = get_paste_item(root, request)
+        self.assertEqual(item, None)
+
+    def test_paste_non_existing_node(self):
+        from kotti import DBSession
+        from kotti.resources import Node
+        from kotti.views.edit import paste_node
+
+        root = DBSession().query(Node).get(1)
+        request = DummyRequest()
+
+        for index, action in enumerate(['copy', 'cut']):
+            request.session['kotti.paste'] = (1701, 'copy')
+            response = paste_node(root, request)
+            self.assertEqual(response.status, '302 Found')
+            self.assertEqual(len(request.session['_f_error']), index + 1)
+
     def test_paste_without_edit_permission(self):
         from kotti import DBSession
         from kotti.resources import Node
@@ -49,7 +75,6 @@ class TestNodePaste(UnitTestBase):
         response = paste_node(root, request)
         self.assertEqual(response.status, '302 Found')
 
-
 class TestNodeRename(UnitTestBase):
 
     def test_rename_to_empty_name(self):
@@ -67,7 +92,6 @@ class TestNodeRename(UnitTestBase):
         rename_node(child, request)
         self.assertEqual(request.session.pop_flash('error'),
                          [u'Name and title are required.'])
-
 
 class TestNodeShare(UnitTestBase):
     @staticmethod
