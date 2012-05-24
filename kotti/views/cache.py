@@ -5,6 +5,8 @@ from pyramid.events import NewResponse
 from pyramid.response import FileResponse
 from pyramid.security import authenticated_userid
 
+from kotti import get_settings
+
 CACHE_POLICY_HEADER = 'x-caching-policy'
 
 
@@ -69,7 +71,7 @@ caching_policies = {
 }
 
 
-def choose_caching_policy(context, request, response):
+def default_caching_policy_chooser(context, request, response):
     authenticated = authenticated_userid(request) is not None
     if request.method != 'GET' or response.status_int != 200:
         return None
@@ -83,6 +85,11 @@ def choose_caching_policy(context, request, response):
         return 'Cache Media Content'
 
 
+def caching_policy_chooser(context, request, response):
+    return get_settings()['kotti.caching_policy_chooser'][0](
+        context, request, response)
+
+
 @subscriber(NewResponse)
 def set_cache_headers(event):
     request, response = event.request, event.response
@@ -92,7 +99,7 @@ def set_cache_headers(event):
     # CACHE_POLICY_HEADER header), we'll choose one at this point:
     caching_policy = response.headers.get(CACHE_POLICY_HEADER)
     if caching_policy is None:
-        caching_policy = choose_caching_policy(context, request, response)
+        caching_policy = caching_policy_chooser(context, request, response)
     if caching_policy is not None:
         response.headers[CACHE_POLICY_HEADER] = caching_policy
 

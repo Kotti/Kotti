@@ -59,6 +59,7 @@ conf_defaults = {
     'kotti.authz_policy_factory': 'kotti.acl_factory',
     'kotti.session_factory': 'kotti.beaker_session_factory',
     'kotti.principals_factory': 'kotti.security.principals_factory',
+    'kotti.caching_policy_chooser': 'kotti.views.cache.default_caching_policy_chooser',
     'kotti.date_format': 'medium',
     'kotti.datetime_format': 'medium',
     'kotti.time_format': 'medium',
@@ -76,6 +77,7 @@ conf_dotted = set([
     'kotti.authz_policy_factory',
     'kotti.session_factory',
     'kotti.principals_factory',
+    'kotti.caching_policy_chooser',
     ])
 
 def get_version():
