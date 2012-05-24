@@ -46,7 +46,7 @@ def get_paste_item(context, request):
     if info:
         id, action = info
         item = DBSession().query(Node).get(id)
-        if not item.type_info.addable(context, request):
+        if item is None or not item.type_info.addable(context, request):
             return
         if action == 'cut' and inside(context, item):
             return
@@ -96,22 +96,25 @@ def paste_node(context, request):
     session = DBSession()
     id, action = request.session['kotti.paste']
     item = session.query(Node).get(id)
-    if action == 'cut':
-        if not has_permission('edit', item, request):
-            raise Forbidden()
-        item.__parent__.children.remove(item)
-        context.children.append(item)
-        del request.session['kotti.paste']
-    elif action == 'copy':
-        copy = item.copy()
-        name = copy.name
-        if not name:  # for root
-            name = copy.title
-        name = title_to_name(name, blacklist=context.keys())
-        copy.name = name
-        context.children.append(copy)
-    request.session.flash(_(u'${title} pasted.',
-                            mapping=dict(title=item.title)), 'success')
+    if item is not None:
+        if action == 'cut':
+            if not has_permission('edit', item, request):
+                raise Forbidden()
+            item.__parent__.children.remove(item)
+            context.children.append(item)
+            del request.session['kotti.paste']
+        elif action == 'copy':
+            copy = item.copy()
+            name = copy.name
+            if not name:  # for root
+                name = copy.title
+            name = title_to_name(name, blacklist=context.keys())
+            copy.name = name
+            context.children.append(copy)
+        request.session.flash(_(u'${title} pasted.',
+                                mapping=dict(title=item.title)), 'success')
+    else:
+        request.session.flash(_(u'Could not paste node. It does not exist anymore.'), 'error')
     if not request.is_xhr:
         location = resource_url(context, request)
         return HTTPFound(location=location)
