@@ -4,9 +4,9 @@ from logging import getLogger
 from pyramid.events import subscriber
 from pyramid.events import NewResponse
 from pyramid.response import FileResponse
-from pyramid.security import authenticated_userid
 
 from kotti import get_settings
+from kotti.security import get_user
 
 CACHE_POLICY_HEADER = 'x-caching-policy'
 
@@ -79,7 +79,7 @@ def default_caching_policy_chooser(context, request, response):
         return None
     elif isinstance(response, FileResponse):
         return 'Cache Resource'
-    elif authenticated_userid(request) is not None:
+    elif get_user(request) is not None:
         return 'No Cache'
     elif response.headers['content-type'].startswith('text/html'):
         return 'Cache HTML'
