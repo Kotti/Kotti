@@ -25,6 +25,7 @@ image_scales = {
     'span10': [960, 1920],
     'span11': [1060, 2120],
     'span12': [1160, 2320],
+    'thumb': [64, 64],
     }
 
 
@@ -67,11 +68,14 @@ class ImageView(object):
     @view_config(context=Image,
                  name="image",
                  permission='view')
-    def image(self):
+    def image(self, subpath=None):
         """return the image in a specific scale, either inline (default) or as attachment"""
 
+        if subpath is None:
+            subpath = self.request.subpath
+
         width, height = (None, None)
-        subpath = list(self.request.subpath)
+        subpath = list(subpath)
 
         if (len(subpath) > 0) and (subpath[-1] == "download"):
             disposition = "attachment"
