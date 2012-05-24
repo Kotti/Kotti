@@ -445,7 +445,7 @@ def preferences(context, request):
     api = template_api(context, request)
     api.page_title = _(u"My preferences - ${title}",
                        mapping=dict(title=api.site_title))
-    user = api.user
+    user = request.user
 
     form = UserEditFormView(user, request)()
     if request.is_response(form):

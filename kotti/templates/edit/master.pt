@@ -60,7 +60,7 @@
 
   <body class="view-${request.view_name or 'default'} ${api.body_css_class} logged-in">
     <div metal:define-slot="editor-bar"
-         tal:condition="api.user is not None"
+         tal:condition="request.user is not None"
          tal:replace="api.render_template('kotti:templates/editor-bar.pt')" />
 
     <div class="container">
