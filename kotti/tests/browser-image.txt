@@ -137,46 +137,6 @@ Span1, attachment
   >>> browser.headers["content-disposition"].lower()
   'attachment;filename="sendeschluss.jpg"'
 
-300x200 as string
-
-  >>> browser.open(testing.BASE_URL + '/my-gallery/image-1/image/300x200')
-  >>> browser.headers["content-type"]
-  'image/jpeg'
-  >>> 15000 < int(browser.headers["content-length"]) < 25000
-  True
-  >>> browser.headers["content-disposition"].lower()
-  'inline;filename="sendeschluss.jpg"'
-
-300x200 as string, attachment
-
-  >>> browser.open(testing.BASE_URL + '/my-gallery/image-1/image/300x200/download')
-  >>> browser.headers["content-type"]
-  'image/jpeg'
-  >>> 15000 < int(browser.headers["content-length"]) < 25000
-  True
-  >>> browser.headers["content-disposition"].lower()
-  'attachment;filename="sendeschluss.jpg"'
-
-300x200 as separate URL path segments
-
-  >>> browser.open(testing.BASE_URL + '/my-gallery/image-1/image/300/200')
-  >>> browser.headers["content-type"]
-  'image/jpeg'
-  >>> 15000 < int(browser.headers["content-length"]) < 25000
-  True
-  >>> browser.headers["content-disposition"].lower()
-  'inline;filename="sendeschluss.jpg"'
-
-300x200 as separate URL path segments, attachment
-
-  >>> browser.open(testing.BASE_URL + '/my-gallery/image-1/image/300/200/download')
-  >>> browser.headers["content-type"]
-  'image/jpeg'
-  >>> 15000 < int(browser.headers["content-length"]) < 25000
-  True
-  >>> browser.headers["content-disposition"].lower()
-  'attachment;filename="sendeschluss.jpg"'
-
 Invalid predefined scale (should return original size)
 
   >>> browser.open(testing.BASE_URL + '/my-gallery/image-1/image/invalid_scale')
@@ -190,26 +150,6 @@ Invalid predefined scale (should return original size)
 Invalid predefined scale (should return original size), attachment
 
   >>> browser.open(testing.BASE_URL + '/my-gallery/image-1/image/invalid_scale/download')
-  >>> browser.headers["content-type"]
-  'image/jpeg'
-  >>> browser.headers["content-length"]
-  '107341'
-  >>> browser.headers["content-disposition"].lower()
-  'attachment;filename="sendeschluss.jpg"'
-
-Invalid URL path segment scale (should return original size)
-
-  >>> browser.open(testing.BASE_URL + '/my-gallery/image-1/image/width/height')
-  >>> browser.headers["content-type"]
-  'image/jpeg'
-  >>> browser.headers["content-length"]
-  '107341'
-  >>> browser.headers["content-disposition"].lower()
-  'inline;filename="sendeschluss.jpg"'
-
-Invalid URL path segment scale (should return original size), attachment
-
-  >>> browser.open(testing.BASE_URL + '/my-gallery/image-1/image/width/height/download')
   >>> browser.headers["content-type"]
   'image/jpeg'
   >>> browser.headers["content-length"]

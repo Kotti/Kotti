@@ -3,11 +3,7 @@ Image URLs
 
 Kotti provides on-the-fly image scaling by utilizing `plone.scale`_.
 
-Images (including arbitrary scales) can be referenced by this URL schema: ``/path/to/image_content_object/image[[/<image_scale>]/download]`` where ``<image_scale>`` can be:
-
- - a predefined image scale (see below)
- - a string of the form ``<max_width>x<max_height>`` or
- - a URL path segment of the form ``<max_width>/<max_height>``
+Images can be referenced by this URL schema: ``/path/to/image_content_object/image[/<image_scale>]/download]`` where ``<image_scale>`` is a predefined image scale (see below).
 
 If the last URL path segment is ``download``, the image will be served with ``Content-disposition: attachment`` otherwise it will be served with ``Content-disposition: inline``.
 
