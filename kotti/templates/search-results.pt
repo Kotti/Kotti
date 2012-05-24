@@ -4,10 +4,9 @@
       i18n:domain="Kotti"
       metal:use-macro="api.macro('kotti:templates/view/master.pt')">
 
-  <div metal:fill-slot="container">
+  <div metal:fill-slot="content">
 
     <h2 i18n:translate="">Search Results</h2>
-    <a href="${request.application_url}" i18n:translate="">Back Home</a>
 
     <dl id="search-results">
       <tal:repeat tal:repeat="result results">
