@@ -79,15 +79,12 @@ Cache Resource
   >>> 'Last-Modified' in browser.headers
   True
 
-No Cache
---------
+POST request
+------------
 
   >>> browser.post(testing.BASE_URL, '')
-  >>> browser.headers['X-Caching-Policy']
-  'No Cache'
-  >>> d = delta(browser.headers['Expires'])
-  >>> (d.days, d.seconds) < (0, 0)
-  True
+  >>> 'X-Caching-Policy' in browser.headers
+  False
 
 ---------
 Logged in
@@ -104,9 +101,6 @@ Logged in
 
 Cache HTML
 ----------
-
-We define different caching policies for different kinds of items.  A
-document:
 
   >>> browser.open(testing.BASE_URL)
   >>> browser.headers['X-Caching-Policy']
@@ -128,3 +122,13 @@ Cache Resource
   >>> browser.open(testing.BASE_URL + '/static-kotti/base.css')
   >>> browser.headers['X-Caching-Policy']
   'Cache Resource'
+
+===
+404
+===
+
+  >>> browser.open(testing.BASE_URL + '/this-isnt-here')
+  Traceback (most recent call last):
+  HTTPError: HTTP Error 404: Not Found
+  >>> 'X-Caching-Policy' in browser.headers
+  False
