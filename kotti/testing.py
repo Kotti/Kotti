@@ -106,6 +106,8 @@ def setUpFunctional(global_config=None, **settings):
     import wsgi_intercept.zope_testbrowser
     from webtest import TestApp
 
+    tearDown()
+
     _settings = {
         'sqlalchemy.url': testing_db_url(),
         'kotti.secret': 'secret',
