@@ -43,7 +43,8 @@
     <div tal:condition="api.user is not None"
          tal:replace="api.render_template('kotti:templates/editor-bar.pt')" />
 
-    <div class="container">
+    <div class="container" metal:define-slot="container">
+        <nav tal:replace="api.render_template('kotti:templates/search.pt')" />
         <nav tal:replace="api.render_template('kotti:templates/view/nav.pt')" />
         <div class="row">
           <div class="span3 left-column"

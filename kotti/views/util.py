@@ -325,6 +325,25 @@ def nodes_tree(request):
         item_to_children,
         )
 
+
+# do we have to pass the request here?
+def search_content(search=u'', request=None):
+    from sqlalchemy import or_
+    searchstring = u'%%%s%%' % search
+    results = DBSession.query(Content).filter(or_(Content.name.like(searchstring),
+                                                  Content.title.like(searchstring),
+                                                  Content.description.like(searchstring),
+                                                  ))
+    result_dict = []
+    for result in results.all():
+        result_dict.append({
+            'name': result.name,
+            'title': result.title,
+            'description': result.description,
+            'path': request.resource_path(result),
+        })
+    return result_dict
+
 # BBB starts here --- --- --- --- --- ---
 
 appstruct = get_appstruct

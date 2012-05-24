@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      i18n:domain="Kotti"
+      metal:use-macro="api.macro('kotti:templates/view/master.pt')">
+
+  <div metal:fill-slot="container">
+
+    <h2 i18n:translate=''>Search Results</h2>
+
+    <tal:repeat tal:repeat="result results">
+      <span tal:content="result.title" />
+    </tal:repeat>
+
+  </div>
+</html>

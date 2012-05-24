@@ -1,0 +1,14 @@
+<div>
+<form action="${api.url(api.root)}@@search" method="post" id="form-search">
+  <fieldset>
+    <legend i18n:translate="">
+      Search
+    </legend>
+    <input id="search_term" type="text" name="search-term" />
+    <div class="form-actions">
+      <button type="submit" name="search" value="search" 
+              class="btn" i18n:translate="">Search</button>
+    </div>
+  </fieldset>
+</form>
+</div>

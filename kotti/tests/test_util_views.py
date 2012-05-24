@@ -429,3 +429,23 @@ class TestTemplateStructure(UnitTestBase):
 
         item = TemplateStructure(u'123')
         assert item.split('2') == [u'1', u'3']
+
+
+class TestSearch(UnitTestBase):
+
+    def test_search_empty_content(self):
+        from kotti.views.util import search_content
+        request = DummyRequest()
+        results = search_content(request, u'teststring')
+        assert results == []
+
+    def test_search_content(self):
+        from kotti.views.util import search_content
+        request = DummyRequest()
+        a, aa, ab, ac, aca, acb = create_contents()
+        results = search_content(u'aca', request)
+        assert len(results) == 1
+        assert results[0]['name'] == 'aca'
+        results = search_content(u'a', request)
+        assert len(results) == 7
+        assert results[1]['name'] == 'a'
