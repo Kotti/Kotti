@@ -326,8 +326,12 @@ def nodes_tree(request):
         )
 
 
+def search_content(search_term, request=None):
+    return get_settings()['kotti.search_content'][0](search_term, request)
+
+
 # do we have to pass the request here?
-def search_content(search=u'', request=None):
+def default_search_content(search=u'', request=None):
     from sqlalchemy import or_
     searchstring = u'%%%s%%' % search
     results = DBSession.query(Content).filter(or_(Content.name.like(searchstring),
