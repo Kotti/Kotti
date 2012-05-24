@@ -204,3 +204,10 @@ class TestApp(UnitTestBase):
 
         main({}, **settings)
         self.assertEqual(get_settings()['kotti.site_title'], u'K\xf6tti')
+
+    def test_search_content(self):
+        from kotti import main
+
+        settings = self.required_settings()
+        settings['kotti.search_content'] = 'kotti.views.util.default_search_content'
+        main({}, **settings)
