@@ -1,6 +1,7 @@
 var kotti = {
     dom_changed_handlers: new Array()
 };
+var jq = jQuery;
 
 (function($) {
 
