@@ -1,0 +1,83 @@
+kotti image browser tests
+=========================
+
+Setup and Login
+---------------
+  >>> from kotti import testing
+  >>> tools = testing.setUpFunctional(
+  ...     **{})
+  >>> browser = tools['Browser']()
+  >>> ctrl = browser.getControl
+
+  >>> browser.open(testing.BASE_URL + '/edit')
+  >>> "Log in" in browser.contents
+  True
+  >>> ctrl("Username or email").value = "admin"
+  >>> ctrl("Password").value = "secret"
+  >>> ctrl(name="submit").click()
+  >>> "Welcome, Administrator" in browser.contents
+  True
+
+
+Add some documents
+------------------
+
+  >>> browser.getLink("Add").click()
+  >>> browser.getLink("Document").click()
+  >>> ctrl("Title").value = "Document 1"
+  >>> ctrl("Description").value = u'I am the first Document'
+  >>> ctrl("save").click()
+  >>> "Successfully added item" in browser.contents
+  True
+  >>> browser.url == testing.BASE_URL + '/document-1/'
+  True
+
+  >>> browser.open(testing.BASE_URL)
+  >>> browser.getLink("Document").click()
+
+  >>> ctrl("Title").value = u'Document 2'
+  >>> ctrl("Description").value = u'And I am the second Document'
+  >>> ctrl("save").click()
+  >>> u'Successfully added item' in browser.contents
+  True
+
+
+Search the documents
+--------------------
+
+  >>> browser.open(testing.BASE_URL)
+  >>> ctrl(name='search-term').value = u'Document 1'
+  >>> ctrl(name='search').click()
+  >>> browser.url
+  'http://localhost:6543/@@search-results'
+
+
+  >>> u'<dd>I am the first Document' in browser.contents
+  True
+  >>> u'<dd>And I am the second Document' in browser.contents
+  False
+
+  >>> browser.open(testing.BASE_URL)
+  >>> ctrl(name='search-term').value = u'Document 2'
+  >>> ctrl(name='search').click()
+  >>> u'<dd>I am the first Document' in browser.contents
+  False
+  >>> u'<dd>And I am the second Document' in browser.contents
+  True
+
+
+  >>> browser.open(testing.BASE_URL)
+  >>> ctrl(name='search-term').value = u'Document'
+  >>> ctrl(name='search').click()
+  >>> u'<dd>I am the first Document' in browser.contents
+  True
+  >>> u'<dd>And I am the second Document' in browser.contents
+  True
+
+  >>> browser.open(testing.BASE_URL)
+  >>> ctrl(name='search-term').value = u'the second Document'
+  >>> ctrl(name='search').click()
+  >>> u'<dd>I am the first Document' in browser.contents
+  False
+  >>> u'<dd>And I am the second Document' in browser.contents
+  True

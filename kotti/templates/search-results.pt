@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      i18n:domain="Kotti"
+      metal:use-macro="api.macro('kotti:templates/view/master.pt')">
+
+  <div metal:fill-slot="content">
+
+    <h2 i18n:translate="">Search Results</h2>
+
+    <dl id="search-results">
+      <tal:repeat tal:repeat="result results">
+        <dt class="search-result">
+          <a href="${request.application_url}${result.path}">${result.title}</a>
+        </dt>
+        <dd><span tal:replace="result.description" /></dd>
+      </tal:repeat>
+    </dl>
+
+  </div>
+</html>
