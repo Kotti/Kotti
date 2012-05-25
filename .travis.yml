@@ -11,4 +11,4 @@ install:
 before_script:
   - psql -c 'create database kotti_testing;' -U postgres
   - mysql -e 'create database kotti_testing;'
-script: py.test --tb=native
+script: py.test --tb=native --cov=kotti --cov-report=term-missing
