@@ -19,7 +19,6 @@ form.deform input, form.deform textarea, ul.tagit {
     width: 90%;
 }
 
-textarea.mce_editable {
+textarea.tinymce {
     height: 400px;
-
 }
