@@ -7,11 +7,11 @@
       metal:use-macro="api.macro('kotti:templates/view/master.pt')">
 
   <div metal:fill-slot="content">
-    <div tal:condition="api.user"
+    <div tal:condition="request.user"
          i18n:translate="">
-      Welcome, <span tal:omit-tag="" i18n:name="user">${api.user.title}</span>!  You are logged in.
+      Welcome, <span tal:omit-tag="" i18n:name="user">${request.user.title}</span>!  You are logged in.
     </div>
-    <div tal:condition="not api.user"
+    <div tal:condition="not request.user"
          i18n:translate="">
       Welcome, you are not logged in.
     </div>

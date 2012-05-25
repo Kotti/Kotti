@@ -21,6 +21,7 @@ from pyramid.threadlocal import get_current_request
 from pyramid.view import render_view_to_response
 from zope.deprecation import deprecated
 from sqlalchemy import or_
+from zope.deprecation.deprecation import deprecate
 
 from kotti import get_settings
 from kotti import DBSession
@@ -178,7 +179,9 @@ class TemplateAPI(object):
         return reversed(self.lineage)
 
     @reify
-    def user(self):
+    @deprecate('api.user is deprecated as of Kotti 0.7.0.  '
+               'Use ``request.user`` instead.')
+    def user(self):  # pragma: no cover
         return get_user(self.request)
 
     def has_permission(self, permission, context=None):
@@ -219,7 +222,7 @@ class TemplateAPI(object):
 
     def avatar_url(self, user=None, size="14", default_image='identicon'):
         if user is None:
-            user = self.user
+            user = self.request.user
         email = user.email
         if not email:
             email = user.name

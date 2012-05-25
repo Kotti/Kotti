@@ -39,11 +39,11 @@
           </tal:condition>
         </tal:condition>
         
-        <ul tal:condition="api.user is not None" class="nav pull-right">
+        <ul tal:condition="request.user is not None" class="nav pull-right">
           <li class="dropdown">
             <a href="#" class="dropdown-toggle" data-toggle="dropdown">
               <img src="${api.avatar_url(default_image='mm')}" />
-              ${api.user.title}
+              ${request.user.title}
               <b class="caret"></b>
             </a>
             <ul class="dropdown-menu">

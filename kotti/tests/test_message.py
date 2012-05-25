@@ -25,11 +25,11 @@ class TestSendSetPassword(UnitTestBase):
         for patcher in self.patchers:
             patcher.stop()
 
-    def test_send_set_password_basic(self):
-        from kotti.message import send_set_password
+    def test_email_set_password_basic(self):
+        from kotti.message import email_set_password
 
         user = Dummy(name=u'joe', email='joe@bar.com', title=u'Joe')
-        send_set_password(user, DummyRequest())
+        email_set_password(user, DummyRequest())
 
         assert hasattr(user, 'confirm_token')
         assert self.mailer.send.called
@@ -61,6 +61,16 @@ class TestSendSetPassword(UnitTestBase):
         message = self.mailer.send.call_args[0][0]
         assert message.subject == 'Hey there Joe'
         assert message.body == 'This is Awesome site speaking'
+
+    def test_email_set_password_add_query(self):
+        from kotti.message import email_set_password
+
+        user = Dummy(name=u'joe', email='joe@bar.com', title=u'Joe')
+        email_set_password(user, DummyRequest(), add_query={'another': 'param'})
+
+        assert self.mailer.send.called
+        message = self.mailer.send.call_args[0][0]
+        assert 'another=param' in message.body
 
     def test_send_set_password_add_query(self):
         from kotti.message import send_set_password
