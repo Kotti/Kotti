@@ -1,5 +1,5 @@
 <div id="search">
-  <form action="${api.url(api.root)}@@search" method="post" id="form-search">
+  <form action="${api.url(api.root)}@@search-results" method="post" id="form-search">
       <input type="text" name="search-term" />
         <button type="submit" name="search" value="search" 
                 class="btn" i18n:translate="">&#8594;</button>

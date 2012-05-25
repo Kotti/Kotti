@@ -32,17 +32,10 @@ def view_node(context, request):  # pragma: no coverage
     return {}  # BBB
 
 
-def search(context, request, **kwargs):
-    request.session['search-term'] = request.POST['search-term']
-    location = resource_url(get_root(), request) + '@@search-results'
-    return HTTPFound(location=location)
-
-
 def search_results(context, request):
-    search_term = None
     results = []
-    if u'search-term' in request.session:
-        search_term = request.session[u'search-term']
+    if u'search-term' in request.POST:
+        search_term = request.POST[u'search-term']
         results = search_content(search_term, request)
     return {'results': results}
 
@@ -58,7 +51,7 @@ def includeme(config):
         )
 
     config.add_view(
-        search,
+        None,
         name='search',
         permission='view',
         renderer='kotti:templates/search.pt',
