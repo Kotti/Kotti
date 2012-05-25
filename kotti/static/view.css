@@ -10,13 +10,13 @@ a.site-title {
     letter-spacing: -1px;
 }
 
-.search-slot {
+#search {
     position: absolute;
     right: 50px;
     top: 50px;
 }
 
-#search_term {
+#search input {
     margin: 0;
 }
 

@@ -45,10 +45,7 @@
 
     <div class="container">
 
-        <div class="search-slot">
-             <search tal:replace="api.render_template('kotti:templates/search.pt')">
-        </div>
-
+        <search tal:replace="api.render_template('kotti:templates/search.pt')">
         <nav tal:replace="api.render_template('kotti:templates/view/nav.pt')" />
         <div class="row">
           <div class="span3 left-column"
