@@ -1,10 +1,16 @@
 import warnings
 
 from pyramid.exceptions import NotFound
+from pyramid.httpexceptions import HTTPFound
 from pyramid.view import render_view_to_response
+from pyramid.url import resource_url
 
 from kotti.resources import IContent
 from kotti.resources import Document
+from kotti.resources import get_root
+
+from kotti.views.util import search_content
+
 
 def view_content_default(context, request):
     """This view is always registered as the default view for any Content.
@@ -25,6 +31,15 @@ def view_content_default(context, request):
 def view_node(context, request):  # pragma: no coverage
     return {}  # BBB
 
+
+def search_results(context, request):
+    results = []
+    if u'search-term' in request.POST:
+        search_term = request.POST[u'search-term']
+        results = search_content(search_term, request)
+    return {'results': results}
+
+
 def includeme(config):
     config.add_view('kotti.views.view.view_content_default', context=IContent)
 
@@ -33,4 +48,18 @@ def includeme(config):
         name='view',
         permission='view',
         renderer='kotti:templates/view/document.pt',
+        )
+
+    config.add_view(
+        None,
+        name='search',
+        permission='view',
+        renderer='kotti:templates/search.pt',
+        )
+
+    config.add_view(
+        search_results,
+        name='search-results',
+        permission='view',
+        renderer='kotti:templates/search-results.pt',
         )

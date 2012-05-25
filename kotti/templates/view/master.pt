@@ -44,6 +44,8 @@
          tal:replace="api.render_template('kotti:templates/editor-bar.pt')" />
 
     <div class="container">
+
+        <search tal:replace="api.render_template('kotti:templates/search.pt')">
         <nav tal:replace="api.render_template('kotti:templates/view/nav.pt')" />
         <div class="row">
           <div class="span3 left-column"
