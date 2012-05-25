@@ -14,3 +14,12 @@ form.deform div.input label {
     padding-top: 0;
     margin-right: 5px;
 }
+
+form.deform input, form.deform textarea, ul.tagit {
+    width: 90%;
+}
+
+textarea.mce_editable {
+    height: 400px;
+
+}
