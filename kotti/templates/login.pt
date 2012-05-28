@@ -4,7 +4,7 @@
       xmlns:tal="http://xml.zope.org/namespaces/tal"
       xmlns:i18n="http://xml.zope.org/namespaces/i18n"
       i18n:domain="Kotti"
-      metal:use-macro="api.macro('kotti:templates/edit/master.pt')">
+      metal:use-macro="api.macro('kotti:templates/view/master.pt')">
 
   <div metal:fill-slot="content" class="login-form">
     <h1 i18n:translate="">Login</h1>
