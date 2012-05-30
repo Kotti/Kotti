@@ -237,19 +237,23 @@ kotti.resources.Content. The default configuration here is:
   kotti.search_function = kotti.views.util.default_search_content
 
 You can provide an own search function in an add-on and register this
-in your INI file. The return value of the search function has to be a
-list of dictionaries with the following structure:
+in your INI file. The return value of the search function is a list of
+dictionaries, each representing a search result:
 
-.. code-block:: ini
+.. code-block:: python
 
-  [dict(name='Named identifier of the content object',
-        title='Title of the content object',
-        description='Description of the content object',
-        path='Relative path to the content object',), ]
+  [{'title': 'Title of search result 1',
+    'description': 'Description of search result 1',
+    'path': '/path/to/search-result-1'},
+   {'title': 'Title of search result 2',
+    'description': 'Description of search result 2',
+    'path': '/path/to/search-result-2'},
+   ...
+   ]
 
-All keys have to be in the dictionaries, the value of the description
-can be empty. An add-on where already another search function is included
-is `kotti_solr`_, what provides an integration with `Solr`_ search engine.
+An add-on that defines an alternative search function is
+`kotti_solr`_, which provides an integration with the `Solr`_ search
+engine.
 
 .. _user interface language:
 
