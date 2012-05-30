@@ -56,6 +56,7 @@ kotti.base_includes          List of base Python configuration hooks
 kotti.configurators          List of advanced functions for config
 kotti.root_factory           Override Kotti's default Pyramid *root factory*
 kotti.populators             List of functions to fill initial database
+kotti.search_content         Override Kotti's default search function
 
 kotti.asset_overrides        Override Kotti's templates, CSS files and images.
 kotti.templates.api          Override ``api`` used by all templates
@@ -223,6 +224,33 @@ Populators are functions with no arguments that get called on system
 startup.  They may then make automatic changes to the database (before
 calling ``transaction.commit()``).
 
+.. _kotti.search_content:
+
+kotti.search_content
+````````````````````
+
+Kotti provides a simple search over the content types based on
+kotti.resources.Content. The default configuration here is:
+
+.. code-block:: ini
+
+  kotti.search_function = kotti.views.util.default_search_content
+
+You can provide an own search function in an add-on and register this
+in your INI file. The return value of the search function has to be a
+list of dictionaries with the following structure:
+
+.. code-block:: ini
+
+  [dict(name='Named identifier of the content object',
+        title='Title of the content object',
+        description='Description of the content object',
+        path='Relative path to the content object',), ]
+
+All keys have to be in the dictionaries, the value of the description
+can be empty. An add-on where already another search function is included
+is `kotti_solr`_, what provides an integration with `Solr`_ search engine.
+
 .. _user interface language:
 
 Configure the user interface language
@@ -286,6 +314,8 @@ configuration variable.  The default is:
 .. _SQLAlchemy database URL: http://www.sqlalchemy.org/docs/core/engines.html#database-urls
 .. _Pyramid Configurator API: http://docs.pylonsproject.org/projects/pyramid/dev/api/config.html
 .. _kotti_twitter: http://pypi.python.org/pypi/kotti_twitter
+.. _kotti_solr: http://pypi.python.org/pypi/kotti_solr
+.. _Solr: http://lucene.apache.org/solr/
 .. _pyramid.authentication.AuthTktAuthenticationPolicy: http://docs.pylonsproject.org/projects/pyramid/dev/api/authentication.html
 .. _pyramid.authorization.ACLAuthorizationPolicy: http://docs.pylonsproject.org/projects/pyramid/dev/api/authorization.html
 .. _pyramid.session.UnencryptedCookieSessionFactoryConfig: http://docs.pylonsproject.org/projects/pyramid/dev/api/session.html
