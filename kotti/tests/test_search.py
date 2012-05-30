@@ -34,3 +34,11 @@ class TestSearch(UnitTestBase):
         assert results[1]['name'] == 'doc11'
         assert results[1]['title'] == 'Second Document'
         assert results[1]['path'] == '/doc1/doc11/'
+
+    def test_search_content_without_permission(self):
+        from kotti.views.util import search_content
+        request = DummyRequest()
+        doc1, doc11, doc12 = create_contents()
+        self.config.testing_securitypolicy(permissive=False)
+        results = search_content(u'Document', request)
+        assert len(results) == 0
