@@ -20,6 +20,11 @@ install_requires = [
     'deform_bootstrap>=0.1',  # checked_input widget
     'formencode',
     'html2text',
+    'js.bootstrap',
+    'js.jquery',
+    'js.jquery_timepicker_addon',
+    'js.jqueryui',
+    'js.jqueryui_tagit',
     'lingua>=1.3',
     'Pillow',  # indirect dependency of plone.scale (that doesn't declare this dependency itself)
     'plone.i18n<2.0',  # >= 2.0 adds a huge number of dependencies
@@ -80,6 +85,10 @@ setup(name='Kotti',
       entry_points="""\
       [paste.app_factory]
       main = kotti:main
+      [fanstatic.libraries]
+      kotti = kotti.static:lib_kotti
+      deform = kotti.static:lib_deform
+      deform_bootstrap = kotti.static:lib_deform_bootstrap
       """,
       extras_require={
           'testing': tests_require,

@@ -32,6 +32,8 @@ from kotti.resources import Content
 from kotti.security import get_user
 from kotti.security import has_permission
 from kotti.security import view_permitted
+from kotti.static import edit_needed
+from kotti.static import view_needed
 from kotti.views.form import get_appstruct
 from kotti.views.form import BaseFormView
 from kotti.views.form import AddFormView
@@ -89,6 +91,7 @@ class TemplateStructure(object):
     def __getattr__(self, key):
         return getattr(self.html, key)
 
+
 class Slots(object):
     def __init__(self, context, request):
         self.context = context
@@ -110,6 +113,7 @@ class Slots(object):
                     value.append(snippet)
         setattr(self, name, value)
         return value
+
 
 class TemplateAPI(object):
     """This implements the 'api' object that's passed to all
@@ -139,6 +143,11 @@ class TemplateAPI(object):
         self.bare = bare
         self.slots = Slots(context, request)
         self.__dict__.update(kwargs)
+
+        if request.user is None:
+            view_needed.need()
+        else:
+            edit_needed.need()
 
     def macro(self, asset_spec, macro_name='main'):
         if self.bare and asset_spec in (
@@ -289,6 +298,7 @@ def ensure_view_selector(func):
     wrapper.__doc__ = func.__doc__
     return wrapper
 
+
 class NavigationNodeWrapper(object):
     def __init__(self, node, request, item_mapping, item_to_children):
         self._node = node
@@ -310,6 +320,7 @@ class NavigationNodeWrapper(object):
 
     def __getattr__(self, name):
         return getattr(self._node, name)
+
 
 def nodes_tree(request):
     item_mapping = {}
