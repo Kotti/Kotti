@@ -4,6 +4,7 @@ from mock import patch
 from kotti.testing import DummyRequest
 from kotti.testing import UnitTestBase
 
+
 class TestUserManagement(UnitTestBase):
     def test_roles(self):
         from kotti.resources import get_root
@@ -85,6 +86,7 @@ class TestUserManagement(UnitTestBase):
         self.assertRaises(
             colander.Invalid,
             group_validator, None, u'this-group-never-exists')
+
 
 class TestSetPassword(UnitTestBase):
     def setUp(self):

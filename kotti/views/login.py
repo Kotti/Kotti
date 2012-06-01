@@ -21,6 +21,7 @@ from kotti.security import get_principals
 from kotti.util import _
 from kotti.views.util import template_api
 
+
 def _find_user(login):
     principals = get_principals()
     principal = principals.get(login)
@@ -34,6 +35,7 @@ def _find_user(login):
         else:
             for p in principals.search(email=login):
                 return p
+
 
 def login(context, request):
     principals = get_principals()
@@ -78,11 +80,13 @@ def login(context, request):
         'password': password,
         }
 
+
 def logout(context, request):
     headers = forget(request)
     request.session.flash(_(u"You have been logged out."))
     location = request.params.get('came_from', request.application_url)
     return HTTPFound(location=location, headers=headers)
+
 
 class SetPasswordSchema(colander.MappingSchema):
     password = colander.SchemaNode(
@@ -105,6 +109,7 @@ class SetPasswordSchema(colander.MappingSchema):
         widget=HiddenWidget(),
         missing=colander.null,
         )
+
 
 def set_password(context, request,
                  success_msg=_(u"You've reset your password successfully.")):
@@ -152,6 +157,7 @@ def set_password(context, request,
         'form': rendered_form,
         }
 
+
 def forbidden_redirect(context, request):
     if authenticated_userid(request):
         location = request.application_url + '/@@forbidden'
@@ -160,8 +166,10 @@ def forbidden_redirect(context, request):
             {'came_from': request.url})
     return HTTPFound(location=location)
 
+
 def forbidden_view(request):
     return request.exception
+
 
 def includeme(config):
     config.add_view(

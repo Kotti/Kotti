@@ -6,6 +6,7 @@ from pyramid.authentication import CallbackAuthenticationPolicy
 from kotti.testing import DummyRequest
 from kotti.testing import UnitTestBase
 
+
 class TestGroups(UnitTestBase):
     def test_root_default(self):
         from kotti.resources import get_root
@@ -395,6 +396,7 @@ class TestGroups(UnitTestBase):
         DBSession.flush()
         self.assertEqual(DBSession.query(LocalGroup).count(), 0)
 
+
 class TestPrincipals(UnitTestBase):
     def get_principals(self):
         from kotti.security import get_principals
@@ -572,6 +574,7 @@ class TestPrincipals(UnitTestBase):
             [request.session.pop_flash('success')[0].interpolate()],
             [u'Welcome, Bob Dabolina!'])
 
+
 class TestAuthzContextManager(TestCase):
     def test_basic(self):
         from kotti.security import authz_context
@@ -602,6 +605,7 @@ class TestAuthzContextManager(TestCase):
         except ValueError:
             assert request.environ['authz_context'] == context2
 
+
 class TestHasPermission(TestCase):
     def test_basic(self):
         from kotti.security import has_permission
@@ -618,6 +622,7 @@ class TestHasPermission(TestCase):
             has_permission(permission, context, request)
 
         assert args == [(permission, context, request)]
+
 
 class TestRolesSetters(UnitTestBase):
     def test_set_roles(self):

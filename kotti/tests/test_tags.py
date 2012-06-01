@@ -228,11 +228,13 @@ class TestTags(EventTestBase, UnitTestBase):
         root[u'folder_1'][u'content_2'] = Content()
         root[u'folder_1'][u'content_2'].tags = [u'first tag', u'third tag']
         first_tag = ses.query(Tag).filter(Tag.title == u'first tag').one()
-        assert [rel.name for rel in first_tag.items] == [u'folder_1', u'content_2']
+        assert [rel.name for rel in first_tag.items] == [
+            u'folder_1', u'content_2']
         second_tag = ses.query(Tag).filter(Tag.title == u'second tag').one()
         assert [rel.name for rel in second_tag.items] == [u'folder_1']
         third_tag = ses.query(Tag).filter(Tag.title == u'third tag').one()
-        assert [rel.name for rel in third_tag.items] == [u'content_1', u'content_2']
+        assert [rel.name for rel in third_tag.items] == [
+            u'content_1', u'content_2']
 
     def test_get_content_items_for_tag_title(self):
         from kotti import DBSession
@@ -286,7 +288,8 @@ class TestCommaSeparatedListWidget(UnitTestBase):
             widget.template, field=field, cstruct=['yes'])
 
     def test_widget_deserialize_null(self):
-        assert self.make_one().deserialize(None, colander.null) == colander.null
+        assert (self.make_one().deserialize(None, colander.null) ==
+                colander.null)
 
     def test_widget_deserialize(self):
         assert self.make_one().deserialize(None, 'foo,bar') == ['foo', 'bar']

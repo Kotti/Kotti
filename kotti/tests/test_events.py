@@ -3,6 +3,7 @@ from mock import patch
 from kotti.testing import EventTestBase
 from kotti.testing import UnitTestBase
 
+
 class TestEvents(EventTestBase, UnitTestBase):
     @patch('kotti.events.authenticated_userid')
     @patch('kotti.events.get_current_request')
@@ -37,15 +38,22 @@ class TestEvents(EventTestBase, UnitTestBase):
         from kotti.resources import Content
 
         insert_events = []
+
         def insert(event):
             insert_events.append(event)
+
         update_events = []
+
         def update(event):
             update_events.append(event)
+
         delete_events = []
+
         def delete(event):
             delete_events.append(event)
+
         after_delete_events = []
+
         def after_delete(event):
             after_delete_events.append(event)
 

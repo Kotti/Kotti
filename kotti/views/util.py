@@ -89,6 +89,7 @@ class TemplateStructure(object):
     def __getattr__(self, key):
         return getattr(self.html, key)
 
+
 class Slots(object):
     def __init__(self, context, request):
         self.context = context
@@ -110,6 +111,7 @@ class Slots(object):
                     value.append(snippet)
         setattr(self, name, value)
         return value
+
 
 class TemplateAPI(object):
     """This implements the 'api' object that's passed to all
@@ -289,6 +291,7 @@ def ensure_view_selector(func):
     wrapper.__doc__ = func.__doc__
     return wrapper
 
+
 class NavigationNodeWrapper(object):
     def __init__(self, node, request, item_mapping, item_to_children):
         self._node = node
@@ -310,6 +313,7 @@ class NavigationNodeWrapper(object):
 
     def __getattr__(self, name):
         return getattr(self._node, name)
+
 
 def nodes_tree(request):
     item_mapping = {}

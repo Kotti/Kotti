@@ -8,9 +8,11 @@ import transaction
 
 BASE_URL = 'http://localhost:6543'
 
+
 class Dummy(dict):
     def __init__(self, **kwargs):
         self.__dict__.update(kwargs)
+
 
 class DummyRequest(testing.DummyRequest):
     is_xhr = False
@@ -20,8 +22,10 @@ class DummyRequest(testing.DummyRequest):
         return (hasattr(ob, 'app_iter') and hasattr(ob, 'headerlist') and
                 hasattr(ob, 'status'))
 
+
 def testing_db_url():
     return os.environ.get('KOTTI_TEST_DB_STRING', 'sqlite://')
+
 
 def _initTestingDB():
     from sqlalchemy import create_engine
@@ -30,6 +34,7 @@ def _initTestingDB():
     database_url = testing_db_url()
     session = initialize_sql(create_engine(database_url), drop_all=True)
     return session
+
 
 def _populator():
     from kotti import DBSession
@@ -41,6 +46,7 @@ def _populator():
         DBSession.delete(doc)
     transaction.commit()
 
+
 def _turn_warnings_into_errors():  # pragma: no cover
     # turn all warnings into errors, but let the `ImportWarning`
     # produced by Babel's `localedata.py` vs `localedata/` show up once...
@@ -48,6 +54,7 @@ def _turn_warnings_into_errors():  # pragma: no cover
     localedata  # make pyflakes happy... :p
     from warnings import filterwarnings
     filterwarnings("error")
+
 
 def setUp(init_db=True, **kwargs):
     #_turn_warnings_into_errors()
@@ -73,6 +80,7 @@ def setUp(init_db=True, **kwargs):
     transaction.begin()
     return config
 
+
 def tearDown():
     from kotti import events
     from kotti import security
@@ -87,6 +95,7 @@ def tearDown():
     transaction.abort()
     testing.tearDown()
 
+
 class UnitTestBase(TestCase):
     def setUp(self, **kwargs):
         self.config = setUp(**kwargs)
@@ -94,12 +103,14 @@ class UnitTestBase(TestCase):
     def tearDown(self):
         tearDown()
 
+
 class EventTestBase(TestCase):
     def setUp(self, **kwargs):
         super(EventTestBase, self).setUp(**kwargs)
         self.config.include('kotti.events')
 
 # Functional ----
+
 
 def setUpFunctional(global_config=None, **settings):
     from kotti import main
@@ -128,6 +139,7 @@ def setUpFunctional(global_config=None, **settings):
         test_app=TestApp(app),
         )
 
+
 class FunctionalTestBase(TestCase):
     BASE_URL = BASE_URL
 
@@ -152,6 +164,7 @@ class FunctionalTestBase(TestCase):
         browser.getControl(name="submit").click()
         return browser
 
+
 class TestingRootFactory(dict):
     __name__ = ''  # root is required to have an empty name!
     __parent__ = None
@@ -160,8 +173,10 @@ class TestingRootFactory(dict):
     def __init__(self, request):
         super(TestingRootFactory, self).__init__()
 
+
 def dummy_view(context, request):
     return {}
+
 
 def include_testing_view(config):
     config.add_view(
@@ -178,6 +193,7 @@ def include_testing_view(config):
         renderer='kotti:tests/testing_view.pt',
         )
 
+
 def setUpFunctionalStrippedDownApp(global_config=None, **settings):
     # An app that doesn't use Nodes at all
     _settings = {
@@ -193,6 +209,7 @@ def setUpFunctionalStrippedDownApp(global_config=None, **settings):
     _settings.update(settings)
 
     return setUpFunctional(global_config, **_settings)
+
 
 def registerDummyMailer():
     from pyramid_mailer.mailer import DummyMailer

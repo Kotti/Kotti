@@ -18,6 +18,7 @@ def populate_users():
             'groups': [u'role:admin'],
             }
 
+
 def populate():
     if DBSession.query(Node).count() == 0:
         root = Document(**_ROOT_ATTRS)

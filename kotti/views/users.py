@@ -237,7 +237,9 @@ def user_schema(base=PrincipalFull()):
         has_password = False
     if has_password:
         schema['password'].description = _(
-            u"Leave this empty and tick the 'Send password registration' box below to have the user set their own password.")
+            u"Leave this empty and tick the 'Send password registration' "
+            "box below to have the user set their own password."
+            )
     schema['title'].title = _(u"Full name")
     return schema
 

@@ -6,6 +6,7 @@ from mock import MagicMock
 from kotti.testing import DummyRequest
 from kotti.testing import UnitTestBase
 
+
 def create_contents(root=None):
     from kotti.resources import get_root
     from kotti.resources import Content
@@ -26,6 +27,7 @@ def create_contents(root=None):
     aca = ac['aca'] = Content()
     acb = ac['acb'] = Content()
     return a, aa, ab, ac, aca, acb
+
 
 class TestTemplateAPI(UnitTestBase):
     def make(self, context=None, request=None, id=1, **kwargs):
@@ -108,8 +110,10 @@ class TestTemplateAPI(UnitTestBase):
         # these:
         class MyLink(ViewLink):
             permit = True
+
             def permitted(self, context, request):
                 return self.permit
+
         open_link = MyLink('open')
         secure_link = MyLink('secure')
         secure_link.permit = False
@@ -200,6 +204,7 @@ class TestTemplateAPI(UnitTestBase):
 
     def test_slots(self):
         from kotti.views.slots import register, RenderAboveContent
+
         def render_something(context, request):
             return u"Hello, %s!" % context.title
         register(RenderAboveContent, None, render_something)
@@ -227,6 +232,7 @@ class TestTemplateAPI(UnitTestBase):
         from kotti.views.slots import register, RenderAboveContent
 
         called = []
+
         def render_something(context, request):
             called.append(True)
         register(RenderAboveContent, None, render_something)
@@ -297,10 +303,13 @@ class TestTemplateAPI(UnitTestBase):
 
     def test_render_view(self):
         from pyramid.response import Response
+
         def first_view(context, request):
             return Response(u'first')
+
         def second_view(context, request):
             return Response(u'second')
+
         self.config.add_view(first_view, name='')
         self.config.add_view(second_view, name='second')
         api = self.make()
@@ -321,6 +330,7 @@ class TestTemplateAPI(UnitTestBase):
         api = self.make()
         self.assertEqual(api.get_type('Document'), Document)
         self.assertEqual(api.get_type('NoExist'), None)
+
 
 class TestViewUtil(UnitTestBase):
     def test_add_renderer_globals_json(self):
@@ -351,6 +361,7 @@ class TestViewUtil(UnitTestBase):
         add_renderer_globals(event)
         self.assertTrue('api' in event)
 
+
 class TestUtil(UnitTestBase):
     def test_ensure_view_selector(self):
         from kotti.views.util import ensure_view_selector
@@ -360,6 +371,7 @@ class TestUtil(UnitTestBase):
         # We check that path_info was set accordingly though:
         wrapper(None, request)
         self.assertEqual(request.path_info, u'/@@edit')
+
 
 class TestLocalNavigationSlot(UnitTestBase):
     def setUp(self):
@@ -400,6 +412,7 @@ class TestLocalNavigationSlot(UnitTestBase):
         ac.in_navigation = False
         assert render_local_navigation(a, DummyRequest()) is None
 
+
 class TestNodesTree(UnitTestBase):
     def test_it(self):
         from kotti.views.util import nodes_tree
@@ -422,6 +435,7 @@ class TestNodesTree(UnitTestBase):
             0, 1, 2]
         assert [ch.id for ch in tree.children[0].children] == [
             ab.id, aa.id, ac.id]
+
 
 class TestTemplateStructure(UnitTestBase):
     def test_getattr(self):

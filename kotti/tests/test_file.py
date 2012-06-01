@@ -8,6 +8,7 @@ from mock import patch
 from kotti.testing import DummyRequest
 from kotti.testing import UnitTestBase
 
+
 class TestFileViews(UnitTestBase):
     def setUp(self):
         from kotti.resources import File
@@ -37,6 +38,7 @@ class TestFileViews(UnitTestBase):
         assert headers["Content-Disposition"] == (
             'attachment;filename="myfle.png"')
         assert res.body == 'file contents'
+
 
 class TestEditFileFormView(TestCase):
     def make_one(self):
@@ -75,6 +77,7 @@ class TestEditFileFormView(TestCase):
         assert view.context.filename == u'myfile.png'
         assert view.context.mimetype == u'image/png'
         assert view.context.size == 777
+
 
 class TestAddFileFormView(TestCase):
     def make_one(self):
@@ -119,6 +122,7 @@ class TestAddFileFormView(TestCase):
                 mimetype=u'image/png',
                 ),
             ))
+
 
 class TestFileUploadTempStore(TestCase):
     def make_one(self):

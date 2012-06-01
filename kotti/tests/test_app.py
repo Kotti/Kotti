@@ -13,12 +13,14 @@ from kotti.testing import TestingRootFactory
 from kotti.testing import UnitTestBase
 from kotti.testing import testing_db_url
 
+
 def _includeme_login(config):
     config.add_view(
         _login_view,
         name='login',
         renderer='kotti:templates/login.pt',
         )
+
 
 def _includeme_layout(config):
     # override edit master layout with view master layout
@@ -27,11 +29,14 @@ def _includeme_layout(config):
         override_with='kotti:templates/view/master.pt',
         )
 
+
 def _login_view(request):
     return {}  # pragma: no cover
 
+
 def _dummy_search(search_term, request):
     return u"Not found. Sorry!"
+
 
 class TestApp(UnitTestBase):
     def required_settings(self):
@@ -63,8 +68,8 @@ class TestApp(UnitTestBase):
         main({}, **settings)
 
         registry = get_current_registry()
-        assert registry.queryUtility(IAuthenticationPolicy) != None
-        assert registry.queryUtility(IAuthorizationPolicy) != None
+        assert registry.queryUtility(IAuthenticationPolicy) is not None
+        assert registry.queryUtility(IAuthorizationPolicy) is not None
 
     def test_auth_policies_override(self):
         from kotti import main
@@ -75,8 +80,8 @@ class TestApp(UnitTestBase):
         main({}, **settings)
 
         registry = get_current_registry()
-        assert registry.queryUtility(IAuthenticationPolicy) == None
-        assert registry.queryUtility(IAuthorizationPolicy) == None
+        assert registry.queryUtility(IAuthenticationPolicy) is None
+        assert registry.queryUtility(IAuthorizationPolicy) is None
 
     def test_persistent_settings(self):
         from kotti import get_settings
@@ -180,7 +185,7 @@ class TestApp(UnitTestBase):
         assert isinstance(get_root(), TestingRootFactory)
         assert isinstance(app.root_factory(), TestingRootFactory)
 
-    def test_render_master_edit_template_with_minimal_root(self, settings=None):
+    def test_render_master_edit_template_minimal_root(self, settings=None):
         from kotti import main
 
         settings = settings or self.required_settings()
@@ -192,11 +197,11 @@ class TestApp(UnitTestBase):
         (status, headers, response) = request.call_application(app)
         assert status == '200 OK'
 
-    def test_render_master_view_template_with_minimal_root(self):
+    def test_render_master_view_template_minimal_root(self):
         settings = self.required_settings()
         settings['pyramid.includes'] = (
             'kotti.tests.test_app._includeme_layout')
-        return self.test_render_master_edit_template_with_minimal_root(settings)
+        return self.test_render_master_edit_template_minimal_root(settings)
 
     def test_setting_values_as_unicode(self):
         from kotti import get_settings

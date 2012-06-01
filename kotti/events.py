@@ -52,27 +52,34 @@ from kotti.security import list_groups
 from kotti.security import list_groups_raw
 from kotti.security import set_groups
 
+
 class ObjectEvent(object):
     def __init__(self, object, request=None):
         self.object = object
         self.request = request
 
+
 class ObjectInsert(ObjectEvent):
     pass
+
 
 class ObjectUpdate(ObjectEvent):
     pass
 
+
 class ObjectDelete(ObjectEvent):
     pass
 
+
 class ObjectAfterDelete(ObjectEvent):
     pass
+
 
 class DispatcherDict(defaultdict, OrderedDict):
     def __init__(self, *args, **kwargs):
         defaultdict.__init__(self, list)
         OrderedDict.__init__(self, *args, **kwargs)
+
 
 class Dispatcher(DispatcherDict):
     """Dispatches based on event type.
@@ -112,6 +119,7 @@ class Dispatcher(DispatcherDict):
                     results.append(handler(event))
         return results
 
+
 class ObjectEventDispatcher(DispatcherDict):
     """Dispatches based on both event type and object type.
 
@@ -140,12 +148,13 @@ class ObjectEventDispatcher(DispatcherDict):
     """
     def __call__(self, event):
         results = []
-        for (event_type, object_type), handlers in self.items():
-            if (isinstance(event, event_type) and
-                (object_type is None or isinstance(event.object, object_type))):
+        for (evtype, objtype), handlers in self.items():
+            if (isinstance(event, evtype) and
+                (objtype is None or isinstance(event.object, objtype))):
                 for handler in handlers:
                     results.append(handler(event))
         return results
+
 
 def clear():
     listeners.clear()
@@ -157,19 +166,24 @@ notify = listeners.__call__
 objectevent_listeners = ObjectEventDispatcher()
 clear()
 
+
 def _before_insert(mapper, connection, target):
     notify(ObjectInsert(target, get_current_request()))
+
 
 def _before_update(mapper, connection, target):
     session = DBSession.object_session(target)
     if session.is_modified(target, include_collections=False):
         notify(ObjectUpdate(target, get_current_request()))
 
+
 def _before_delete(mapper, conection, target):
     notify(ObjectDelete(target, get_current_request()))
 
+
 def _after_delete(mapper, conection, target):
     notify(ObjectAfterDelete(target, get_current_request()))
+
 
 def set_owner(event):
     obj, request = event.object, event.request
@@ -184,19 +198,24 @@ def set_owner(event):
                 groups = list_groups_raw(userid, obj) | set([u'role:owner'])
                 set_groups(userid, obj, groups)
 
+
 def set_creation_date(event):
     obj = event.object
     if obj.creation_date is None:
         obj.creation_date = obj.modification_date = datetime.now()
 
+
 def set_modification_date(event):
     event.object.modification_date = datetime.now()
+
 
 def delete_orphaned_tags(event):
     DBSession.query(Tag).filter(~Tag.content_tags.any()).delete(
         synchronize_session=False)
 
 _WIRED_SQLALCHMEY = False
+
+
 def wire_sqlalchemy():  # pragma: no cover
     global _WIRED_SQLALCHMEY
     if _WIRED_SQLALCHMEY:
@@ -208,10 +227,14 @@ def wire_sqlalchemy():  # pragma: no cover
     sqlalchemy.event.listen(mapper, 'before_delete', _before_delete)
     sqlalchemy.event.listen(mapper, 'after_delete', _after_delete)
 
+
 def includeme(config):
     wire_sqlalchemy()
-    objectevent_listeners[(ObjectInsert, Content)].append(set_owner)
-    objectevent_listeners[(ObjectInsert, Content)].append(set_creation_date)
-    objectevent_listeners[(ObjectUpdate, Content)].append(set_modification_date)
-    objectevent_listeners[(ObjectAfterDelete, TagsToContents)].append(
-        delete_orphaned_tags)
+    objectevent_listeners[
+        (ObjectInsert, Content)].append(set_owner)
+    objectevent_listeners[
+        (ObjectInsert, Content)].append(set_creation_date)
+    objectevent_listeners[
+        (ObjectUpdate, Content)].append(set_modification_date)
+    objectevent_listeners[
+        (ObjectAfterDelete, TagsToContents)].append(delete_orphaned_tags)

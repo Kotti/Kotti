@@ -4,12 +4,14 @@ from mock import patch
 
 from kotti.testing import FunctionalTestBase
 
+
 class TestLogin(FunctionalTestBase):
     def test_it(self):
         res = self.login()
         assert res.status == '302 Found'
         res = res.follow()
         assert res.status == '200 OK'
+
 
 class TestForbidden(FunctionalTestBase):
     def test_forbidden(self):
@@ -26,6 +28,7 @@ class TestForbidden(FunctionalTestBase):
         userid.return_value = "foo"
         res = self.test_app.get('/@@edit', status=302)
         assert res.location == 'http://localhost/@@forbidden'
+
 
 class TestUploadFile(FunctionalTestBase):
     def add_file(self, browser, contents='ABC'):

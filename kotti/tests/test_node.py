@@ -5,6 +5,7 @@ from sqlalchemy.exc import SQLAlchemyError
 
 from kotti.testing import UnitTestBase
 
+
 class TestNode(UnitTestBase):
     def test_root_acl(self):
         from kotti.resources import get_root

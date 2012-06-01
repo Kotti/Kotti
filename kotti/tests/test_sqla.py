@@ -3,6 +3,7 @@ from unittest import TestCase
 from mock import MagicMock
 from pyramid.security import ALL_PERMISSIONS
 
+
 class TestNestedMutationDict(TestCase):
     def test_dictwrapper_basics(self):
         from kotti.sqla import NestedMutationDict
@@ -80,6 +81,7 @@ class TestNestedMutationDict(TestCase):
         assert isinstance(wrapper[0]['children'], NestedMutationList)
         assert changed.call_count == 0
 
+
 class TestJsonType(TestCase):
     def make(self):
         from kotti.sqla import JsonType
@@ -87,7 +89,7 @@ class TestJsonType(TestCase):
 
     def test_process_bind_param_no_value(self):
         value = self.make().process_bind_param(None, None)
-        assert value == None
+        assert value is None
 
     def test_process_bind_param_with_value(self):
         value = self.make().process_bind_param([{'foo': 'bar'}], None)
@@ -103,11 +105,12 @@ class TestJsonType(TestCase):
 
     def test_process_result_value_no_value(self):
         value = self.make().process_result_value(None, None)
-        assert value == None
+        assert value is None
 
     def test_process_result_value_with_value(self):
         value = self.make().process_result_value('[{"foo": "bar"}]', None)
         assert value == [{"foo": "bar"}]
+
 
 class TestACLType(TestCase):
     def make(self):
@@ -116,7 +119,7 @@ class TestACLType(TestCase):
 
     def test_process_bind_param_no_value(self):
         value = self.make().process_bind_param(None, None)
-        assert value == None
+        assert value is None
 
     def test_process_bind_param_with_value(self):
         value = self.make().process_bind_param(
@@ -143,7 +146,7 @@ class TestACLType(TestCase):
 
     def test_process_result_value_no_value(self):
         value = self.make().process_result_value(None, None)
-        assert value == None
+        assert value is None
 
     def test_process_result_value_with_value(self):
         acl = self.make().process_result_value(
@@ -153,11 +156,13 @@ class TestACLType(TestCase):
             ('Allow', 'role:admin', 'edit'),
             ]
 
+
 class TestMutationList(TestCase):
     def test_radd(self):
         from kotti.sqla import MutationList
         mlist = MutationList(['foo'])
         assert ['bar'] + mlist == ['bar', 'foo']
+
 
 class TestNestedMutationDict(TestCase):
     def test_setdefault_dict(self):
