@@ -125,9 +125,11 @@ class TestSetPassword(UnitTestBase):
         self.user.confirm_token = 'mytoken'
         self.user.password = 'old_password'
         context, request = get_root(), DummyRequest(post={'submit': 'submit'})
+        self.user.last_login_date = None
         res = set_password(context, request)
 
         assert self.user.confirm_token is None
+        assert self.user.last_login_date is not None
         assert get_principals().validate_password(
             'mypassword', self.user.password)
         assert res.status == '302 Found'

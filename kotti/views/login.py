@@ -128,6 +128,8 @@ def set_password(context, request,
                 user.password = get_principals().hash_password(password)
                 user.confirm_token = None
                 headers = remember(request, user.name)
+                user.last_login_date = datetime.now()
+
                 location = (appstruct['continue_to'] or
                             resource_url(context, request))
                 request.session.flash(success_msg, 'success')

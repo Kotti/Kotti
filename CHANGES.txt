@@ -39,6 +39,8 @@ Bugs
 - Fix bug with group edit views.
   See https://github.com/Pylons/Kotti/pull/61
 
+- Fix bug where ``user.last_login_date`` was not set during automic
+  login after the set password screen.
 
 0.6.3 - 2012-05-08
 ------------------
