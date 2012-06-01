@@ -1,7 +1,7 @@
 Change History
 ==============
 
-0.7.0 - Unreleased
+0.7a1 - 2012-06-01
 ------------------
 
 Features
