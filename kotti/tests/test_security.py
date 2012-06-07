@@ -418,6 +418,9 @@ class TestPrincipals(UnitTestBase):
         self.assertEqual(bob.title, u'Bob Dabolina')
         self.assertEqual(bob.groups, [u'group:bobsgroup'])
 
+    def test_hash_password_non_ascii(self):
+        self.get_principals().hash_password(u'\xd6TEst')
+
     def test_default_admin(self):
         admin = self.get_principals()[u'admin']
         self.assertTrue(
@@ -516,6 +519,35 @@ class TestPrincipals(UnitTestBase):
         self.assertEqual(bob.active, True)
         bob.active = False
         self.assertEqual(bob.active, False)
+
+    @patch('kotti.views.login.email_set_password')
+    def test_reset_password(self, email_set_password):
+        from kotti.views.login import login
+
+        request = DummyRequest()
+        self.make_bob()
+        request.params['reset-password'] = u'on'
+        request.params['login'] = u'bob'
+        request.params['password'] = u'secret'
+        login(None, request)
+        self.assertEqual(request.session.pop_flash('success'), [
+            u"You should receive an email with a link to reset your "
+            u"password momentarily."])
+        assert email_set_password.call_count == 1
+
+    @patch('kotti.views.login.email_set_password')
+    def test_reset_password_inactive_user(self, email_set_password):
+        from kotti.views.login import login
+
+        request = DummyRequest()
+        self.make_bob().active = False
+        request.params['reset-password'] = u'on'
+        request.params['login'] = u'bob'
+        request.params['password'] = u'secret'
+        login(None, request)
+        self.assertEqual(request.session.pop_flash('error'),
+                         [u"That username or email is not known to us."])
+        assert email_set_password.call_count == 0
 
     def test_login(self):
         from kotti.views.login import login

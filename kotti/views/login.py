@@ -62,7 +62,7 @@ def login(context, request):
     if 'reset-password' in request.POST:
         login = request.params['login']
         user = _find_user(login)
-        if user is not None:
+        if user is not None and user.active:
             email_set_password(
                 user, request,
                 template_name='kotti:templates/email-reset-password.pt')
@@ -128,7 +128,8 @@ def set_password(context, request,
             user = _find_user(email)
             if (user is not None and
                 validate_token(user, token) and
-                token == user.confirm_token):
+                token == user.confirm_token and
+                user.active):
                 password = appstruct['password']
                 user.password = get_principals().hash_password(password)
                 user.confirm_token = None
