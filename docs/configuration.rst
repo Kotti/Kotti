@@ -57,7 +57,6 @@ kotti.configurators          List of advanced functions for config
 kotti.root_factory           Override Kotti's default Pyramid *root factory*
 kotti.populators             List of functions to fill initial database
 kotti.search_content         Override Kotti's default search function
-kotti.local_navigation       Widget to use for Kotti's local navigation
 
 kotti.asset_overrides        Override Kotti's templates, CSS files and images.
 kotti.templates.api          Override ``api`` used by all templates
@@ -256,34 +255,6 @@ An add-on that defines an alternative search function is
 `kotti_solr`_, which provides an integration with the `Solr`_ search
 engine.
 
-
-.. _kotti.local_navigation:
-
-kotti.local_navigation
-`````````````````````
-
-Kotti provides a build in navigation. The default configuration here is:
-
-.. code-block:: ini
-
-  kotti.local_navigation = kotti.views.slots.includeme_local_navigation
-
-You can override this with an empty string to disable the local navigation:
-
-.. code-block:: ini
-
-  kotti.local_navigation = 
-
-You can set up your own navigation. An example for a navigation you find in
-`kotti_navigation`_. With this add-on included your configuration looks like:
-
-.. code-block:: ini
-
-  kotti.local_navigation = kotti_navigation.include_navigation_widget
-
-Check the documentation of `kotti_navigation`_ for more options.
-
-
 .. _user interface language:
 
 Configure the user interface language
@@ -341,6 +312,26 @@ configuration variable.  The default is:
 .. code-block:: ini
 
   kotti.caching_policy_chooser = kotti.views.cache.default_caching_policy_chooser
+
+Local navigation
+----------------
+
+Kotti provides a build in navigation widget, which is disabled by default.
+To enable the navigation widget add the following to the ``pyramid.includes``
+setting:
+
+.. code-block:: ini
+
+  pyramid.includes = kotti.views.slots.includeme_local_navigation
+
+The add-on `kotti_navigation`_ provides also a navigation widget with more features.
+With this add-on included your configuration looks like:
+
+.. code-block:: ini
+
+  pyramid.includes = kotti_navigation.include_navigation_widget
+
+Check the documentation of `kotti_navigation`_ for more options.
 
 
 .. _repoze.tm2: http://pypi.python.org/pypi/repoze.tm2
