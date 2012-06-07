@@ -5,7 +5,8 @@ First set up an app without local navigation
 --------------------------------------------
 
   >>> from kotti import testing
-  >>> tools = testing.setUpFunctional()
+  >>> tools = testing.setUpFunctional(
+  ...     **{'kotti.local_navigation': '',})
   >>> browser = tools['Browser']()
   >>> ctrl = browser.getControl
 
