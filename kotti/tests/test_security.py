@@ -418,6 +418,9 @@ class TestPrincipals(UnitTestBase):
         self.assertEqual(bob.title, u'Bob Dabolina')
         self.assertEqual(bob.groups, [u'group:bobsgroup'])
 
+    def test_hash_password_non_ascii(self):
+        self.get_principals().hash_password(u'\xd6TEst')
+
     def test_default_admin(self):
         admin = self.get_principals()[u'admin']
         self.assertTrue(

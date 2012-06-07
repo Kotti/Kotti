@@ -464,7 +464,8 @@ class Principals(DictMixin):
     def hash_password(self, password, hashed=None):
         if hashed is None:
             hashed = bcrypt.gensalt(self.log_rounds)
-        return unicode(bcrypt.hashpw(password, hashed))
+        return unicode(
+            bcrypt.hashpw(password.encode('utf-8'), hashed.encode('utf-8')))
 
     def validate_password(self, clear, hashed):
         try:

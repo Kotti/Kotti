@@ -4,6 +4,8 @@ Change History
 0.7a3 - Unreleased
 ------------------
 
+- Fix encoding error with non-ascii passwords.
+
 0.7a2 - 2012-06-07
 ------------------
 
