@@ -1,8 +1,10 @@
 Change History
 ==============
 
-0.7a2 - Unreleased
+0.7a2 - 2012-06-07
 ------------------
+
+- Do not allow inactive users to reset their password.
 
 
 0.7a1 - 2012-06-01
