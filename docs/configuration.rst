@@ -57,6 +57,7 @@ kotti.configurators          List of advanced functions for config
 kotti.root_factory           Override Kotti's default Pyramid *root factory*
 kotti.populators             List of functions to fill initial database
 kotti.search_content         Override Kotti's default search function
+kotti.local_navigation       Widget to use for Kotti's local navigation
 
 kotti.asset_overrides        Override Kotti's templates, CSS files and images.
 kotti.templates.api          Override ``api`` used by all templates
@@ -255,6 +256,34 @@ An add-on that defines an alternative search function is
 `kotti_solr`_, which provides an integration with the `Solr`_ search
 engine.
 
+
+.. _kotti.local_navigation:
+
+kotti.local_navigation
+`````````````````````
+
+Kotti provides a build in navigation. The default configuration here is:
+
+.. code-block:: ini
+
+  kotti.local_navigation = kotti.views.slots.includeme_local_navigation
+
+You can override this with an empty string to disable the local navigation:
+
+.. code-block:: ini
+
+  kotti.local_navigation = 
+
+You can set up your own navigation. An example for a navigation you find in
+`kotti_navigation`_. With this add-on included your configuration looks like:
+
+.. code-block:: ini
+
+  kotti.local_navigation = kotti_navigation.include_navigation_widget
+
+Check the documentation of `kotti_navigation`_ for more options.
+
+
 .. _user interface language:
 
 Configure the user interface language
@@ -318,6 +347,7 @@ configuration variable.  The default is:
 .. _SQLAlchemy database URL: http://www.sqlalchemy.org/docs/core/engines.html#database-urls
 .. _Pyramid Configurator API: http://docs.pylonsproject.org/projects/pyramid/dev/api/config.html
 .. _kotti_twitter: http://pypi.python.org/pypi/kotti_twitter
+.. _kotti_navigation: http://pypi.python.org/pypi/kotti_navigation
 .. _kotti_solr: http://pypi.python.org/pypi/kotti_solr
 .. _Solr: http://lucene.apache.org/solr/
 .. _pyramid.authentication.AuthTktAuthenticationPolicy: http://docs.pylonsproject.org/projects/pyramid/dev/api/authentication.html

@@ -38,6 +38,10 @@ def _dummy_search(search_term, request):
     return u"Not found. Sorry!"
 
 
+def _include_local_navigation(config):
+    return u"local nav"
+
+
 class TestApp(UnitTestBase):
     def required_settings(self):
         return {'sqlalchemy.url': testing_db_url(),
@@ -221,3 +225,13 @@ class TestApp(UnitTestBase):
         settings['kotti.search_content'] = 'kotti.tests.test_app._dummy_search'
         main({}, **settings)
         assert search_content(u"Nuno") == u"Not found. Sorry!"
+
+    def test_local_navigation_setting(self):
+        from kotti import main
+        from kotti import get_settings
+
+        settings = self.required_settings()
+        settings['kotti.local_navigation'] = 'kotti.tests.test_app._include_local_navigation'
+        main({}, **settings)
+
+        assert get_settings()['kotti.local_navigation'][0](None) == u"local nav"

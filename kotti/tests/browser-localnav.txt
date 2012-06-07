@@ -1,0 +1,72 @@
+kotti local navigation browser tests
+====================================
+
+First set up an app without local navigation
+--------------------------------------------
+
+  >>> from kotti import testing
+  >>> tools = testing.setUpFunctional()
+  >>> browser = tools['Browser']()
+  >>> ctrl = browser.getControl
+
+  >>> browser.open(testing.BASE_URL + '/edit')
+  >>> "Log in" in browser.contents
+  True
+  >>> ctrl("Username or email").value = "admin"
+  >>> ctrl("Password").value = "secret"
+  >>> ctrl(name="submit").click()
+  >>> "Welcome, Administrator" in browser.contents
+  True
+
+
+Add a document and a child document into it::
+
+  >>> browser.getLink("Add").click()
+  >>> browser.getLink("Document").click()
+  >>> ctrl("Title").value = "Test Folder"
+  >>> ctrl("save").click()
+  >>> browser.getLink("Add").click()
+  >>> browser.getLink("Document").click()
+  >>> ctrl("Title").value = "Test Subfolder"
+  >>> ctrl("save").click()
+
+
+The child document is not visible, because we have no local navigation::
+
+  >>> browser.open(testing.BASE_URL + '/test-folder/')
+  >>> "Test Subfolder" in browser.contents
+  False
+
+
+Then set up an app with local navigation
+----------------------------------------
+
+  >>> tools = testing.setUpFunctional(
+  ...     **{'kotti.local_navigation': 'kotti.views.slots.includeme_local_navigation',})
+  >>> browser = tools['Browser']()
+  >>> ctrl = browser.getControl
+
+  >>> browser.open(testing.BASE_URL + '/edit')
+  >>> "Log in" in browser.contents
+  True
+  >>> ctrl("Username or email").value = "admin"
+  >>> ctrl("Password").value = "secret"
+  >>> ctrl(name="submit").click()
+  >>> "Welcome, Administrator" in browser.contents
+  True
+
+  >>> browser.getLink("Add").click()
+  >>> browser.getLink("Document").click()
+  >>> ctrl("Title").value = "Test Folder"
+  >>> ctrl("save").click()
+  >>> browser.getLink("Add").click()
+  >>> browser.getLink("Document").click()
+  >>> ctrl("Title").value = "Test Subfolder"
+  >>> ctrl("save").click()
+
+
+The child document is visible, because we have the local navigation::
+
+  >>> browser.open(testing.BASE_URL + '/test-folder/')
+  >>> "Test Subfolder" in browser.contents
+  True
