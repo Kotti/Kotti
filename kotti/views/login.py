@@ -128,7 +128,8 @@ def set_password(context, request,
             user = _find_user(email)
             if (user is not None and
                 validate_token(user, token) and
-                token == user.confirm_token):
+                token == user.confirm_token and
+                user.active):
                 password = appstruct['password']
                 user.password = get_principals().hash_password(password)
                 user.confirm_token = None
