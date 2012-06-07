@@ -71,7 +71,6 @@ conf_defaults = {
         'kotti.resources.Image',
         ]),
     'kotti.search_content': 'kotti.views.util.default_search_content',
-    'kotti.local_navigation': 'kotti.views.slots.includeme_local_navigation',
     'kotti.authn_policy_factory': 'kotti.authtkt_factory',
     'kotti.authz_policy_factory': 'kotti.acl_factory',
     'kotti.session_factory': 'kotti.beaker_session_factory',
@@ -97,7 +96,6 @@ conf_dotted = set([
     'kotti.session_factory',
     'kotti.principals_factory',
     'kotti.caching_policy_chooser',
-    'kotti.local_navigation',
     ])
 
 
@@ -216,10 +214,6 @@ def includeme(config):
 
     config.add_subscriber(
         kotti.views.util.add_renderer_globals, BeforeRender)
-
-    local_navigation = settings['kotti.local_navigation']
-    if local_navigation:
-        local_navigation[0](config)
 
     for override in [a.strip()
                      for a in settings['kotti.asset_overrides'].split()
