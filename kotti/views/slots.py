@@ -120,5 +120,5 @@ def render_local_navigation(context, request):
             )
 
 
-def includeme(config):
+def includeme_local_navigation(config):
     register(RenderRightSlot, None, render_local_navigation)

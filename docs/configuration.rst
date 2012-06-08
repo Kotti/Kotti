@@ -313,11 +313,32 @@ configuration variable.  The default is:
 
   kotti.caching_policy_chooser = kotti.views.cache.default_caching_policy_chooser
 
+Local navigation
+----------------
+
+Kotti provides a build in navigation widget, which is disabled by default.
+To enable the navigation widget add the following to the ``pyramid.includes``
+setting:
+
+.. code-block:: ini
+
+  pyramid.includes = kotti.views.slots.includeme_local_navigation
+
+The add-on `kotti_navigation`_ provides also a navigation widget with more features.
+With this add-on included your configuration looks like:
+
+.. code-block:: ini
+
+  pyramid.includes = kotti_navigation.include_navigation_widget
+
+Check the documentation of `kotti_navigation`_ for more options.
+
 
 .. _repoze.tm2: http://pypi.python.org/pypi/repoze.tm2
 .. _SQLAlchemy database URL: http://www.sqlalchemy.org/docs/core/engines.html#database-urls
 .. _Pyramid Configurator API: http://docs.pylonsproject.org/projects/pyramid/dev/api/config.html
 .. _kotti_twitter: http://pypi.python.org/pypi/kotti_twitter
+.. _kotti_navigation: http://pypi.python.org/pypi/kotti_navigation
 .. _kotti_solr: http://pypi.python.org/pypi/kotti_solr
 .. _Solr: http://lucene.apache.org/solr/
 .. _pyramid.authentication.AuthTktAuthenticationPolicy: http://docs.pylonsproject.org/projects/pyramid/dev/api/authentication.html
