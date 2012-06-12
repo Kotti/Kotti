@@ -34,6 +34,10 @@ class NeededGroup(object):
         if not isinstance(resources, list):
             raise ValueError("resources must be a list of fanstatic.Resource and/or fanstatic.Group objects")
 
+        for resource in resources:
+            if not (isinstance(resource, Resource) or isinstance(resource, Group)):
+                raise ValueError("resources must be a list of fanstatic.Resource and/or fanstatic.Group objects")
+
         self.resources = resources
 
     def add(self, resource):
@@ -43,14 +47,16 @@ class NeededGroup(object):
             - string with a full filesystem path to a CSS/JS file"""
 
         if isinstance(resource, Group) or isinstance(resource, Resource):
-            self.resources.append(resource)
-        elif isinstance(resource, str):
-            raise NotImplemented
+            if resource not in self.resources:
+                self.resources.append(resource)
+        elif isinstance(resource, str):  # pragma: no cover
+            raise NotImplementedError
         else:
             raise ValueError("resource must be a fanstatic.Resource, fanstatic.Group or string object")
 
-    def need(self):
-
+    def need(self):  # pragma: no cover
+        # this is tested in fanstatic itself
+        # we should add browser tests for view_needed and edit_needed (see below)
         Group(self.resources).need()
 
 view_needed = NeededGroup([jquery, bootstrap_js, view_css])
