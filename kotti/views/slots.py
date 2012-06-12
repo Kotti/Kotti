@@ -48,6 +48,7 @@ from kotti.events import ObjectEvent
 from kotti.events import objectevent_listeners
 from kotti.security import has_permission
 
+
 def register(slot, objtype, renderer):
     """Register a new slot renderer.
 
@@ -64,23 +65,30 @@ def register(slot, objtype, renderer):
     objectevent_listeners[(slot, objtype)].append(
         lambda ev: renderer(ev.object, ev.request))
 
+
 class RenderLeftSlot(ObjectEvent):
     name = u'left'
+
 
 class RenderRightSlot(ObjectEvent):
     name = u'right'
 
+
 class RenderAboveContent(ObjectEvent):
     name = u'abovecontent'
+
 
 class RenderBelowContent(ObjectEvent):
     name = u'belowcontent'
 
+
 class RenderInHead(ObjectEvent):
     name = u'inhead'
 
+
 class RenderBeforeBodyEnd(ObjectEvent):
     name = u'beforebodyend'
+
 
 class RenderEditInHead(ObjectEvent):
     name = u'edit_inhead'
@@ -89,6 +97,7 @@ slot_events = [
     RenderLeftSlot, RenderRightSlot, RenderAboveContent, RenderBelowContent,
     RenderInHead, RenderBeforeBodyEnd, RenderEditInHead,
     ]
+
 
 def render_local_navigation(context, request):
     from kotti.resources import get_root
@@ -110,5 +119,6 @@ def render_local_navigation(context, request):
             request,
             )
 
-def includeme(config):
+
+def includeme_local_navigation(config):
     register(RenderRightSlot, None, render_local_navigation)

@@ -4,6 +4,7 @@ from mock import patch
 from kotti.testing import DummyRequest
 from kotti.testing import UnitTestBase
 
+
 class TestUserManagement(UnitTestBase):
     def test_roles(self):
         from kotti.resources import get_root
@@ -86,6 +87,7 @@ class TestUserManagement(UnitTestBase):
             colander.Invalid,
             group_validator, None, u'this-group-never-exists')
 
+
 class TestSetPassword(UnitTestBase):
     def setUp(self):
         super(TestSetPassword, self).setUp()
@@ -125,9 +127,11 @@ class TestSetPassword(UnitTestBase):
         self.user.confirm_token = 'mytoken'
         self.user.password = 'old_password'
         context, request = get_root(), DummyRequest(post={'submit': 'submit'})
+        self.user.last_login_date = None
         res = set_password(context, request)
 
         assert self.user.confirm_token is None
+        assert self.user.last_login_date is not None
         assert get_principals().validate_password(
             'mypassword', self.user.password)
         assert res.status == '302 Found'
@@ -149,6 +153,30 @@ class TestSetPassword(UnitTestBase):
         res = set_password(context, request)
 
         assert self.user.confirm_token == 'mytoken'
+        assert not get_principals().validate_password(
+            'mypassword', self.user.password)
+        assert not request.is_response(res)
+
+    def test_inactive_user(self):
+        from kotti.resources import get_root
+        from kotti.security import get_principals
+        from kotti.views.login import set_password
+
+        self.form_values({
+            'token': 'mytoken',
+            'email': 'myemail',
+            'password': 'mypassword',
+            'continue_to': '',
+            })
+        self.user.confirm_token = 'mytoken'
+        self.user.password = 'old_password'
+        context, request = get_root(), DummyRequest(post={'submit': 'submit'})
+        self.user.active = False
+        self.user.last_login_date = None
+        res = set_password(context, request)
+
+        assert self.user.confirm_token == 'mytoken'
+        assert self.user.last_login_date is None
         assert not get_principals().validate_password(
             'mypassword', self.user.password)
         assert not request.is_response(res)

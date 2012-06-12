@@ -66,7 +66,7 @@ class ContainerMixin(object, DictMixin):
             path = (path,)
         path = [unicode(p) for p in path]
 
-        # Optimization: don't query children if self._children is already there:
+        # Optimization: don't query children if self._children already there:
         if '_children' in self.__dict__:
             first, rest = path[0], path[1:]
             try:
@@ -179,16 +179,17 @@ class Node(Base, ContainerMixin, PersistentACLMixin):
         self.title = title
         self.annotations = annotations
 
-    # Provide location-awareness through __name__ and __parent__
     @property
     def __name__(self):
         return self.name
 
-    def get___parent__(self):
+    @property
+    def __parent__(self):
         return self.parent
-    def set___parent__(self, value):
+
+    @__parent__.setter
+    def __parent__(self, value):
         self.parent = value
-    __parent__ = property(get___parent__, set___parent__)
 
     def __repr__(self):
         return '<%s %s at %s>' % (
@@ -202,6 +203,7 @@ class Node(Base, ContainerMixin, PersistentACLMixin):
 
     copy_properties_blacklist = (
         'id', 'parent', 'parent_id', '_children', 'local_groups', '_tags')
+
     def copy(self, **kwargs):
         children = list(self.children)
         copy = self.__class__()

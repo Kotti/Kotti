@@ -11,6 +11,7 @@ from zope.deprecation import deprecated
 
 _ = TranslationStringFactory('Kotti')
 
+
 class ViewLink(object):
     def __init__(self, path, title=None):
         self.path = path
@@ -35,10 +36,12 @@ class ViewLink(object):
     def __repr__(self):
         return "ViewLink(%r, %r)" % (self.path, self.title)
 
+
 class DontCache(Exception):
     pass
 
 _CACHE_ATTR = 'kotti_cache'
+
 
 def request_container():
     request = get_current_request()
@@ -50,8 +53,10 @@ def request_container():
         setattr(request, _CACHE_ATTR, cache)
     return cache
 
+
 def cache(compute_key, container_factory):
     marker = object()
+
     def decorator(func):
         def replacement(*args, **kwargs):
             cache = container_factory()
@@ -74,22 +79,27 @@ def cache(compute_key, container_factory):
         return replacement
     return decorator
 
+
 def request_cache(compute_key):
     return cache(compute_key, request_container)
+
 
 class LRUCacheSetItem(LRUCache):
     __setitem__ = LRUCache.put
 
 _lru_cache = LRUCacheSetItem(1000)
 
+
 def lru_cache(compute_key):
     return cache(compute_key, lambda: _lru_cache)
+
 
 def clear_cache():  # only useful for tests really
     request = get_current_request()
     if request is not None:
         setattr(request, _CACHE_ATTR, None)
     _lru_cache.clear()
+
 
 def extract_from_settings(prefix, settings=None):
     """
@@ -106,6 +116,7 @@ def extract_from_settings(prefix, settings=None):
             extracted[key[len(prefix):]] = value
     return extracted
 
+
 def disambiguate_name(name):
     parts = name.split(u'-')
     if len(parts) > 1:
@@ -119,6 +130,7 @@ def disambiguate_name(name):
         parts.append(u'1')
     return u'-'.join(parts)
 
+
 def title_to_name(title, blacklist=()):
     request = get_current_request()
     if request is not None:
@@ -129,6 +141,7 @@ def title_to_name(title, blacklist=()):
     while name in blacklist:
         name = disambiguate_name(name)
     return name
+
 
 def camel_case_to_name(text):
     """

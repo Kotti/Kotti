@@ -354,12 +354,12 @@ def default_search_content(search_term, request=None):
                    ))
     result_dict = []
     for result in results.all():
-        result_dict.append({
-            'name': result.name,
-            'title': result.title,
-            'description': result.description,
-            'path': request.resource_path(result),
-        })
+        if has_permission('view', result, request):
+            result_dict.append(dict(
+                name=result.name,
+                title=result.title,
+                description=result.description,
+                path=request.resource_path(result)))
     return result_dict
 
 

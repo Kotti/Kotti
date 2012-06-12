@@ -18,6 +18,7 @@ from kotti.views.form import (
     AddFormView,
     )
 
+
 class FileUploadTempStore(DictMixin):
     def __init__(self, request):
         self.session = request.session
@@ -43,6 +44,7 @@ class FileUploadTempStore(DictMixin):
     def preview_url(self, name):
         return None
 
+
 def inline_view(context, request, disposition='inline'):
     res = Response(
         headerlist=[
@@ -54,12 +56,15 @@ def inline_view(context, request, disposition='inline'):
     res.body = context.data
     return res
 
+
 def attachment_view(context, request):
     return inline_view(context, request, 'attachment')
+
 
 class EditFileFormView(EditFormView):
     def schema_factory(self):
         tmpstore = FileUploadTempStore(self.request)
+
         class FileSchema(ContentSchema):
             file = SchemaNode(
                 FileData(),
@@ -79,12 +84,14 @@ class EditFileFormView(EditFormView):
             self.context.mimetype = appstruct['file']['mimetype']
             self.context.size = len(buf)
 
+
 class AddFileFormView(AddFormView):
     item_type = _(u"File")
     item_class = File
 
     def schema_factory(self):
         tmpstore = FileUploadTempStore(self.request)
+
         class FileSchema(MappingSchema):
             title = SchemaNode(String(), title=_(u'Title'), missing=u'')
             description = SchemaNode(
@@ -115,6 +122,7 @@ class AddFileFormView(AddFormView):
             mimetype=appstruct['file']['mimetype'],
             size=len(buf),
             )
+
 
 def includeme(config):
     config.add_view(

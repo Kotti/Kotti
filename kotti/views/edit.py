@@ -114,7 +114,8 @@ def paste_node(context, request):
         request.session.flash(_(u'${title} pasted.',
                                 mapping=dict(title=item.title)), 'success')
     else:
-        request.session.flash(_(u'Could not paste node. It does not exist anymore.'), 'error')
+        request.session.flash(
+            _(u'Could not paste node. It does not exist anymore.'), 'error')
     if not request.is_xhr:
         location = resource_url(context, request)
         return HTTPFound(location=location)
@@ -180,6 +181,7 @@ def rename_node(context, request):
             return HTTPFound(location=location)
     return {}
 
+
 # XXX These and the make_generic_edit functions below can probably be
 # simplified quite a bit.
 def generic_edit(context, request, schema, **kwargs):
@@ -189,6 +191,7 @@ def generic_edit(context, request, schema, **kwargs):
         schema=schema,
         **kwargs
         )()
+
 
 def generic_add(context, request, schema, add, title, **kwargs):
     return AddFormView(
@@ -200,16 +203,19 @@ def generic_add(context, request, schema, add, title, **kwargs):
         **kwargs
         )()
 
+
 def make_generic_edit(schema, **kwargs):
     @ensure_view_selector
     def view(context, request):
         return generic_edit(context, request, schema, **kwargs)
     return view
 
+
 def make_generic_add(schema, add, title=None, **kwargs):
     def view(context, request):
         return generic_add(context, request, schema, add, title, **kwargs)
     return view
+
 
 def render_tree_navigation(context, request):
     tree = nodes_tree(request)
@@ -218,6 +224,7 @@ def render_tree_navigation(context, request):
             'children': [tree],
             },
         }
+
 
 def includeme(config):
     nodes_includeme(config)

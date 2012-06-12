@@ -1,16 +1,35 @@
 Change History
 ==============
 
-0.7.0 - Unreleased
+0.7a3 - Unreleased
 ------------------
 
+- Fix encoding error with non-ascii passwords.
+
+0.7a2 - 2012-06-07
+------------------
+
+- Do not allow inactive users to reset their password.
+
+
+0.7a1 - 2012-06-01
+------------------
+
+Features
+~~~~~~~~
+
 - Add a new 'Image' content type and image scaling, originally from
-  kotti_image_gallery add-on.
+  the kotti_image_gallery add-on.  See ``kotti.image_scales.*``
+  settings.
 
-- Fix bug with group edit views.
-  See https://github.com/Pylons/Kotti/pull/61
+- Add search and related setting ``kotti.search_content``.
 
-- Add subscriber to set cache headers based on caching rules.
+- Add subscriber to set cache headers based on caching rules.  See
+  also related setting ``kotti.caching_policy_chooser``.
+
+- Remove TinyMCE from the core.  NOTE: We will either add
+  ``kotti_tinymce`` as a dependency or put back TinyMCE as before
+  prior to a final release.
 
 - Move email templates into page templates in
   ``kotti:templates/email-set-password.pt`` and
@@ -21,6 +40,18 @@ Change History
 - Add a 'edit_inhead' slot for stuff that goes into the edit
   interface's head.  'inhead' is no longer be used in
   'edit/master.pt'.
+
+- For more details, see also
+  http://danielnouri.org/notes/2012/05/28/kotti-werkpalast-sprint-wrap-up/
+
+Bugs
+~~~~
+
+- Fix bug with group edit views.
+  See https://github.com/Pylons/Kotti/pull/61
+
+- Fix bug where ``user.last_login_date`` was not set during automic
+  login after the set password screen.
 
 0.6.3 - 2012-05-08
 ------------------

@@ -6,6 +6,7 @@ from pyramid.authentication import CallbackAuthenticationPolicy
 from kotti.testing import DummyRequest
 from kotti.testing import UnitTestBase
 
+
 class TestGroups(UnitTestBase):
     def test_root_default(self):
         from kotti.resources import get_root
@@ -395,6 +396,7 @@ class TestGroups(UnitTestBase):
         DBSession.flush()
         self.assertEqual(DBSession.query(LocalGroup).count(), 0)
 
+
 class TestPrincipals(UnitTestBase):
     def get_principals(self):
         from kotti.security import get_principals
@@ -415,6 +417,9 @@ class TestPrincipals(UnitTestBase):
         self.assertEqual(bob.name, u'bob')
         self.assertEqual(bob.title, u'Bob Dabolina')
         self.assertEqual(bob.groups, [u'group:bobsgroup'])
+
+    def test_hash_password_non_ascii(self):
+        self.get_principals().hash_password(u'\xd6TEst')
 
     def test_default_admin(self):
         admin = self.get_principals()[u'admin']
@@ -515,6 +520,35 @@ class TestPrincipals(UnitTestBase):
         bob.active = False
         self.assertEqual(bob.active, False)
 
+    @patch('kotti.views.login.email_set_password')
+    def test_reset_password(self, email_set_password):
+        from kotti.views.login import login
+
+        request = DummyRequest()
+        self.make_bob()
+        request.params['reset-password'] = u'on'
+        request.params['login'] = u'bob'
+        request.params['password'] = u'secret'
+        login(None, request)
+        self.assertEqual(request.session.pop_flash('success'), [
+            u"You should receive an email with a link to reset your "
+            u"password momentarily."])
+        assert email_set_password.call_count == 1
+
+    @patch('kotti.views.login.email_set_password')
+    def test_reset_password_inactive_user(self, email_set_password):
+        from kotti.views.login import login
+
+        request = DummyRequest()
+        self.make_bob().active = False
+        request.params['reset-password'] = u'on'
+        request.params['login'] = u'bob'
+        request.params['password'] = u'secret'
+        login(None, request)
+        self.assertEqual(request.session.pop_flash('error'),
+                         [u"That username or email is not known to us."])
+        assert email_set_password.call_count == 0
+
     def test_login(self):
         from kotti.views.login import login
         request = DummyRequest()
@@ -572,6 +606,7 @@ class TestPrincipals(UnitTestBase):
             [request.session.pop_flash('success')[0].interpolate()],
             [u'Welcome, Bob Dabolina!'])
 
+
 class TestAuthzContextManager(TestCase):
     def test_basic(self):
         from kotti.security import authz_context
@@ -602,6 +637,7 @@ class TestAuthzContextManager(TestCase):
         except ValueError:
             assert request.environ['authz_context'] == context2
 
+
 class TestHasPermission(TestCase):
     def test_basic(self):
         from kotti.security import has_permission
@@ -618,6 +654,7 @@ class TestHasPermission(TestCase):
             has_permission(permission, context, request)
 
         assert args == [(permission, context, request)]
+
 
 class TestRolesSetters(UnitTestBase):
     def test_set_roles(self):

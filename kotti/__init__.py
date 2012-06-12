@@ -16,9 +16,6 @@ from pyramid.threadlocal import get_current_registry
 from pyramid.util import DottedNameResolver
 from pyramid_beaker import session_factory_from_settings
 
-import kotti.patches
-kotti.patches   # pyflakes
-
 from kotti.sqla import Base as KottiBase
 from kotti.util import request_cache
 
@@ -52,18 +49,34 @@ conf_defaults = {
     'kotti.configurators': '',
     'pyramid.includes': '',
     'kotti.includes': '',  # BBB
-    'kotti.base_includes': 'kotti kotti.events kotti.views kotti.views.cache kotti.views.view kotti.views.edit kotti.views.login kotti.views.file kotti.views.image kotti.views.users kotti.views.site_setup kotti.views.slots',
+    'kotti.base_includes': ' '.join([
+        'kotti kotti.events',
+        'kotti.views',
+        'kotti.views.cache',
+        'kotti.views.view',
+        'kotti.views.edit',
+        'kotti.views.login',
+        'kotti.views.file',
+        'kotti.views.image',
+        'kotti.views.users',
+        'kotti.views.site_setup',
+        ]),
     'kotti.asset_overrides': '',
     'kotti.use_tables': '',
     'kotti.root_factory': 'kotti.resources.default_get_root',
     'kotti.populators': 'kotti.populate.populate',
-    'kotti.available_types': 'kotti.resources.Document kotti.resources.File kotti.resources.Image',
+    'kotti.available_types': ' '.join([
+        'kotti.resources.Document',
+        'kotti.resources.File',
+        'kotti.resources.Image',
+        ]),
     'kotti.search_content': 'kotti.views.util.default_search_content',
     'kotti.authn_policy_factory': 'kotti.authtkt_factory',
     'kotti.authz_policy_factory': 'kotti.acl_factory',
     'kotti.session_factory': 'kotti.beaker_session_factory',
     'kotti.principals_factory': 'kotti.security.principals_factory',
-    'kotti.caching_policy_chooser': 'kotti.views.cache.default_caching_policy_chooser',
+    'kotti.caching_policy_chooser': (
+        'kotti.views.cache.default_caching_policy_chooser'),
     'kotti.date_format': 'medium',
     'kotti.datetime_format': 'medium',
     'kotti.time_format': 'medium',

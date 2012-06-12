@@ -8,6 +8,7 @@ CONTROL_PANEL_LINKS = [
     ViewLink('setup-users', title=_(u'User Management')),
     ]
 
+
 def main(context, request):
     api = template_api(
         context, request,
@@ -16,6 +17,7 @@ def main(context, request):
     api.page_title = _(u"Site Setup - ${title}",
                        mapping=dict(title=api.site_title))
     return {'api': api}
+
 
 def includeme(config):
     config.add_view(

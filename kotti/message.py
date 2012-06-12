@@ -39,11 +39,14 @@ deprecated(
     )
 
 _inject_mailer = []
+
+
 def get_mailer():
     # Consider that we may have persistent settings
     if _inject_mailer:
         return _inject_mailer[0]
     return Mailer.from_settings(get_settings())  # pragma: no cover
+
 
 def make_token(user, seconds=None):
     secret = get_settings()['kotti.secret2']
@@ -51,6 +54,7 @@ def make_token(user, seconds=None):
         seconds = time.time()
     token = '%s:%s:%s' % (user.name, secret, seconds)
     return '%s:%s' % (hashlib.sha224(token).hexdigest(), seconds)
+
 
 def validate_token(user, token, valid_hrs=24):
     """
@@ -85,6 +89,7 @@ def validate_token(user, token, valid_hrs=24):
             return True
     return False
 
+
 @deprecate('send_set_password is deprecated as of Kotti 0.6.4.  '
            'Use ``kotti.message.email_set_password`` instead.')
 def send_set_password(user, request, templates='set-password', add_query=None):
@@ -113,6 +118,7 @@ def send_set_password(user, request, templates='set-password', add_query=None):
         )
     mailer = get_mailer()
     mailer.send(message)
+
 
 def email_set_password(user, request,
                        template_name='kotti:templates/email-set-password.pt',

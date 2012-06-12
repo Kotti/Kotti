@@ -268,7 +268,7 @@ def _cachekey_list_groups_ext(name, context=None, _seen=None, _inherited=None):
     if _seen is not None or _inherited is not None:
         raise DontCache
     else:
-        context_id = context is not None and getattr(context, 'id', id(context))
+        context_id = getattr(context, 'id', id(context))
         return (name, context_id)
 
 
@@ -464,7 +464,8 @@ class Principals(DictMixin):
     def hash_password(self, password, hashed=None):
         if hashed is None:
             hashed = bcrypt.gensalt(self.log_rounds)
-        return unicode(bcrypt.hashpw(password, hashed))
+        return unicode(
+            bcrypt.hashpw(password.encode('utf-8'), hashed.encode('utf-8')))
 
     def validate_password(self, clear, hashed):
         try:

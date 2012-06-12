@@ -4,6 +4,7 @@ from kotti.testing import Dummy
 from kotti.testing import DummyRequest
 from kotti.testing import UnitTestBase
 
+
 class TestSendSetPassword(UnitTestBase):
     def setUp(self):
         super(TestSendSetPassword, self).setUp()
@@ -66,7 +67,8 @@ class TestSendSetPassword(UnitTestBase):
         from kotti.message import email_set_password
 
         user = Dummy(name=u'joe', email='joe@bar.com', title=u'Joe')
-        email_set_password(user, DummyRequest(), add_query={'another': 'param'})
+        email_set_password(
+            user, DummyRequest(), add_query={'another': 'param'})
 
         assert self.mailer.send.called
         message = self.mailer.send.call_args[0][0]
@@ -81,6 +83,7 @@ class TestSendSetPassword(UnitTestBase):
         assert self.mailer.send.called
         message = self.mailer.send.call_args[0][0]
         assert 'another=param' in message.body
+
 
 class TestEmailSetPassword(UnitTestBase):
     def setUp(self):
@@ -135,7 +138,8 @@ class TestEmailSetPassword(UnitTestBase):
         from kotti.message import email_set_password
 
         user = Dummy(name=u'joe', email='joe@bar.com', title=u'Joe')
-        email_set_password(user, DummyRequest(), add_query={'another': 'param'})
+        email_set_password(
+            user, DummyRequest(), add_query={'another': 'param'})
 
         assert self.mailer.send.called
         message = self.mailer.send.call_args[0][0]
