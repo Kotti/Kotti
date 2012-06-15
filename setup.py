@@ -7,10 +7,10 @@ from setuptools import find_packages
 here = os.path.abspath(os.path.dirname(__file__))
 try:
     README = open(os.path.join(here, 'README.rst')).read()
-    THANKS = open(os.path.join(here, 'THANKS.txt')).read()
+    AUTHORS = open(os.path.join(here, 'AUTHORS.txt')).read()
     CHANGES = open(os.path.join(here, 'CHANGES.txt')).read()
 except IOError:
-    README = THANKS = CHANGES = ''
+    README = AUTHORS = CHANGES = ''
 
 install_requires = [
     'Babel',
@@ -62,7 +62,7 @@ if sys.version_info[:3] < (2, 7, 0):
 setup(name='Kotti',
       version='0.7dev3',
       description="Kotti is a high-level, 'Pythonic' web application framework. It includes a small and extensible CMS application called the Kotti CMS.",
-      long_description='\n\n'.join([README, THANKS, CHANGES]),
+      long_description='\n\n'.join([README, AUTHORS, CHANGES]),
       classifiers=[
         "Programming Language :: Python",
         "Framework :: Pylons",
@@ -71,7 +71,7 @@ setup(name='Kotti',
         "Topic :: Internet :: WWW/HTTP :: WSGI :: Application",
         "License :: Repoze Public License",
         ],
-      author='Daniel Nouri, Marco Scheidhuber and contributors',
+      author='Kotti developers',
       author_email='kotti@googlegroups.com',
       url='https://github.com/Pylons/Kotti',
       keywords='kotti web cms wcms pylons pyramid sqlalchemy bootstrap',
