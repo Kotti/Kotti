@@ -21,6 +21,9 @@ http://groups.google.com/group/kotti or #kotti on IRC.
 Smaller tasks
 =============
 
+- Update kotti_twitter to use 'kotti.views.slots.assign_slot' instead
+  of the deprecated 'kotti.views.slots.register'.
+
 - To allow for easier integration with 'repoze.workflow', add a
   'state' attribute to the Content class.  Write a cookbook entry for
   using 'repoze.workflow'.
