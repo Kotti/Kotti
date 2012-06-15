@@ -50,12 +50,6 @@
       </footer>
 
     </div>
-    <script type="text/javascript">
-      $(document).ready(function() {
-      deform.load();
-      kotti.main();
-      });
-    </script>
     <more tal:omit-tag="" metal:define-slot="js-more"></more>
   </body>
 </html>
