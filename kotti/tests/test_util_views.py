@@ -2,6 +2,7 @@ import time
 
 from mock import patch
 from mock import MagicMock
+from pyramid.request import Response
 
 from kotti.testing import DummyRequest
 from kotti.testing import UnitTestBase
@@ -204,23 +205,30 @@ class TestTemplateAPI(UnitTestBase):
 
     def test_assign_to_slots(self):
         from kotti.views.slots import assign_slot
-        from pyramid.request import Response
-
-        def special(context, request):
-            pass
-        self.config.add_view(special, name='special',
-                request_method="GET")
-        assign_slot('special', 'right')
 
         def foo(context, request):
             greeting = request.POST['greeting']
-            return Response("{0} world!".format(greeting))
+            return Response(u"{0} world!".format(greeting))
         self.config.add_view(foo, name='foo')
         assign_slot('foo', 'left', params=dict(greeting="Yo"))
 
         api = self.make()
-        assert api.slots.left == ["Yo world!"]
+        assert api.slots.left == [u"Yo world!"]
+
+    def test_assign_to_slot_predicate_mismatch(self):
+        from kotti.views.slots import assign_slot
+
+        def special(context, request):
+            return Response(u"Hello world!")
+        assign_slot('special', 'right')
+
+        self.config.add_view(special, name='special', request_method="GET")
+        api = self.make()
         assert api.slots.right == []
+
+        self.config.add_view(special, name='special')
+        api = self.make()
+        assert api.slots.right == [u"Hello world!"]
 
     def test_slots(self):
         from kotti.views.slots import register, RenderAboveContent

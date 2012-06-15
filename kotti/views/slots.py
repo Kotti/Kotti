@@ -51,7 +51,7 @@ def register(slot, objtype, renderer):
         lambda ev: renderer(ev.object, ev.request))
 
 
-def __render_view_on_slot_event(view_name, event, params):
+def _render_view_on_slot_event(view_name, event, params):
     context = event.object
     request = event.request
     view_request = Request.blank(
@@ -83,7 +83,7 @@ def assign_slot(view_name, slot, params=None):
     """
 
     objectevent_listeners[(slots[slot], None)].append(
-        lambda ev: __render_view_on_slot_event(view_name, ev, params))
+        lambda ev: _render_view_on_slot_event(view_name, ev, params))
 
 
 class RenderLeftSlot(ObjectEvent):
@@ -118,16 +118,7 @@ slot_events = [
     RenderInHead, RenderBeforeBodyEnd, RenderEditInHead,
     ]
 
-
-slots = dict(
-        left=RenderLeftSlot,
-        right=RenderRightSlot,
-        abovecontent=RenderAboveContent,
-        belowcontent=RenderBelowContent,
-        inhead=RenderInHead,
-        beforebodyend=RenderBeforeBodyEnd,
-        edit_inhead=RenderEditInHead,
-        )
+slots = dict((slot.name, slot) for slot in slot_events)
 
 
 def local_navigation(context, request):
