@@ -230,7 +230,19 @@ class TestTemplateAPI(UnitTestBase):
         api = self.make()
         assert api.slots.right == [u"Hello world!"]
 
-    def test_slots(self):
+    def test_slot_request_has_registry(self):
+        from kotti.views.slots import assign_slot
+
+        def my_viewlet(request):
+            assert hasattr(request, 'registry')
+            return Response(u"Hello world!")
+        assign_slot('my-viewlet', 'right')
+
+        self.config.add_view(my_viewlet, name='my-viewlet')
+        api = self.make()
+        assert api.slots.right == [u"Hello world!"]
+
+    def test_deprecated_slots(self):
         from kotti.views.slots import register, RenderAboveContent
 
         def render_something(context, request):
