@@ -90,8 +90,10 @@ def assign_slot(view_name, slot, params=None):
     The  ``params`` argument optionally allows to pass POST parameters
     specified as a dictionary to the view.
     """
-
-    objectevent_listeners[(slots[slot], None)].append(
+    event = [e for e in slot_events if e.name == slot]
+    if not event:
+        raise KeyError("Unknown slot '{0}'".format(slot))
+    objectevent_listeners[(event[0], None)].append(
         lambda ev: _render_view_on_slot_event(view_name, ev, params))
 
 
@@ -126,8 +128,6 @@ slot_events = [
     RenderLeftSlot, RenderRightSlot, RenderAboveContent, RenderBelowContent,
     RenderInHead, RenderBeforeBodyEnd, RenderEditInHead,
     ]
-
-slots = dict((slot.name, slot) for slot in slot_events)
 
 
 def local_navigation(context, request):

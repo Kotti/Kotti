@@ -3,6 +3,7 @@ import time
 from mock import patch
 from mock import MagicMock
 from pyramid.request import Response
+from pytest import raises
 
 from kotti.testing import DummyRequest
 from kotti.testing import UnitTestBase
@@ -229,6 +230,12 @@ class TestTemplateAPI(UnitTestBase):
         self.config.add_view(special, name='special')
         api = self.make()
         assert api.slots.right == [u"Hello world!"]
+
+    def test_assign_slot_bad_name(self):
+        from kotti.views.slots import assign_slot
+
+        with raises(KeyError):
+            assign_slot('viewname', 'noslotlikethis')
 
     def test_slot_request_has_registry(self):
         from kotti.views.slots import assign_slot
