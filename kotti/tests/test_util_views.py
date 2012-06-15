@@ -364,34 +364,33 @@ class TestUtil:
 
 
 class TestLocalNavigationSlot:
-    def setup_method(self, method):
-        self.renderer = self.config.testing_add_renderer(
+    def test_it(self, config, db_session):
+        renderer = config.testing_add_renderer(
             'kotti:templates/view/nav-local.pt')
-
-    def test_it(self):
         from kotti.views.slots import render_local_navigation
         a, aa, ab, ac, aca, acb = create_contents()
 
         assert render_local_navigation(ac, DummyRequest()) is not None
-        self.renderer.assert_(parent=ac, children=[aca, acb])
+        renderer.assert_(parent=ac, children=[aca, acb])
 
         assert render_local_navigation(acb, DummyRequest()) is not None
-        self.renderer.assert_(parent=ac, children=[aca, acb])
+        renderer.assert_(parent=ac, children=[aca, acb])
 
         assert render_local_navigation(a.__parent__, DummyRequest()) is None
 
-    @patch('kotti.views.slots.has_permission')
-    def test_no_permission(self, has_permission):
+    def test_no_permission(self, config, db_session):
+        config.testing_add_renderer('kotti:templates/view/nav-local.pt')
         from kotti.views.slots import render_local_navigation
         a, aa, ab, ac, aca, acb = create_contents()
 
-        has_permission.return_value = True
-        assert render_local_navigation(ac, DummyRequest()) is not None
+        with patch('kotti.views.slots.has_permission', return_value=True):
+            assert render_local_navigation(ac, DummyRequest()) is not None
 
-        has_permission.return_value = False
-        assert render_local_navigation(ac, DummyRequest()) is None
+        with patch('kotti.views.slots.has_permission', return_value=False):
+            assert render_local_navigation(ac, DummyRequest()) is None
 
-    def test_in_navigation(self):
+    def test_in_navigation(self, config, db_session):
+        config.testing_add_renderer('kotti:templates/view/nav-local.pt')
         from kotti.views.slots import render_local_navigation
         a, aa, ab, ac, aca, acb = create_contents()
 
