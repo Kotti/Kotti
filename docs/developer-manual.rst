@@ -14,7 +14,7 @@ your github account, and follow the usual steps to get a local clone, with origi
 as your fork, and with upstream as the pylons/Kotti repo. Then, you will be able
 to make branches for contributing, etc. Steps would be something like this:
 
-.. code-block:: bash
+.. code-block:: BashLexer
 
   git clone https://github.com/your_github/Kotti.git
 
@@ -31,7 +31,7 @@ from a branch, and the usual git procedures.
 
 To run and develop within your clone, do these steps:
 
-.. code-block:: bash
+.. code-block:: BashLexer
 
   virtualenv . --no-site-packages 
 
