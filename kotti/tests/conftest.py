@@ -55,3 +55,10 @@ def pytest_funcarg__db_session(request):
     request.addfinalizer(abort)
     from kotti import DBSession
     return DBSession()
+
+
+def pytest_funcarg__request(request):
+    from kotti.testing import DummyRequest
+    config = request.getfuncargvalue('config')
+    config.manager.get()['request'] = request = DummyRequest()
+    return request

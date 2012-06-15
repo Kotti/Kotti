@@ -5,7 +5,6 @@ from mock import MagicMock
 from pytest import raises
 
 from kotti.testing import DummyRequest
-from kotti.testing import UnitTestBase
 
 
 def create_contents(root=None):
@@ -364,9 +363,8 @@ class TestUtil:
         assert request.path_info == u'/@@edit'
 
 
-class TestLocalNavigationSlot(UnitTestBase):
-    def setUp(self):
-        super(TestLocalNavigationSlot, self).setUp()
+class TestLocalNavigationSlot:
+    def setup_method(self, method):
         self.renderer = self.config.testing_add_renderer(
             'kotti:templates/view/nav-local.pt')
 

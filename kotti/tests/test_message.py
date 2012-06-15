@@ -2,13 +2,10 @@ from mock import patch
 
 from kotti.testing import Dummy
 from kotti.testing import DummyRequest
-from kotti.testing import UnitTestBase
 
 
-class TestSendSetPassword(UnitTestBase):
-    def setUp(self):
-        super(TestSendSetPassword, self).setUp()
-
+class TestSendSetPassword:
+    def setup_method(self, method):
         get_settings_patcher = patch('kotti.message.get_settings')
         self.get_settings = get_settings_patcher.start()
         self.get_settings.return_value = {
@@ -85,10 +82,8 @@ class TestSendSetPassword(UnitTestBase):
         assert 'another=param' in message.body
 
 
-class TestEmailSetPassword(UnitTestBase):
+class TestEmailSetPassword:
     def setUp(self):
-        super(TestEmailSetPassword, self).setUp()
-
         get_settings_patcher = patch('kotti.message.get_settings')
         self.get_settings = get_settings_patcher.start()
         self.get_settings.return_value = {

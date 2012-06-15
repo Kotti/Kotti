@@ -1,20 +1,11 @@
-from pyramid.registry import Registry
-
-from kotti.testing import DummyRequest
-from kotti.testing import UnitTestBase
 
 
-class TestRequestCache(UnitTestBase):
-    def setUp(self):
+class TestRequestCache:
+    def setup_method(self, method):
         from kotti.util import request_cache
-
-        registry = Registry('testing')
-        request = DummyRequest()
-        request.registry = registry
-        super(TestRequestCache, self).setUp(registry=registry, request=request)
         self.cache_decorator = request_cache
 
-    def test_it(self):
+    def test_it(self, request):
         from kotti.util import clear_cache
 
         called = []
@@ -33,7 +24,7 @@ class TestRequestCache(UnitTestBase):
         my_fun(1, 2)
         assert len(called) == 3
 
-    def test_dont_cache(self):
+    def test_dont_cache(self, request):
         from kotti.util import DontCache
         called = []
 

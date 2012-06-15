@@ -3,7 +3,6 @@ from mock import patch
 from pytest import raises
 
 from kotti.testing import DummyRequest
-from kotti.testing import UnitTestBase
 
 
 class TestUserManagement:
@@ -88,10 +87,8 @@ class TestUserManagement:
             group_validator(None, u'this-group-never-exists')
 
 
-class TestSetPassword(UnitTestBase):
-    def setUp(self):
-        super(TestSetPassword, self).setUp()
-
+class TestSetPassword:
+    def setup_method(self, method):
         Form_patcher = patch('kotti.views.login.Form')
         self.Form_mock = Form_patcher.start()
 

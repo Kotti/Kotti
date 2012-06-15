@@ -5,11 +5,10 @@ from mock import MagicMock
 from mock import patch
 
 from kotti.testing import DummyRequest
-from kotti.testing import UnitTestBase
 
 
-class TestFileViews(UnitTestBase):
-    def setUp(self):
+class TestFileViews:
+    def setup_method(self, method):
         from kotti.resources import File
         self.file = File("file contents", u"myf\xfcle.png", u"image/png")
 
