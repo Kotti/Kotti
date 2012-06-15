@@ -409,7 +409,8 @@ class TestLocalNavigationSlot(UnitTestBase):
         ret = local_navigation(acb, DummyRequest())
         assert ret == dict(parent=ac, children=[aca, acb])
 
-        assert local_navigation(a.__parent__, DummyRequest()) is None
+        assert local_navigation(a.__parent__,
+                DummyRequest())['parent'] is None
 
     @patch('kotti.views.slots.has_permission')
     def test_no_permission(self, has_permission):
@@ -417,20 +418,20 @@ class TestLocalNavigationSlot(UnitTestBase):
         a, aa, ab, ac, aca, acb = create_contents()
 
         has_permission.return_value = True
-        assert local_navigation(ac, DummyRequest()) is not None
+        assert local_navigation(ac, DummyRequest())['parent'] is not None
 
         has_permission.return_value = False
-        assert local_navigation(ac, DummyRequest()) is None
+        assert local_navigation(ac, DummyRequest())['parent'] is None
 
     def test_in_navigation(self):
         from kotti.views.slots import local_navigation
         a, aa, ab, ac, aca, acb = create_contents()
 
-        assert local_navigation(a, DummyRequest()) is not None
+        assert local_navigation(a, DummyRequest())['parent'] is not None
         aa.in_navigation = False
         ab.in_navigation = False
         ac.in_navigation = False
-        assert local_navigation(a, DummyRequest()) is None
+        assert local_navigation(a, DummyRequest())['parent'] is None
 
 
 class TestNodesTree(UnitTestBase):

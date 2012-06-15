@@ -145,6 +145,7 @@ def local_navigation(context, request):
         children = ch(parent)
     if len(children) and parent != get_root():
         return dict(parent=parent, children=children)
+    return dict(parent=None)
 
 
 def includeme_local_navigation(config):
