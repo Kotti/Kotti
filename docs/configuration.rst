@@ -10,12 +10,12 @@ INI File
 
 Kotti is configured using an INI configuration file.  The
 :ref:`installation` section explains how to get hold of a sample
-configuration file.  The ``[app:main]`` section in it might look like
+configuration file.  The ``[app:kotti]`` section in it might look like
 this:
 
 .. code-block:: ini
 
-  [app:main]
+  [app:kotti]
   use = egg:Kotti
   pyramid.reload_templates = true
   pyramid.debug_authorization = false
@@ -36,11 +36,11 @@ Overview of settings
 --------------------
 
 This table provides an overview of available settings.  All these
-settings must go into the ``[app:main]`` section of your Paste Deploy
+settings must go into the ``[app:kotti]`` section of your Paste Deploy
 configuration file.
 
 ===========================  ===================================================
-Setting                      Description                            
+Setting                      Description
 ===========================  ===================================================
 **kotti.site_title**         The title of your site
 **kotti.secret**             Secret token used for the initial admin password
@@ -156,7 +156,7 @@ we install the package from PyPI:
   bin/pip install kotti_twitter
 
 Then we activate the add-on in our site by editing the
-``pyramid.includes`` setting in the ``[app:main]`` section of our INI
+``pyramid.includes`` setting in the ``[app:kotti]`` section of our INI
 file.  (If a line with ``pyramid.includes`` does not exist, add it.)
 
 .. code-block:: ini
