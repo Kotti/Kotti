@@ -17,6 +17,7 @@ class Dummy(dict):
 class DummyRequest(testing.DummyRequest):
     is_xhr = False
     POST = dict()
+    user = None
 
     def is_response(self, ob):
         return (hasattr(ob, 'app_iter') and hasattr(ob, 'headerlist') and
