@@ -202,6 +202,26 @@ class TestTemplateAPI(UnitTestBase):
         api = self.make(request=request, bare=False)
         self.assertEqual(api.bare, False)
 
+    def test_assign_to_slots(self):
+        from kotti.views.slots import assign_slot
+        from pyramid.request import Response
+
+        def special(context, request):
+            pass
+        self.config.add_view(special, name='special',
+                request_method="GET")
+        assign_slot('special', 'right')
+
+        def foo(context, request):
+            greeting = request.POST['greeting']
+            return Response("{0} world!".format(greeting))
+        self.config.add_view(foo, name='foo')
+        assign_slot('foo', 'left', params=dict(greeting="Yo"))
+
+        api = self.make()
+        assert api.slots.left == ["Yo world!"]
+        assert api.slots.right == []
+
     def test_slots(self):
         from kotti.views.slots import register, RenderAboveContent
 
@@ -380,37 +400,38 @@ class TestLocalNavigationSlot(UnitTestBase):
             'kotti:templates/view/nav-local.pt')
 
     def test_it(self):
-        from kotti.views.slots import render_local_navigation
+        from kotti.views.slots import local_navigation
         a, aa, ab, ac, aca, acb = create_contents()
 
-        assert render_local_navigation(ac, DummyRequest()) is not None
-        self.renderer.assert_(parent=ac, children=[aca, acb])
+        ret = local_navigation(ac, DummyRequest())
+        assert ret == dict(parent=ac, children=[aca, acb])
 
-        assert render_local_navigation(acb, DummyRequest()) is not None
-        self.renderer.assert_(parent=ac, children=[aca, acb])
+        ret = local_navigation(acb, DummyRequest())
+        assert ret == dict(parent=ac, children=[aca, acb])
 
-        assert render_local_navigation(a.__parent__, DummyRequest()) is None
+        assert local_navigation(a.__parent__,
+                DummyRequest())['parent'] is None
 
     @patch('kotti.views.slots.has_permission')
     def test_no_permission(self, has_permission):
-        from kotti.views.slots import render_local_navigation
+        from kotti.views.slots import local_navigation
         a, aa, ab, ac, aca, acb = create_contents()
 
         has_permission.return_value = True
-        assert render_local_navigation(ac, DummyRequest()) is not None
+        assert local_navigation(ac, DummyRequest())['parent'] is not None
 
         has_permission.return_value = False
-        assert render_local_navigation(ac, DummyRequest()) is None
+        assert local_navigation(ac, DummyRequest())['parent'] is None
 
     def test_in_navigation(self):
-        from kotti.views.slots import render_local_navigation
+        from kotti.views.slots import local_navigation
         a, aa, ab, ac, aca, acb = create_contents()
 
-        assert render_local_navigation(a, DummyRequest()) is not None
+        assert local_navigation(a, DummyRequest())['parent'] is not None
         aa.in_navigation = False
         ab.in_navigation = False
         ac.in_navigation = False
-        assert render_local_navigation(a, DummyRequest()) is None
+        assert local_navigation(a, DummyRequest())['parent'] is None
 
 
 class TestNodesTree(UnitTestBase):
