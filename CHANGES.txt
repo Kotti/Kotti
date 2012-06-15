@@ -4,9 +4,19 @@ Change History
 0.7a3 - Unreleased
 ------------------
 
-- Fix encoding error with non-ascii passwords.
+- Depend on new shiny kotti_tinymce, which implements image and file
+  browsing and upload, and browsing to link items.
+
+  Upgrade note: This requires changes to existing `*.ini` application
+  configuration files.  Concretely, you'll need to add a
+  ``filter:fanstatic`` section and a ``pipeline:main`` section and
+  rename an existing ``app:main`` section to ``app:Kotti`` or the
+  like.  Take a look at Kotti's own ``development.ini`` for an
+  example.
+
 - Switch to fanstatic for static resource management.
-- Depend on kotti_tinymce for WYSIWYG editing.
+
+- Fix encoding error with non-ascii passwords.
 
 0.7a2 - 2012-06-07
 ------------------
@@ -29,9 +39,7 @@ Features
 - Add subscriber to set cache headers based on caching rules.  See
   also related setting ``kotti.caching_policy_chooser``.
 
-- Remove TinyMCE from the core.  NOTE: We will either add
-  ``kotti_tinymce`` as a dependency or put back TinyMCE as before
-  prior to a final release.
+- Remove TinyMCE from the core.
 
 - Move email templates into page templates in
   ``kotti:templates/email-set-password.pt`` and
