@@ -25,7 +25,7 @@ install_requires = [
     'js.jquery_timepicker_addon',
     'js.jqueryui',
     'js.jqueryui_tagit',
-    'kotti_tinymce>=0.2.1',
+    'kotti_tinymce>=0.2.2',
     'lingua>=1.3',
     'Pillow',  # indirect dependency of plone.scale (that doesn't declare this dependency itself)
     'plone.i18n<2.0',  # >= 2.0 adds a huge number of dependencies
