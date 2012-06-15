@@ -126,6 +126,7 @@ Cookbook
   cookbook/images.rst
   cookbook/i18n.rst
   cookbook/as-a-library.rst
+  cookbook/static-resource-management.rst
 
 Support and Development
 =======================
