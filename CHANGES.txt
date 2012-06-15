@@ -1,7 +1,7 @@
 Change History
 ==============
 
-0.7a3 - Unreleased
+0.7a3 - 2012-06-15
 ------------------
 
 - Include ``kotti.tinymce`` which adds plug-ins for image and file
