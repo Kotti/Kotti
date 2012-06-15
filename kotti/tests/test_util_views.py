@@ -257,22 +257,25 @@ class TestTemplateAPI(UnitTestBase):
             )
 
     def test_slots_only_rendered_when_accessed(self):
-        from kotti.views.slots import register, RenderAboveContent
+        from kotti.views.slots import assign_slot
 
         called = []
 
-        def render_something(context, request):
+        def foo(context, request):
             called.append(True)
-        register(RenderAboveContent, None, render_something)
+            return Response(u"")
+
+        self.config.add_view(foo, name='foo')
+        assign_slot('foo', 'abovecontent')
 
         api = self.make()
         api.slots.belowcontent
-        self.assertFalse(called)
+        assert not called
 
         api.slots.abovecontent
-        self.assertEquals(len(called), 1)
+        assert len(called) == 1
         api.slots.abovecontent
-        self.assertEquals(len(called), 1)
+        assert len(called) == 1
 
     def test_format_datetime(self):
         import datetime
