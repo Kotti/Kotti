@@ -20,6 +20,7 @@ inside an ``includeme`` function and not on a module level, to allow
 users of your package to include your slot assignments through the
 ``pyramid.includes`` configuration setting.  """
 
+from pyramid.exceptions import PredicateMismatch
 from pyramid.renderers import render
 from pyramid.request import Request
 from pyramid.view import render_view
@@ -62,7 +63,7 @@ def __render_view_on_slot_event(view_name, event, params):
                 context,
                 view_request,
                 view_name)
-    except:
+    except PredicateMismatch:
         return None
     else:
         return result
