@@ -21,7 +21,6 @@ users of your package to include your slot assignments through the
 ``pyramid.includes`` configuration setting.  """
 
 from pyramid.exceptions import PredicateMismatch
-from pyramid.renderers import render
 from pyramid.request import Request
 from pyramid.view import render_view
 import urllib
@@ -51,22 +50,31 @@ def register(slot, objtype, renderer):
         lambda ev: renderer(ev.object, ev.request))
 
 
+def _encode(params):
+    if not params:
+        return u''
+    return urllib.urlencode(
+        dict((k, v.encode('utf-8')) for k, v in params.items()))
+
+
 def _render_view_on_slot_event(view_name, event, params):
     context = event.object
     request = event.request
     view_request = Request.blank(
-            "{0}/{1}".format(request.path, view_name),
-            base_url=request.application_url,
-            POST=urllib.urlencode(params or ""))
+        "{0}/{1}".format(request.path, view_name),
+        base_url=request.application_url,
+        POST=_encode(params),
+        )
     try:
         result = render_view(
-                context,
-                view_request,
-                view_name)
+            context,
+            view_request,
+            view_name,
+            )
     except PredicateMismatch:
         return None
     else:
-        return result
+        return result.decode('utf-8')
 
 
 def assign_slot(view_name, slot, params=None):

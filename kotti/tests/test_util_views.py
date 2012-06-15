@@ -210,10 +210,10 @@ class TestTemplateAPI(UnitTestBase):
             greeting = request.POST['greeting']
             return Response(u"{0} world!".format(greeting))
         self.config.add_view(foo, name='foo')
-        assign_slot('foo', 'left', params=dict(greeting="Yo"))
+        assign_slot('foo', 'left', params=dict(greeting=u"Y\u0153"))
 
         api = self.make()
-        assert api.slots.left == [u"Yo world!"]
+        assert api.slots.left == [u"Y\u0153 world!"]
 
     def test_assign_to_slot_predicate_mismatch(self):
         from kotti.views.slots import assign_slot
