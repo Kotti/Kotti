@@ -1,13 +1,10 @@
 import warnings
 
 from pyramid.exceptions import NotFound
-from pyramid.httpexceptions import HTTPFound
 from pyramid.view import render_view_to_response
-from pyramid.url import resource_url
 
 from kotti.resources import IContent
 from kotti.resources import Document
-from kotti.resources import get_root
 
 from kotti.views.util import search_content
 
