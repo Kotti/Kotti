@@ -103,17 +103,8 @@ def get_version():
     return pkg_resources.require("Kotti")[0].version
 
 
-@request_cache(lambda: None)
 def get_settings():
-    from kotti.resources import Settings
-    session = DBSession()
-    db_settings = session.query(Settings).order_by(desc(Settings.id)).first()
-    if db_settings is not None:
-        reg_settings = dict(get_current_registry().settings)
-        reg_settings.update(db_settings.data)
-        return reg_settings
-    else:
-        return get_current_registry().settings
+    return get_current_registry().settings
 
 
 def _resolve_dotted(d, keys=conf_dotted):

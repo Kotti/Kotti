@@ -380,22 +380,6 @@ class Image(File):
         addable_to=[u'Document', ], )
 
 
-class Settings(Base):
-    __tablename__ = 'settings'
-
-    id = Column(Integer(), primary_key=True)
-    data = Column(JsonType())
-
-    def __init__(self, data):
-        self.data = data
-
-    def copy(self, newdata):
-        data = self.data.copy()
-        data.update(newdata)
-        copy = self.__class__(data)
-        return copy
-
-
 def get_root(request=None):
     return get_settings()['kotti.root_factory'][0](request)
 
@@ -417,8 +401,6 @@ def initialize_sql(engine, drop_all=False):
     settings = get_current_registry().settings
     tables = settings['kotti.use_tables'].strip() or None
     if tables:
-        if 'settings' not in tables:
-            tables += ' settings'
         tables = [metadata.tables[name] for name in tables.split()]
 
     if engine.dialect.name == 'mysql':  # pragma: no cover
