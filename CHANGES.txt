@@ -4,6 +4,11 @@ Change History
 0.7a3 - Unreleased
 ------------------
 
+- Drop Pyramid 1.2 support since cache views uses
+  ``pyramid.response.FileResponse`` as well as kotti_tinymce uses
+  ``pyramid.view.view_defaults`` which are only available in Pyramid
+  1.3 or later.
+
 - Depend on new shiny kotti_tinymce, which implements image and file
   browsing and upload, and browsing to link items.
 
