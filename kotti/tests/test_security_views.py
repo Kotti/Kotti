@@ -102,15 +102,14 @@ class TestSetPassword:
         self.patchers = (
             Form_patcher, _find_user_patcher, validate_token_patcher)
 
-    def tearDown(self):
-        super(TestSetPassword, self).tearDown()
+    def teardown_method(self, method):
         for patcher in self.patchers:
             patcher.stop()
 
     def form_values(self, values):
         self.Form_mock.return_value.validate.return_value = values
 
-    def test_success(self):
+    def test_success(self, db_session):
         from kotti.resources import get_root
         from kotti.security import get_principals
         from kotti.views.login import set_password
@@ -133,7 +132,7 @@ class TestSetPassword:
             'mypassword', self.user.password)
         assert res.status == '302 Found'
 
-    def test_wrong_token(self):
+    def test_wrong_token(self, db_session):
         from kotti.resources import get_root
         from kotti.security import get_principals
         from kotti.views.login import set_password
@@ -154,7 +153,7 @@ class TestSetPassword:
             'mypassword', self.user.password)
         assert not request.is_response(res)
 
-    def test_inactive_user(self):
+    def test_inactive_user(self, db_session):
         from kotti.resources import get_root
         from kotti.security import get_principals
         from kotti.views.login import set_password
@@ -178,7 +177,7 @@ class TestSetPassword:
             'mypassword', self.user.password)
         assert not request.is_response(res)
 
-    def test_success_continue(self):
+    def test_success_continue(self, db_session):
         from kotti.resources import get_root
         from kotti.views.login import set_password
 

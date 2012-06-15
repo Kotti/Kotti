@@ -1,6 +1,6 @@
 
 
-class TestRequestCache:
+class TestRequestCache(object):
     def setup_method(self, method):
         from kotti.util import request_cache
         self.cache_decorator = request_cache
@@ -41,10 +41,10 @@ class TestRequestCache:
 
 
 class TestLRUCache(TestRequestCache):
-    def setUp(self):
+    def setup_method(self, method):
         from kotti.util import lru_cache
 
-        super(TestLRUCache, self).setUp()
+        super(TestLRUCache, self).setup_method(method)
         self.cache_decorator = lru_cache
 
 
