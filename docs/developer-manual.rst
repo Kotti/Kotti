@@ -16,15 +16,15 @@ to make branches for contributing, etc. Steps would be something like this:
 
 .. code-block:: bash
 
-    git clone https://github.com/your_github/Kotti.git
+  git clone https://github.com/your_github/Kotti.git
 
-    cd Kotti
+  cd Kotti
 
-    git remote add upstream git://github.com/Pylons/Kotti.git
+  git remote add upstream git://github.com/Pylons/Kotti.git
 
-    git fetch upstream
+  git fetch upstream
 
-    git merge upstream/master
+  git merge upstream/master
 
 Now you should be set up to make branches for this and that, doing a pull request
 from a branch, and the usual git procedures.
@@ -33,9 +33,9 @@ To run and develop within your clone, do these steps:
 
 .. code-block:: bash
 
-    virtualenv . --no-site-packages 
+  virtualenv . --no-site-packages 
 
-    bin/python setup.py develop
+  bin/python setup.py develop
 
 This will create a new virtualenv "in place" and do the python develop steps to
 use the Kotti code in the repo.
