@@ -99,4 +99,7 @@ var jq = jQuery;
         kotti.dom_changed(node);
     };
 
+    deform.load();
+    kotti.main();
+
  })(jQuery);

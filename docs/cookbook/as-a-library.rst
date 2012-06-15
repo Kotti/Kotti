@@ -40,9 +40,17 @@ directly, maybe like this:
 
 .. code-block:: ini
 
-  [app:main]
+  [app:myapp]
   use = egg:myapp
   pyramid.includes = pyramid_tm
   mail.default_sender = yourname@yourhost
   sqlalchemy.url = sqlite:///%(here)s/myapp.db
   kotti.secret = secret
+
+  [filter:fanstatic]
+  use = egg:fanstatic#fanstatic
+
+  [pipeline:main]
+  pipeline =
+      fanstatic
+      myapp
