@@ -14,7 +14,7 @@ your github account, and follow the usual steps to get a local clone, with origi
 as your fork, and with upstream as the pylons/Kotti repo. Then, you will be able
 to make branches for contributing, etc. Steps would be something like this:
 
-.. code-block:: BashLexer
+.. code-block:: bash
 
   git clone https://github.com/your_github/Kotti.git
 
@@ -22,16 +22,15 @@ to make branches for contributing, etc. Steps would be something like this:
 
   git remote add upstream git://github.com/Pylons/Kotti.git
 
-  git fetch upstream
-
-  git merge upstream/master
-
 Now you should be set up to make branches for this and that, doing a pull request
-from a branch, and the usual git procedures.
+from a branch, and the usual git procedures. You may wish to read the 
+`Github fork-a-repo help`_.
+
+.. _Github fork-a-repo help: https://help.github.com/articles/fork-a-repo
 
 To run and develop within your clone, do these steps:
 
-.. code-block:: BashLexer
+.. code-block:: bash
 
   virtualenv . --no-site-packages 
 
