@@ -4,15 +4,8 @@ Change History
 0.7a3 - Unreleased
 ------------------
 
-- Depend on new shiny kotti_tinymce, which implements image and file
-  browsing and upload, and browsing to link items.
-
-  Upgrade note: This requires changes to existing `*.ini` application
-  configuration files.  Concretely, you'll need to add a
-  ``filter:fanstatic`` section and a ``pipeline:main`` section and
-  rename an existing ``app:main`` section to ``app:Kotti`` or the
-  like.  Take a look at Kotti's own ``development.ini`` for an
-  example.
+- Include ``kotti.tinymce`` which adds plug-ins for image and file
+  upload and content linking to the TinyMCE rich text editor.
 
 - Slot renderers have been replaced by normal views (or viewlets).
   ``kotti.views.slots.register`` has been deprecated in favour of
@@ -21,6 +14,13 @@ Change History
   registration.
 
 - Switch to fanstatic for static resource management.
+
+  Upgrade note: This requires changes to existing `*.ini` application
+  configuration files.  Concretely, you'll need to add a
+  ``filter:fanstatic`` section and a ``pipeline:main`` section and
+  rename an existing ``app:main`` section to ``app:Kotti`` or the
+  like.  Take a look at Kotti's own ``development.ini`` for an
+  example.
 
 - Retire the undocumented ``kotti.resources.Setting`` class and table.
   ``kotti.get_settings`` will now return ``registry.settings``
