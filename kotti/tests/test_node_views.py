@@ -1,3 +1,4 @@
+from pytest import raises
 from pyramid.exceptions import Forbidden
 
 from kotti.testing import DummyRequest
@@ -67,7 +68,8 @@ class TestNodePaste(UnitTestBase):
         # We need to have the 'edit' permission on the original object
         # to be able to cut and paste:
         request.session['kotti.paste'] = (1, 'cut')
-        self.assertRaises(Forbidden, paste_node, root, request)
+        with raises(Forbidden):
+            paste_node(root, request)
 
         # We don't need 'edit' permission if we're just copying:
         request.session['kotti.paste'] = (1, 'copy')
@@ -204,7 +206,8 @@ class TestNodeShare(UnitTestBase):
         # the request:
         request.params['role::bob::role:admin'] = u'1'
         request.params['orig-role::bob::role:admin'] = u''
-        self.assertRaises(Forbidden, share_node, root, request)
+        with raises(Forbidden):
+            share_node(root, request)
         assert (
             set(list_groups('bob', root)) ==
             set(['role:owner', 'role:editor', 'role:special'])

@@ -1,6 +1,7 @@
 from unittest import TestCase
 
 from mock import patch
+from pytest import raises
 from pyramid.authentication import CallbackAuthenticationPolicy
 
 from kotti.testing import DummyRequest
@@ -398,8 +399,10 @@ class TestPrincipals(UnitTestBase):
 
     def test_users_empty(self):
         users = self.get_principals()
-        self.assertRaises(KeyError, users.__getitem__, u'bob')
-        self.assertRaises(KeyError, users.__delitem__, u'bob')
+        with raises(KeyError):
+            users[u'bob']
+        with raises(KeyError):
+            del users[u'bob']
         assert users.keys() == [u'admin']
 
     def test_users_add_and_remove(self):
@@ -409,8 +412,10 @@ class TestPrincipals(UnitTestBase):
         assert set(users.keys()) == set([u'admin', u'bob'])
 
         del users['bob']
-        self.assertRaises(KeyError, users.__getitem__, u'bob')
-        self.assertRaises(KeyError, users.__delitem__, u'bob')
+        with raises(KeyError):
+            users[u'bob']
+        with raises(KeyError):
+            del users[u'bob']
 
     def test_users_search(self):
         users = self.get_principals()
@@ -422,8 +427,8 @@ class TestPrincipals(UnitTestBase):
         self._assert_is_bob(bob)
         [bob] = list(users.search(name=u"*Bob*", title=u"*Frank*"))
         self._assert_is_bob(bob)
-        self.assertRaises(AttributeError,
-                          users.search, name=u"bob", foo=u"bar")
+        with raises(AttributeError):
+            users.search(name=u"bob", foo=u"bar")
         assert list(users.search()) == []
 
     def test_groups_from_users(self):

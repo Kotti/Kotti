@@ -2,6 +2,7 @@ import time
 
 from mock import patch
 from mock import MagicMock
+from pytest import raises
 
 from kotti.testing import DummyRequest
 from kotti.testing import UnitTestBase
@@ -223,10 +224,8 @@ class TestTemplateAPI(UnitTestBase):
             [u'Hello, %s!' % api.context.title, u'a', u'list']
             )
 
-        self.assertRaises(
-            AttributeError,
-            getattr, api.slots, 'foobar'
-            )
+        with raises(AttributeError):
+            api.slots.foobar
 
     def test_slots_only_rendered_when_accessed(self):
         from kotti.views.slots import register, RenderAboveContent
@@ -262,7 +261,8 @@ class TestTemplateAPI(UnitTestBase):
             api.format_datetime(first, format='short') ==
             format_datetime(first, format='short', locale='en'))
         api.locale_name = 'unknown'
-        self.assertRaises(UnknownLocaleError, api.format_datetime, first)
+        with raises(UnknownLocaleError):
+            api.format_datetime(first)
 
     def test_format_date(self):
         import datetime
@@ -277,7 +277,8 @@ class TestTemplateAPI(UnitTestBase):
             api.format_date(first, format='short') ==
             format_date(first, format='short', locale='en'))
         api.locale_name = 'unknown'
-        self.assertRaises(UnknownLocaleError, api.format_date, first)
+        with raises(UnknownLocaleError):
+            api.format_date(first)
 
     def test_format_time(self):
         import datetime
@@ -292,7 +293,8 @@ class TestTemplateAPI(UnitTestBase):
             api.format_time(first, format='short') ==
             format_time(first, format='short', locale='en'))
         api.locale_name = 'unknown'
-        self.assertRaises(UnknownLocaleError, api.format_time, first)
+        with raises(UnknownLocaleError):
+            api.format_time(first)
 
     def test_render_view(self):
         from pyramid.response import Response

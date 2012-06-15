@@ -1,5 +1,6 @@
 import colander
 from mock import patch
+from pytest import raises
 
 from kotti.testing import DummyRequest
 from kotti.testing import UnitTestBase
@@ -83,9 +84,8 @@ class TestUserManagement(UnitTestBase):
 
     def test_group_validator(self):
         from kotti.views.users import group_validator
-        self.assertRaises(
-            colander.Invalid,
-            group_validator, None, u'this-group-never-exists')
+        with raises(colander.Invalid):
+            group_validator(None, u'this-group-never-exists')
 
 
 class TestSetPassword(UnitTestBase):

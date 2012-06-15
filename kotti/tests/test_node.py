@@ -1,3 +1,4 @@
+from pytest import raises
 from pyramid.security import ALL_PERMISSIONS
 from pyramid.security import Allow
 from sqlalchemy.exc import IntegrityError
@@ -34,7 +35,8 @@ class TestNode(UnitTestBase):
         # The __acl__ attribute of Nodes allows access to the mapped
         # '_acl' property:
         del root.__acl__
-        self.assertRaises(AttributeError, root._get_acl)
+        with raises(AttributeError):
+            root._get_acl()
 
         root.__acl__ = [('Allow', 'system.Authenticated', ['edit'])]
         assert (
@@ -102,7 +104,8 @@ class TestNode(UnitTestBase):
         root = get_root()
         session.add(Node(name=u'child1', parent=root))
         session.add(Node(name=u'child1', parent=root))
-        self.assertRaises(IntegrityError, session.flush)
+        with raises(IntegrityError):
+            session.flush()
 
     def test_container_methods(self):
         from kotti import DBSession
@@ -142,9 +145,11 @@ class TestNode(UnitTestBase):
         assert root[u'child3', u'subchild33'] is root[u'child3'][u'subchild33']
         assert root[(u'child3', u'subchild33')] is subchild33
         assert root[(u'child3', u'subchild33')] is subchild33
-        self.assertRaises(KeyError, root.__getitem__, (u'child3', u'bad-name'))
+        with raises(KeyError):
+            root[u'child3', u'bad-name']
         root.children  # force a different code path
-        self.assertRaises(KeyError, root.__getitem__, (u'child3', u'bad-name'))
+        with raises(KeyError):
+            root[u'child3', u'bad-name']
         del root[u'child3']
 
         # Overwriting an existing Node is an error; first delete manually!
@@ -155,7 +160,8 @@ class TestNode(UnitTestBase):
         child44 = Node(name=u'child4')
         session.add(child44)
         root[u'child4'] = child44
-        self.assertRaises(SQLAlchemyError, session.flush)
+        with raises(SQLAlchemyError):
+            session.flush()
 
     def test_node_copy_name(self):
         from kotti.resources import get_root
@@ -260,7 +266,8 @@ class TestNode(UnitTestBase):
         from kotti.resources import get_root
 
         root = get_root()
-        self.assertRaises(ValueError, setattr, root, 'annotations', [])
+        with raises(ValueError):
+            root.annotations = []
 
 
 class TestLocalGroup(UnitTestBase):
