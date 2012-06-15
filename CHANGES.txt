@@ -5,6 +5,8 @@ Change History
 ------------------
 
 - Fix encoding error with non-ascii passwords.
+- Switch to fanstatic for static resource management.
+- Depend on kotti_tinymce for WYSIWYG editing.
 
 0.7a2 - 2012-06-07
 ------------------

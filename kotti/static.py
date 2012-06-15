@@ -29,6 +29,7 @@ deform_bootstrap_js = Resource(
 lib_kotti = Library("kotti", "static")
 kotti_js = Resource(lib_kotti,
     "kotti.js",
+    depends=[deform_bootstrap_js, ],
     bottom=True)
 base_css = Resource(lib_kotti,
     "base.css",
