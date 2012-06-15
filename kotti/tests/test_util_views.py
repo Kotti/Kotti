@@ -239,7 +239,7 @@ class TestTemplateAPI(UnitTestBase):
 
         api = self.make()
         api.slots.belowcontent
-        self.assertFalse(called)
+        assert called == []
 
         api.slots.abovecontent
         assert len(called) == 1
@@ -340,7 +340,7 @@ class TestViewUtil(UnitTestBase):
         request.template_api = template_api = object()
         event = {'request': request, 'renderer_name': 'foo'}
         add_renderer_globals(event)
-        self.assertTrue(event['api'] is template_api)
+        assert event['api'] is template_api
 
     def test_add_renderer_globals(self):
         from kotti.views.util import add_renderer_globals
@@ -352,7 +352,7 @@ class TestViewUtil(UnitTestBase):
             'renderer_name': 'foo',
             }
         add_renderer_globals(event)
-        self.assertTrue('api' in event)
+        assert 'api' in event
 
 
 class TestUtil(UnitTestBase):

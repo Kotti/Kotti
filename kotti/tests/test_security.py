@@ -57,7 +57,7 @@ class TestGroups(UnitTestBase):
 
         set_groups('bob', root)
         assert list_groups('bob', root) == []
-        self.assertTrue(get_root() is root)
+        assert get_root() is root
 
     def test_inherit(self):
         from kotti import DBSession
@@ -393,8 +393,7 @@ class TestPrincipals(UnitTestBase):
 
     def test_default_admin(self):
         admin = self.get_principals()[u'admin']
-        self.assertTrue(
-            self.get_principals().validate_password(u'secret', admin.password))
+        assert self.get_principals().validate_password(u'secret', admin.password)
         assert admin.groups == [u'role:admin']
 
     def test_users_empty(self):
@@ -461,24 +460,22 @@ class TestPrincipals(UnitTestBase):
         password = u"secret"
         principals = self.get_principals()
         hashed = principals.hash_password(password)
-        self.assertTrue(principals.validate_password(password, hashed))
-        self.assertFalse(principals.validate_password(u"foo", hashed))
+        assert principals.validate_password(password, hashed)
+        assert principals.validate_password(u"foo", hashed) is False
 
     def test_bobs_hashed_password(self):
         bob = self.make_bob()
         principals = self.get_principals()
-        self.assertTrue(principals.validate_password(u"secret", bob.password))
+        assert principals.validate_password(u"secret", bob.password)
 
         # When we set the 'password' attribute directly, we have to do
         # the hashing ourselves.  This won't work:
         bob.password = u'anothersecret'
-        self.assertFalse(
-            principals.validate_password(u"anothersecret", bob.password))
+        assert principals.validate_password(u"anothersecret", bob.password) is False
 
         # This will:
         bob.password = principals.hash_password(u"anothersecret")
-        self.assertTrue(
-            principals.validate_password(u"anothersecret", bob.password))
+        assert principals.validate_password(u"anothersecret", bob.password)
 
     def test_active(self):
         bob = self.make_bob()
@@ -554,7 +551,7 @@ class TestPrincipals(UnitTestBase):
         assert (
             [request.session.pop_flash('success')[0].interpolate()] ==
             [u'Welcome, Bob Dabolina!'])
-        self.assertTrue(last_login_date < bob.last_login_date)
+        assert last_login_date < bob.last_login_date
 
         # Deactive Bob, logging in is no longer possible:
         bob.active = False

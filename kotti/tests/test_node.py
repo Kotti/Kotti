@@ -139,12 +139,9 @@ class TestNode(UnitTestBase):
         subchild33 = Node(name=u'subchild33', parent=root[u'child3'])
         session.add(subchild33)
         del root.__dict__['_children']  # force a different code path
-        self.assertTrue(
-            root[u'child3', u'subchild33'] is root[u'child3'][u'subchild33'])
-        self.assertTrue(
-            root[(u'child3', u'subchild33')] is subchild33)
-        self.assertTrue(
-            root[(u'child3', u'subchild33')] is subchild33)
+        assert root[u'child3', u'subchild33'] is root[u'child3'][u'subchild33']
+        assert root[(u'child3', u'subchild33')] is subchild33
+        assert root[(u'child3', u'subchild33')] is subchild33
         self.assertRaises(KeyError, root.__getitem__, (u'child3', u'bad-name'))
         root.children  # force a different code path
         self.assertRaises(KeyError, root.__getitem__, (u'child3', u'bad-name'))
@@ -238,7 +235,7 @@ class TestNode(UnitTestBase):
 
         root = get_root()
         root.annotations['foo'] = u'bar'
-        self.assertTrue(root in DBSession.dirty)
+        assert root in DBSession.dirty
         del root.annotations['foo']
 
     def test_nested_annotations_mutable(self):
@@ -252,7 +249,7 @@ class TestNode(UnitTestBase):
 
         root = get_root()
         root.annotations['foo']['bar'] = u'baz'
-        self.assertTrue(root in DBSession.dirty)
+        assert root in DBSession.dirty
         DBSession.flush()
         DBSession.expire_all()
 
