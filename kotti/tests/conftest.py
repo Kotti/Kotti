@@ -62,3 +62,9 @@ def pytest_funcarg__request(request):
     config = request.getfuncargvalue('config')
     config.manager.get()['request'] = request = DummyRequest()
     return request
+
+
+def pytest_funcarg__events(request):
+    config = request.getfuncargvalue('config')
+    config.include('kotti.events')
+    return config

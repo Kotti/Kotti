@@ -1,13 +1,8 @@
 from mock import patch
 
-from kotti.testing import EventTestBase
-from kotti.testing import UnitTestBase
 
-
-class TestEvents(EventTestBase, UnitTestBase):
-    @patch('kotti.events.authenticated_userid')
-    @patch('kotti.events.get_current_request')
-    def test_owner(self, get_current_request, authenticated_userid):
+class TestEvents:
+    def test_owner(self, db_session, events, request):
         from kotti import DBSession
         from kotti.resources import get_root
         from kotti.resources import Content
@@ -15,23 +10,23 @@ class TestEvents(EventTestBase, UnitTestBase):
         from kotti.security import list_groups_raw
         from kotti.util import clear_cache
 
-        get_current_request.return_value = not None
-        authenticated_userid.return_value = 'bob'
         root = get_root()
-        child = root[u'child'] = Content()
-        DBSession.flush()
+        with patch('kotti.events.authenticated_userid', return_value='bob'):
+            child = root[u'child'] = Content()
+            DBSession.flush()
         assert child.owner == u'bob'
         assert list_groups(u'bob', child) == [u'role:owner']
 
         clear_cache()
         # The event listener does not set the role again for subitems:
-        grandchild = child[u'grandchild'] = Content()
-        DBSession.flush()
+        with patch('kotti.events.authenticated_userid', return_value='bob'):
+            grandchild = child[u'grandchild'] = Content()
+            DBSession.flush()
         assert grandchild.owner == u'bob'
         assert list_groups(u'bob', grandchild) == [u'role:owner']
         assert len(list_groups_raw(u'bob', grandchild)) == 0
 
-    def test_sqlalchemy_events(self):
+    def test_sqlalchemy_events(self, db_session, events):
         from kotti import events
         from kotti import DBSession
         from kotti.resources import get_root
