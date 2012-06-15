@@ -20,16 +20,16 @@ class TestEvents(EventTestBase, UnitTestBase):
         root = get_root()
         child = root[u'child'] = Content()
         DBSession.flush()
-        self.assertEqual(child.owner, u'bob')
-        self.assertEqual(list_groups(u'bob', child), [u'role:owner'])
+        assert child.owner == u'bob'
+        assert list_groups(u'bob', child) == [u'role:owner']
 
         clear_cache()
         # The event listener does not set the role again for subitems:
         grandchild = child[u'grandchild'] = Content()
         DBSession.flush()
-        self.assertEqual(grandchild.owner, u'bob')
-        self.assertEqual(list_groups(u'bob', grandchild), [u'role:owner'])
-        self.assertEqual(len(list_groups_raw(u'bob', grandchild)), 0)
+        assert grandchild.owner == u'bob'
+        assert list_groups(u'bob', grandchild) == [u'role:owner']
+        assert len(list_groups_raw(u'bob', grandchild)) == 0
 
     def test_sqlalchemy_events(self):
         from kotti import events

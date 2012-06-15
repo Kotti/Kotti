@@ -58,8 +58,8 @@ class TestApp(UnitTestBase):
         settings['kotti.configurators'] = [my_configurator]
         main({}, **settings)
 
-        self.assertEqual(get_settings()['kotti.base_includes'], [])
-        self.assertEqual(get_settings()['kotti.available_types'], [MyType])
+        assert get_settings()['kotti.base_includes'] == []
+        assert get_settings()['kotti.available_types'] == [MyType]
 
     def test_auth_policies_no_override(self):
         from kotti import main
@@ -91,10 +91,10 @@ class TestApp(UnitTestBase):
 
         session = DBSession()
         [settings] = session.query(Settings).all()
-        self.assertEqual(settings.data, {'kotti.db_version': get_version()})
-        self.assertEqual(get_settings()['kotti.db_version'], get_version())
+        assert settings.data == {'kotti.db_version': get_version()}
+        assert get_settings()['kotti.db_version'] == get_version()
         settings.data['foo.bar'] = u'baz'
-        self.assertEqual(get_settings()['foo.bar'], u'baz')
+        assert get_settings()['foo.bar'] == u'baz'
 
     def test_persistent_settings_add_new(self):
         from kotti import DBSession
@@ -105,8 +105,8 @@ class TestApp(UnitTestBase):
         data = {'foo.bar': u'spam', 'kotti.db_version': u'next'}
         new_settings = settings.copy(data)
         DBSession.add(new_settings)
-        self.assertEqual(get_settings()['foo.bar'], u'spam')
-        self.assertEqual(get_settings()['kotti.db_version'], u'next')
+        assert get_settings()['foo.bar'] == u'spam'
+        assert get_settings()['kotti.db_version'] == u'next'
 
     def test_asset_overrides(self):
         from kotti import main
@@ -211,7 +211,7 @@ class TestApp(UnitTestBase):
         settings['kotti.site_title'] = 'K\xc3\xb6tti'  # Kötti
 
         main({}, **settings)
-        self.assertEqual(get_settings()['kotti.site_title'], u'K\xf6tti')
+        assert get_settings()['kotti.site_title'] == u'K\xf6tti'
 
     def test_search_content(self):
         from kotti import main

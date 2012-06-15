@@ -14,15 +14,15 @@ class TestGroups(UnitTestBase):
         from kotti.security import list_groups_raw
 
         root = get_root()
-        self.assertEqual(list_groups('admin', root), ['role:admin'])
-        self.assertEqual(list_groups_raw(u'admin', root), set([]))
+        assert list_groups('admin', root) == ['role:admin']
+        assert list_groups_raw(u'admin', root) == set([])
 
     def test_empty(self):
         from kotti.resources import get_root
         from kotti.security import list_groups
 
         root = get_root()
-        self.assertEqual(list_groups('bob', root), [])
+        assert list_groups('bob', root) == []
 
     def test_simple(self):
         from kotti.resources import get_root
@@ -32,15 +32,13 @@ class TestGroups(UnitTestBase):
 
         root = get_root()
         set_groups('bob', root, ['role:editor'])
-        self.assertEqual(
-            list_groups('bob', root), ['role:editor'])
-        self.assertEqual(
-            list_groups_raw(u'bob', root), set(['role:editor']))
+        assert list_groups('bob', root) == ['role:editor']
+        assert list_groups_raw(u'bob', root) == set(['role:editor'])
 
     def test_not_a_node(self):
         from kotti.security import list_groups_raw
 
-        self.assertEqual(list_groups_raw(u'bob', object()), set())
+        assert list_groups_raw(u'bob', object()) == set()
 
     def test_overwrite_and_delete(self):
         from kotti.resources import get_root
@@ -50,20 +48,15 @@ class TestGroups(UnitTestBase):
 
         root = get_root()
         set_groups('bob', root, ['role:editor'])
-        self.assertEqual(
-            list_groups('bob', root), ['role:editor'])
-        self.assertEqual(
-            list_groups_raw(u'bob', root), set(['role:editor']))
+        assert list_groups('bob', root) == ['role:editor']
+        assert list_groups_raw(u'bob', root) == set(['role:editor'])
 
         set_groups('bob', root, ['role:admin'])
-        self.assertEqual(
-            list_groups('bob', root), ['role:admin'])
-        self.assertEqual(
-            list_groups_raw(u'bob', root), set(['role:admin']))
+        assert list_groups('bob', root) == ['role:admin']
+        assert list_groups_raw(u'bob', root) == set(['role:admin'])
 
         set_groups('bob', root)
-        self.assertEqual(
-            list_groups('bob', root), [])
+        assert list_groups('bob', root) == []
         self.assertTrue(get_root() is root)
 
     def test_inherit(self):
@@ -78,20 +71,19 @@ class TestGroups(UnitTestBase):
         child = root[u'child'] = Node()
         DBSession.flush()
 
-        self.assertEqual(list_groups('bob', child), [])
+        assert list_groups('bob', child) == []
         set_groups('bob', root, ['role:editor'])
-        self.assertEqual(list_groups('bob', child), ['role:editor'])
+        assert list_groups('bob', child) == ['role:editor']
 
         # Groups from the child are added:
         set_groups('bob', child, ['group:somegroup'])
-        self.assertEqual(
-            set(list_groups('bob', child)),
+        assert (
+            set(list_groups('bob', child)) ==
             set(['group:somegroup', 'role:editor'])
             )
 
         # We can ask to list only those groups that are defined locally:
-        self.assertEqual(
-            list_groups_raw(u'bob', child), set(['group:somegroup']))
+        assert list_groups_raw(u'bob', child) == set(['group:somegroup'])
 
     @staticmethod
     def add_some_groups():
@@ -142,61 +134,42 @@ class TestGroups(UnitTestBase):
         grandchild = child[u'grandchild']
 
         # Check bob's groups on every level:
-        self.assertEqual(list_groups('bob', root), ['group:bobsgroup'])
-        self.assertEqual(
-            set(list_groups('bob', child)),
-            set(['group:bobsgroup', 'group:franksgroup', 'role:editor'])
-            )
-        self.assertEqual(
-            set(list_groups('bob', grandchild)),
+        assert list_groups('bob', root) == ['group:bobsgroup']
+        assert (set(list_groups('bob', child)) ==
+            set(['group:bobsgroup', 'group:franksgroup', 'role:editor']))
+        assert (set(list_groups('bob', grandchild)) ==
             set(['group:bobsgroup', 'group:franksgroup', 'role:editor',
-                 'role:owner'])
-            )
+                 'role:owner']))
 
         # Check group:franksgroup groups on every level:
-        self.assertEqual(
-            set(list_groups('frank', root)),
-            set(['group:franksgroup', 'role:editor'])
-            )
-        self.assertEqual(
-            set(list_groups('frank', child)),
-            set(['group:franksgroup', 'role:editor'])
-            )
-        self.assertEqual(
-            set(list_groups('frank', grandchild)),
+        assert (set(list_groups('frank', root)) ==
+            set(['group:franksgroup', 'role:editor']))
+        assert (set(list_groups('frank', child)) ==
+            set(['group:franksgroup', 'role:editor']))
+        assert (set(list_groups('frank', grandchild)) ==
             set(['group:franksgroup', 'role:editor', 'role:owner',
-                 'group:bobsgroup'])
-            )
+                 'group:bobsgroup']))
 
         # Sometimes it's useful to know which of the groups were
         # inherited, that's what 'list_groups_ext' is for:
         groups, inherited = list_groups_ext('bob', root)
-        self.assertEqual(groups, ['group:bobsgroup'])
-        self.assertEqual(inherited, [])
+        assert groups == ['group:bobsgroup']
+        assert inherited == []
 
         groups, inherited = list_groups_ext('bob', child)
-        self.assertEqual(
-            set(groups),
-            set(['group:bobsgroup', 'group:franksgroup', 'role:editor'])
-            )
-        self.assertEqual(
-            set(inherited),
-            set(['group:bobsgroup', 'group:franksgroup', 'role:editor'])
-            )
+        assert (set(groups) ==
+            set(['group:bobsgroup', 'group:franksgroup', 'role:editor']))
+        assert (set(inherited) ==
+            set(['group:bobsgroup', 'group:franksgroup', 'role:editor']))
 
         groups, inherited = list_groups_ext('group:bobsgroup', child)
-        self.assertEqual(
-            set(groups),
-            set(['group:franksgroup', 'role:editor'])
-            )
-        self.assertEqual(inherited, ['role:editor'])
+        assert set(groups) == set(['group:franksgroup', 'role:editor'])
+        assert inherited == ['role:editor']
 
         groups, inherited = list_groups_ext('group:franksgroup', grandchild)
-        self.assertEqual(
-            set(groups),
-            set(['group:bobsgroup', 'role:owner', 'role:editor'])
-            )
-        self.assertEqual(inherited, ['role:editor'])
+        assert (set(groups) ==
+            set(['group:bobsgroup', 'role:owner', 'role:editor']))
+        assert inherited == ['role:editor']
 
     def test_works_with_auth(self):
         from kotti import DBSession
@@ -216,22 +189,22 @@ class TestGroups(UnitTestBase):
         auth.callback = list_groups_callback
 
         request.context = root
-        self.assertEqual(  # user doesn't exist yet
-            auth.effective_principals(request),
+        assert (  # user doesn't exist yet
+            auth.effective_principals(request) ==
             ['system.Everyone']
             )
 
         get_principals()[u'bob'] = dict(name=u'bob')
-        self.assertEqual(
-            auth.effective_principals(request),
+        assert (
+            auth.effective_principals(request) ==
             ['system.Everyone', 'system.Authenticated', 'bob']
             )
 
         # Define that bob belongs to bobsgroup on the root level:
         set_groups('bob', root, ['group:bobsgroup'])
         request.context = child
-        self.assertEqual(
-            set(auth.effective_principals(request)), set([
+        assert (
+            set(auth.effective_principals(request)) == set([
                 'system.Everyone', 'system.Authenticated',
                 'bob', 'group:bobsgroup'
                 ])
@@ -240,8 +213,8 @@ class TestGroups(UnitTestBase):
         # define that bob belongs to franksgroup in the user db:
         get_principals()[u'bob'].groups = [u'group:franksgroup']
         set_groups('group:franksgroup', child, ['group:anothergroup'])
-        self.assertEqual(
-            set(auth.effective_principals(request)), set([
+        assert (
+            set(auth.effective_principals(request)) == set([
                 'system.Everyone', 'system.Authenticated',
                 'bob', 'group:bobsgroup', 'group:franksgroup',
                 'group:anothergroup',
@@ -255,8 +228,8 @@ class TestGroups(UnitTestBase):
             title=u"Frank's group",
             groups=[u'group:funnygroup', u'group:bobsgroup'],
             )
-        self.assertEqual(
-            set(auth.effective_principals(request)), set([
+        assert (
+            set(auth.effective_principals(request)) == set([
                 'system.Everyone', 'system.Authenticated',
                 'bob', 'group:bobsgroup', 'group:franksgroup',
                 'group:anothergroup', 'group:funnygroup',
@@ -273,10 +246,8 @@ class TestGroups(UnitTestBase):
         get_principals()[u'group:bobsgroup'] = dict(name=u'group:bobsgroup')
 
         request = DummyRequest()
-        self.assertEqual(
-            list_groups_callback(u'bob', request), [])
-        self.assertEqual(
-            list_groups_callback(u'group:bobsgroup', request), None)
+        assert list_groups_callback(u'bob', request) == []
+        assert list_groups_callback(u'group:bobsgroup', request) is None
 
     def test_principals_with_local_roles(self):
         from kotti import DBSession
@@ -290,25 +261,25 @@ class TestGroups(UnitTestBase):
         child = root[u'child'] = Node()
         DBSession.flush()
 
-        self.assertEqual(principals_with_local_roles(root), [])
-        self.assertEqual(principals_with_local_roles(child), [])
-        self.assertEqual(map_principals_with_local_roles(root), [])
-        self.assertEqual(map_principals_with_local_roles(child), [])
+        assert principals_with_local_roles(root) == []
+        assert principals_with_local_roles(child) == []
+        assert map_principals_with_local_roles(root) == []
+        assert map_principals_with_local_roles(child) == []
 
         set_groups('group:bobsgroup', child, ['role:editor'])
         set_groups('bob', root, ['group:bobsgroup'])
         set_groups('group:franksgroup', root, ['role:editor'])
 
-        self.assertEqual(
-            set(principals_with_local_roles(child)),
+        assert (
+            set(principals_with_local_roles(child)) ==
             set(['bob', 'group:bobsgroup', 'group:franksgroup'])
             )
-        self.assertEqual(
-            set(principals_with_local_roles(child, inherit=False)),
+        assert (
+            set(principals_with_local_roles(child, inherit=False)) ==
             set(['group:bobsgroup'])
             )
-        self.assertEqual(
-            set(principals_with_local_roles(root)),
+        assert (
+            set(principals_with_local_roles(root)) ==
             set(['bob', 'group:franksgroup'])
             )
 
@@ -321,8 +292,8 @@ class TestGroups(UnitTestBase):
         self.test_principals_with_local_roles()
         root = get_root()
         child = root[u'child']
-        self.assertEqual(
-            set(principals_with_local_roles(child)),
+        assert (
+            set(principals_with_local_roles(child)) ==
             set(['bob', 'group:bobsgroup', 'group:franksgroup'])
             )
 
@@ -330,17 +301,16 @@ class TestGroups(UnitTestBase):
         # on 'child' to not be copied over:
         child2 = root['child2'] = child.copy()
         DBSession.flush()
-        self.assertEqual(
-            set(principals_with_local_roles(child2)),
-            set([u'bob', u'group:franksgroup']),
-            )
-        self.assertEqual(len(principals_with_local_roles(child)), 3)
+        assert (
+            set(principals_with_local_roles(child2)) ==
+            set([u'bob', u'group:franksgroup']))
+        assert len(principals_with_local_roles(child)) == 3
 
         # When we now change the local roles of 'child', the copy is
         # unaffected:
         set_groups('group:bobsgroup', child, [])
-        self.assertEqual(len(principals_with_local_roles(child)), 2)
-        self.assertEqual(len(principals_with_local_roles(child2)), 2)
+        assert len(principals_with_local_roles(child)) == 2
+        assert len(principals_with_local_roles(child2)) == 2
 
     def test_map_principals_with_local_roles(self):
         from kotti.resources import get_root
@@ -353,27 +323,27 @@ class TestGroups(UnitTestBase):
         P = get_principals()
 
         # No users are defined in P, thus we get the empty list:
-        self.assertEqual(map_principals_with_local_roles(root), [])
+        assert map_principals_with_local_roles(root) == []
 
         P['bob'] = {'name': u'bob'}
         P['group:bobsgroup'] = {'name': u'group:bobsgroup'}
 
         value = map_principals_with_local_roles(root)
-        self.assertEqual(len(value), 1)
+        assert len(value) == 1
         bob, (bob_all, bob_inherited) = value[0]
-        self.assertEqual(bob_all, ['group:bobsgroup'])
-        self.assertEqual(bob_inherited, [])
+        assert bob_all == ['group:bobsgroup']
+        assert bob_inherited == []
 
         value = map_principals_with_local_roles(child)
-        self.assertEqual(len(value), 2)
+        assert len(value) == 2
         bob, (bob_all, bob_inherited) = value[0]
         bobsgroup, (bobsgroup_all, bobsgroup_inherited) = value[1]
-        self.assertEqual(set(bob_all),
+        assert (set(bob_all) ==
                          set(['group:bobsgroup', 'role:editor']))
-        self.assertEqual(set(bob_inherited),
+        assert (set(bob_inherited) ==
                          set(['group:bobsgroup', 'role:editor']))
-        self.assertEqual(bobsgroup_all, ['role:editor'])
-        self.assertEqual(bobsgroup_inherited, [])
+        assert bobsgroup_all == ['role:editor']
+        assert bobsgroup_inherited == []
 
     def test_local_roles_db_cascade(self):
         from kotti import DBSession
@@ -389,12 +359,12 @@ class TestGroups(UnitTestBase):
         # We set a local group on child and delete child.  We then
         # expect the LocalGroup entry to have been deleted from the
         # database:
-        self.assertEqual(DBSession.query(LocalGroup).count(), 0)
+        assert DBSession.query(LocalGroup).count() == 0
         set_groups('group:bobsgroup', child, ['role:editor'])
-        self.assertEqual(DBSession.query(LocalGroup).count(), 1)
+        assert DBSession.query(LocalGroup).count() == 1
         del root[u'child']
         DBSession.flush()
-        self.assertEqual(DBSession.query(LocalGroup).count(), 0)
+        assert DBSession.query(LocalGroup).count() == 0
 
 
 class TestPrincipals(UnitTestBase):
@@ -414,9 +384,9 @@ class TestPrincipals(UnitTestBase):
         return users[u'bob']
 
     def _assert_is_bob(self, bob):
-        self.assertEqual(bob.name, u'bob')
-        self.assertEqual(bob.title, u'Bob Dabolina')
-        self.assertEqual(bob.groups, [u'group:bobsgroup'])
+        assert bob.name == u'bob'
+        assert bob.title == u'Bob Dabolina'
+        assert bob.groups == [u'group:bobsgroup']
 
     def test_hash_password_non_ascii(self):
         self.get_principals().hash_password(u'\xd6TEst')
@@ -425,19 +395,19 @@ class TestPrincipals(UnitTestBase):
         admin = self.get_principals()[u'admin']
         self.assertTrue(
             self.get_principals().validate_password(u'secret', admin.password))
-        self.assertEqual(admin.groups, [u'role:admin'])
+        assert admin.groups == [u'role:admin']
 
     def test_users_empty(self):
         users = self.get_principals()
         self.assertRaises(KeyError, users.__getitem__, u'bob')
         self.assertRaises(KeyError, users.__delitem__, u'bob')
-        self.assertEqual(users.keys(), [u'admin'])
+        assert users.keys() == [u'admin']
 
     def test_users_add_and_remove(self):
         self.make_bob()
         users = self.get_principals()
         self._assert_is_bob(users[u'bob'])
-        self.assertEqual(set(users.keys()), set([u'admin', u'bob']))
+        assert set(users.keys()) == set([u'admin', u'bob'])
 
         del users['bob']
         self.assertRaises(KeyError, users.__getitem__, u'bob')
@@ -445,7 +415,7 @@ class TestPrincipals(UnitTestBase):
 
     def test_users_search(self):
         users = self.get_principals()
-        self.assertEqual(list(users.search(name=u"*Bob*")), [])
+        assert list(users.search(name=u"*Bob*")) == []
         self.make_bob()
         [bob] = list(users.search(name=u"bob"))
         self._assert_is_bob(bob)
@@ -455,7 +425,7 @@ class TestPrincipals(UnitTestBase):
         self._assert_is_bob(bob)
         self.assertRaises(AttributeError,
                           users.search, name=u"bob", foo=u"bar")
-        self.assertEqual(list(users.search()), [])
+        assert list(users.search()) == []
 
     def test_groups_from_users(self):
         from kotti import DBSession
@@ -469,27 +439,23 @@ class TestPrincipals(UnitTestBase):
         child = root[u'child'] = Node()
         DBSession.flush()
 
-        self.assertEqual(list_groups('bob', root), ['group:bobsgroup'])
+        assert list_groups('bob', root) == ['group:bobsgroup']
 
         set_groups('group:bobsgroup', root, ['role:editor'])
         set_groups('role:editor', child, ['group:foogroup'])
 
-        self.assertEqual(
-            set(list_groups('bob', root)),
-            set(['group:bobsgroup', 'role:editor'])
-            )
-        self.assertEqual(
-            set(list_groups('bob', child)),
-            set(['group:bobsgroup', 'role:editor', 'group:foogroup'])
-            )
+        assert (set(list_groups('bob', root)) ==
+            set(['group:bobsgroup', 'role:editor']))
+        assert (set(list_groups('bob', child)) ==
+            set(['group:bobsgroup', 'role:editor', 'group:foogroup']))
 
     def test_is_user(self):
         from kotti.security import is_user
 
         bob = self.make_bob()
-        self.assertEqual(is_user(bob), True)
+        assert is_user(bob) is True
         bob.name = u'group:bobsgroup'
-        self.assertEqual(is_user(bob), False)
+        assert is_user(bob) is False
 
     def test_hash_and_validate_password(self):
         password = u"secret"
@@ -516,9 +482,9 @@ class TestPrincipals(UnitTestBase):
 
     def test_active(self):
         bob = self.make_bob()
-        self.assertEqual(bob.active, True)
+        assert bob.active is True
         bob.active = False
-        self.assertEqual(bob.active, False)
+        assert bob.active is False
 
     @patch('kotti.views.login.email_set_password')
     def test_reset_password(self, email_set_password):
@@ -530,7 +496,7 @@ class TestPrincipals(UnitTestBase):
         request.params['login'] = u'bob'
         request.params['password'] = u'secret'
         login(None, request)
-        self.assertEqual(request.session.pop_flash('success'), [
+        assert (request.session.pop_flash('success') == [
             u"You should receive an email with a link to reset your "
             u"password momentarily."])
         assert email_set_password.call_count == 1
@@ -545,7 +511,7 @@ class TestPrincipals(UnitTestBase):
         request.params['login'] = u'bob'
         request.params['password'] = u'secret'
         login(None, request)
-        self.assertEqual(request.session.pop_flash('error'),
+        assert (request.session.pop_flash('error') ==
                          [u"That username or email is not known to us."])
         assert email_set_password.call_count == 0
 
@@ -556,8 +522,8 @@ class TestPrincipals(UnitTestBase):
         # No login attempt:
         result = login(None, request)
         self.assert_(isinstance(result, dict))
-        self.assertEqual(request.session.pop_flash('success'), [])
-        self.assertEqual(request.session.pop_flash('error'), [])
+        assert request.session.pop_flash('success') == []
+        assert request.session.pop_flash('error') == []
 
         # Attempt to log in before Bob exists:
         request.params['submit'] = u'on'
@@ -565,28 +531,28 @@ class TestPrincipals(UnitTestBase):
         request.params['password'] = u'secret'
         result = login(None, request)
         self.assert_(isinstance(result, dict))
-        self.assertEqual(request.session.pop_flash('success'), [])
-        self.assertEqual(request.session.pop_flash('error'),
+        assert request.session.pop_flash('success') == []
+        assert (request.session.pop_flash('error') ==
                          [u'Login failed.'])
 
         # Make Bob and do it again:
         bob = self.make_bob()
-        self.assertEqual(bob.last_login_date, None)
+        assert bob.last_login_date is None
         result = login(None, request)
-        self.assertEqual(result.status, '302 Found')
-        self.assertEqual(
-            [request.session.pop_flash('success')[0].interpolate()],
+        assert result.status == '302 Found'
+        assert (
+            [request.session.pop_flash('success')[0].interpolate()] ==
             [u'Welcome, Bob Dabolina!'])
         last_login_date = bob.last_login_date
         self.assertNotEqual(last_login_date, None)
-        self.assertEqual(request.session.pop_flash('error'), [])
+        assert request.session.pop_flash('error') == []
 
         # Log in with email:
         request.params['login'] = u'bob@dabolina.com'
         result = login(None, request)
-        self.assertEqual(result.status, '302 Found')
-        self.assertEqual(
-            [request.session.pop_flash('success')[0].interpolate()],
+        assert result.status == '302 Found'
+        assert (
+            [request.session.pop_flash('success')[0].interpolate()] ==
             [u'Welcome, Bob Dabolina!'])
         self.assertTrue(last_login_date < bob.last_login_date)
 
@@ -594,16 +560,16 @@ class TestPrincipals(UnitTestBase):
         bob.active = False
         result = login(None, request)
         self.assert_(isinstance(result, dict))
-        self.assertEqual(request.session.pop_flash('error'),
+        assert (request.session.pop_flash('error') ==
                          [u'Login failed.'])
 
         # If Bob has a 'confirm_token' set, logging in is still possible:
         bob.active = True
         bob.confirm_token = u'token'
         result = login(None, request)
-        self.assertEqual(result.status, '302 Found')
-        self.assertEqual(
-            [request.session.pop_flash('success')[0].interpolate()],
+        assert result.status == '302 Found'
+        assert (
+            [request.session.pop_flash('success')[0].interpolate()] ==
             [u'Welcome, Bob Dabolina!'])
 
 

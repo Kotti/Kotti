@@ -12,8 +12,8 @@ class TestNode(UnitTestBase):
         root = get_root()
 
         # The root object has a persistent ACL set:
-        self.assertEquals(
-            root.__acl__[1:], [
+        assert (
+            root.__acl__[1:] == [
                 ('Allow', 'system.Everyone', ['view']),
                 ('Allow', 'role:viewer', ['view']),
                 ('Allow', 'role:editor', ['view', 'add', 'edit']),
@@ -21,10 +21,9 @@ class TestNode(UnitTestBase):
                 ])
 
         # The first ACE is here to preven lock-out:
-        self.assertEquals(
-            root.__acl__[0],
-            (Allow, 'role:admin', ALL_PERMISSIONS),
-            )
+        assert (
+            root.__acl__[0] ==
+            (Allow, 'role:admin', ALL_PERMISSIONS))
 
     def test_set_and_get_acl(self):
         from kotti import DBSession
@@ -38,24 +37,24 @@ class TestNode(UnitTestBase):
         self.assertRaises(AttributeError, root._get_acl)
 
         root.__acl__ = [('Allow', 'system.Authenticated', ['edit'])]
-        self.assertEquals(
-            root.__acl__, [('Allow', 'system.Authenticated', ['edit'])])
+        assert (
+            root.__acl__ == [('Allow', 'system.Authenticated', ['edit'])])
 
         root.__acl__ = [
             ('Allow', 'system.Authenticated', ['view']),
             ('Deny', 'system.Authenticated', ALL_PERMISSIONS),
             ]
 
-        self.assertEquals(
-            root.__acl__, [
+        assert (
+            root.__acl__ == [
                 ('Allow', 'system.Authenticated', ['view']),
                 ('Deny', 'system.Authenticated', ALL_PERMISSIONS),
                 ])
 
         # We can append to the ACL, and it'll be persisted fine:
         root.__acl__.append(('Allow', 'system.Authenticated', ['edit']))
-        self.assertEquals(
-            root.__acl__, [
+        assert (
+            root.__acl__ == [
                 ('Allow', 'system.Authenticated', ['view']),
                 ('Deny', 'system.Authenticated', ALL_PERMISSIONS),
                 ('Allow', 'system.Authenticated', ['edit']),
@@ -64,8 +63,8 @@ class TestNode(UnitTestBase):
         DBSession.flush()
         DBSession.expire_all()
 
-        self.assertEquals(
-            root.__acl__, [
+        assert (
+            root.__acl__ == [
                 ('Allow', 'role:admin', ALL_PERMISSIONS),
                 ('Allow', 'system.Authenticated', ['view']),
                 ('Deny', 'system.Authenticated', ALL_PERMISSIONS),
@@ -114,25 +113,25 @@ class TestNode(UnitTestBase):
 
         # Test some of Node's container methods:
         root = get_root()
-        self.assertEquals(root.keys(), [])
+        assert root.keys() == []
 
         child1 = Node(name=u'child1', parent=root)
         session.add(child1)
-        self.assertEquals(root.keys(), [u'child1'])
-        self.assertEquals(root[u'child1'], child1)
+        assert root.keys() == [u'child1']
+        assert root[u'child1'] == child1
 
         del root[u'child1']
-        self.assertEquals(root.keys(), [])
+        assert root.keys() == []
 
         # When we delete a parent node, all its child nodes will be
         # released as well:
         root[u'child2'] = Node()
         root[u'child2'][u'subchild'] = Node()
-        self.assertEquals(
-            session.query(Node).filter(Node.name == u'subchild').count(), 1)
+        assert (
+            session.query(Node).filter(Node.name == u'subchild').count() == 1)
         del root[u'child2']
-        self.assertEquals(
-            session.query(Node).filter(Node.name == u'subchild').count(), 0)
+        assert (
+            session.query(Node).filter(Node.name == u'subchild').count() == 0)
 
         # We can pass a tuple as the key to more efficiently reach
         # down to child objects:
@@ -154,7 +153,7 @@ class TestNode(UnitTestBase):
         # Overwriting an existing Node is an error; first delete manually!
         child4 = Node(name=u'child4', parent=root)
         session.add(child4)
-        self.assertEquals(root.keys(), [u'child4'])
+        assert root.keys() == [u'child4']
 
         child44 = Node(name=u'child4')
         session.add(child44)
@@ -166,8 +165,8 @@ class TestNode(UnitTestBase):
 
         root = get_root()
         copy_of_root = root.copy(name=u'copy_of_root')
-        self.assertEqual(copy_of_root.name, u'copy_of_root')
-        self.assertEqual(root.name, u'')
+        assert copy_of_root.name == u'copy_of_root'
+        assert root.name == u''
 
     def test_node_copy_variants(self):
         from kotti.resources import get_root
@@ -258,7 +257,7 @@ class TestNode(UnitTestBase):
         DBSession.expire_all()
 
         root = get_root()
-        self.assertEqual(root.annotations['foo']['bar'], u'baz')
+        assert root.annotations['foo']['bar'] == u'baz'
 
     def test_annotations_coerce_fail(self):
         from kotti.resources import get_root

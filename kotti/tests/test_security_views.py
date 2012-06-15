@@ -13,8 +13,8 @@ class TestUserManagement(UnitTestBase):
 
         root = get_root()
         request = DummyRequest()
-        self.assertEqual(
-            [r.name for r in users_manage(root, request)['available_roles']],
+        assert (
+            [r.name for r in users_manage(root, request)['available_roles']] ==
             USER_MANAGEMENT_ROLES)
 
     def test_search(self):
@@ -31,22 +31,22 @@ class TestUserManagement(UnitTestBase):
         request.params['search'] = u''
         request.params['query'] = u'Joe'
         entries = users_manage(root, request)['entries']
-        self.assertEqual(len(entries), 0)
-        self.assertEqual(request.session.pop_flash('info'),
+        assert len(entries) == 0
+        assert (request.session.pop_flash('info') ==
                          [u'No users or groups found.'])
         request.params['query'] = u'Bob'
         entries = users_manage(root, request)['entries']
-        self.assertEqual(entries[0][0], P['bob'])
-        self.assertEqual(entries[0][1], ([], []))
-        self.assertEqual(entries[1][0], P['group:bobsgroup'])
-        self.assertEqual(entries[1][1], ([], []))
+        assert entries[0][0] == P['bob']
+        assert entries[0][1] == ([], [])
+        assert entries[1][0] == P['group:bobsgroup']
+        assert entries[1][1] == ([], [])
 
         P[u'bob'].groups = [u'group:bobsgroup']
         P[u'group:bobsgroup'].groups = [u'role:admin']
         entries = users_manage(root, request)['entries']
-        self.assertEqual(entries[0][1],
+        assert (entries[0][1] ==
                          (['group:bobsgroup', 'role:admin'], ['role:admin']))
-        self.assertEqual(entries[1][1], (['role:admin'], []))
+        assert entries[1][1] == (['role:admin'], [])
 
     def test_apply(self):
         from kotti.resources import get_root
@@ -63,9 +63,9 @@ class TestUserManagement(UnitTestBase):
 
         request.params['apply'] = u''
         users_manage(root, request)
-        self.assertEqual(request.session.pop_flash('info'),
+        assert (request.session.pop_flash('info') ==
                          [u'No changes made.'])
-        self.assertEqual(list_groups('bob'), [])
+        assert list_groups('bob') == []
         bob.groups = [u'role:special']
 
         request.params['role::bob::role:owner'] = u'1'
@@ -74,10 +74,10 @@ class TestUserManagement(UnitTestBase):
         request.params['orig-role::bob::role:editor'] = u''
 
         users_manage(root, request)
-        self.assertEqual(request.session.pop_flash('success'),
+        assert (request.session.pop_flash('success') ==
                          [u'Your changes have been saved.'])
-        self.assertEqual(
-            set(list_groups('bob')),
+        assert (
+            set(list_groups('bob')) ==
             set(['role:owner', 'role:editor', 'role:special'])
             )
 

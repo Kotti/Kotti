@@ -45,18 +45,18 @@ class TestTemplateAPI(UnitTestBase):
     def test_page_title(self):
         api = self.make()
         api.context.title = u"Hello, world!"
-        self.assertEqual(api.page_title, u"Hello, world! - Hello, world!")
+        assert api.page_title == u"Hello, world! - Hello, world!"
 
         api = self.make()
         api.context.title = u"Hello, world!"
         api.site_title = u"Wasnhierlos"
-        self.assertEqual(api.page_title, u"Hello, world! - Wasnhierlos")
+        assert api.page_title == u"Hello, world! - Wasnhierlos"
 
     @patch('kotti.views.util.get_settings')
     def test_site_title(self, get_settings):
         get_settings.return_value = {'kotti.site_title': u'This is it.'}
         api = self.make()
-        self.assertEqual(api.site_title, u'This is it.')
+        assert api.site_title == u'This is it.'
 
     @patch('kotti.views.util.has_permission')
     def test_list_children(self, has_permission):
@@ -64,31 +64,31 @@ class TestTemplateAPI(UnitTestBase):
 
         api = self.make()  # the default context is root
         root = api.context
-        self.assertEquals(len(api.list_children(root)), 0)
+        assert len(api.list_children(root)) == 0
 
         # Now try it on a little graph:
         a, aa, ab, ac, aca, acb = create_contents(root)
-        self.assertEquals(api.list_children(root), [a])
-        self.assertEquals(api.list_children(a), [aa, ab, ac])
-        self.assertEquals(api.list_children(aca), [])
+        assert api.list_children(root) == [a]
+        assert api.list_children(a) == [aa, ab, ac]
+        assert api.list_children(aca) == []
 
         # Try permissions
         has_permission.reset_mock()
         has_permission.return_value = False
-        self.assertEquals(api.list_children(root), [])
+        assert api.list_children(root) == []
         has_permission.assert_called_once_with('view', a, api.request)
 
         has_permission.reset_mock()
         has_permission.return_value = False
-        self.assertEquals(api.list_children(root, permission='edit'), [])
+        assert api.list_children(root, permission='edit') == []
         has_permission.assert_called_once_with('edit', a, api.request)
 
     def test_root(self):
         api = self.make()
         root = api.context
         a, aa, ab, ac, aca, acb = create_contents(root)
-        self.assertEquals(self.make().root, root)
-        self.assertEquals(self.make(acb).root, root)
+        assert self.make().root == root
+        assert self.make(acb).root == root
 
     @patch('kotti.views.util.has_permission')
     def test_has_permission(self, has_permission):
@@ -100,7 +100,7 @@ class TestTemplateAPI(UnitTestBase):
         from kotti.util import ViewLink
 
         api = self.make()
-        self.assertEqual(api.edit_links, [
+        assert (api.edit_links == [
             ViewLink('edit', u'Edit'),
             ViewLink('share', u'Share'),
             ])
@@ -122,7 +122,7 @@ class TestTemplateAPI(UnitTestBase):
         root.type_info = root.type_info.copy(
             edit_links=[open_link, secure_link])
         api = self.make()
-        self.assertEqual(api.edit_links, [open_link])
+        assert api.edit_links == [open_link]
 
     @patch('kotti.views.util.view_permitted')
     def test_find_edit_view_not_permitted(self, view_permitted):
@@ -186,21 +186,21 @@ class TestTemplateAPI(UnitTestBase):
     def test_bare(self):
         # By default, no "bare" templates are used:
         api = self.make()
-        self.assertEqual(api.bare, None)
+        assert api.bare is None
 
         # We can ask for "bare" templates explicitely:
         api = self.make(bare=True)
-        self.assertEqual(api.bare, True)
+        assert api.bare is True
 
         # An XHR request will always result in bare master templates:
         request = DummyRequest()
         request.is_xhr = True
         api = self.make(request=request)
-        self.assertEqual(api.bare, True)
+        assert api.bare is True
 
         # unless overridden:
         api = self.make(request=request, bare=False)
-        self.assertEqual(api.bare, False)
+        assert api.bare is False
 
     def test_slots(self):
         from kotti.views.slots import register, RenderAboveContent
@@ -210,7 +210,7 @@ class TestTemplateAPI(UnitTestBase):
         register(RenderAboveContent, None, render_something)
 
         api = self.make()
-        self.assertEqual(api.slots.abovecontent,
+        assert (api.slots.abovecontent ==
                          [u'Hello, %s!' % api.context.title])
 
         # Slot renderers may also return lists:
@@ -218,8 +218,8 @@ class TestTemplateAPI(UnitTestBase):
             return [u"a", u"list"]
         register(RenderAboveContent, None, render_a_list)
         api = self.make()
-        self.assertEqual(
-            api.slots.abovecontent,
+        assert (
+            api.slots.abovecontent ==
             [u'Hello, %s!' % api.context.title, u'a', u'list']
             )
 
@@ -242,9 +242,9 @@ class TestTemplateAPI(UnitTestBase):
         self.assertFalse(called)
 
         api.slots.abovecontent
-        self.assertEquals(len(called), 1)
+        assert len(called) == 1
         api.slots.abovecontent
-        self.assertEquals(len(called), 1)
+        assert len(called) == 1
 
     def test_format_datetime(self):
         import datetime
@@ -252,18 +252,15 @@ class TestTemplateAPI(UnitTestBase):
         from babel.core import UnknownLocaleError
         api = self.make()
         first = datetime.datetime(2012, 1, 1, 0)
-        self.assertEqual(
-            api.format_datetime(first),
-            format_datetime(first, format='medium', locale='en'),
-            )
-        self.assertEqual(
-            api.format_datetime(time.mktime(first.timetuple())),
-            format_datetime(first, format='medium', locale='en'),
-            )
-        self.assertEqual(
-            api.format_datetime(first, format='short'),
-            format_datetime(first, format='short', locale='en'),
-            )
+        assert (
+            api.format_datetime(first) ==
+            format_datetime(first, format='medium', locale='en'))
+        assert (
+            api.format_datetime(time.mktime(first.timetuple())) ==
+            format_datetime(first, format='medium', locale='en'))
+        assert (
+            api.format_datetime(first, format='short') ==
+            format_datetime(first, format='short', locale='en'))
         api.locale_name = 'unknown'
         self.assertRaises(UnknownLocaleError, api.format_datetime, first)
 
@@ -273,14 +270,12 @@ class TestTemplateAPI(UnitTestBase):
         from babel.core import UnknownLocaleError
         api = self.make()
         first = datetime.date(2012, 1, 1)
-        self.assertEqual(
-            api.format_date(first),
-            format_date(first, format='medium', locale='en'),
-            )
-        self.assertEqual(
-            api.format_date(first, format='short'),
-            format_date(first, format='short', locale='en'),
-            )
+        assert (
+            api.format_date(first) ==
+            format_date(first, format='medium', locale='en'))
+        assert (
+            api.format_date(first, format='short') ==
+            format_date(first, format='short', locale='en'))
         api.locale_name = 'unknown'
         self.assertRaises(UnknownLocaleError, api.format_date, first)
 
@@ -290,14 +285,12 @@ class TestTemplateAPI(UnitTestBase):
         from babel.core import UnknownLocaleError
         api = self.make()
         first = datetime.time(23, 59)
-        self.assertEqual(
-            api.format_time(first),
-            format_time(first, format='medium', locale='en'),
-            )
-        self.assertEqual(
-            api.format_time(first, format='short'),
-            format_time(first, format='short', locale='en'),
-            )
+        assert (
+            api.format_time(first) ==
+            format_time(first, format='medium', locale='en'))
+        assert (
+            api.format_time(first, format='short') ==
+            format_time(first, format='short', locale='en'))
         api.locale_name = 'unknown'
         self.assertRaises(UnknownLocaleError, api.format_time, first)
 
@@ -313,23 +306,23 @@ class TestTemplateAPI(UnitTestBase):
         self.config.add_view(first_view, name='')
         self.config.add_view(second_view, name='second')
         api = self.make()
-        self.assertEqual(api.render_view().__unicode__(), u'first')
-        self.assertEqual(api.render_view('second').__unicode__(), u'second')
-        self.assertEqual(api.render_view(
-            context=api.context, request=api.request).__unicode__(), u'first')
+        assert api.render_view().__unicode__() == u'first'
+        assert api.render_view('second').__unicode__() == u'second'
+        assert api.render_view(
+            context=api.context, request=api.request).__unicode__() == u'first'
 
     def test_render_template(self):
         renderer = MagicMock()
         self.config.testing_add_renderer('my-rendererer', renderer)
         api = self.make()
         api.render_template('my-rendererer', some='variable')
-        self.assertEqual(renderer.call_args[0][0], {'some': 'variable'})
+        assert renderer.call_args[0][0] == {'some': 'variable'}
 
     def test_get_type(self):
         from kotti.resources import Document
         api = self.make()
-        self.assertEqual(api.get_type('Document'), Document)
-        self.assertEqual(api.get_type('NoExist'), None)
+        assert api.get_type('Document') == Document
+        assert api.get_type('NoExist') is None
 
 
 class TestViewUtil(UnitTestBase):
@@ -338,7 +331,7 @@ class TestViewUtil(UnitTestBase):
 
         event = {'renderer_name': 'json'}
         add_renderer_globals(event)
-        self.assertEqual(event.keys(), ['renderer_name'])
+        assert event.keys() == ['renderer_name']
 
     def test_add_renderer_globals_request_has_template_api(self):
         from kotti.views.util import add_renderer_globals
@@ -370,7 +363,7 @@ class TestUtil(UnitTestBase):
         # Ignoring the result since it's not useful with DummyRequest.
         # We check that path_info was set accordingly though:
         wrapper(None, request)
-        self.assertEqual(request.path_info, u'/@@edit')
+        assert request.path_info == u'/@@edit'
 
 
 class TestLocalNavigationSlot(UnitTestBase):

@@ -27,13 +27,13 @@ class TestRequestCache(UnitTestBase):
 
         my_fun(1, 2)
         my_fun(1, 2)
-        self.assertEqual(len(called), 1)
+        assert len(called) == 1
         my_fun(2, 1)
-        self.assertEqual(len(called), 2)
+        assert len(called) == 2
 
         clear_cache()
         my_fun(1, 2)
-        self.assertEqual(len(called), 3)
+        assert len(called) == 3
 
     def test_dont_cache(self):
         from kotti.util import DontCache
@@ -48,7 +48,7 @@ class TestRequestCache(UnitTestBase):
 
         my_fun(1, 2)
         my_fun(1, 2)
-        self.assertEqual(len(called), 2)
+        assert len(called) == 2
 
 
 class TestLRUCache(TestRequestCache):
