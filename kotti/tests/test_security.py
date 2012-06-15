@@ -518,7 +518,7 @@ class TestPrincipals(UnitTestBase):
 
         # No login attempt:
         result = login(None, request)
-        self.assert_(isinstance(result, dict))
+        assert isinstance(result, dict)
         assert request.session.pop_flash('success') == []
         assert request.session.pop_flash('error') == []
 
@@ -527,7 +527,7 @@ class TestPrincipals(UnitTestBase):
         request.params['login'] = u'bob'
         request.params['password'] = u'secret'
         result = login(None, request)
-        self.assert_(isinstance(result, dict))
+        assert isinstance(result, dict)
         assert request.session.pop_flash('success') == []
         assert (request.session.pop_flash('error') ==
                          [u'Login failed.'])
@@ -541,7 +541,7 @@ class TestPrincipals(UnitTestBase):
             [request.session.pop_flash('success')[0].interpolate()] ==
             [u'Welcome, Bob Dabolina!'])
         last_login_date = bob.last_login_date
-        self.assertNotEqual(last_login_date, None)
+        assert last_login_date is not None
         assert request.session.pop_flash('error') == []
 
         # Log in with email:
@@ -556,7 +556,7 @@ class TestPrincipals(UnitTestBase):
         # Deactive Bob, logging in is no longer possible:
         bob.active = False
         result = login(None, request)
-        self.assert_(isinstance(result, dict))
+        assert isinstance(result, dict)
         assert (request.session.pop_flash('error') ==
                          [u'Login failed.'])
 
