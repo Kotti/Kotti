@@ -50,6 +50,7 @@ tests_require = [
     'mock',
     'pytest',
     'pytest-cov',
+    'pytest-pep8',
     'pytest-xdist',
     'wsgi_intercept',
     'zope.testbrowser',
@@ -85,6 +86,7 @@ setup(name='Kotti',
       entry_points="""\
       [paste.app_factory]
       main = kotti:main
+
       [fanstatic.libraries]
       kotti = kotti.static:lib_kotti
       deform = kotti.static:lib_deform
