@@ -1,5 +1,6 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
-      tal:define="page_slots api.slots"
+      tal:define="page_slots api.slots;
+                  dummy api.edit_needed"
       metal:define-macro="main">
   <head>
     <meta charset="utf-8" />

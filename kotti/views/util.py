@@ -144,10 +144,13 @@ class TemplateAPI(object):
         self.slots = Slots(context, request)
         self.__dict__.update(kwargs)
 
-        if hasattr(request, "user") and request.user is not None:
-            edit_needed.need()
-        else:
-            view_needed.need()
+    @reify
+    def edit_needed(self):
+        return edit_needed.need()
+
+    @reify
+    def view_needed(self):
+        return view_needed.need()
 
     def macro(self, asset_spec, macro_name='main'):
         if self.bare and asset_spec in (
