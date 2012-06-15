@@ -1,5 +1,4 @@
 from kotti.testing import DummyRequest
-from kotti.testing import UnitTestBase
 
 
 def create_contents(root=None):
@@ -15,15 +14,15 @@ def create_contents(root=None):
     return doc1, doc11, doc12, file1
 
 
-class TestSearch(UnitTestBase):
+class TestSearch:
 
-    def test_search_empty_content(self):
+    def test_search_empty_content(self, db_session):
         from kotti.views.util import search_content
         request = DummyRequest()
         results = search_content(request, u'teststring')
         assert results == []
 
-    def test_search_content(self):
+    def test_search_content(self, db_session):
         from kotti.views.util import search_content
         request = DummyRequest()
         doc1, doc11, doc12, file1 = create_contents()
@@ -37,7 +36,7 @@ class TestSearch(UnitTestBase):
         assert results[1]['title'] == 'Second Document'
         assert results[1]['path'] == '/doc1/doc11/'
 
-    def test_search_file_description(self):
+    def test_search_file_description(self, db_session):
         from kotti.views.util import search_content
         request = DummyRequest()
         doc1, doc11, doc12, file1 = create_contents()
@@ -47,10 +46,10 @@ class TestSearch(UnitTestBase):
         assert results[0]['title'] == 'First File'
         assert results[0]['path'] == '/doc1/file1/'
 
-    def test_search_content_without_permission(self):
+    def test_search_content_without_permission(self, config, db_session):
         from kotti.views.util import search_content
         request = DummyRequest()
         create_contents()
-        self.config.testing_securitypolicy(permissive=False)
+        config.testing_securitypolicy(permissive=False)
         results = search_content(u'Document', request)
         assert len(results) == 0

@@ -1,5 +1,3 @@
-from unittest import TestCase
-
 from pyramid.registry import Registry
 
 from kotti.testing import DummyRequest
@@ -59,7 +57,7 @@ class TestLRUCache(TestRequestCache):
         self.cache_decorator = lru_cache
 
 
-class TestTitleToName(TestCase):
+class TestTitleToName:
     def test_max_length(self):
         from kotti.util import title_to_name
         assert len(title_to_name(u'a' * 50)) == 40

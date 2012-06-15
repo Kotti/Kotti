@@ -1,7 +1,6 @@
-from kotti.testing import UnitTestBase
 
 
-class TestImageScaleLoading(UnitTestBase):
+class TestImageScaleLoading:
 
     def test_it(self):
 

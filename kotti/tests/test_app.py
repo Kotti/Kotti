@@ -12,7 +12,6 @@ from zope.interface import implementedBy
 from zope.interface import providedBy
 
 from kotti.testing import TestingRootFactory
-from kotti.testing import UnitTestBase
 from kotti.testing import testing_db_url
 
 
@@ -40,12 +39,13 @@ def _dummy_search(search_term, request):
     return u"Not found. Sorry!"
 
 
-class TestApp(UnitTestBase):
+class TestApp:
+
     def required_settings(self):
         return {'sqlalchemy.url': testing_db_url(),
                 'kotti.secret': 'dude'}
 
-    def test_override_settings(self):
+    def test_override_settings(self, db_session):
         from kotti import main
         from kotti import get_settings
 
@@ -63,7 +63,7 @@ class TestApp(UnitTestBase):
         assert get_settings()['kotti.base_includes'] == []
         assert get_settings()['kotti.available_types'] == [MyType]
 
-    def test_auth_policies_no_override(self):
+    def test_auth_policies_no_override(self, db_session):
         from kotti import main
 
         settings = self.required_settings()
@@ -73,7 +73,7 @@ class TestApp(UnitTestBase):
         assert registry.queryUtility(IAuthenticationPolicy) is not None
         assert registry.queryUtility(IAuthorizationPolicy) is not None
 
-    def test_auth_policies_override(self):
+    def test_auth_policies_override(self, db_session):
         from kotti import main
 
         settings = self.required_settings()
@@ -85,7 +85,7 @@ class TestApp(UnitTestBase):
         assert registry.queryUtility(IAuthenticationPolicy) is None
         assert registry.queryUtility(IAuthorizationPolicy) is None
 
-    def test_persistent_settings(self):
+    def test_persistent_settings(self, db_session):
         from kotti import get_settings
         from kotti import get_version
         from kotti import DBSession
@@ -98,7 +98,7 @@ class TestApp(UnitTestBase):
         settings.data['foo.bar'] = u'baz'
         assert get_settings()['foo.bar'] == u'baz'
 
-    def test_persistent_settings_add_new(self):
+    def test_persistent_settings_add_new(self, db_session):
         from kotti import DBSession
         from kotti import get_settings
         from kotti.resources import Settings
@@ -110,14 +110,14 @@ class TestApp(UnitTestBase):
         assert get_settings()['foo.bar'] == u'spam'
         assert get_settings()['kotti.db_version'] == u'next'
 
-    def test_asset_overrides(self):
+    def test_asset_overrides(self, db_session):
         from kotti import main
 
         settings = self.required_settings()
         settings['kotti.asset_overrides'] = 'pyramid:scaffold/ pyramid.fixers'
         main({}, **settings)
 
-    def test_kotti_includes_deprecation_warning(self):
+    def test_kotti_includes_deprecation_warning(self, db_session):
         from kotti import main
 
         settings = self.required_settings()
@@ -131,7 +131,7 @@ class TestApp(UnitTestBase):
             msg = str(w[-1].message)
             assert "The 'kotti.includes' setting has been deprecated" in msg
 
-    def test_kotti_includes_merged_to_pyramid_includes(self):
+    def test_kotti_includes_merged_to_pyramid_includes(self, db_session):
         from kotti import main
 
         settings = self.required_settings()
@@ -152,7 +152,7 @@ class TestApp(UnitTestBase):
         assert len(regsettings['pyramid.includes'].split()) == 2
         assert settings['kotti.includes'] in regsettings['pyramid.includes']
 
-    def test_pyramid_includes_overrides_base_includes(self):
+    def test_pyramid_includes_overrides_base_includes(self, db_session):
         from kotti import main
         from kotti.resources import get_root
 
@@ -169,7 +169,7 @@ class TestApp(UnitTestBase):
         view = app.registry.adapters.lookup(provides, IView, name='login')
         assert view.__module__ == __name__
 
-    def test_use_tables(self):
+    def test_use_tables(self, db_session):
         from kotti import main
 
         settings = self.required_settings()
@@ -177,7 +177,7 @@ class TestApp(UnitTestBase):
         settings['kotti.use_tables'] = 'principals'
         main({}, **settings)
 
-    def test_root_factory(self):
+    def test_root_factory(self, db_session):
         from kotti import main
         from kotti.resources import get_root
 
@@ -199,13 +199,13 @@ class TestApp(UnitTestBase):
         (status, headers, response) = request.call_application(app)
         assert status == '200 OK'
 
-    def test_render_master_view_template_minimal_root(self):
+    def test_render_master_view_template_minimal_root(self, db_session):
         settings = self.required_settings()
         settings['pyramid.includes'] = (
             'kotti.tests.test_app._includeme_layout')
         return self.test_render_master_edit_template_minimal_root(settings)
 
-    def test_setting_values_as_unicode(self):
+    def test_setting_values_as_unicode(self, db_session):
         from kotti import get_settings
         from kotti import main
 
@@ -215,7 +215,7 @@ class TestApp(UnitTestBase):
         main({}, **settings)
         assert get_settings()['kotti.site_title'] == u'K\xf6tti'
 
-    def test_search_content(self):
+    def test_search_content(self, db_session):
         from kotti import main
         from kotti.views.util import search_content
 

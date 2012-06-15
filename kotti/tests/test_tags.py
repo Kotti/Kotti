@@ -261,7 +261,7 @@ class TestTags(EventTestBase, UnitTestBase):
         assert [res.name for res in result] == [u'content_1', u'content_2']
 
 
-class TestCommaSeparatedListWidget(UnitTestBase):
+class TestCommaSeparatedListWidget:
     def make_one(self):
         from kotti.views.form import CommaSeparatedListWidget
         return CommaSeparatedListWidget(template='')

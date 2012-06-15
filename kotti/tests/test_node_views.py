@@ -2,34 +2,33 @@ from pytest import raises
 from pyramid.exceptions import Forbidden
 
 from kotti.testing import DummyRequest
-from kotti.testing import UnitTestBase
 
 
-class TestAddableTypes(UnitTestBase):
-    def test_view_permitted_yes(self):
+class TestAddableTypes:
+    def test_view_permitted_yes(self, config, db_session):
         from kotti import DBSession
         from kotti.resources import Node
         from kotti.resources import Document
 
-        self.config.testing_securitypolicy(permissive=True)
-        self.config.include('kotti.views.edit')
+        config.testing_securitypolicy(permissive=True)
+        config.include('kotti.views.edit')
         root = DBSession().query(Node).get(1)
         request = DummyRequest()
         assert Document.type_info.addable(root, request) is True
 
-    def test_view_permitted_no(self):
+    def test_view_permitted_no(self, config, db_session):
         from kotti import DBSession
         from kotti.resources import Node
         from kotti.resources import Document
 
-        self.config.testing_securitypolicy(permissive=False)
-        self.config.include('kotti.views.edit')
+        config.testing_securitypolicy(permissive=False)
+        config.include('kotti.views.edit')
         root = DBSession().query(Node).get(1)
         request = DummyRequest()
         assert Document.type_info.addable(root, request) is False
 
 
-class TestNodePaste(UnitTestBase):
+class TestNodePaste:
     def test_get_non_existing_paste_item(self):
         from kotti import DBSession
         from kotti.resources import Node
@@ -55,7 +54,7 @@ class TestNodePaste(UnitTestBase):
             assert response.status == '302 Found'
             assert len(request.session['_f_error']) == index + 1
 
-    def test_paste_without_edit_permission(self):
+    def test_paste_without_edit_permission(self, config, db_session):
         from kotti import DBSession
         from kotti.resources import Node
         from kotti.views.edit import paste_node
@@ -63,7 +62,7 @@ class TestNodePaste(UnitTestBase):
         root = DBSession().query(Node).get(1)
         request = DummyRequest()
         request.params['paste'] = u'on'
-        self.config.testing_securitypolicy(permissive=False)
+        config.testing_securitypolicy(permissive=False)
 
         # We need to have the 'edit' permission on the original object
         # to be able to cut and paste:
@@ -77,7 +76,7 @@ class TestNodePaste(UnitTestBase):
         assert response.status == '302 Found'
 
 
-class TestNodeRename(UnitTestBase):
+class TestNodeRename:
     def test_rename_to_empty_name(self):
         from kotti import DBSession
         from kotti.resources import Node
@@ -95,7 +94,7 @@ class TestNodeRename(UnitTestBase):
                          [u'Name and title are required.'])
 
 
-class TestNodeShare(UnitTestBase):
+class TestNodeShare:
     @staticmethod
     def add_some_principals():
         from kotti.security import get_principals
@@ -108,7 +107,7 @@ class TestNodeShare(UnitTestBase):
         P[u'group:franksgroup'] = {
             'name': u'group:franksgroup', 'title': u"Frank's Group"}
 
-    def test_roles(self):
+    def test_roles(self, db_session):
         from kotti.views.users import share_node
         from kotti.resources import get_root
         from kotti.security import SHARING_ROLES
@@ -121,7 +120,7 @@ class TestNodeShare(UnitTestBase):
             [r.name for r in share_node(root, request)['available_roles']] ==
             SHARING_ROLES)
 
-    def test_search(self):
+    def test_search(self, db_session):
         from kotti.resources import get_root
         from kotti.security import get_principals
         from kotti.security import set_groups
@@ -172,7 +171,7 @@ class TestNodeShare(UnitTestBase):
         assert len(entries) == 1
         assert entries[0][0] == P['bob']
 
-    def test_apply(self):
+    def test_apply(self, db_session):
         from kotti.resources import get_root
         from kotti.security import list_groups
         from kotti.security import set_groups

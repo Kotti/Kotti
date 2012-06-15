@@ -1,4 +1,3 @@
-from unittest import TestCase
 from StringIO import StringIO
 
 from colander import null
@@ -40,7 +39,7 @@ class TestFileViews(UnitTestBase):
         assert res.body == 'file contents'
 
 
-class TestEditFileFormView(TestCase):
+class TestEditFileFormView:
     def make_one(self):
         from kotti.views.file import EditFileFormView
         return EditFileFormView(MagicMock(), DummyRequest())
@@ -79,7 +78,7 @@ class TestEditFileFormView(TestCase):
         assert view.context.size == 777
 
 
-class TestAddFileFormView(TestCase):
+class TestAddFileFormView:
     def make_one(self):
         from kotti.views.file import AddFileFormView
         return AddFileFormView(MagicMock(), DummyRequest())
@@ -124,7 +123,7 @@ class TestAddFileFormView(TestCase):
             ))
 
 
-class TestFileUploadTempStore(TestCase):
+class TestFileUploadTempStore:
     def make_one(self):
         from kotti.views.file import FileUploadTempStore
         return FileUploadTempStore(DummyRequest())

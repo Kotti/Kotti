@@ -6,8 +6,8 @@ from kotti.testing import DummyRequest
 from kotti.testing import UnitTestBase
 
 
-class TestUserManagement(UnitTestBase):
-    def test_roles(self):
+class TestUserManagement:
+    def test_roles(self, db_session):
         from kotti.resources import get_root
         from kotti.security import USER_MANAGEMENT_ROLES
         from kotti.views.users import users_manage
@@ -18,7 +18,7 @@ class TestUserManagement(UnitTestBase):
             [r.name for r in users_manage(root, request)['available_roles']] ==
             USER_MANAGEMENT_ROLES)
 
-    def test_search(self):
+    def test_search(self, db_session):
         from kotti.resources import get_root
         from kotti.security import get_principals
         from kotti.tests.test_node_views import TestNodeShare
@@ -49,7 +49,7 @@ class TestUserManagement(UnitTestBase):
                          (['group:bobsgroup', 'role:admin'], ['role:admin']))
         assert entries[1][1] == (['role:admin'], [])
 
-    def test_apply(self):
+    def test_apply(self, db_session):
         from kotti.resources import get_root
         from kotti.security import get_principals
         from kotti.security import list_groups
@@ -82,7 +82,7 @@ class TestUserManagement(UnitTestBase):
             set(['role:owner', 'role:editor', 'role:special'])
             )
 
-    def test_group_validator(self):
+    def test_group_validator(self, db_session):
         from kotti.views.users import group_validator
         with raises(colander.Invalid):
             group_validator(None, u'this-group-never-exists')

@@ -4,11 +4,9 @@ from pyramid.security import Allow
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.exc import SQLAlchemyError
 
-from kotti.testing import UnitTestBase
 
-
-class TestNode(UnitTestBase):
-    def test_root_acl(self):
+class TestNode:
+    def test_root_acl(self, db_session):
         from kotti.resources import get_root
         root = get_root()
 
@@ -26,7 +24,7 @@ class TestNode(UnitTestBase):
             root.__acl__[0] ==
             (Allow, 'role:admin', ALL_PERMISSIONS))
 
-    def test_set_and_get_acl(self):
+    def test_set_and_get_acl(self, db_session):
         from kotti import DBSession
         from kotti.resources import get_root
 
@@ -73,7 +71,7 @@ class TestNode(UnitTestBase):
                 ('Allow', 'system.Authenticated', ['edit']),
                 ])
 
-    def test_append_to_empty_acl(self):
+    def test_append_to_empty_acl(self, db_session):
         from kotti import DBSession
         from kotti.resources import get_root
         from kotti.resources import Node
@@ -94,7 +92,7 @@ class TestNode(UnitTestBase):
             ('Allow', 'system.Authenticated', ['edit']),
             ]
 
-    def test_unique_constraint(self):
+    def test_unique_constraint(self, db_session):
         from kotti import DBSession
         from kotti.resources import get_root
         from kotti.resources import Node
@@ -107,7 +105,7 @@ class TestNode(UnitTestBase):
         with raises(IntegrityError):
             session.flush()
 
-    def test_container_methods(self):
+    def test_container_methods(self, db_session):
         from kotti import DBSession
         from kotti.resources import get_root
         from kotti.resources import Node
@@ -163,7 +161,7 @@ class TestNode(UnitTestBase):
         with raises(SQLAlchemyError):
             session.flush()
 
-    def test_node_copy_name(self):
+    def test_node_copy_name(self, db_session):
         from kotti.resources import get_root
 
         root = get_root()
@@ -171,7 +169,7 @@ class TestNode(UnitTestBase):
         assert copy_of_root.name == u'copy_of_root'
         assert root.name == u''
 
-    def test_node_copy_variants(self):
+    def test_node_copy_variants(self, db_session):
         from kotti.resources import get_root
         from kotti.resources import Node
 
@@ -195,7 +193,7 @@ class TestNode(UnitTestBase):
         assert [child.name for child in child2.children] == [
             'child1', 'child2', 'child3']
 
-    def test_node_copy_parent_id(self):
+    def test_node_copy_parent_id(self, db_session):
         from kotti import DBSession
         from kotti.resources import get_root
         from kotti.resources import Node
@@ -208,7 +206,7 @@ class TestNode(UnitTestBase):
         assert grandchild2.parent_id is None
         assert grandchild2.parent is None
 
-    def test_node_copy_with_local_groups(self):
+    def test_node_copy_with_local_groups(self, db_session):
         from kotti import DBSession
         from kotti.resources import get_root
         from kotti.resources import Node
@@ -224,7 +222,7 @@ class TestNode(UnitTestBase):
         DBSession.flush()
         assert child2.local_groups == []
 
-    def test_clear(self):
+    def test_clear(self, db_session):
         from kotti import DBSession
         from kotti.resources import get_root
         from kotti.resources import Node
@@ -235,7 +233,7 @@ class TestNode(UnitTestBase):
         get_root().clear()
         assert DBSession.query(Node).filter(Node.name == u'child').all() == []
 
-    def test_annotations_mutable(self):
+    def test_annotations_mutable(self, db_session):
         from kotti import DBSession
         from kotti.resources import get_root
 
@@ -244,7 +242,7 @@ class TestNode(UnitTestBase):
         assert root in DBSession.dirty
         del root.annotations['foo']
 
-    def test_nested_annotations_mutable(self):
+    def test_nested_annotations_mutable(self, db_session):
         from kotti import DBSession
         from kotti.resources import get_root
 
@@ -262,7 +260,7 @@ class TestNode(UnitTestBase):
         root = get_root()
         assert root.annotations['foo']['bar'] == u'baz'
 
-    def test_annotations_coerce_fail(self):
+    def test_annotations_coerce_fail(self, db_session):
         from kotti.resources import get_root
 
         root = get_root()
@@ -270,8 +268,8 @@ class TestNode(UnitTestBase):
             root.annotations = []
 
 
-class TestLocalGroup(UnitTestBase):
-    def test_copy(self):
+class TestLocalGroup:
+    def test_copy(self, db_session):
         from kotti.resources import get_root
         from kotti.resources import LocalGroup
 
