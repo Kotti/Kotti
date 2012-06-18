@@ -4,6 +4,7 @@ Kotti browser tests
 Setup
 -----
 
+   >>> import cStringIO
    >>> import pytest
    >>> from kotti import testing, DBSession
    >>> from kotti.resources import Node, Document, File, Image
@@ -174,6 +175,48 @@ There's no Add link if nothing can be added:
   ...     File.type_info.addable_to = save_addable_file
   Traceback (most recent call last):
   LinkNotFoundError
+
+Add a file
+----------
+
+  >>> browser.open(testing.BASE_URL + '/')
+  >>> browser.getLink("Add").click()
+  >>> browser.getLink("File").click()
+  >>> ctrl("Title").value = "Tiny File"
+  >>> ctrl("Description").value = "A tiny file"
+  >>> ctrl("File").add_file('tiny', 'text/plain', 'tiny.txt')
+  >>> ctrl("save").click()
+  >>> "Successfully added item" in browser.contents
+  True
+  >>> browser.url == testing.BASE_URL + '/tiny-file/'
+  True
+
+Add a file larger than maximum file size
+----------------------------------------
+
+  >>> browser.open(testing.BASE_URL + '/')
+  >>> browser.getLink("Add").click()
+  >>> browser.getLink("File").click()
+  >>> ctrl("Title").value = "Huge File"
+  >>> ctrl("Description").value = "An huge file"
+  >>> huge = '*' * (10 * 1024 * 1024 + 1)
+  >>> ctrl("File").add_file(cStringIO.StringIO(huge), 'text/plain', 'huge.txt')
+  >>> ctrl("save").click()
+  >>> "There was a problem" in browser.contents
+  True
+  >>> "Maximum file size" in browser.contents
+  True
+
+Now let's edit a tiny file and try to replace with an huge one:
+
+  >>> browser.open(testing.BASE_URL + '/tiny-file')
+  >>> browser.getLink("Edit").click()
+  >>> ctrl("File").add_file(cStringIO.StringIO(huge), 'text/plain', 'huge.txt')
+  >>> ctrl("save").click()
+  >>> "There was a problem" in browser.contents
+  True
+  >>> "Maximum file size" in browser.contents
+  True
 
 
 Add tags to a document:
