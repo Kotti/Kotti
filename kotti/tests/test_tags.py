@@ -209,7 +209,7 @@ class TestTags(EventTestBase, UnitTestBase):
         assert ses.query(TagsToContents).count() == 3
 
         request = DummyRequest()
-        request.POST['delete-confirm'] = 'on'
+        request.POST['delete'] = 'on'
         delete_node(root[u'folder_1'], request)
         assert ses.query(Tag).count() == 0
         assert ses.query(TagsToContents).count() == 0

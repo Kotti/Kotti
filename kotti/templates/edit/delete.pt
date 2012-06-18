@@ -18,13 +18,6 @@
           <legend i18n:translate="">
             Are you sure you want to delete <em i18n:name="title">${context.title}</em>?
           </legend>
-          <div class="control-group">
-            <label class="control-label" for="delete-checkbox" i18n:translate="">Yes</label>
-            <div class="controls">
-              <input id="delete-checkbox" type="checkbox"
-                     name="delete-confirm" value="Yes" i18n:attributes="value" />
-            </div>
-          </div>
           <div class="form-actions">
             <button type="submit" name="delete" value="delete" 
                     class="btn btn-danger" i18n:translate="">Delete</button>

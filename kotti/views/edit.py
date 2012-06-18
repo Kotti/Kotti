@@ -157,7 +157,7 @@ def order_node(context, request):
 
 
 def delete_node(context, request):
-    if 'delete-confirm' in request.POST:
+    if 'delete' in request.POST:
         parent = context.__parent__
         request.session.flash(_(u'${title} deleted.',
                                 mapping=dict(title=context.title)), 'success')
