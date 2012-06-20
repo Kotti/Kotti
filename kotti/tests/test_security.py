@@ -606,6 +606,18 @@ class TestPrincipals(UnitTestBase):
             [request.session.pop_flash('success')[0].interpolate()],
             [u'Welcome, Bob Dabolina!'])
 
+    @patch('kotti.views.login.remember')
+    def test_login_with_email_remembers(self, remember):
+        from kotti.views.login import login
+        request = DummyRequest()
+
+        self.make_bob()
+        request.params['submit'] = u'on'
+        request.params['login'] = u'bob@dabolina.com'
+        request.params['password'] = u'secret'
+        login(None, request)
+        remember.assert_called_with(request, u'bob')
+
 
 class TestAuthzContextManager(TestCase):
     def test_basic(self):

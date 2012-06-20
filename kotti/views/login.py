@@ -51,7 +51,7 @@ def login(context, request):
 
         if (user is not None and user.active and
             principals.validate_password(password, user.password)):
-            headers = remember(request, login)
+            headers = remember(request, user.name)
             request.session.flash(
                 _(u"Welcome, ${user}!",
                   mapping=dict(user=user.title or user.name)), 'success')
