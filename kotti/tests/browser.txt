@@ -4,7 +4,7 @@ Kotti browser tests
 Setup
 -----
 
-   >>> import cStringIO
+   >>> from cStringIO import cStringIO
    >>> import pytest
    >>> from kotti import testing, DBSession
    >>> from kotti.resources import Node, Document, File, Image
@@ -200,24 +200,12 @@ Add a file larger than maximum file size
   >>> ctrl("Title").value = "Huge File"
   >>> ctrl("Description").value = "An huge file"
   >>> huge = '*' * (10 * 1024 * 1024 + 1)
-  >>> ctrl("File").add_file(cStringIO.StringIO(huge), 'text/plain', 'huge.txt')
+  >>> ctrl("File").add_file(StringIO(huge), 'text/plain', 'huge.txt')
   >>> ctrl("save").click()
   >>> "There was a problem" in browser.contents
   True
   >>> "Maximum file size" in browser.contents
   True
-
-Now let's edit a tiny file and try to replace with an huge one:
-
-  >>> browser.open(testing.BASE_URL + '/tiny-file')
-  >>> browser.getLink("Edit").click()
-  >>> ctrl("File").add_file(cStringIO.StringIO(huge), 'text/plain', 'huge.txt')
-  >>> ctrl("save").click()
-  >>> "There was a problem" in browser.contents
-  True
-  >>> "Maximum file size" in browser.contents
-  True
-
 
 Add tags to a document:
 -----------------------

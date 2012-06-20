@@ -67,7 +67,7 @@ def validate_file_size_limit(node, value):
     value['fp'].seek(0, 2)
     size = value['fp'].tell()
     value['fp'].seek(0)
-    max_size = get_settings().get('kotti.max_file_size', 10)
+    max_size = get_settings()['kotti.max_file_size']
     if size > int(max_size) * 1024 * 1024:
         msg = _('Maximum file size: ${size}MB', mapping={'size': max_size})
         raise Invalid(node, msg)

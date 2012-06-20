@@ -69,6 +69,7 @@ kotti.caching_policy_chooser Component for choosing the cache header policy
 kotti.date_format            Date format to use, default: ``medium``
 kotti.datetime_format        Datetime format to use, default: ``medium``
 kotti.time_format            Time format to use, default: ``medium``
+kotti.max_file_size          Max size for file uploads, default: ```10`` (MB)
 
 pyramid.default_locale_name  Set the user interface language, default ``en``
 ===========================  ===================================================
