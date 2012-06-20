@@ -4,7 +4,7 @@ Kotti browser tests
 Setup
 -----
 
-   >>> from cStringIO import cStringIO
+   >>> from cStringIO import StringIO
    >>> import pytest
    >>> from kotti import testing, DBSession
    >>> from kotti.resources import Node, Document, File, Image
