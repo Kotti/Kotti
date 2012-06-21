@@ -30,16 +30,20 @@ lib_kotti = Library("kotti", "static")
 kotti_js = Resource(lib_kotti,
     "kotti.js",
     depends=[deform_bootstrap_js, ],
+    minified="kotti.min.js",
     bottom=True)
 base_css = Resource(lib_kotti,
     "base.css",
-    depends=[bootstrap_responsive_css, ])
+    depends=[bootstrap_responsive_css, ],
+    minified="base.min.css")
 edit_css = Resource(lib_kotti,
     "edit.css",
-    depends=[bootstrap_responsive_css, ])
+    depends=[bootstrap_responsive_css, ],
+    minified="edit.min.css")
 view_css = Resource(lib_kotti,
     "view.css",
-    depends=[base_css, ])
+    depends=[base_css, ],
+    minified="view.min.css")
 
 
 class NeededGroup(object):
