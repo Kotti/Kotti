@@ -4,6 +4,12 @@ Change History
 0.7 - Unreleased
 ----------------
 
+- Add minified versions JS/CSS files.
+
+- Fix #88: logging in with email.
+
+- Update translations.
+
 0.7a3 - 2012-06-15
 ------------------
 
