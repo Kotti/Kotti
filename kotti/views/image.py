@@ -104,7 +104,7 @@ class ImageView(object):
                         ('Content-Length', str(len(image))),
                         ('Content-Type', str(self.context.mimetype)),
                         ],
-            app_iter=image)
+            app_iter=[image])
 
         return res
 
