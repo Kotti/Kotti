@@ -1,8 +1,8 @@
 Change History
 ==============
 
-0.7 - Unreleased
-----------------
+0.7a4 - 2012-06-25
+------------------
 
 - Add minified versions JS/CSS files.
 
