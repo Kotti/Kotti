@@ -511,7 +511,7 @@ We cannot add Bob Dabolina's email twice:
   True
   >>> ctrl("Email", index=0).value = "bob@gmail.com"
   >>> ctrl(name="add_user").click()
-  >>> "Bobby Brown" in browser.contents
+  >>> "Bobby Brown added" in browser.contents
   True
 
 Searching for Bob will return both Bob and Bob's Group:
@@ -587,8 +587,7 @@ Set password
 Remember that we sent Bob an email for registration.  He can use it to
 set his own password:
 
-  >>> [email1, email2] = mailer.outbox
-  >>> email = email1 if email1.recipients[0].startswith('"Bob Dabolina"') else email2
+  >>> [email, email2] = mailer.outbox
   >>> print email.recipients
   [u'"Bob Dabolina" <bob@dabolina.com>']
   >>> print email.subject

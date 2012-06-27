@@ -3,7 +3,6 @@
 
 import re
 from urllib import urlencode
-from urlparse import parse_qs
 
 from pyramid.httpexceptions import HTTPFound
 from pyramid.exceptions import Forbidden
@@ -153,22 +152,16 @@ def deferred_email_validator(node, kw):
         raise colander.Invalid(
             node, _(u"A user with that email already exists."))
 
-    req = kw['request']
-    if req.environ.get('REQUEST_METHOD') == 'POST':
-        post_vars = req.environ.get('webob._parsed_post_vars')
-        post_dict = post_vars[0] if isinstance(post_vars, tuple) else None
-        if post_dict:
-            email = post_dict.get('email')
-            name = post_dict.get('name')  # create user info
-            if not name:  # update user info
-                qs = parse_qs(req.environ['QUERY_STRING'])
-                name = qs['name'][0] if 'name' in qs.iterkeys() else None
-            if email and name:
-                principals = get_principals()
-                if any(p for p in principals.search(email=email)
-                                    if p.name.lower() != name.lower()):
-                    # verify duplicated email except myself when update info
-                    return raise_invalid_email
+    request = kw['request']
+    if request.POST:
+        email = request.params.get('email')
+        name = request.params.get('name')
+        if email and name:
+            principals = get_principals()
+            if any(p for p in principals.search(email=email)
+                   if p.name.lower() != name.lower()):
+                # verify duplicated email except myself when update info
+                return raise_invalid_email
 
 
 def roleset_validator(node, value):
