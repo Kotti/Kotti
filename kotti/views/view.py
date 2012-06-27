@@ -1,13 +1,10 @@
 import warnings
 
 from pyramid.exceptions import NotFound
-from pyramid.httpexceptions import HTTPFound
 from pyramid.view import render_view_to_response
-from pyramid.url import resource_url
 
 from kotti.resources import IContent
 from kotti.resources import Document
-from kotti.resources import get_root
 
 from kotti.views.util import search_content
 
@@ -52,15 +49,14 @@ def includeme(config):
         )
 
     config.add_view(
-        None,
         name='search',
         permission='view',
-        renderer='kotti:templates/search.pt',
+        renderer='kotti:templates/view/search.pt',
         )
 
     config.add_view(
         search_results,
         name='search-results',
         permission='view',
-        renderer='kotti:templates/search-results.pt',
+        renderer='kotti:templates/view/search-results.pt',
         )
