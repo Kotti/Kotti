@@ -4,6 +4,8 @@ Change History
 0.7 - Unreleased
 ----------------
 
+- Fix #89: Validate email address for uniqueness when user changes it.
+
 0.7a4 - 2012-06-25
 ------------------
 
