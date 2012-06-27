@@ -156,6 +156,8 @@ def deferred_email_validator(node, kw):
     if request.POST:
         email = request.params.get('email')
         name = request.params.get('name')
+        if not name and request.user:
+            name = request.user.name
         if email and name:
             principals = get_principals()
             if any(p for p in principals.search(email=email)
