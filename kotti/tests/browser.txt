@@ -674,6 +674,15 @@ their preferences:
   >>> "Your changes have been saved" in browser.contents
   True
 
+
+The email could not be used if already a users with that email exists:
+
+  >>> browser.getLink("Preferences").click()
+  >>> ctrl("Email").value = 'bob@dabolina.com'
+  >>> ctrl(name="save").click()
+  >>> "A user with that email already exists" in browser.contents
+  True
+
 Share
 -----
 
