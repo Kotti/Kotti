@@ -3,6 +3,7 @@
 
 import re
 from urllib import urlencode
+from urlparse import parse_qs
 
 from pyramid.httpexceptions import HTTPFound
 from pyramid.exceptions import Forbidden
@@ -146,6 +147,30 @@ def name_new_validator(node, value):
             node, _(u"A user with that name already exists."))
 
 
+@colander.deferred
+def deferred_email_validator(node, kw):
+    def raise_invalid_email(node, value):
+        raise colander.Invalid(
+            node, _(u"A user with that email already exists."))
+
+    req = kw['request']
+    if req.environ.get('REQUEST_METHOD') == 'POST':
+        post_vars = req.environ.get('webob._parsed_post_vars')
+        post_dict = post_vars[0] if isinstance(post_vars, tuple) else None
+        if post_dict:
+            email = post_dict.get('email')
+            name = post_dict.get('name')  # create user info
+            if not name:  # update user info
+                qs = parse_qs(req.environ['QUERY_STRING'])
+                name = qs['name'][0] if 'name' in qs.iterkeys() else None
+            if email and name:
+                principals = get_principals()
+                if any(p for p in principals.search(email=email)
+                                    if p.name.lower() != name.lower()):
+                    # verify duplicated email except myself when update info
+                    return raise_invalid_email
+
+
 def roleset_validator(node, value):
     oneof = colander.OneOf(USER_MANAGEMENT_ROLES)
     [oneof(node, item) for item in value]
@@ -170,7 +195,11 @@ class Groups(colander.SequenceSchema):
 
 class PrincipalBasic(colander.MappingSchema):
     title = colander.SchemaNode(colander.String(), title=_(u'Title'))
-    email = colander.SchemaNode(colander.String(), title=_(u'Email'))
+    email = colander.SchemaNode(
+        colander.String(),
+        title=_(u'Email'),
+        validator=deferred_email_validator,
+    )
 
 
 class PrincipalFull(PrincipalBasic):
