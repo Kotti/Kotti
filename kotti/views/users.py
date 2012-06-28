@@ -468,10 +468,13 @@ def user_manage(context, request):
 
 
 def preferences(context, request):
+    user = request.user
+    if user is None:
+        raise Forbidden()
+
     api = template_api(context, request)
     api.page_title = _(u"My preferences - ${title}",
                        mapping=dict(title=api.site_title))
-    user = request.user
 
     form = UserEditFormView(user, request)()
     if request.is_response(form):
