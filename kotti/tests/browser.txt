@@ -665,17 +665,14 @@ their preferences so the user need to be authenticated:
   >>> "Welcome, Administrator" in browser.contents
   True
 
-  >>> browser.getLink("Preferences").click()
   >>> ctrl("Full name").value = "Mr. Administrator"
   >>> ctrl("Email").value = 'admin@minad.com'
   >>> ctrl(name="save").click()
   >>> "Your changes have been saved" in browser.contents
   True
 
-
 The email could not be used if already a users with that email exists:
 
-  >>> browser.getLink("Preferences").click()
   >>> ctrl("Email").value = 'bob@dabolina.com'
   >>> ctrl(name="save").click()
   >>> "A user with that email already exists" in browser.contents
