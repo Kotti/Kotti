@@ -652,32 +652,27 @@ The login form has a "Reset password" button.  Let's try it:
   Hello, Bob Dabolina!
   Click this link to reset your password at Website des Kottbusser Tors:...
 
-Log in as admin again:
+User preferences
+----------------
 
-  >>> browser.open(testing.BASE_URL + '/@@edit')
+The "Preferences" link leads us to a form where the user can change
+their preferences so the user need to be authenticated:
+
+  >>> browser.open(testing.BASE_URL + '/@@prefs')
   >>> ctrl("Username or email").value = "admin"
   >>> ctrl("Password").value = "secret"
   >>> ctrl(name="submit").click()
   >>> "Welcome, Administrator" in browser.contents
   True
 
-User preferences
-----------------
-
-The "Preferences" link leads us to a form where the user can change
-their preferences:
-
-  >>> browser.getLink("Preferences").click()
   >>> ctrl("Full name").value = "Mr. Administrator"
   >>> ctrl("Email").value = 'admin@minad.com'
   >>> ctrl(name="save").click()
   >>> "Your changes have been saved" in browser.contents
   True
 
-
 The email could not be used if already a users with that email exists:
 
-  >>> browser.getLink("Preferences").click()
   >>> ctrl("Email").value = 'bob@dabolina.com'
   >>> ctrl(name="save").click()
   >>> "A user with that email already exists" in browser.contents
