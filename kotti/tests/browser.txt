@@ -678,6 +678,15 @@ The email could not be used if already a users with that email exists:
   >>> "A user with that email already exists" in browser.contents
   True
 
+
+If the user cancel the process he will be redirected to the site root:
+
+  >>> ctrl(name="cancel").click()
+  >>> def dc(content, name='/tmp/out.html'): open(name, 'w').write(content)
+  >>> 'Welcome to Kotti' in browser.contents
+  True
+
+
 Share
 -----
 

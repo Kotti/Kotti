@@ -15,6 +15,7 @@ from deform.widget import CheckboxChoiceWidget
 from deform.widget import SequenceWidget
 
 from kotti.message import email_set_password
+from kotti.resources import get_root
 from kotti.security import USER_MANAGEMENT_ROLES
 from kotti.security import ROLES
 from kotti.security import SHARING_ROLES
@@ -467,6 +468,14 @@ def user_manage(context, request):
         }
 
 
+class PreferencesFormView(UserEditFormView):
+
+    def cancel_success(self, appstruct):
+        location = self.request.resource_url(get_root())
+        return HTTPFound(location=location)
+    cancel_failure = cancel_success
+
+
 def preferences(context, request):
     user = request.user
     if user is None:
@@ -476,7 +485,8 @@ def preferences(context, request):
     api.page_title = _(u"My preferences - ${title}",
                        mapping=dict(title=api.site_title))
 
-    form = UserEditFormView(user, request)()
+    form = PreferencesFormView(user, request)()
+
     if request.is_response(form):
         return form
 
