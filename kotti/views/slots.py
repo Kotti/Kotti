@@ -31,8 +31,14 @@ from kotti.events import objectevent_listeners
 from kotti.security import has_permission
 
 
-@deprecate('.slots.register is deprecated as of Kotti 0.7.0.  '
-            'Use ``.slots.assign_slot`` instead.')
+@deprecate("""\
+kotti.views.slots.register is deprecated as of Kotti 0.7.0.
+
+Convert your slot renderer function to a normal view, and register it
+using Pyramid's ``config.add_view``.  Then use
+``kotti.views.slots.assign_slot(view_name, slot_name)`` to assign your
+view to a slot, e.g.: ``assign_slot('my-navigation', 'left')``.
+""")
 def register(slot, objtype, renderer):
     """Register a new slot renderer.
 
