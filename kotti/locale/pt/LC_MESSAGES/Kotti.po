@@ -5,9 +5,9 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Kotti 0.4.4\n"
+"Project-Id-Version: Kotti 0.7\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2012-06-22 14:25+0200\n"
+"POT-Creation-Date: 2012-06-30 17:03+0100\n"
 "PO-Revision-Date: 2012-01-16 12:02+0000\n"
 "Last-Translator: Nuno Teixeira <teixas@gmail.com>\n"
 "Language-Team: pt <LL@li.org>\n"
@@ -115,7 +115,7 @@ msgstr "Entrar"
 msgid "Username or email"
 msgstr "Utilizador ou e-mail"
 
-#: kotti/templates/login.pt:22 kotti/views/login.py:94 kotti/views/users.py:184
+#: kotti/templates/login.pt:22 kotti/views/login.py:94 kotti/views/users.py:209
 msgid "Password"
 msgstr "Palavra passe"
 
@@ -139,14 +139,6 @@ msgstr ""
 "Preencha com o seu nome de utilizador com o seu e-mail e clique em "
 "${reset_password} para receber um e-mail com uma ligação para reiniciar a"
 " sua palavra passe."
-
-#: kotti/templates/search-results.pt:9
-msgid "Search Results"
-msgstr "Resultados da pesquisa"
-
-#: kotti/templates/search.pt:4
-msgid "&#8594;"
-msgstr "&#8594;"
 
 #: kotti/templates/edit/breadcrumbs.pt:4
 msgid "You are here:"
@@ -229,7 +221,7 @@ msgid "Search"
 msgstr "Procurar"
 
 #: kotti/templates/edit/share.pt:31 kotti/templates/site-setup/users.pt:32
-#: kotti/views/users.py:179
+#: kotti/views/users.py:204
 msgid "Name"
 msgstr "Nome"
 
@@ -260,6 +252,10 @@ msgstr "Adicionar utilizador"
 #: kotti/templates/site-setup/users.pt:74
 msgid "Add group"
 msgstr "Adicionar grupo"
+
+#: kotti/templates/view/search-results.pt:9
+msgid "Search Results"
+msgstr "Resultados da pesquisa"
 
 #: kotti/tests/testing_view.pt:10
 msgid "Welcome, ${user}! You are logged in."
@@ -333,7 +329,7 @@ msgstr "Item renomeado"
 msgid "Maximum file size: ${size}MB"
 msgstr "Tamanho máximo do ficheiro: ${size}MB"
 
-#: kotti/views/file.py:109 kotti/views/form.py:48 kotti/views/users.py:172
+#: kotti/views/file.py:109 kotti/views/form.py:48 kotti/views/users.py:193
 msgid "Title"
 msgstr "Título"
 
@@ -349,11 +345,11 @@ msgstr "Etiquetas"
 msgid "Save"
 msgstr "Guardar"
 
-#: kotti/views/form.py:74 kotti/views/users.py:287 kotti/views/users.py:319
+#: kotti/views/form.py:74 kotti/views/users.py:312 kotti/views/users.py:344
 msgid "Cancel"
 msgstr "Cancelar"
 
-#: kotti/views/form.py:75 kotti/views/users.py:66
+#: kotti/views/form.py:75 kotti/views/users.py:67
 msgid "Your changes have been saved."
 msgstr "As suas alterações foram guardadas."
 
@@ -397,7 +393,7 @@ msgstr "Este utilizador ou e-mail não são reconhecidos."
 msgid "You have been logged out."
 msgstr "Você desligou a sessão"
 
-#: kotti/views/login.py:104 kotti/views/users.py:173
+#: kotti/views/login.py:104 kotti/views/users.py:196
 msgid "Email"
 msgstr "E-mail"
 
@@ -429,47 +425,51 @@ msgstr "Gestão de Utilizadores"
 msgid "Site Setup - ${title}"
 msgstr "Configuração do Sítio - ${title}"
 
-#: kotti/views/users.py:68 kotti/views/users.py:405
+#: kotti/views/users.py:69 kotti/views/users.py:430
 msgid "No changes made."
 msgstr "Não foram efectuadas nenhumas alterações"
 
-#: kotti/views/users.py:95
+#: kotti/views/users.py:96
 msgid "No users or groups found."
 msgstr "Utilizadores e grupos não encontrados."
 
-#: kotti/views/users.py:140
+#: kotti/views/users.py:141
 msgid "Invalid value"
 msgstr "Valor inválido"
 
-#: kotti/views/users.py:146
+#: kotti/views/users.py:147
 msgid "A user with that name already exists."
 msgstr "Esse utilizador com esse nome já existe."
 
-#: kotti/views/users.py:157
+#: kotti/views/users.py:154
+msgid "A user with that email already exists."
+msgstr "Esse utilizador com esse e-mail já existe."
+
+#: kotti/views/users.py:178
 msgid "No such group: ${group}"
 msgstr "Grupo não encontrado: ${group}"
 
-#: kotti/views/users.py:164 kotti/views/users.py:424
+#: kotti/views/users.py:185 kotti/views/users.py:449
 msgid "Group"
 msgstr "Grupo"
 
-#: kotti/views/users.py:191
+#: kotti/views/users.py:216
 msgid "Active"
 msgstr "Activo"
 
-#: kotti/views/users.py:192
+#: kotti/views/users.py:217
 msgid "Untick this to deactivate the account."
 msgstr "Retirar para desactivar a conta."
 
-#: kotti/views/users.py:198
+#: kotti/views/users.py:223
 msgid "Global roles"
 msgstr "Papéis globais"
 
-#: kotti/views/users.py:202
+#: kotti/views/users.py:227
 msgid "Groups"
 msgstr "Grupos"
 
-#: kotti/views/users.py:239
+#: kotti/views/users.py:264
 msgid ""
 "Leave this empty and tick the 'Send password registration' box below to "
 "have the user set their own password."
@@ -477,38 +477,39 @@ msgstr ""
 "Deixe este campo por preencher e escolha a opção 'Enviar ligação para "
 "registo' abaixo para permitir ao utilizador escolher a sua palavra passe."
 
-#: kotti/views/users.py:243
+#: kotti/views/users.py:268
 msgid "Full name"
 msgstr "Nome completo"
 
-#: kotti/views/users.py:285 kotti/views/users.py:424
+#: kotti/views/users.py:310 kotti/views/users.py:449
 msgid "User"
 msgstr "Utilizador"
 
-#: kotti/views/users.py:286
+#: kotti/views/users.py:311
 msgid "Add User"
 msgstr "Adicionar Utilizador"
 
-#: kotti/views/users.py:295
+#: kotti/views/users.py:320
 msgid "Send password registration link"
 msgstr "Enviar ligação para registo de palavra passe"
 
-#: kotti/views/users.py:309
+#: kotti/views/users.py:334
 msgid "${title} added."
 msgstr "${title} adicionado."
 
-#: kotti/views/users.py:318
+#: kotti/views/users.py:343
 msgid "Add Group"
 msgstr "Adicionar Grupo"
 
-#: kotti/views/users.py:336
+#: kotti/views/users.py:361
 msgid "User Management - ${title}"
 msgstr "Gestão de Utilizadores - ${title}"
 
-#: kotti/views/users.py:428
+#: kotti/views/users.py:453
 msgid "Edit ${principal_type} - ${title}"
 msgstr "Editar ${principal_type} - ${title}"
 
-#: kotti/views/users.py:448
+#: kotti/views/users.py:485
 msgid "My preferences - ${title}"
 msgstr "Minhas preferências - ${title}"
+
