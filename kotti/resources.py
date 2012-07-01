@@ -268,6 +268,40 @@ class TagsToContents(Base):
         return self(tag=tag)
 
 
+class AllowedPrincipal(Base):
+    __tablename__ = 'allowed_principals'
+
+    id = Column(Integer, primary_key=True)
+    name = Column(Unicode(100), unique=True, nullable=False)
+
+    def __repr__(self):
+        return "<AllowedPrincipal ('%s')>" % self.name
+
+    @property
+    def items(self):
+        return [rel.item for rel in self.content_principals]
+
+
+class AllowedPrincipalsToContents(Base):
+    __tablename__ = 'principals_to_contents'
+
+    allowed_principal_id = Column(
+        Integer, ForeignKey('allowed_principals.id'), primary_key=True)
+    content_id = Column(Integer, ForeignKey('contents.id'), primary_key=True)
+    principal = relation(
+        AllowedPrincipal, backref=backref('content_principals', cascade='all'))
+    name = association_proxy('principal', 'name')
+
+    @classmethod
+    def _principal_find_or_create(self, name):
+        with DBSession.no_autoflush:
+            principal = DBSession.query(
+                AllowedPrincipal).filter_by(name=name).first()
+        if principal is None:
+            principal = AllowedPrincipal(name=name)
+        return self(principal=principal)
+
+
 class Content(Node):
     implements(IContent)
 
@@ -296,6 +330,18 @@ class Content(Node):
         creator=TagsToContents._tag_find_or_create,
         )
 
+    _allowed_principals = relation(
+        AllowedPrincipalsToContents,
+        backref=backref('item'),
+        collection_class=list,
+        cascade='all, delete-orphan',
+        )
+    allowed_principals = association_proxy(
+        '_allowed_principals',
+        'name',
+        creator=AllowedPrincipalsToContents._principal_find_or_create,
+        )
+
     type_info = TypeInfo(
         name=u'Content',
         title=u'type_info title missing',   # BBB
@@ -310,7 +356,7 @@ class Content(Node):
     def __init__(self, name=None, parent=None, title=u"", annotations=None,
                  default_view=None, description=u"", language=None,
                  owner=None, creation_date=None, modification_date=None,
-                 in_navigation=True, tags=[]):
+                 in_navigation=True, tags=[], allowed_principals=[]):
         super(Content, self).__init__(name, parent, title, annotations)
         self.default_view = default_view
         self.description = description
@@ -321,6 +367,7 @@ class Content(Node):
         self.creation_date = creation_date
         self.modification_date = modification_date
         self.tags = tags
+        self.allowed_principals = allowed_principals
 
     def copy(self, **kwargs):
         tags = getattr(self, 'tags', None)
