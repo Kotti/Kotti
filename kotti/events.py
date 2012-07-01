@@ -42,8 +42,11 @@ import sqlalchemy.event
 from sqlalchemy.orm import mapper
 from pyramid.threadlocal import get_current_request
 from pyramid.security import authenticated_userid
+from pyramid.security import principals_allowed_by_permission
 
 from kotti import DBSession
+from kotti.resources import AllowedPrincipal
+from kotti.resources import AllowedPrincipalsToContents
 from kotti.resources import Node
 from kotti.resources import Content
 from kotti.resources import Tag
@@ -205,12 +208,24 @@ def set_creation_date(event):
         obj.creation_date = obj.modification_date = datetime.now()
 
 
+def set_allowed_principals(event):
+    obj = event.object
+    principals = principals_allowed_by_permission(obj, 'view')
+    #obj.allowed_principals = map(unicode, principals)
+
+
 def set_modification_date(event):
     event.object.modification_date = datetime.now()
 
 
 def delete_orphaned_tags(event):
     DBSession.query(Tag).filter(~Tag.content_tags.any()).delete(
+        synchronize_session=False)
+
+
+def delete_orphaned_allowed_principals(event):
+    DBSession.query(AllowedPrincipal).filter(
+        ~AllowedPrincipal.content_principals.any()).delete(
         synchronize_session=False)
 
 _WIRED_SQLALCHMEY = False
@@ -235,6 +250,11 @@ def includeme(config):
     objectevent_listeners[
         (ObjectInsert, Content)].append(set_creation_date)
     objectevent_listeners[
+        (ObjectInsert, Content)].append(set_allowed_principals)
+    objectevent_listeners[
         (ObjectUpdate, Content)].append(set_modification_date)
     objectevent_listeners[
         (ObjectAfterDelete, TagsToContents)].append(delete_orphaned_tags)
+    objectevent_listeners[
+        (ObjectAfterDelete, AllowedPrincipalsToContents)].append(
+        delete_orphaned_allowed_principals)
