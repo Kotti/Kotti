@@ -310,7 +310,7 @@ class Content(Node):
     def __init__(self, name=None, parent=None, title=u"", annotations=None,
                  default_view=None, description=u"", language=None,
                  owner=None, creation_date=None, modification_date=None,
-                 in_navigation=True, tags=[]):
+                 in_navigation=True, tags=None):
         super(Content, self).__init__(name, parent, title, annotations)
         self.default_view = default_view
         self.description = description
@@ -320,7 +320,7 @@ class Content(Node):
         # These are set by events if not defined at this point:
         self.creation_date = creation_date
         self.modification_date = modification_date
-        self.tags = tags
+        self.tags = tags or []
 
     def copy(self, **kwargs):
         tags = getattr(self, 'tags', None)
