@@ -1,0 +1,18 @@
+Authors
+=======
+
+Kotti was created by Daniel Nouri.
+
+Major contributing authors include:
+
+- Andreas Kaiser
+- Andreas Zeidler
+- Christian Neumann
+- Daniel Nouri
+- Jure Cerjak
+- Marco Scheidhuber
+- Nuno Teixeira
+- Tom Lazar
+
+For a complete list of contributors, see
+https://github.com/Pylons/Kotti/graphs/contributors

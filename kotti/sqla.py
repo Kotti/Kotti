@@ -113,6 +113,7 @@ for wrapper_class in (MutationDict, MutationList):
         ('__setslice__', True),
         ('__delslice__', True),
         ('append', True),
+        ('extend', True),
         ('insert', True),
         ('pop', True),
         ('setdefault', True),

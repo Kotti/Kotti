@@ -1,54 +1,44 @@
-"""This module allows add-ons to register renderers that add pieces of
-HTML to the overall page.  In other systems, these are called portlets
-or viewlets.
+"""This module allows add-ons to assign views to slots defined in
+the overall page.  In other systems, these are called portlets or
+viewlets.
 
-A simple example that'll render *Hello, World!* in in the left column
-of every page::
+A simple example that'll include the output of the 'hello_world' view
+in in the left column of every page::
 
-  def render_hello(context, request):
-      return u'Hello, World!'
+  from kotti.views.slots import assign_slot
+  assign_slot('hello_world', 'left_slot')
 
-  from kotti.views.slots import register
-  from kotti.views.slots import RenderLeftSlot
-  register(RenderLeftSlot, None, render_hello)
+It is also possible to pass parameters to the view:
 
-Slot renderers may also return ``None`` to indicate that they don't
-want to include anything.  We can change our ``render_hello`` function
-to include a message only when the context is the root object::
+  assign_slot('last_tweets', 'right_slot', params=dict(user='foo'))
 
-  from kotti.resources import get_root
-  def render_hello(context, request):
-      if context == get_root():
-          return u'Hello, World!'
+If no view can be found for the given request and slot, the slot
+remains empty.
 
-The second argument to :func:`kotti.views.slots.register` allows you
-to filter on context.  These two are equivalent::
+Usually you'll want to call :func:`kotti.views.slots.assign_slot`
+inside an ``includeme`` function and not on a module level, to allow
+users of your package to include your slot assignments through the
+``pyramid.includes`` configuration setting.  """
 
-  from kotti.views.slots import RenderRightSlot
-  from mypackage.resources import Calendar
-
-  def render_agenda1(context, request):
-      if isinstance(context, Calendar):
-          return '<div>...</div>'
-  register(RenderRightSlot, None, render_agenda1)
-
-  def render_agenda2(context, request):
-      return '<div>...</div>'
-  register(RenderRightSlot, Calendar, render_agenda2)
-
-Usually you'll want to call :func:`kotti.views.slots.register` inside
-an ``includeme`` function and not on a module level, to allow users of
-your package to include your slot renderers through the
-``pyramid.includes`` configuration setting.
-"""
-
-from pyramid.renderers import render
+from pyramid.exceptions import PredicateMismatch
+from pyramid.request import Request
+from pyramid.view import render_view
+import urllib
+from zope.deprecation import deprecate
 
 from kotti.events import ObjectEvent
 from kotti.events import objectevent_listeners
 from kotti.security import has_permission
 
 
+@deprecate("""\
+kotti.views.slots.register is deprecated as of Kotti 0.7.0.
+
+Convert your slot renderer function to a normal view, and register it
+using Pyramid's ``config.add_view``.  Then use
+``kotti.views.slots.assign_slot(view_name, slot_name)`` to assign your
+view to a slot, e.g.: ``assign_slot('my-navigation', 'left')``.
+""")
 def register(slot, objtype, renderer):
     """Register a new slot renderer.
 
@@ -64,6 +54,53 @@ def register(slot, objtype, renderer):
     """
     objectevent_listeners[(slot, objtype)].append(
         lambda ev: renderer(ev.object, ev.request))
+
+
+def _encode(params):
+    if not params:
+        return u''
+    return urllib.urlencode(
+        dict((k, v.encode('utf-8')) for k, v in params.items()))
+
+
+def _render_view_on_slot_event(view_name, event, params):
+    context = event.object
+    request = event.request
+    view_request = Request.blank(
+        "{0}/{1}".format(request.path, view_name),
+        base_url=request.application_url,
+        POST=_encode(params),
+        )
+    view_request.registry = request.registry
+    try:
+        result = render_view(
+            context,
+            view_request,
+            view_name,
+            )
+    except PredicateMismatch:
+        return None
+    else:
+        return result.decode('utf-8')
+
+
+def assign_slot(view_name, slot, params=None):
+    """Assign view to slot.
+
+    The ``view_name`` argument is the name of the view to assign.
+
+    The ``slot`` argument is the name of the slot to assign to.
+    Possible values are: left, right, abovecontent, belowcontent,
+    inhead, beforebodyend, edit_inhead
+
+    The  ``params`` argument optionally allows to pass POST parameters
+    specified as a dictionary to the view.
+    """
+    event = [e for e in slot_events if e.name == slot]
+    if not event:
+        raise KeyError("Unknown slot '{0}'".format(slot))
+    objectevent_listeners[(event[0], None)].append(
+        lambda ev: _render_view_on_slot_event(view_name, ev, params))
 
 
 class RenderLeftSlot(ObjectEvent):
@@ -99,7 +136,7 @@ slot_events = [
     ]
 
 
-def render_local_navigation(context, request):
+def local_navigation(context, request):
     from kotti.resources import get_root
 
     def ch(node):
@@ -113,12 +150,13 @@ def render_local_navigation(context, request):
         parent = context.__parent__
         children = ch(parent)
     if len(children) and parent != get_root():
-        return render(
-            'kotti:templates/view/nav-local.pt',
-            dict(parent=parent, children=children),
-            request,
-            )
+        return dict(parent=parent, children=children)
+    return dict(parent=None)
 
 
 def includeme_local_navigation(config):
-    register(RenderRightSlot, None, render_local_navigation)
+    config.add_view(
+            local_navigation,
+            name='local-navigation',
+            renderer='kotti:templates/view/nav-local.pt')
+    assign_slot('local-navigation', 'right')

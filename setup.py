@@ -7,10 +7,10 @@ from setuptools import find_packages
 here = os.path.abspath(os.path.dirname(__file__))
 try:
     README = open(os.path.join(here, 'README.rst')).read()
-    THANKS = open(os.path.join(here, 'THANKS.txt')).read()
+    AUTHORS = open(os.path.join(here, 'AUTHORS.txt')).read()
     CHANGES = open(os.path.join(here, 'CHANGES.txt')).read()
 except IOError:
-    README = THANKS = CHANGES = ''
+    README = AUTHORS = CHANGES = ''
 
 install_requires = [
     'Babel',
@@ -20,12 +20,18 @@ install_requires = [
     'deform_bootstrap>=0.1',  # checked_input widget
     'formencode',
     'html2text',
+    'js.bootstrap',
+    'js.jquery',
+    'js.jquery_timepicker_addon',
+    'js.jqueryui',
+    'js.jqueryui_tagit',
+    'kotti_tinymce>=0.2.2',
     'lingua>=1.3',
     'Pillow',  # indirect dependency of plone.scale (that doesn't declare this dependency itself)
     'plone.i18n<2.0',  # >= 2.0 adds a huge number of dependencies
     'plone.scale',  # needed for image resizing capabilities
     'py-bcrypt',
-    'pyramid>=1.2',
+    'pyramid>=1.3', # needed for kotti_tinymce
     'pyramid_beaker',
     'pyramid_debugtoolbar',
     'pyramid_deform>=0.2a3',  # language and template path config includeme
@@ -54,9 +60,9 @@ if sys.version_info[:3] < (2, 7, 0):
     install_requires.append('ordereddict')
 
 setup(name='Kotti',
-      version='0.7dev3',
+      version='0.7dev5',
       description="Kotti is a high-level, 'Pythonic' web application framework. It includes a small and extensible CMS application called the Kotti CMS.",
-      long_description='\n\n'.join([README, THANKS, CHANGES]),
+      long_description='\n\n'.join([README, AUTHORS, CHANGES]),
       classifiers=[
         "Programming Language :: Python",
         "Framework :: Pylons",
@@ -65,7 +71,7 @@ setup(name='Kotti',
         "Topic :: Internet :: WWW/HTTP :: WSGI :: Application",
         "License :: Repoze Public License",
         ],
-      author='Daniel Nouri, Marco Scheidhuber and contributors',
+      author='Kotti developers',
       author_email='kotti@googlegroups.com',
       url='https://github.com/Pylons/Kotti',
       keywords='kotti web cms wcms pylons pyramid sqlalchemy bootstrap',
@@ -80,6 +86,11 @@ setup(name='Kotti',
       entry_points="""\
       [paste.app_factory]
       main = kotti:main
+
+      [fanstatic.libraries]
+      kotti = kotti.static:lib_kotti
+      deform = kotti.static:lib_deform
+      deform_bootstrap = kotti.static:lib_deform_bootstrap
       """,
       extras_require={
           'testing': tests_require,

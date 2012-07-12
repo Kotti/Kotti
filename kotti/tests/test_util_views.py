@@ -2,6 +2,7 @@ import time
 
 from mock import patch
 from mock import MagicMock
+from pyramid.request import Response
 from pytest import raises
 
 from kotti.testing import DummyRequest
@@ -198,7 +199,52 @@ class TestTemplateAPI:
         api = self.make(request=request, bare=False)
         assert api.bare is False
 
-    def test_slots(self, db_session):
+    def test_assign_to_slots(self):
+        from kotti.views.slots import assign_slot
+
+        def foo(context, request):
+            greeting = request.POST['greeting']
+            return Response(u"{0} world!".format(greeting))
+        self.config.add_view(foo, name='foo')
+        assign_slot('foo', 'left', params=dict(greeting=u"Y\u0153"))
+
+        api = self.make()
+        assert api.slots.left == [u"Y\u0153 world!"]
+
+    def test_assign_to_slot_predicate_mismatch(self):
+        from kotti.views.slots import assign_slot
+
+        def special(context, request):
+            return Response(u"Hello world!")
+        assign_slot('special', 'right')
+
+        self.config.add_view(special, name='special', request_method="GET")
+        api = self.make()
+        assert api.slots.right == []
+
+        self.config.add_view(special, name='special')
+        api = self.make()
+        assert api.slots.right == [u"Hello world!"]
+
+    def test_assign_slot_bad_name(self):
+        from kotti.views.slots import assign_slot
+
+        with raises(KeyError):
+            assign_slot('viewname', 'noslotlikethis')
+
+    def test_slot_request_has_registry(self):
+        from kotti.views.slots import assign_slot
+
+        def my_viewlet(request):
+            assert hasattr(request, 'registry')
+            return Response(u"Hello world!")
+        assign_slot('my-viewlet', 'right')
+
+        self.config.add_view(my_viewlet, name='my-viewlet')
+        api = self.make()
+        assert api.slots.right == [u"Hello world!"]
+
+    def test_deprecated_slots(self):
         from kotti.views.slots import register, RenderAboveContent
 
         def render_something(context, request):
@@ -223,13 +269,16 @@ class TestTemplateAPI:
             api.slots.foobar
 
     def test_slots_only_rendered_when_accessed(self, db_session):
-        from kotti.views.slots import register, RenderAboveContent
+        from kotti.views.slots import assign_slot
 
         called = []
 
-        def render_something(context, request):
+        def foo(context, request):
             called.append(True)
-        register(RenderAboveContent, None, render_something)
+            return Response(u"")
+
+        self.config.add_view(foo, name='foo')
+        assign_slot('foo', 'abovecontent')
 
         api = self.make()
         api.slots.belowcontent
@@ -367,38 +416,39 @@ class TestLocalNavigationSlot:
     def test_it(self, config, db_session):
         renderer = config.testing_add_renderer(
             'kotti:templates/view/nav-local.pt')
-        from kotti.views.slots import render_local_navigation
+        from kotti.views.slots import local_navigation
         a, aa, ab, ac, aca, acb = create_contents()
 
-        assert render_local_navigation(ac, DummyRequest()) is not None
-        renderer.assert_(parent=ac, children=[aca, acb])
+        ret = local_navigation(ac, DummyRequest())
+        assert ret == dict(parent=ac, children=[aca, acb])
 
-        assert render_local_navigation(acb, DummyRequest()) is not None
-        renderer.assert_(parent=ac, children=[aca, acb])
+        ret = local_navigation(acb, DummyRequest())
+        assert ret == dict(parent=ac, children=[aca, acb])
 
-        assert render_local_navigation(a.__parent__, DummyRequest()) is None
+        assert local_navigation(a.__parent__,
+                DummyRequest())['parent'] is None
 
     def test_no_permission(self, config, db_session):
         config.testing_add_renderer('kotti:templates/view/nav-local.pt')
-        from kotti.views.slots import render_local_navigation
+        from kotti.views.slots import local_navigation
         a, aa, ab, ac, aca, acb = create_contents()
 
         with patch('kotti.views.slots.has_permission', return_value=True):
-            assert render_local_navigation(ac, DummyRequest()) is not None
+            assert local_navigation(ac, DummyRequest())['parent'] is not None
 
         with patch('kotti.views.slots.has_permission', return_value=False):
-            assert render_local_navigation(ac, DummyRequest()) is None
+            assert local_navigation(ac, DummyRequest())['parent'] is None
 
     def test_in_navigation(self, config, db_session):
         config.testing_add_renderer('kotti:templates/view/nav-local.pt')
-        from kotti.views.slots import render_local_navigation
+        from kotti.views.slots import local_navigation
         a, aa, ab, ac, aca, acb = create_contents()
 
-        assert render_local_navigation(a, DummyRequest()) is not None
+        assert local_navigation(a, DummyRequest())['parent'] is not None
         aa.in_navigation = False
         ab.in_navigation = False
         ac.in_navigation = False
-        assert render_local_navigation(a, DummyRequest()) is None
+        assert local_navigation(a, DummyRequest())['parent'] is None
 
 
 class TestNodesTree:

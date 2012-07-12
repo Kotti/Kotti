@@ -1,5 +1,6 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
-      tal:define="page_slots api.slots"
+      tal:define="page_slots api.slots;
+                  dummy api.edit_needed"
       metal:define-macro="main">
   <head>
     <meta charset="utf-8" />
@@ -10,42 +11,13 @@
     <!-- HTML5 shim, for IE6-8 support of HTML elements -->
     <!--[if lt IE 9]>
         <script src="https://html5shim.googlecode.com/svn/trunk/html5.js"></script>
-        <![endif]-->
-
-    <!-- Styles -->
-    <link href="${request.static_url('kotti:static/bootstrap/css/bootstrap.min.css')}" rel="stylesheet" />
-    <link href="${request.static_url('kotti:static/bootstrap/css/bootstrap-responsive.min.css')}" rel="stylesheet" />
-    <link href="${request.static_url('kotti:static/base.css')}" rel="stylesheet" />
-    <link href="${request.static_url('kotti:static/edit.css')}" rel="stylesheet" />
-    <link href="${request.static_url('kotti:static/tag-it/css/jquery.tagit.css')}" rel="stylesheet" />
+    <![endif]-->
 
     <!-- Fav icons -->
     <link rel="shortcut icon" href="${request.static_url('kotti:static/favicon.ico')}" />
 
     <!-- Scripts -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.12/jquery-ui.min.js" type="text/javascript" charset="utf-8"></script>    
-    <script src="${request.static_url('kotti:static/bootstrap/js/bootstrap.min.js')}" type="text/javascript"></script>
-    <script src="${request.static_url('kotti:static/kotti.js')}" type="text/javascript"></script>
-    <script src="${request.static_url('kotti:static/tag-it/js/tag-it.js')}" type="text/javascript"></script>
-
-    <!-- Form scripts and styles -->
-    <!-- XXX needs to use form.get_widget_resources() or similar -->
     <link href="${request.static_url('deform:static/css/ui-lightness/jquery-ui-1.8.11.custom.css')}" rel="stylesheet" />
-    <link href="${request.static_url('deform:static/css/jquery-ui-timepicker-addon.css')}" rel="stylesheet" />
-    <script src="${request.static_url('deform:static/scripts/jquery-ui-1.8.11.custom.min.js')}" type="text/javascript"></script>
-    <script src="${request.static_url('deform:static/scripts/jquery-ui-timepicker-addon.js')}" type="text/javascript"></script>
-    <script src="${request.static_url('deform:static/scripts/jquery.form.js')}" type="text/javascript"></script>
-    <script src="${request.static_url('deform:static/scripts/deform.js')}" type="text/javascript"></script>
-    <script src="${request.static_url('deform_bootstrap:static/deform_bootstrap.js')}" type="text/javascript"></script>
-
-
-    <script type="text/javascript">
-      $(document).ready(function() {
-      deform.load();
-      kotti.main();
-      });
-    </script>
 
     <more tal:omit-tag="" metal:define-slot="head-more"></more>
 
@@ -79,5 +51,6 @@
       </footer>
 
     </div>
+    <more tal:omit-tag="" metal:define-slot="js-more"></more>
   </body>
 </html>

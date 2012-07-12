@@ -25,7 +25,6 @@ image_scales = {
     'span10': [960, 1920],
     'span11': [1060, 2120],
     'span12': [1160, 2320],
-    'thumb': [64, 64],
     }
 
 
@@ -105,7 +104,7 @@ class ImageView(object):
                         ('Content-Length', str(len(image))),
                         ('Content-Type', str(self.context.mimetype)),
                         ],
-            app_iter=image)
+            app_iter=[image])
 
         return res
 

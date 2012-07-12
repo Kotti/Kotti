@@ -15,6 +15,7 @@ from deform.widget import CheckboxChoiceWidget
 from deform.widget import SequenceWidget
 
 from kotti.message import email_set_password
+from kotti.resources import get_root
 from kotti.security import USER_MANAGEMENT_ROLES
 from kotti.security import ROLES
 from kotti.security import SHARING_ROLES
@@ -146,6 +147,26 @@ def name_new_validator(node, value):
             node, _(u"A user with that name already exists."))
 
 
+@colander.deferred
+def deferred_email_validator(node, kw):
+    def raise_invalid_email(node, value):
+        raise colander.Invalid(
+            node, _(u"A user with that email already exists."))
+
+    request = kw['request']
+    if request.POST:
+        email = request.params.get('email')
+        name = request.params.get('name')
+        if not name and request.user:
+            name = request.user.name
+        if email and name:
+            principals = get_principals()
+            if any(p for p in principals.search(email=email)
+                   if p.name.lower() != name.lower()):
+                # verify duplicated email except myself when update info
+                return raise_invalid_email
+
+
 def roleset_validator(node, value):
     oneof = colander.OneOf(USER_MANAGEMENT_ROLES)
     [oneof(node, item) for item in value]
@@ -170,7 +191,11 @@ class Groups(colander.SequenceSchema):
 
 class PrincipalBasic(colander.MappingSchema):
     title = colander.SchemaNode(colander.String(), title=_(u'Title'))
-    email = colander.SchemaNode(colander.String(), title=_(u'Email'))
+    email = colander.SchemaNode(
+        colander.String(),
+        title=_(u'Email'),
+        validator=deferred_email_validator,
+    )
 
 
 class PrincipalFull(PrincipalBasic):
@@ -443,13 +468,25 @@ def user_manage(context, request):
         }
 
 
+class PreferencesFormView(UserEditFormView):
+
+    def cancel_success(self, appstruct):
+        location = self.request.resource_url(get_root())
+        return HTTPFound(location=location)
+    cancel_failure = cancel_success
+
+
 def preferences(context, request):
+    user = request.user
+    if user is None:
+        raise Forbidden()
+
     api = template_api(context, request)
     api.page_title = _(u"My preferences - ${title}",
                        mapping=dict(title=api.site_title))
-    user = request.user
 
-    form = UserEditFormView(user, request)()
+    form = PreferencesFormView(user, request)()
+
     if request.is_response(form):
         return form
 

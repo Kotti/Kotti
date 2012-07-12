@@ -49,15 +49,14 @@ def includeme(config):
         )
 
     config.add_view(
-        None,
         name='search',
         permission='view',
-        renderer='kotti:templates/search.pt',
+        renderer='kotti:templates/view/search.pt',
         )
 
     config.add_view(
         search_results,
         name='search-results',
         permission='view',
-        renderer='kotti:templates/search-results.pt',
+        renderer='kotti:templates/view/search-results.pt',
         )

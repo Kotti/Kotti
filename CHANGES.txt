@@ -1,8 +1,50 @@
 Change History
 ==============
 
-0.7a3 - Unreleased
+0.7 - Unreleased
+----------------
+
+- Fix #89: Validate email address for uniqueness when user changes it.
+
+- Fix #91: Styling of search box.
+
+0.7a4 - 2012-06-25
 ------------------
+
+- Add minified versions JS/CSS files.
+
+- Fix #88: logging in with email.
+
+- Update translations.
+
+0.7a3 - 2012-06-15
+------------------
+
+- Include ``kotti.tinymce`` which adds plug-ins for image and file
+  upload and content linking to the TinyMCE rich text editor.
+
+- Slot renderers have been replaced by normal views (or viewlets).
+  ``kotti.views.slots.register`` has been deprecated in favour of
+  ``kotti.views.slots.assign_slot``, which works similarly, but takes
+  a view name of a registered view instead of a function for
+  registration.
+
+- Switch to fanstatic for static resource management.
+
+  Upgrade note: This requires changes to existing `*.ini` application
+  configuration files.  Concretely, you'll need to add a
+  ``filter:fanstatic`` section and a ``pipeline:main`` section and
+  rename an existing ``app:main`` section to ``app:Kotti`` or the
+  like.  Take a look at Kotti's own ``development.ini`` for an
+  example.
+
+- Retire the undocumented ``kotti.resources.Setting`` class and table.
+  ``kotti.get_settings`` will now return ``registry.settings``
+  straight, without looking for persistent overrides in the database.
+
+- Drop support for Pyramid<1.3, since we use
+  ``pyramid.response.FileResponse``, and kotti_tinymce uses
+  ``pyramid.view.view_defaults``.
 
 - Fix encoding error with non-ascii passwords.
 
@@ -27,9 +69,7 @@ Features
 - Add subscriber to set cache headers based on caching rules.  See
   also related setting ``kotti.caching_policy_chooser``.
 
-- Remove TinyMCE from the core.  NOTE: We will either add
-  ``kotti_tinymce`` as a dependency or put back TinyMCE as before
-  prior to a final release.
+- Remove TinyMCE from the core.
 
 - Move email templates into page templates in
   ``kotti:templates/email-set-password.pt`` and

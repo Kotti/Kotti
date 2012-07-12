@@ -310,7 +310,7 @@ class Content(Node):
     def __init__(self, name=None, parent=None, title=u"", annotations=None,
                  default_view=None, description=u"", language=None,
                  owner=None, creation_date=None, modification_date=None,
-                 in_navigation=True, tags=[]):
+                 in_navigation=True, tags=None):
         super(Content, self).__init__(name, parent, title, annotations)
         self.default_view = default_view
         self.description = description
@@ -320,7 +320,7 @@ class Content(Node):
         # These are set by events if not defined at this point:
         self.creation_date = creation_date
         self.modification_date = modification_date
-        self.tags = tags
+        self.tags = tags or []
 
     def copy(self, **kwargs):
         tags = getattr(self, 'tags', None)
@@ -380,22 +380,6 @@ class Image(File):
         addable_to=[u'Document', ], )
 
 
-class Settings(Base):
-    __tablename__ = 'settings'
-
-    id = Column(Integer(), primary_key=True)
-    data = Column(JsonType())
-
-    def __init__(self, data):
-        self.data = data
-
-    def copy(self, newdata):
-        data = self.data.copy()
-        data.update(newdata)
-        copy = self.__class__(data)
-        return copy
-
-
 def get_root(request=None):
     return get_settings()['kotti.root_factory'][0](request)
 
@@ -417,8 +401,6 @@ def initialize_sql(engine, drop_all=False):
     settings = get_current_registry().settings
     tables = settings['kotti.use_tables'].strip() or None
     if tables:
-        if 'settings' not in tables:
-            tables += ' settings'
         tables = [metadata.tables[name] for name in tables.split()]
 
     if engine.dialect.name == 'mysql':  # pragma: no cover

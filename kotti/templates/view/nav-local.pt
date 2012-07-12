@@ -1,4 +1,4 @@
-<div id="local-navigation">
+<div tal:condition="parent" id="local-navigation">
   <ul class="nav nav-pills nav-stacked">
     <tal:repeat tal:define="nodes [parent] + children"
                 tal:repeat="item nodes">

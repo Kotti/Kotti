@@ -4,6 +4,7 @@ Kotti browser tests
 Setup
 -----
 
+   >>> from cStringIO import StringIO
    >>> import pytest
    >>> from kotti import testing, DBSession
    >>> from kotti.resources import Node, Document, File, Image
@@ -175,6 +176,36 @@ There's no Add link if nothing can be added:
   Traceback (most recent call last):
   LinkNotFoundError
 
+Add a file
+----------
+
+  >>> browser.open(testing.BASE_URL + '/')
+  >>> browser.getLink("Add").click()
+  >>> browser.getLink("File").click()
+  >>> ctrl("Title").value = "Tiny File"
+  >>> ctrl("Description").value = "A tiny file"
+  >>> ctrl("File").add_file('tiny', 'text/plain', 'tiny.txt')
+  >>> ctrl("save").click()
+  >>> "Successfully added item" in browser.contents
+  True
+  >>> browser.url == testing.BASE_URL + '/tiny-file/'
+  True
+
+Add a file larger than maximum file size
+----------------------------------------
+
+  >>> browser.open(testing.BASE_URL + '/')
+  >>> browser.getLink("Add").click()
+  >>> browser.getLink("File").click()
+  >>> ctrl("Title").value = "Huge File"
+  >>> ctrl("Description").value = "An huge file"
+  >>> huge = '*' * (10 * 1024 * 1024 + 1)
+  >>> ctrl("File").add_file(StringIO(huge), 'text/plain', 'huge.txt')
+  >>> ctrl("save").click()
+  >>> "There was a problem" in browser.contents
+  True
+  >>> "Maximum file size" in browser.contents
+  True
 
 Add tags to a document:
 -----------------------
@@ -255,7 +286,6 @@ Delete a document
 
   >>> browser.open(testing.BASE_URL + '/second-child/grandchild')
   >>> browser.getLink('Delete').click()
-  >>> ctrl(name="delete-confirm").displayValue = ['Yes']
   >>> ctrl("delete").click()
   >>> "Grandchild deleted" in browser.contents
   True
@@ -452,6 +482,7 @@ Use a valid username now.  Note how the checkbox to send a password
 registration link is ticked:
 
   >>> ctrl("Name", index=0).value = u"Bob"
+  >>> ctrl("Email", index=0).value = "bob@dabolina.com"
   >>> ctrl("Send password registration link", index=0).selected
   True
   >>> ctrl(name="add_user").click()
@@ -462,11 +493,25 @@ We cannot add Bob twice:
 
   >>> ctrl("Name", index=0).value = "bob"
   >>> ctrl("Full name", index=0).value = "Bobby Brown"
-  >>> ctrl("Email", index=0).value = "bob@gmail.com"
   >>> ctrl("Password", index=0).value = "secret"
   >>> ctrl(name='password-confirm').value = "secret"
   >>> ctrl(name="add_user").click()
   >>> "A user with that name already exists" in browser.contents
+  True
+
+We cannot add Bob Dabolina's email twice:
+
+  >>> ctrl("Name", index=0).value = "bob2"
+  >>> ctrl("Full name", index=0).value = "Bobby Brown"
+  >>> ctrl("Email", index=0).value = "bob@dabolina.com"
+  >>> ctrl("Password", index=0).value = "secret"
+  >>> ctrl(name='password-confirm').value = "secret"
+  >>> ctrl(name="add_user").click()
+  >>> "A user with that email already exists" in browser.contents
+  True
+  >>> ctrl("Email", index=0).value = "bob@gmail.com"
+  >>> ctrl(name="add_user").click()
+  >>> "Bobby Brown added" in browser.contents
   True
 
 Searching for Bob will return both Bob and Bob's Group:
@@ -491,6 +536,17 @@ to:
   >>> ctrl(name="group").value = "bobsgroup"
   >>> ctrl(name="save").click()
   >>> "Your changes have been saved" in browser.contents
+  True
+
+We cannot update on the Bobby Brown's entry with duplicated email:
+
+  >>> browser.getLink("Back to User Management").click()
+  >>> ctrl(name="query").value = "Bobby"
+  >>> ctrl(name="search").click()
+  >>> browser.getLink("Bobby Brown").click()
+  >>> ctrl("Email", index=0).value = "bob@dabolina.com"
+  >>> ctrl(name="save").click()
+  >>> "A user with that email already exists" in browser.contents
   True
 
 If we cancel the edit of the user, we are redirected to the user management
@@ -531,7 +587,7 @@ Set password
 Remember that we sent Bob an email for registration.  He can use it to
 set his own password:
 
-  >>> [email] = mailer.outbox
+  >>> [email, email2] = mailer.outbox
   >>> print email.recipients
   [u'"Bob Dabolina" <bob@dabolina.com>']
   >>> print email.subject
@@ -591,32 +647,44 @@ The login form has a "Reset password" button.  Let's try it:
   >>> "You should receive an email" in browser.contents
   True
 
-  >>> [email1, email2] = mailer.outbox
-  >>> print email2.body # doctest: +ELLIPSIS +NORMALIZE_WHITESPACE
+  >>> [email1, email2, email3] = mailer.outbox
+  >>> print email3.body # doctest: +ELLIPSIS +NORMALIZE_WHITESPACE
   Hello, Bob Dabolina!
   Click this link to reset your password at Website des Kottbusser Tors:...
 
-Log in as admin again:
+User preferences
+----------------
 
-  >>> browser.open(testing.BASE_URL + '/@@edit')
+The "Preferences" link leads us to a form where the user can change
+their preferences so the user need to be authenticated:
+
+  >>> browser.open(testing.BASE_URL + '/@@prefs')
   >>> ctrl("Username or email").value = "admin"
   >>> ctrl("Password").value = "secret"
   >>> ctrl(name="submit").click()
   >>> "Welcome, Administrator" in browser.contents
   True
 
-User preferences
-----------------
-
-The "Preferences" link leads us to a form where the user can change
-their preferences:
-
-  >>> browser.getLink("Preferences").click()
   >>> ctrl("Full name").value = "Mr. Administrator"
   >>> ctrl("Email").value = 'admin@minad.com'
   >>> ctrl(name="save").click()
   >>> "Your changes have been saved" in browser.contents
   True
+
+The email could not be used if already a users with that email exists:
+
+  >>> ctrl("Email").value = 'bob@dabolina.com'
+  >>> ctrl(name="save").click()
+  >>> "A user with that email already exists" in browser.contents
+  True
+
+
+If the user cancel the process he will be redirected to the site root:
+
+  >>> ctrl(name="cancel").click()
+  >>> 'Welcome to Kotti' in browser.contents
+  True
+
 
 Share
 -----

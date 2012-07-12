@@ -85,31 +85,6 @@ class TestApp:
         assert registry.queryUtility(IAuthenticationPolicy) is None
         assert registry.queryUtility(IAuthorizationPolicy) is None
 
-    def test_persistent_settings(self, db_session):
-        from kotti import get_settings
-        from kotti import get_version
-        from kotti import DBSession
-        from kotti.resources import Settings
-
-        session = DBSession()
-        [settings] = session.query(Settings).all()
-        assert settings.data == {'kotti.db_version': get_version()}
-        assert get_settings()['kotti.db_version'] == get_version()
-        settings.data['foo.bar'] = u'baz'
-        assert get_settings()['foo.bar'] == u'baz'
-
-    def test_persistent_settings_add_new(self, db_session):
-        from kotti import DBSession
-        from kotti import get_settings
-        from kotti.resources import Settings
-
-        [settings] = DBSession.query(Settings).all()
-        data = {'foo.bar': u'spam', 'kotti.db_version': u'next'}
-        new_settings = settings.copy(data)
-        DBSession.add(new_settings)
-        assert get_settings()['foo.bar'] == u'spam'
-        assert get_settings()['kotti.db_version'] == u'next'
-
     def test_asset_overrides(self, db_session):
         from kotti import main
 

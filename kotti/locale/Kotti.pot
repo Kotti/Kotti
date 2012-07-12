@@ -6,9 +6,9 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: Kotti 0.6.1dev\n"
+"Project-Id-Version: Kotti 0.7dev5\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2012-03-28 19:49+0200\n"
+"POT-Creation-Date: 2012-06-30 17:03+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,36 +17,40 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 0.9.6\n"
 
-#: kotti/resources.py:260
+#: kotti/resources.py:305 kotti/templates/edit/nav-tree.pt:8
 msgid "Edit"
 msgstr ""
 
-#: kotti/resources.py:261
+#: kotti/resources.py:306
 msgid "Share"
 msgstr ""
 
-#: kotti/resources.py:287
+#: kotti/resources.py:338
 msgid "Document"
 msgstr ""
 
-#: kotti/resources.py:307 kotti/views/file.py:66 kotti/views/file.py:83
-#: kotti/views/file.py:97
+#: kotti/resources.py:358 kotti/views/file.py:83 kotti/views/file.py:102
+#: kotti/views/file.py:118
 msgid "File"
 msgstr ""
 
-#: kotti/security.py:159
+#: kotti/resources.py:378 kotti/views/image.py:38
+msgid "Image"
+msgstr ""
+
+#: kotti/security.py:165
 msgid "Viewer"
 msgstr ""
 
-#: kotti/security.py:160
+#: kotti/security.py:166
 msgid "Editor"
 msgstr ""
 
-#: kotti/security.py:161
+#: kotti/security.py:167
 msgid "Owner"
 msgstr ""
 
-#: kotti/security.py:162
+#: kotti/security.py:168
 msgid "Admin"
 msgstr ""
 
@@ -78,6 +82,31 @@ msgstr ""
 msgid "Logout"
 msgstr ""
 
+#: kotti/templates/email-reset-password.pt:2
+msgid "Reset your password for ${site_title}"
+msgstr ""
+
+#: kotti/templates/email-reset-password.pt:4
+#: kotti/templates/email-set-password.pt:4
+msgid "Hello, ${user_title}!"
+msgstr ""
+
+#: kotti/templates/email-reset-password.pt:5
+msgid "Click this link to reset your password at ${site_title}: ${url}"
+msgstr ""
+
+#: kotti/templates/email-set-password.pt:2
+msgid "Your registration for ${site_title}"
+msgstr ""
+
+#: kotti/templates/email-set-password.pt:5
+msgid "You've just been invited to join ${site_title}."
+msgstr ""
+
+#: kotti/templates/email-set-password.pt:6
+msgid "Click here to set your password and log in: ${url}"
+msgstr ""
+
 #: kotti/templates/login.pt:10
 msgid "Login"
 msgstr ""
@@ -86,7 +115,7 @@ msgstr ""
 msgid "Username or email"
 msgstr ""
 
-#: kotti/templates/login.pt:22 kotti/views/login.py:88 kotti/views/users.py:172
+#: kotti/templates/login.pt:22 kotti/views/login.py:94 kotti/views/users.py:209
 msgid "Password"
 msgstr ""
 
@@ -124,11 +153,7 @@ msgstr ""
 msgid "Are you sure you want to delete ${title}?"
 msgstr ""
 
-#: kotti/templates/edit/delete.pt:22 kotti/templates/edit/delete.pt:24
-msgid "Yes"
-msgstr ""
-
-#: kotti/templates/edit/delete.pt:29 kotti/views/edit.py:82
+#: kotti/templates/edit/delete.pt:22 kotti/views/edit.py:70
 msgid "Delete"
 msgstr ""
 
@@ -172,7 +197,7 @@ msgstr ""
 msgid "New title"
 msgstr ""
 
-#: kotti/templates/edit/rename.pt:27 kotti/views/edit.py:81
+#: kotti/templates/edit/rename.pt:27 kotti/views/edit.py:69
 msgid "Rename"
 msgstr ""
 
@@ -193,7 +218,7 @@ msgid "Search"
 msgstr ""
 
 #: kotti/templates/edit/share.pt:31 kotti/templates/site-setup/users.pt:32
-#: kotti/views/users.py:167
+#: kotti/views/users.py:204
 msgid "Name"
 msgstr ""
 
@@ -225,6 +250,10 @@ msgstr ""
 msgid "Add group"
 msgstr ""
 
+#: kotti/templates/view/search-results.pt:9
+msgid "Search Results"
+msgstr ""
+
 #: kotti/tests/testing_view.pt:10
 msgid "Welcome, ${user}! You are logged in."
 msgstr ""
@@ -233,111 +262,151 @@ msgstr ""
 msgid "Welcome, you are not logged in."
 msgstr ""
 
-#: kotti/views/edit.py:28 kotti/views/file.py:88 kotti/views/users.py:161
-msgid "Title"
-msgstr ""
-
-#: kotti/views/edit.py:31 kotti/views/file.py:91
-msgid "Description"
-msgstr ""
-
-#: kotti/views/edit.py:40
+#: kotti/views/edit.py:27
 msgid "Body"
 msgstr ""
 
-#: kotti/views/edit.py:74
+#: kotti/views/edit.py:62
 msgid "Copy"
 msgstr ""
 
-#: kotti/views/edit.py:77
+#: kotti/views/edit.py:65
 msgid "Cut"
 msgstr ""
 
-#: kotti/views/edit.py:79
+#: kotti/views/edit.py:67
 msgid "Paste"
 msgstr ""
 
-#: kotti/views/edit.py:84
+#: kotti/views/edit.py:72
 msgid "Order"
 msgstr ""
 
-#: kotti/views/edit.py:91
+#: kotti/views/edit.py:79
 msgid "${title} copied."
 msgstr ""
 
-#: kotti/views/edit.py:100
+#: kotti/views/edit.py:88
 msgid "${title} cut."
 msgstr ""
 
-#: kotti/views/edit.py:126
+#: kotti/views/edit.py:114
 msgid "${title} pasted."
 msgstr ""
 
-#: kotti/views/edit.py:146
+#: kotti/views/edit.py:118
+msgid "Could not paste node. It does not exist anymore."
+msgstr ""
+
+#: kotti/views/edit.py:137
 msgid "${title} moved."
 msgstr ""
 
-#: kotti/views/edit.py:156
+#: kotti/views/edit.py:147
 msgid "${title} is now visible in the navigation."
 msgstr ""
 
-#: kotti/views/edit.py:159
+#: kotti/views/edit.py:150
 msgid "${title} is no longer visible in the navigation."
 msgstr ""
 
-#: kotti/views/edit.py:171
+#: kotti/views/edit.py:162
 msgid "${title} deleted."
 msgstr ""
 
-#: kotti/views/edit.py:184
+#: kotti/views/edit.py:175
 msgid "Name and title are required."
 msgstr ""
 
-#: kotti/views/edit.py:188
+#: kotti/views/edit.py:179
 msgid "Item renamed"
 msgstr ""
 
-#: kotti/views/login.py:54
+#: kotti/views/file.py:72
+msgid "Maximum file size: ${size}MB"
+msgstr ""
+
+#: kotti/views/file.py:109 kotti/views/form.py:48 kotti/views/users.py:193
+msgid "Title"
+msgstr ""
+
+#: kotti/views/file.py:112 kotti/views/form.py:51
+msgid "Description"
+msgstr ""
+
+#: kotti/views/form.py:57
+msgid "Tags"
+msgstr ""
+
+#: kotti/views/form.py:74
+msgid "Save"
+msgstr ""
+
+#: kotti/views/form.py:74 kotti/views/users.py:312 kotti/views/users.py:344
+msgid "Cancel"
+msgstr ""
+
+#: kotti/views/form.py:75 kotti/views/users.py:67
+msgid "Your changes have been saved."
+msgstr ""
+
+#: kotti/views/form.py:127
+msgid "Edit <em>${title}</em>"
+msgstr ""
+
+#: kotti/views/form.py:133
+msgid "Successfully added item."
+msgstr ""
+
+#: kotti/views/form.py:158
+msgid "Add ${type} to <em>${title}</em>"
+msgstr ""
+
+#: kotti/views/form.py:162
+msgid "Add ${type}"
+msgstr ""
+
+#: kotti/views/login.py:56
 msgid "Welcome, ${user}!"
 msgstr ""
 
-#: kotti/views/login.py:58
+#: kotti/views/login.py:60
 msgid "Login failed."
 msgstr ""
 
-#: kotti/views/login.py:65
+#: kotti/views/login.py:69
 msgid "You should receive an email with a link to reset your password momentarily."
 msgstr ""
 
-#: kotti/views/login.py:70
+#: kotti/views/login.py:74
 msgid "That username or email is not known to us."
 msgstr ""
 
-#: kotti/views/login.py:81
+#: kotti/views/login.py:86
 msgid "You have been logged out."
 msgstr ""
 
-#: kotti/views/login.py:98 kotti/views/users.py:162
+#: kotti/views/login.py:104 kotti/views/users.py:196
 msgid "Email"
 msgstr ""
 
-#: kotti/views/login.py:108
+#: kotti/views/login.py:115
 msgid "You've reset your password successfully."
 msgstr ""
 
-#: kotti/views/login.py:109
+#: kotti/views/login.py:116
 msgid "Submit"
 msgstr ""
 
-#: kotti/views/login.py:116
+#: kotti/views/login.py:123
 msgid "There was an error."
 msgstr ""
 
-#: kotti/views/login.py:135
+#: kotti/views/login.py:145
 msgid "Your password reset token may have expired."
 msgstr ""
 
-#: kotti/views/login.py:142
+#: kotti/views/login.py:152
 msgid "Reset your password - ${title}"
 msgstr ""
 
@@ -345,117 +414,93 @@ msgstr ""
 msgid "User Management"
 msgstr ""
 
-#: kotti/views/site_setup.py:16
+#: kotti/views/site_setup.py:17
 msgid "Site Setup - ${title}"
 msgstr ""
 
-#: kotti/views/users.py:65 kotti/views/util.py:344
-msgid "Your changes have been saved."
-msgstr ""
-
-#: kotti/views/users.py:67
+#: kotti/views/users.py:69 kotti/views/users.py:430
 msgid "No changes made."
 msgstr ""
 
-#: kotti/views/users.py:93
+#: kotti/views/users.py:96
 msgid "No users or groups found."
 msgstr ""
 
-#: kotti/views/users.py:134
+#: kotti/views/users.py:141
 msgid "Invalid value"
 msgstr ""
 
-#: kotti/views/users.py:139
+#: kotti/views/users.py:147
 msgid "A user with that name already exists."
 msgstr ""
 
-#: kotti/views/users.py:148
+#: kotti/views/users.py:154
+msgid "A user with that email already exists."
+msgstr ""
+
+#: kotti/views/users.py:178
 msgid "No such group: ${group}"
 msgstr ""
 
-#: kotti/views/users.py:154
+#: kotti/views/users.py:185 kotti/views/users.py:449
 msgid "Group"
 msgstr ""
 
-#: kotti/views/users.py:179
+#: kotti/views/users.py:216
 msgid "Active"
 msgstr ""
 
-#: kotti/views/users.py:180
+#: kotti/views/users.py:217
 msgid "Untick this to deactivate the account."
 msgstr ""
 
-#: kotti/views/users.py:186
+#: kotti/views/users.py:223
 msgid "Global roles"
 msgstr ""
 
-#: kotti/views/users.py:190
+#: kotti/views/users.py:227
 msgid "Groups"
 msgstr ""
 
-#: kotti/views/users.py:225
+#: kotti/views/users.py:264
 msgid ""
 "Leave this empty and tick the 'Send password registration' box below to have "
 "the user set their own password."
 msgstr ""
 
-#: kotti/views/users.py:227
+#: kotti/views/users.py:268
 msgid "Full name"
 msgstr ""
 
-#: kotti/views/users.py:265
+#: kotti/views/users.py:310 kotti/views/users.py:449
 msgid "User"
 msgstr ""
 
-#: kotti/views/users.py:266
+#: kotti/views/users.py:311
 msgid "Add User"
 msgstr ""
 
-#: kotti/views/users.py:267 kotti/views/users.py:298 kotti/views/util.py:343
-msgid "Cancel"
-msgstr ""
-
-#: kotti/views/users.py:275
+#: kotti/views/users.py:320
 msgid "Send password registration link"
 msgstr ""
 
-#: kotti/views/users.py:289
+#: kotti/views/users.py:334
 msgid "${title} added."
 msgstr ""
 
-#: kotti/views/users.py:297
+#: kotti/views/users.py:343
 msgid "Add Group"
 msgstr ""
 
-#: kotti/views/users.py:314
+#: kotti/views/users.py:361
 msgid "User Management - ${title}"
 msgstr ""
 
-#: kotti/views/users.py:386
-msgid "Edit User - ${title}"
+#: kotti/views/users.py:453
+msgid "Edit ${principal_type} - ${title}"
 msgstr ""
 
-#: kotti/views/users.py:403
+#: kotti/views/users.py:485
 msgid "My preferences - ${title}"
-msgstr ""
-
-#: kotti/views/util.py:343
-msgid "Save"
-msgstr ""
-
-#: kotti/views/util.py:393
-msgid "Edit <em>${title}</em>"
-msgstr ""
-
-#: kotti/views/util.py:398
-msgid "Successfully added item."
-msgstr ""
-
-#: kotti/views/util.py:423
-msgid "Add ${type} to <em>${title}</em>"
-msgstr ""
-
-#: kotti/views/util.py:427
-msgid "Add ${type}"
 msgstr ""
 
