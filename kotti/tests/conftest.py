@@ -13,10 +13,15 @@ def test_settings():
 
 def pytest_funcarg__config(request):
     from pyramid.config import DEFAULT_RENDERERS
-    from pyramid.testing import setUp, tearDown
+    from pyramid import testing
+    from kotti import security
+
+    def teardown(config):
+        security.reset()
+        testing.tearDown()
     config = request.cached_setup(
-        setup=lambda: setUp(settings=test_settings()),
-        teardown=tearDown, scope='function')
+        setup=lambda: testing.setUp(settings=test_settings()),
+        teardown=teardown, scope='function')
     for name, renderer in DEFAULT_RENDERERS:
         config.add_renderer(name, renderer)
     return config
