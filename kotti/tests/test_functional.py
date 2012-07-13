@@ -34,6 +34,7 @@ class TestUploadFile(FunctionalTestBase):
     def add_file(self, browser, contents='ABC'):
         file_ctrl = browser.getControl("File").mech_control
         file_ctrl.add_file(StringIO(contents), filename='my_image.gif')
+        browser.getControl('save').click()
 
     def get_browser(self):
         browser = self.Browser()
@@ -47,14 +48,12 @@ class TestUploadFile(FunctionalTestBase):
     def test_it(self):
         browser = self.get_browser()
         self.add_file(browser)
-        browser.getControl('save').click()
         assert "Successfully added item" in browser.contents
         return browser
 
     def test_view_uploaded_file(self):
         browser = self.get_browser()
         self.add_file(browser)
-        browser.getControl('save').click()
         browser.getLink("View").click()
         browser.getLink("Download file").click()
         assert browser.contents == 'ABC'
@@ -62,11 +61,9 @@ class TestUploadFile(FunctionalTestBase):
     def test_tempstorage(self):
         browser = self.get_browser()
         self.add_file(browser)
-        browser.getControl('save').click()
         browser.getLink("Edit").click()
         browser.getControl("Title").value = ''  # the error
         self.add_file(browser, contents='DEF')
-        browser.getControl('save').click()
         assert "Your changes have been saved" not in browser.contents
         browser.getControl("Title").value = 'A title'
         browser.getControl('save').click()
