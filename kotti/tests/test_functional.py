@@ -2,13 +2,13 @@ from StringIO import StringIO
 
 from mock import patch
 
-from kotti.testing import FunctionalTestBase
 from kotti.testing import user
 
 
-class TestLogin(FunctionalTestBase):
-    def test_it(self):
-        res = self.login()
+class TestLogin:
+    def test_it(self, app):
+        res = app.post('/@@login', dict(login='admin',
+                password='secret', submit='submit'))
         assert res.status == '302 Found'
         res = res.follow()
         assert res.status == '200 OK'
