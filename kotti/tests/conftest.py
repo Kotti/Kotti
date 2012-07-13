@@ -77,15 +77,19 @@ def pytest_funcarg__events(request):
     return config
 
 
+def app():
+    from mock import patch
+    from kotti import main
+    with patch('kotti.resources.initialize_sql'):
+        with patch('kotti.engine_from_config'):
+            app = main({}, **test_settings())
+    return app
+
+
 def pytest_funcarg__browser(request):
     def setup():
-        from mock import patch
         from wsgi_intercept import add_wsgi_intercept, zope_testbrowser
-        from kotti import main
-        with patch('kotti.resources.initialize_sql'):
-            with patch('kotti.engine_from_config'):
-                app = main({}, **test_settings())
-        add_wsgi_intercept('example.com', 80, lambda: app)
+        add_wsgi_intercept('example.com', 80, app)
         return zope_testbrowser.WSGI_Browser('http://example.com/')
     request.getfuncargvalue('db_session')   # db usually needs a rollback
     browser = request.cached_setup(setup=setup, scope='function')
