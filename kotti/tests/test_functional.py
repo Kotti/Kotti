@@ -14,20 +14,19 @@ class TestLogin(FunctionalTestBase):
         assert res.status == '200 OK'
 
 
-class TestForbidden(FunctionalTestBase):
-    def test_forbidden(self):
-        self.test_app.get(
+class TestForbidden:
+    def test_forbidden(self, app):
+        app.get(
             '/@@edit', headers={'Accept': '*/json'}, status=403)
 
-    def test_forbidden_redirect(self):
-        res = self.test_app.get(
+    def test_forbidden_redirect(self, app):
+        res = app.get(
             '/@@edit', headers={'Accept': 'text/html'}, status=302)
         assert res.location.startswith('http://localhost/@@login?came_from=')
 
-    @patch('kotti.views.login.authenticated_userid')
-    def test_forbidden_redirect_when_authenticated(self, userid):
-        userid.return_value = "foo"
-        res = self.test_app.get('/@@edit', status=302)
+    def test_forbidden_redirect_when_authenticated(self, app):
+        with patch('kotti.views.login.authenticated_userid', return_value='foo'):
+            res = app.get('/@@edit', status=302)
         assert res.location == 'http://localhost/@@forbidden'
 
 

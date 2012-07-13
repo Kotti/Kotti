@@ -86,6 +86,12 @@ def app():
     return app
 
 
+def pytest_funcarg__app(request):
+    request.getfuncargvalue('db_session')
+    from webtest import TestApp
+    return TestApp(app())
+
+
 def pytest_funcarg__browser(request):
     def setup():
         from wsgi_intercept import add_wsgi_intercept, zope_testbrowser
