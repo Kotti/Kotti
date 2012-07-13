@@ -75,3 +75,30 @@ def pytest_funcarg__events(request):
     config.include('kotti.events')
     request.addfinalizer(clear)
     return config
+
+
+def pytest_funcarg__browser(request):
+    def setup():
+        from mock import patch
+        from wsgi_intercept import add_wsgi_intercept, zope_testbrowser
+        from kotti import main
+        with patch('kotti.resources.initialize_sql'):
+            with patch('kotti.engine_from_config'):
+                app = main({}, **test_settings())
+        add_wsgi_intercept('example.com', 80, lambda: app)
+        return zope_testbrowser.WSGI_Browser('http://example.com/')
+    request.getfuncargvalue('db_session')   # db usually needs a rollback
+    browser = request.cached_setup(setup=setup, scope='function')
+    if 'user' in request.keywords:
+        # set auth cookie directly on the browser instance...
+        from pyramid.security import remember
+        from pyramid.testing import DummyRequest
+        login = request.keywords['user'].args[0]
+        environ = dict(HTTP_HOST='example.com')
+        for _, value in remember(DummyRequest(environ=environ), login):
+            cookie, _ = value.split(';', 1)
+            name, value = cookie.split('=')
+            if name in browser.cookies:
+                del browser.cookies[name]
+            browser.cookies.create(name, value.strip('"'), path='/')
+    return browser

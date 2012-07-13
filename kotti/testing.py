@@ -1,5 +1,6 @@
 import os
 from unittest import TestCase
+from pytest import mark
 
 from pyramid import testing
 from pyramid.config import DEFAULT_RENDERERS
@@ -16,6 +17,10 @@ from babel import localedata
 import compiler
 localedata, compiler    # make pyflakes happy... :p
 resetwarnings()
+
+
+# py.test markers (see http://pytest.org/latest/example/markers.html)
+user = mark.user
 
 
 BASE_URL = 'http://localhost:6543'
