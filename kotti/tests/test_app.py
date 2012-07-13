@@ -2,6 +2,8 @@
 
 import warnings
 
+from mock import patch
+
 from pyramid.interfaces import IAuthenticationPolicy
 from pyramid.interfaces import IAuthorizationPolicy
 from pyramid.interfaces import IView
@@ -58,7 +60,8 @@ class TestApp:
 
         settings = self.required_settings()
         settings['kotti.configurators'] = [my_configurator]
-        main({}, **settings)
+        with patch('kotti.resources.initialize_sql'):
+            main({}, **settings)
 
         assert get_settings()['kotti.base_includes'] == []
         assert get_settings()['kotti.available_types'] == [MyType]
@@ -67,7 +70,8 @@ class TestApp:
         from kotti import main
 
         settings = self.required_settings()
-        main({}, **settings)
+        with patch('kotti.resources.initialize_sql'):
+            main({}, **settings)
 
         registry = get_current_registry()
         assert registry.queryUtility(IAuthenticationPolicy) is not None
@@ -79,7 +83,8 @@ class TestApp:
         settings = self.required_settings()
         settings['kotti.authn_policy_factory'] = 'kotti.none_factory'
         settings['kotti.authz_policy_factory'] = 'kotti.none_factory'
-        main({}, **settings)
+        with patch('kotti.resources.initialize_sql'):
+            main({}, **settings)
 
         registry = get_current_registry()
         assert registry.queryUtility(IAuthenticationPolicy) is None
@@ -90,7 +95,8 @@ class TestApp:
 
         settings = self.required_settings()
         settings['kotti.asset_overrides'] = 'pyramid:scaffold/ pyramid.fixers'
-        main({}, **settings)
+        with patch('kotti.resources.initialize_sql'):
+            main({}, **settings)
 
     def test_kotti_includes_deprecation_warning(self, db_session):
         from kotti import main
@@ -100,7 +106,8 @@ class TestApp:
             'kotti.tests.test_app._includeme_layout')
         with warnings.catch_warnings(record=True) as w:
             warnings.simplefilter('always')
-            main({}, **settings)
+            with patch('kotti.resources.initialize_sql'):
+                main({}, **settings)
             assert len(w) == 1
             assert issubclass(w[-1].category, DeprecationWarning)
             msg = str(w[-1].message)
@@ -113,7 +120,8 @@ class TestApp:
         settings['kotti.includes'] = (
             'kotti.tests.test_app._includeme_login')
 
-        app = main({}, **settings)
+        with patch('kotti.resources.initialize_sql'):
+            app = main({}, **settings)
         assert (app.registry.settings['pyramid.includes'].strip() ==
                 'kotti.tests.test_app._includeme_login')
 
@@ -122,7 +130,8 @@ class TestApp:
             'kotti.tests.test_app._includeme_layout')
         settings['kotti.includes'] = (
             'kotti.tests.test_app._includeme_login')
-        app = main({}, **settings)
+        with patch('kotti.resources.initialize_sql'):
+            app = main({}, **settings)
         regsettings = app.registry.settings
         assert len(regsettings['pyramid.includes'].split()) == 2
         assert settings['kotti.includes'] in regsettings['pyramid.includes']
@@ -134,7 +143,8 @@ class TestApp:
         settings = self.required_settings()
         settings['pyramid.includes'] = (
             'kotti.tests.test_app._includeme_login')
-        app = main({}, **settings)
+        with patch('kotti.resources.initialize_sql'):
+            app = main({}, **settings)
 
         provides = [
             IViewClassifier,
@@ -150,7 +160,8 @@ class TestApp:
         settings = self.required_settings()
         settings['kotti.populators'] = ''
         settings['kotti.use_tables'] = 'principals'
-        main({}, **settings)
+        with patch('kotti.resources.initialize_sql'):
+            main({}, **settings)
 
     def test_root_factory(self, db_session):
         from kotti import main
@@ -158,7 +169,8 @@ class TestApp:
 
         settings = self.required_settings()
         settings['kotti.root_factory'] = (TestingRootFactory,)
-        app = main({}, **settings)
+        with patch('kotti.resources.initialize_sql'):
+            app = main({}, **settings)
         assert isinstance(get_root(), TestingRootFactory)
         assert isinstance(app.root_factory(), TestingRootFactory)
 
@@ -168,7 +180,8 @@ class TestApp:
         settings = settings or self.required_settings()
         settings['kotti.root_factory'] = (TestingRootFactory,)
         settings['kotti.site_title'] = 'My Site'
-        app = main({}, **settings)
+        with patch('kotti.resources.initialize_sql'):
+            app = main({}, **settings)
 
         request = Request.blank('/@@login')
         (status, headers, response) = request.call_application(app)
@@ -187,7 +200,8 @@ class TestApp:
         settings = self.required_settings()
         settings['kotti.site_title'] = 'K\xc3\xb6tti'  # Kötti
 
-        main({}, **settings)
+        with patch('kotti.resources.initialize_sql'):
+            main({}, **settings)
         assert get_settings()['kotti.site_title'] == u'K\xf6tti'
 
     def test_search_content(self, db_session):
@@ -196,5 +210,6 @@ class TestApp:
 
         settings = self.required_settings()
         settings['kotti.search_content'] = 'kotti.tests.test_app._dummy_search'
-        main({}, **settings)
+        with patch('kotti.resources.initialize_sql'):
+            main({}, **settings)
         assert search_content(u"Nuno") == u"Not found. Sorry!"
