@@ -12,7 +12,8 @@ import transaction
 # `localedata.py` vs `localedata/` show up once...
 from warnings import resetwarnings
 from babel import localedata
-localedata  # make pyflakes happy... :p
+import compiler
+localedata, compiler    # make pyflakes happy... :p
 resetwarnings()
 
 
