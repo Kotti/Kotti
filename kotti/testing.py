@@ -4,6 +4,7 @@ from unittest import TestCase
 from pyramid import testing
 from pyramid.config import DEFAULT_RENDERERS
 from pyramid.security import ALL_PERMISSIONS
+from zope.deprecation.deprecation import deprecate
 import transaction
 
 
@@ -168,6 +169,8 @@ class FunctionalTestBase(TestCase):
             status=302,
             )
 
+    @deprecate('login_testbrowser is deprecated as of Kotti 0.7.  Please use '
+            'the `browser` funcarg in conjunction with the `@user` decorator.')
     def login_testbrowser(self, login=u'admin', password=u'secret'):
         browser = self.Browser()
         browser.open(BASE_URL + '/edit')

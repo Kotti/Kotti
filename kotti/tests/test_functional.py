@@ -36,7 +36,11 @@ class TestUploadFile(FunctionalTestBase):
         file_ctrl.add_file(StringIO(contents), filename='my_image.gif')
 
     def test_it(self):
-        browser = self.login_testbrowser()
+        browser = self.Browser()
+        browser.open(self.BASE_URL + '/edit')
+        browser.getControl("Username or email").value = 'admin'
+        browser.getControl("Password").value = 'secret'
+        browser.getControl(name="submit").click()
         browser.open(self.BASE_URL + '/@@add_file')
         self.add_file(browser)
         browser.getControl('save').click()
