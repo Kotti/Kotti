@@ -17,6 +17,11 @@ from kotti.testing import TestingRootFactory
 from kotti.testing import testing_db_url
 
 
+# filter deprecation warnings for code that is still tested...
+from warnings import filterwarnings
+filterwarnings('ignore', "^The 'kotti.includes' setting")
+
+
 def _includeme_login(config):
     config.add_view(
         _login_view,

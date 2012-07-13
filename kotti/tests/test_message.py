@@ -4,6 +4,11 @@ from kotti.testing import Dummy
 from kotti.testing import DummyRequest
 
 
+# filter deprecation warnings for code that is still tested...
+from warnings import filterwarnings
+filterwarnings('ignore', '^send_set_password is deprecated')
+
+
 class TestSendSetPassword:
     def setup_method(self, method):
         get_settings_patcher = patch('kotti.message.get_settings')

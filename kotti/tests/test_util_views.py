@@ -8,6 +8,11 @@ from pytest import raises
 from kotti.testing import DummyRequest
 
 
+# filter deprecation warnings for code that is still tested...
+from warnings import filterwarnings
+filterwarnings('ignore', '^kotti.views.slots.register is deprecated')
+
+
 def create_contents(root=None):
     from kotti.resources import get_root
     from kotti.resources import Content
