@@ -1,3 +1,5 @@
+from __future__ import absolute_import
+
 from fanstatic import Group, Library, Resource
 from js.bootstrap import bootstrap_js
 from js.bootstrap import bootstrap_responsive_css

@@ -32,8 +32,8 @@ from kotti.resources import Content
 from kotti.security import get_user
 from kotti.security import has_permission
 from kotti.security import view_permitted
-from kotti.static import edit_needed
-from kotti.static import view_needed
+from kotti.fanstatic import edit_needed
+from kotti.fanstatic import view_needed
 from kotti.views.form import get_appstruct
 from kotti.views.form import BaseFormView
 from kotti.views.form import AddFormView

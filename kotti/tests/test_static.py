@@ -5,10 +5,10 @@ class TestStatic:
 
     def test_NeededGroup(self):
 
-        from kotti.static import deform_bootstrap_js
-        from kotti.static import deform_js
-        from kotti.static import kotti_js
-        from kotti.static import NeededGroup
+        from kotti.fanstatic import deform_bootstrap_js
+        from kotti.fanstatic import deform_js
+        from kotti.fanstatic import kotti_js
+        from kotti.fanstatic import NeededGroup
 
         def NeededGroupFactory(resources):
             return NeededGroup(resources)
