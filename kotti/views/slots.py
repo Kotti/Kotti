@@ -71,7 +71,9 @@ def _render_view_on_slot_event(view_name, event, params):
         base_url=request.application_url,
         POST=_encode(params),
         )
+    view_request.context = request.context
     view_request.registry = request.registry
+    view_request.user = request.user
     try:
         result = render_view(
             context,

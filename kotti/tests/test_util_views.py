@@ -232,11 +232,13 @@ class TestTemplateAPI:
         with raises(KeyError):
             assign_slot('viewname', 'noslotlikethis')
 
-    def test_slot_request_has_registry(self, config, db_session, events):
+    def test_slot_request_has_attributes(self, config, db_session, events):
         from kotti.views.slots import assign_slot
 
         def my_viewlet(request):
             assert hasattr(request, 'registry')
+            assert hasattr(request, 'context')
+            assert hasattr(request, 'user')
             return Response(u"Hello world!")
         assign_slot('my-viewlet', 'right')
 
