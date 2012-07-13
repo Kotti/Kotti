@@ -65,6 +65,8 @@ def pytest_funcarg__request(request):
 
 
 def pytest_funcarg__events(request):
+    from kotti.events import clear
     config = request.getfuncargvalue('config')
     config.include('kotti.events')
+    request.addfinalizer(clear)
     return config

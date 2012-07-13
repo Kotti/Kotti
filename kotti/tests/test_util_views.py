@@ -199,30 +199,30 @@ class TestTemplateAPI:
         api = self.make(request=request, bare=False)
         assert api.bare is False
 
-    def test_assign_to_slots(self):
+    def test_assign_to_slots(self, config, db_session, events):
         from kotti.views.slots import assign_slot
 
         def foo(context, request):
             greeting = request.POST['greeting']
             return Response(u"{0} world!".format(greeting))
-        self.config.add_view(foo, name='foo')
+        config.add_view(foo, name='foo')
         assign_slot('foo', 'left', params=dict(greeting=u"Y\u0153"))
 
         api = self.make()
         assert api.slots.left == [u"Y\u0153 world!"]
 
-    def test_assign_to_slot_predicate_mismatch(self):
+    def test_assign_to_slot_predicate_mismatch(self, config, db_session, events):
         from kotti.views.slots import assign_slot
 
         def special(context, request):
             return Response(u"Hello world!")
         assign_slot('special', 'right')
 
-        self.config.add_view(special, name='special', request_method="GET")
+        config.add_view(special, name='special', request_method="GET")
         api = self.make()
         assert api.slots.right == []
 
-        self.config.add_view(special, name='special')
+        config.add_view(special, name='special')
         api = self.make()
         assert api.slots.right == [u"Hello world!"]
 
@@ -232,7 +232,7 @@ class TestTemplateAPI:
         with raises(KeyError):
             assign_slot('viewname', 'noslotlikethis')
 
-    def test_slot_request_has_registry(self):
+    def test_slot_request_has_registry(self, config, db_session, events):
         from kotti.views.slots import assign_slot
 
         def my_viewlet(request):
@@ -240,7 +240,7 @@ class TestTemplateAPI:
             return Response(u"Hello world!")
         assign_slot('my-viewlet', 'right')
 
-        self.config.add_view(my_viewlet, name='my-viewlet')
+        config.add_view(my_viewlet, name='my-viewlet')
         api = self.make()
         assert api.slots.right == [u"Hello world!"]
 
@@ -268,7 +268,7 @@ class TestTemplateAPI:
         with raises(AttributeError):
             api.slots.foobar
 
-    def test_slots_only_rendered_when_accessed(self, db_session):
+    def test_slots_only_rendered_when_accessed(self, config, events):
         from kotti.views.slots import assign_slot
 
         called = []
@@ -277,7 +277,7 @@ class TestTemplateAPI:
             called.append(True)
             return Response(u"")
 
-        self.config.add_view(foo, name='foo')
+        config.add_view(foo, name='foo')
         assign_slot('foo', 'abovecontent')
 
         api = self.make()
