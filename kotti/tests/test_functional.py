@@ -1,7 +1,5 @@
 from StringIO import StringIO
-
 from mock import patch
-
 from kotti.testing import user
 
 
@@ -16,12 +14,10 @@ class TestLogin:
 
 class TestForbidden:
     def test_forbidden(self, app):
-        app.get(
-            '/@@edit', headers={'Accept': '*/json'}, status=403)
+        app.get('/@@edit', headers={'Accept': '*/json'}, status=403)
 
     def test_forbidden_redirect(self, app):
-        res = app.get(
-            '/@@edit', headers={'Accept': 'text/html'}, status=302)
+        res = app.get('/@@edit', headers={'Accept': 'text/html'}, status=302)
         assert res.location.startswith('http://localhost/@@login?came_from=')
 
     def test_forbidden_redirect_when_authenticated(self, app):
