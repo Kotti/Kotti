@@ -6,6 +6,16 @@ from pyramid.config import DEFAULT_RENDERERS
 from pyramid.security import ALL_PERMISSIONS
 import transaction
 
+
+# re-enable deprecation warnings during test runs
+# however, let the `ImportWarning` produced by Babel's
+# `localedata.py` vs `localedata/` show up once...
+from warnings import resetwarnings
+from babel import localedata
+localedata  # make pyflakes happy... :p
+resetwarnings()
+
+
 BASE_URL = 'http://localhost:6543'
 
 
@@ -219,3 +229,11 @@ def registerDummyMailer():
     mailer = DummyMailer()
     _inject_mailer.append(mailer)
     return mailer
+
+
+# set up deprecation warnings
+from zope.deprecation.deprecation import deprecated
+for item in UnitTestBase, EventTestBase, _initTestingDB:
+    name = getattr(item, '__name__', item)
+    deprecated(name, 'Unittest-style tests are deprecated as of Kotti 0.7. '
+        'Please use pytest function arguments instead.')
