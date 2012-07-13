@@ -1,7 +1,7 @@
-from kotti.testing import UnitTestBase
+from pytest import raises
 
 
-class TestStatic(UnitTestBase):
+class TestStatic:
 
     def test_NeededGroup(self):
 
@@ -13,8 +13,10 @@ class TestStatic(UnitTestBase):
         def NeededGroupFactory(resources):
             return NeededGroup(resources)
 
-        self.assertRaises(ValueError, NeededGroupFactory, "foo")
-        self.assertRaises(ValueError, NeededGroupFactory, ["foo", "bar"])
+        with raises(ValueError):
+            NeededGroupFactory("foo")
+        with raises(ValueError):
+            NeededGroupFactory(["foo", "bar"])
 
         needed = NeededGroup([deform_js, kotti_js])
 
@@ -23,7 +25,8 @@ class TestStatic(UnitTestBase):
         def needed_group_adder(resource):
             needed.add(resource)
 
-        self.assertRaises(ValueError, needed_group_adder, 42)
+        with raises(ValueError):
+            needed_group_adder(42)
 
         needed.add(deform_bootstrap_js)
 
