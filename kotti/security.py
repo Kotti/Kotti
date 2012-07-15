@@ -249,8 +249,8 @@ def list_groups_raw(name, context):
     if isinstance(context, Node):
         return set(
             r[0] for r in DBSession.query(LocalGroup.group_name).filter(
-            LocalGroup.node_id == context.id).filter(
-            LocalGroup.principal_name == name).all()
+                LocalGroup.node_id == context.id).filter(
+                    LocalGroup.principal_name == name).all()
             )
     return set()
 
@@ -319,7 +319,7 @@ def set_groups(name, context, groups_to_set=()):
     session = DBSession()
     session.query(LocalGroup).filter(
         LocalGroup.node_id == context.id).filter(
-        LocalGroup.principal_name == name).delete()
+            LocalGroup.principal_name == name).delete()
 
     for group_name in groups_to_set:
         session.add(LocalGroup(context, name, unicode(group_name)))
@@ -370,7 +370,7 @@ def principals_with_local_roles(context, inherit=True):
             r[0] for r in
             session.query(LocalGroup.principal_name).filter(
                 LocalGroup.node_id == item.id).group_by(
-                LocalGroup.principal_name).all()
+                    LocalGroup.principal_name).all()
             if not r[0].startswith('role:')
             )
     return list(principals)
