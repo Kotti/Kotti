@@ -154,7 +154,7 @@ class TemplateAPI(object):
 
     def macro(self, asset_spec, macro_name='main'):
         if self.bare and asset_spec in (
-            self.VIEW_MASTER, self.EDIT_MASTER, self.SITE_SETUP_MASTER):
+                self.VIEW_MASTER, self.EDIT_MASTER, self.SITE_SETUP_MASTER):
             asset_spec = self.BARE_MASTER
         return get_renderer(asset_spec).implementation().macros[macro_name]
 
@@ -226,7 +226,7 @@ class TemplateAPI(object):
         if hasattr(context, 'values'):
             for child in context.values():
                 if (not permission or
-                    has_permission(permission, child, self.request)):
+                        has_permission(permission, child, self.request)):
                     children.append(child)
         return children
 
