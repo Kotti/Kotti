@@ -318,8 +318,8 @@ class NavigationNodeWrapper(object):
     def children(self):
         return [NavigationNodeWrapper(
             child, self._request, self._item_mapping, self._item_to_children)
-                for child in self._item_to_children[self.id]
-                if has_permission('view', child, self._request)]
+            for child in self._item_to_children[self.id]
+            if has_permission('view', child, self._request)]
 
     def __getattr__(self, name):
         return getattr(self._node, name)
@@ -351,9 +351,9 @@ def search_content(search_term, request=None):
 def default_search_content(search_term, request=None):
     searchstring = u'%%%s%%' % search_term
     results = DBSession.query(Content).filter(
-                or_(Content.name.like(searchstring),
-                    Content.title.like(searchstring),
-                    Content.description.like(searchstring)))
+        or_(Content.name.like(searchstring),
+            Content.title.like(searchstring),
+            Content.description.like(searchstring)))
     result_dict = []
     for result in results.all():
         if has_permission('view', result, request):
