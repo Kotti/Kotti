@@ -1,5 +1,4 @@
 from kotti import get_settings
-from kotti import get_version
 from kotti.resources import DBSession
 from kotti.resources import Node
 from kotti.resources import Document
@@ -52,14 +51,16 @@ _ROOT_ATTRS = dict(
   using a simple text file in your file system.
 </p>
 <p>
-  <a href="http://kotti.readthedocs.org/en/latest/configuration.html" class="btn btn-info">Configuration manual</a>
+  <a href="http://kotti.readthedocs.org/en/latest/configuration.html"
+     class="btn btn-info">Configuration manual</a>
 </p>
 <p>
   A number of add-ons allow you to extend the functionality of your
   Kotti site.
 </p>
 <p>
-  <a href="http://pypi.python.org/pypi?%3Aaction=search&amp;term=kotti&amp;submit=search" class="btn btn-info">Kotti add-ons</a>
+  <a href="http://pypi.python.org/pypi?%3Aaction=search&term=kotti"
+     class="btn btn-info">Kotti add-ons</a>
 </p>
 
 <h2>Develop</h2>
@@ -67,7 +68,8 @@ _ROOT_ATTRS = dict(
   Kotti aims to be easy and extensible.  Check out the developer manual.
 </p>
 <p>
-  <a href="http://kotti.readthedocs.org/en/latest/developer-manual.html" class="btn btn-info">Developer Manual</a>
+  <a href="http://kotti.readthedocs.org/en/latest/developer-manual.html"
+     class="btn btn-info">Developer Manual</a>
 </p>
 
 <h2>Documentation</h2>
@@ -76,7 +78,8 @@ _ROOT_ATTRS = dict(
   the manual for more information.
 </p>
 <p>
-  <a href="http://kotti.readthedocs.org/en/latest/" class="btn btn-info">Documentation</a>
+  <a href="http://kotti.readthedocs.org/en/latest/"
+     class="btn btn-info">Documentation</a>
 </p>
 """)
 

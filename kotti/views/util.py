@@ -154,7 +154,7 @@ class TemplateAPI(object):
 
     def macro(self, asset_spec, macro_name='main'):
         if self.bare and asset_spec in (
-            self.VIEW_MASTER, self.EDIT_MASTER, self.SITE_SETUP_MASTER):
+                self.VIEW_MASTER, self.EDIT_MASTER, self.SITE_SETUP_MASTER):
             asset_spec = self.BARE_MASTER
         return get_renderer(asset_spec).implementation().macros[macro_name]
 
@@ -226,7 +226,7 @@ class TemplateAPI(object):
         if hasattr(context, 'values'):
             for child in context.values():
                 if (not permission or
-                    has_permission(permission, child, self.request)):
+                        has_permission(permission, child, self.request)):
                     children.append(child)
         return children
 
@@ -318,8 +318,8 @@ class NavigationNodeWrapper(object):
     def children(self):
         return [NavigationNodeWrapper(
             child, self._request, self._item_mapping, self._item_to_children)
-                for child in self._item_to_children[self.id]
-                if has_permission('view', child, self._request)]
+            for child in self._item_to_children[self.id]
+            if has_permission('view', child, self._request)]
 
     def __getattr__(self, name):
         return getattr(self._node, name)
@@ -351,10 +351,9 @@ def search_content(search_term, request=None):
 def default_search_content(search_term, request=None):
     searchstring = u'%%%s%%' % search_term
     results = DBSession.query(Content).filter(
-                or_(Content.name.like(searchstring),
-                    Content.title.like(searchstring),
-                    Content.description.like(searchstring),
-                   ))
+        or_(Content.name.like(searchstring),
+            Content.title.like(searchstring),
+            Content.description.like(searchstring)))
     result_dict = []
     for result in results.all():
         if has_permission('view', result, request):

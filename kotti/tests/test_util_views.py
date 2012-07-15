@@ -348,8 +348,6 @@ class TestTemplateAPI:
             api.format_time(first)
 
     def test_render_view(self, config, db_session):
-        from pyramid.response import Response
-
         def first_view(context, request):
             return Response(u'first')
 

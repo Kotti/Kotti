@@ -101,9 +101,9 @@ class ImageView(object):
             headerlist=[('Content-Disposition', '%s;filename="%s"' % (
                 disposition,
                 self.context.filename.encode('ascii', 'ignore'))),
-                        ('Content-Length', str(len(image))),
-                        ('Content-Type', str(self.context.mimetype)),
-                        ],
+                ('Content-Length', str(len(image))),
+                ('Content-Type', str(self.context.mimetype)),
+            ],
             app_iter=[image])
 
         return res
