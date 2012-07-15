@@ -98,26 +98,26 @@ def _make_mutable_method_wrapper(wrapper_class, methodname, mutates):
 
 for wrapper_class in (MutationDict, MutationList):
     for methodname, mutates in (
-        ('__iter__', False),
-        ('__len__', False),
-        ('__eq__', False),
-        ('__add__', False),
-        ('__getitem__', False),
-        ('__getslice__', False),
-        ('__repr__', False),
-        ('get', False),
-        ('keys', False),
+            ('__iter__', False),
+            ('__len__', False),
+            ('__eq__', False),
+            ('__add__', False),
+            ('__getitem__', False),
+            ('__getslice__', False),
+            ('__repr__', False),
+            ('get', False),
+            ('keys', False),
 
-        ('__setitem__', True),
-        ('__delitem__', True),
-        ('__setslice__', True),
-        ('__delslice__', True),
-        ('append', True),
-        ('extend', True),
-        ('insert', True),
-        ('pop', True),
-        ('setdefault', True),
-        ):
+            ('__setitem__', True),
+            ('__delitem__', True),
+            ('__setslice__', True),
+            ('__delslice__', True),
+            ('append', True),
+            ('extend', True),
+            ('insert', True),
+            ('pop', True),
+            ('setdefault', True),
+            ):
         setattr(
             wrapper_class, methodname,
             _make_mutable_method_wrapper(

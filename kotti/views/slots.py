@@ -158,7 +158,7 @@ def local_navigation(context, request):
 
 def includeme_local_navigation(config):
     config.add_view(
-            local_navigation,
-            name='local-navigation',
-            renderer='kotti:templates/view/nav-local.pt')
+        local_navigation,
+        name='local-navigation',
+        renderer='kotti:templates/view/nav-local.pt')
     assign_slot('local-navigation', 'right')

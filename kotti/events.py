@@ -150,7 +150,7 @@ class ObjectEventDispatcher(DispatcherDict):
         results = []
         for (evtype, objtype), handlers in self.items():
             if (isinstance(event, evtype) and
-                (objtype is None or isinstance(event.object, objtype))):
+                    (objtype is None or isinstance(event.object, objtype))):
                 for handler in handlers:
                     results.append(handler(event))
         return results

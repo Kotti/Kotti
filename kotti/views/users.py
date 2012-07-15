@@ -332,8 +332,7 @@ class UserAddFormView(AddFormView):
         if send_email:
             email_set_password(get_principals()[name], self.request)
         self.request.session.flash(_(u'${title} added.',
-                                     mapping=dict(title=appstruct['title'])),
-                                     'success')
+            mapping=dict(title=appstruct['title'])), 'success')
         location = self.request.url.split('?')[0] + '?' + urlencode(
             {'extra': name})
         return HTTPFound(location=location)
