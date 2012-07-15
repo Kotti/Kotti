@@ -112,3 +112,15 @@ def pytest_funcarg__browser(request):
                 del browser.cookies[name]
             browser.cookies.create(name, value.strip('"'), path='/')
     return browser
+
+
+def pytest_funcarg__extra_principals(request):
+    request.getfuncargvalue('db_session')
+    from kotti.security import get_principals
+    P = get_principals()
+    P[u'bob'] = {'name': u'bob', 'title': u"Bob"}
+    P[u'frank'] = {'name': u'frank', 'title': u"Frank"}
+    P[u'group:bobsgroup'] = {
+        'name': u'group:bobsgroup', 'title': u"Bob's Group"}
+    P[u'group:franksgroup'] = {
+        'name': u'group:franksgroup', 'title': u"Frank's Group"}

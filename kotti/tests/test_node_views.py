@@ -95,18 +95,6 @@ class TestNodeRename:
 
 
 class TestNodeShare:
-    @staticmethod
-    def add_some_principals():
-        from kotti.security import get_principals
-
-        P = get_principals()
-        P[u'bob'] = {'name': u'bob', 'title': u"Bob"}
-        P[u'frank'] = {'name': u'frank', 'title': u"Frank"}
-        P[u'group:bobsgroup'] = {
-            'name': u'group:bobsgroup', 'title': u"Bob's Group"}
-        P[u'group:franksgroup'] = {
-            'name': u'group:franksgroup', 'title': u"Frank's Group"}
-
     def test_roles(self, db_session):
         from kotti.views.users import share_node
         from kotti.resources import get_root
@@ -120,7 +108,7 @@ class TestNodeShare:
             [r.name for r in share_node(root, request)['available_roles']] ==
             SHARING_ROLES)
 
-    def test_search(self, db_session):
+    def test_search(self, extra_principals):
         from kotti.resources import get_root
         from kotti.security import get_principals
         from kotti.security import set_groups
@@ -129,7 +117,6 @@ class TestNodeShare:
         root = get_root()
         request = DummyRequest()
         P = get_principals()
-        self.add_some_principals()
 
         # Search for "Bob", which will return both the user and the
         # group, both of which have no roles:
@@ -171,7 +158,7 @@ class TestNodeShare:
         assert len(entries) == 1
         assert entries[0][0] == P['bob']
 
-    def test_apply(self, db_session):
+    def test_apply(self, extra_principals):
         from kotti.resources import get_root
         from kotti.security import list_groups
         from kotti.security import set_groups
@@ -179,7 +166,6 @@ class TestNodeShare:
 
         root = get_root()
         request = DummyRequest()
-        self.add_some_principals()
 
         request.params['apply'] = u''
         share_node(root, request)

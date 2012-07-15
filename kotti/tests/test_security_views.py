@@ -17,16 +17,14 @@ class TestUserManagement:
             [r.name for r in users_manage(root, request)['available_roles']] ==
             USER_MANAGEMENT_ROLES)
 
-    def test_search(self, db_session):
+    def test_search(self, extra_principals):
         from kotti.resources import get_root
         from kotti.security import get_principals
-        from kotti.tests.test_node_views import TestNodeShare
         from kotti.views.users import users_manage
 
         root = get_root()
         request = DummyRequest()
         P = get_principals()
-        TestNodeShare.add_some_principals()
 
         request.params['search'] = u''
         request.params['query'] = u'Joe'
@@ -48,17 +46,15 @@ class TestUserManagement:
                          (['group:bobsgroup', 'role:admin'], ['role:admin']))
         assert entries[1][1] == (['role:admin'], [])
 
-    def test_apply(self, db_session):
+    def test_apply(self, extra_principals):
         from kotti.resources import get_root
         from kotti.security import get_principals
         from kotti.security import list_groups
-        from kotti.tests.test_node_views import TestNodeShare
         from kotti.views.users import users_manage
 
         root = get_root()
         request = DummyRequest()
 
-        TestNodeShare.add_some_principals()
         bob = get_principals()[u'bob']
 
         request.params['apply'] = u''
