@@ -38,8 +38,7 @@ class TestTemplateAPI(UnitTestBase):
         from kotti.views.util import TemplateAPI
 
         if context is None:
-            session = DBSession()
-            context = session.query(Node).get(id)
+            context = DBSession.query(Node).get(id)
         if request is None:
             request = DummyRequest()
         return TemplateAPI(context, request, **kwargs)
