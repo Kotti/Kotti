@@ -50,7 +50,7 @@ def login(context, request):
         user = _find_user(login)
 
         if (user is not None and user.active and
-            principals.validate_password(password, user.password)):
+                principals.validate_password(password, user.password)):
             headers = remember(request, user.name)
             request.session.flash(
                 _(u"Welcome, ${user}!",
@@ -127,9 +127,9 @@ def set_password(context, request,
             email = appstruct['email']
             user = _find_user(email)
             if (user is not None and
-                validate_token(user, token) and
-                token == user.confirm_token and
-                user.active):
+                    validate_token(user, token) and
+                    token == user.confirm_token and
+                    user.active):
                 password = appstruct['password']
                 user.password = get_principals().hash_password(password)
                 user.confirm_token = None
