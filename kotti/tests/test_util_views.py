@@ -259,8 +259,7 @@ class TestTemplateAPI:
         register(RenderAboveContent, None, render_something)
 
         api = self.make()
-        assert (api.slots.abovecontent ==
-                         [u'Hello, %s!' % api.context.title])
+        assert (api.slots.abovecontent == [u'Hello, %s!' % api.context.title])
 
         # Slot renderers may also return lists:
         def render_a_list(context, request):

@@ -336,10 +336,8 @@ class TestGroups:
         assert len(value) == 2
         bob, (bob_all, bob_inherited) = value[0]
         bobsgroup, (bobsgroup_all, bobsgroup_inherited) = value[1]
-        assert (set(bob_all) ==
-                         set(['group:bobsgroup', 'role:editor']))
-        assert (set(bob_inherited) ==
-                         set(['group:bobsgroup', 'role:editor']))
+        assert (set(bob_all) == set(['group:bobsgroup', 'role:editor']))
+        assert (set(bob_inherited) == set(['group:bobsgroup', 'role:editor']))
         assert bobsgroup_all == ['role:editor']
         assert bobsgroup_inherited == []
 
@@ -511,7 +509,7 @@ class TestPrincipals:
         with patch('kotti.views.login.email_set_password') as email_set_password:
             login(None, request)
         assert (request.session.pop_flash('error') ==
-                         [u"That username or email is not known to us."])
+            [u"That username or email is not known to us."])
         assert email_set_password.call_count == 0
 
     def test_login(self, db_session):
@@ -531,8 +529,7 @@ class TestPrincipals:
         result = login(None, request)
         assert isinstance(result, dict)
         assert request.session.pop_flash('success') == []
-        assert (request.session.pop_flash('error') ==
-                         [u'Login failed.'])
+        assert (request.session.pop_flash('error') == [u'Login failed.'])
 
         # Make Bob and do it again:
         bob = self.make_bob()
@@ -559,8 +556,7 @@ class TestPrincipals:
         bob.active = False
         result = login(None, request)
         assert isinstance(result, dict)
-        assert (request.session.pop_flash('error') ==
-                         [u'Login failed.'])
+        assert (request.session.pop_flash('error') == [u'Login failed.'])
 
         # If Bob has a 'confirm_token' set, logging in is still possible:
         bob.active = True

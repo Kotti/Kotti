@@ -91,7 +91,7 @@ class TestNodeRename:
         request.params['title'] = u'foo'
         rename_node(child, request)
         assert (request.session.pop_flash('error') ==
-                         [u'Name and title are required.'])
+            [u'Name and title are required.'])
 
 
 class TestNodeShare:
@@ -148,7 +148,7 @@ class TestNodeShare:
         assert entries[0][0] == P[u'bob']
         assert entries[0][1] == ([u'role:editor'], [])
         assert (request.session.pop_flash('info') ==
-                         [u'No users or groups found.'])
+            [u'No users or groups found.'])
 
         # It does not, however, include entries that have local group
         # assignments only:
@@ -169,8 +169,7 @@ class TestNodeShare:
 
         request.params['apply'] = u''
         share_node(root, request)
-        assert (request.session.pop_flash('info') ==
-                         [u'No changes made.'])
+        assert (request.session.pop_flash('info') == [u'No changes made.'])
         assert list_groups('bob', root) == []
         set_groups('bob', root, ['role:special'])
 
@@ -181,7 +180,7 @@ class TestNodeShare:
 
         share_node(root, request)
         assert (request.session.pop_flash('success') ==
-                         [u'Your changes have been saved.'])
+            [u'Your changes have been saved.'])
         assert (
             set(list_groups('bob', root)) ==
             set(['role:owner', 'role:editor', 'role:special'])

@@ -31,7 +31,7 @@ class TestUserManagement:
         entries = users_manage(root, request)['entries']
         assert len(entries) == 0
         assert (request.session.pop_flash('info') ==
-                         [u'No users or groups found.'])
+            [u'No users or groups found.'])
         request.params['query'] = u'Bob'
         entries = users_manage(root, request)['entries']
         assert entries[0][0] == P['bob']
@@ -43,7 +43,7 @@ class TestUserManagement:
         P[u'group:bobsgroup'].groups = [u'role:admin']
         entries = users_manage(root, request)['entries']
         assert (entries[0][1] ==
-                         (['group:bobsgroup', 'role:admin'], ['role:admin']))
+            (['group:bobsgroup', 'role:admin'], ['role:admin']))
         assert entries[1][1] == (['role:admin'], [])
 
     def test_apply(self, extra_principals):
@@ -59,8 +59,7 @@ class TestUserManagement:
 
         request.params['apply'] = u''
         users_manage(root, request)
-        assert (request.session.pop_flash('info') ==
-                         [u'No changes made.'])
+        assert (request.session.pop_flash('info') == [u'No changes made.'])
         assert list_groups('bob') == []
         bob.groups = [u'role:special']
 
@@ -71,7 +70,7 @@ class TestUserManagement:
 
         users_manage(root, request)
         assert (request.session.pop_flash('success') ==
-                         [u'Your changes have been saved.'])
+            [u'Your changes have been saved.'])
         assert (
             set(list_groups('bob')) ==
             set(['role:owner', 'role:editor', 'role:special'])
