@@ -118,9 +118,8 @@ def pytest_funcarg__extra_principals(request):
     request.getfuncargvalue('db_session')
     from kotti.security import get_principals
     P = get_principals()
-    P[u'bob'] = {'name': u'bob', 'title': u"Bob"}
-    P[u'frank'] = {'name': u'frank', 'title': u"Frank"}
-    P[u'group:bobsgroup'] = {
-        'name': u'group:bobsgroup', 'title': u"Bob's Group"}
-    P[u'group:franksgroup'] = {
-        'name': u'group:franksgroup', 'title': u"Frank's Group"}
+    P[u'bob'] = dict(name=u'bob', title=u"Bob")
+    P[u'frank'] = dict(name=u'frank', title=u"Frank")
+    P[u'group:bobsgroup'] = dict(name=u'group:bobsgroup', title=u"Bob's Group")
+    P[u'group:franksgroup'] = dict(name=u'group:franksgroup',
+        title=u"Frank's Group")
