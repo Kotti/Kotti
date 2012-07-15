@@ -1,5 +1,4 @@
 from kotti import get_settings
-from kotti import get_version
 from kotti.resources import DBSession
 from kotti.resources import Node
 from kotti.resources import Document

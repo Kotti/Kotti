@@ -4,7 +4,6 @@ import warnings
 from sqlalchemy import engine_from_config
 from sqlalchemy import MetaData
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.sql.expression import desc
 from sqlalchemy.orm import scoped_session
 from sqlalchemy.orm import sessionmaker
 from zope.sqlalchemy import ZopeTransactionExtension
@@ -17,7 +16,7 @@ from pyramid.util import DottedNameResolver
 from pyramid_beaker import session_factory_from_settings
 
 from kotti.sqla import Base as KottiBase
-from kotti.util import request_cache
+
 
 metadata = MetaData()
 DBSession = scoped_session(sessionmaker(extension=ZopeTransactionExtension()))

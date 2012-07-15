@@ -354,8 +354,6 @@ class TestTemplateAPI(UnitTestBase):
         self.assertRaises(UnknownLocaleError, api.format_time, first)
 
     def test_render_view(self):
-        from pyramid.response import Response
-
         def first_view(context, request):
             return Response(u'first')
 
