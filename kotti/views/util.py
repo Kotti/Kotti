@@ -353,8 +353,7 @@ def default_search_content(search_term, request=None):
     results = DBSession.query(Content).filter(
                 or_(Content.name.like(searchstring),
                     Content.title.like(searchstring),
-                    Content.description.like(searchstring),
-                   ))
+                    Content.description.like(searchstring)))
     result_dict = []
     for result in results.all():
         if has_permission('view', result, request):
