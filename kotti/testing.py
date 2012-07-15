@@ -47,6 +47,24 @@ def asset(name):
     return open(join(dirname(kotti.__file__), 'tests', name), 'rb')
 
 
+def includeme_login(config):
+    config.add_view(
+        login_view,
+        name='login',
+        renderer='kotti:templates/login.pt')
+
+
+def includeme_layout(config):
+    # override edit master layout with view master layout
+    config.override_asset(
+        to_override='kotti:templates/edit/master.pt',
+        override_with='kotti:templates/view/master.pt')
+
+
+def login_view(request):
+    return {}
+
+
 def testing_db_url():
     return os.environ.get('KOTTI_TEST_DB_STRING', 'sqlite://')
 

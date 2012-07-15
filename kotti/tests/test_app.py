@@ -22,26 +22,6 @@ from warnings import filterwarnings
 filterwarnings('ignore', "^The 'kotti.includes' setting")
 
 
-def _includeme_login(config):
-    config.add_view(
-        _login_view,
-        name='login',
-        renderer='kotti:templates/login.pt',
-        )
-
-
-def _includeme_layout(config):
-    # override edit master layout with view master layout
-    config.override_asset(
-        to_override='kotti:templates/edit/master.pt',
-        override_with='kotti:templates/view/master.pt',
-        )
-
-
-def _login_view(request):
-    return {}  # pragma: no cover
-
-
 def _dummy_search(search_term, request):
     return u"Not found. Sorry!"
 
@@ -108,7 +88,7 @@ class TestApp:
 
         settings = self.required_settings()
         settings['kotti.includes'] = (
-            'kotti.tests.test_app._includeme_layout')
+            'kotti.testing.includeme_layout')
         with warnings.catch_warnings(record=True) as w:
             warnings.simplefilter('always')
             with patch('kotti.resources.initialize_sql'):
@@ -123,18 +103,18 @@ class TestApp:
 
         settings = self.required_settings()
         settings['kotti.includes'] = (
-            'kotti.tests.test_app._includeme_login')
+            'kotti.testing.includeme_login')
 
         with patch('kotti.resources.initialize_sql'):
             app = main({}, **settings)
         assert (app.registry.settings['pyramid.includes'].strip() ==
-                'kotti.tests.test_app._includeme_login')
+                'kotti.testing.includeme_login')
 
         settings = self.required_settings()
         settings['pyramid.includes'] = (
-            'kotti.tests.test_app._includeme_layout')
+            'kotti.testing.includeme_layout')
         settings['kotti.includes'] = (
-            'kotti.tests.test_app._includeme_login')
+            'kotti.testing.includeme_login')
         with patch('kotti.resources.initialize_sql'):
             app = main({}, **settings)
         regsettings = app.registry.settings
@@ -147,7 +127,7 @@ class TestApp:
 
         settings = self.required_settings()
         settings['pyramid.includes'] = (
-            'kotti.tests.test_app._includeme_login')
+            'kotti.testing.includeme_login')
         with patch('kotti.resources.initialize_sql'):
             app = main({}, **settings)
 
@@ -157,7 +137,7 @@ class TestApp:
             providedBy(get_root()),
             ]
         view = app.registry.adapters.lookup(provides, IView, name='login')
-        assert view.__module__ == __name__
+        assert view.__module__ == 'kotti.testing'
 
     def test_use_tables(self, db_session):
         from kotti import main
@@ -195,7 +175,7 @@ class TestApp:
     def test_render_master_view_template_minimal_root(self, db_session):
         settings = self.required_settings()
         settings['pyramid.includes'] = (
-            'kotti.tests.test_app._includeme_layout')
+            'kotti.testing.includeme_layout')
         return self.test_render_master_edit_template_minimal_root(settings)
 
     def test_setting_values_as_unicode(self, db_session):
