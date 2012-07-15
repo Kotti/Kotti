@@ -65,6 +65,10 @@ def login_view(request):
     return {}
 
 
+def dummy_search(search_term, request):
+    return u"Not found. Sorry!"
+
+
 def testing_db_url():
     return os.environ.get('KOTTI_TEST_DB_STRING', 'sqlite://')
 

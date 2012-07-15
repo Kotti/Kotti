@@ -22,10 +22,6 @@ from warnings import filterwarnings
 filterwarnings('ignore', "^The 'kotti.includes' setting")
 
 
-def _dummy_search(search_term, request):
-    return u"Not found. Sorry!"
-
-
 class TestApp:
 
     def required_settings(self):
@@ -188,7 +184,7 @@ class TestApp:
         from kotti.views.util import search_content
 
         settings = self.required_settings()
-        settings['kotti.search_content'] = 'kotti.tests.test_app._dummy_search'
+        settings['kotti.search_content'] = 'kotti.testing.dummy_search'
         with patch('kotti.resources.initialize_sql'):
             main({}, **settings)
         assert search_content(u"Nuno") == u"Not found. Sorry!"
