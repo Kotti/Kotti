@@ -1,6 +1,6 @@
 
 
-def test_settings():
+def settings():
     from kotti import _resolve_dotted
     from kotti import conf_defaults
     settings = conf_defaults.copy()
@@ -20,7 +20,7 @@ def pytest_funcarg__config(request):
         security.reset()
         testing.tearDown()
     config = request.cached_setup(
-        setup=lambda: testing.setUp(settings=test_settings()),
+        setup=lambda: testing.setUp(settings=settings()),
         teardown=teardown, scope='function')
     for name, renderer in DEFAULT_RENDERERS:
         config.add_renderer(name, renderer)
@@ -44,7 +44,7 @@ def pytest_funcarg__connection(request):
         metadata.bind = engine
         metadata.drop_all(engine)
         metadata.create_all(engine)
-        for populate in test_settings()['kotti.populators']:
+        for populate in settings()['kotti.populators']:
             populate()
         commit()
         return connection
@@ -82,7 +82,7 @@ def app():
     from kotti import main
     with patch('kotti.resources.initialize_sql'):
         with patch('kotti.engine_from_config'):
-            app = main({}, **test_settings())
+            app = main({}, **settings())
     return app
 
 
