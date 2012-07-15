@@ -87,8 +87,7 @@ class TestApp:
         from kotti import main
 
         settings = self.required_settings()
-        settings['kotti.includes'] = (
-            'kotti.testing.includeme_layout')
+        settings['kotti.includes'] = ('kotti.testing.includeme_layout')
         with warnings.catch_warnings(record=True) as w:
             warnings.simplefilter('always')
             with patch('kotti.resources.initialize_sql'):
@@ -102,8 +101,7 @@ class TestApp:
         from kotti import main
 
         settings = self.required_settings()
-        settings['kotti.includes'] = (
-            'kotti.testing.includeme_login')
+        settings['kotti.includes'] = ('kotti.testing.includeme_login')
 
         with patch('kotti.resources.initialize_sql'):
             app = main({}, **settings)
@@ -111,10 +109,8 @@ class TestApp:
                 'kotti.testing.includeme_login')
 
         settings = self.required_settings()
-        settings['pyramid.includes'] = (
-            'kotti.testing.includeme_layout')
-        settings['kotti.includes'] = (
-            'kotti.testing.includeme_login')
+        settings['pyramid.includes'] = ('kotti.testing.includeme_layout')
+        settings['kotti.includes'] = ('kotti.testing.includeme_login')
         with patch('kotti.resources.initialize_sql'):
             app = main({}, **settings)
         regsettings = app.registry.settings
@@ -126,8 +122,7 @@ class TestApp:
         from kotti.resources import get_root
 
         settings = self.required_settings()
-        settings['pyramid.includes'] = (
-            'kotti.testing.includeme_login')
+        settings['pyramid.includes'] = ('kotti.testing.includeme_login')
         with patch('kotti.resources.initialize_sql'):
             app = main({}, **settings)
 
@@ -174,8 +169,7 @@ class TestApp:
 
     def test_render_master_view_template_minimal_root(self, db_session):
         settings = self.required_settings()
-        settings['pyramid.includes'] = (
-            'kotti.testing.includeme_layout')
+        settings['pyramid.includes'] = ('kotti.testing.includeme_layout')
         return self.test_render_master_edit_template_minimal_root(settings)
 
     def test_setting_values_as_unicode(self, db_session):
