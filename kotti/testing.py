@@ -1,4 +1,5 @@
 import os
+from os.path import join, dirname
 from unittest import TestCase
 from pytest import mark
 
@@ -39,6 +40,11 @@ class DummyRequest(testing.DummyRequest):
     def is_response(self, ob):
         return (hasattr(ob, 'app_iter') and hasattr(ob, 'headerlist') and
                 hasattr(ob, 'status'))
+
+
+def asset(name):
+    import kotti
+    return open(join(dirname(kotti.__file__), 'tests', name), 'rb')
 
 
 def testing_db_url():
