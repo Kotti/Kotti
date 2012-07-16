@@ -38,7 +38,4 @@ Smaller tasks
   'self.assertEquals'.  Create unit tests for some of the edit views;
   some of these are currently only tested in browser.txt.
 
-- Clean up code to use 'DBSession' directly instead of instantiating
-  a 'session = DBSession()' before use.
-
 - Make a proper LICENSE.txt file, listing all licenses of components we use.

@@ -316,13 +316,12 @@ def set_groups(name, context, groups_to_set=()):
     """
     name = unicode(name)
     from kotti.resources import LocalGroup
-    session = DBSession()
-    session.query(LocalGroup).filter(
+    DBSession.query(LocalGroup).filter(
         LocalGroup.node_id == context.id).filter(
         LocalGroup.principal_name == name).delete()
 
     for group_name in groups_to_set:
-        session.add(LocalGroup(context, name, unicode(group_name)))
+        DBSession.add(LocalGroup(context, name, unicode(group_name)))
 
 
 def list_groups_callback(name, request):
@@ -360,7 +359,6 @@ def principals_with_local_roles(context, inherit=True):
     context.
     """
     from resources import LocalGroup
-    session = DBSession()
     principals = set()
     items = [context]
     if inherit:
@@ -368,7 +366,7 @@ def principals_with_local_roles(context, inherit=True):
     for item in items:
         principals.update(
             r[0] for r in
-            session.query(LocalGroup.principal_name).filter(
+            DBSession.query(LocalGroup.principal_name).filter(
                 LocalGroup.node_id == item.id).group_by(
                 LocalGroup.principal_name).all()
             if not r[0].startswith('role:')
@@ -409,33 +407,29 @@ class Principals(DictMixin):
     @request_cache(lambda self, name: name)
     def __getitem__(self, name):
         name = unicode(name)
-        session = DBSession()
         try:
-            return session.query(
+            return DBSession.query(
                 self.factory).filter(self.factory.name == name).one()
         except NoResultFound:
             raise KeyError(name)
 
     def __setitem__(self, name, principal):
         name = unicode(name)
-        session = DBSession()
         if isinstance(principal, dict):
             principal = self.factory(**principal)
-        session.add(principal)
+        DBSession.add(principal)
 
     def __delitem__(self, name):
         name = unicode(name)
-        session = DBSession()
         try:
-            principal = session.query(
+            principal = DBSession.query(
                 self.factory).filter(self.factory.name == name).one()
-            session.delete(principal)
+            DBSession.delete(principal)
         except NoResultFound:
             raise KeyError(name)
 
     def iterkeys(self):
-        session = DBSession()
-        for (principal_name,) in session.query(self.factory.name):
+        for (principal_name,) in DBSession.query(self.factory.name):
             yield principal_name
 
     def keys(self):
@@ -454,8 +448,7 @@ class Principals(DictMixin):
             else:
                 filters.append(col == value)
 
-        session = DBSession()
-        query = session.query(self.factory)
+        query = DBSession.query(self.factory)
         query = query.filter(or_(*filters))
         return query
 
