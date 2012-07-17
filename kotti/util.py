@@ -169,7 +169,7 @@ from kotti.sqla import NestedMutationList
 
 
 for cls in (JsonType, MutationDict, MutationList, NestedMixin,
-             NestedMutationDict, NestedMutationList):
+            NestedMutationDict, NestedMutationList):
     name = cls.__name__
     deprecated(
         name,

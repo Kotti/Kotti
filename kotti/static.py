@@ -53,11 +53,13 @@ class NeededGroup(object):
     def __init__(self, resources=[]):
 
         if not isinstance(resources, list):
-            raise ValueError("resources must be a list of fanstatic.Resource and/or fanstatic.Group objects")
+            raise ValueError("resources must be a list of fanstatic.Resource "
+                "and/or fanstatic.Group objects")
 
         for resource in resources:
-            if not (isinstance(resource, Resource) or isinstance(resource, Group)):
-                raise ValueError("resources must be a list of fanstatic.Resource and/or fanstatic.Group objects")
+            if not (isinstance(resource, (Resource, Group))):
+                raise ValueError("resources must be a list of "
+                    "fanstatic.Resource and/or fanstatic.Group objects")
 
         self.resources = resources
 
@@ -73,11 +75,12 @@ class NeededGroup(object):
         elif isinstance(resource, str):  # pragma: no cover
             raise NotImplementedError
         else:
-            raise ValueError("resource must be a fanstatic.Resource, fanstatic.Group or string object")
+            raise ValueError("resource must be a fanstatic.Resource, "
+                "fanstatic.Group or string object")
 
     def need(self):  # pragma: no cover
-        # this is tested in fanstatic itself
-        # we should add browser tests for view_needed and edit_needed (see below)
+        # this is tested in fanstatic itself; we should add browser tests
+        # for `view_needed` and `edit_needed` (see below)
         Group(self.resources).need()
 
 view_needed = NeededGroup([

@@ -60,14 +60,14 @@ def set_max_age(response, delta, cache_ctrl=None):
 caching_policies = {
     'Cache HTML':
     lambda response: set_max_age(response, datetime.timedelta(days=-1),
-                                  cache_ctrl={'s-maxage': '3600'}),
+                                 cache_ctrl={'s-maxage': '3600'}),
 
     'Cache Media Content':
     lambda response: set_max_age(response, datetime.timedelta(hours=4)),
 
     'Cache Resource':
     lambda response: set_max_age(response, datetime.timedelta(days=32),
-                                  cache_ctrl={'public': None}),
+                                 cache_ctrl={'public': None}),
 
     'No Cache':
     lambda response: set_max_age(response, datetime.timedelta(days=-1)),

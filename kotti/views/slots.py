@@ -71,7 +71,9 @@ def _render_view_on_slot_event(view_name, event, params):
         base_url=request.application_url,
         POST=_encode(params),
         )
+    view_request.context = request.context
     view_request.registry = request.registry
+    view_request.user = request.user
     try:
         result = render_view(
             context,
@@ -156,7 +158,7 @@ def local_navigation(context, request):
 
 def includeme_local_navigation(config):
     config.add_view(
-            local_navigation,
-            name='local-navigation',
-            renderer='kotti:templates/view/nav-local.pt')
+        local_navigation,
+        name='local-navigation',
+        renderer='kotti:templates/view/nav-local.pt')
     assign_slot('local-navigation', 'right')

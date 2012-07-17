@@ -237,11 +237,13 @@ class TestTemplateAPI(UnitTestBase):
         with raises(KeyError):
             assign_slot('viewname', 'noslotlikethis')
 
-    def test_slot_request_has_registry(self):
+    def test_slot_request_has_attributes(self):
         from kotti.views.slots import assign_slot
 
         def my_viewlet(request):
             assert hasattr(request, 'registry')
+            assert hasattr(request, 'context')
+            assert hasattr(request, 'user')
             return Response(u"Hello world!")
         assign_slot('my-viewlet', 'right')
 
@@ -352,8 +354,6 @@ class TestTemplateAPI(UnitTestBase):
         self.assertRaises(UnknownLocaleError, api.format_time, first)
 
     def test_render_view(self):
-        from pyramid.response import Response
-
         def first_view(context, request):
             return Response(u'first')
 
