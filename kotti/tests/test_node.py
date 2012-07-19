@@ -99,25 +99,22 @@ class TestNode(UnitTestBase):
         from kotti.resources import Node
 
         # Try to add two children with the same name to the root node:
-        session = DBSession()
         root = get_root()
-        session.add(Node(name=u'child1', parent=root))
-        session.add(Node(name=u'child1', parent=root))
-        self.assertRaises(IntegrityError, session.flush)
+        DBSession.add(Node(name=u'child1', parent=root))
+        DBSession.add(Node(name=u'child1', parent=root))
+        self.assertRaises(IntegrityError, DBSession.flush)
 
     def test_container_methods(self):
         from kotti import DBSession
         from kotti.resources import get_root
         from kotti.resources import Node
 
-        session = DBSession()
-
         # Test some of Node's container methods:
         root = get_root()
         self.assertEquals(root.keys(), [])
 
         child1 = Node(name=u'child1', parent=root)
-        session.add(child1)
+        DBSession.add(child1)
         self.assertEquals(root.keys(), [u'child1'])
         self.assertEquals(root[u'child1'], child1)
 
@@ -129,16 +126,16 @@ class TestNode(UnitTestBase):
         root[u'child2'] = Node()
         root[u'child2'][u'subchild'] = Node()
         self.assertEquals(
-            session.query(Node).filter(Node.name == u'subchild').count(), 1)
+            DBSession.query(Node).filter(Node.name == u'subchild').count(), 1)
         del root[u'child2']
         self.assertEquals(
-            session.query(Node).filter(Node.name == u'subchild').count(), 0)
+            DBSession.query(Node).filter(Node.name == u'subchild').count(), 0)
 
         # We can pass a tuple as the key to more efficiently reach
         # down to child objects:
         root[u'child3'] = Node()
         subchild33 = Node(name=u'subchild33', parent=root[u'child3'])
-        session.add(subchild33)
+        DBSession.add(subchild33)
         del root.__dict__['_children']  # force a different code path
         self.assertTrue(
             root[u'child3', u'subchild33'] is root[u'child3'][u'subchild33'])
@@ -153,13 +150,13 @@ class TestNode(UnitTestBase):
 
         # Overwriting an existing Node is an error; first delete manually!
         child4 = Node(name=u'child4', parent=root)
-        session.add(child4)
+        DBSession.add(child4)
         self.assertEquals(root.keys(), [u'child4'])
 
         child44 = Node(name=u'child4')
-        session.add(child44)
+        DBSession.add(child44)
         root[u'child4'] = child44
-        self.assertRaises(SQLAlchemyError, session.flush)
+        self.assertRaises(SQLAlchemyError, DBSession.flush)
 
     def test_node_copy_name(self):
         from kotti.resources import get_root

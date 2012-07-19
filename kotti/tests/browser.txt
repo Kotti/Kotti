@@ -14,8 +14,7 @@ Get a handle for some useful objects:
    >>> tools = testing.setUpFunctional()
    >>> browser = tools['Browser']()
    >>> ctrl = browser.getControl
-   >>> session = DBSession()
-   >>> root = session.query(Node).get(1)
+   >>> root = DBSession.query(Node).get(1)
    >>> mailer = testing.registerDummyMailer()
    >>> save_addable_document = Document.type_info.addable_to
    >>> save_addable_file = File.type_info.addable_to

@@ -53,14 +53,13 @@ class ContainerMixin(object, DictMixin):
     def __delitem__(self, key):
         node = self[unicode(key)]
         self.children.remove(node)
-        DBSession().delete(node)
+        DBSession.delete(node)
 
     def keys(self):
         return [child.name for child in self.children]
 
     def __getitem__(self, path):
-        session = DBSession()
-        session._autoflush()
+        DBSession()._autoflush()
 
         if not hasattr(path, '__iter__'):
             path = (path,)
@@ -95,10 +94,10 @@ class ContainerMixin(object, DictMixin):
             conditions.append(alias.c.parent_id == old_alias.c.id)
             conditions.append(alias.c.name == name)
         expr = select([alias.c.id], and_(*conditions))
-        row = session.execute(expr).fetchone()
+        row = DBSession.execute(expr).fetchone()
         if row is None:
             raise KeyError(path)
-        return session.query(Node).get(row.id)
+        return DBSession.query(Node).get(row.id)
 
     @hybrid_property
     def children(self):
@@ -412,7 +411,7 @@ def initialize_sql(engine, drop_all=False):
         populate()
     commit()
 
-    return DBSession()
+    return DBSession
 
 
 def appmaker(engine):
