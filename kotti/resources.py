@@ -258,6 +258,7 @@ class TagsToContents(Base):
     tag = relation(Tag, backref=backref('content_tags', cascade='all'))
     position = Column(Integer, nullable=False)
     title = association_proxy('tag', 'title')
+
     @classmethod
     def _tag_find_or_create(self, title):
         with DBSession.no_autoflush:
