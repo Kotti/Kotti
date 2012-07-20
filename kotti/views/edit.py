@@ -45,7 +45,7 @@ def get_paste_item(context, request):
     info = request.session.get('kotti.paste')
     if info:
         id, action = info
-        item = DBSession().query(Node).get(id)
+        item = DBSession.query(Node).get(id)
         if item is None or not item.type_info.addable(context, request):
             return
         if action == 'cut' and inside(context, item):
@@ -93,9 +93,8 @@ def cut_node(context, request):
 
 
 def paste_node(context, request):
-    session = DBSession()
     id, action = request.session['kotti.paste']
-    item = session.query(Node).get(id)
+    item = DBSession.query(Node).get(id)
     if item is not None:
         if action == 'cut':
             if not has_permission('edit', item, request):

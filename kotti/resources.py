@@ -6,6 +6,7 @@ from pyramid.traversal import resource_path
 from sqlalchemy.sql import and_
 from sqlalchemy.sql import select
 from sqlalchemy.orm import backref
+from sqlalchemy.orm import deferred
 from sqlalchemy.orm import object_mapper
 from sqlalchemy.orm import relation
 from sqlalchemy.orm.exc import NoResultFound
@@ -53,14 +54,13 @@ class ContainerMixin(object, DictMixin):
     def __delitem__(self, key):
         node = self[unicode(key)]
         self.children.remove(node)
-        DBSession().delete(node)
+        DBSession.delete(node)
 
     def keys(self):
         return [child.name for child in self.children]
 
     def __getitem__(self, path):
-        session = DBSession()
-        session._autoflush()
+        DBSession()._autoflush()
 
         if not hasattr(path, '__iter__'):
             path = (path,)
@@ -95,10 +95,10 @@ class ContainerMixin(object, DictMixin):
             conditions.append(alias.c.parent_id == old_alias.c.id)
             conditions.append(alias.c.name == name)
         expr = select([alias.c.id], and_(*conditions))
-        row = session.execute(expr).fetchone()
+        row = DBSession.execute(expr).fetchone()
         if row is None:
             raise KeyError(path)
-        return session.query(Node).get(row.id)
+        return DBSession.query(Node).get(row.id)
 
     @hybrid_property
     def children(self):
@@ -258,7 +258,6 @@ class TagsToContents(Base):
     tag = relation(Tag, backref=backref('content_tags', cascade='all'))
     position = Column(Integer, nullable=False)
     title = association_proxy('tag', 'title')
-
     @classmethod
     def _tag_find_or_create(self, title):
         with DBSession.no_autoflush:
@@ -348,7 +347,7 @@ class Document(Content):
 
 class File(Content):
     id = Column(Integer(), ForeignKey('contents.id'), primary_key=True)
-    data = Column(LargeBinary())
+    data = deferred(Column(LargeBinary()))
     filename = Column(Unicode(100))
     mimetype = Column(String(100))
     size = Column(Integer())
@@ -412,7 +411,7 @@ def initialize_sql(engine, drop_all=False):
         populate()
     commit()
 
-    return DBSession()
+    return DBSession
 
 
 def appmaker(engine):
