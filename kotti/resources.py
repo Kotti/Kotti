@@ -6,6 +6,7 @@ from pyramid.traversal import resource_path
 from sqlalchemy.sql import and_
 from sqlalchemy.sql import select
 from sqlalchemy.orm import backref
+from sqlalchemy.orm import deferred
 from sqlalchemy.orm import object_mapper
 from sqlalchemy.orm import relation
 from sqlalchemy.orm.exc import NoResultFound
@@ -257,7 +258,6 @@ class TagsToContents(Base):
     tag = relation(Tag, backref=backref('content_tags', cascade='all'))
     position = Column(Integer, nullable=False)
     title = association_proxy('tag', 'title')
-
     @classmethod
     def _tag_find_or_create(self, title):
         with DBSession.no_autoflush:
@@ -347,7 +347,7 @@ class Document(Content):
 
 class File(Content):
     id = Column(Integer(), ForeignKey('contents.id'), primary_key=True)
-    data = Column(LargeBinary())
+    data = deferred(Column(LargeBinary()))
     filename = Column(Unicode(100))
     mimetype = Column(String(100))
     size = Column(Integer())
