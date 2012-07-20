@@ -8,6 +8,8 @@ Change History
 
 - Fix #91: Styling of search box.
 
+- Enabled deferred loading on File.data column.
+
 0.7a4 - 2012-06-25
 ------------------
 
