@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Kotti 0.7dev5\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2012-06-30 17:03+0100\n"
+"POT-Creation-Date: 2012-07-22 08:40+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -290,35 +290,35 @@ msgstr ""
 msgid "${title} cut."
 msgstr ""
 
-#: kotti/views/edit.py:114
+#: kotti/views/edit.py:113
 msgid "${title} pasted."
 msgstr ""
 
-#: kotti/views/edit.py:118
+#: kotti/views/edit.py:117
 msgid "Could not paste node. It does not exist anymore."
 msgstr ""
 
-#: kotti/views/edit.py:137
+#: kotti/views/edit.py:136
 msgid "${title} moved."
 msgstr ""
 
-#: kotti/views/edit.py:147
+#: kotti/views/edit.py:146
 msgid "${title} is now visible in the navigation."
 msgstr ""
 
-#: kotti/views/edit.py:150
+#: kotti/views/edit.py:149
 msgid "${title} is no longer visible in the navigation."
 msgstr ""
 
-#: kotti/views/edit.py:162
+#: kotti/views/edit.py:161
 msgid "${title} deleted."
 msgstr ""
 
-#: kotti/views/edit.py:175
+#: kotti/views/edit.py:174
 msgid "Name and title are required."
 msgstr ""
 
-#: kotti/views/edit.py:179
+#: kotti/views/edit.py:178
 msgid "Item renamed"
 msgstr ""
 
@@ -342,7 +342,7 @@ msgstr ""
 msgid "Save"
 msgstr ""
 
-#: kotti/views/form.py:74 kotti/views/users.py:312 kotti/views/users.py:344
+#: kotti/views/form.py:74 kotti/views/users.py:312 kotti/views/users.py:343
 msgid "Cancel"
 msgstr ""
 
@@ -418,7 +418,7 @@ msgstr ""
 msgid "Site Setup - ${title}"
 msgstr ""
 
-#: kotti/views/users.py:69 kotti/views/users.py:430
+#: kotti/views/users.py:69 kotti/views/users.py:429
 msgid "No changes made."
 msgstr ""
 
@@ -442,7 +442,7 @@ msgstr ""
 msgid "No such group: ${group}"
 msgstr ""
 
-#: kotti/views/users.py:185 kotti/views/users.py:449
+#: kotti/views/users.py:185 kotti/views/users.py:448
 msgid "Group"
 msgstr ""
 
@@ -472,7 +472,7 @@ msgstr ""
 msgid "Full name"
 msgstr ""
 
-#: kotti/views/users.py:310 kotti/views/users.py:449
+#: kotti/views/users.py:310 kotti/views/users.py:448
 msgid "User"
 msgstr ""
 
@@ -488,19 +488,19 @@ msgstr ""
 msgid "${title} added."
 msgstr ""
 
-#: kotti/views/users.py:343
+#: kotti/views/users.py:342
 msgid "Add Group"
 msgstr ""
 
-#: kotti/views/users.py:361
+#: kotti/views/users.py:360
 msgid "User Management - ${title}"
 msgstr ""
 
-#: kotti/views/users.py:453
+#: kotti/views/users.py:452
 msgid "Edit ${principal_type} - ${title}"
 msgstr ""
 
-#: kotti/views/users.py:485
+#: kotti/views/users.py:484
 msgid "My preferences - ${title}"
 msgstr ""
 
