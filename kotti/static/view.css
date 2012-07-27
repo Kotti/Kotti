@@ -16,6 +16,10 @@ a.site-title {
     }
 }
 
+#form-search {
+    display: none;
+}
+
 #search input {
     margin: 0;
 }
