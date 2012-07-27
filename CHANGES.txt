@@ -4,6 +4,16 @@ Change History
 0.7 - Unreleased
 ----------------
 
+- Add a "minify" command to compress CSS and JS resources.
+
+  To use it run:
+
+  - ``python setup.py dev``
+  - ``python setup.py minify``
+
+  The ``miniy`` command assumes, that all resources are in
+  ``kotti/static/``.
+
 - Make Document.body searchable (and therefore the search feature
   actually useful for the first time).
 
