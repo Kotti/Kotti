@@ -13,7 +13,17 @@ Change History
 - Add migrations via alembic.  Addons should add their alembic
   directory to 'kotti.alembic_script_locations'.
 
+- Added a 'Content.state' string column for workflow.
+
 - Enabled deferred loading on File.data column.
+
+Migrations
+~~~~~~~~~~
+
+Upgrading from 0.6 to 0.7 requires you to run a migration script on
+your database.  To run the migration, call::
+
+  $ bin/kotti-migrate <myconfig.ini> upgrade
 
 0.7a4 - 2012-06-25
 ------------------

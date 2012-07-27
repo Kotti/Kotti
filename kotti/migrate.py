@@ -79,71 +79,70 @@ def stamp_heads():
         pkg_env.run_env(do_stamp)
 
 
-class Migrate(object):
-    """Migrate Kotti and Kotti add-ons.
+def list_all():
+    for pkg_env in pkg_envs():
+        print(u'{0}:'.format(pkg_env.pkg_name))
+
+        for script in pkg_env.script_dir.walk_revisions():
+            print(u"  - {0} -> {1}: {2}".format(
+                script.down_revision,
+                script.revision,
+                script.doc,
+                ))
+
+        def current_revision(rev, context):
+            print(u"  - current revision: {0}".format(rev))
+            return []
+        pkg_env.run_env(current_revision)
+        print
+
+
+def upgrade_all():
+    for pkg_env in pkg_envs():
+        revision = pkg_env.script_dir.get_current_head()
+        print(u'{0}:'.format(pkg_env.location))
+
+        def upgrade(rev, context):
+            if rev == revision:
+                print(u'  - already up to date.')
+                return []
+            print(u'  - upgrading from {0} to {1}...'.format(
+                rev, revision))
+            return pkg_env.script_dir._upgrade_revs(revision, rev)
+
+        pkg_env.run_env(
+            upgrade,
+            starting_rev=None,
+            destination_rev=revision,
+            )
+        print
+
+
+def main():
+    __doc__ = """Migrate Kotti and Kotti add-ons.
 
     Usage:
-      kotti-migrate <config_uri> upgrade
-      kotti-migrate <config_uri> list
+      kotti-migrate <config_uri> upgrade_all
+      kotti-migrate <config_uri> list_all
 
     Options:
       -h --help     Show this screen.
     """
-    def __call__(self):
-        arguments = docopt(self.__doc__)
+    arguments = docopt(__doc__)
 
-        # We need to turn these off, because they would access the
-        # database, which may not be possible prior to the migration:
-        conf_defaults['kotti.populators'] = []
-        conf_defaults['kotti.root_factory'] = [lambda req: None]
+    # We need to turn these off, because they would access the
+    # database, which may not be possible prior to the migration:
+    conf_defaults['kotti.populators'] = []
+    conf_defaults['kotti.root_factory'] = [lambda req: None]
 
-        self.pyramid_env = bootstrap(arguments['<config_uri>'])
+    pyramid_env = bootstrap(arguments['<config_uri>'])
 
-        if arguments['list']:
-            method = self.list
-        elif arguments['upgrade']:
-            method = self.upgrade
+    if arguments['list_all']:
+        func = list_all
+    elif arguments['upgrade_all']:
+        func = upgrade_all
 
-        try:
-            method()
-        finally:
-            self.pyramid_env['closer']()
-
-    def list(self):
-        for pkg_env in pkg_envs():
-            print(u'{0}:'.format(pkg_env.pkg_name))
-
-            for script in pkg_env.script_dir.walk_revisions():
-                print(u"  - {0} -> {1}: {2}".format(
-                    script.down_revision,
-                    script.revision,
-                    script.doc,
-                    ))
-
-            def current_revision(rev, context):
-                print(u"  - current revision: {0}".format(rev))
-                return []
-            pkg_env.run_env(current_revision)
-            print
-
-    def upgrade(self):
-        for pkg_env in pkg_envs():
-            revision = pkg_env.script_dir.get_current_head()
-            print(u'{0}:'.format(pkg_env.location))
-
-            def upgrade(rev, context):
-                if rev == revision:
-                    print(u'  - already up to date.')
-                    return []
-                print(u'  - upgrading from {0} to {1}...'.format(
-                    rev, revision))
-                return pkg_env.script_dir._upgrade_revs(revision, rev)
-
-            pkg_env.run_env(
-                upgrade,
-                starting_rev=None,
-                destination_rev=revision,
-                )
-            print
-
-main = Migrate()
+    try:
+        func()
+    finally:
+        pyramid_env['closer']()
