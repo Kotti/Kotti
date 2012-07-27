@@ -27,13 +27,13 @@ install_requires = [
     'js.jquery_timepicker_addon',
     'js.jqueryui',
     'js.jqueryui_tagit',
-    'kotti_tinymce>=0.2.2',
+    'kotti_tinymce>=0.2.3',
     'lingua>=1.3',
     'Pillow',  # indirect dependency of plone.scale (that doesn't declare this dependency itself)
     'plone.i18n<2.0',  # >= 2.0 adds a huge number of dependencies
     'plone.scale',  # needed for image resizing capabilities
     'py-bcrypt',
-    'pyramid>=1.3', # needed for kotti_tinymce
+    'pyramid>=1.3',  # needed for kotti_tinymce
     'pyramid_beaker',
     'pyramid_debugtoolbar',
     'pyramid_deform>=0.2a3',  # language and template path config includeme
@@ -56,6 +56,10 @@ tests_require = [
     'pytest-xdist',
     'wsgi_intercept',
     'zope.testbrowser',
+    ]
+
+development_requires = [
+    'minify',
     ]
 
 if sys.version_info[:3] < (2, 7, 0):
@@ -99,6 +103,7 @@ setup(name='Kotti',
       """,
       extras_require={
           'testing': tests_require,
+          'development': development_requires,
           },
       message_extractors={'kotti': [
             ('**.py', 'lingua_python', None),

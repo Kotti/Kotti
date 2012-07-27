@@ -1,69 +1,52 @@
-<div class="navbar navbar-fixed-top" i18n:domain="Kotti"
+<div class="subnav subnav-fixed"
+     i18n:domain="Kotti"
      tal:define="disable_context_links disable_context_links | False">
-  <div class="navbar-inner">
-    <div class="container">
-      <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
+
+  <ul class="nav nav-pills">
+    <li class="${api.url() == request.url and 'active' or None}">
+      <a href="${api.url()}" i18n:translate="">View</a>
+    </li>
+
+    <li tal:condition="not disable_context_links"
+        tal:repeat="link api.edit_links"
+        class="${link.selected(context, request) and 'active' or None}">
+      <a href="${link.url(context, request)}">
+        ${link.title}
       </a>
-      <span class="brand">Kotti</span>
-      <div class="nav-collapse">
+    </li>
 
-        <ul class="nav">
-          <li class="${api.url() == request.url and 'active' or None}">
-            <a href="${api.url()}" i18n:translate="">View</a>
-          </li>
+    <tal:condition tal:condition="not disable_context_links">
+      <tal:condition tal:condition="api.has_permission('edit')">
+        <ul tal:replace="api.render_view('actions-dropdown')" />
+      </tal:condition>
+      <tal:condition tal:condition="api.has_permission('add')">
+        <ul tal:replace="api.render_view('add-dropdown')" />
+      </tal:condition>
+    </tal:condition>
 
-          <li tal:condition="not disable_context_links"
-              tal:repeat="link api.edit_links"
-              class="${link.selected(context, request) and 'active' or None}">
-            <a href="${link.url(context, request)}">
-              ${link.title}
-            </a>
-          </li>
-
-          <li tal:define="url api.url(context, '@@navigate')"
-              class="${url == request.url and 'active' or None}">
-            <a href="${url}" i18n:translate="">Navigate</a>
-          </li>
-        </ul>
-
-        <tal:condition tal:condition="not disable_context_links">
-          <tal:condition tal:condition="api.has_permission('edit')">
-            <ul tal:replace="api.render_view('actions-dropdown')" />
-          </tal:condition>
-
-          <tal:condition tal:condition="api.has_permission('add')">
-            <ul tal:replace="api.render_view('add-dropdown')" />
-          </tal:condition>
-        </tal:condition>
-        
-        <ul tal:condition="request.user is not None" class="nav pull-right">
-          <li class="dropdown">
-            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-              <img src="${api.avatar_url(default_image='mm')}" />
-              ${request.user.title}
-              <b class="caret"></b>
-            </a>
-            <ul class="dropdown-menu">
-              <li tal:condition="api.has_permission('admin', api.root)">
-                <a href="${api.url(api.root, '@@setup')}"
-                   i18n:translate="">Site Setup</a>
-              </li>
-              <li>
-                <a href="${api.url(api.root, '@@prefs')}"
-                   i18n:translate="">Preferences</a>
-              </li>
-              <li>
-                <a href="${request.application_url}/@@logout?came_from=${request.url}"
-                   i18n:translate="">Logout</a>
-              </li>
-            </ul>
-          </li>
-        </ul>
-      </div>
-
-    </div>
-  </div>
+    <li tal:condition="api.user is not None" class="dropdown pull-right">
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+        ${api.user.title}
+        <b class="caret"></b>
+      </a>
+      <ul class="dropdown-menu">
+        <li tal:condition="api.has_permission('admin', api.root)">
+          <a href="${api.url(api.root, '@@setup')}"
+             i18n:translate="">Site Setup</a>
+        </li>
+        <li>
+          <a href="${api.url(api.root, '@@prefs')}"
+             i18n:translate="">Preferences</a>
+        </li>
+        <li>
+          <a href="${request.application_url}/@@logout?came_from=${request.url}"
+             i18n:translate="">Logout</a>
+        </li>
+      </ul>
+    </li>
+    <li tal:define="url api.url(context, '@@navigate')"
+        class="${url == request.url and 'active' or None} pull-right">
+      <a href="${url}" i18n:translate="">Navigate</a>
+    </li>
+  </ul>
 </div>
