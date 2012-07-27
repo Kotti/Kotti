@@ -12,6 +12,7 @@ from kotti import conf_defaults
 from kotti import get_settings
 
 KOTTI_SCRIPT_DIR = pkg_resources.resource_filename('kotti', 'alembic')
+DEFAULT_LOCATION = 'kotti:alembic'
 
 
 class ScriptDirectoryWithDefaultEnvPy(ScriptDirectory):
@@ -63,24 +64,56 @@ class PackageEnvironment(object):
         return script_dir
 
 
-def pkg_envs():
+def get_locations():
     conf_str = get_settings()['kotti.alembic_script_locations']
-    locs = [l.strip() for l in conf_str.split() if l.strip()]
-    return [PackageEnvironment(loc) for loc in locs]
+    return [l.strip() for l in conf_str.split() if l.strip()]
 
 
-def stamp_heads():
-    for pkg_env in pkg_envs():
-        def do_stamp(rev, context):
-            current = context._current_rev()
+def stamp_head(location=DEFAULT_LOCATION, revision=None):
+    pkg_env = PackageEnvironment(location)
+
+    def do_stamp(rev, context, revision=revision):
+        current = context._current_rev()
+        if revision is None:
             revision = pkg_env.script_dir.get_current_head()
-            context._update_current_rev(current, revision)
+        elif revision == 'None':
+            revision = None
+        context._update_current_rev(current, revision)
+        return []
+
+    pkg_env.run_env(do_stamp)
+
+
+def upgrade(location=DEFAULT_LOCATION):
+    pkg_env = PackageEnvironment(location)
+
+    revision = pkg_env.script_dir.get_current_head()
+    print(u'Upgrading {0}:'.format(pkg_env.location))
+
+    def upgrade(rev, context):
+        if rev == revision:
+            print(u'  - already up to date.')
             return []
-        pkg_env.run_env(do_stamp)
+        print(u'  - upgrading from {0} to {1}...'.format(
+            rev, revision))
+        return pkg_env.script_dir._upgrade_revs(revision, rev)
+
+    pkg_env.run_env(
+        upgrade,
+        starting_rev=None,
+        destination_rev=revision,
+        )
+    print
+
+
+def upgrade_all():
+    for location in get_locations():
+        upgrade(location)
 
 
 def list_all():
-    for pkg_env in pkg_envs():
+    pkg_envs = [PackageEnvironment(l) for l in get_locations()]
+    for pkg_env in pkg_envs:
         print(u'{0}:'.format(pkg_env.pkg_name))
 
         for script in pkg_env.script_dir.walk_revisions():
@@ -97,52 +130,40 @@ def list_all():
         print
 
 
-def upgrade_all():
-    for pkg_env in pkg_envs():
-        revision = pkg_env.script_dir.get_current_head()
-        print(u'{0}:'.format(pkg_env.location))
-
-        def upgrade(rev, context):
-            if rev == revision:
-                print(u'  - already up to date.')
-                return []
-            print(u'  - upgrading from {0} to {1}...'.format(
-                rev, revision))
-            return pkg_env.script_dir._upgrade_revs(revision, rev)
-
-        pkg_env.run_env(
-            upgrade,
-            starting_rev=None,
-            destination_rev=revision,
-            )
-        print
-
-
 def main():
     __doc__ = """Migrate Kotti and Kotti add-ons.
 
     Usage:
-      kotti-migrate <config_uri> upgrade_all
       kotti-migrate <config_uri> list_all
+      kotti-migrate <config_uri> upgrade [--location=<location>]
+      kotti-migrate <config_uri> upgrade_all
+      kotti-migrate <config_uri> stamp_head [--location=<location>] [--rev=<rev>]
 
     Options:
       -h --help     Show this screen.
     """
-    arguments = docopt(__doc__)
-
     # We need to turn these off, because they would access the
     # database, which may not be possible prior to the migration:
-    os.environ['KOTTI_USE_POPULATORS'] = '0'
+    os.environ['KOTTI_DISABLE_POPULATORS'] = '1'
     conf_defaults['kotti.root_factory'] = [lambda req: None]
 
+    arguments = docopt(__doc__)
     pyramid_env = bootstrap(arguments['<config_uri>'])
 
+    args = ()
+    args_with_location = (arguments['--location'] or DEFAULT_LOCATION,)
     if arguments['list_all']:
         func = list_all
+    elif arguments['upgrade']:
+        func = upgrade
+        args = args_with_location
     elif arguments['upgrade_all']:
         func = upgrade_all
+    elif arguments['stamp_head']:
+        func = stamp_head
+        args = args_with_location + (arguments['--rev'],)
 
     try:
-        func()
+        func(*args)
     finally:
         pyramid_env['closer']()

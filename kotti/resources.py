@@ -32,7 +32,7 @@ from kotti import get_settings
 from kotti import metadata
 from kotti import DBSession
 from kotti import Base
-from kotti.migrate import stamp_heads
+from kotti.migrate import stamp_head
 from kotti.security import PersistentACLMixin
 from kotti.security import view_permitted
 from kotti.sqla import ACLType
@@ -412,10 +412,10 @@ def initialize_sql(engine, drop_all=False):
     # Allow migrations to set the 'head' stamp in case the database is
     # initialized freshly:
     if not engine.table_names():
-        stamp_heads()
+        stamp_head()
 
     metadata.create_all(engine, tables=tables)
-    if os.environ.get('KOTTI_USE_POPULATORS', '1') not in ('0', 'n'):
+    if os.environ.get('KOTTI_DISABLE_POPULATORS', '0') not in ('1', 'y'):
         for populate in get_settings()['kotti.populators']:
             populate()
     commit()
