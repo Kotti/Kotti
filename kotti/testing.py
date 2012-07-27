@@ -30,9 +30,11 @@ def testing_db_url():
 
 def _initTestingDB():
     from sqlalchemy import create_engine
+    from kotti import get_settings
     from kotti.resources import initialize_sql
 
     database_url = testing_db_url()
+    get_settings()['sqlalchemy.url'] = database_url
     session = initialize_sql(create_engine(database_url), drop_all=True)
     return session
 

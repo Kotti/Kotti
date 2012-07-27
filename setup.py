@@ -13,11 +13,13 @@ except IOError:
     README = AUTHORS = CHANGES = ''
 
 install_requires = [
+    'alembic',
     'Babel',
     'Chameleon>=2.7.4',  # Fixes error when raising HTTPFound
     'colander>=0.9.3',
     'deform>=0.9.4',  # deform_bootstrap (needs fixing there)
     'deform_bootstrap>=0.1',  # checked_input widget
+    'docopt',
     'formencode',
     'html2text',
     'js.bootstrap',
@@ -91,6 +93,9 @@ setup(name='Kotti',
       kotti = kotti.static:lib_kotti
       deform = kotti.static:lib_deform
       deform_bootstrap = kotti.static:lib_deform_bootstrap
+
+      [console_scripts]
+      kotti-migrate = kotti.migrate:main
       """,
       extras_require={
           'testing': tests_require,

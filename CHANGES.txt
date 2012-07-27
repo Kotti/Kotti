@@ -10,6 +10,9 @@ Change History
 
 - Fix #104: Make fanstatic resources completely overridable.
 
+- Add migrations via alembic.  Addons should add their alembic
+  directory to 'kotti.alembic_script_locations'.
+
 - Enabled deferred loading on File.data column.
 
 0.7a4 - 2012-06-25
