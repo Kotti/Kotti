@@ -179,8 +179,7 @@ Add a file
 ----------
 
   >>> browser.open(testing.BASE_URL + '/')
-  >>> browser.getLink("Add").click()
-  >>> browser.getLink("File").click()
+  >>> browser.getLink(url="/add_file").click()
   >>> ctrl("Title").value = "Tiny File"
   >>> ctrl("Description").value = "A tiny file"
   >>> ctrl("File").add_file('tiny', 'text/plain', 'tiny.txt')
@@ -194,8 +193,7 @@ Add a file larger than maximum file size
 ----------------------------------------
 
   >>> browser.open(testing.BASE_URL + '/')
-  >>> browser.getLink("Add").click()
-  >>> browser.getLink("File").click()
+  >>> browser.getLink(url="/add_file").click()
   >>> ctrl("Title").value = "Huge File"
   >>> ctrl("Description").value = "An huge file"
   >>> huge = '*' * (10 * 1024 * 1024 + 1)
