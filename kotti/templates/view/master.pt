@@ -14,9 +14,6 @@
         <script src="https://html5shim.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
 
-    <!-- Fav icons -->
-	  <link rel="shortcut icon" href="${request.static_url('kotti:static/favicon.ico')}" />
-
     <more tal:omit-tag="" metal:define-slot="head-more"></more>
 
     <!-- 'inhead' slots: support third party injection of things that
@@ -27,50 +24,49 @@
                tal:replace="structure snippet" />
   </head>
 
-  <body class="${request.user is not None and 'logged-in'}
+  <body class="${api.user is not None and 'logged-in'}
                view-${request.view_name or 'default'}
                ${api.body_css_class}">
-    <div tal:condition="request.user is not None"
-         tal:replace="api.render_template('kotti:templates/editor-bar.pt')" />
+    <nav tal:replace="api.render_template('kotti:templates/view/nav.pt')" />
 
     <div class="container">
+      <div tal:replace="api.render_template('kotti:templates/edit/breadcrumbs.pt')" />
 
-        <div tal:replace="api.render_template('kotti:templates/view/search.pt')" />
-        <nav tal:replace="api.render_template('kotti:templates/view/nav.pt')" />
-        <div class="row">
-          <div class="span3 left-column"
-               tal:condition="page_slots.left"
-               tal:content="api.render_template('kotti:templates/render_column_slot.pt', slot=page_slots.left)">
+      <div tal:condition="api.user is not None"
+           tal:replace="api.render_template('kotti:templates/editor-bar.pt')" />
+      <div class="row">
+        <div class="span3 left-column"
+             tal:condition="page_slots.left"
+             tal:content="api.render_template('kotti:templates/render_column_slot.pt', slot=page_slots.left)">
+        </div>
+
+        <div tal:define="span 12 - int(bool(page_slots.left)) * 3 - int(bool(page_slots.right)) * 3" class="span${span}">
+          <div class="above-content"
+               tal:condition="page_slots.abovecontent"
+               tal:content="api.render_template('kotti:templates/render_content_slot.pt', slot=page_slots.abovecontent)">
           </div>
 
-          <div tal:define="span 12 - int(bool(page_slots.left)) * 3 - int(bool(page_slots.right)) * 3" class="span${span}">
-            <div class="above-content"
-                 tal:condition="page_slots.abovecontent"
-                 tal:content="api.render_template('kotti:templates/render_content_slot.pt', slot=page_slots.abovecontent)">
-            </div>
+          <div tal:replace="api.render_template('kotti:templates/messages.pt')" />
 
-            <div tal:replace="api.render_template('kotti:templates/messages.pt')" />
-
-            <div class="inner-content">
-              <div metal:define-slot="content">
-                <h1>${context.title}</h1>
-              </div>
-            </div>
-
-            <div class="below-content"
-                 tal:condition="page_slots.belowcontent"
-                 tal:content="api.render_template('kotti:templates/render_content_slot.pt', slot=page_slots.belowcontent)">
+          <div class="inner-content">
+            <div metal:define-slot="content">
+              <h1>${context.title}</h1>
             </div>
           </div>
 
-          <div class="span3 right-column"
-               tal:condition="page_slots.right"
-               tal:content="api.render_template('kotti:templates/render_column_slot.pt', slot=page_slots.right)">
+          <div class="below-content"
+               tal:condition="page_slots.belowcontent"
+               tal:content="api.render_template('kotti:templates/render_content_slot.pt', slot=page_slots.belowcontent)">
           </div>
         </div>
 
-      <footer tal:replace="api.render_template('kotti:templates/view/footer.pt')">
-      </footer>
+        <div class="span3 right-column"
+             tal:condition="page_slots.right"
+             tal:content="api.render_template('kotti:templates/render_column_slot.pt', slot=page_slots.right)">
+        </div>
+      </div>
+
+      <footer tal:replace="api.render_template('kotti:templates/view/footer.pt')"></footer>
 
     </div>
 
@@ -78,5 +74,6 @@
                tal:condition="snippets"
                tal:repeat="snippet snippets"
                tal:replace="structure snippet" />
+
   </body>
 </html>
