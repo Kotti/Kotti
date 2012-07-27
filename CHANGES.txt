@@ -4,6 +4,9 @@ Change History
 0.7 - Unreleased
 ----------------
 
+- Make Document.body searchable (and therefore the search feature
+  actually useful for the first time).
+
 - Change the default layout
 
   Kotti's new default look is now even closer to the Bootstrap
