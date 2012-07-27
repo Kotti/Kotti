@@ -7,10 +7,10 @@
         type="text"
         name="search-term"
         class="search-query"
-        placeholder="Search…" />
+        placeholder="Search..." />
     <button
         type="submit"
-        name="search"
+        name="search-submit"
         value="search"
         class="btn"
         style="display: none;"
