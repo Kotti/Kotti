@@ -4,6 +4,9 @@ Change History
 0.7 - Unreleased
 ----------------
 
+- Don't display the search form per default (until document's bodies
+  are searched. 0.8?).
+
 - Change the default layout
 
   Kotti's new default look is now even closer to the Bootstrap
