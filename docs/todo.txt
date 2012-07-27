@@ -21,9 +21,6 @@ http://groups.google.com/group/kotti or #kotti on IRC.
 Smaller tasks
 =============
 
-- Update kotti_twitter to use 'kotti.views.slots.assign_slot' instead
-  of the deprecated 'kotti.views.slots.register'.
-
 - To allow for easier integration with 'repoze.workflow', add a
   'state' attribute to the Content class.  Write a cookbook entry for
   using 'repoze.workflow'.
@@ -33,9 +30,5 @@ Smaller tasks
 
 - Many of the templates used in 'kotti/views/edit.py' have some legacy
   cruft in them.  Clean up.
-
-- Clean up tests to consistently use 'assert' instead of
-  'self.assertEquals'.  Create unit tests for some of the edit views;
-  some of these are currently only tested in browser.txt.
 
 - Make a proper LICENSE.txt file, listing all licenses of components we use.
