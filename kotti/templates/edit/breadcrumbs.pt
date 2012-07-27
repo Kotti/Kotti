@@ -1,19 +1,19 @@
 <ul class="breadcrumb"
     xmlns:i18n="http://xml.zope.org/namespaces/i18n"
-    i18n:domain="Kotti">
+    i18n:domain="Kotti"
+    tal:define="breadcrumbs [i for i in api.breadcrumbs]"
+    tal:condition="len(breadcrumbs) > 1">
   <span tal:omit-tag="" i18n:translate="">You are here:</span>
-  <tal:repeat tal:repeat="item api.breadcrumbs">
+  <tal:repeat tal:repeat="item breadcrumbs">
     <li tal:define="first repeat.item.start; last repeat.item.end"
         class="${last and 'active' or None}">
 
-      <a tal:define="view_name api.find_edit_view(item)"
-         tal:omit-tag="not view_name or last"
-         href="${api.url(item, '@@' + view_name)}">
-        <span tal:condition="first" i18n:translate="">Home</span>
+      <a tal:omit-tag="last"
+         href="${api.url(item)}">
         <span tal:condition="not first">${item.title}</span>
       </a>
 
-      <span class="divider" tal:condition="not last">/</span>
+      <span class="divider" tal:condition="not (first or last)">/</span>
     </li>
   </tal:repeat>
 </ul>
