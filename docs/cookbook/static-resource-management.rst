@@ -57,6 +57,51 @@ Don't forget to add an ``entry_point`` to your package's setup.py:
 Fanstatic has many more useful options, such as being able to define additional minified resources for deployment.
 Please consult `Fanstatic's documentation`_ for a complete list of options.
 
+Overriding Kotti's default definitions
+--------------------------------------
+
+You can ovveride the resources to be included in the configuration file.
+
+The defaults are
+
+.. code-block:: ini
+
+    [app:kotti]
+
+    kotti.static.edit_needed = kotti.static.edit_needed
+    kotti.static.view_needed = kotti.static.view_needed
+
+which ist actually a shortcut for
+
+.. code-block:: ini
+
+    [app:kotti]
+
+    kotti.static.edit_needed =
+        kotti.static.edit_needed_js
+        kotti.static.edit_needed_css
+
+    kotti.static.view_needed =
+        kotti.static.view_needed_js
+        kotti.static.view_needed_css
+
+You may add as many ``kotti.static.NeededGroup``, ``fanstatic.Group`` or ``fanstatic.Resource`` (or actually anything that provides a ``.need()`` method) objects in dotted notation as you want.
+
+Say you want to completely abandon Kotti's CSS resources (and use your own for both view and edit views) but use Kotti's JS resources plus an additional JS resource defined within your app (only in edit views). Your configuration file might look like this:
+
+.. code-block:: ini
+
+    [app:kotti]
+
+    kotti.static.edit_needed =
+        kotti.static.edit_needed_js
+        myapp.static.js_resource
+        myapp.static.css_resource
+
+    kotti.static.view_needed =
+        kotti.static.view_needed_js
+        myapp.static.css_resource
+
 
 Using Kotti without Fanstatic
 -----------------------------

@@ -32,8 +32,6 @@ from kotti.resources import Content
 from kotti.security import get_user
 from kotti.security import has_permission
 from kotti.security import view_permitted
-from kotti.static import edit_needed
-from kotti.static import view_needed
 from kotti.views.form import get_appstruct
 from kotti.views.form import BaseFormView
 from kotti.views.form import AddFormView
@@ -146,11 +144,19 @@ class TemplateAPI(object):
 
     @reify
     def edit_needed(self):
-        return edit_needed.need()
+
+        if 'kotti.static.edit_needed' in self.S:
+            return [r.need() for r in self.S['kotti.static.edit_needed']]
+
+        return None
 
     @reify
     def view_needed(self):
-        return view_needed.need()
+
+        if 'kotti.static.view_needed' in self.S:
+            return [r.need() for r in self.S['kotti.static.view_needed']]
+
+        return None
 
     def macro(self, asset_spec, macro_name='main'):
         if self.bare and asset_spec in (
