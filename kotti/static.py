@@ -16,6 +16,7 @@ jquery_form_js = Resource(
     "scripts/jquery.form.js",
     depends=[jquery, ])
 
+
 # deform_bootstrap doesn't provide fanstatic resources itself
 # this should be moved to deform_bootstrap in the future
 deform_bootstrap_dir = resource_filename("deform_bootstrap", "static")
@@ -24,6 +25,7 @@ deform_bootstrap_js = Resource(
     lib_deform_bootstrap,
     "deform_bootstrap.js",
     depends=[deform_js, ])
+
 
 # Kotti's resources
 lib_kotti = Library("kotti", "static")
@@ -38,7 +40,7 @@ base_css = Resource(lib_kotti,
     minified="base.min.css")
 edit_css = Resource(lib_kotti,
     "edit.css",
-    depends=[bootstrap_responsive_css, ],
+    depends=[base_css, ],
     minified="edit.min.css")
 view_css = Resource(lib_kotti,
     "view.css",
@@ -56,43 +58,48 @@ class NeededGroup(object):
             raise ValueError("resources must be a list of fanstatic.Resource "
                 "and/or fanstatic.Group objects")
 
-        for resource in resources:
-            if not (isinstance(resource, (Resource, Group))):
-                raise ValueError("resources must be a list of "
-                    "fanstatic.Resource and/or fanstatic.Group objects")
+        self.resources = []
 
-        self.resources = resources
+        for resource in resources:
+            self.add(resource)
 
     def add(self, resource):
         """resource may be a:
             - fanstatic.Resource object
-            - fanstatic.Group object
-            - string with a full filesystem path to a CSS/JS file"""
+            - fanstatic.Group object"""
 
-        if isinstance(resource, Group) or isinstance(resource, Resource):
-            if resource not in self.resources:
-                self.resources.append(resource)
-        elif isinstance(resource, str):  # pragma: no cover
-            raise NotImplementedError
+        if isinstance(resource, self.__class__):
+            self.resources = self.resources + resource.resources
+        elif isinstance(resource, (Resource, Group)):
+            self.resources.append(resource)
         else:
-            raise ValueError("resource must be a fanstatic.Resource, "
-                "fanstatic.Group or string object")
+            raise ValueError("resource must be a NeededGroup,"
+                "fanstatic.Resource or fanstatic.Group object")
 
     def need(self):  # pragma: no cover
         # this is tested in fanstatic itself; we should add browser tests
         # for `view_needed` and `edit_needed` (see below)
         Group(self.resources).need()
 
+view_needed_css = NeededGroup([
+    view_css, ])
+view_needed_js = NeededGroup([
+    jquery,
+    bootstrap_js, ])
 view_needed = NeededGroup([
+    view_needed_css,
+    view_needed_js, ])
+
+edit_needed_css = NeededGroup([
+    edit_css, ])
+edit_needed_js = NeededGroup([
     jquery,
     bootstrap_js,
-    view_css])
-edit_needed = NeededGroup([
-    jquery,
-    bootstrap_js,
-    edit_css,
     tagit,
     kotti_js,
     timepicker,
     jquery_form_js,
-    deform_bootstrap_js, ])
+    deform_bootstrap_js])
+edit_needed = NeededGroup([
+    edit_needed_css,
+    edit_needed_js, ])
