@@ -12,7 +12,11 @@ Change History
   - ``python setup.py minify``
 
   The ``miniy`` command assumes, that all resources are in
-  ``kotti/static/``.
+  ``kotti/static/``. ``YUI compressor`` is used for compression
+  and will be automatically installed when running
+  ``python setup.py dev``. However, you still need a JVM on
+  your development machine to be able to use the ``minify``
+  command.
 
 - Make Document.body searchable (and therefore the search feature
   actually useful for the first time).
