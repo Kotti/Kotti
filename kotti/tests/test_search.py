@@ -32,10 +32,12 @@ class TestSearch(UnitTestBase):
         assert results[0]['name'] == u'doc1'
         assert results[0]['title'] == u'First Document'
         results = search_content(u'Document', request)
-        assert len(results) == 3
+        # The frontpage contains 'Documentation' in its body!
+        assert len(results) == 4
         assert results[1]['name'] == 'doc11'
         assert results[1]['title'] == 'Second Document'
         assert results[1]['path'] == '/doc1/doc11/'
+        assert results[-1]['path'] == '/'
 
     def test_search_file_description(self):
         from kotti.views.util import search_content
