@@ -4,7 +4,7 @@
       metal:define-macro="main">
   <head>
     <meta charset="utf-8" />
-	<title metal:define-slot="page-title">${api.page_title | api.site_title}</title>
+    <title metal:define-slot="page-title">${api.page_title | api.site_title}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content="${context.description | ''}" />
 
@@ -30,6 +30,7 @@
   </head>
 
   <body class="view-${request.view_name or 'default'} ${api.body_css_class} logged-in">
+    <nav tal:replace="api.render_template('kotti:templates/view/nav.pt')" />
     <div metal:define-slot="editor-bar"
          tal:condition="request.user is not None"
          tal:replace="api.render_template('kotti:templates/editor-bar.pt')" />

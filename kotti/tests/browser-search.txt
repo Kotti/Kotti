@@ -1,5 +1,5 @@
-kotti image browser tests
-=========================
+kotti search browser tests
+==========================
 
 Setup and Login
 ---------------
@@ -33,7 +33,7 @@ Add some documents
   True
 
   >>> browser.open(testing.BASE_URL)
-  >>> browser.getLink("Document").click()
+  >>> browser.getLink(url="/add_document").click()
 
   >>> ctrl("Title").value = u'Document 2'
   >>> ctrl("Description").value = u'And I am the second Document'
@@ -47,7 +47,7 @@ Search the documents
 
   >>> browser.open(testing.BASE_URL)
   >>> ctrl(name='search-term').value = u'Document 1'
-  >>> ctrl(name='search').click()
+  >>> ctrl(name='search-submit').click()
   >>> browser.url
   'http://localhost:6543/@@search-results'
 
@@ -59,7 +59,7 @@ Search the documents
 
   >>> browser.open(testing.BASE_URL)
   >>> ctrl(name='search-term').value = u'Document 2'
-  >>> ctrl(name='search').click()
+  >>> ctrl(name='search-submit').click()
   >>> u'<dd>I am the first Document' in browser.contents
   False
   >>> u'<dd>And I am the second Document' in browser.contents
@@ -68,7 +68,7 @@ Search the documents
 
   >>> browser.open(testing.BASE_URL)
   >>> ctrl(name='search-term').value = u'Document'
-  >>> ctrl(name='search').click()
+  >>> ctrl(name='search-submit').click()
   >>> u'<dd>I am the first Document' in browser.contents
   True
   >>> u'<dd>And I am the second Document' in browser.contents
@@ -76,7 +76,7 @@ Search the documents
 
   >>> browser.open(testing.BASE_URL)
   >>> ctrl(name='search-term').value = u'the second Document'
-  >>> ctrl(name='search').click()
+  >>> ctrl(name='search-submit').click()
   >>> u'<dd>I am the first Document' in browser.contents
   False
   >>> u'<dd>And I am the second Document' in browser.contents
