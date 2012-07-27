@@ -132,7 +132,7 @@ def main():
 
     # We need to turn these off, because they would access the
     # database, which may not be possible prior to the migration:
-    conf_defaults['kotti.populators'] = []
+    os.environ['KOTTI_USE_POPULATORS'] = '0'
     conf_defaults['kotti.root_factory'] = [lambda req: None]
 
     pyramid_env = bootstrap(arguments['<config_uri>'])

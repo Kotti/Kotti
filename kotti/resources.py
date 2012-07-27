@@ -415,8 +415,9 @@ def initialize_sql(engine, drop_all=False):
         stamp_heads()
 
     metadata.create_all(engine, tables=tables)
-    for populate in get_settings()['kotti.populators']:
-        populate()
+    if os.environ.get('KOTTI_USE_POPULATORS', '1') not in ('0', 'n'):
+        for populate in get_settings()['kotti.populators']:
+            populate()
     commit()
 
     return DBSession
