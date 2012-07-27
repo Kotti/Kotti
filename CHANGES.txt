@@ -4,6 +4,36 @@ Change History
 0.7 - Unreleased
 ----------------
 
+- Add a "minify" command to compress CSS and JS resources.
+
+  To use it run:
+
+  - ``python setup.py dev``
+  - ``python setup.py minify``
+
+  The ``miniy`` command assumes, that all resources are in
+  ``kotti/static/``. ``YUI compressor`` is used for compression
+  and will be automatically installed when running
+  ``python setup.py dev``. However, you still need a JVM on
+  your development machine to be able to use the ``minify``
+  command.
+
+- Make Document.body searchable (and therefore the search feature
+  actually useful for the first time).
+
+- Change the default layout
+
+  Kotti's new default look is now even closer to the Bootstrap
+  documentation, with the main nav bar at the very top and the
+  edit bar right below.
+
+  Upgrade note: if you have a customized main_template and want to
+  use the recent changes in that template, you need to swap
+  positions of ``nav.pt`` and ``editor-bar.pt`` ``api.render_template``
+  calls and remove the ``search.pt`` call from the main_template
+  (it's now called from within ``nav.pt``).
+  Everything else is completely optional.
+
 - Fix #89: Validate email address for uniqueness when user changes it.
 
 - Fix #91: Styling of search box.

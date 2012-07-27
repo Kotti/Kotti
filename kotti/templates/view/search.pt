@@ -1,7 +1,18 @@
-<div id="search" class="pull-right">
-  <form action="${api.url(api.root)}@@search-results" method="post" id="form-search">
-      <input type="text" name="search-term" />
-        <button type="submit" name="search" value="Search" class="btn"
-                i18n:attributes="value">&#8594;</button>
-  </form>
-</div>
+<form
+    class="navbar-search pull-right"
+    action="${api.url(api.root)}@@search-results"
+    method="post"
+    id="form-search">
+    <input
+        type="text"
+        name="search-term"
+        class="search-query"
+        placeholder="Search..." />
+    <button
+        type="submit"
+        name="search-submit"
+        value="search"
+        class="btn"
+        style="display: none;"
+        i18n:translate="">&#8594;</button>
+</form>
