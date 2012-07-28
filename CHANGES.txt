@@ -4,6 +4,9 @@ Change History
 0.7 - Unreleased
 ----------------
 
+- Fix settings: only values for kotti.* keys should be converted to
+  unicode strings.
+
 - Add a "minify" command to compress CSS and JS resources.
 
   To use it run:
