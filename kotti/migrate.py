@@ -1,3 +1,44 @@
+"""This module aims to make it easier to run the Alembic migration
+scripts of Kotti and Kotti add-ons by providing a uniform access.
+
+Commands herein will typically be called by the console script
+``kotti-migrate`` (see the docstring of that command below).
+
+Kotti stores the current revision of its migration in table
+``kotti_alembic_versions``.  The convention here is
+``<packagename>_alembic_versions``.  You should normally not need to
+worry about the name of this table, as it is created and managed
+automatically through this module.  If, however, you plan to use your
+own alembic.ini configuration file for your add-on or application,
+keep in mind to configure a table name as described above.  The table
+name can be set using Alembic's ``version_table`` option.
+
+Kotti has start-up code that will create the database from scratch if
+it doesn't exist.  This code will also call this module's function
+``stamp_heads`` to set the current revision of all migrations
+registered with this module to the latest.  This assumes that when we
+create the database from scratch (using ``metadata.create_all``), we
+don't need to run any of the past migrations.
+
+Unfortunately, this won't help in the situation where a user adds an
+add-on with migrations to the Kotti site _after_ the database was
+initialized for the first time.  In this case, users of the add-on
+will need to run ``kotti-migrate stamp_head
+--location=yourpackage:alembic``, or the add-on author will have to
+write equivalent code somewhere in their populate hook.
+
+Add-on authors can register their Alembic scripts with this module by
+adding their Alembic 'script directory' location to the
+``kotti.alembic_dirs`` setting.  An example::
+
+  def kotti_configure(settings):
+      # ...
+      settings['kotti.alembic_dirs'] += ' kotti_contactform:alembic'
+
+``kotti-migrate`` commands 'list_all', 'upgrade_all' and
+'stamp_heads' will then include the add-on.
+"""
+
 import os
 import pkg_resources
 
@@ -65,7 +106,7 @@ class PackageEnvironment(object):
 
 
 def get_locations():
-    conf_str = get_settings()['kotti.alembic_script_locations']
+    conf_str = get_settings()['kotti.alembic_dirs']
     return [l.strip() for l in conf_str.split() if l.strip()]
 
 
@@ -82,6 +123,11 @@ def stamp_head(location=DEFAULT_LOCATION, revision=None):
         return []
 
     pkg_env.run_env(do_stamp)
+
+
+def stamp_heads():
+    for location in get_locations():
+        stamp_head(location)
 
 
 def upgrade(location=DEFAULT_LOCATION):

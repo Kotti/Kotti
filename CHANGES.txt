@@ -34,16 +34,22 @@ Change History
   (it's now called from within ``nav.pt``).
   Everything else is completely optional.
 
+- Add migrations via Alembic.  A new script ``kotti-migrate`` will now
+  help you manage database upgrades of Kotti and Kotti add-ons.  Run
+  ``kotti-migrate <your.ini> upgrade`` to upgrade the Kotti database
+  to the latest version.
+
+  Add-on authors should see the ``kotti.migrate`` module's docstring
+  for more details.
+
+- Add a 'Content.state' string column for use as the item's workflow
+  state.
+
 - Fix #89: Validate email address for uniqueness when user changes it.
 
 - Fix #91: Styling of search box.
 
 - Fix #104: Make fanstatic resources completely overridable.
-
-- Add migrations via alembic.  Addons should add their alembic
-  directory to 'kotti.alembic_script_locations'.
-
-- Added a 'Content.state' string column for workflow.
 
 - Enabled deferred loading on File.data column.
 

@@ -82,7 +82,7 @@ conf_defaults = {
     'kotti.max_file_size': '10',
     'kotti.static.edit_needed': 'kotti.static.edit_needed',
     'kotti.static.view_needed': 'kotti.static.view_needed',
-    'kotti.alembic_script_locations': 'kotti:alembic',
+    'kotti.alembic_dirs': 'kotti:alembic',
     'pyramid_deform.template_search_path': 'kotti:templates/deform',
     }
 
