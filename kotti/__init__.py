@@ -140,7 +140,7 @@ def base_configure(global_config, **settings):
         settings.setdefault(key, value)
 
     for key, value in settings.items():
-        if key.startswith('kotti.') and isinstance(value, basestring):
+        if key.startswith('kotti') and isinstance(value, basestring):
             settings[key] = unicode(value, 'utf8')
 
     # Allow extending packages to change 'settings' w/ Python:
