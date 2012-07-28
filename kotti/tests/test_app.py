@@ -186,7 +186,7 @@ class TestApp(UnitTestBase):
         settings['kotti.site_title'] = 'K\xc3\xb6tti'  # Kötti
         settings['kotti_foo.site_title'] = 'K\xc3\xb6tti'
         settings['foo.site_title'] = 'K\xc3\xb6tti'
-        
+
         main({}, **settings)
         assert get_settings()['kotti.site_title'] == u'K\xf6tti'
         assert get_settings()['kotti_foo.site_title'] == u'K\xf6tti'
