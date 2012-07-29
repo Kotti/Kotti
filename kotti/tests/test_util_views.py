@@ -388,6 +388,13 @@ class TestTemplateAPI(UnitTestBase):
         assert result.startswith('https://secure.gravatar.com/avatar/'
                                 'd3aeefdd7afe103ab70875172135cab7')
 
+    def test_avatar_url_request_user(self):
+        api = self.make()
+        api.request.user = Dummy(email='daniel.nouri@gmail.com')
+        result = api.avatar_url()
+        assert result.startswith('https://secure.gravatar.com/avatar/'
+                                'd3aeefdd7afe103ab70875172135cab7')
+
 
 class TestViewUtil(UnitTestBase):
     def test_add_renderer_globals_json(self):

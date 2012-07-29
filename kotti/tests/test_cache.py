@@ -40,7 +40,7 @@ class TestSetCacheHeaders(UnitTestBase):
     def test_caching_policy_chooser_raises(self):
         from kotti.views.cache import set_cache_headers
 
-        def raiser():
+        def raiser(*args, **kw):
             raise Exception()
 
         with patch('kotti.views.cache.caching_policy_chooser') as chooser:
@@ -48,7 +48,9 @@ class TestSetCacheHeaders(UnitTestBase):
 
             event = MagicMock()
             event.response.headers.get.return_value = None
-            set_cache_headers(event)
+
+            with patch('kotti.views.cache.logger'):
+                set_cache_headers(event)
 
         chooser.assert_called_with(
             event.request.context, event.request, event.response)
