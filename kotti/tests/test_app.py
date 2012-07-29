@@ -1,3 +1,4 @@
+from unittest import TestCase
 import warnings
 
 from pyramid.interfaces import IAuthenticationPolicy
@@ -196,3 +197,9 @@ class TestApp(UnitTestBase):
         settings['kotti.search_content'] = 'kotti.tests.test_app._dummy_search'
         main({}, **settings)
         assert search_content(u"Nuno") == u"Not found. Sorry!"
+
+
+class TestGetVersion(TestCase):
+    def test_it(self):
+        from kotti import get_version
+        assert isinstance(get_version(), str)

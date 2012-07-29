@@ -5,6 +5,7 @@ from mock import MagicMock
 from pyramid.request import Response
 from pytest import raises
 
+from kotti.testing import Dummy
 from kotti.testing import DummyRequest
 from kotti.testing import UnitTestBase
 
@@ -379,6 +380,20 @@ class TestTemplateAPI(UnitTestBase):
         api = self.make()
         self.assertEqual(api.get_type('Document'), Document)
         self.assertEqual(api.get_type('NoExist'), None)
+
+    def test_avatar_url(self):
+        api = self.make()
+        user = Dummy(email='daniel.nouri@gmail.com')
+        result = api.avatar_url(user)
+        assert result.startswith('https://secure.gravatar.com/avatar/'
+                                'd3aeefdd7afe103ab70875172135cab7')
+
+    def test_avatar_url_request_user(self):
+        api = self.make()
+        api.request.user = Dummy(email='daniel.nouri@gmail.com')
+        result = api.avatar_url()
+        assert result.startswith('https://secure.gravatar.com/avatar/'
+                                'd3aeefdd7afe103ab70875172135cab7')
 
 
 class TestViewUtil(UnitTestBase):

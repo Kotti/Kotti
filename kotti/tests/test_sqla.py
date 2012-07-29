@@ -81,6 +81,22 @@ class TestNestedMutationDict(TestCase):
         assert isinstance(wrapper[0]['children'], NestedMutationList)
         assert changed.call_count == 0
 
+    def test_setdefault_dict(self):
+        from kotti.sqla import NestedMutationDict
+        mdict = NestedMutationDict({})
+        assert isinstance(mdict.setdefault('bar', {}), NestedMutationDict)
+
+    def test_setdefault_list(self):
+        from kotti.sqla import NestedMutationDict
+        from kotti.sqla import NestedMutationList
+        mdict = NestedMutationDict({})
+        assert isinstance(mdict.setdefault('bar', []), NestedMutationList)
+
+    def test_setdefault_parent(self):
+        from kotti.sqla import NestedMutationDict
+        mdict = NestedMutationDict({})
+        assert mdict.setdefault('bar', []).__parent__ is mdict
+
 
 class TestJsonType(TestCase):
     def make(self):
@@ -162,21 +178,3 @@ class TestMutationList(TestCase):
         from kotti.sqla import MutationList
         mlist = MutationList(['foo'])
         assert ['bar'] + mlist == ['bar', 'foo']
-
-
-class TestNestedMutationDict(TestCase):
-    def test_setdefault_dict(self):
-        from kotti.sqla import NestedMutationDict
-        mdict = NestedMutationDict({})
-        assert isinstance(mdict.setdefault('bar', {}), NestedMutationDict)
-
-    def test_setdefault_list(self):
-        from kotti.sqla import NestedMutationDict
-        from kotti.sqla import NestedMutationList
-        mdict = NestedMutationDict({})
-        assert isinstance(mdict.setdefault('bar', []), NestedMutationList)
-
-    def test_setdefault_parent(self):
-        from kotti.sqla import NestedMutationDict
-        mdict = NestedMutationDict({})
-        assert mdict.setdefault('bar', []).__parent__ is mdict
