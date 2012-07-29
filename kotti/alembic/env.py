@@ -1,17 +1,7 @@
-from __future__ import with_statement
 from alembic import context
 from sqlalchemy import engine_from_config, pool
 
 from kotti import metadata as target_metadata
-
-
-def run_migrations_offline():
-    config = context.config
-    url = config.get_main_option("sqlalchemy.url")
-    context.configure(url=url)
-
-    with context.begin_transaction():
-        context.run_migrations()
 
 
 def run_migrations_online():
@@ -36,12 +26,15 @@ def run_migrations_online():
         connection.close()
 
 
-try:
+try:  # Alembic's "if __name__ == '__main__'"
     offline_mode = context.is_offline_mode()
 except AttributeError:
     pass
 else:
-    if offline_mode:
-        run_migrations_offline()
-    else:
-        run_migrations_online()
+    if offline_mode:  # pragma: no cover
+        raise ValueError(
+            "\nNo support for Alembic's offline mode at this point."
+            "\nYou may want to write your own env.py script to use "
+            "\n'offline mode'."
+            )
+    run_migrations_online()

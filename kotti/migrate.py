@@ -38,6 +38,7 @@ adding their Alembic 'script directory' location to the
 ``kotti-migrate`` commands 'list_all', 'upgrade_all' and
 'stamp_heads' will then include the add-on.
 """
+from __future__ import absolute_import
 
 import os
 import pkg_resources
@@ -72,8 +73,8 @@ class ScriptDirectoryWithDefaultEnvPy(ScriptDirectory):
 class PackageEnvironment(object):
     def __init__(self, location):
         self.location = location
-        self.config = self.make_config(location)
-        self.script_dir = self.make_script_dir(self.config)
+        self.config = self._make_config(location)
+        self.script_dir = self._make_script_dir(self.config)
 
     @property
     def pkg_name(self):
@@ -93,13 +94,13 @@ class PackageEnvironment(object):
             ):
             self.script_dir.run_env()
 
-    def make_config(self, location):
+    def _make_config(self, location):
         cfg = Config()
         cfg.set_main_option("script_location", location)
         cfg.set_main_option("sqlalchemy.url", get_settings()['sqlalchemy.url'])
         return cfg
 
-    def make_script_dir(self, alembic_cfg):
+    def _make_script_dir(self, alembic_cfg):
         script_dir = ScriptDirectory.from_config(alembic_cfg)
         script_dir.__class__ = ScriptDirectoryWithDefaultEnvPy  # O_o
         return script_dir
@@ -181,15 +182,40 @@ def main():
 
     Usage:
       kotti-migrate <config_uri> list_all
-      kotti-migrate <config_uri> upgrade [--location=<location>]
+      kotti-migrate <config_uri> upgrade [--scripts=<location>]
       kotti-migrate <config_uri> upgrade_all
-      kotti-migrate <config_uri> stamp_head [--location=<location>] [--rev=<rev>]
+      kotti-migrate <config_uri> stamp_head [--scripts=<location>] [--rev=<rev>]
+
+    o 'list_all' prints a list of all available migrations of Kotti
+      and registered add-ons.
+
+    o 'upgrade' will run Kotti's upgrades to upgrade the database to
+    the latest version.
+
+      Use '--scripts=kotti_myaddon:alembic' to run the upgrades of the
+      'kotti_myaddon' package instead.
+
+    o 'upgrade_all' will run all upgrades of all packages registered
+      with Kotti.
+
+    o 'stamp_head' allows you to manually set the stamped version to
+      the latest version inside the 'kotti_alembic_version' table,
+      that is, without actually running any migrations.
+
+      You may use this command for a different package by using the
+      '--scripts' option.
 
     Options:
       -h --help     Show this screen.
     """
-    # We need to turn these off, because they would access the
-    # database, which may not be possible prior to the migration:
+    # We need to turn off populators and root_factory when we run
+    # migrations, because they would access the database, which may
+    # not be possible prior to the migration.
+    #
+    # Unfortunately, we're not able to just set the 'kotti.populators'
+    # setting to an empty list.  Since add-ons might add to this list
+    # again later, when we call 'bootstrap' (and thus their
+    # 'includeme' function).
     os.environ['KOTTI_DISABLE_POPULATORS'] = '1'
     conf_defaults['kotti.root_factory'] = [lambda req: None]
 
@@ -197,7 +223,7 @@ def main():
     pyramid_env = bootstrap(arguments['<config_uri>'])
 
     args = ()
-    args_with_location = (arguments['--location'] or DEFAULT_LOCATION,)
+    args_with_location = (arguments['--scripts'] or DEFAULT_LOCATION,)
     if arguments['list_all']:
         func = list_all
     elif arguments['upgrade']:
