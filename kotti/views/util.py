@@ -1,5 +1,4 @@
 from collections import defaultdict
-from collections import OrderedDict
 from datetime import datetime
 import hashlib
 import urllib
@@ -42,7 +41,6 @@ from kotti.views.form import BaseFormView
 from kotti.views.form import AddFormView
 from kotti.views.form import EditFormView
 from kotti.views.slots import slot_events
-from kotti.workflow import get_workflow
 
 
 def template_api(context, request, **kwargs):
