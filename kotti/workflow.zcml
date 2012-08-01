@@ -1,0 +1,79 @@
+<!-- Kotti's default workflow file.
+
+To use, set 'kotti.use_default_workflow = 1' in your configuration file.
+
+To use an alternative workflow.zcml, add code like this in your includeme
+function::
+
+  config.load_zcml('workflow.zcml')
+
+If your site already has content and you configure it use a workflow for the
+first time, or a different workflow, run the 'kotti-reset-workflow' command
+to reset all your content's workflow.
+
+-->
+
+<configure xmlns="http://namespaces.repoze.org/bfg"
+           xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+           i18n:domain="Kotti">
+
+  <include package="repoze.workflow" file="meta.zcml"/>
+
+  <workflow
+      type="security"
+      name="simple"
+      state_attr="state"
+      initial_state="private"
+      content_types="kotti.resources.IContent"
+      permission_checker="pyramid.security.has_permission"
+      >
+
+    <state name="private" callback="kotti.workflow.workflow_callback">
+      
+      <key name="title" value="_(u'Private')" />
+      <key name="order" value="1" />
+
+      <key name="inherit" value="0" />
+      <key name="system.Everyone" value="" />
+      <key name="role:viewer" value="view" />
+      <key name="role:editor" value="view, add, edit, state_change" />
+      <key name="role:owner" value="view, add, edit, manage, state_change" />
+
+    </state>
+
+    <state name="public" callback="kotti.workflow.workflow_callback">
+      
+      <key name="title" value="_(u'Public')" />
+      <key name="order" value="2" />
+
+      <key name="inherit" value="0" />
+      <key name="system.Everyone" value="view" />
+      <key name="role:viewer" value="view" />
+      <key name="role:editor" value="view, add, edit, state_change" />
+      <key name="role:owner" value="view, add, edit, manage, state_change" />
+
+    </state>
+
+  <transition
+      name="private_to_public"
+      from_state="private"
+      to_state="public"
+      permission="state_change">
+
+    <key name="title" value="_(u'publish')" />
+
+  </transition>
+
+  <transition
+      name="public_to_private"
+      from_state="public"
+      to_state="private"
+      permission="state_change">
+
+    <key name="title" value="_(u'retract')" />
+
+  </transition>
+
+  </workflow>
+
+</configure>

@@ -31,6 +31,14 @@ span.brand a, span.brand a:hover {
   }
 }
 
+.state-public {
+  color: #468847;
+}
+
+.state-private {
+  color: #B94A48;
+}
+
 /* @group Subnav */
 
 .subnav {

@@ -1,0 +1,14 @@
+<li class="dropdown" 
+    tal:condition="current_state"
+    i18n:domain="Kotti">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown"
+     tal:condition="transitions">
+    <span class="state-${current_state['name']}">${current_state['title']}</span>
+    <b class="caret"></b>
+  </a>
+  <ul class="dropdown-menu">
+    <li tal:repeat="trans transitions">
+      <a href="${api.url(context, '@@workflow-change', query={'new_state': trans['to_state']})}">${trans['title']}</a>
+    </li>
+  </ul>
+</li>

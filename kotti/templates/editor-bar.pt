@@ -22,6 +22,9 @@
       <tal:condition tal:condition="api.has_permission('add')">
         <ul tal:replace="api.render_view('add-dropdown')" />
       </tal:condition>
+      <tal:condition tal:condition="api.has_permission('edit')">
+        <ul tal:replace="api.render_view('workflow-dropdown')" />
+      </tal:condition>
     </tal:condition>
 
     <li tal:condition="api.user is not None" class="dropdown pull-right">

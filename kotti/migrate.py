@@ -47,11 +47,10 @@ from alembic.config import Config
 from alembic.environment import EnvironmentContext
 from alembic.script import ScriptDirectory
 from alembic.util import load_python_file
-from docopt import docopt
-from pyramid.paster import bootstrap
 
 from kotti import conf_defaults
 from kotti import get_settings
+from kotti.util import command
 
 KOTTI_SCRIPT_DIR = pkg_resources.resource_filename('kotti', 'alembic')
 DEFAULT_LOCATION = 'kotti:alembic'
@@ -177,7 +176,7 @@ def list_all():
         print
 
 
-def main():
+def kotti_migrate_command():
     __doc__ = """Migrate Kotti and Kotti add-ons.
 
     Usage:
@@ -216,26 +215,29 @@ def main():
     # setting to an empty list.  Since add-ons might add to this list
     # again later, when we call 'bootstrap' (and thus their
     # 'includeme' function).
+    save_conf_defaults = conf_defaults.copy()
+
     os.environ['KOTTI_DISABLE_POPULATORS'] = '1'
     conf_defaults['kotti.root_factory'] = [lambda req: None]
 
-    arguments = docopt(__doc__)
-    pyramid_env = bootstrap(arguments['<config_uri>'])
-
-    args = ()
-    args_with_location = (arguments['--scripts'] or DEFAULT_LOCATION,)
-    if arguments['list_all']:
-        func = list_all
-    elif arguments['upgrade']:
-        func = upgrade
-        args = args_with_location
-    elif arguments['upgrade_all']:
-        func = upgrade_all
-    elif arguments['stamp_head']:
-        func = stamp_head
-        args = args_with_location + (arguments['--rev'],)
+    def callback(arguments):
+        args = ()
+        args_with_location = (arguments['--scripts'] or DEFAULT_LOCATION,)
+        if arguments['list_all']:
+            func = list_all
+        elif arguments['upgrade']:
+            func = upgrade
+            args = args_with_location
+        elif arguments['upgrade_all']:
+            func = upgrade_all
+        elif arguments['stamp_head']:
+            func = stamp_head
+            args = args_with_location + (arguments['--rev'],)
+        func(*args)
 
     try:
-        func(*args)
+        return command(callback, __doc__)
     finally:
-        pyramid_env['closer']()
+        conf_defaults.clear()
+        conf_defaults.update(save_conf_defaults)
+        del os.environ['KOTTI_DISABLE_POPULATORS']

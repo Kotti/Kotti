@@ -179,8 +179,8 @@ _DEFAULT_USER_MANAGEMENT_ROLES = USER_MANAGEMENT_ROLES[:]
 SITE_ACL = [
     ['Allow', 'system.Everyone', ['view']],
     ['Allow', 'role:viewer', ['view']],
-    ['Allow', 'role:editor', ['view', 'add', 'edit']],
-    ['Allow', 'role:owner', ['view', 'add', 'edit', 'manage']],
+    ['Allow', 'role:editor', ['view', 'add', 'edit', 'state_change']],
+    ['Allow', 'role:owner', ['view', 'add', 'edit', 'manage', 'state_change']],
     ]
 
 

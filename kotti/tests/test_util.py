@@ -1,5 +1,7 @@
 from unittest import TestCase
 
+from mock import Mock
+from mock import patch
 from pyramid.registry import Registry
 
 from kotti.testing import DummyRequest
@@ -72,3 +74,20 @@ class TestTitleToName(TestCase):
         from kotti.util import disambiguate_name
         assert disambiguate_name(u'foo') == u'foo-1'
         assert disambiguate_name(u'foo-3') == u'foo-4'
+
+
+class TestCommand(UnitTestBase):
+    def test_it(self):
+        from kotti.util import command
+
+        func = Mock()
+        closer = Mock()
+        with patch('kotti.util.docopt') as docopt:
+            with patch('kotti.util.bootstrap') as bootstrap:
+                docopt.return_value = {'<config_uri>': 'uri'}
+                bootstrap.return_value = {'closer': closer}
+                assert command(func, 'doc') == 0
+                func.assert_called_with({'<config_uri>': 'uri'})
+                docopt.assert_called_with('doc')
+                bootstrap.assert_called_with('uri')
+                assert closer.call_count == 1
