@@ -185,9 +185,13 @@ class TestApp(UnitTestBase):
 
         settings = self.required_settings()
         settings['kotti.site_title'] = 'K\xc3\xb6tti'  # Kötti
+        settings['kotti_foo.site_title'] = 'K\xc3\xb6tti'
+        settings['foo.site_title'] = 'K\xc3\xb6tti'
 
         main({}, **settings)
-        self.assertEqual(get_settings()['kotti.site_title'], u'K\xf6tti')
+        assert get_settings()['kotti.site_title'] == u'K\xf6tti'
+        assert get_settings()['kotti_foo.site_title'] == u'K\xf6tti'
+        assert get_settings()['foo.site_title'] == 'K\xc3\xb6tti'
 
     def test_search_content(self):
         from kotti import main
