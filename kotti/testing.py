@@ -3,6 +3,7 @@ from unittest import TestCase
 
 from pyramid import testing
 from pyramid.config import DEFAULT_RENDERERS
+from pyramid.events import NewResponse
 from pyramid.security import ALL_PERMISSIONS
 import transaction
 
@@ -115,6 +116,16 @@ class EventTestBase(TestCase):
 # Functional ----
 
 
+def _functional_includeme(config):
+    from kotti import DBSession
+
+    def expire(event):
+        DBSession.flush()
+        DBSession.expire_all()
+
+    config.add_subscriber(expire, NewResponse)
+
+
 def setUpFunctional(global_config=None, **settings):
     from kotti import main
     import wsgi_intercept.zope_testbrowser
@@ -128,6 +139,7 @@ def setUpFunctional(global_config=None, **settings):
         'kotti.site_title': 'Website des Kottbusser Tors',  # for mailing
         'kotti.populators': 'kotti.testing._populator',
         'mail.default_sender': 'kotti@localhost',
+        'pyramid.includes': 'kotti.testing._functional_includeme',
         }
     _settings.update(settings)
 
