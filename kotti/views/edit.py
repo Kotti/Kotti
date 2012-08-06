@@ -90,10 +90,10 @@ def workflow(context, request):
     wf = get_workflow(context)
     if wf is not None:
         state_info = _eval_titles(wf.state_info(context, request))
-        trans_info = _eval_titles(wf.get_transitions(context, request))
         curr_state = [i for i in state_info if i['current']][0]
+        trans_info = wf.get_transitions(context, request)
         return {
-            'states': state_info,
+            'states': dict([(i['name'], i) for i in state_info]),
             'transitions': trans_info,
             'current_state': curr_state,
             }

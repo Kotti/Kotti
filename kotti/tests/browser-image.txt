@@ -4,8 +4,9 @@ kotti image browser tests
 Setup and Login
 ---------------
   >>> from kotti import testing
-  >>> tools = testing.setUpFunctional(
-  ...     **{'pyramid.includes': 'kotti.views.slots.includeme_local_navigation', })
+  >>> tools = testing.setUpFunctional(**{
+  ...     'pyramid.includes': 'kotti.views.slots.includeme_local_navigation',
+  ...     })
   >>> browser = tools['Browser']()
   >>> ctrl = browser.getControl
 

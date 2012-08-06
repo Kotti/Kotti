@@ -24,8 +24,8 @@ class TestWorkflow(EventTestBase, UnitTestBase):
         info.workflow.initial_state = 'bar'
         info.workflow._state_data = {
             "next_state": {
-                "role:me": "myfirstpermission, mysecondpermission",
-                "role:you": "yourpermission , ",
+                "role:me": "myfirstpermission mysecondpermission",
+                "role:you": " \t yourpermission ",
                 },
             }
         workflow_callback(context, info)
@@ -47,8 +47,8 @@ class TestWorkflow(EventTestBase, UnitTestBase):
         info.workflow.initial_state = 'bar'
         info.workflow._state_data = {
             "next_state": {
-                "role:me": "myfirstpermission, mysecondpermission",
-                "role:you": "yourpermission , ",
+                "role:me": "myfirstpermission mysecondpermission",
+                "role:you": " \t yourpermission ",
                 "inherit": "true",
                 },
             }
@@ -127,15 +127,14 @@ class TestDefaultWorkflow(FunctionalTestBase):
     def setUp(self):
         from kotti.resources import get_root
 
-        super(TestDefaultWorkflow, self).setUp(
-            **{'kotti.use_default_workflow': '1'})
+        super(TestDefaultWorkflow, self).setUp()
         self.root = get_root()
 
-    def make_content(self):
+    def make_document(self):
         from kotti import DBSession
-        from kotti.resources import Content
+        from kotti.resources import Document
 
-        content = self.root['content'] = Content()
+        content = self.root['document'] = Document()
         DBSession.flush()
         DBSession.refresh(content)
         return content
@@ -150,7 +149,7 @@ class TestDefaultWorkflow(FunctionalTestBase):
     def test_workflow_new_content(self):
         from kotti.workflow import get_workflow
 
-        content = self.make_content()
+        content = self.make_document()
         wf = get_workflow(content)
         assert wf.name == u'simple'
         assert content.state == u'private'
@@ -161,7 +160,7 @@ class TestDefaultWorkflow(FunctionalTestBase):
 
     def test_workflow_transition(self):
         from kotti.workflow import get_workflow
-        content = self.make_content()
+        content = self.make_document()
         wf = get_workflow(content)
         wf.transition_to_state(content, None, u'public')
         assert content.state == u'public'
@@ -170,7 +169,7 @@ class TestDefaultWorkflow(FunctionalTestBase):
         from kotti.workflow import get_workflow
         from kotti.workflow import reset_workflow
 
-        content = self.make_content()
+        content = self.make_document()
         wf = get_workflow(content)
         wf.transition_to_state(content, None, u'public')
         assert content.state == u'public'
@@ -184,7 +183,7 @@ class TestDefaultWorkflow(FunctionalTestBase):
         from kotti.workflow import get_workflow
         from kotti.workflow import reset_workflow
 
-        content = self.make_content()
+        content = self.make_document()
         wf = get_workflow(content)
         wf.transition_to_state(content, None, u'public')
         assert content.state == u'public'

@@ -3,7 +3,7 @@ Kotti browser tests for the default workflow
 
   >>> from kotti import testing
   >>> from kotti import DBSession
-  >>> tools = testing.setUpFunctional(**{'kotti.use_default_workflow': '1'})
+  >>> tools = testing.setUpFunctional()
   >>> browser = tools['Browser']()
   >>> ctrl = browser.getControl
   >>> browser_anonymous = tools['Browser']()
@@ -27,15 +27,9 @@ make the front page private.  First log in:
 
 Now make private:
 
-  >>> browser.getLink("retract").click()
+  >>> browser.getLink("Make Private").click()
   >>> "Your changes have been saved" in browser.contents
   True
-
-A limitation of how we handle the ``role:admin`` special role in the
-``__acl__`` is that we have to call ``expire_all`` at this point in
-our doctest:
-
-  >>> DBSession.expire_all()
 
 The administrator can still see the page, but the anonymous user
 can't:
@@ -49,7 +43,7 @@ can't:
 
 Make the front page public again:
 
-  >>> browser.getLink("publish").click()
+  >>> browser.getLink("Make Public").click()
   >>> "Your changes have been saved" in browser.contents
   True
   >>> browser_anonymous.reload()

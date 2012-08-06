@@ -52,7 +52,7 @@ def workflow_callback(context, info):
     # This could definitely be cached...
     for key, value in state_data.items():
         if key.startswith('role:') or key == 'system.Everyone':
-            for perm in [p.strip() for p in value.split(',') if p.strip()]:
+            for perm in value.split():
                 acl.append(("Allow", key, perm))
 
     if state_data.get('inherit', '0').lower() not in TRUE_VALUES:
