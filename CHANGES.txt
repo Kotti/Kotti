@@ -4,25 +4,11 @@ Change History
 0.7 - Unreleased
 ----------------
 
-- Fix settings: only values for kotti* keys should be converted to
-  unicode strings.
-
-- Add a "minify" command to compress CSS and JS resources.
-
-  To use it run:
-
-  - ``python setup.py dev``
-  - ``python setup.py minify``
-
-  The ``miniy`` command assumes, that all resources are in
-  ``kotti/static/``. ``YUI compressor`` is used for compression
-  and will be automatically installed when running
-  ``python setup.py dev``. However, you still need a JVM on
-  your development machine to be able to use the ``minify``
-  command.
-
-- Make Document.body searchable (and therefore the search feature
-  actually useful for the first time).
+- Add workflow support based on ``repoze.workflow``.  A simple
+  workflow is included in ``workflow.zcml`` and is active by default.
+  Use ``kotti.use_workflow = 0`` to deactivate.  The workflow support
+  adds a drop-down that allows users with ``state_change`` permission
+  to modify the workflow state.
 
 - Change the default layout
 
@@ -37,19 +23,33 @@ Change History
   (it's now called from within ``nav.pt``).
   Everything else is completely optional.
 
-- Add migrations via Alembic.  A new script ``kotti-migrate`` will now
-  help you manage database upgrades of Kotti and Kotti add-ons.  Run
+- Add migrations via Alembic.  A new script ``kotti-migrate`` helps
+  with managing database upgrades of Kotti and Kotti add-ons.  Run
   ``kotti-migrate <your.ini> upgrade`` to upgrade the Kotti database
   to the latest version.
 
   Add-on authors should see the ``kotti.migrate`` module's docstring
   for more details.
 
-- Add workflow support based on ``repoze.workflow``.  A simple
-  workflow is included in ``workflow.zcml`` and can be activated by
-  setting ``kotti.use_default_workflow = 1`` in the configuration
-  file.  This will add a drop-down that allows users with
-  ``state_change`` permission to modify the workflow state.
+- Make ``Document.body`` searchable (and therefore the search feature
+  actually useful for the first time).
+
+- Add a "minify" command to compress CSS and JS resources.
+
+  To use it run::
+
+    python setup.py dev
+    python setup.py minify
+
+  The ``minify`` command assumes, that all resources are in
+  ``kotti/static/``. ``YUI compressor`` is used for compression
+  and will be automatically installed when running
+  ``python setup.py dev``. However, you still need a JVM on
+  your development machine to be able to use the ``minify``
+  command.
+
+- Fix settings: only values for kotti* keys should be converted to
+  unicode strings.
 
 - Fix #89: Validate email address for uniqueness when user changes it.
 
@@ -67,20 +67,16 @@ Migrations
 
     $ bin/kotti-migrate <myconfig.ini> upgrade
 
-- If you want to use the new workflow which adds a private/public flag
-  to all content types, you must add this line to your ``.ini``
-  configuration file ::
+  Make sure you **backup** your database before running the migration!
 
-    kotti.use_default_workflow = 1
+- Upgrading to 0.7 will initialize workfow state and permissions for
+  all your content objects, unless you've overwritten
+  ``kotti-use_workflow`` to not use a workflow (use ``0``) or a custom
+  one.
 
-  Furthermore, you'll need to run the ``kotti-reset-workflow`` script
-  from the command line::
-
-    $ bin/kotti-reset-workflow <myconfig.ini>
-
-  This will reset all your pages to the default workflow state, which
-  is ``private``.
-
+  It is **important** that sites that have custom permissions,
+  e.g. custom modifications to SITE_ACL, turn off workflow support
+  prior to running the upgrade script.
 
 0.7a4 - 2012-06-25
 ------------------
