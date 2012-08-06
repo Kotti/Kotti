@@ -29,6 +29,7 @@ from kotti import get_settings
 from kotti import DBSession
 from kotti.util import disambiguate_name
 disambiguate_name  # BBB
+from kotti.util import _
 from kotti.events import objectevent_listeners
 from kotti.resources import Content
 from kotti.resources import Document

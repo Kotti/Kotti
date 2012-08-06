@@ -23,6 +23,8 @@ DBSession = scoped_session(sessionmaker(extension=ZopeTransactionExtension()))
 Base = declarative_base(cls=KottiBase)
 Base.metadata = metadata
 Base.query = DBSession.query_property()
+TRUE_VALUES = ('1', 'y', 'yes', 't', 'true')
+FALSE_VALUES = ('0', 'n', 'no', 'f', 'false', 'none')
 
 
 def authtkt_factory(**settings):
@@ -76,6 +78,7 @@ conf_defaults = {
     'kotti.principals_factory': 'kotti.security.principals_factory',
     'kotti.caching_policy_chooser': (
         'kotti.views.cache.default_caching_policy_chooser'),
+    'kotti.use_workflow': 'kotti:workflow.zcml',
     'kotti.date_format': 'medium',
     'kotti.datetime_format': 'medium',
     'kotti.time_format': 'medium',
@@ -169,6 +172,9 @@ def base_configure(global_config, **settings):
     config = Configurator(settings=settings)
     config.begin()
 
+    config.hook_zca()
+    config.include('pyramid_zcml')
+
     config.registry.settings['pyramid.includes'] = pyramid_includes
 
     # Include modules listed in 'kotti.base_includes':
@@ -217,5 +223,9 @@ def includeme(config):
         config.override_asset(to_override='kotti', override_with=override)
 
     config.add_translation_dirs('kotti:locale')
+
+    workflow = settings['kotti.use_workflow']
+    if workflow.lower() not in FALSE_VALUES:
+        config.load_zcml(workflow)
 
     return config

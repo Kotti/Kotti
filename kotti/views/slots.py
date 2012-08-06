@@ -30,6 +30,8 @@ from kotti.events import ObjectEvent
 from kotti.events import objectevent_listeners
 from kotti.security import has_permission
 
+REQUEST_ATTRS_TO_COPY = ('context', 'registry', 'user', 'cookies')
+
 
 @deprecate("""\
 kotti.views.slots.register is deprecated as of Kotti 0.7.0.
@@ -66,14 +68,17 @@ def _encode(params):
 def _render_view_on_slot_event(view_name, event, params):
     context = event.object
     request = event.request
+
     view_request = Request.blank(
-        "{0}/{1}".format(request.path, view_name),
+        "{0}/{1}".format(request.path.rstrip('/'), view_name),
         base_url=request.application_url,
         POST=_encode(params),
         )
-    view_request.context = request.context
-    view_request.registry = request.registry
-    view_request.user = request.user
+
+    # This is quite brittle:
+    for name in REQUEST_ATTRS_TO_COPY:
+        setattr(view_request, name, getattr(request, name))
+
     try:
         result = render_view(
             context,

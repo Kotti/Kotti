@@ -14,10 +14,14 @@ class TestNode(UnitTestBase):
         # The root object has a persistent ACL set:
         self.assertEquals(
             root.__acl__[1:], [
-                ('Allow', 'system.Everyone', ['view']),
-                ('Allow', 'role:viewer', ['view']),
-                ('Allow', 'role:editor', ['view', 'add', 'edit']),
-                ('Allow', 'role:owner', ['view', 'add', 'edit', 'manage']),
+                ('Allow', 'system.Everyone',
+                 ['view']),
+                ('Allow', 'role:viewer',
+                 ['view']),
+                ('Allow', 'role:editor',
+                 ['view', 'add', 'edit', 'state_change']),
+                ('Allow', 'role:owner',
+                 ['view', 'add', 'edit', 'manage', 'state_change']),
                 ])
 
         # The first ACE is here to preven lock-out:

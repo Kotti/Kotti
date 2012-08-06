@@ -45,8 +45,11 @@ Change History
   Add-on authors should see the ``kotti.migrate`` module's docstring
   for more details.
 
-- Add a 'Content.state' string column for use as the item's workflow
-  state.
+- Add workflow support based on ``repoze.workflow``.  A simple
+  workflow is included in ``workflow.zcml`` and can be activated by
+  setting ``kotti.use_default_workflow = 1`` in the configuration
+  file.  This will add a drop-down that allows users with
+  ``state_change`` permission to modify the workflow state.
 
 - Fix #89: Validate email address for uniqueness when user changes it.
 
@@ -59,10 +62,25 @@ Change History
 Migrations
 ~~~~~~~~~~
 
-Upgrading from 0.6 to 0.7 requires you to run a migration script on
-your database.  To run the migration, call::
+- Upgrading from 0.6 to 0.7 requires you to run a migration script on
+  your database.  To run the migration, call::
 
-  $ bin/kotti-migrate <myconfig.ini> upgrade
+    $ bin/kotti-migrate <myconfig.ini> upgrade
+
+- If you want to use the new workflow which adds a private/public flag
+  to all content types, you must add this line to your ``.ini``
+  configuration file ::
+
+    kotti.use_default_workflow = 1
+
+  Furthermore, you'll need to run the ``kotti-reset-workflow`` script
+  from the command line::
+
+    $ bin/kotti-reset-workflow <myconfig.ini>
+
+  This will reset all your pages to the default workflow state, which
+  is ``private``.
+
 
 0.7a4 - 2012-06-25
 ------------------

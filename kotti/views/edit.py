@@ -19,6 +19,7 @@ from kotti.views.form import EditFormView
 from kotti.views.form import AddFormView
 from kotti.views.util import ensure_view_selector
 from kotti.views.util import nodes_tree
+from kotti.workflow import get_workflow
 
 
 class DocumentSchema(ContentSchema):
@@ -72,6 +73,44 @@ def actions(context, request):
         actions.append(ViewLink('order', title=_(u'Order')))
     return {'actions': [action for action in actions
                         if action.permitted(context, request)]}
+
+
+def _eval_titles(info):
+    result = []
+    for d in info:
+        d = d.copy()
+        d['title'] = eval(d['title']) if 'title' in d else d['name']
+        result.append(d)
+    return result
+
+
+def workflow(context, request):
+    """Drop down menu for workflow actions.
+    """
+    wf = get_workflow(context)
+    if wf is not None:
+        state_info = _eval_titles(wf.state_info(context, request))
+        curr_state = [i for i in state_info if i['current']][0]
+        trans_info = wf.get_transitions(context, request)
+        return {
+            'states': dict([(i['name'], i) for i in state_info]),
+            'transitions': trans_info,
+            'current_state': curr_state,
+            }
+
+    return {
+        'current_state': None
+        }
+
+
+def workflow_change(context, request):
+    """Handle workflow change requests from workflow dropdown
+    """
+    new_state = request.params['new_state']
+    wf = get_workflow(context)
+    wf.transition_to_state(context, request, new_state)
+    request.session.flash(EditFormView.success_message, 'success')
+    return HTTPFound(location=request.resource_url(context))
 
 
 def copy_node(context, request):
@@ -269,6 +308,19 @@ def includeme(config):
         name='actions-dropdown',
         permission='view',
         renderer='kotti:templates/actions-dropdown.pt',
+        )
+
+    config.add_view(
+        workflow_change,
+        name='workflow-change',
+        permission='state_change',
+        )
+
+    config.add_view(
+        workflow,
+        name='workflow-dropdown',
+        permission='edit',
+        renderer='kotti:templates/workflow-dropdown.pt',
         )
 
 

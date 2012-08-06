@@ -4,6 +4,7 @@ from kotti.resources import Node
 from kotti.resources import Document
 from kotti.security import get_principals
 from kotti.security import SITE_ACL
+from kotti.workflow import get_workflow
 
 
 def populate_users():
@@ -23,6 +24,11 @@ def populate():
         root.__acl__ = SITE_ACL
         DBSession.add(root)
         root['about'] = Document(**_ABOUT_ATTRS)
+
+        wf = get_workflow(root)
+        if wf is not None:
+            DBSession.flush()  # Initializes workflow
+            wf.transition_to_state(root, None, u'public')
 
     populate_users()
 

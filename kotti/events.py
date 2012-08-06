@@ -229,6 +229,8 @@ def wire_sqlalchemy():  # pragma: no cover
 
 
 def includeme(config):
+    from kotti.workflow import initialize_workflow
+
     wire_sqlalchemy()
     objectevent_listeners[
         (ObjectInsert, Content)].append(set_owner)
@@ -238,3 +240,5 @@ def includeme(config):
         (ObjectUpdate, Content)].append(set_modification_date)
     objectevent_listeners[
         (ObjectAfterDelete, TagsToContents)].append(delete_orphaned_tags)
+    objectevent_listeners[
+        (ObjectInsert, Content)].append(initialize_workflow)

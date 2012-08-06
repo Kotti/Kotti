@@ -39,7 +39,9 @@ install_requires = [
     'pyramid_deform>=0.2a3',  # language and template path config includeme
     'pyramid_mailer',
     'pyramid_tm',
+    'pyramid_zcml',
     'repoze.lru',
+    'repoze.workflow',
     'sqlalchemy>=0.7.6',  # avoid "Table 'local_groups' is already defined" error
     'transaction>=1.1.0',  # ask c-neumann :-)
     'waitress',
@@ -99,7 +101,8 @@ setup(name='Kotti',
       deform_bootstrap = kotti.static:lib_deform_bootstrap
 
       [console_scripts]
-      kotti-migrate = kotti.migrate:main
+      kotti-migrate = kotti.migrate:kotti_migrate_command
+      kotti-reset-workflow = kotti.workflow:reset_workflow_command
       """,
       extras_require={
           'testing': tests_require,

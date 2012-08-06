@@ -1,9 +1,11 @@
 import re
 import urllib
 
+from docopt import docopt
 from plone.i18n.normalizer import urlnormalizer
 from pyramid.i18n import get_locale_name
 from pyramid.i18n import TranslationStringFactory
+from pyramid.paster import bootstrap
 from pyramid.threadlocal import get_current_request
 from pyramid.url import resource_url
 from repoze.lru import LRUCache
@@ -158,6 +160,16 @@ def camel_case_to_name(text):
     """
     return re.sub(
         r'((?<=[a-z])[A-Z]|(?<!\A)[A-Z](?=[a-z]))', r'_\1', text).lower()
+
+
+def command(func, doc):
+    args = docopt(doc)
+    pyramid_env = bootstrap(args['<config_uri>'])
+    try:
+        func(args)
+    finally:
+        pyramid_env['closer']()
+    return 0
 
 
 from kotti.sqla import JsonType

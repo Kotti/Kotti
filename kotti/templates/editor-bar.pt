@@ -3,6 +3,10 @@
      tal:define="disable_context_links disable_context_links | False">
 
   <ul class="nav nav-pills">
+    <tal:condition tal:condition="api.has_permission('edit')">
+      <li tal:replace="api.render_view('workflow-dropdown')" />
+    </tal:condition>
+
     <li class="${api.url() == request.url and 'active' or None}">
       <a href="${api.url()}" i18n:translate="">View</a>
     </li>
