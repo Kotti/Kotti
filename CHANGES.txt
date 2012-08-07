@@ -4,6 +4,10 @@ Change History
 0.7 - Unreleased
 ----------------
 
+- Fix a bug with connections in the migration script.  This would
+  previously cause Postgres to deadlock when calling
+  ``kotti-migrate``.
+
 0.7a5 - 2012-08-07
 ------------------
 
