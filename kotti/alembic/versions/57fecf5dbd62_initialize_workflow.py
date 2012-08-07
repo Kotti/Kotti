@@ -12,7 +12,6 @@ down_revision = '9398ccf41c2'
 
 
 def upgrade():
-    from transaction import commit
     from kotti import DBSession
     from kotti import get_settings
     from kotti.resources import Document
@@ -27,8 +26,6 @@ def upgrade():
     for obj in DBSession.query(Document):
         workflow = get_workflow(obj)
         workflow.transition_to_state(obj, None, 'public')
-
-    commit()
 
 
 def downgrade():

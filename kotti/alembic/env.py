@@ -1,27 +1,30 @@
 from alembic import context
-from sqlalchemy import engine_from_config, pool
+import transaction
 
-from kotti import metadata as target_metadata
+from kotti import DBSession
+from kotti import metadata
 
 
 def run_migrations_online():
-    config = context.config
+    if DBSession.bind is not None:
+        transaction.begin()
+        connection = DBSession.connection()
+    else:
+        raise ValueError(
+            "\nYou must run Kotti's migration using the 'kotti-migrate' script"
+            "\nthrough 'alembic' directly."
+            )
 
-    engine = engine_from_config(
-        config.get_section(config.config_ini_section),
-        prefix='sqlalchemy.',
-        poolclass=pool.NullPool,
-        )
-
-    connection = engine.connect()
     context.configure(
         connection=connection,
-        target_metadata=target_metadata,
+        target_metadata=metadata,
         )
 
     try:
-        with context.begin_transaction():
-            context.run_migrations()
+        context.run_migrations()
+        transaction.commit()
+    except:
+        transaction.abort()
     finally:
         connection.close()
 
