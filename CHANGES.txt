@@ -4,7 +4,7 @@ Change History
 0.7 - Unreleased
 ----------------
 
-0.7a5 - 2012-08-12
+0.7a5 - 2012-08-07
 ------------------
 
 - Add workflow support based on ``repoze.workflow``.  A simple
