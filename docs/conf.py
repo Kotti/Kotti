@@ -93,7 +93,8 @@ pygments_style = 'sphinx'
 # -- Options for HTML output ---------------------------------------------------
 
 # Add and use Pylons theme
-if 'sphinx-build' in ' '.join(sys.argv): # protect against dumb importers
+sys_argv = ' '.join(sys.argv)  # protect against dumb importers
+if any(map(lambda x: x in sys_argv, ['sphinx-build','build_sphinx'])):
     from subprocess import call, Popen, PIPE
 
     p = Popen('which git', shell=True, stdout=PIPE)
