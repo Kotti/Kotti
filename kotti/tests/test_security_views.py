@@ -126,7 +126,6 @@ class TestUserDelete(EventTestBase, UnitTestBase):
         request.params['name'] = u'bob'
         request.params['delete'] = u'delete'
         user_delete(root, request)
-        assert request.session.pop_flash('info') == [u'User deleted.']
         with pytest.raises(KeyError):
             get_principals()[u'bob']
 
@@ -146,7 +145,6 @@ class TestUserDelete(EventTestBase, UnitTestBase):
         request.params['name'] = u'group:bobsgroup'
         request.params['delete'] = u'delete'
         user_delete(root, request)
-        assert request.session.pop_flash('info') == [u'User deleted.']
         with pytest.raises(KeyError):
             get_principals()[u'group:bobsgroup']
         assert bob.groups == []

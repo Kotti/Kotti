@@ -488,18 +488,21 @@ def user_delete(context, request):
         if principal is None:
             request.session.flash(_(u'User not found.'), 'error')
         else:
+            is_group = user_or_group.startswith("group:")
+            principal_type = _(u"Group") if is_group else _(u"User")
+            search_entries = search_principals(request, ignore=user_or_group)
+
             # We already coming from the confirmation page.
             if 'delete' in request.POST:
                 if 'new-owner' in request.POST:
                     setattr(request, 'new_owner', request.POST['new-owner'])
                 principals.__delitem__(principal.name)
-                request.session.flash(_(u'User deleted.'), 'info')
+                request.session.flash(_(u'${principal_type} ${title} deleted.',
+                                        mapping=dict(principal_type=principal_type,
+                                                     title=principal.title)), 'info')
                 location = "%s/@@setup-users" % request.application_url
                 return HTTPFound(location=location)
 
-            is_group = user_or_group.startswith("group:")
-            principal_type = _(u"Group") if is_group else _(u"User")
-            search_entries = search_principals(request, ignore=user_or_group)
             api = template_api(
                 context, request,
                 page_title=_(u"Delete ${principal_type} - ${title}",

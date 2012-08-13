@@ -840,7 +840,7 @@ Now let's delete Bruce::
   >>> ctrl(name='search').click()
   >>> ctrl(name='new-owner', index=0).value = ['brian',]
   >>> ctrl(name='delete').click()
-  >>> "User deleted" in browser.contents
+  >>> "User Bruce Pelayo deleted." in browser.contents
   True
 
   >>> ctrl(name="query").value = "Bruce"
