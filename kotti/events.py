@@ -48,9 +48,12 @@ from kotti.resources import Node
 from kotti.resources import Content
 from kotti.resources import Tag
 from kotti.resources import TagsToContents
+from kotti.resources import LocalGroup
 from kotti.security import list_groups
 from kotti.security import list_groups_raw
 from kotti.security import set_groups
+from kotti.security import Principal
+from kotti.security import get_principals
 
 
 class ObjectEvent(object):
@@ -72,6 +75,10 @@ class ObjectDelete(ObjectEvent):
 
 
 class ObjectAfterDelete(ObjectEvent):
+    pass
+
+
+class UserDeleted(ObjectEvent):
     pass
 
 
@@ -185,6 +192,10 @@ def _after_delete(mapper, conection, target):
     notify(ObjectAfterDelete(target, get_current_request()))
 
 
+def _user_deleted(mapper, connection, target):
+    notify(UserDeleted(target, get_current_request()))
+
+
 def set_owner(event):
     obj, request = event.object, event.request
     if request is not None and isinstance(obj, Node) and obj.owner is None:
@@ -213,6 +224,28 @@ def delete_orphaned_tags(event):
     DBSession.query(Tag).filter(~Tag.content_tags.any()).delete(
         synchronize_session=False)
 
+
+def cleanup_user_groups(event):
+    """Remove a deleted group from the groups of a user/group and remove
+       all local group entries of it."""
+    principals = get_principals()
+    name = event.object.name
+    users_groups = [p for p in principals if name in principals[p].groups]
+    for user_or_group in users_groups:
+        principals[user_or_group].groups.remove(name)
+    DBSession.query(LocalGroup).filter(
+        LocalGroup.principal_name == name).delete()
+
+
+def reset_content_owner(event):
+    """Reset the owner of the content from the deleted owner."""
+    contents = DBSession.query(Content).filter(
+        Content.owner == event.object.name).all()
+    new_owner = getattr(event.request, 'new_owner', None)
+    for content in contents:
+        content.owner = new_owner
+
+
 _WIRED_SQLALCHMEY = False
 
 
@@ -226,6 +259,7 @@ def wire_sqlalchemy():  # pragma: no cover
     sqlalchemy.event.listen(mapper, 'before_update', _before_update)
     sqlalchemy.event.listen(mapper, 'before_delete', _before_delete)
     sqlalchemy.event.listen(mapper, 'after_delete', _after_delete)
+    sqlalchemy.event.listen(mapper, 'after_delete', _user_deleted)
 
 
 def includeme(config):
@@ -242,3 +276,7 @@ def includeme(config):
         (ObjectAfterDelete, TagsToContents)].append(delete_orphaned_tags)
     objectevent_listeners[
         (ObjectInsert, Content)].append(initialize_workflow)
+    objectevent_listeners[
+        (UserDeleted, Principal)].append(cleanup_user_groups)
+    objectevent_listeners[
+        (UserDeleted, Principal)].append(reset_content_owner)

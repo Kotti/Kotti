@@ -308,6 +308,7 @@ def _massage_groups_out(appstruct):
 
 class UserAddFormView(AddFormView):
     item_type = _(u'User')
+
     buttons = (Button('add_user', _(u'Add User')),
                Button('cancel', _(u'Cancel')))
 
@@ -412,6 +413,11 @@ class UserEditFormView(EditFormView):
 
 
 class UserManageFormView(UserEditFormView):
+
+    buttons = (Button('save', _(u'Save')),
+               Button('cancel', _(u'Cancel')),
+               Button('delete', _(u'Delete')))
+
     def schema_factory(self):
         schema = user_schema()
         del schema['name']
@@ -430,6 +436,12 @@ class UserManageFormView(UserEditFormView):
         location = "%s/@@setup-users" % self.request.application_url
         return HTTPFound(location=location)
     cancel_failure = cancel_success
+
+    def delete_success(self, appstruct):
+        principals = get_principals()
+        user = principals.search(email=appstruct['email']).first()
+        location = "%s/@@delete-user?name=%s" % (self.request.application_url, user.name)
+        return HTTPFound(location=location)
 
 
 class GroupManageFormView(UserManageFormView):
@@ -465,6 +477,44 @@ def user_manage(context, request):
         'api': api,
         'form': form['form'],
         }
+
+
+def user_delete(context, request):
+    principals = get_principals()
+
+    if 'name' in request.params and request.params['name']:
+        user_or_group = request.params['name']
+        principal = principals.search(name=user_or_group).first()
+        if principal is None:
+            request.session.flash(_(u'User not found.'), 'error')
+        else:
+            # We already coming from the confirmation page.
+            if 'delete' in request.POST:
+                if 'new-owner' in request.POST:
+                    setattr(request, 'new_owner', request.POST['new-owner'])
+                principals.__delitem__(principal.name)
+                request.session.flash(_(u'User deleted.'), 'info')
+                location = "%s/@@setup-users" % request.application_url
+                return HTTPFound(location=location)
+
+            is_group = user_or_group.startswith("group:")
+            principal_type = _(u"Group") if is_group else _(u"User")
+            search_entries = search_principals(request, ignore=user_or_group)
+            api = template_api(
+                context, request,
+                page_title=_(u"Delete ${principal_type} - ${title}",
+                             mapping=dict(principal_type=principal_type,
+                                          title=principal.title)),
+                principal_type=principal_type,
+                principal=principal,
+                )
+            return {'api': api,
+                    'entries': search_entries, }
+    else:
+        request.session.flash(_(u'No name given.'), 'error')
+
+    return {'api': template_api(context, request),  # eahrg?
+            'entries': [], }
 
 
 class PreferencesFormView(UserEditFormView):
@@ -511,6 +561,14 @@ def includeme(config):
         custom_predicates=(is_root,),
         renderer='kotti:templates/site-setup/users.pt',
         )
+
+    config.add_view(
+        user_delete,
+        name='delete-user',
+        permission='admin',
+        custom_predicates=(is_root,),
+        renderer='kotti:templates/site-setup/delete-user.pt',
+    )
 
     config.add_view(
         user_manage,

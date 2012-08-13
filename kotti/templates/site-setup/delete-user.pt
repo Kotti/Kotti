@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      i18n:domain="Kotti"
+      metal:use-macro="api.macro('kotti:templates/edit/master.pt')">
+
+  <div metal:fill-slot="content">
+
+    <h1 i18n:translate="">Delete <em i18n:name="title">${api.principal.title}</em></h1>
+
+    <div class="tab-pane" id="delete">
+      <form action="${request.url}" method="post" id="form-delete-user">
+        <fieldset>
+          <legend i18n:translate="">
+            Are you sure you want to delete <span i18n:name="type">${api.principal_type}</span> <em i18n:name="title">${api.principal.title}</em>?
+          </legend>
+
+          <tal:newowner tal:condition="python:api.principal_type=='User'">
+            <legend i18n:translate="">
+              Optionally choose a new owner of the content of the deleted user <em i18n:name="title">${api.principal.title}</em>.
+            </legend>
+
+            <div class="control-group">
+              <div class="controls">
+                <input type="text" name="query" id="search-query"
+                       value="${request.params.get('query')}"
+                       placeholder="Search users and groups"
+                       i18n:attributes="placeholder" />
+              </div>
+            </div>
+
+            <div class="form-actions">
+              <button type="submit" name="search" class="btn btn-primary"
+                      i18n:translate="">
+                Search
+              </button>
+            </div>
+
+            <table tal:condition="entries" class="table table-bordered">
+              <tr>
+                <th i18n:translate="">Name</th>
+                <th i18n:translate="">Use</th>
+              </tr>
+              <tr tal:repeat="entry entries"
+                  class="entry ${repeat.entry.even and 'even' or 'odd'}">
+                <td class="hover-link-enable">
+                  <img src="${api.avatar_url(entry[0])}" alt="Gravatar"
+                       i18n:attributes="alt"/>
+                  <span>${entry[0].title}</span>
+                  <span tal:condition="entry[0].email">&lt;${entry[0].email}&gt;</span>
+                </td>
+                <td>
+                  <input type="radio"
+                         name="new-owner"
+                         value="${entry[0].name}"
+                         />
+                </td>
+              </tr>
+            </table>
+          </tal:newowner>
+
+          <div class="form-actions">
+            <button type="submit" name="delete" value="delete" 
+                    class="btn btn-danger" i18n:translate="">Delete</button>
+          </div>
+        </fieldset>
+      </form>
+    </div>
+
+  </div>
+</html>
