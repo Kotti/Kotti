@@ -224,11 +224,14 @@ def delete_orphaned_tags(event):
 def cleanup_user_groups(event):
     """Remove a deleted group from the groups of a user/group and remove
        all local group entries of it."""
-    principals = get_principals()
     name = event.object.name
-    users_groups = [p for p in principals if name in principals[p].groups]
-    for user_or_group in users_groups:
-        principals[user_or_group].groups.remove(name)
+
+    if name.startswith("group:"):
+        principals = get_principals()
+        users_groups = [p for p in principals if name in principals[p].groups]
+        for user_or_group in users_groups:
+            principals[user_or_group].groups.remove(name)
+
     DBSession.query(LocalGroup).filter(
         LocalGroup.principal_name == name).delete()
 
