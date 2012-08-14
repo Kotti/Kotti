@@ -192,10 +192,6 @@ def _after_delete(mapper, conection, target):
     notify(ObjectAfterDelete(target, get_current_request()))
 
 
-def _user_deleted(mapper, connection, target):
-    notify(UserDeleted(target, get_current_request()))
-
-
 def set_owner(event):
     obj, request = event.object, event.request
     if request is not None and isinstance(obj, Node) and obj.owner is None:
@@ -259,7 +255,6 @@ def wire_sqlalchemy():  # pragma: no cover
     sqlalchemy.event.listen(mapper, 'before_update', _before_update)
     sqlalchemy.event.listen(mapper, 'before_delete', _before_delete)
     sqlalchemy.event.listen(mapper, 'after_delete', _after_delete)
-    sqlalchemy.event.listen(mapper, 'after_delete', _user_deleted)
 
 
 def includeme(config):

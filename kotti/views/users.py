@@ -14,6 +14,10 @@ from deform.widget import CheckedPasswordWidget
 from deform.widget import CheckboxChoiceWidget
 from deform.widget import SequenceWidget
 
+from kotti.events import (
+    UserDeleted,
+    notify,
+)
 from kotti.message import email_set_password
 from kotti.resources import get_root
 from kotti.security import USER_MANAGEMENT_ROLES
@@ -497,6 +501,7 @@ def user_delete(context, request):
                 if 'new-owner' in request.POST:
                     setattr(request, 'new_owner', request.POST['new-owner'])
                 principals.__delitem__(principal.name)
+                notify(UserDeleted(principal, request))
                 request.session.flash(_(u'${principal_type} ${title} deleted.',
                                         mapping=dict(principal_type=principal_type,
                                                      title=principal.title)), 'info')
