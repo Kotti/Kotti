@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Kotti 0.4.4\n"
 "Report-Msgid-Bugs-To: kotti@googlegroups.com\n"
-"POT-Creation-Date: 2012-08-13 17:20+0200\n"
+"POT-Creation-Date: 2012-08-15 11:19+0200\n"
 "PO-Revision-Date: 2012-03-16 11:04+0000\n"
 "Last-Translator: Wim Boucquaert <wim.boucquaert@gmail.com>\n"
 "Language-Team: nl <kotti@googlegroups.com>\n"
@@ -127,7 +127,7 @@ msgstr "Aanmelden"
 msgid "Username or email"
 msgstr "Gebuikersnaam of e-mail"
 
-#: kotti/templates/login.pt:22 kotti/views/login.py:94 kotti/views/users.py:209
+#: kotti/templates/login.pt:22 kotti/views/login.py:94 kotti/views/users.py:213
 msgid "Password"
 msgstr "Wachtwoord"
 
@@ -170,8 +170,8 @@ msgid "Are you sure you want to delete ${title}?"
 msgstr "Ben je zeker dat je ${title} wil verwijderen?"
 
 #: kotti/templates/edit/delete.pt:22
-#: kotti/templates/site-setup/delete-user.pt:63 kotti/views/edit.py:71
-#: kotti/views/users.py:419
+#: kotti/templates/site-setup/delete-user.pt:19 kotti/views/edit.py:71
+#: kotti/views/users.py:423
 msgid "Delete"
 msgstr "Verwijderen"
 
@@ -227,27 +227,20 @@ msgstr "Delen ${title}"
 msgid "Assign local roles"
 msgstr "Locale rollen toewijzen"
 
-#: kotti/templates/edit/share.pt:16
-#: kotti/templates/site-setup/delete-user.pt:25
-#: kotti/templates/site-setup/users.pt:16
+#: kotti/templates/edit/share.pt:16 kotti/templates/site-setup/users.pt:16
 msgid "Search users and groups"
 msgstr "Zoeken naar gebruikers en groepen"
 
-#: kotti/templates/edit/share.pt:24
-#: kotti/templates/site-setup/delete-user.pt:33
-#: kotti/templates/site-setup/users.pt:24
+#: kotti/templates/edit/share.pt:24 kotti/templates/site-setup/users.pt:24
 msgid "Search"
 msgstr "Zoeken"
 
-#: kotti/templates/edit/share.pt:31
-#: kotti/templates/site-setup/delete-user.pt:41
-#: kotti/templates/site-setup/users.pt:32 kotti/views/users.py:204
+#: kotti/templates/edit/share.pt:31 kotti/templates/site-setup/users.pt:32
+#: kotti/views/users.py:208
 msgid "Name"
 msgstr "Naam"
 
-#: kotti/templates/edit/share.pt:39
-#: kotti/templates/site-setup/delete-user.pt:47
-#: kotti/templates/site-setup/users.pt:40
+#: kotti/templates/edit/share.pt:39 kotti/templates/site-setup/users.pt:40
 msgid "Gravatar"
 msgstr "Gravatar"
 
@@ -259,14 +252,6 @@ msgstr "Wijzigingen toepassen"
 #, fuzzy
 msgid "Are you sure you want to delete ${type} ${title}?"
 msgstr "Ben je zeker dat je ${title} wil verwijderen?"
-
-#: kotti/templates/site-setup/delete-user.pt:19
-msgid "Optionally choose a new owner of the content of the deleted user ${title}."
-msgstr ""
-
-#: kotti/templates/site-setup/delete-user.pt:42
-msgid "Use"
-msgstr ""
 
 #: kotti/templates/site-setup/user.pt:8
 msgid "Back to User Management"
@@ -368,7 +353,7 @@ msgstr "Item hernoemd."
 msgid "Maximum file size: ${size}MB"
 msgstr ""
 
-#: kotti/views/file.py:109 kotti/views/form.py:48 kotti/views/users.py:193
+#: kotti/views/file.py:109 kotti/views/form.py:48 kotti/views/users.py:197
 msgid "Title"
 msgstr "Titel"
 
@@ -380,16 +365,16 @@ msgstr "Beschrijving"
 msgid "Tags"
 msgstr ""
 
-#: kotti/views/form.py:74 kotti/views/users.py:417
+#: kotti/views/form.py:74 kotti/views/users.py:421
 msgid "Save"
 msgstr "Opslaan"
 
-#: kotti/views/form.py:74 kotti/views/users.py:313 kotti/views/users.py:344
-#: kotti/views/users.py:418
+#: kotti/views/form.py:74 kotti/views/users.py:317 kotti/views/users.py:348
+#: kotti/views/users.py:422
 msgid "Cancel"
 msgstr "Annuleren"
 
-#: kotti/views/form.py:75 kotti/views/users.py:67
+#: kotti/views/form.py:75 kotti/views/users.py:71
 msgid "Your changes have been saved."
 msgstr "Je wijzigingen werden opgeslagen."
 
@@ -433,7 +418,7 @@ msgstr "Deze gebruikersnaam of e-mailadres is ons onbekend."
 msgid "You have been logged out."
 msgstr "Je bent afgemeld."
 
-#: kotti/views/login.py:104 kotti/views/users.py:196
+#: kotti/views/login.py:104 kotti/views/users.py:200
 msgid "Email"
 msgstr "E-mailadres"
 
@@ -465,52 +450,52 @@ msgstr "Gebruikersbeheer"
 msgid "Site Setup - ${title}"
 msgstr "Site instellingen - ${title}"
 
-#: kotti/views/users.py:69 kotti/views/users.py:435
+#: kotti/views/users.py:73 kotti/views/users.py:439
 msgid "No changes made."
 msgstr "Geen wijzigingen toegepast."
 
-#: kotti/views/users.py:96
+#: kotti/views/users.py:100
 msgid "No users or groups found."
 msgstr "Geen gebruikers of groepen gevonden."
 
-#: kotti/views/users.py:141
+#: kotti/views/users.py:145
 msgid "Invalid value"
 msgstr "Ongeldige waarde"
 
-#: kotti/views/users.py:147
+#: kotti/views/users.py:151
 msgid "A user with that name already exists."
 msgstr "Een gebruiker met deze naam bestaat reeds."
 
-#: kotti/views/users.py:154
+#: kotti/views/users.py:158
 #, fuzzy
 msgid "A user with that email already exists."
 msgstr "Een gebruiker met deze naam bestaat reeds."
 
-#: kotti/views/users.py:178
+#: kotti/views/users.py:182
 msgid "No such group: ${group}"
 msgstr "Onbekende groep: ${group}"
 
-#: kotti/views/users.py:185 kotti/views/users.py:460 kotti/views/users.py:492
+#: kotti/views/users.py:189 kotti/views/users.py:464 kotti/views/users.py:496
 msgid "Group"
 msgstr "Groep"
 
-#: kotti/views/users.py:216
+#: kotti/views/users.py:220
 msgid "Active"
 msgstr "Actief"
 
-#: kotti/views/users.py:217
+#: kotti/views/users.py:221
 msgid "Untick this to deactivate the account."
 msgstr "Uitvinken om je account te de-activeren."
 
-#: kotti/views/users.py:223
+#: kotti/views/users.py:227
 msgid "Global roles"
 msgstr "Globale rollen"
 
-#: kotti/views/users.py:227
+#: kotti/views/users.py:231
 msgid "Groups"
 msgstr "Groepen"
 
-#: kotti/views/users.py:264
+#: kotti/views/users.py:268
 msgid ""
 "Leave this empty and tick the 'Send password registration' box below to "
 "have the user set their own password."
@@ -518,63 +503,58 @@ msgstr ""
 "Laat dit veld leeg en vink de optie 'Verstuur wachtwoord registratie' "
 "hieronder aan zodat de gebruiker zelf een wachtwoord kan instellen."
 
-#: kotti/views/users.py:268
+#: kotti/views/users.py:272
 msgid "Full name"
 msgstr "Volledige naam"
 
-#: kotti/views/users.py:310 kotti/views/users.py:460 kotti/views/users.py:492
+#: kotti/views/users.py:314 kotti/views/users.py:464 kotti/views/users.py:496
 msgid "User"
 msgstr "gebruiker"
 
-#: kotti/views/users.py:312
+#: kotti/views/users.py:316
 msgid "Add User"
 msgstr "Gebruiker toevoegen"
 
-#: kotti/views/users.py:321
+#: kotti/views/users.py:325
 msgid "Send password registration link"
 msgstr "Verstuur wachtwoord registratie link"
 
-#: kotti/views/users.py:335
+#: kotti/views/users.py:339
 msgid "${title} added."
 msgstr "${title} toegevoegd."
 
-#: kotti/views/users.py:343
+#: kotti/views/users.py:347
 msgid "Add Group"
 msgstr "Groep toevoegen"
 
-#: kotti/views/users.py:361
+#: kotti/views/users.py:365
 msgid "User Management - ${title}"
 msgstr "Gebruikersbeheer - ${title}"
 
-#: kotti/views/users.py:464
+#: kotti/views/users.py:468
 #, fuzzy
 msgid "Edit ${principal_type} - ${title}"
 msgstr "Gebruiker bewerken - ${title}"
 
-#: kotti/views/users.py:489
+#: kotti/views/users.py:493
 #, fuzzy
 msgid "User not found."
 msgstr "Geen gebruikers of groepen gevonden."
 
-#: kotti/views/users.py:500
+#: kotti/views/users.py:502
 #, fuzzy
-#| msgid "Edit ${principal_type} - ${title}"
 msgid "${principal_type} ${title} deleted."
 msgstr "Gebruiker bewerken - ${title}"
 
-#: kotti/views/users.py:508
+#: kotti/views/users.py:510
 msgid "Delete ${principal_type} - ${title}"
 msgstr ""
 
-#: kotti/views/users.py:517
+#: kotti/views/users.py:518
 msgid "No name given."
 msgstr ""
 
 #: kotti/views/users.py:537
 msgid "My preferences - ${title}"
 msgstr "Mijn instellingen - ${title}"
-
-# | msgid "${title} deleted."
-#~ msgid "User deleted."
-#~ msgstr "${title} verwijderd."
 

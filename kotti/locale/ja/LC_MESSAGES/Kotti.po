@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Kotti 0.6.0\n"
 "Report-Msgid-Bugs-To: kotti@googlegroups.com\n"
-"POT-Creation-Date: 2012-08-13 17:20+0200\n"
+"POT-Creation-Date: 2012-08-15 11:19+0200\n"
 "PO-Revision-Date: 2012-03-18 18:13+0900\n"
 "Last-Translator: MORIMOTO, Tetsuya <tetsuya.morimoto@gmail.com>\n"
 "Language-Team: ja <kotti@googlegroups.com>\n"
@@ -124,7 +124,7 @@ msgstr "ログイン"
 msgid "Username or email"
 msgstr "ユーザー名またはメールアドレス"
 
-#: kotti/templates/login.pt:22 kotti/views/login.py:94 kotti/views/users.py:209
+#: kotti/templates/login.pt:22 kotti/views/login.py:94 kotti/views/users.py:213
 msgid "Password"
 msgstr "パスワード"
 
@@ -166,8 +166,8 @@ msgid "Are you sure you want to delete ${title}?"
 msgstr "本当に ${title} を削除しますか?"
 
 #: kotti/templates/edit/delete.pt:22
-#: kotti/templates/site-setup/delete-user.pt:63 kotti/views/edit.py:71
-#: kotti/views/users.py:419
+#: kotti/templates/site-setup/delete-user.pt:19 kotti/views/edit.py:71
+#: kotti/views/users.py:423
 msgid "Delete"
 msgstr "削除"
 
@@ -223,27 +223,20 @@ msgstr "${title} を共有"
 msgid "Assign local roles"
 msgstr "ローカルロールに割り当て"
 
-#: kotti/templates/edit/share.pt:16
-#: kotti/templates/site-setup/delete-user.pt:25
-#: kotti/templates/site-setup/users.pt:16
+#: kotti/templates/edit/share.pt:16 kotti/templates/site-setup/users.pt:16
 msgid "Search users and groups"
 msgstr "ユーザーとグループを検索"
 
-#: kotti/templates/edit/share.pt:24
-#: kotti/templates/site-setup/delete-user.pt:33
-#: kotti/templates/site-setup/users.pt:24
+#: kotti/templates/edit/share.pt:24 kotti/templates/site-setup/users.pt:24
 msgid "Search"
 msgstr "検索"
 
-#: kotti/templates/edit/share.pt:31
-#: kotti/templates/site-setup/delete-user.pt:41
-#: kotti/templates/site-setup/users.pt:32 kotti/views/users.py:204
+#: kotti/templates/edit/share.pt:31 kotti/templates/site-setup/users.pt:32
+#: kotti/views/users.py:208
 msgid "Name"
 msgstr "名称"
 
-#: kotti/templates/edit/share.pt:39
-#: kotti/templates/site-setup/delete-user.pt:47
-#: kotti/templates/site-setup/users.pt:40
+#: kotti/templates/edit/share.pt:39 kotti/templates/site-setup/users.pt:40
 msgid "Gravatar"
 msgstr "Gravatar"
 
@@ -255,14 +248,6 @@ msgstr "変更を適用"
 #, fuzzy
 msgid "Are you sure you want to delete ${type} ${title}?"
 msgstr "本当に ${title} を削除しますか?"
-
-#: kotti/templates/site-setup/delete-user.pt:19
-msgid "Optionally choose a new owner of the content of the deleted user ${title}."
-msgstr ""
-
-#: kotti/templates/site-setup/delete-user.pt:42
-msgid "Use"
-msgstr ""
 
 #: kotti/templates/site-setup/user.pt:8
 msgid "Back to User Management"
@@ -364,7 +349,7 @@ msgstr "名称変更しました"
 msgid "Maximum file size: ${size}MB"
 msgstr "最大ファイルサイズ: ${size}MB"
 
-#: kotti/views/file.py:109 kotti/views/form.py:48 kotti/views/users.py:193
+#: kotti/views/file.py:109 kotti/views/form.py:48 kotti/views/users.py:197
 msgid "Title"
 msgstr "タイトル"
 
@@ -376,16 +361,16 @@ msgstr "説明"
 msgid "Tags"
 msgstr "タグ"
 
-#: kotti/views/form.py:74 kotti/views/users.py:417
+#: kotti/views/form.py:74 kotti/views/users.py:421
 msgid "Save"
 msgstr "保存"
 
-#: kotti/views/form.py:74 kotti/views/users.py:313 kotti/views/users.py:344
-#: kotti/views/users.py:418
+#: kotti/views/form.py:74 kotti/views/users.py:317 kotti/views/users.py:348
+#: kotti/views/users.py:422
 msgid "Cancel"
 msgstr "キャンセル"
 
-#: kotti/views/form.py:75 kotti/views/users.py:67
+#: kotti/views/form.py:75 kotti/views/users.py:71
 msgid "Your changes have been saved."
 msgstr "変更内容を保存しました。"
 
@@ -427,7 +412,7 @@ msgstr "ユーザー名もメールアドレスも見つかりませんでした
 msgid "You have been logged out."
 msgstr "ログアウトしました。"
 
-#: kotti/views/login.py:104 kotti/views/users.py:196
+#: kotti/views/login.py:104 kotti/views/users.py:200
 msgid "Email"
 msgstr "メールアドレス"
 
@@ -459,114 +444,109 @@ msgstr "ユーザー管理"
 msgid "Site Setup - ${title}"
 msgstr "サイト設定 - ${title}"
 
-#: kotti/views/users.py:69 kotti/views/users.py:435
+#: kotti/views/users.py:73 kotti/views/users.py:439
 msgid "No changes made."
 msgstr "変更箇所がありません。"
 
-#: kotti/views/users.py:96
+#: kotti/views/users.py:100
 msgid "No users or groups found."
 msgstr "ユーザーもグループも見つかりませんでした。"
 
-#: kotti/views/users.py:141
+#: kotti/views/users.py:145
 msgid "Invalid value"
 msgstr "無効な値"
 
-#: kotti/views/users.py:147
+#: kotti/views/users.py:151
 msgid "A user with that name already exists."
 msgstr "同じ名称のユーザーがすでに存在します。"
 
-#: kotti/views/users.py:154
+#: kotti/views/users.py:158
 #, fuzzy
 msgid "A user with that email already exists."
 msgstr "同じ名称のユーザーがすでに存在します。"
 
-#: kotti/views/users.py:178
+#: kotti/views/users.py:182
 msgid "No such group: ${group}"
 msgstr "グループが見つかりません: ${group}"
 
-#: kotti/views/users.py:185 kotti/views/users.py:460 kotti/views/users.py:492
+#: kotti/views/users.py:189 kotti/views/users.py:464 kotti/views/users.py:496
 msgid "Group"
 msgstr "グループ"
 
-#: kotti/views/users.py:216
+#: kotti/views/users.py:220
 msgid "Active"
 msgstr "有効"
 
-#: kotti/views/users.py:217
+#: kotti/views/users.py:221
 msgid "Untick this to deactivate the account."
 msgstr "チェックを外すと、このアカウントは無効になります。"
 
-#: kotti/views/users.py:223
+#: kotti/views/users.py:227
 msgid "Global roles"
 msgstr "グローバルロール"
 
-#: kotti/views/users.py:227
+#: kotti/views/users.py:231
 msgid "Groups"
 msgstr "グループ"
 
-#: kotti/views/users.py:264
+#: kotti/views/users.py:268
 msgid ""
 "Leave this empty and tick the 'Send password registration' box below to "
 "have the user set their own password."
 msgstr "この項目を空にして下の 'パスワード登録を送信する' をチェックすると、ユーザー自身にパスワードを設定させられます。"
 
-#: kotti/views/users.py:268
+#: kotti/views/users.py:272
 msgid "Full name"
 msgstr "フルネーム"
 
-#: kotti/views/users.py:310 kotti/views/users.py:460 kotti/views/users.py:492
+#: kotti/views/users.py:314 kotti/views/users.py:464 kotti/views/users.py:496
 msgid "User"
 msgstr "ユーザー"
 
-#: kotti/views/users.py:312
+#: kotti/views/users.py:316
 msgid "Add User"
 msgstr "ユーザーを追加"
 
-#: kotti/views/users.py:321
+#: kotti/views/users.py:325
 msgid "Send password registration link"
 msgstr "パスワード登録を送信する"
 
-#: kotti/views/users.py:335
+#: kotti/views/users.py:339
 msgid "${title} added."
 msgstr "${title} を追加しました。"
 
-#: kotti/views/users.py:343
+#: kotti/views/users.py:347
 msgid "Add Group"
 msgstr "グループ追加"
 
-#: kotti/views/users.py:361
+#: kotti/views/users.py:365
 msgid "User Management - ${title}"
 msgstr "ユーザー管理 - ${title}"
 
-#: kotti/views/users.py:464
+#: kotti/views/users.py:468
 msgid "Edit ${principal_type} - ${title}"
 msgstr "${principal_type} を編集 - ${title}"
 
-#: kotti/views/users.py:489
+#: kotti/views/users.py:493
 #, fuzzy
 msgid "User not found."
 msgstr "ユーザーもグループも見つかりませんでした。"
 
-#: kotti/views/users.py:500
+#: kotti/views/users.py:502
 #, fuzzy
-#| msgid "Edit ${principal_type} - ${title}"
 msgid "${principal_type} ${title} deleted."
 msgstr "${principal_type} を編集 - ${title}"
 
-#: kotti/views/users.py:508
+#: kotti/views/users.py:510
 #, fuzzy
 msgid "Delete ${principal_type} - ${title}"
 msgstr "${principal_type} を編集 - ${title}"
 
-#: kotti/views/users.py:517
+#: kotti/views/users.py:518
 msgid "No name given."
 msgstr ""
 
 #: kotti/views/users.py:537
 msgid "My preferences - ${title}"
 msgstr "個人設定 - ${title}"
-
-# | msgid "${title} deleted."
-#~ msgid "User deleted."
-#~ msgstr "${title} を削除しました。"
 
