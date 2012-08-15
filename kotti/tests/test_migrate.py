@@ -18,7 +18,7 @@ class TestScriptDirectoryWithDefaultEnvPy(TestCase):
         assert scripts.env_py_location.endswith('kotti/alembic/env.py')
 
     def test_env_py_location_default(self):
-        # Wee allow add-ons to use Kotti's version of 'env.py' if they
+        # We allow add-ons to use Kotti's version of 'env.py' if they
         # don't come with their own.
         scripts = self.make()
         with patch('kotti.migrate.os.path.exists') as exists:

@@ -1,4 +1,5 @@
 from alembic import context
+import traceback
 import transaction
 
 from kotti import DBSession
@@ -6,14 +7,14 @@ from kotti import metadata
 
 
 def run_migrations_online():
-    if DBSession.bind is not None:
-        transaction.begin()
-        connection = DBSession.connection()
-    else:
+    if DBSession.bind is None:
         raise ValueError(
             "\nYou must run Kotti's migration using the 'kotti-migrate' script"
-            "\nthrough 'alembic' directly."
+            "\nand not through 'alembic' directly."
             )
+
+    transaction.begin()
+    connection = DBSession.connection()
 
     context.configure(
         connection=connection,
@@ -22,11 +23,14 @@ def run_migrations_online():
 
     try:
         context.run_migrations()
-        transaction.commit()
     except:
+        traceback.print_exc()
         transaction.abort()
+    else:
+        transaction.commit()
     finally:
-        connection.close()
+        #connection.close()
+        pass
 
 
 try:  # Alembic's "if __name__ == '__main__'"

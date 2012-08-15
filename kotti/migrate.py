@@ -47,10 +47,13 @@ from alembic.config import Config
 from alembic.environment import EnvironmentContext
 from alembic.script import ScriptDirectory
 from alembic.util import load_python_file
+from zope.sqlalchemy import mark_changed
 
 from kotti import conf_defaults
 from kotti import get_settings
+from kotti import DBSession
 from kotti.util import command
+
 
 KOTTI_SCRIPT_DIR = pkg_resources.resource_filename('kotti', 'alembic')
 DEFAULT_LOCATION = 'kotti:alembic'
@@ -111,18 +114,17 @@ def get_locations():
 
 
 def stamp_head(location=DEFAULT_LOCATION, revision=None):
-    pkg_env = PackageEnvironment(location)
-
     def do_stamp(rev, context, revision=revision):
         current = context._current_rev()
         if revision is None:
-            revision = pkg_env.script_dir.get_current_head()
+            revision = context.script.get_current_head()
         elif revision == 'None':
             revision = None
         context._update_current_rev(current, revision)
+        mark_changed(DBSession())
         return []
 
-    pkg_env.run_env(do_stamp)
+    PackageEnvironment(location).run_env(do_stamp)
 
 
 def stamp_heads():
@@ -142,7 +144,7 @@ def upgrade(location=DEFAULT_LOCATION):
             return []
         print(u'  - upgrading from {0} to {1}...'.format(
             rev, revision))
-        return pkg_env.script_dir._upgrade_revs(revision, rev)
+        return context.script._upgrade_revs(revision, rev)
 
     pkg_env.run_env(
         upgrade,
