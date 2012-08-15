@@ -24,7 +24,7 @@ Unfortunately, this won't help in the situation where a user adds an
 add-on with migrations to the Kotti site _after_ the database was
 initialized for the first time.  In this case, users of the add-on
 will need to run ``kotti-migrate stamp_head
---location=yourpackage:alembic``, or the add-on author will have to
+--scripts=yourpackage:alembic``, or the add-on author will have to
 write equivalent code somewhere in their populate hook.
 
 Add-on authors can register their Alembic scripts with this module by
