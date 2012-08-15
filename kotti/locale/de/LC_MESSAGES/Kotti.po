@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Kotti 0.7dev4\n"
 "Report-Msgid-Bugs-To: kotti@googlegroups.com\n"
-"POT-Creation-Date: 2012-07-22 08:40+0200\n"
-"PO-Revision-Date: 2012-07-22 08:46+0200\n"
+"POT-Creation-Date: 2012-08-15 12:45+0200\n"
+"PO-Revision-Date: 2012-08-15 13:05+0200\n"
 "Last-Translator: Christian Neumann <cneumann@datenkarussell.de>\n"
 "Language-Team: de <kotti@googlegroups.com>\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
@@ -17,24 +17,24 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 0.9.6\n"
 
-#: kotti/resources.py:305 kotti/templates/edit/nav-tree.pt:8
+#: kotti/resources.py:315 kotti/templates/edit/nav-tree.pt:8
 msgid "Edit"
 msgstr "Bearbeiten"
 
-#: kotti/resources.py:306
+#: kotti/resources.py:316
 msgid "Share"
 msgstr "Teilen"
 
-#: kotti/resources.py:338
+#: kotti/resources.py:350
 msgid "Document"
 msgstr "Dokument"
 
-#: kotti/resources.py:358 kotti/views/file.py:83 kotti/views/file.py:102
+#: kotti/resources.py:370 kotti/views/file.py:83 kotti/views/file.py:102
 #: kotti/views/file.py:118
 msgid "File"
 msgstr "Datei"
 
-#: kotti/resources.py:378 kotti/views/image.py:38
+#: kotti/resources.py:390 kotti/views/image.py:38
 msgid "Image"
 msgstr "Bild"
 
@@ -54,33 +54,41 @@ msgstr "Besitzer"
 msgid "Admin"
 msgstr "Administrator"
 
-#: kotti/templates/actions-dropdown.pt:4
+#: kotti/workflow.zcml:28
+msgid "Private"
+msgstr "Privat"
+
+#: kotti/workflow.zcml:41
+msgid "Public"
+msgstr "Öffentlich"
+
+#: kotti/templates/actions-dropdown.pt:3
 msgid "Actions"
 msgstr "Aktionen"
 
-#: kotti/templates/add-dropdown.pt:4
+#: kotti/templates/add-dropdown.pt:3
 msgid "Add"
 msgstr "Hinzufügen"
 
-#: kotti/templates/editor-bar.pt:15
+#: kotti/templates/editor-bar.pt:11
 msgid "View"
 msgstr "Anzeigen"
 
-#: kotti/templates/editor-bar.pt:28
-msgid "Navigate"
-msgstr "Navigieren"
-
-#: kotti/templates/editor-bar.pt:51
+#: kotti/templates/editor-bar.pt:38
 msgid "Site Setup"
 msgstr "Seiten-Einstellungen"
 
-#: kotti/templates/editor-bar.pt:55
+#: kotti/templates/editor-bar.pt:42
 msgid "Preferences"
 msgstr "Einstellungen"
 
-#: kotti/templates/editor-bar.pt:59
+#: kotti/templates/editor-bar.pt:46
 msgid "Logout"
 msgstr "Abmelden"
+
+#: kotti/templates/editor-bar.pt:53
+msgid "Navigate"
+msgstr "Navigieren"
 
 #: kotti/templates/email-reset-password.pt:2
 msgid "Reset your password for ${site_title}"
@@ -144,13 +152,13 @@ msgstr ""
 "klicken Sie auf ${reset_password} unten um eine E-Mail zu erhalten, "
 "welche einen Link enthält um ihr Passwort zurückzusetzen."
 
-#: kotti/templates/edit/breadcrumbs.pt:4
+#: kotti/templates/workflow-dropdown.pt:11
+msgid "Make ${state}"
+msgstr "Setze ${state}"
+
+#: kotti/templates/edit/breadcrumbs.pt:6
 msgid "You are here:"
 msgstr "Sie sind hier:"
-
-#: kotti/templates/edit/breadcrumbs.pt:12
-msgid "Home"
-msgstr "Startseite"
 
 #: kotti/templates/edit/delete.pt:9
 msgid "Delete ${title}"
@@ -160,7 +168,7 @@ msgstr "Lösche ${title}"
 msgid "Are you sure you want to delete ${title}?"
 msgstr "Sind Sie sicher, dass sie ${title} löschen möchten?"
 
-#: kotti/templates/edit/delete.pt:22 kotti/views/edit.py:70
+#: kotti/templates/edit/delete.pt:22 kotti/views/edit.py:71
 msgid "Delete"
 msgstr "Löschen"
 
@@ -204,7 +212,7 @@ msgstr "Neuer Name"
 msgid "New title"
 msgstr "Neuer Titel"
 
-#: kotti/templates/edit/rename.pt:27 kotti/views/edit.py:69
+#: kotti/templates/edit/rename.pt:27 kotti/views/edit.py:70
 msgid "Rename"
 msgstr "Umbenennen"
 
@@ -261,6 +269,10 @@ msgstr "Neue Gruppe"
 msgid "Search Results"
 msgstr "Suchergebnisse"
 
+#: kotti/templates/view/search.pt:11
+msgid "&#8594;"
+msgstr "&#8594;"
+
 #: kotti/tests/testing_view.pt:10
 msgid "Welcome, ${user}! You are logged in."
 msgstr "Willkommen, ${user}! Sie sind angemeldet."
@@ -269,63 +281,63 @@ msgstr "Willkommen, ${user}! Sie sind angemeldet."
 msgid "Welcome, you are not logged in."
 msgstr "Willkommen! Sie sind nicht angemeldet."
 
-#: kotti/views/edit.py:27
+#: kotti/views/edit.py:28
 msgid "Body"
 msgstr "Inhalt"
 
-#: kotti/views/edit.py:62
+#: kotti/views/edit.py:63
 msgid "Copy"
 msgstr "Kopieren"
 
-#: kotti/views/edit.py:65
+#: kotti/views/edit.py:66
 msgid "Cut"
 msgstr "Ausschneiden"
 
-#: kotti/views/edit.py:67
+#: kotti/views/edit.py:68
 msgid "Paste"
 msgstr "Einfügen"
 
-#: kotti/views/edit.py:72
+#: kotti/views/edit.py:73
 msgid "Order"
 msgstr "Umordnen"
 
-#: kotti/views/edit.py:79
+#: kotti/views/edit.py:118
 msgid "${title} copied."
 msgstr "${title} kopiert."
 
-#: kotti/views/edit.py:88
+#: kotti/views/edit.py:127
 msgid "${title} cut."
 msgstr "${title} ausgeschnitten."
 
-#: kotti/views/edit.py:113
+#: kotti/views/edit.py:152
 msgid "${title} pasted."
 msgstr "${title} eingefügt."
 
-#: kotti/views/edit.py:117
+#: kotti/views/edit.py:156
 msgid "Could not paste node. It does not exist anymore."
 msgstr "Inhalt konnte nicht eingefügt werden, da er nicht mehr existiert."
 
-#: kotti/views/edit.py:136
+#: kotti/views/edit.py:175
 msgid "${title} moved."
 msgstr "${title} verschoben."
 
-#: kotti/views/edit.py:146
+#: kotti/views/edit.py:185
 msgid "${title} is now visible in the navigation."
 msgstr "${title} wird nun in der Navigation angezeigt."
 
-#: kotti/views/edit.py:149
+#: kotti/views/edit.py:188
 msgid "${title} is no longer visible in the navigation."
 msgstr "${title} wird nun nicht mehr in der Navigation angezeigt."
 
-#: kotti/views/edit.py:161
+#: kotti/views/edit.py:200
 msgid "${title} deleted."
 msgstr "${title} gelöscht."
 
-#: kotti/views/edit.py:174
+#: kotti/views/edit.py:213
 msgid "Name and title are required."
 msgstr "Name und Titel werden benötigt."
 
-#: kotti/views/edit.py:178
+#: kotti/views/edit.py:217
 msgid "Item renamed"
 msgstr "Objekt umbenannt."
 
