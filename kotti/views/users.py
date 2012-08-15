@@ -494,12 +494,9 @@ def user_delete(context, request):
         else:
             is_group = user_or_group.startswith("group:")
             principal_type = _(u"Group") if is_group else _(u"User")
-            search_entries = search_principals(request, ignore=user_or_group)
 
             # We already coming from the confirmation page.
             if 'delete' in request.POST:
-                if 'new-owner' in request.POST:
-                    setattr(request, 'new_owner', request.POST['new-owner'])
                 principals.__delitem__(principal.name)
                 notify(UserDeleted(principal, request))
                 request.session.flash(_(u'${principal_type} ${title} deleted.',
@@ -516,13 +513,11 @@ def user_delete(context, request):
                 principal_type=principal_type,
                 principal=principal,
                 )
-            return {'api': api,
-                    'entries': search_entries, }
+            return {'api': api, }
     else:
         request.session.flash(_(u'No name given.'), 'error')
 
-    return {'api': template_api(context, request),  # eahrg?
-            'entries': [], }
+    return {'api': template_api(context, request), }
 
 
 class PreferencesFormView(UserEditFormView):

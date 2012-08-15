@@ -240,9 +240,8 @@ def reset_content_owner(event):
     """Reset the owner of the content from the deleted owner."""
     contents = DBSession.query(Content).filter(
         Content.owner == event.object.name).all()
-    new_owner = getattr(event.request, 'new_owner', None)
     for content in contents:
-        content.owner = new_owner
+        content.owner = None
 
 
 _WIRED_SQLALCHMEY = False

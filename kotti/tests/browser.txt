@@ -836,9 +836,6 @@ Now let's delete Bruce::
   >>> "Are you sure you want to delete <span>User</span> <em>Bruce Pelayo</em>?" in browser.contents
   True
 
-  >>> ctrl(name='query').value = 'brian'
-  >>> ctrl(name='search').click()
-  >>> ctrl(name='new-owner', index=0).value = ['brian',]
   >>> ctrl(name='delete').click()
   >>> "User Bruce Pelayo deleted." in browser.contents
   True

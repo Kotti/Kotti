@@ -170,7 +170,7 @@ class TestUserDelete(EventTestBase, UnitTestBase):
         user_delete(root, request)
         assert DBSession.query(LocalGroup).first() == None
 
-    def test_reset_owner_without_new_owner(self):
+    def test_reset_owner_to_none(self):
         from kotti.resources import get_root
         from kotti.resources import Content
         from kotti.views.users import user_delete
@@ -188,28 +188,6 @@ class TestUserDelete(EventTestBase, UnitTestBase):
         request.params['delete'] = u'delete'
         user_delete(root, request)
         assert root[u'content_1'].owner == None
-
-    @patch('kotti.events.get_current_request')
-    def test_reset_owner_with_new_owner(self, get_current_request):
-        from kotti.resources import get_root
-        from kotti.resources import Content
-        from kotti.views.users import user_delete
-        from kotti.tests.test_node_views import TestNodeShare
-
-        root = get_root()
-        request = DummyRequest()
-        get_current_request.return_value = request
-        TestNodeShare.add_some_principals()
-
-        root[u'content_1'] = Content()
-        root[u'content_1'].owner = u'bob'
-        assert root[u'content_1'].owner == u'bob'
-
-        request.params['name'] = u'bob'
-        request.params['new-owner'] = u'frank'
-        request.params['delete'] = u'delete'
-        user_delete(root, request)
-        assert root[u'content_1'].owner == u'frank'
 
 
 class TestSetPassword(UnitTestBase):
