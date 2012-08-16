@@ -127,7 +127,7 @@ msgstr "Anmelden"
 msgid "Username or email"
 msgstr "Benutzername oder E-Mail"
 
-#: kotti/templates/login.pt:22 kotti/views/login.py:94 kotti/views/users.py:209
+#: kotti/templates/login.pt:22 kotti/views/login.py:94 kotti/views/users.py:213
 msgid "Password"
 msgstr "Passwort"
 
@@ -160,7 +160,7 @@ msgstr "Setze ${state}"
 msgid "You are here:"
 msgstr "Sie sind hier:"
 
-#: kotti/templates/edit/delete.pt:9
+#: kotti/templates/edit/delete.pt:9 kotti/templates/site-setup/delete-user.pt:9
 msgid "Delete ${title}"
 msgstr "Lösche ${title}"
 
@@ -168,7 +168,9 @@ msgstr "Lösche ${title}"
 msgid "Are you sure you want to delete ${title}?"
 msgstr "Sind Sie sicher, dass sie ${title} löschen möchten?"
 
-#: kotti/templates/edit/delete.pt:22 kotti/views/edit.py:71
+#: kotti/templates/edit/delete.pt:22
+#: kotti/templates/site-setup/delete-user.pt:19 kotti/views/edit.py:71
+#: kotti/views/users.py:423
 msgid "Delete"
 msgstr "Löschen"
 
@@ -233,7 +235,7 @@ msgid "Search"
 msgstr "Suche"
 
 #: kotti/templates/edit/share.pt:31 kotti/templates/site-setup/users.pt:32
-#: kotti/views/users.py:204
+#: kotti/views/users.py:208
 msgid "Name"
 msgstr "Name"
 
@@ -244,6 +246,10 @@ msgstr "Gravatar"
 #: kotti/templates/edit/share.pt:58 kotti/templates/site-setup/users.pt:60
 msgid "Apply changes"
 msgstr "Änderungen übernehmen"
+
+#: kotti/templates/site-setup/delete-user.pt:14
+msgid "Are you sure you want to delete ${type} ${title}?"
+msgstr "Sind Sie sicher, dass sie ${type} ${title} löschen möchten?"
 
 #: kotti/templates/site-setup/user.pt:8
 msgid "Back to User Management"
@@ -345,7 +351,7 @@ msgstr "Objekt umbenannt."
 msgid "Maximum file size: ${size}MB"
 msgstr "Maximale Dateigröße: ${size}MB"
 
-#: kotti/views/file.py:109 kotti/views/form.py:48 kotti/views/users.py:193
+#: kotti/views/file.py:109 kotti/views/form.py:48 kotti/views/users.py:197
 msgid "Title"
 msgstr "Titel"
 
@@ -357,15 +363,16 @@ msgstr "Beschreibung"
 msgid "Tags"
 msgstr "Tags"
 
-#: kotti/views/form.py:74
+#: kotti/views/form.py:74 kotti/views/users.py:421
 msgid "Save"
 msgstr "Übernehmen"
 
-#: kotti/views/form.py:74 kotti/views/users.py:312 kotti/views/users.py:343
+#: kotti/views/form.py:74 kotti/views/users.py:317 kotti/views/users.py:348
+#: kotti/views/users.py:422
 msgid "Cancel"
 msgstr "Abbrechen"
 
-#: kotti/views/form.py:75 kotti/views/users.py:67
+#: kotti/views/form.py:75 kotti/views/users.py:71
 msgid "Your changes have been saved."
 msgstr "Ihre Änderungen wurden übernommen."
 
@@ -409,7 +416,7 @@ msgstr "Der angegebene Benutzername oder die E-Mail-Adresse ist nicht bekannt."
 msgid "You have been logged out."
 msgstr "Sie wurden abgemeldet."
 
-#: kotti/views/login.py:104 kotti/views/users.py:196
+#: kotti/views/login.py:104 kotti/views/users.py:200
 msgid "Email"
 msgstr "E-Mail"
 
@@ -441,51 +448,51 @@ msgstr "Benutzerverwaltung"
 msgid "Site Setup - ${title}"
 msgstr "Seiten-Einstellungen - ${title}"
 
-#: kotti/views/users.py:69 kotti/views/users.py:429
+#: kotti/views/users.py:73 kotti/views/users.py:439
 msgid "No changes made."
 msgstr "Keine Änderungen."
 
-#: kotti/views/users.py:96
+#: kotti/views/users.py:100
 msgid "No users or groups found."
 msgstr "Keine Benutzer oder Gruppen gefunden."
 
-#: kotti/views/users.py:141
+#: kotti/views/users.py:145
 msgid "Invalid value"
 msgstr "Falsche Eingabe"
 
-#: kotti/views/users.py:147
+#: kotti/views/users.py:151
 msgid "A user with that name already exists."
 msgstr "Ein Benutzer mit diesem Namen existiert bereits."
 
-#: kotti/views/users.py:154
+#: kotti/views/users.py:158
 msgid "A user with that email already exists."
 msgstr "Ein Benutzer mit dieser E-Mail Adresse existiert bereits."
 
-#: kotti/views/users.py:178
+#: kotti/views/users.py:182
 msgid "No such group: ${group}"
 msgstr "Unbekannte Gruppe: ${group}"
 
-#: kotti/views/users.py:185 kotti/views/users.py:448
+#: kotti/views/users.py:189 kotti/views/users.py:464 kotti/views/users.py:496
 msgid "Group"
 msgstr "Gruppe"
 
-#: kotti/views/users.py:216
+#: kotti/views/users.py:220
 msgid "Active"
 msgstr "Aktiv"
 
-#: kotti/views/users.py:217
+#: kotti/views/users.py:221
 msgid "Untick this to deactivate the account."
 msgstr "Hier abwählen um das Konto zu deaktivieren."
 
-#: kotti/views/users.py:223
+#: kotti/views/users.py:227
 msgid "Global roles"
 msgstr "Globale Rollen"
 
-#: kotti/views/users.py:227
+#: kotti/views/users.py:231
 msgid "Groups"
 msgstr "Gruppen"
 
-#: kotti/views/users.py:264
+#: kotti/views/users.py:268
 msgid ""
 "Leave this empty and tick the 'Send password registration' box below to "
 "have the user set their own password."
@@ -494,39 +501,56 @@ msgstr ""
 "Passwort-Registrierung\" um den Benutzer das Passwort selbst einstellen "
 "zu lassen."
 
-#: kotti/views/users.py:268
+#: kotti/views/users.py:272
 msgid "Full name"
 msgstr "Vollständiger Name"
 
-#: kotti/views/users.py:310 kotti/views/users.py:448
+#: kotti/views/users.py:314 kotti/views/users.py:464 kotti/views/users.py:496
 msgid "User"
 msgstr "Benutzer"
 
-#: kotti/views/users.py:311
+#: kotti/views/users.py:316
 msgid "Add User"
 msgstr "Benutzer hinzufügen"
 
-#: kotti/views/users.py:320
+#: kotti/views/users.py:325
 msgid "Send password registration link"
 msgstr "Schicke Passwort-Registrierung"
 
-#: kotti/views/users.py:334
+#: kotti/views/users.py:339
 msgid "${title} added."
 msgstr "${title} hinzugefügt."
 
-#: kotti/views/users.py:342
+#: kotti/views/users.py:347
 msgid "Add Group"
 msgstr "Gruppe hinzufügen"
 
-#: kotti/views/users.py:360
+#: kotti/views/users.py:365
 msgid "User Management - ${title}"
 msgstr "Benutzerverwaltung - ${title}"
 
-#: kotti/views/users.py:452
+#: kotti/views/users.py:468
 msgid "Edit ${principal_type} - ${title}"
 msgstr "Bearbeite ${principal_type} - ${title}"
 
-#: kotti/views/users.py:484
+#: kotti/views/users.py:493
+#, fuzzy
+msgid "User not found."
+msgstr "Keine Benutzer oder Gruppen gefunden."
+
+#: kotti/views/users.py:502
+msgid "${principal_type} ${title} deleted."
+msgstr "${principal_type} ${title} gelöscht."
+
+#: kotti/views/users.py:510
+msgid "Delete ${principal_type} - ${title}"
+msgstr "Bearbeite ${principal_type} - ${title}"
+
+#: kotti/views/users.py:518
+msgid "No name given."
+msgstr ""
+
+#: kotti/views/users.py:537
 msgid "My preferences - ${title}"
 msgstr "Meine Einstellungen - ${title}"
 

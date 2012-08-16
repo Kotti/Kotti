@@ -9,6 +9,7 @@ Change History
 
 - Fix critical issue with migrations where version number would not be
   persisted in the Alembic versions table.
+- Add deletion of users to the users management.
 
 0.7rc1 - 2012-08-14
 -------------------

@@ -1,8 +1,12 @@
 import colander
+import pytest
 from mock import patch
 
-from kotti.testing import DummyRequest
-from kotti.testing import UnitTestBase
+from kotti.testing import (
+    DummyRequest,
+    UnitTestBase,
+    EventTestBase,
+)
 
 
 class TestUserManagement(UnitTestBase):
@@ -86,6 +90,104 @@ class TestUserManagement(UnitTestBase):
         self.assertRaises(
             colander.Invalid,
             group_validator, None, u'this-group-never-exists')
+
+
+class TestUserDelete(EventTestBase, UnitTestBase):
+    def test_user_delete(self):
+        from kotti.resources import get_root
+        from kotti.security import get_principals
+        from kotti.tests.test_node_views import TestNodeShare
+        from kotti.views.users import user_delete
+
+        root = get_root()
+        request = DummyRequest()
+        TestNodeShare.add_some_principals()
+        bob = get_principals()[u'bob']
+
+        request.params['name'] = u''
+        user_delete(root, request)
+        assert request.session.pop_flash('error') == [u'No name given.']
+        assert u'bob' in get_principals().keys()
+
+        request.params['name'] = u'bob'
+        result = user_delete(root, request)
+        assert u'api' in result
+        api = result[u'api']
+        assert api.principal == bob
+        assert api.principal_type == u'User'
+        assert u'bob' in get_principals().keys()
+
+        request.params['name'] = u'john'
+        request.params['delete'] = u'delete'
+        user_delete(root, request)
+        assert request.session.pop_flash('error') == [u"User not found."]
+        assert u'bob' in get_principals().keys()
+
+        request.params['name'] = u'bob'
+        request.params['delete'] = u'delete'
+        user_delete(root, request)
+        with pytest.raises(KeyError):
+            get_principals()[u'bob']
+
+    def test_deleted_group_removed_in_usergroups(self):
+        from kotti.resources import get_root
+        from kotti.security import get_principals
+        from kotti.tests.test_node_views import TestNodeShare
+        from kotti.views.users import user_delete
+
+        root = get_root()
+        request = DummyRequest()
+        TestNodeShare.add_some_principals()
+        bob = get_principals()[u'bob']
+        bob.groups = [u'group:bobsgroup']
+        assert bob.groups == [u'group:bobsgroup']
+
+        request.params['name'] = u'group:bobsgroup'
+        request.params['delete'] = u'delete'
+        user_delete(root, request)
+        with pytest.raises(KeyError):
+            get_principals()[u'group:bobsgroup']
+        assert bob.groups == []
+
+    def test_deleted_group_removed_from_localgroups(self):
+        from kotti import DBSession
+        from kotti.resources import get_root
+        from kotti.security import set_groups
+        from kotti.resources import LocalGroup
+        from kotti.views.users import user_delete
+        from kotti.tests.test_node_views import TestNodeShare
+
+        root = get_root()
+        request = DummyRequest()
+        TestNodeShare.add_some_principals()
+        set_groups(u'group:bobsgroup', root, ['role:admin'])
+        local_group = DBSession.query(LocalGroup).first()
+        assert local_group.principal_name == u'group:bobsgroup'
+        assert local_group.node == root
+
+        request.params['name'] = u'group:bobsgroup'
+        request.params['delete'] = u'delete'
+        user_delete(root, request)
+        assert DBSession.query(LocalGroup).first() == None
+
+    def test_reset_owner_to_none(self):
+        from kotti.resources import get_root
+        from kotti.resources import Content
+        from kotti.views.users import user_delete
+        from kotti.tests.test_node_views import TestNodeShare
+
+        root = get_root()
+        request = DummyRequest()
+        TestNodeShare.add_some_principals()
+
+        root[u'content_1'] = Content()
+        root[u'content_1'].owner = u'bob'
+        assert root[u'content_1'].owner == u'bob'
+
+        request.params['name'] = u'bob'
+        request.params['delete'] = u'delete'
+        user_delete(root, request)
+        assert root[u'content_1'].owner == None
 
 
 class TestSetPassword(UnitTestBase):
