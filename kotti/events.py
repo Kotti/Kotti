@@ -48,9 +48,12 @@ from kotti.resources import Node
 from kotti.resources import Content
 from kotti.resources import Tag
 from kotti.resources import TagsToContents
+from kotti.resources import LocalGroup
 from kotti.security import list_groups
 from kotti.security import list_groups_raw
 from kotti.security import set_groups
+from kotti.security import Principal
+from kotti.security import get_principals
 
 
 class ObjectEvent(object):
@@ -72,6 +75,10 @@ class ObjectDelete(ObjectEvent):
 
 
 class ObjectAfterDelete(ObjectEvent):
+    pass
+
+
+class UserDeleted(ObjectEvent):
     pass
 
 
@@ -213,6 +220,30 @@ def delete_orphaned_tags(event):
     DBSession.query(Tag).filter(~Tag.content_tags.any()).delete(
         synchronize_session=False)
 
+
+def cleanup_user_groups(event):
+    """Remove a deleted group from the groups of a user/group and remove
+       all local group entries of it."""
+    name = event.object.name
+
+    if name.startswith("group:"):
+        principals = get_principals()
+        users_groups = [p for p in principals if name in principals[p].groups]
+        for user_or_group in users_groups:
+            principals[user_or_group].groups.remove(name)
+
+    DBSession.query(LocalGroup).filter(
+        LocalGroup.principal_name == name).delete()
+
+
+def reset_content_owner(event):
+    """Reset the owner of the content from the deleted owner."""
+    contents = DBSession.query(Content).filter(
+        Content.owner == event.object.name).all()
+    for content in contents:
+        content.owner = None
+
+
 _WIRED_SQLALCHMEY = False
 
 
@@ -242,3 +273,7 @@ def includeme(config):
         (ObjectAfterDelete, TagsToContents)].append(delete_orphaned_tags)
     objectevent_listeners[
         (ObjectInsert, Content)].append(initialize_workflow)
+    objectevent_listeners[
+        (UserDeleted, Principal)].append(cleanup_user_groups)
+    objectevent_listeners[
+        (UserDeleted, Principal)].append(reset_content_owner)
