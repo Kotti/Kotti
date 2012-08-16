@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Kotti 0.7dev8\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2012-08-15 11:19+0200\n"
+"POT-Creation-Date: 2012-08-15 12:45+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -163,6 +163,7 @@ msgstr ""
 
 #: kotti/templates/edit/delete.pt:22 kotti/templates/site-setup/delete-user.pt:19
 #: kotti/views/edit.py:71 kotti/views/users.py:423
+#: kotti/templates/edit/delete.pt:22 kotti/views/edit.py:71
 msgid "Delete"
 msgstr ""
 

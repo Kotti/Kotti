@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Kotti 0.7dev4\n"
 "Report-Msgid-Bugs-To: kotti@googlegroups.com\n"
-"POT-Creation-Date: 2012-08-15 11:19+0200\n"
-"PO-Revision-Date: 2012-07-22 08:46+0200\n"
+"POT-Creation-Date: 2012-08-15 12:45+0200\n"
+"PO-Revision-Date: 2012-08-15 13:05+0200\n"
 "Last-Translator: Christian Neumann <cneumann@datenkarussell.de>\n"
 "Language-Team: de <kotti@googlegroups.com>\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
@@ -56,11 +56,11 @@ msgstr "Administrator"
 
 #: kotti/workflow.zcml:28
 msgid "Private"
-msgstr ""
+msgstr "Privat"
 
 #: kotti/workflow.zcml:41
 msgid "Public"
-msgstr ""
+msgstr "Öffentlich"
 
 #: kotti/templates/actions-dropdown.pt:3
 msgid "Actions"
@@ -153,9 +153,8 @@ msgstr ""
 "welche einen Link enthält um ihr Passwort zurückzusetzen."
 
 #: kotti/templates/workflow-dropdown.pt:11
-#, fuzzy
 msgid "Make ${state}"
-msgstr "Teile ${title}"
+msgstr "Setze ${state}"
 
 #: kotti/templates/edit/breadcrumbs.pt:6
 msgid "You are here:"
@@ -278,7 +277,7 @@ msgstr "Suchergebnisse"
 
 #: kotti/templates/view/search.pt:11
 msgid "&#8594;"
-msgstr ""
+msgstr "&#8594;"
 
 #: kotti/tests/testing_view.pt:10
 msgid "Welcome, ${user}! You are logged in."

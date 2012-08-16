@@ -7,6 +7,7 @@ from pyramid.interfaces import IView
 from pyramid.interfaces import IViewClassifier
 from pyramid.request import Request
 from pyramid.threadlocal import get_current_registry
+from sqlalchemy import select
 from zope.interface import implementedBy
 from zope.interface import providedBy
 
@@ -201,6 +202,17 @@ class TestApp(UnitTestBase):
         settings['kotti.search_content'] = 'kotti.tests.test_app._dummy_search'
         main({}, **settings)
         assert search_content(u"Nuno") == u"Not found. Sorry!"
+
+    def test_stamp_heads(self):
+        from kotti import main
+        from kotti import DBSession
+
+        settings = self.required_settings()
+        main({}, **settings)
+
+        res = DBSession.execute(select(
+            columns=['version_num'], from_obj=['kotti_alembic_version']))
+        assert tuple(res)  # a version_num should exist
 
 
 class TestGetVersion(TestCase):
