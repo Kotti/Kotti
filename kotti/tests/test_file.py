@@ -71,9 +71,10 @@ class TestEditFileFormView(TestCase):
         view.context.filename = u'myfile.png'
         view.context.mimetype = u'image/png'
         view.context.size = 777
-        view.edit(title=u'A title', description=u'A description', tags=null,
-                                                                file=null)
-
+        view.edit(title=u'A title',
+                  description=u'A description',
+                  tags=null,
+                  file=null)
         assert view.context.title == u'A title'
         assert view.context.description == u'A description'
         assert view.context.data == 'filecontents'
