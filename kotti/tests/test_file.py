@@ -49,6 +49,7 @@ class TestEditFileFormView(TestCase):
         view = self.make_one()
         view.edit(
             title=u'A title', description=u'A description',
+            tags=[u"A tag"],
             file=dict(
                 fp=StringIO('filecontents'),
                 filename=u'myfile.png',
@@ -62,6 +63,7 @@ class TestEditFileFormView(TestCase):
         assert view.context.filename == u'myfile.png'
         assert view.context.mimetype == u'image/png'
         assert view.context.size == len('filecontents')
+        assert view.context.tags == [u"A tag"]
 
     def test_edit_without_file(self):
         view = self.make_one()
@@ -69,7 +71,8 @@ class TestEditFileFormView(TestCase):
         view.context.filename = u'myfile.png'
         view.context.mimetype = u'image/png'
         view.context.size = 777
-        view.edit(title=u'A title', description=u'A description', file=null)
+        view.edit(title=u'A title', description=u'A description', tags=null,
+                                                                file=null)
 
         assert view.context.title == u'A title'
         assert view.context.description == u'A description'
