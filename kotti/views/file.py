@@ -90,6 +90,7 @@ class EditFileFormView(EditFormView):
     def edit(self, **appstruct):
         self.context.title = appstruct['title']
         self.context.description = appstruct['description']
+        self.context.tags = appstruct['tags']
         if appstruct['file']:
             buf = appstruct['file']['fp'].read()
             self.context.data = buf
