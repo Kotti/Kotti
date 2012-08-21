@@ -18,6 +18,8 @@ from kotti.views.form import (
     ContentSchema,
     EditFormView,
     AddFormView,
+    ObjectType,
+    CommaSeparatedListWidget,
     )
 
 
@@ -114,6 +116,15 @@ class AddFileFormView(AddFormView):
                 missing=u"",
                 widget=TextAreaWidget(cols=40, rows=5),
                 )
+            tags = SchemaNode(
+                ObjectType(),
+                title=_('Test'),
+                missing=[],
+                widget=CommaSeparatedListWidget(
+                    template='tag_it',
+                    available_tags=[],
+                    )
+                )
             file = SchemaNode(
                 FileData(),
                 title=_(u'File'),
@@ -132,6 +143,7 @@ class AddFileFormView(AddFormView):
         return self.item_class(
             title=appstruct['title'],
             description=appstruct['description'],
+            tags=appstruct['tags'],
             data=buf,
             filename=appstruct['file']['filename'],
             mimetype=appstruct['file']['mimetype'],

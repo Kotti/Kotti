@@ -5,6 +5,7 @@ Change History
 ------------------
 
 - Add deletion of users to the users management.
+- Fix tag support for files and images.
 
 0.7 - 2012-08-16
 ----------------
