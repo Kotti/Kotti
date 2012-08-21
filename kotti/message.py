@@ -112,12 +112,21 @@ def send_set_password(user, request, templates='set-password', add_query=None):
     if isinstance(templates, str):
         templates = message_templates[templates]
     message = Message(
+        sender=get_message_sender(),
         recipients=[u'"%s" <%s>' % (user.title, user.email)],  # XXX naive?
         subject=templates['subject'] % variables,
         body=templates['body'] % variables,
         )
     mailer = get_mailer()
     mailer.send(message)
+
+
+def get_message_sender(sender_user=None):
+    sender = sender_user or 'Kotti Administrator'
+    sender_address = get_settings().get('mail.default_sender')
+    if sender_address:
+        sender += ' <%s>' % sender_address
+    return sender
 
 
 def email_set_password(user, request,
@@ -147,6 +156,7 @@ def email_set_password(user, request,
     textbody = html2text.handle(htmlbody).strip()
 
     message = Message(
+        sender=get_message_sender(),
         recipients=[u'"%s" <%s>' % (user.title, user.email)],  # XXX naive?
         subject=subject,
         body=textbody,
