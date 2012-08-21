@@ -60,6 +60,7 @@ class TestSendSetPassword(UnitTestBase):
 
         assert self.mailer.send.called
         message = self.mailer.send.call_args[0][0]
+        assert message.sender.startswith('Kotti Administrator')
         assert message.subject == 'Hey there Joe'
         assert message.body == 'This is Awesome site speaking'
 
@@ -115,6 +116,7 @@ class TestEmailSetPassword(UnitTestBase):
         assert hasattr(user, 'confirm_token')
         assert self.mailer.send.called
         message = self.mailer.send.call_args[0][0]
+        assert message.sender.startswith('Kotti Administrator')
         assert message.subject.startswith('Your registration')
         assert 'Joe' in message.body
         assert 'Joe' in message.html
