@@ -41,6 +41,7 @@ from kotti.views.form import BaseFormView
 from kotti.views.form import AddFormView
 from kotti.views.form import EditFormView
 from kotti.views.slots import slot_events
+from kotti.views.site_setup import CONTROL_PANEL_LINKS
 
 
 def template_api(context, request, **kwargs):
@@ -292,6 +293,11 @@ class TemplateAPI(object):
     def more_links(self, name):
         return [l for l in getattr(self, name)
                 if l.permitted(self.context, self.request)]
+
+    @reify
+    def site_setup_links(self):
+
+        return CONTROL_PANEL_LINKS
 
 
 def ensure_view_selector(func):

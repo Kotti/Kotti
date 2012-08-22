@@ -22,7 +22,7 @@ install_requires = [
     'docopt',
     'formencode',
     'html2text',
-    'js.bootstrap',
+    'js.bootstrap>=2.1.5',
     'js.jquery',
     'js.jquery_timepicker_addon',
     'js.jqueryui',
