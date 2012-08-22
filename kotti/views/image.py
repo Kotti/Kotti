@@ -44,6 +44,7 @@ class AddImageFormView(AddFileFormView):
         return Image(
             title=appstruct['title'],
             description=appstruct['description'],
+            tags=appstruct['tags'],
             data=buf,
             filename=appstruct['file']['filename'],
             mimetype=appstruct['file']['mimetype'],
