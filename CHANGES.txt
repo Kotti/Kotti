@@ -9,9 +9,13 @@ Change History
 - Fix tag support for files and images.
 
 - Upgrade to Twitter Bootstrap 2.1
-  (and require js.bootstrap 2.1.5 or greater).
 
-- Add "Site Setup" submenu.
+  - remove lots of CSS that is no longer needed
+
+  - fix responsive layout that was broken on some phone size
+    screen resolutions
+
+- Add "Site Setup" submenu / remove @@setup view.
 
 0.7 - 2012-08-16
 ----------------
