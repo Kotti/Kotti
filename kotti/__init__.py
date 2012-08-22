@@ -60,7 +60,6 @@ conf_defaults = {
         'kotti.views.file',
         'kotti.views.image',
         'kotti.views.users',
-        'kotti.views.site_setup',
         ]),
     'kotti.asset_overrides': '',
     'kotti.use_tables': '',

@@ -102,8 +102,6 @@ var jq = jQuery;
     deform.load();
     kotti.main();
 
-    jQuery(document).ready(function() {
-        $('.view-setup-user #deformdelete').addClass('btn-danger');
-    });
+    $('.view-setup-user #deformdelete').addClass('btn-danger');
 
  })(jQuery);

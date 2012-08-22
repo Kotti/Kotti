@@ -427,7 +427,7 @@ We cannot rename the root:
 On setup pages we can't use the actions:
 
   >>> browser.open(testing.BASE_URL)
-  >>> browser.getLink('Site Setup').click()
+  >>> browser.getLink('User Management').click()
   >>> browser.getLink('Copy').click()
   Traceback (most recent call last):
   LinkNotFoundError
@@ -448,9 +448,8 @@ Navigation
 User management
 ---------------
 
-The user management screen is available through Site Setup:
+The user management screen is available through the "Site Setup" submenu:
 
-  >>> browser.getLink("Site Setup").click()
   >>> browser.getLink("User Management").click()
 
 We add Bob's Group and assign the ``Viewer`` role:
@@ -762,7 +761,6 @@ again:
 Delete users
 ------------
 
-  >>> browser.getLink("Site Setup").click()
   >>> browser.getLink("User Management").click()
 
 We add a group and assign the ``Manager`` role to one:
@@ -824,7 +822,6 @@ Now let's delete Bruce::
   >>> ctrl("Password").value = "secret"
   >>> ctrl(name="submit").click()
 
-  >>> browser.getLink("Site Setup").click()
   >>> browser.getLink("User Management").click()
   >>> ctrl(name="query").value = "Bruce"
   >>> ctrl(name="search").click()
