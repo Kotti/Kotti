@@ -293,6 +293,11 @@ class TemplateAPI(object):
         return [l for l in getattr(self, name)
                 if l.permitted(self.context, self.request)]
 
+    @reify
+    def site_setup_links(self):
+        from site_setup import CONTROL_PANEL_LINKS
+        return CONTROL_PANEL_LINKS
+
 
 def ensure_view_selector(func):
     def wrapper(context, request):

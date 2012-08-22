@@ -162,3 +162,8 @@ span.brand a, span.brand a:hover {
   }
 }
 /* @end */
+
+
+#user-dropdown .dropdown-submenu > .dropdown-menu {
+  left: -100%;
+}

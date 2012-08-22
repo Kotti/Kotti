@@ -33,18 +33,33 @@
         ${api.user.title}
         <b class="caret"></b>
       </a>
-      <ul class="dropdown-menu">
-        <li tal:condition="api.has_permission('admin', api.root)">
-          <a href="${api.url(api.root, '@@setup')}"
-             i18n:translate="">Site Setup</a>
-        </li>
+      <ul class="dropdown-menu" id="user-dropdown">
         <li>
-          <a href="${api.url(api.root, '@@prefs')}"
-             i18n:translate="">Preferences</a>
+          <a href="${api.url(api.root, '@@prefs')}">
+            <b class="icon icon-user"></b>
+            <span i18n:translate="">Preferences</span>
+          </a>
         </li>
+        <tal:condition tal:condition="api.has_permission('admin', api.root)">
+          <li class="divider"></li>
+          <li class="dropdown-submenu">
+            <a tabindex="-1" href="${api.url(api.root, '@@setup')}">
+              <b class="icon icon-cog"></b>
+              <span i18n:translate="">Site Setup</span>
+            </a>
+            <ul class="dropdown-menu">
+              <li tal:repeat="link api.more_links('site_setup_links')">
+                <a href="${link.url(context, request)}">${link.title}</a>
+              </li>
+            </ul>
+          </li>
+          <li class="divider"></li>
+        </tal:condition>
         <li>
-          <a href="${request.application_url}/@@logout?came_from=${request.url}"
-             i18n:translate="">Logout</a>
+          <a href="${request.application_url}/@@logout?came_from=${request.url}">
+            <b class="icon icon-off"></b>
+            <span i18n:translate="">Logout</span>
+          </a>
         </li>
       </ul>
     </li>
