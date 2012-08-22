@@ -43,7 +43,7 @@
         <tal:condition tal:condition="api.has_permission('admin', api.root)">
           <li class="divider"></li>
           <li class="dropdown-submenu">
-            <a tabindex="-1" href="${api.url(api.root, '@@setup')}">
+            <a tabindex="-1" href="#">
               <b class="icon icon-cog"></b>
               <span i18n:translate="">Site Setup</span>
             </a>
