@@ -26,7 +26,7 @@ Logging in
 User management
 ---------------
 
-  >>> browser.open(testing.BASE_URL + '/@@setup')
+  >>> browser.open(testing.BASE_URL)
   >>> browser.getLink("User Management").click()
 
   >>> ctrl(name="query").value = "admin"
