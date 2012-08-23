@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Kotti 0.7dev4\n"
 "Report-Msgid-Bugs-To: kotti@googlegroups.com\n"
 "POT-Creation-Date: 2012-08-15 12:45+0200\n"
-"PO-Revision-Date: 2012-08-15 13:05+0200\n"
+"PO-Revision-Date: 2012-08-23 17:56+0200\n"
 "Last-Translator: Christian Neumann <cneumann@datenkarussell.de>\n"
 "Language-Team: de <kotti@googlegroups.com>\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
@@ -166,7 +166,7 @@ msgstr "Lösche ${title}"
 
 #: kotti/templates/edit/delete.pt:18
 msgid "Are you sure you want to delete ${title}?"
-msgstr "Sind Sie sicher, dass sie ${title} löschen möchten?"
+msgstr "Sind Sie sicher, dass Sie ${title} löschen möchten?"
 
 #: kotti/templates/edit/delete.pt:22
 #: kotti/templates/site-setup/delete-user.pt:19 kotti/views/edit.py:71
@@ -249,7 +249,7 @@ msgstr "Änderungen übernehmen"
 
 #: kotti/templates/site-setup/delete-user.pt:14
 msgid "Are you sure you want to delete ${type} ${title}?"
-msgstr "Sind Sie sicher, dass sie ${type} ${title} löschen möchten?"
+msgstr "Sind Sie sicher, dass Sie ${type} ${title} löschen möchten?"
 
 #: kotti/templates/site-setup/user.pt:8
 msgid "Back to User Management"
