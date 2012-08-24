@@ -2,12 +2,14 @@
     class="navbar-search pull-right"
     action="${api.url(api.root)}@@search-results"
     method="post"
-    id="form-search">
+    id="form-search"
+    i18n:domain="Kotti">
     <input
         type="text"
         name="search-term"
         class="search-query"
-        placeholder="Search..." />
+        placeholder="Search..."
+        i18n:attributes="placeholder" />
     <button
         type="submit"
         name="search-submit"

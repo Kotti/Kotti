@@ -6,9 +6,9 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: Kotti 0.7dev8\n"
+"Project-Id-Version: Kotti 0.7.1dev1\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2012-08-15 12:45+0200\n"
+"POT-Creation-Date: 2012-08-24 11:04+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -29,8 +29,8 @@ msgstr ""
 msgid "Document"
 msgstr ""
 
-#: kotti/resources.py:370 kotti/views/file.py:83 kotti/views/file.py:102
-#: kotti/views/file.py:118
+#: kotti/resources.py:370 kotti/views/file.py:85 kotti/views/file.py:110
+#: kotti/views/file.py:119
 msgid "File"
 msgstr ""
 
@@ -70,24 +70,24 @@ msgstr ""
 msgid "Add"
 msgstr ""
 
-#: kotti/templates/editor-bar.pt:11
+#: kotti/templates/editor-bar.pt:13
 msgid "View"
 msgstr ""
 
 #: kotti/templates/editor-bar.pt:38
-msgid "Site Setup"
+msgid "Navigate"
 msgstr ""
 
-#: kotti/templates/editor-bar.pt:42
+#: kotti/templates/editor-bar.pt:49
 msgid "Preferences"
 msgstr ""
 
-#: kotti/templates/editor-bar.pt:46
-msgid "Logout"
+#: kotti/templates/editor-bar.pt:57
+msgid "Site Setup"
 msgstr ""
 
-#: kotti/templates/editor-bar.pt:53
-msgid "Navigate"
+#: kotti/templates/editor-bar.pt:70
+msgid "Logout"
 msgstr ""
 
 #: kotti/templates/email-reset-password.pt:2
@@ -163,7 +163,6 @@ msgstr ""
 
 #: kotti/templates/edit/delete.pt:22 kotti/templates/site-setup/delete-user.pt:19
 #: kotti/views/edit.py:71 kotti/views/users.py:423
-#: kotti/templates/edit/delete.pt:22 kotti/views/edit.py:71
 msgid "Delete"
 msgstr ""
 
@@ -268,7 +267,11 @@ msgstr ""
 msgid "Search Results"
 msgstr ""
 
-#: kotti/templates/view/search.pt:11
+#: kotti/templates/view/search.pt:7
+msgid "Search..."
+msgstr ""
+
+#: kotti/templates/view/search.pt:13
 msgid "&#8594;"
 msgstr ""
 
@@ -340,15 +343,15 @@ msgstr ""
 msgid "Item renamed"
 msgstr ""
 
-#: kotti/views/file.py:72
+#: kotti/views/file.py:74
 msgid "Maximum file size: ${size}MB"
 msgstr ""
 
-#: kotti/views/file.py:109 kotti/views/form.py:48 kotti/views/users.py:197
+#: kotti/views/form.py:48 kotti/views/users.py:197
 msgid "Title"
 msgstr ""
 
-#: kotti/views/file.py:112 kotti/views/form.py:51
+#: kotti/views/form.py:51
 msgid "Description"
 msgstr ""
 
@@ -429,12 +432,8 @@ msgstr ""
 msgid "Reset your password - ${title}"
 msgstr ""
 
-#: kotti/views/site_setup.py:8
+#: kotti/views/site_setup.py:6
 msgid "User Management"
-msgstr ""
-
-#: kotti/views/site_setup.py:17
-msgid "Site Setup - ${title}"
 msgstr ""
 
 #: kotti/views/users.py:73 kotti/views/users.py:439
