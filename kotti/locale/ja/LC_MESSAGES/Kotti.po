@@ -6,9 +6,9 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Kotti 0.6.0\n"
+"Project-Id-Version: Kotti 0.7.0\n"
 "Report-Msgid-Bugs-To: kotti@googlegroups.com\n"
-"POT-Creation-Date: 2012-08-15 11:19+0200\n"
+"POT-Creation-Date: 2012-08-27 15:43+0900\n"
 "PO-Revision-Date: 2012-03-18 18:13+0900\n"
 "Last-Translator: MORIMOTO, Tetsuya <tetsuya.morimoto@gmail.com>\n"
 "Language-Team: ja <kotti@googlegroups.com>\n"
@@ -30,8 +30,8 @@ msgstr "共有"
 msgid "Document"
 msgstr "ドキュメント"
 
-#: kotti/resources.py:370 kotti/views/file.py:83 kotti/views/file.py:102
-#: kotti/views/file.py:118
+#: kotti/resources.py:370 kotti/views/file.py:85 kotti/views/file.py:110
+#: kotti/views/file.py:119
 msgid "File"
 msgstr "ファイル"
 
@@ -57,11 +57,11 @@ msgstr "管理者"
 
 #: kotti/workflow.zcml:28
 msgid "Private"
-msgstr ""
+msgstr "プライベート"
 
 #: kotti/workflow.zcml:41
 msgid "Public"
-msgstr ""
+msgstr "パブリック"
 
 #: kotti/templates/actions-dropdown.pt:3
 msgid "Actions"
@@ -71,25 +71,25 @@ msgstr "アクション"
 msgid "Add"
 msgstr "追加"
 
-#: kotti/templates/editor-bar.pt:11
+#: kotti/templates/editor-bar.pt:13
 msgid "View"
 msgstr "表示"
 
 #: kotti/templates/editor-bar.pt:38
-msgid "Site Setup"
-msgstr "サイト設定"
+msgid "Navigate"
+msgstr "ナビゲート"
 
-#: kotti/templates/editor-bar.pt:42
+#: kotti/templates/editor-bar.pt:49
 msgid "Preferences"
 msgstr "設定"
 
-#: kotti/templates/editor-bar.pt:46
+#: kotti/templates/editor-bar.pt:57
+msgid "Site Setup"
+msgstr "サイト設定"
+
+#: kotti/templates/editor-bar.pt:70
 msgid "Logout"
 msgstr "ログアウト"
-
-#: kotti/templates/editor-bar.pt:53
-msgid "Navigate"
-msgstr "ナビゲート"
 
 #: kotti/templates/email-reset-password.pt:2
 msgid "Reset your password for ${site_title}"
@@ -149,9 +149,8 @@ msgstr ""
 "をクリックしてください。パスワードをリセットするためのリンクが書かれたメールが送信されます。"
 
 #: kotti/templates/workflow-dropdown.pt:11
-#, fuzzy
 msgid "Make ${state}"
-msgstr "${title} を共有"
+msgstr "${state} を作る"
 
 #: kotti/templates/edit/breadcrumbs.pt:6
 msgid "You are here:"
@@ -245,9 +244,8 @@ msgid "Apply changes"
 msgstr "変更を適用"
 
 #: kotti/templates/site-setup/delete-user.pt:14
-#, fuzzy
 msgid "Are you sure you want to delete ${type} ${title}?"
-msgstr "本当に ${title} を削除しますか?"
+msgstr "本当に ${type} ${title} を削除しますか?"
 
 #: kotti/templates/site-setup/user.pt:8
 msgid "Back to User Management"
@@ -345,15 +343,15 @@ msgstr "名称とタイトルは必須です。"
 msgid "Item renamed"
 msgstr "名称変更しました"
 
-#: kotti/views/file.py:72
+#: kotti/views/file.py:74
 msgid "Maximum file size: ${size}MB"
 msgstr "最大ファイルサイズ: ${size}MB"
 
-#: kotti/views/file.py:109 kotti/views/form.py:48 kotti/views/users.py:197
+#: kotti/views/form.py:48 kotti/views/users.py:197
 msgid "Title"
 msgstr "タイトル"
 
-#: kotti/views/file.py:112 kotti/views/form.py:51
+#: kotti/views/form.py:51
 msgid "Description"
 msgstr "説明"
 
@@ -436,13 +434,9 @@ msgstr "パスワードをリセットするためのトークンが期限切れ
 msgid "Reset your password - ${title}"
 msgstr "パスワードのリセット - ${title}"
 
-#: kotti/views/site_setup.py:8
+#: kotti/views/site_setup.py:6
 msgid "User Management"
 msgstr "ユーザー管理"
-
-#: kotti/views/site_setup.py:17
-msgid "Site Setup - ${title}"
-msgstr "サイト設定 - ${title}"
 
 #: kotti/views/users.py:73 kotti/views/users.py:439
 msgid "No changes made."
@@ -461,9 +455,8 @@ msgid "A user with that name already exists."
 msgstr "同じ名称のユーザーがすでに存在します。"
 
 #: kotti/views/users.py:158
-#, fuzzy
 msgid "A user with that email already exists."
-msgstr "同じ名称のユーザーがすでに存在します。"
+msgstr "そのメールアドレスをもつユーザーがすでに存在します。"
 
 #: kotti/views/users.py:182
 msgid "No such group: ${group}"
@@ -528,25 +521,21 @@ msgid "Edit ${principal_type} - ${title}"
 msgstr "${principal_type} を編集 - ${title}"
 
 #: kotti/views/users.py:493
-#, fuzzy
 msgid "User not found."
-msgstr "ユーザーもグループも見つかりませんでした。"
+msgstr "ユーザーは見つかりませんでした。"
 
 #: kotti/views/users.py:502
-#, fuzzy
 msgid "${principal_type} ${title} deleted."
-msgstr "${principal_type} を編集 - ${title}"
+msgstr "${principal_type} ${title} を削除しました。"
 
 #: kotti/views/users.py:510
-#, fuzzy
 msgid "Delete ${principal_type} - ${title}"
-msgstr "${principal_type} を編集 - ${title}"
+msgstr "${principal_type} を削除 - ${title}"
 
 #: kotti/views/users.py:518
 msgid "No name given."
-msgstr ""
+msgstr "名前がありません。"
 
 #: kotti/views/users.py:537
 msgid "My preferences - ${title}"
 msgstr "個人設定 - ${title}"
-
