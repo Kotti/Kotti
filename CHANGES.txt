@@ -1,7 +1,7 @@
 Change History
 ==============
 
-0.7.1 - Unreleased
+0.7.1 - 2012-08-30
 ------------------
 
 - Add deletion of users to the users management.
