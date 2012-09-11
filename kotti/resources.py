@@ -118,6 +118,10 @@ class IDocument(Interface):
     pass
 
 
+class IImage(Interface):
+    pass
+
+
 class IDefaultWorkflow(Interface):
     pass
 
@@ -382,6 +386,7 @@ class File(Content):
 
 
 class Image(File):
+    implements(IImage)
 
     id = Column(Integer(), ForeignKey('files.id'), primary_key=True)
 
