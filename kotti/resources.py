@@ -122,7 +122,7 @@ class IFile(Interface):
     pass
 
 
-class IImage(Interface):
+class IImage(IFile):
     pass
 
 
@@ -367,6 +367,9 @@ class Document(Content):
 
 
 class File(Content):
+
+    implements(IFile)
+
     id = Column(Integer(), ForeignKey('contents.id'), primary_key=True)
     data = deferred(Column(LargeBinary()))
     filename = Column(Unicode(100))
@@ -390,7 +393,8 @@ class File(Content):
 
 
 class Image(File):
-    implements(IImage, IFile)
+
+    implements(IImage)
 
     id = Column(Integer(), ForeignKey('files.id'), primary_key=True)
 
