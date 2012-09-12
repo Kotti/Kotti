@@ -118,6 +118,10 @@ class IDocument(Interface):
     pass
 
 
+class IFile(Interface):
+    pass
+
+
 class IImage(Interface):
     pass
 
@@ -386,7 +390,7 @@ class File(Content):
 
 
 class Image(File):
-    implements(IImage)
+    implements(IImage, IFile)
 
     id = Column(Integer(), ForeignKey('files.id'), primary_key=True)
 
