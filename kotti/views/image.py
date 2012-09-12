@@ -59,7 +59,7 @@ class ImageView(object):
         self.context = context
         self.request = request
 
-    @view_config(context=Image,
+    @view_config(context=IImage,
                  name='view',
                  permission='view',
                  renderer='kotti:templates/view/image.pt')
