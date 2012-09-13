@@ -7,12 +7,7 @@ env:
   - KOTTI_TEST_DB_STRING=mysql+oursql://root@localhost:3306/kotti_testing
   - KOTTI_TEST_DB_STRING=sqlite://
 install:
-  - echo | sudo add-apt-repository ppa:nathan-renniewaldock/ppa
-  - sudo apt-get update
-  - sudo apt-get -y purge mysql-server-5.1
-  - sudo apt-get -y install mysql-server-5.5
-  - python setup.py dev
-  - pip install psycopg oursql
+  - python setup.py dev; pip install psycopg oursql
 before_script:
   - psql -c 'create database kotti_testing;' -U postgres
   - mysql -e 'create database kotti_testing;'
