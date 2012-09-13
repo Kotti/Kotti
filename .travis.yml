@@ -9,7 +9,6 @@ env:
 install:
   - pip install -r requirements.txt
   - python setup.py dev
-  - pip install psycopg oursql
 before_script:
   - psql -c 'create database kotti_testing;' -U postgres
   - mysql -e 'create database kotti_testing;'
