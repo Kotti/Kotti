@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Kotti 0.7dev4\n"
 "Report-Msgid-Bugs-To: kotti@googlegroups.com\n"
-"POT-Creation-Date: 2012-08-15 12:45+0200\n"
+"POT-Creation-Date: 2012-08-24 11:04+0200\n"
 "PO-Revision-Date: 2012-08-23 17:56+0200\n"
 "Last-Translator: Christian Neumann <cneumann@datenkarussell.de>\n"
 "Language-Team: de <kotti@googlegroups.com>\n"
@@ -29,8 +29,8 @@ msgstr "Teilen"
 msgid "Document"
 msgstr "Dokument"
 
-#: kotti/resources.py:370 kotti/views/file.py:83 kotti/views/file.py:102
-#: kotti/views/file.py:118
+#: kotti/resources.py:370 kotti/views/file.py:85 kotti/views/file.py:110
+#: kotti/views/file.py:119
 msgid "File"
 msgstr "Datei"
 
@@ -70,25 +70,25 @@ msgstr "Aktionen"
 msgid "Add"
 msgstr "Hinzufügen"
 
-#: kotti/templates/editor-bar.pt:11
+#: kotti/templates/editor-bar.pt:13
 msgid "View"
 msgstr "Anzeigen"
 
 #: kotti/templates/editor-bar.pt:38
-msgid "Site Setup"
-msgstr "Seiten-Einstellungen"
+msgid "Navigate"
+msgstr "Navigieren"
 
-#: kotti/templates/editor-bar.pt:42
+#: kotti/templates/editor-bar.pt:49
 msgid "Preferences"
 msgstr "Einstellungen"
 
-#: kotti/templates/editor-bar.pt:46
+#: kotti/templates/editor-bar.pt:57
+msgid "Site Setup"
+msgstr "Seiten-Einstellungen"
+
+#: kotti/templates/editor-bar.pt:70
 msgid "Logout"
 msgstr "Abmelden"
-
-#: kotti/templates/editor-bar.pt:53
-msgid "Navigate"
-msgstr "Navigieren"
 
 #: kotti/templates/email-reset-password.pt:2
 msgid "Reset your password for ${site_title}"
@@ -275,7 +275,11 @@ msgstr "Neue Gruppe"
 msgid "Search Results"
 msgstr "Suchergebnisse"
 
-#: kotti/templates/view/search.pt:11
+#: kotti/templates/view/search.pt:7
+msgid "Search..."
+msgstr "Suche..."
+
+#: kotti/templates/view/search.pt:13
 msgid "&#8594;"
 msgstr "&#8594;"
 
@@ -347,15 +351,15 @@ msgstr "Name und Titel werden benötigt."
 msgid "Item renamed"
 msgstr "Objekt umbenannt."
 
-#: kotti/views/file.py:72
+#: kotti/views/file.py:74
 msgid "Maximum file size: ${size}MB"
 msgstr "Maximale Dateigröße: ${size}MB"
 
-#: kotti/views/file.py:109 kotti/views/form.py:48 kotti/views/users.py:197
+#: kotti/views/form.py:48 kotti/views/users.py:197
 msgid "Title"
 msgstr "Titel"
 
-#: kotti/views/file.py:112 kotti/views/form.py:51
+#: kotti/views/form.py:51
 msgid "Description"
 msgstr "Beschreibung"
 
@@ -440,13 +444,9 @@ msgstr "Der Link zum Zurücksetzen Ihres Passwortes ist abgelaufen!"
 msgid "Reset your password - ${title}"
 msgstr "Passwort zurücksetzen - ${title}"
 
-#: kotti/views/site_setup.py:8
+#: kotti/views/site_setup.py:6
 msgid "User Management"
 msgstr "Benutzerverwaltung"
-
-#: kotti/views/site_setup.py:17
-msgid "Site Setup - ${title}"
-msgstr "Seiten-Einstellungen - ${title}"
 
 #: kotti/views/users.py:73 kotti/views/users.py:439
 msgid "No changes made."
@@ -553,4 +553,7 @@ msgstr ""
 #: kotti/views/users.py:537
 msgid "My preferences - ${title}"
 msgstr "Meine Einstellungen - ${title}"
+
+#~ msgid "Site Setup - ${title}"
+#~ msgstr "Seiten-Einstellungen - ${title}"
 
