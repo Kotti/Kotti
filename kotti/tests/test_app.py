@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+from unittest import TestCase
 import warnings
 
 from mock import patch
@@ -10,6 +11,7 @@ from pyramid.interfaces import IView
 from pyramid.interfaces import IViewClassifier
 from pyramid.request import Request
 from pyramid.threadlocal import get_current_registry
+from sqlalchemy import select
 from zope.interface import implementedBy
 from zope.interface import providedBy
 
@@ -174,10 +176,14 @@ class TestApp:
 
         settings = self.required_settings()
         settings['kotti.site_title'] = 'K\xc3\xb6tti'  # Kötti
+        settings['kotti_foo.site_title'] = 'K\xc3\xb6tti'
+        settings['foo.site_title'] = 'K\xc3\xb6tti'
 
         with patch('kotti.resources.initialize_sql'):
             main({}, **settings)
         assert get_settings()['kotti.site_title'] == u'K\xf6tti'
+        assert get_settings()['kotti_foo.site_title'] == u'K\xf6tti'
+        assert get_settings()['foo.site_title'] == 'K\xc3\xb6tti'
 
     def test_search_content(self, db_session):
         from kotti import main
@@ -188,3 +194,20 @@ class TestApp:
         with patch('kotti.resources.initialize_sql'):
             main({}, **settings)
         assert search_content(u"Nuno") == u"Not found. Sorry!"
+
+    def test_stamp_heads(self):
+        from kotti import main
+        from kotti import DBSession
+
+        settings = self.required_settings()
+        main({}, **settings)
+
+        res = DBSession.execute(select(
+            columns=['version_num'], from_obj=['kotti_alembic_version']))
+        assert tuple(res)  # a version_num should exist
+
+
+class TestGetVersion(TestCase):
+    def test_it(self):
+        from kotti import get_version
+        assert isinstance(get_version(), str)

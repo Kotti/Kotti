@@ -12,7 +12,7 @@ class TestAddableTypes:
 
         config.testing_securitypolicy(permissive=True)
         config.include('kotti.views.edit')
-        root = DBSession().query(Node).get(1)
+        root = DBSession.query(Node).get(1)
         request = DummyRequest()
         assert Document.type_info.addable(root, request) is True
 
@@ -23,7 +23,7 @@ class TestAddableTypes:
 
         config.testing_securitypolicy(permissive=False)
         config.include('kotti.views.edit')
-        root = DBSession().query(Node).get(1)
+        root = DBSession.query(Node).get(1)
         request = DummyRequest()
         assert Document.type_info.addable(root, request) is False
 
@@ -34,7 +34,7 @@ class TestNodePaste:
         from kotti.resources import Node
         from kotti.views.edit import get_paste_item
 
-        root = DBSession().query(Node).get(1)
+        root = DBSession.query(Node).get(1)
         request = DummyRequest()
         request.session['kotti.paste'] = (1701, 'copy')
         item = get_paste_item(root, request)
@@ -45,7 +45,7 @@ class TestNodePaste:
         from kotti.resources import Node
         from kotti.views.edit import paste_node
 
-        root = DBSession().query(Node).get(1)
+        root = DBSession.query(Node).get(1)
         request = DummyRequest()
 
         for index, action in enumerate(['copy', 'cut']):
@@ -59,7 +59,7 @@ class TestNodePaste:
         from kotti.resources import Node
         from kotti.views.edit import paste_node
 
-        root = DBSession().query(Node).get(1)
+        root = DBSession.query(Node).get(1)
         request = DummyRequest()
         request.params['paste'] = u'on'
         config.testing_securitypolicy(permissive=False)
@@ -83,7 +83,7 @@ class TestNodeRename:
         from kotti.resources import Document
         from kotti.views.edit import rename_node
 
-        root = DBSession().query(Node).get(1)
+        root = DBSession.query(Node).get(1)
         child = root['child'] = Document(title=u"Child")
         request = DummyRequest()
         request.params['rename'] = u'on'

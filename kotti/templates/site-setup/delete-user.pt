@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      i18n:domain="Kotti"
+      metal:use-macro="api.macro('kotti:templates/edit/master.pt')">
+
+  <div metal:fill-slot="content">
+
+    <h1 i18n:translate="">Delete <em i18n:name="title">${api.principal.title}</em></h1>
+
+    <div class="tab-pane" id="delete">
+      <form action="${request.url}" method="post" id="form-delete-user">
+        <fieldset>
+          <legend i18n:translate="">
+            Are you sure you want to delete <span i18n:name="type">${api.principal_type}</span> <em i18n:name="title">${api.principal.title}</em>?
+          </legend>
+
+          <div class="form-actions">
+            <button type="submit" name="delete" value="delete" 
+                    class="btn btn-danger" i18n:translate="">Delete</button>
+          </div>
+        </fieldset>
+      </form>
+    </div>
+
+  </div>
+</html>

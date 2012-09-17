@@ -18,6 +18,8 @@ from kotti.views.form import (
     ContentSchema,
     EditFormView,
     AddFormView,
+    ObjectType,
+    CommaSeparatedListWidget,
     )
 
 
@@ -90,12 +92,18 @@ class EditFileFormView(EditFormView):
     def edit(self, **appstruct):
         self.context.title = appstruct['title']
         self.context.description = appstruct['description']
+        self.context.tags = appstruct['tags']
         if appstruct['file']:
             buf = appstruct['file']['fp'].read()
             self.context.data = buf
             self.context.filename = appstruct['file']['filename']
             self.context.mimetype = appstruct['file']['mimetype']
             self.context.size = len(buf)
+
+
+def set_title_missing(node, kw):
+    if 'title_missing' in kw:
+        node['title'].missing = kw['title_missing']
 
 
 class AddFileFormView(AddFormView):
@@ -105,21 +113,15 @@ class AddFileFormView(AddFormView):
     def schema_factory(self):
         tmpstore = FileUploadTempStore(self.request)
 
-        class FileSchema(MappingSchema):
-            title = SchemaNode(String(), title=_(u'Title'), missing=u'')
-            description = SchemaNode(
-                String(),
-                title=_('Description'),
-                missing=u"",
-                widget=TextAreaWidget(cols=40, rows=5),
-                )
+        class FileSchema(ContentSchema):
             file = SchemaNode(
                 FileData(),
                 title=_(u'File'),
                 widget=FileUploadWidget(tmpstore),
                 validator=validate_file_size_limit,
                 )
-        return FileSchema()
+        file_schema = FileSchema(after_bind=set_title_missing)
+        return file_schema.bind(title_missing=u'')
 
     def save_success(self, appstruct):
         if not appstruct['title']:
@@ -131,6 +133,7 @@ class AddFileFormView(AddFormView):
         return self.item_class(
             title=appstruct['title'],
             description=appstruct['description'],
+            tags=appstruct['tags'],
             data=buf,
             filename=appstruct['file']['filename'],
             mimetype=appstruct['file']['mimetype'],

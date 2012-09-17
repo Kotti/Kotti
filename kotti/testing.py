@@ -5,6 +5,7 @@ from pytest import mark
 
 from pyramid import testing
 from pyramid.config import DEFAULT_RENDERERS
+from pyramid.events import NewResponse
 from pyramid.security import ALL_PERMISSIONS
 from zope.deprecation.deprecation import deprecate
 import transaction
@@ -75,9 +76,11 @@ def testing_db_url():
 
 def _initTestingDB():
     from sqlalchemy import create_engine
+    from kotti import get_settings
     from kotti.resources import initialize_sql
 
     database_url = testing_db_url()
+    get_settings()['sqlalchemy.url'] = database_url
     session = initialize_sql(create_engine(database_url), drop_all=True)
     return session
 
@@ -158,6 +161,16 @@ class EventTestBase(TestCase):
 # Functional ----
 
 
+def _functional_includeme(config):
+    from kotti import DBSession
+
+    def expire(event):
+        DBSession.flush()
+        DBSession.expire_all()
+
+    config.add_subscriber(expire, NewResponse)
+
+
 def setUpFunctional(global_config=None, **settings):
     from kotti import main
     import wsgi_intercept.zope_testbrowser
@@ -171,6 +184,7 @@ def setUpFunctional(global_config=None, **settings):
         'kotti.site_title': 'Website des Kottbusser Tors',  # for mailing
         'kotti.populators': 'kotti.testing._populator',
         'mail.default_sender': 'kotti@localhost',
+        'pyramid.includes': 'kotti.testing._functional_includeme',
         }
     _settings.update(settings)
 
@@ -246,8 +260,7 @@ def setUpFunctionalStrippedDownApp(global_config=None, **settings):
     # An app that doesn't use Nodes at all
     _settings = {
         'kotti.base_includes': (
-            'kotti kotti.views kotti.views.login kotti.views.site_setup '
-            'kotti.views.users'),
+            'kotti kotti.views kotti.views.login kotti.views.users'),
         'kotti.use_tables': 'principals',
         'kotti.populators': 'kotti.populate.populate_users',
         'pyramid.includes': 'kotti.testing.include_testing_view',

@@ -6,6 +6,7 @@ from pyramid.traversal import resource_path
 from sqlalchemy.sql import and_
 from sqlalchemy.sql import select
 from sqlalchemy.orm import backref
+from sqlalchemy.orm import deferred
 from sqlalchemy.orm import object_mapper
 from sqlalchemy.orm import relation
 from sqlalchemy.orm.exc import NoResultFound
@@ -31,6 +32,7 @@ from kotti import get_settings
 from kotti import metadata
 from kotti import DBSession
 from kotti import Base
+from kotti.migrate import stamp_heads
 from kotti.security import PersistentACLMixin
 from kotti.security import view_permitted
 from kotti.sqla import ACLType
@@ -53,14 +55,13 @@ class ContainerMixin(object, DictMixin):
     def __delitem__(self, key):
         node = self[unicode(key)]
         self.children.remove(node)
-        DBSession().delete(node)
+        DBSession.delete(node)
 
     def keys(self):
         return [child.name for child in self.children]
 
     def __getitem__(self, path):
-        session = DBSession()
-        session._autoflush()
+        DBSession()._autoflush()
 
         if not hasattr(path, '__iter__'):
             path = (path,)
@@ -95,10 +96,10 @@ class ContainerMixin(object, DictMixin):
             conditions.append(alias.c.parent_id == old_alias.c.id)
             conditions.append(alias.c.name == name)
         expr = select([alias.c.id], and_(*conditions))
-        row = session.execute(expr).fetchone()
+        row = DBSession.execute(expr).fetchone()
         if row is None:
             raise KeyError(path)
-        return session.query(Node).get(row.id)
+        return DBSession.query(Node).get(row.id)
 
     @hybrid_property
     def children(self):
@@ -110,6 +111,22 @@ class INode(Interface):
 
 
 class IContent(Interface):
+    pass
+
+
+class IDocument(Interface):
+    pass
+
+
+class IFile(Interface):
+    pass
+
+
+class IImage(IFile):
+    pass
+
+
+class IDefaultWorkflow(Interface):
     pass
 
 
@@ -280,6 +297,7 @@ class Content(Node):
     description = Column(UnicodeText())
     language = Column(Unicode(10))
     owner = Column(Unicode(100))
+    state = Column(String(50))
     creation_date = Column(DateTime())
     modification_date = Column(DateTime())
     in_navigation = Column(Boolean())
@@ -329,6 +347,8 @@ class Content(Node):
 
 
 class Document(Content):
+    implements(IDocument, IDefaultWorkflow)
+
     id = Column(Integer(), ForeignKey('contents.id'), primary_key=True)
     body = Column(UnicodeText())
     mime_type = Column(String(30))
@@ -347,8 +367,11 @@ class Document(Content):
 
 
 class File(Content):
+
+    implements(IFile)
+
     id = Column(Integer(), ForeignKey('contents.id'), primary_key=True)
-    data = Column(LargeBinary())
+    data = deferred(Column(LargeBinary()))
     filename = Column(Unicode(100))
     mimetype = Column(String(100))
     size = Column(Integer())
@@ -370,6 +393,8 @@ class File(Content):
 
 
 class Image(File):
+
+    implements(IImage)
 
     id = Column(Integer(), ForeignKey('files.id'), primary_key=True)
 
@@ -407,12 +432,18 @@ def initialize_sql(engine, drop_all=False):
         from sqlalchemy.dialects.mysql.base import LONGBLOB
         File.__table__.c.data.type = LONGBLOB()
 
+    # Allow migrations to set the 'head' stamp in case the database is
+    # initialized freshly:
+    if not engine.table_names():
+        stamp_heads()
+
     metadata.create_all(engine, tables=tables)
-    for populate in get_settings()['kotti.populators']:
-        populate()
+    if os.environ.get('KOTTI_DISABLE_POPULATORS', '0') not in ('1', 'y'):
+        for populate in get_settings()['kotti.populators']:
+            populate()
     commit()
 
-    return DBSession()
+    return DBSession
 
 
 def appmaker(engine):

@@ -1,12 +1,119 @@
 Change History
 ==============
 
-0.7 - Unreleased
+0.7.2 - Unreleased
+------------------
+
+0.7.1 - 2012-08-30
+------------------
+
+- Add deletion of users to the users management.
+
+- Fix tag support for files and images.
+
+- Upgrade to Twitter Bootstrap 2.1
+
+  - remove lots of CSS that is no longer needed
+
+  - fix responsive layout that was broken on some phone size
+    screen resolutions
+
+- Add "Site Setup" submenu / remove @@setup view.
+
+0.7 - 2012-08-16
 ----------------
+
+- Fix critical issue with migrations where version number would not be
+  persisted in the Alembic versions table.
+
+0.7rc1 - 2012-08-14
+-------------------
+
+- No changes.
+
+0.7a6 - 2012-08-07
+------------------
+
+- Fix a bug with connections in the migration script.  This would
+  previously cause Postgres to deadlock when calling
+  ``kotti-migrate``.
+
+0.7a5 - 2012-08-07
+------------------
+
+- Add workflow support based on ``repoze.workflow``.  A simple
+  workflow is included in ``workflow.zcml`` and is active by default.
+  Use ``kotti.use_workflow = 0`` to deactivate.  The workflow support
+  adds a drop-down that allows users with ``state_change`` permission
+  to modify the workflow state.
+
+- Change the default layout
+
+  Kotti's new default look is now even closer to the Bootstrap
+  documentation, with the main nav bar at the very top and the
+  edit bar right below.
+
+  Upgrade note: if you have a customized main_template and want to
+  use the recent changes in that template, you need to swap
+  positions of ``nav.pt`` and ``editor-bar.pt`` ``api.render_template``
+  calls and remove the ``search.pt`` call from the main_template
+  (it's now called from within ``nav.pt``).
+  Everything else is completely optional.
+
+- Add migrations via Alembic.  A new script ``kotti-migrate`` helps
+  with managing database upgrades of Kotti and Kotti add-ons.  Run
+  ``kotti-migrate <your.ini> upgrade`` to upgrade the Kotti database
+  to the latest version.
+
+  Add-on authors should see the ``kotti.migrate`` module's docstring
+  for more details.
+
+- Make ``Document.body`` searchable (and therefore the search feature
+  actually useful for the first time).
+
+- Add a "minify" command to compress CSS and JS resources.
+
+  To use it run::
+
+    python setup.py dev
+    python setup.py minify
+
+  The ``minify`` command assumes, that all resources are in
+  ``kotti/static/``. ``YUI compressor`` is used for compression
+  and will be automatically installed when running
+  ``python setup.py dev``. However, you still need a JVM on
+  your development machine to be able to use the ``minify``
+  command.
+
+- Fix settings: only values for kotti* keys should be converted to
+  unicode strings.
 
 - Fix #89: Validate email address for uniqueness when user changes it.
 
 - Fix #91: Styling of search box.
+
+- Fix #104: Make fanstatic resources completely overridable.
+
+- Enabled deferred loading on File.data column.
+
+Migrations
+~~~~~~~~~~
+
+- Upgrading from 0.6 to 0.7 requires you to run a migration script on
+  your database.  To run the migration, call::
+
+    $ bin/kotti-migrate <myconfig.ini> upgrade
+
+  Make sure you **backup** your database before running the migration!
+
+- Upgrading to 0.7 will initialize workfow state and permissions for
+  all your content objects, unless you've overwritten
+  ``kotti-use_workflow`` to not use a workflow (use ``0``) or a custom
+  one.
+
+  It is **important** that sites that have custom permissions,
+  e.g. custom modifications to SITE_ACL, turn off workflow support
+  prior to running the upgrade script.
 
 0.7a4 - 2012-06-25
 ------------------

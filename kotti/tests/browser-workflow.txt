@@ -1,0 +1,54 @@
+Kotti browser tests for the default workflow
+============================================
+
+  >>> from kotti import testing
+  >>> from kotti import DBSession
+  >>> tools = testing.setUpFunctional()
+  >>> browser = tools['Browser']()
+  >>> ctrl = browser.getControl
+  >>> browser_anonymous = tools['Browser']()
+  >>> WELCOME = "Wonder what more you can do with Kotti?"
+
+By default, the front page is published and thus visible to all users:
+
+  >>> browser_anonymous.open(testing.BASE_URL)
+  >>> WELCOME in browser_anonymous.contents
+  True
+
+An administrator (or any user with ``state_change`` permission) can
+make the front page private.  First log in:
+
+  >>> browser.open(testing.BASE_URL + '/edit')
+  >>> ctrl("Username or email").value = "admin"
+  >>> ctrl("Password").value = "secret"
+  >>> ctrl(name="submit").click()
+  >>> "Welcome, Administrator" in browser.contents
+  True
+
+Now make private:
+
+  >>> browser.getLink("Make Private").click()
+  >>> "Your changes have been saved" in browser.contents
+  True
+
+The administrator can still see the page, but the anonymous user
+can't:
+
+  >>> browser.open(testing.BASE_URL)
+  >>> WELCOME in browser.contents
+  True
+  >>> browser_anonymous.open(testing.BASE_URL)
+  >>> WELCOME in browser_anonymous.contents
+  False
+
+Make the front page public again:
+
+  >>> browser.getLink("Make Public").click()
+  >>> "Your changes have been saved" in browser.contents
+  True
+  >>> browser_anonymous.reload()
+  >>> WELCOME in browser_anonymous.contents
+  True
+
+
+  >>> testing.tearDown()

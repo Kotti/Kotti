@@ -15,8 +15,8 @@ class TestNode:
             root.__acl__[1:] == [
                 ('Allow', 'system.Everyone', ['view']),
                 ('Allow', 'role:viewer', ['view']),
-                ('Allow', 'role:editor', ['view', 'add', 'edit']),
-                ('Allow', 'role:owner', ['view', 'add', 'edit', 'manage']),
+                ('Allow', 'role:editor', ['view', 'add', 'edit', 'state_change']),
+                ('Allow', 'role:owner', ['view', 'add', 'edit', 'manage', 'state_change']),
                 ])
 
         # The first ACE is here to preven lock-out:
@@ -98,26 +98,23 @@ class TestNode:
         from kotti.resources import Node
 
         # Try to add two children with the same name to the root node:
-        session = DBSession()
         root = get_root()
-        session.add(Node(name=u'child1', parent=root))
-        session.add(Node(name=u'child1', parent=root))
+        DBSession.add(Node(name=u'child1', parent=root))
+        DBSession.add(Node(name=u'child1', parent=root))
         with raises(IntegrityError):
-            session.flush()
+            DBSession.flush()
 
     def test_container_methods(self, db_session):
         from kotti import DBSession
         from kotti.resources import get_root
         from kotti.resources import Node
 
-        session = DBSession()
-
         # Test some of Node's container methods:
         root = get_root()
         assert root.keys() == []
 
         child1 = Node(name=u'child1', parent=root)
-        session.add(child1)
+        DBSession.add(child1)
         assert root.keys() == [u'child1']
         assert root[u'child1'] == child1
 
@@ -129,16 +126,16 @@ class TestNode:
         root[u'child2'] = Node()
         root[u'child2'][u'subchild'] = Node()
         assert (
-            session.query(Node).filter(Node.name == u'subchild').count() == 1)
+            DBSession.query(Node).filter(Node.name == u'subchild').count() == 1)
         del root[u'child2']
         assert (
-            session.query(Node).filter(Node.name == u'subchild').count() == 0)
+            DBSession.query(Node).filter(Node.name == u'subchild').count() == 0)
 
         # We can pass a tuple as the key to more efficiently reach
         # down to child objects:
         root[u'child3'] = Node()
         subchild33 = Node(name=u'subchild33', parent=root[u'child3'])
-        session.add(subchild33)
+        DBSession.add(subchild33)
         del root.__dict__['_children']  # force a different code path
         assert root[u'child3', u'subchild33'] is root[u'child3'][u'subchild33']
         assert root[(u'child3', u'subchild33')] is subchild33
@@ -152,14 +149,14 @@ class TestNode:
 
         # Overwriting an existing Node is an error; first delete manually!
         child4 = Node(name=u'child4', parent=root)
-        session.add(child4)
+        DBSession.add(child4)
         assert root.keys() == [u'child4']
 
         child44 = Node(name=u'child4')
-        session.add(child44)
+        DBSession.add(child44)
         root[u'child4'] = child44
         with raises(SQLAlchemyError):
-            session.flush()
+            DBSession.flush()
 
     def test_node_copy_name(self, db_session):
         from kotti.resources import get_root

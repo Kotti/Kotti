@@ -5,6 +5,7 @@ from mock import MagicMock
 from pyramid.request import Response
 from pytest import raises
 
+from kotti.testing import Dummy
 from kotti.testing import DummyRequest
 
 
@@ -42,8 +43,7 @@ class TestTemplateAPI:
         from kotti.views.util import TemplateAPI
 
         if context is None:
-            session = DBSession()
-            context = session.query(Node).get(id)
+            context = DBSession.query(Node).get(id)
         if request is None:
             request = DummyRequest()
         return TemplateAPI(context, request, **kwargs)
@@ -373,6 +373,20 @@ class TestTemplateAPI:
         api = self.make()
         assert api.get_type('Document') == Document
         assert api.get_type('NoExist') is None
+
+    def test_avatar_url(self):
+        api = self.make()
+        user = Dummy(email='daniel.nouri@gmail.com')
+        result = api.avatar_url(user)
+        assert result.startswith('https://secure.gravatar.com/avatar/'
+                                'd3aeefdd7afe103ab70875172135cab7')
+
+    def test_avatar_url_request_user(self):
+        api = self.make()
+        api.request.user = Dummy(email='daniel.nouri@gmail.com')
+        result = api.avatar_url()
+        assert result.startswith('https://secure.gravatar.com/avatar/'
+                                'd3aeefdd7afe103ab70875172135cab7')
 
 
 class TestViewUtil:
