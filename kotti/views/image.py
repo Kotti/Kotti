@@ -5,6 +5,7 @@ from kotti.util import _
 from kotti.util import extract_from_settings
 from kotti.views.file import AddFileFormView, EditFileFormView
 from kotti.resources import Image
+from kotti.resources import IImage
 from plone.scale.scale import scaleImage
 from pyramid.response import Response
 from pyramid.view import view_config
@@ -58,14 +59,14 @@ class ImageView(object):
         self.context = context
         self.request = request
 
-    @view_config(context=Image,
+    @view_config(context=IImage,
                  name='view',
                  permission='view',
                  renderer='kotti:templates/view/image.pt')
     def view(self):
         return {}
 
-    @view_config(context=Image,
+    @view_config(context=IImage,
                  name="image",
                  permission='view')
     def image(self, subpath=None):
