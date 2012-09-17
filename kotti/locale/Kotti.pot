@@ -267,7 +267,11 @@ msgstr ""
 msgid "Search Results"
 msgstr ""
 
-#: kotti/templates/view/search.pt:11
+#: kotti/templates/view/search.pt:7
+msgid "Search..."
+msgstr ""
+
+#: kotti/templates/view/search.pt:13
 msgid "&#8594;"
 msgstr ""
 
