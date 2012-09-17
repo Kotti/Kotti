@@ -96,9 +96,9 @@ setup(name='Kotti',
       main = kotti:main
 
       [fanstatic.libraries]
-      kotti = kotti.static:lib_kotti
-      deform = kotti.static:lib_deform
-      deform_bootstrap = kotti.static:lib_deform_bootstrap
+      kotti = kotti.fanstatic:lib_kotti
+      deform = kotti.fanstatic:lib_deform
+      deform_bootstrap = kotti.fanstatic:lib_deform_bootstrap
 
       [console_scripts]
       kotti-migrate = kotti.migrate:kotti_migrate_command

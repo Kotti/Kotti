@@ -82,8 +82,8 @@ conf_defaults = {
     'kotti.datetime_format': 'medium',
     'kotti.time_format': 'medium',
     'kotti.max_file_size': '10',
-    'kotti.static.edit_needed': 'kotti.static.edit_needed',
-    'kotti.static.view_needed': 'kotti.static.view_needed',
+    'kotti.fanstatic.edit_needed': 'kotti.fanstatic.edit_needed',
+    'kotti.fanstatic.view_needed': 'kotti.fanstatic.view_needed',
     'kotti.alembic_dirs': 'kotti:alembic',
     'pyramid_deform.template_search_path': 'kotti:templates/deform',
     }
@@ -101,8 +101,8 @@ conf_dotted = set([
     'kotti.session_factory',
     'kotti.principals_factory',
     'kotti.caching_policy_chooser',
-    'kotti.static.edit_needed',
-    'kotti.static.view_needed',
+    'kotti.fanstatic.edit_needed',
+    'kotti.fanstatic.view_needed',
     ])
 
 

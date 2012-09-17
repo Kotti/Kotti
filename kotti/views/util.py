@@ -149,13 +149,13 @@ class TemplateAPI(object):
 
     @reify
     def edit_needed(self):
-        if 'kotti.static.edit_needed' in self.S:
-            return [r.need() for r in self.S['kotti.static.edit_needed']]
+        if 'kotti.fanstatic.edit_needed' in self.S:
+            return [r.need() for r in self.S['kotti.fanstatic.edit_needed']]
 
     @reify
     def view_needed(self):
-        if 'kotti.static.view_needed' in self.S:
-            return [r.need() for r in self.S['kotti.static.view_needed']]
+        if 'kotti.fanstatic.view_needed' in self.S:
+            return [r.need() for r in self.S['kotti.fanstatic.view_needed']]
 
     def macro(self, asset_spec, macro_name='main'):
         if self.bare and asset_spec in (
