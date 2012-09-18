@@ -87,16 +87,14 @@ class TestUserManagement:
             group_validator(None, u'this-group-never-exists')
 
 
-class TestUserDelete(EventTestBase, UnitTestBase):
-    def test_user_delete(self):
+class TestUserDelete:
+    def test_user_delete(self, events, extra_principals):
         from kotti.resources import get_root
         from kotti.security import get_principals
-        from kotti.tests.test_node_views import TestNodeShare
         from kotti.views.users import user_delete
 
         root = get_root()
         request = DummyRequest()
-        TestNodeShare.add_some_principals()
         bob = get_principals()[u'bob']
 
         request.params['name'] = u''
@@ -124,15 +122,13 @@ class TestUserDelete(EventTestBase, UnitTestBase):
         with pytest.raises(KeyError):
             get_principals()[u'bob']
 
-    def test_deleted_group_removed_in_usergroups(self):
+    def test_deleted_group_removed_in_usergroups(self, events, extra_principals):
         from kotti.resources import get_root
         from kotti.security import get_principals
-        from kotti.tests.test_node_views import TestNodeShare
         from kotti.views.users import user_delete
 
         root = get_root()
         request = DummyRequest()
-        TestNodeShare.add_some_principals()
         bob = get_principals()[u'bob']
         bob.groups = [u'group:bobsgroup']
         assert bob.groups == [u'group:bobsgroup']
@@ -144,17 +140,15 @@ class TestUserDelete(EventTestBase, UnitTestBase):
             get_principals()[u'group:bobsgroup']
         assert bob.groups == []
 
-    def test_deleted_group_removed_from_localgroups(self):
+    def test_deleted_group_removed_from_localgroups(self, events, extra_principals):
         from kotti import DBSession
         from kotti.resources import get_root
         from kotti.security import set_groups
         from kotti.resources import LocalGroup
         from kotti.views.users import user_delete
-        from kotti.tests.test_node_views import TestNodeShare
 
         root = get_root()
         request = DummyRequest()
-        TestNodeShare.add_some_principals()
         set_groups(u'group:bobsgroup', root, ['role:admin'])
         local_group = DBSession.query(LocalGroup).first()
         assert local_group.principal_name == u'group:bobsgroup'
@@ -165,15 +159,13 @@ class TestUserDelete(EventTestBase, UnitTestBase):
         user_delete(root, request)
         assert DBSession.query(LocalGroup).first() == None
 
-    def test_reset_owner_to_none(self):
+    def test_reset_owner_to_none(self, events, extra_principals):
         from kotti.resources import get_root
         from kotti.resources import Content
         from kotti.views.users import user_delete
-        from kotti.tests.test_node_views import TestNodeShare
 
         root = get_root()
         request = DummyRequest()
-        TestNodeShare.add_some_principals()
 
         root[u'content_1'] = Content()
         root[u'content_1'].owner = u'bob'
