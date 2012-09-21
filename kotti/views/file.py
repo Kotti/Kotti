@@ -1,26 +1,17 @@
-from StringIO import StringIO
-from UserDict import DictMixin
-
 from colander import Invalid
-from colander import MappingSchema
 from colander import SchemaNode
-from colander import String
 from colander import null
 from deform import FileData
 from deform.widget import FileUploadWidget
-from deform.widget import TextAreaWidget
-from pyramid.response import Response
-
 from kotti import get_settings
 from kotti.resources import File
 from kotti.util import _
-from kotti.views.form import (
-    ContentSchema,
-    EditFormView,
-    AddFormView,
-    ObjectType,
-    CommaSeparatedListWidget,
-    )
+from kotti.views.form import ContentSchema
+from kotti.views.form import EditFormView
+from kotti.views.form import AddFormView
+from pyramid.response import Response
+from StringIO import StringIO
+from UserDict import DictMixin
 
 
 class FileUploadTempStore(DictMixin):
