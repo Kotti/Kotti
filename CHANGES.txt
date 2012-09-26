@@ -4,6 +4,8 @@ Change History
 0.7.2 - Unreleased
 ------------------
 
+- Added event request POST vars to the request for the slot viewlet.
+
 0.7.1 - 2012-08-30
 ------------------
 
