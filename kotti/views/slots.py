@@ -75,6 +75,10 @@ def _render_view_on_slot_event(view_name, event, params):
         POST=_encode(params),
         )
 
+    post_items = request.POST.items()
+    if post_items:
+        view_request.POST.extend(post_items)
+
     # This is quite brittle:
     for name in REQUEST_ATTRS_TO_COPY:
         setattr(view_request, name, getattr(request, name))
