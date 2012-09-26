@@ -251,6 +251,20 @@ class TestTemplateAPI(UnitTestBase):
         api = self.make()
         assert api.slots.right == [u"Hello world!"]
 
+    def test_slot_request_has_parameters(self):
+        from kotti.views.slots import assign_slot
+
+        def foo(context, request):
+            bar = request.POST['bar']
+            return Response(u"{0} world!".format(bar))
+        self.config.add_view(foo, name='foo')
+        assign_slot('foo', 'left', params=dict(greeting=u"Y\u0153"))
+
+        request = DummyRequest()
+        request.params['bar'] = u'Hello'
+        api = self.make(request=request)
+        assert api.slots.left == [u"Hello world!"]
+
     def test_deprecated_slots(self):
         from kotti.views.slots import register, RenderAboveContent
 
