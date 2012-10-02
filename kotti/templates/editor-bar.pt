@@ -57,7 +57,7 @@
                   <span i18n:translate="">Site Setup</span>
                 </a>
                 <ul class="dropdown-menu">
-                  <li tal:repeat="link api.more_links('site_setup_links')">
+                  <li tal:repeat="link api.site_setup_links">
                     <a href="${link.url(api.root, request)}">${link.title}</a>
                   </li>
                 </ul>

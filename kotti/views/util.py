@@ -297,7 +297,8 @@ class TemplateAPI(object):
     @reify
     def site_setup_links(self):
 
-        return CONTROL_PANEL_LINKS
+        return [l for l in CONTROL_PANEL_LINKS
+                if l.permitted(self.root, self.request)]
 
 
 def ensure_view_selector(func):
