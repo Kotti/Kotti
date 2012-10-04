@@ -75,6 +75,31 @@ def actions(context, request):
                         if action.permitted(context, request)]}
 
 
+def default_view_selector(context, request):
+    """Submenu for selection of the node's default view.
+    """
+
+    return {
+        "selectable_default_views": [
+            {
+                "name": "default",
+                "title": "Default",
+            },
+            {
+                "name": "media_folder_view",
+                "title": "Media Folder",
+            },
+        ]
+    }
+
+
+def set_default_view(context, request):
+    """Set the node's default view and redirect to it.
+    """
+
+    return HTTPFound(location=request.resource_url(context))
+
+
 def _eval_titles(info):
     result = []
     for d in info:
@@ -308,6 +333,19 @@ def includeme(config):
         name='actions-dropdown',
         permission='view',
         renderer='kotti:templates/actions-dropdown.pt',
+        )
+
+    config.add_view(
+        default_view_selector,
+        name='default-view-selector',
+        permission='view',
+        renderer='kotti:templates/default-view-selector.pt',
+        )
+
+    config.add_view(
+        set_default_view,
+        name='set-default-view',
+        permission='view',
         )
 
     config.add_view(

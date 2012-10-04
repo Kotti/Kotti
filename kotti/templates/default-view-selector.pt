@@ -1,0 +1,13 @@
+<tal:condition tal:condition="len(selectable_default_views) > 0">
+  <li class="divider"></li>
+  <li class="dropdown-submenu">
+    <a href="#">
+      <span i18n:translate="">Set default view</span>
+    </a>
+    <ul class="dropdown-menu">
+      <li tal:repeat="v selectable_default_views">
+        <a href="${request.resource_url(context)}set-default-view?view_name=${v.name}">${v.title}</a>
+      </li>
+    </ul>
+  </li>
+</tal:condition>
