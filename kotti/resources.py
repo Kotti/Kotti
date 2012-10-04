@@ -321,6 +321,7 @@ class Content(Node):
             ViewLink('edit', title=_(u'Edit')),
             ViewLink('share', title=_(u'Share')),
             ],
+        selectable_default_views=[],
         )
 
     def __init__(self, name=None, parent=None, title=u"", annotations=None,
