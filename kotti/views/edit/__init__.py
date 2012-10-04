@@ -14,16 +14,11 @@ from kotti.views.form import EditFormView
 from kotti.views.util import ensure_view_selector
 from kotti.views.util import nodes_tree
 from kotti.workflow import get_workflow
-from pyramid.compat import map_
 from pyramid.exceptions import Forbidden
 from pyramid.httpexceptions import HTTPFound
-from pyramid.interfaces import IView
-from pyramid.interfaces import IViewClassifier
 from pyramid.location import inside
 from pyramid.security import has_permission
-from pyramid.threadlocal import get_current_registry
 from pyramid.url import resource_url
-from zope.interface import providedBy
 
 
 class DocumentSchema(ContentSchema):
@@ -77,73 +72,6 @@ def actions(context, request):
         actions.append(ViewLink('order', title=_(u'Order')))
     return {'actions': [action for action in actions
                         if action.permitted(context, request)]}
-
-
-def _is_valid_view(context, request, view_name):
-    """This code is copied from pyramid.view.
-       Returns True if a view with name view_name is registered for context.
-    """
-
-    provides = [IViewClassifier] + map_(providedBy, (request, context))
-    try:
-        reg = request.registry
-    except AttributeError:
-        reg = get_current_registry()
-    view = reg.adapters.lookup(provides, IView, name=view_name)
-
-    return view is not None
-
-
-def default_view_selector(context, request):
-    """Submenu for selection of the node's default view.
-    """
-
-    sviews = [
-        {
-            "name": v,
-            "title": v,
-            "is_current": v == context.default_view,
-        }
-        for v in context.type_info.selectable_default_views
-    ]
-
-    return {
-        "selectable_default_views": [
-            {
-                "name": "default",
-                "title": _("Default view"),
-                "is_current": context.default_view is None,
-            }
-        ] + sviews,
-    }
-
-
-def set_default_view(context, request):
-    """Set the node's default view and redirect to it.
-    """
-
-    if 'view_name' in request.GET:
-        view_name = request.GET['view_name']
-        if view_name == "default":
-            context.default_view = None
-            request.session.flash(
-                _("Default view has been reset to default."),
-                'success'
-            )
-        else:
-            if _is_valid_view(context, request, view_name):
-                context.default_view = view_name
-                request.session.flash(
-                    _("Default view has been set."),
-                    'success'
-                )
-            else:
-                request.session.flash(
-                    _("Default view could not be set."),
-                    'error'
-                )
-
-    return HTTPFound(location=request.resource_url(context))
 
 
 def _eval_titles(info):
@@ -382,19 +310,6 @@ def includeme(config):
         )
 
     config.add_view(
-        default_view_selector,
-        name='default-view-selector',
-        permission='view',
-        renderer='kotti:templates/default-view-selector.pt',
-        )
-
-    config.add_view(
-        set_default_view,
-        name='set-default-view',
-        permission='view',
-        )
-
-    config.add_view(
         workflow_change,
         name='workflow-change',
         permission='state_change',
@@ -447,3 +362,5 @@ def nodes_includeme(config):
         permission='edit',
         renderer='kotti:templates/edit/rename.pt',
         )
+
+    config.scan("kotti.views.edit.default_view_selection")
