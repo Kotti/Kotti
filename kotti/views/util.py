@@ -291,6 +291,7 @@ class TemplateAPI(object):
                 if l.permitted(self.context, self.request)]
 
     def more_links(self, name):
+        # completely unused?
         return [l for l in getattr(self, name)
                 if l.permitted(self.context, self.request)]
 

@@ -5,6 +5,7 @@ from kotti import DBSession
 from kotti import get_settings
 from kotti import metadata
 from kotti.migrate import stamp_heads
+from kotti.security import has_permission
 from kotti.security import PersistentACLMixin
 from kotti.security import view_permitted
 from kotti.sqla import ACLType
@@ -101,7 +102,19 @@ class ContainerMixin(object, DictMixin):
 
     @hybrid_property
     def children(self):
+        """Return *all* child nodes without considering permissions."""
+
         return self._children
+
+    def children_with_permission(self, request, permission='view'):
+        """Return only those children for which the user initiating
+           the request has the asked permission.
+        """
+
+        return [
+            c for c in self.children
+            if has_permission(permission, c, request)
+        ]
 
 
 class INode(Interface):
@@ -321,7 +334,9 @@ class Content(Node):
             ViewLink('edit', title=_(u'Edit')),
             ViewLink('share', title=_(u'Share')),
             ],
-        selectable_default_views=[],
+        selectable_default_views=[
+            ("folder_view", "Folder"),
+        ],
         )
 
     def __init__(self, name=None, parent=None, title=u"", annotations=None,

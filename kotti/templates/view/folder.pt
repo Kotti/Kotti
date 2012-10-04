@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      metal:use-macro="api.macro('kotti:templates/view/master.pt')">
+
+  <article metal:fill-slot="content" class="document-view content">
+    <h1>${context.title}</h1>
+    <p class="description">
+      ${context.description}
+    </p>
+    <h2>Contents</h2>
+    <div class="body">
+      <table class="table table-condensed">
+        <thead>
+          <tr>
+            <th>Title</th>
+            <th>Name</th>
+            <th>Type</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr tal:repeat="child context.children_with_permission(request)">
+            <tal:block tal:define="url request.resource_url(child)">
+            <td>
+                <a href="${url}">
+                    ${child.title}
+                </a>
+            </td>
+            <td>
+                <a href="${url}">
+                    ${child.name}
+                </a>
+            </td>
+            <td>
+                <a href="${url}">
+                    ${child.type}
+                </a>
+            </td>
+            </tal:block>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </article>
+
+</html>

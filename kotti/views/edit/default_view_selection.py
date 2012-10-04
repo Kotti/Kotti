@@ -19,8 +19,10 @@ class DefaultViewSelection(object):
         self.context = context
         self.request = request
 
-    def _get_view(self, view_name):
+    def _get_view(self, view_name):  # pragma: no cov
         """This code is copied from pyramid.view.
+           We trust it and don't test.
+
            Returns True if a view with name view_name is registered for context.
         """
 
@@ -54,7 +56,7 @@ class DefaultViewSelection(object):
                 "title": v[1],
                 "is_current": v[0] == self.context.default_view,
             }
-            for v in self.context.type_info.selectable_default_views
+            for v in getattr(self.context.type_info, "selectable_default_views", [])
         ]
 
         return {
