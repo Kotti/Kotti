@@ -26,7 +26,6 @@ class DefaultViewSelection(object):
 
            Returns True if a view with name view_name is registered for context.
         """
-
         provides = [IViewClassifier] + map_(
             providedBy,
             (self.request, self.context)
@@ -54,15 +53,17 @@ class DefaultViewSelection(object):
         sviews = []
 
         for v in getattr(self.context.type_info, "selectable_default_views", []):
-            if self._is_valid_view(v[0]):
+
+            name, title = v
+            if self._is_valid_view(name):
                 sviews.append({
-                    "name": v[0],
-                    "title": v[1],
-                    "is_current": v[0] == self.context.default_view,
+                    "name": name,
+                    "title": title,
+                    "is_current": name == self.context.default_view,
                 })
             else:
                 warnings.warn("No view called %r is registered for %r" %
-                    (v[0], self.context))
+                    (name, self.context))
 
         return {
             "selectable_default_views": [
