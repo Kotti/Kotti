@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Kotti 0.7\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2012-08-15 11:19+0200\n"
+"POT-Creation-Date: 2012-10-05 17:31+0200\n"
 "PO-Revision-Date: 2012-01-16 12:02+0000\n"
 "Last-Translator: Nuno Teixeira <teixas@gmail.com>\n"
 "Language-Team: pt <LL@li.org>\n"
@@ -17,24 +17,28 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 0.9.6\n"
 
-#: kotti/resources.py:315 kotti/templates/edit/nav-tree.pt:8
+#: kotti/resources.py:334 kotti/templates/edit/nav-tree.pt:8
 msgid "Edit"
 msgstr "Editar"
 
-#: kotti/resources.py:316
+#: kotti/resources.py:335
 msgid "Share"
 msgstr "Partilha"
 
-#: kotti/resources.py:350
+#: kotti/resources.py:338
+msgid "Folder view"
+msgstr ""
+
+#: kotti/resources.py:372
 msgid "Document"
 msgstr "Documento"
 
-#: kotti/resources.py:370 kotti/views/file.py:83 kotti/views/file.py:102
-#: kotti/views/file.py:118
+#: kotti/resources.py:395 kotti/views/file.py:76 kotti/views/file.py:101
+#: kotti/views/file.py:110
 msgid "File"
 msgstr "Ficheiro"
 
-#: kotti/resources.py:390 kotti/views/image.py:38
+#: kotti/resources.py:418 kotti/views/image.py:39
 msgid "Image"
 msgstr "Imagem"
 
@@ -70,25 +74,29 @@ msgstr "Ações"
 msgid "Add"
 msgstr "Adicionar"
 
-#: kotti/templates/editor-bar.pt:11
+#: kotti/templates/default-view-selector.pt:5
+msgid "Set default view"
+msgstr ""
+
+#: kotti/templates/editor-bar.pt:13
 msgid "View"
 msgstr "Ver"
 
 #: kotti/templates/editor-bar.pt:38
-msgid "Site Setup"
-msgstr "Configurar Sítio"
+msgid "Navigate"
+msgstr "Navegar"
 
-#: kotti/templates/editor-bar.pt:42
+#: kotti/templates/editor-bar.pt:49
 msgid "Preferences"
 msgstr "Preferências"
 
-#: kotti/templates/editor-bar.pt:46
+#: kotti/templates/editor-bar.pt:57
+msgid "Site Setup"
+msgstr "Configurar Sítio"
+
+#: kotti/templates/editor-bar.pt:70
 msgid "Logout"
 msgstr "Sair"
-
-#: kotti/templates/editor-bar.pt:53
-msgid "Navigate"
-msgstr "Navegar"
 
 #: kotti/templates/email-reset-password.pt:2
 msgid "Reset your password for ${site_title}"
@@ -166,8 +174,8 @@ msgid "Are you sure you want to delete ${title}?"
 msgstr "Deseja realmente eliminar ${title}?"
 
 #: kotti/templates/edit/delete.pt:22
-#: kotti/templates/site-setup/delete-user.pt:19 kotti/views/edit.py:71
-#: kotti/views/users.py:423
+#: kotti/templates/site-setup/delete-user.pt:19 kotti/views/users.py:423
+#: kotti/views/edit/__init__.py:70
 msgid "Delete"
 msgstr "Apagar"
 
@@ -211,7 +219,7 @@ msgstr "Novo nome"
 msgid "New title"
 msgstr "Novo título"
 
-#: kotti/templates/edit/rename.pt:27 kotti/views/edit.py:70
+#: kotti/templates/edit/rename.pt:27 kotti/views/edit/__init__.py:69
 msgid "Rename"
 msgstr "Renomear"
 
@@ -273,7 +281,12 @@ msgstr "Adicionar grupo"
 msgid "Search Results"
 msgstr "Resultados da pesquisa"
 
-#: kotti/templates/view/search.pt:11
+#: kotti/templates/view/search.pt:7
+#, fuzzy
+msgid "Search..."
+msgstr "Procurar"
+
+#: kotti/templates/view/search.pt:13
 msgid "&#8594;"
 msgstr ""
 
@@ -285,75 +298,15 @@ msgstr "Bem-vindo, ${user}! Você está autenticado."
 msgid "Welcome, you are not logged in."
 msgstr "Bem-vindo, você não está autenticado."
 
-#: kotti/views/edit.py:28
-msgid "Body"
-msgstr "Corpo"
-
-#: kotti/views/edit.py:63
-msgid "Copy"
-msgstr "Copiar"
-
-#: kotti/views/edit.py:66
-msgid "Cut"
-msgstr "Cortar"
-
-#: kotti/views/edit.py:68
-msgid "Paste"
-msgstr "Colar"
-
-#: kotti/views/edit.py:73
-msgid "Order"
-msgstr "Ordem"
-
-#: kotti/views/edit.py:118
-msgid "${title} copied."
-msgstr "${title} copiado."
-
-#: kotti/views/edit.py:127
-msgid "${title} cut."
-msgstr "${title} cortado."
-
-#: kotti/views/edit.py:152
-msgid "${title} pasted."
-msgstr "${title} colado."
-
-#: kotti/views/edit.py:156
-msgid "Could not paste node. It does not exist anymore."
-msgstr "Nãp é possivel copiar. A cópia já não está disponivel."
-
-#: kotti/views/edit.py:175
-msgid "${title} moved."
-msgstr "${title} movido."
-
-#: kotti/views/edit.py:185
-msgid "${title} is now visible in the navigation."
-msgstr "${title} encontra-se visivel na navegação."
-
-#: kotti/views/edit.py:188
-msgid "${title} is no longer visible in the navigation."
-msgstr "${title} já não está visivel na navegação."
-
-#: kotti/views/edit.py:200
-msgid "${title} deleted."
-msgstr "${title} apagado."
-
-#: kotti/views/edit.py:213
-msgid "Name and title are required."
-msgstr "Nome e título são obrigatórios."
-
-#: kotti/views/edit.py:217
-msgid "Item renamed"
-msgstr "Item renomeado"
-
-#: kotti/views/file.py:72
+#: kotti/views/file.py:65
 msgid "Maximum file size: ${size}MB"
 msgstr "Tamanho máximo do ficheiro: ${size}MB"
 
-#: kotti/views/file.py:109 kotti/views/form.py:48 kotti/views/users.py:197
+#: kotti/views/form.py:48 kotti/views/users.py:197
 msgid "Title"
 msgstr "Título"
 
-#: kotti/views/file.py:112 kotti/views/form.py:51
+#: kotti/views/form.py:51
 msgid "Description"
 msgstr "Descrição"
 
@@ -438,13 +391,9 @@ msgstr "A seu pedido para alterar a palavra passe expirou."
 msgid "Reset your password - ${title}"
 msgstr "Reiniciar a sua palavra passe - ${title}"
 
-#: kotti/views/site_setup.py:8
+#: kotti/views/site_setup.py:6
 msgid "User Management"
 msgstr "Gestão de Utilizadores"
-
-#: kotti/views/site_setup.py:17
-msgid "Site Setup - ${title}"
-msgstr "Configuração do Sítio - ${title}"
 
 #: kotti/views/users.py:73 kotti/views/users.py:439
 msgid "No changes made."
@@ -552,4 +501,80 @@ msgstr ""
 #: kotti/views/users.py:537
 msgid "My preferences - ${title}"
 msgstr "Minhas preferências - ${title}"
+
+#: kotti/views/edit/__init__.py:27
+msgid "Body"
+msgstr "Corpo"
+
+#: kotti/views/edit/__init__.py:62
+msgid "Copy"
+msgstr "Copiar"
+
+#: kotti/views/edit/__init__.py:65
+msgid "Cut"
+msgstr "Cortar"
+
+#: kotti/views/edit/__init__.py:67
+msgid "Paste"
+msgstr "Colar"
+
+#: kotti/views/edit/__init__.py:72
+msgid "Order"
+msgstr "Ordem"
+
+#: kotti/views/edit/__init__.py:117
+msgid "${title} copied."
+msgstr "${title} copiado."
+
+#: kotti/views/edit/__init__.py:126
+msgid "${title} cut."
+msgstr "${title} cortado."
+
+#: kotti/views/edit/__init__.py:151
+msgid "${title} pasted."
+msgstr "${title} colado."
+
+#: kotti/views/edit/__init__.py:155
+msgid "Could not paste node. It does not exist anymore."
+msgstr "Nãp é possivel copiar. A cópia já não está disponivel."
+
+#: kotti/views/edit/__init__.py:174
+msgid "${title} moved."
+msgstr "${title} movido."
+
+#: kotti/views/edit/__init__.py:184
+msgid "${title} is now visible in the navigation."
+msgstr "${title} encontra-se visivel na navegação."
+
+#: kotti/views/edit/__init__.py:187
+msgid "${title} is no longer visible in the navigation."
+msgstr "${title} já não está visivel na navegação."
+
+#: kotti/views/edit/__init__.py:199
+msgid "${title} deleted."
+msgstr "${title} apagado."
+
+#: kotti/views/edit/__init__.py:212
+msgid "Name and title are required."
+msgstr "Nome e título são obrigatórios."
+
+#: kotti/views/edit/__init__.py:216
+msgid "Item renamed"
+msgstr "Item renomeado"
+
+#: kotti/views/edit/default_view_selection.py:66
+msgid "Default view"
+msgstr ""
+
+#: kotti/views/edit/default_view_selection.py:84
+msgid "Default view has been reset to default."
+msgstr ""
+
+#: kotti/views/edit/default_view_selection.py:91
+msgid "Default view has been set."
+msgstr ""
+
+#: kotti/views/edit/default_view_selection.py:96
+msgid "Default view could not be set."
+msgstr ""
 
