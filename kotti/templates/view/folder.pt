@@ -13,8 +13,9 @@
         <thead>
           <tr>
             <th>Title</th>
-            <th>Name</th>
             <th>Type</th>
+            <th>Creation Date</th>
+            <th>Modification Date</th>
           </tr>
         </thead>
         <tbody>
@@ -27,12 +28,17 @@
             </td>
             <td>
                 <a href="${url}">
-                    ${child.name}
+                    ${child.type_info.title}
                 </a>
             </td>
             <td>
                 <a href="${url}">
-                    ${child.type}
+                    ${api.format_date(child.creation_date)}
+                </a>
+            </td>
+            <td>
+                <a href="${url}">
+                    ${api.format_date(child.modification_date)}
                 </a>
             </td>
             </tal:block>
