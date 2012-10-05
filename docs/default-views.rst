@@ -2,7 +2,7 @@ Default views in Kotti
 ======================
 
 In Kotti every ``Content`` node has a ``default_view`` attribute.
-This allows to have different views for any instance of the a
+This allows to have different views for any instance of a
 content type without having to append the view name to the URL.
 
 You can also provide additional views for the default content
