@@ -335,8 +335,8 @@ class Content(Node):
             ViewLink('share', title=_(u'Share')),
             ],
         selectable_default_views=[
-            ("folder_view", "Folder"),
-        ],
+            ("folder_view", _(u"Folder view")),
+            ],
         )
 
     def __init__(self, name=None, parent=None, title=u"", annotations=None,
