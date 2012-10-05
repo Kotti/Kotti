@@ -19,7 +19,7 @@ class DefaultViewSelection(object):
         self.context = context
         self.request = request
 
-    def _get_view(self, view_name):  # pragma: no cov
+    def _get_view(self, view_name):  # pragma: no cover
         """This code is copied from pyramid.view.
            We trust it and don't test.
 
