@@ -49,7 +49,7 @@ def includeme(config):
         )
 
     config.add_view(
-        context=Document,
+        context=IContent,
         name='folder_view',
         permission='view',
         renderer='kotti:templates/view/folder.pt',

@@ -75,7 +75,9 @@ class DefaultViewSelection(object):
         """
 
         if 'view_name' in self.request.GET:
+
             view_name = self.request.GET['view_name']
+
             if view_name == "default":
                 self.context.default_view = None
                 self.request.session.flash(

@@ -395,6 +395,7 @@ class File(Content):
         title=_(u'File'),
         add_view=u'add_file',
         addable_to=[u'Document'],
+        selectable_default_views=[],
         )
 
     def __init__(self, data=None, filename=None, mimetype=None, size=None,
@@ -416,7 +417,9 @@ class Image(File):
         name=u'Image',
         title=_(u'Image'),
         add_view=u'add_image',
-        addable_to=[u'Document', ], )
+        addable_to=[u'Document', ],
+        selectable_default_views=[],
+        )
 
 
 def get_root(request=None):
