@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+import warnings
 from kotti.util import _
 from pyramid.compat import map_
 from pyramid.httpexceptions import HTTPFound
@@ -50,14 +51,18 @@ class DefaultViewSelection(object):
         """Submenu for selection of the node's default view.
         """
 
-        sviews = [
-            {
-                "name": v[0],
-                "title": v[1],
-                "is_current": v[0] == self.context.default_view,
-            }
-            for v in getattr(self.context.type_info, "selectable_default_views", [])
-        ]
+        sviews = []
+
+        for v in getattr(self.context.type_info, "selectable_default_views", []):
+            if self._is_valid_view(v[0]):
+                sviews.append({
+                    "name": v[0],
+                    "title": v[1],
+                    "is_current": v[0] == self.context.default_view,
+                })
+            else:
+                warnings.warn("No view called %r is registered for %r" %
+                    (v[0], self.context))
 
         return {
             "selectable_default_views": [
