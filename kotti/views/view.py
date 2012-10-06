@@ -49,6 +49,13 @@ def includeme(config):
         )
 
     config.add_view(
+        context=IContent,
+        name='folder_view',
+        permission='view',
+        renderer='kotti:templates/view/folder.pt',
+        )
+
+    config.add_view(
         name='search',
         permission='view',
         renderer='kotti:templates/view/search.pt',

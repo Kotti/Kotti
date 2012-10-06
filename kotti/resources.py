@@ -1,47 +1,46 @@
 import os
 from UserDict import DictMixin
-
-from pyramid.threadlocal import get_current_registry
-from pyramid.traversal import resource_path
-from sqlalchemy.sql import and_
-from sqlalchemy.sql import select
-from sqlalchemy.orm import backref
-from sqlalchemy.orm import deferred
-from sqlalchemy.orm import object_mapper
-from sqlalchemy.orm import relation
-from sqlalchemy.orm.exc import NoResultFound
-from sqlalchemy.util import classproperty
-from sqlalchemy.ext.hybrid import hybrid_property
-from sqlalchemy.ext.orderinglist import ordering_list
-from sqlalchemy.ext.associationproxy import association_proxy
-from sqlalchemy import Column
-from sqlalchemy import UniqueConstraint
-from sqlalchemy import ForeignKey
-from sqlalchemy import Boolean
-from sqlalchemy import DateTime
-from sqlalchemy import Integer
-from sqlalchemy import LargeBinary
-from sqlalchemy import String
-from sqlalchemy import Unicode
-from sqlalchemy import UnicodeText
-from transaction import commit
-from zope.interface import implements
-from zope.interface import Interface
-
+from kotti import Base
+from kotti import DBSession
 from kotti import get_settings
 from kotti import metadata
-from kotti import DBSession
-from kotti import Base
 from kotti.migrate import stamp_heads
 from kotti.security import PersistentACLMixin
+from kotti.security import has_permission
 from kotti.security import view_permitted
 from kotti.sqla import ACLType
 from kotti.sqla import JsonType
 from kotti.sqla import MutationList
 from kotti.sqla import NestedMutationDict
+from kotti.util import ViewLink
 from kotti.util import _
 from kotti.util import camel_case_to_name
-from kotti.util import ViewLink
+from pyramid.threadlocal import get_current_registry
+from pyramid.traversal import resource_path
+from sqlalchemy import Boolean
+from sqlalchemy import Column
+from sqlalchemy import DateTime
+from sqlalchemy import ForeignKey
+from sqlalchemy import Integer
+from sqlalchemy import LargeBinary
+from sqlalchemy import String
+from sqlalchemy import Unicode
+from sqlalchemy import UnicodeText
+from sqlalchemy import UniqueConstraint
+from sqlalchemy.ext.associationproxy import association_proxy
+from sqlalchemy.ext.hybrid import hybrid_property
+from sqlalchemy.ext.orderinglist import ordering_list
+from sqlalchemy.orm import backref
+from sqlalchemy.orm import deferred
+from sqlalchemy.orm import object_mapper
+from sqlalchemy.orm import relation
+from sqlalchemy.orm.exc import NoResultFound
+from sqlalchemy.sql import and_
+from sqlalchemy.sql import select
+from sqlalchemy.util import classproperty
+from transaction import commit
+from zope.interface import Interface
+from zope.interface import implements
 
 
 class ContainerMixin(object, DictMixin):
@@ -103,7 +102,19 @@ class ContainerMixin(object, DictMixin):
 
     @hybrid_property
     def children(self):
+        """Return *all* child nodes without considering permissions."""
+
         return self._children
+
+    def children_with_permission(self, request, permission='view'):
+        """Return only those children for which the user initiating
+           the request has the asked permission.
+        """
+
+        return [
+            c for c in self.children
+            if has_permission(permission, c, request)
+        ]
 
 
 class INode(Interface):
@@ -323,6 +334,9 @@ class Content(Node):
             ViewLink('edit', title=_(u'Edit')),
             ViewLink('share', title=_(u'Share')),
             ],
+        selectable_default_views=[
+            ("folder_view", _(u"Folder view")),
+            ],
         )
 
     def __init__(self, name=None, parent=None, title=u"", annotations=None,
@@ -344,6 +358,17 @@ class Content(Node):
         tags = getattr(self, 'tags', None)
         kwargs['tags'] = tags
         return super(Content, self).copy(**kwargs)
+
+    @classmethod
+    def add_selectable_default_view(cls, name, title):
+        """Add a view to the list of default views selectable by the
+           user in the UI.
+
+           - name (str): name the view is registered with
+
+           - title (Unicode): title to be displayed in the UI"""
+
+        cls.type_info.selectable_default_views.append((name, title))
 
 
 class Document(Content):
@@ -381,6 +406,7 @@ class File(Content):
         title=_(u'File'),
         add_view=u'add_file',
         addable_to=[u'Document'],
+        selectable_default_views=[],
         )
 
     def __init__(self, data=None, filename=None, mimetype=None, size=None,
@@ -402,7 +428,9 @@ class Image(File):
         name=u'Image',
         title=_(u'Image'),
         add_view=u'add_image',
-        addable_to=[u'Document', ], )
+        addable_to=[u'Document', ],
+        selectable_default_views=[],
+        )
 
 
 def get_root(request=None):
