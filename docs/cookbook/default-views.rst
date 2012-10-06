@@ -9,7 +9,8 @@ You can also provide additional views for the default content
 types in your third party add on.  To make them show up in the
 default view selector in the UI you have to append a
 ``(view_name, view_title)`` tuple to the ``type_info`` attribute
-of the respective content class.
+of the respective content class via its class method
+``add_selectable_default_view(name, title)``.
 
 E.g. the ``kotti_media`` add on provides a ``media_folder_view``
 for the ``Document`` content type that lists all 'media type'
@@ -23,6 +24,5 @@ Registration is done like this:
 
     def includeme(config):
 
-        Document.type_info.selectable_default_views.append(
-            ("media_folder_view", "MediaFolder")
-        )
+        Document.add_selectable_default_view("media_folder_view",
+                                             "MediaFolder")
