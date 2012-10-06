@@ -25,8 +25,8 @@ class TestDefaultViewSelection(UnitTestBase):
 
         view = DefaultViewSelection(context, request)
 
-        assert view._is_valid_view("folder_view") == True
-        assert view._is_valid_view("foo_view") == False
+        assert view._is_valid_view("folder_view") is True
+        assert view._is_valid_view("foo_view") is False
 
     def test_default_view_selection(self):
 
