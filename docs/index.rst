@@ -127,6 +127,7 @@ Cookbook
   cookbook/i18n.rst
   cookbook/as-a-library.rst
   cookbook/static-resource-management.rst
+  cookbook/default-views.rst
 
 Support and Development
 =======================

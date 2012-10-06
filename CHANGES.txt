@@ -1,6 +1,13 @@
 Change History
 ==============
 
+0.8 - Unreleased
+----------------
+
+- Add children_with_permission method to ContainerMixin.
+
+- Add UI for default_view selection.
+
 0.7.3 - Unreleased
 ------------------
 
