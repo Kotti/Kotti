@@ -1,25 +1,24 @@
+import colander
+from deform.widget import RichTextWidget
+from kotti import DBSession
+from kotti import get_settings
+from kotti.resources import Document
+from kotti.resources import Node
+from kotti.resources import get_root
+from kotti.util import ViewLink
+from kotti.util import _
+from kotti.util import title_to_name
+from kotti.views.form import AddFormView
+from kotti.views.form import ContentSchema
+from kotti.views.form import EditFormView
+from kotti.views.util import ensure_view_selector
+from kotti.views.util import nodes_tree
+from kotti.workflow import get_workflow
 from pyramid.exceptions import Forbidden
 from pyramid.httpexceptions import HTTPFound
 from pyramid.location import inside
 from pyramid.security import has_permission
 from pyramid.url import resource_url
-import colander
-from deform.widget import RichTextWidget
-
-from kotti import get_settings
-from kotti import DBSession
-from kotti.resources import Node
-from kotti.resources import Document
-from kotti.resources import get_root
-from kotti.util import _
-from kotti.util import title_to_name
-from kotti.util import ViewLink
-from kotti.views.form import ContentSchema
-from kotti.views.form import EditFormView
-from kotti.views.form import AddFormView
-from kotti.views.util import ensure_view_selector
-from kotti.views.util import nodes_tree
-from kotti.workflow import get_workflow
 
 
 class DocumentSchema(ContentSchema):
@@ -363,3 +362,5 @@ def nodes_includeme(config):
         permission='edit',
         renderer='kotti:templates/edit/rename.pt',
         )
+
+    config.scan("kotti.views.edit.default_view_selection")
