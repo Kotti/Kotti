@@ -21,8 +21,9 @@ Registration is done like this:
 .. code-block:: python
 
     from kotti.resources import Document
+    from kotti_media import _
 
     def includeme(config):
 
         Document.add_selectable_default_view("media_folder_view",
-                                             "MediaFolder")
+                                             _("Media Folder"))
