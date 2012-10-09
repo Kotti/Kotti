@@ -437,12 +437,105 @@ On setup pages we can't use the actions:
   LinkNotFoundError
 
 
+Contents view actions handling
+------------------------------
+
+  >>> browser.open(testing.BASE_URL + '/child-one')
+  >>> browser.getLink('Contents').click()
+  >>> browser.url == testing.BASE_URL + '/child-one/@@contents'
+  True
+
+  >>> ctrl(name='children').value = [u'3', ]
+  >>> ctrl(name='copy').click()
+  >>> 'copied.' in browser.contents  # TODO: this should be show all names
+  True
+
+  >>> browser.open(testing.BASE_URL + '/second-child-1/@@contents')
+  >>> 'My Third Child' in browser.contents
+  False
+  >>> ctrl(name='paste').click()
+  >>> "My Third Child" in browser.contents
+  True
+
+  >>> ctrl(name='children').value = [u'15', ]
+  >>> ctrl(name='cut').click()
+  >>> 'cut.' in browser.contents  # TODO: this should be show all names
+  True
+
+  >>> browser.open(testing.BASE_URL + '/child-one/@@contents')
+  >>> "Grandchild" in browser.contents
+  False
+  >>> ctrl(name='paste').click()
+  >>> "Grandchild" in browser.contents
+  True
+  >>> with pytest.raises(LookupError): ctrl(name='paste')
+
+  >>> ctrl(name='children').value = [u'3', u'15', ]
+  >>> ctrl(name='cut').click()
+  >>> browser.open(testing.BASE_URL)
+  >>> browser.getLink('Document').click()
+  >>> ctrl('Title').value = 'Forth child'
+  >>> ctrl(name='save').click()
+  >>> browser.open(testing.BASE_URL + '/forth-child/@@contents')
+
+  >>> "Grandchild" in browser.contents
+  False
+  >>> "My Third Child" in browser.contents
+  False
+  >>> ctrl(name='paste').click()
+  >>> "Grandchild" in browser.contents
+  True
+  >>> "My Third Child" in browser.contents
+  True
+  >>> browser.open(testing.BASE_URL + '/child-one/@@contents')
+  >>> "Grandchild" in browser.contents
+  False
+
+  >>> browser.open(testing.BASE_URL + '/forth-child/@@contents')
+  >>> 'third-child' in browser.contents
+  True
+  >>> 'Grandchild' in browser.contents
+  True
+  >>> 'child-the-third' in browser.contents
+  False
+  >>> 'Hello Bob' in browser.contents
+  False
+  >>> ctrl(name='children').value = [u'3', u'15', ]
+  >>> ctrl(name='rename').click()
+
+  >>> ctrl(name='3-name').value = 'child-the-third'
+  >>> ctrl(name='3-title').value = 'child, the third'
+  >>> ctrl(name='15-name').value = 'hello-bob'
+  >>> ctrl(name='15-title').value = 'Hello Bob'
+  >>> ctrl(name='rename').click()
+
+  >>> browser.url == testing.BASE_URL + '/forth-child/@@contents'
+  True
+  >>> 'third-child' in browser.contents
+  False
+  >>> 'Grandchild' in browser.contents
+  False
+  >>> 'child-the-third' in browser.contents
+  True
+  >>> 'Hello Bob' in browser.contents
+  True
+
+  >>> ctrl(name='children').value = [u'3', u'15', ]
+  >>> ctrl(name='delete').click()
+  >>> "Are you sure" in browser.contents
+  True
+
+  >>> ctrl(name='children-to-delete').value = [u'15', ]
+  >>> ctrl(name='delete').click()
+  >>> "Hello Bob deleted." in browser.contents
+  True
+
 Navigation
 ----------
 
   >>> browser.getLink("Navigate").click()
-  >>> browser.getLink("My Third Child").click()
-  >>> browser.url == testing.BASE_URL + '/child-one/third-child/'
+  >>> browser.getLink("child, the third").click()
+  >>> browser.url == testing.BASE_URL + '/forth-child/child-the-third/'
   True
 
 User management

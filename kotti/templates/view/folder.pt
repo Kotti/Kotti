@@ -8,43 +8,65 @@
       ${context.description}
     </p>
     <h2>Contents</h2>
-    <div class="body">
-      <table class="table table-condensed">
-        <thead>
-          <tr>
-            <th>Title</th>
-            <th>Type</th>
-            <th>Creation Date</th>
-            <th>Modification Date</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr tal:repeat="child context.children_with_permission(request)">
-            <tal:block tal:define="url request.resource_url(child)">
-            <td>
-                <a href="${url}">
-                    ${child.title}
-                </a>
-            </td>
-            <td>
-                <a href="${url}">
-                    ${child.type_info.title}
-                </a>
-            </td>
-            <td>
-                <a href="${url}">
-                    ${api.format_date(child.creation_date)}
-                </a>
-            </td>
-            <td>
-                <a href="${url}">
-                    ${api.format_date(child.modification_date)}
-                </a>
-            </td>
-            </tal:block>
-          </tr>
-        </tbody>
-      </table>
+
+    <div class="body"
+         tal:define="children context.children_with_permission(request)">
+
+      <form action="${request.resource_url(context)}@@contents" method="post">
+        <input type="hidden" name="contents" value="on" />
+
+        <tal:no-content tal:condition="not:children"><span i18n:translate="">No contents.</span></tal:no-content>
+
+        <table class="table table-condensed" tal:condition="children">
+          <thead>
+            <tr>
+              <th></th>
+              <th>Title</th>
+              <th>Type</th>
+              <th>Creation Date</th>
+              <th>Modification Date</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr tal:repeat="child children">
+              <tal:block tal:define="url string:${request.resource_url(child)}@@contents">
+              <td>
+                  <input name="children" type="checkbox" value="${child.id}" />
+              </td>
+              <td>
+                  <a href="${url}">
+                      ${child.title}
+                  </a>
+              </td>
+              <td>
+                  <a href="${url}">
+                      ${child.type_info.title}
+                  </a>
+              </td>
+              <td>
+                  <a href="${url}">
+                      ${api.format_date(child.creation_date)}
+                  </a>
+              </td>
+              <td>
+                  <a href="${url}">
+                      ${api.format_date(child.modification_date)}
+                  </a>
+              </td>
+              </tal:block>
+            </tr>
+          </tbody>
+        </table>
+
+        <div>
+          <tal:button tal:repeat="action actions">
+            <button name="${action.name}" type="submit" class="btn">
+              ${action.title}
+            </button>
+          </tal:button>
+        </div>
+
+      </form>
     </div>
   </article>
 

@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      i18n:domain="Kotti"
+      metal:use-macro="api.macro('kotti:templates/edit/master.pt')">
+
+  <div metal:fill-slot="content">
+
+    <h1 i18n:translate="">Delete</h1>
+
+    <div class="tab-pane" id="delete" tal:condition="context is not api.root">
+      <form action="${request.url}" method="post" id="form-move-2">
+        <fieldset>
+          <legend>
+            <div i18n:translate="">Are you sure you want to delete the following items?</div>
+            <div tal:repeat="item items">
+              <span><input type="checkbox" name="children-to-delete" value="${item.id}" /></span>
+              <em>${item.title}</em>
+            </div>
+          </legend>
+          <div class="form-actions">
+            <button type="submit" name="delete" value="delete" 
+                    class="btn btn-danger" i18n:translate="">Delete</button>
+          </div>
+        </fieldset>
+      </form>
+    </div>
+
+  </div>
+</html>

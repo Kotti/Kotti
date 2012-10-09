@@ -7,6 +7,7 @@ from kotti.resources import IContent
 from kotti.resources import Document
 
 from kotti.views.util import search_content
+from kotti.views.edit import contents
 
 
 def view_content_default(context, request):
@@ -49,8 +50,9 @@ def includeme(config):
         )
 
     config.add_view(
+        contents,
         context=IContent,
-        name='folder_view',
+        name='contents',
         permission='view',
         renderer='kotti:templates/view/folder.pt',
         )

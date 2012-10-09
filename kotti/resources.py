@@ -331,11 +331,12 @@ class Content(Node):
         add_view=None,
         addable_to=[],
         edit_links=[
+            ViewLink('contents', title=_(u'Contents')),
             ViewLink('edit', title=_(u'Edit')),
             ViewLink('share', title=_(u'Share')),
             ],
         selectable_default_views=[
-            ("folder_view", _(u"Folder view")),
+            ("contents", _(u"Contents view")),
             ],
         )
 

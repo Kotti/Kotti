@@ -42,17 +42,20 @@ def content_type_factories(context, request):
 
 
 def get_paste_item(context, request):
+    items = []
     info = request.session.get('kotti.paste')
     if info:
-        id, action = info
-        item = DBSession.query(Node).get(id)
-        if item is None or not item.type_info.addable(context, request):
-            return
-        if action == 'cut' and inside(context, item):
-            return
-        if context == item:
-            return
-        return item
+        ids, action = info
+        for id in ids:
+            item = DBSession.query(Node).get(id)
+            if item is None or not item.type_info.addable(context, request):
+                continue
+            if action == 'cut' and inside(context, item):
+                continue
+            if context == item:
+                continue
+            items.append(item)
+    return items
 
 
 def actions(context, request):
@@ -63,7 +66,7 @@ def actions(context, request):
     is_root = context is root
     if not is_root:
         actions.append(ViewLink('cut', title=_(u'Cut')))
-    if get_paste_item(context, request) is not None:
+    if get_paste_item(context, request):
         actions.append(ViewLink('paste', title=_(u'Paste')))
     if not is_root:
         actions.append(ViewLink('rename', title=_(u'Rename')))
@@ -74,6 +77,18 @@ def actions(context, request):
                         if action.permitted(context, request)]}
 
 
+def contents_actions(context, request):
+    actions = []
+    if get_paste_item(context, request):
+        actions.append({'name': u'paste', 'title': _(u'Paste'), })
+    if context.children:
+        actions.append({'name': u'copy', 'title': _(u'Copy'), })
+        actions.append({'name': u'cut', 'title': _(u'Cut'), })
+        actions.append({'name': u'rename', 'title': _(u'Rename'), })
+        actions.append({'name': u'delete', 'title': _(u'Delete'), })
+    return actions
+
+
 def _eval_titles(info):
     result = []
     for d in info:
@@ -81,6 +96,24 @@ def _eval_titles(info):
         d['title'] = eval(d['title']) if 'title' in d else d['name']
         result.append(d)
     return result
+
+
+def contents(context, request):
+    if 'copy' in request.POST:
+        return copy_node(context, request)
+    if 'cut' in request.POST:
+        return cut_node(context, request)
+    if 'paste' in request.POST:
+        return paste_node(context, request)
+    if 'delete' in request.POST:
+        location = resource_url(context, request) + '@@delete_nodes'
+        request.session['delete-nodes'] = request.POST.getall('children')
+        return HTTPFound(location, request=request)
+    if 'rename' in request.POST:
+        location = resource_url(context, request) + '@@rename_nodes'
+        request.session['rename-nodes'] = request.POST.getall('children')
+        return HTTPFound(location, request=request)
+    return {'actions': contents_actions(context, request)}
 
 
 def workflow(context, request):
@@ -113,48 +146,66 @@ def workflow_change(context, request):
 
 
 def copy_node(context, request):
-    request.session['kotti.paste'] = (context.id, 'copy')
-    request.session.flash(_(u'${title} copied.',
-                            mapping=dict(title=context.title)), 'success')
+    ids = request.POST.getall('children')
+    if not ids:
+        ids = [context.id, ]
+    request.session['kotti.paste'] = (ids, 'copy')
+    for id in ids:
+        item = DBSession.query(Node).get(id)
+        request.session.flash(_(u'${title} copied.',
+                                mapping=dict(title=item.title)), 'success')
     if not request.is_xhr:
         location = resource_url(context, request)
+        if request.POST.get('contents', None) is not None:
+            location += '@@contents'
         return HTTPFound(location=location)
 
 
 def cut_node(context, request):
-    request.session['kotti.paste'] = (context.id, 'cut')
-    request.session.flash(_(u'${title} cut.',
-                            mapping=dict(title=context.title)), 'success')
+    ids = request.POST.getall('children')
+    if not ids:
+        ids = [context.id, ]
+    request.session['kotti.paste'] = (ids, 'cut')
+    for id in ids:
+        item = DBSession.query(Node).get(id)
+        request.session.flash(_(u'${title} cut.',
+                                mapping=dict(title=item.title)), 'success')
     if not request.is_xhr:
         location = resource_url(context, request)
+        if request.POST.get('contents', None) is not None:
+            location += '@@contents'
         return HTTPFound(location=location)
 
 
 def paste_node(context, request):
-    id, action = request.session['kotti.paste']
-    item = DBSession.query(Node).get(id)
-    if item is not None:
-        if action == 'cut':
-            if not has_permission('edit', item, request):
-                raise Forbidden()
-            item.__parent__.children.remove(item)
-            context.children.append(item)
-            del request.session['kotti.paste']
-        elif action == 'copy':
-            copy = item.copy()
-            name = copy.name
-            if not name:  # for root
-                name = copy.title
-            name = title_to_name(name, blacklist=context.keys())
-            copy.name = name
-            context.children.append(copy)
-        request.session.flash(_(u'${title} pasted.',
-                                mapping=dict(title=item.title)), 'success')
-    else:
-        request.session.flash(
-            _(u'Could not paste node. It does not exist anymore.'), 'error')
+    ids, action = request.session['kotti.paste']
+    for count, id in enumerate(ids):
+        item = DBSession.query(Node).get(id)
+        if item is not None:
+            if action == 'cut':
+                if not has_permission('edit', item, request):
+                    raise Forbidden()
+                item.__parent__.children.remove(item)
+                context.children.append(item)
+                if count is len(ids) - 1:
+                    del request.session['kotti.paste']
+            elif action == 'copy':
+                copy = item.copy()
+                name = copy.name
+                if not name:  # for root
+                    name = copy.title
+                name = title_to_name(name, blacklist=context.keys())
+                copy.name = name
+                context.children.append(copy)
+            request.session.flash(_(u'${title} pasted.',
+                                    mapping=dict(title=item.title)), 'success')
+        else:
+            request.session.flash(
+                _(u'Could not paste node. It does not exist anymore.'), 'error')
     if not request.is_xhr:
         location = resource_url(context, request)
+        if request.POST.get('contents', None) is not None:
+            location += '@@contents'
         return HTTPFound(location=location)
 
 
@@ -204,6 +255,28 @@ def delete_node(context, request):
     return {}
 
 
+def delete_nodes(context, request):
+    if 'delete' in request.POST:
+        if 'delete-nodes' in request.session:
+            del request.session['delete-nodes']
+        ids = request.POST.getall('children-to-delete')
+        if not ids:
+            request.session.flash(_(u"Nothing deleted. Maybe you didn't tick a second time?", 'error'))
+        for id in ids:
+            item = DBSession.query(Node).get(id)
+            request.session.flash(_(u'${title} deleted.',
+                                    mapping=dict(title=item.title)), 'success')
+            del context[item.name]
+        location = resource_url(context, request) + '@@contents'
+        return HTTPFound(location=location)
+    items = []
+    ids = request.session['delete-nodes']
+    if ids:
+        items = DBSession.query(Node).filter(Node.id.in_(ids)).all()
+    return {'multiple': len(items) > 1,
+            'items': items}
+
+
 def rename_node(context, request):
     if 'rename' in request.POST:
         name = request.POST['name']
@@ -217,6 +290,30 @@ def rename_node(context, request):
             location = resource_url(context, request)
             return HTTPFound(location=location)
     return {}
+
+
+def rename_nodes(context, request):
+    if 'rename' in request.POST:
+        if 'rename-nodes' in request.session:
+            del request.session['rename-nodes']
+        ids = request.POST.getall('children-to-rename')
+        for id in ids:
+            item = DBSession.query(Node).get(id)
+            name = request.POST[id + '-name']
+            title = request.POST[id + '-title']
+            if not name or not title:
+                request.session.flash(_(u'Name and title are required.'), 'error')
+            else:
+                item.name = name.replace('/', '')
+                item.title = title
+        request.session.flash(_(u'Items renamed'), 'success')
+        location = resource_url(context, request) + '@@contents'
+        return HTTPFound(location=location)
+    items = []
+    ids = request.session['rename-nodes']
+    if ids:
+        items = DBSession.query(Node).filter(Node.id.in_(ids)).all()
+    return {'items': items}
 
 
 # XXX These and the make_generic_edit functions below can probably be
@@ -357,10 +454,24 @@ def nodes_includeme(config):
         )
 
     config.add_view(
+        delete_nodes,
+        name='delete_nodes',
+        permission='edit',
+        renderer='kotti:templates/edit/delete-nodes.pt',
+        )
+
+    config.add_view(
         rename_node,
         name='rename',
         permission='edit',
         renderer='kotti:templates/edit/rename.pt',
+        )
+
+    config.add_view(
+        rename_nodes,
+        name='rename_nodes',
+        permission='edit',
+        renderer='kotti:templates/edit/rename-nodes.pt',
         )
 
     config.scan("kotti.views.edit.default_view_selection")
