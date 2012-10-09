@@ -530,17 +530,19 @@ Contents view actions handling
   >>> "Are you sure" in browser.contents
   True
 
-  >>> ctrl(name='children-to-delete').value = childs.options[0:1]
+  >>> ctrl(name='children-to-delete').value = childs.options[0:2]
   >>> ctrl(name='delete').click()
   >>> "child, the third deleted." in browser.contents
+  True
+  >>> "Hello Bob deleted." in browser.contents
   True
 
 Navigation
 ----------
 
   >>> browser.getLink("Navigate").click()
-  >>> browser.getLink("Hello Bob").click()
-  >>> browser.url == testing.BASE_URL + '/forth-child/hello-bob/'
+  >>> browser.getLink("Second Child").click()
+  >>> browser.url == testing.BASE_URL + '/second-child-1/'
   True
 
 User management
