@@ -445,7 +445,8 @@ Contents view actions handling
   >>> browser.url == testing.BASE_URL + '/child-one/@@contents'
   True
 
-  >>> ctrl(name='children').value = [u'3', ]
+  >>> childs = ctrl(name='children')
+  >>> childs.value = childs.options[0:1]
   >>> ctrl(name='copy').click()
   >>> 'copied.' in browser.contents  # TODO: this should be show all names
   True
@@ -457,7 +458,8 @@ Contents view actions handling
   >>> "My Third Child" in browser.contents
   True
 
-  >>> ctrl(name='children').value = [u'15', ]
+  >>> childs = ctrl(name='children')
+  >>> childs.value = childs.options[0:1]
   >>> ctrl(name='cut').click()
   >>> 'cut.' in browser.contents  # TODO: this should be show all names
   True
@@ -470,7 +472,8 @@ Contents view actions handling
   True
   >>> with pytest.raises(LookupError): ctrl(name='paste')
 
-  >>> ctrl(name='children').value = [u'3', u'15', ]
+  >>> childs = ctrl(name='children')
+  >>> childs.value = childs.options[0:2]
   >>> ctrl(name='cut').click()
   >>> browser.open(testing.BASE_URL)
   >>> browser.getLink('Document').click()
@@ -500,13 +503,14 @@ Contents view actions handling
   False
   >>> 'Hello Bob' in browser.contents
   False
-  >>> ctrl(name='children').value = [u'3', u'15', ]
+  >>> childs = ctrl(name='children')
+  >>> childs.value = childs.options[0:2]
   >>> ctrl(name='rename').click()
 
-  >>> ctrl(name='3-name').value = 'child-the-third'
-  >>> ctrl(name='3-title').value = 'child, the third'
-  >>> ctrl(name='15-name').value = 'hello-bob'
-  >>> ctrl(name='15-title').value = 'Hello Bob'
+  >>> ctrl(name='%s-name' % childs.options[1]).value = 'child-the-third'
+  >>> ctrl(name='%s-title' % childs.options[1]).value = 'child, the third'
+  >>> ctrl(name='%s-name' % childs.options[0]).value = 'hello-bob'
+  >>> ctrl(name='%s-title' % childs.options[0]).value = 'Hello Bob'
   >>> ctrl(name='rename').click()
 
   >>> browser.url == testing.BASE_URL + '/forth-child/@@contents'
@@ -520,22 +524,23 @@ Contents view actions handling
   >>> 'Hello Bob' in browser.contents
   True
 
-  >>> ctrl(name='children').value = [u'3', u'15', ]
+  >>> childs = ctrl(name='children')
+  >>> childs.value = childs.options[0:2]
   >>> ctrl(name='delete').click()
   >>> "Are you sure" in browser.contents
   True
 
-  >>> ctrl(name='children-to-delete').value = [u'15', ]
+  >>> ctrl(name='children-to-delete').value = childs.options[0:1]
   >>> ctrl(name='delete').click()
-  >>> "Hello Bob deleted." in browser.contents
+  >>> "child, the third deleted." in browser.contents
   True
 
 Navigation
 ----------
 
   >>> browser.getLink("Navigate").click()
-  >>> browser.getLink("child, the third").click()
-  >>> browser.url == testing.BASE_URL + '/forth-child/child-the-third/'
+  >>> browser.getLink("Hello Bob").click()
+  >>> browser.url == testing.BASE_URL + '/forth-child/hello-bob/'
   True
 
 User management
