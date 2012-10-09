@@ -7,7 +7,7 @@
   <div metal:fill-slot="content">
     <h1 i18n:translate="">Rename</h1>
 
-    <div class="tab-pane" id="rename" tal:condition="context is not api.root">
+    <div class="tab-pane" id="rename">
       <form action="${request.url}" method="post" id="form-move-3">
         <tal:items tal:repeat="item items">
           <input type="hidden" name="children-to-rename" value="${item.id}" />
