@@ -21,10 +21,10 @@
           <thead>
             <tr>
               <th></th>
-              <th>Title</th>
-              <th>Type</th>
-              <th>Creation Date</th>
-              <th>Modification Date</th>
+              <th i18n:translate="">Title</th>
+              <th i18n:translate="">Type</th>
+              <th i18n:translate="">Creation Date</th>
+              <th i18n:translate="">Modification Date</th>
             </tr>
             </thead>
             <tbody>
