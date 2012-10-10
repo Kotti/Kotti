@@ -58,9 +58,11 @@
           </tbody>
         </table>
 
-        <div>
+        <div class="btn-group">
           <tal:button tal:repeat="action actions">
-            <button name="${action.name}" type="submit" class="btn">
+            <button name="${action.name}" type="submit" class="btn"
+                    tal:condition="children or action.name in ('paste', )"
+                    tal:attributes="class python: action.name.endswith('delete') and 'btn btn-danger' or 'btn'">
               ${action.title}
             </button>
           </tal:button>
