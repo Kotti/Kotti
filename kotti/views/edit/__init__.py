@@ -5,9 +5,10 @@ from kotti import get_settings
 from kotti.resources import Document
 from kotti.resources import Node
 from kotti.resources import get_root
-from kotti.util import ViewLink
 from kotti.util import _
 from kotti.util import title_to_name
+from kotti.util import ButtonLink
+from kotti.util import ViewLink
 from kotti.views.form import AddFormView
 from kotti.views.form import ContentSchema
 from kotti.views.form import EditFormView
@@ -77,16 +78,19 @@ def actions(context, request):
                         if action.permitted(context, request)]}
 
 
-def contents_actions(context, request):
-    actions = []
+def contents_buttons(context, request):
+    buttons = []
     if get_paste_item(context, request):
-        actions.append({'name': u'paste', 'title': _(u'Paste'), })
+        buttons.append(ButtonLink('paste', title=_(u'Paste'),
+                                  ontop=True))
     if context.children:
-        actions.append({'name': u'copy', 'title': _(u'Copy'), })
-        actions.append({'name': u'cut', 'title': _(u'Cut'), })
-        actions.append({'name': u'rename', 'title': _(u'Rename'), })
-        actions.append({'name': u'delete', 'title': _(u'Delete'), })
-    return actions
+        buttons.append(ButtonLink('copy', title=_(u'Copy')))
+        buttons.append(ButtonLink('cut', title=_(u'Cut')))
+        buttons.append(ButtonLink('rename', title=_(u'Rename')))
+        buttons.append(ButtonLink('delete', title=_(u'Delete'),
+                                  css_class=u'btn btn-danger'))
+    return [button for button in buttons
+                        if button.permitted(context, request)]
 
 
 def _eval_titles(info):
@@ -113,7 +117,8 @@ def contents(context, request):
         location = resource_url(context, request) + '@@rename_nodes'
         request.session['rename-nodes'] = request.POST.getall('children')
         return HTTPFound(location, request=request)
-    return {'actions': contents_actions(context, request)}
+    return {'children': context.children_with_permission(request),
+            'buttons': contents_buttons(context, request)}
 
 
 def workflow(context, request):

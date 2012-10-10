@@ -39,6 +39,13 @@ class ViewLink(object):
         return "ViewLink(%r, %r)" % (self.path, self.title)
 
 
+class ButtonLink(ViewLink):
+    def __init__(self, path, title=None, ontop=False, css_class=u"btn"):
+        super(ButtonLink, self).__init__(path, title)
+        self.ontop = ontop
+        self.css_class = css_class
+
+
 class DontCache(Exception):
     pass
 

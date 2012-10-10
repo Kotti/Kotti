@@ -9,8 +9,7 @@
     </p>
     <h2>Contents</h2>
 
-    <div class="body"
-         tal:define="children context.children_with_permission(request)">
+    <div class="body">
 
       <form action="${request.resource_url(context)}@@contents" method="post">
         <input type="hidden" name="contents" value="on" />
@@ -59,11 +58,10 @@
         </table>
 
         <div class="btn-group">
-          <tal:button tal:repeat="action actions">
-            <button name="${action.name}" type="submit" class="btn"
-                    tal:condition="children or action.name in ('paste', )"
-                    tal:attributes="class python: action.name.endswith('delete') and 'btn btn-danger' or 'btn'">
-              ${action.title}
+          <tal:button tal:repeat="button buttons">
+            <button name="${button.path}" type="submit" class="${button.css_class}"
+                    tal:condition="children or button.ontop">
+              ${button.title}
             </button>
           </tal:button>
         </div>
