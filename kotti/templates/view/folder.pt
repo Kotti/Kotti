@@ -22,6 +22,7 @@
               <th></th>
               <th i18n:translate="">Title</th>
               <th i18n:translate="">Type</th>
+              <th i18n:translate="">State</th>
               <th i18n:translate="">Creation Date</th>
               <th i18n:translate="">Modification Date</th>
             </tr>
@@ -41,6 +42,11 @@
                   <a href="${url}">
                       ${child.type_info.title}
                   </a>
+              </td>
+              <td>
+                <ul class="nav">
+                  <li tal:replace="api.render_view('workflow-dropdown', context=child)" />
+                </ul>
               </td>
               <td>
                   <a href="${url}">

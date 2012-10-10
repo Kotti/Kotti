@@ -90,16 +90,7 @@ def contents_buttons(context, request):
         buttons.append(ButtonLink('delete', title=_(u'Delete'),
                                   css_class=u'btn btn-danger'))
     return [button for button in buttons
-                        if button.permitted(context, request)]
-
-
-def _eval_titles(info):
-    result = []
-    for d in info:
-        d = d.copy()
-        d['title'] = eval(d['title']) if 'title' in d else d['name']
-        result.append(d)
-    return result
+        if button.permitted(context, request)]
 
 
 def contents(context, request):
@@ -117,8 +108,19 @@ def contents(context, request):
         location = resource_url(context, request) + '@@rename_nodes'
         request.session['rename-nodes'] = request.POST.getall('children')
         return HTTPFound(location, request=request)
+
     return {'children': context.children_with_permission(request),
-            'buttons': contents_buttons(context, request)}
+            'buttons': contents_buttons(context, request),
+            }
+
+
+def _eval_titles(info):
+    result = []
+    for d in info:
+        d = d.copy()
+        d['title'] = eval(d['title']) if 'title' in d else d['name']
+        result.append(d)
+    return result
 
 
 def workflow(context, request):
@@ -147,7 +149,11 @@ def workflow_change(context, request):
     wf = get_workflow(context)
     wf.transition_to_state(context, request, new_state)
     request.session.flash(EditFormView.success_message, 'success')
-    return HTTPFound(location=request.resource_url(context))
+    if request.referrer.endswith('@@contents'):
+        url = request.referrer
+    else:
+        url = request.resource_url(context)
+    return HTTPFound(location=url)
 
 
 def copy_node(context, request):
