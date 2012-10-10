@@ -261,7 +261,7 @@ def delete_nodes(context, request):
             del request.session['delete-nodes']
         ids = request.POST.getall('children-to-delete')
         if not ids:
-            request.session.flash(_(u"Nothing deleted. Maybe you didn't tick a second time?", 'error'))
+            request.session.flash(_(u"Nothing deleted."), 'error')
         for id in ids:
             item = DBSession.query(Node).get(id)
             request.session.flash(_(u'${title} deleted.',
@@ -269,8 +269,9 @@ def delete_nodes(context, request):
             del context[item.name]
         location = resource_url(context, request) + '@@contents'
         return HTTPFound(location=location)
-    items = []
-    ids = request.session['delete-nodes']
+    ids = items = []
+    if 'delete-nodes' in request.session:
+        ids = request.session['delete-nodes']
     if ids:
         items = DBSession.query(Node).filter(Node.id.in_(ids)).all()
     return {'multiple': len(items) > 1,
@@ -304,13 +305,14 @@ def rename_nodes(context, request):
             if not name or not title:
                 request.session.flash(_(u'Name and title are required.'), 'error')
             else:
-                item.name = name.replace('/', '')
+                item.name = name.replace('/', '')  # TODO: check if name already exists
                 item.title = title
-        request.session.flash(_(u'Items renamed'), 'success')
+                request.session.flash(_(u'Item renamed.'), 'success')
         location = resource_url(context, request) + '@@contents'
         return HTTPFound(location=location)
-    items = []
-    ids = request.session['rename-nodes']
+    ids = items = []
+    if 'rename-nodes' in request.session:
+        ids = request.session['rename-nodes']
     if ids:
         items = DBSession.query(Node).filter(Node.id.in_(ids)).all()
     return {'items': items}

@@ -1,3 +1,4 @@
+from webob.multidict import MultiDict
 from pyramid.exceptions import Forbidden
 
 from kotti.testing import DummyRequest
@@ -91,6 +92,60 @@ class TestNodeRename(UnitTestBase):
         rename_node(child, request)
         self.assertEqual(request.session.pop_flash('error'),
                          [u'Name and title are required.'])
+
+    def test_multi_rename(self):
+        from kotti import DBSession
+        from kotti.resources import Node
+        from kotti.resources import Document
+        from kotti.views.edit import rename_nodes
+
+        root = DBSession.query(Node).get(1)
+        root['child1'] = Document(title=u"Child 1")
+        root['child2'] = Document(title=u"Child 2")
+        request = DummyRequest()
+        request.POST = MultiDict()
+        id1 = str(root['child1'].id)
+        id2 = str(root['child2'].id)
+        request.POST.add(id1 + '-name', u'')
+        request.POST.add(id1 + '-title', u'Unhappy Child')
+        request.POST.add(id2 + '-name', u'happy-child')
+        request.POST.add(id2 + '-title', u'Happy Child')
+        request.POST.add('children-to-rename', id1)
+        request.POST.add('children-to-rename', id2)
+        request.POST.add('rename', u'on')
+        rename_nodes(root, request)
+        assert request.session.pop_flash('error') ==\
+            [u'Name and title are required.']
+        assert request.session.pop_flash('success') ==\
+            [u'Item renamed.']
+
+
+class TestNodeDelete(UnitTestBase):
+
+    def test_multi_delete(self):
+        from kotti import DBSession
+        from kotti.resources import Node
+        from kotti.resources import Document
+        from kotti.views.edit import delete_nodes
+
+        root = DBSession.query(Node).get(1)
+        root['child1'] = Document(title=u"Child 1")
+        root['child2'] = Document(title=u"Child 2")
+
+        request = DummyRequest()
+        request.POST = MultiDict()
+        id1 = str(root['child1'].id)
+        id2 = str(root['child2'].id)
+        request.POST.add('delete', u'on')
+        delete_nodes(root, request)
+        assert request.session.pop_flash('error') ==\
+            [u'Nothing deleted.']
+
+        request.POST.add('children-to-delete', id1)
+        request.POST.add('children-to-delete', id2)
+        delete_nodes(root, request)
+        assert request.session.pop_flash('success') ==\
+            [u'${title} deleted.', u'${title} deleted.']
 
 
 class TestNodeShare(UnitTestBase):
