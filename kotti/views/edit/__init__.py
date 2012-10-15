@@ -89,6 +89,8 @@ def contents_buttons(context, request):
         buttons.append(ButtonLink('rename', title=_(u'Rename')))
         buttons.append(ButtonLink('delete', title=_(u'Delete'),
                                   css_class=u'btn btn-danger'))
+        if get_workflow(context) is not None:
+            buttons.append(ButtonLink('change_state', title=_(u'Change State')))
     return [button for button in buttons
         if button.permitted(context, request)]
 
@@ -107,6 +109,10 @@ def contents(context, request):
     if 'rename' in request.POST:
         location = resource_url(context, request) + '@@rename_nodes'
         request.session['rename-nodes'] = request.POST.getall('children')
+        return HTTPFound(location, request=request)
+    if 'change_state' in request.POST:
+        location = resource_url(context, request) + '@@change_state'
+        request.session['change-state-nodes'] = request.POST.getall('children')
         return HTTPFound(location, request=request)
 
     return {'children': context.children_with_permission(request),
@@ -329,6 +335,60 @@ def rename_nodes(context, request):
     return {'items': items}
 
 
+def _all_children(item, request, permission='view'):
+    children = item.children_with_permission(request, permission)
+    for child in children:
+        if child.children:
+            sub_children = _all_children(child, request, permission)
+            for sub_child in sub_children:
+                if sub_child not in children:
+                    children.append(sub_child)
+    return children
+
+
+def change_state(context, request):
+    if 'change-state' in request.POST:
+        if 'change-state-nodes' in request.session:
+            del request.session['change-state-nodes']
+        ids = request.POST.getall('children-to-change-state')
+        to_state = request.POST.get('to-state', u'no-change')
+        include_children = request.POST.get('include-children', None)
+        if to_state != u'no-change':
+            items = DBSession.query(Node).filter(Node.id.in_(ids)).all()
+            for item in items:
+                wf = get_workflow(item)
+                if wf is not None:
+                    wf.transition_to_state(item, request, to_state)
+                if include_children:
+                    childs = _all_children(item, request, 'state_change')
+                    for child in childs:
+                        wf = get_workflow(child)
+                        if wf is not None:
+                            wf.transition_to_state(child, request, to_state, )
+            request.session.flash(_(u'Your changes have been saved.'), 'success')
+        else:
+            request.session.flash(_(u'No changes made.'), 'success')
+        location = resource_url(context, request) + '@@contents'
+        return HTTPFound(location=location)
+
+    ids = items = state_info = transitions = []
+    if 'change-state-nodes' in request.session:
+        ids = request.session['change-state-nodes']
+    if ids:
+        items = DBSession.query(Node).filter(Node.id.in_(ids)).all()
+    wf = get_workflow(context)
+    if wf is not None:
+        state_info = _eval_titles(wf.state_info(context, request))
+        for item in items:
+                trans_info = wf.get_transitions(item, request)
+                for tran_info in trans_info:
+                    if tran_info not in transitions:
+                        transitions.append(tran_info)
+    return {'items': items,
+            'states': dict([(i['name'], i) for i in state_info]),
+            'transitions': transitions, }
+
+
 # XXX These and the make_generic_edit functions below can probably be
 # simplified quite a bit.
 def generic_edit(context, request, schema, **kwargs):
@@ -485,6 +545,13 @@ def nodes_includeme(config):
         name='rename_nodes',
         permission='edit',
         renderer='kotti:templates/edit/rename-nodes.pt',
+        )
+
+    config.add_view(
+        change_state,
+        name='change_state',
+        permission='edit',
+        renderer='kotti:templates/edit/change-state.pt',
         )
 
     config.scan("kotti.views.edit.default_view_selection")

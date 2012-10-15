@@ -437,8 +437,8 @@ On setup pages we can't use the actions:
   LinkNotFoundError
 
 
-Contents view actions handling
-------------------------------
+Contents view actions
+---------------------
 
   >>> browser.open(testing.BASE_URL + '/child-one')
   >>> browser.getLink('Contents').click()
@@ -537,6 +537,9 @@ Contents view actions handling
   >>> "Hello Bob deleted." in browser.contents
   True
 
+Contents view change state actions
+----------------------------------
+
   >>> browser.getLink("Second Child").click()
   >>> browser.getLink("Contents").click()
   >>> 'http://localhost:6543/second-child-1/third-child/@@workflow-change?new_state=public' in browser.contents
@@ -544,7 +547,53 @@ Contents view actions handling
   >>> browser.getLink("Make Public", index=1).click()
   >>> 'http://localhost:6543/second-child-1/third-child/@@workflow-change?new_state=private' in browser.contents
   True
- 
+
+  >>> childs = ctrl(name='children')
+  >>> childs.value = childs.options[0:3]
+  >>> ctrl(name='change_state').click()
+  >>> 'Change workflow state' in browser.contents
+  True
+
+  >>> ctrl(name='to-state').value = ['private']
+  >>> ctrl(name='change-state').click()
+  >>> 'Your changes have been saved.' in browser.contents
+  True
+  >>> 'http://localhost:6543/second-child-1/third-child/@@workflow-change?new_state=public' in browser.contents
+  True
+  >>> 'http://localhost:6543/second-child-1/grandchild-2/@@workflow-change?new_state=public' in browser.contents
+  True
+  >>> 'http://localhost:6543/second-child-1/grandchild-3/@@workflow-change?new_state=public' in browser.contents
+  True
+
+  >>> browser.getLink('My Third Child').click()
+  >>> browser.getLink("Make Public", index=1).click()
+  >>> 'http://localhost:6543/second-child-1/third-child/child-one/@@workflow-change?new_state=private' in browser.contents
+  True
+
+  >>> browser.getLink('First Child', index=1).click()
+  >>> browser.getLink('Document').click()
+  >>> ctrl('Title').value = 'Sub child'
+  >>> ctrl(name='save').click()
+  >>> 'http://localhost:6543/second-child-1/third-child/child-one/sub-child/@@workflow-change?new_state=public' in browser.contents
+  True
+
+  >>> browser.getLink("Second Child").click()
+  >>> browser.getLink("Contents").click()
+  >>> childs = ctrl(name='children')
+  >>> childs.value = childs.options[0:3]
+  >>> ctrl(name='change_state').click()
+  >>> ctrl(name='include-children').value = ['include-children']
+  >>> ctrl(name='to-state').value = ['public']
+  >>> ctrl(name='change-state').click()
+  >>> 'Your changes have been saved.' in browser.contents
+  True
+  >>> 'http://localhost:6543/second-child-1/third-child/@@workflow-change?new_state=private' in browser.contents
+  True
+  >>> browser.open(testing.BASE_URL + '/second-child-1/third-child/child-one/sub-child/')
+  >>> 'http://localhost:6543/second-child-1/third-child/child-one/sub-child/@@workflow-change?new_state=private' in browser.contents
+  True
+
+
 Navigation
 ----------
 
