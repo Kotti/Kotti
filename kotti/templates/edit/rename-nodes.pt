@@ -7,28 +7,31 @@
   <div metal:fill-slot="content">
     <h1 i18n:translate="">Rename</h1>
 
-    <div class="tab-pane" id="rename">
-      <form action="${request.url}" method="post" id="form-move-3">
+    <div class="tab-pane" id="rename-nodes">
+
+      <form action="${request.url}" method="post" id="form-rename-nodes">
+        <legend i18n:translate="">Each content item has a name, whats also used to create the url, and a title. You can change both by entering the new details below.</legend>
+
         <tal:items tal:repeat="item items">
           <input type="hidden" name="children-to-rename" value="${item.id}" />
-          <div class="control-group">
-            <label class="control-label desc" for="move-new-name" i18n:translate="">New name(${item.name})</label>
-            <div class="controls">
-              <input type="text" name="${item.id}-name" id="move-new-name"
-                     value="${request.POST.get(str(item.id) + '-name') or item.name}" />
-            </div>
-          </div>
-          <div class="control-group">         
-            <label class="control-label desc" for="move-new-title" i18n:translate="">New title(${item.title})</label>
-            <div class="controls">
-              <input type="text" name="${item.id}-title" id="move-new-title"
-                     value="${request.POST.get(str(item.id) + '-title') or item.title}" />
-            </div>
-          </div>
+
+          <fieldset>
+            <legend>${item.title}(${item.name})</legend>
+            <label class="control-label desc" for="move-new-name" i18n:translate="">New name <input type="text" name="${item.id}-name"
+                     value="${request.POST.get(str(item.id) + '-name') or item.name}" /></label>
+              
+            <label class="control-label desc" for="move-new-title" i18n:translate="">
+              New title
+              <input type="text" name="${item.id}-title" value="${request.POST.get(str(item.id) + '-title') or item.title}" />
+            </label>
+          </fieldset>
+
         </tal:items>
         <div class="form-actions">
-          <button type="submit" name="rename" value="rename" 
-                  class="btn btn-warning" i18n:translate="">Rename</button>
+          <button type="submit" name="rename" value="rename"
+                  class="btn btn-primary" i18n:translate="">Rename</button>
+          <button type="submit" name="cancel" value="cancel"
+                  class="btn" i18n:translate="">Cancel</button>
         </div>
       </form>    
     </div>

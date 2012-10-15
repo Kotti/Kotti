@@ -27,31 +27,35 @@
             <tbody>
             <tr tal:repeat="item items">
               <tal:block tal:define="url string:${request.resource_url(item)}@@contents">
-              <td><input name="children-to-change-state" type="checkbox" value="${item.id}" checked="checked" /></td>
-              <td>${item.title}</td>
-              <td>${item.type_info.title}</td>
-              <td>${states[item.state]['title']}</td>
-              <td>${api.format_date(item.creation_date)}</td>
-              <td>${api.format_date(item.modification_date)}</td>
+                <td><input name="children-to-change-state" type="checkbox" value="${item.id}" checked="checked" /></td>
+                <td><a href="${url}">${item.title}</a></td>
+                <td>${item.type_info.title}</td>
+                <td>${states[item.state]['title']}</td>
+                <td>${api.format_date(item.creation_date)}</td>
+                <td>${api.format_date(item.modification_date)}</td>
               </tal:block>
             </tr>
           </tbody>
         </table>
 
-        <legend>Include children</legend>
-        <span class="help-block" i18n:translate="">If checked, this will attempt to modify the status of all children in any selected documents and their subdocuments.</span>
-        <label class="checkbox">
-          <input type="checkbox" name="include-children" value="include-children" /> <span  i18n:translate="">Include children</span>
-        </label>
+        <fieldset>
+          <legend i18n:translate="">Include children</legend>
+          <span class="help-block" i18n:translate="">If checked, this will attempt to modify the status of all children in any selected documents and their subdocuments.</span>
+          <label class="checkbox">
+            <input type="checkbox" name="include-children" value="include-children" /> <span  i18n:translate="">Include children</span>
+          </label>
+        </fieldset>
 
-        <legend>Change state to</legend>
-        <span class="help-block" i18n:translate="">Select the new state where all choosen items should be set.</span>
-        <label class="radio">
-          <input type="radio" name="to-state" value="no-change" checked="checked" /> <span i18n:translate="">No change</span>
-        </label>
-        <label class="radio" tal:repeat="transition transitions">
-          <input type="radio" name="to-state" value="${transition['to_state']}" /> ${states[transition['to_state']]['title']}
-        </label>
+        <fieldset>
+          <legend i18n:translate="">Change state to</legend>
+          <span class="help-block" i18n:translate="">Select the new state where all choosen items should be set.</span>
+          <label class="radio">
+            <input type="radio" name="to-state" value="no-change" checked="checked" /> <span i18n:translate="">No change</span>
+          </label>
+          <label class="radio" tal:repeat="transition transitions">
+            <input type="radio" name="to-state" value="${transition['to_state']}" /> ${states[transition['to_state']]['title']}
+          </label>
+        </fieldset>
 
         <div class="form-actions">
           <button type="submit" name="change-state" value="change-state" 

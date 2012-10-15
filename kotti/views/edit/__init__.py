@@ -120,6 +120,17 @@ def contents(context, request):
             }
 
 
+def _all_children(item, request, permission='view'):
+    children = item.children_with_permission(request, permission)
+    for child in children:
+        if child.children:
+            sub_children = _all_children(child, request, permission)
+            for sub_child in sub_children:
+                if sub_child not in children:
+                    children.append(sub_child)
+    return children
+
+
 def _eval_titles(info):
     result = []
     for d in info:
@@ -129,16 +140,29 @@ def _eval_titles(info):
     return result
 
 
+def _state_info(context, request):
+    wf = get_workflow(context)
+    state_info = []
+    if wf is not None:
+        state_info = _eval_titles(wf.state_info(context, request))
+        return state_info
+
+
+def _states(context, request):
+    state_info = _state_info(context, request)
+    return dict([(i['name'], i) for i in state_info])
+
+
 def workflow(context, request):
     """Drop down menu for workflow actions.
     """
     wf = get_workflow(context)
     if wf is not None:
-        state_info = _eval_titles(wf.state_info(context, request))
+        state_info = _state_info(context, request)
         curr_state = [i for i in state_info if i['current']][0]
         trans_info = wf.get_transitions(context, request)
         return {
-            'states': dict([(i['name'], i) for i in state_info]),
+            'states': _states(context, request),
             'transitions': trans_info,
             'current_state': curr_state,
             }
@@ -155,7 +179,8 @@ def workflow_change(context, request):
     wf = get_workflow(context)
     wf.transition_to_state(context, request, new_state)
     request.session.flash(EditFormView.success_message, 'success')
-    if request.referrer.endswith('@@contents'):
+    if request.referrer is not None and\
+        request.referrer.endswith('@@contents'):
         url = request.referrer
     else:
         url = request.resource_url(context)
@@ -286,13 +311,15 @@ def delete_nodes(context, request):
             del context[item.name]
         location = resource_url(context, request) + '@@contents'
         return HTTPFound(location=location)
+
     ids = items = []
     if 'delete-nodes' in request.session:
         ids = request.session['delete-nodes']
-    if ids:
-        items = DBSession.query(Node).filter(Node.id.in_(ids)).all()
-    return {'multiple': len(items) > 1,
-            'items': items}
+        if ids:
+            items = DBSession.query(Node).filter(Node.id.in_(ids)).order_by(Node.position).all()
+            return {'items': items,
+                    'states': _states(context, request)}
+    return {}
 
 
 def rename_node(context, request):
@@ -330,20 +357,10 @@ def rename_nodes(context, request):
     ids = items = []
     if 'rename-nodes' in request.session:
         ids = request.session['rename-nodes']
-    if ids:
-        items = DBSession.query(Node).filter(Node.id.in_(ids)).all()
-    return {'items': items}
-
-
-def _all_children(item, request, permission='view'):
-    children = item.children_with_permission(request, permission)
-    for child in children:
-        if child.children:
-            sub_children = _all_children(child, request, permission)
-            for sub_child in sub_children:
-                if sub_child not in children:
-                    children.append(sub_child)
-    return children
+        if ids:
+            items = DBSession.query(Node).filter(Node.id.in_(ids)).all()
+            return {'items': items}
+    return {}
 
 
 def change_state(context, request):
@@ -371,22 +388,23 @@ def change_state(context, request):
         location = resource_url(context, request) + '@@contents'
         return HTTPFound(location=location)
 
-    ids = items = state_info = transitions = []
+    ids = items = transitions = []
     if 'change-state-nodes' in request.session:
         ids = request.session['change-state-nodes']
-    if ids:
-        items = DBSession.query(Node).filter(Node.id.in_(ids)).all()
-    wf = get_workflow(context)
-    if wf is not None:
-        state_info = _eval_titles(wf.state_info(context, request))
-        for item in items:
-                trans_info = wf.get_transitions(item, request)
-                for tran_info in trans_info:
-                    if tran_info not in transitions:
-                        transitions.append(tran_info)
-    return {'items': items,
-            'states': dict([(i['name'], i) for i in state_info]),
-            'transitions': transitions, }
+        if ids:
+            items = DBSession.query(Node).filter(Node.id.in_(ids)).all()
+
+        wf = get_workflow(context)
+        if wf is not None:
+            for item in items:
+                    trans_info = wf.get_transitions(item, request)
+                    for tran_info in trans_info:
+                        if tran_info not in transitions:
+                            transitions.append(tran_info)
+            return {'items': items,
+                    'states': _states(context, request),
+                    'transitions': transitions, }
+    return {}
 
 
 # XXX These and the make_generic_edit functions below can probably be
