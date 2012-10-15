@@ -448,7 +448,7 @@ Contents view actions
   >>> childs = ctrl(name='children')
   >>> childs.value = childs.options[0:1]
   >>> ctrl(name='copy').click()
-  >>> 'copied.' in browser.contents  # TODO: this should be show all names
+  >>> 'copied.' in browser.contents
   True
 
   >>> browser.open(testing.BASE_URL + '/second-child-1/@@contents')
@@ -505,13 +505,13 @@ Contents view actions
   False
   >>> childs = ctrl(name='children')
   >>> childs.value = childs.options[0:2]
-  >>> ctrl(name='rename').click()
+  >>> ctrl(name='rename_nodes').click()
 
-  >>> ctrl(name='%s-name' % childs.options[1]).value = 'child-the-third'
-  >>> ctrl(name='%s-title' % childs.options[1]).value = 'child, the third'
-  >>> ctrl(name='%s-name' % childs.options[0]).value = 'hello-bob'
-  >>> ctrl(name='%s-title' % childs.options[0]).value = 'Hello Bob'
-  >>> ctrl(name='rename').click()
+  >>> ctrl(name='%s-name' % childs.options[0]).value = 'child-the-third'
+  >>> ctrl(name='%s-title' % childs.options[0]).value = 'child, the third'
+  >>> ctrl(name='%s-name' % childs.options[1]).value = 'hello-bob'
+  >>> ctrl(name='%s-title' % childs.options[1]).value = 'Hello Bob'
+  >>> ctrl(name='rename_nodes').click()
 
   >>> browser.url == testing.BASE_URL + '/forth-child/@@contents'
   True
@@ -526,12 +526,12 @@ Contents view actions
 
   >>> childs = ctrl(name='children')
   >>> childs.value = childs.options[0:2]
-  >>> ctrl(name='delete').click()
+  >>> ctrl(name='delete_nodes').click()
   >>> "Are you sure" in browser.contents
   True
 
   >>> ctrl(name='children-to-delete').value = childs.options[0:2]
-  >>> ctrl(name='delete').click()
+  >>> ctrl(name='delete_nodes').click()
   >>> "child, the third deleted." in browser.contents
   True
   >>> "Hello Bob deleted." in browser.contents
@@ -555,7 +555,7 @@ Contents view change state actions
   True
 
   >>> ctrl(name='to-state').value = ['private']
-  >>> ctrl(name='change-state').click()
+  >>> ctrl(name='change_state').click()
   >>> 'Your changes have been saved.' in browser.contents
   True
   >>> 'http://localhost:6543/second-child-1/third-child/@@workflow-change?new_state=public' in browser.contents
@@ -587,7 +587,7 @@ Contents view change state actions
   >>> ctrl(name='change_state').click()
   >>> ctrl(name='include-children').value = ['include-children']
   >>> ctrl(name='to-state').value = ['public']
-  >>> ctrl(name='change-state').click()
+  >>> ctrl(name='change_state').click()
   >>> 'Your changes have been saved.' in browser.contents
   True
   >>> 'http://localhost:6543/second-child-1/third-child/@@workflow-change?new_state=private' in browser.contents

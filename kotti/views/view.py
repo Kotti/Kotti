@@ -18,6 +18,8 @@ def view_content_default(context, request):
     'context' (in 'context.defaultview'), we will fall back to a view
     with the name 'view'.
     """
+    if 'default_view' in request.session:
+        del request.session['default_view']
     view_name = context.default_view or 'view'
     response = render_view_to_response(context, request, name=view_name)
     if response is None:  # pragma: no coverage

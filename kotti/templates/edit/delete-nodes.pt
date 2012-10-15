@@ -42,7 +42,7 @@
 
         <fieldset>
           <div class="form-actions">
-            <button type="submit" name="delete" value="delete" 
+            <button type="submit" name="delete_nodes" value="delete_nodes"
                     class="btn btn-danger" i18n:translate="">Delete</button>
             <button type="submit" name="cancel" value="cancel" 
                     class="btn" i18n:translate="">Cancel</button>

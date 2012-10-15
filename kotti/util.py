@@ -5,6 +5,7 @@ from docopt import docopt
 from plone.i18n.normalizer import urlnormalizer
 from pyramid.i18n import get_locale_name
 from pyramid.i18n import TranslationStringFactory
+from pyramid.httpexceptions import HTTPFound
 from pyramid.paster import bootstrap
 from pyramid.threadlocal import get_current_request
 from pyramid.url import resource_url
@@ -24,13 +25,13 @@ class ViewLink(object):
     def url(self, context, request):
         return resource_url(context, request) + '@@' + self.path
 
-    def selected(self, context, request):
-        return urllib.unquote(request.url).startswith(
-            self.url(context, request))
-
     def permitted(self, context, request):
         from kotti.security import view_permitted
         return view_permitted(context, request, self.path)
+
+    def selected(self, context, request):
+        return urllib.unquote(request.url).startswith(
+            self.url(context, request))
 
     def __eq__(self, other):
         return isinstance(other, ViewLink) and repr(self) == repr(other)
@@ -39,10 +40,11 @@ class ViewLink(object):
         return "ViewLink(%r, %r)" % (self.path, self.title)
 
 
-class ButtonLink(ViewLink):
-    def __init__(self, path, title=None, ontop=False, css_class=u"btn"):
-        super(ButtonLink, self).__init__(path, title)
-        self.ontop = ontop
+class ActionButton(ViewLink):
+    def __init__(self, path, title=None, action=None, no_children=False, css_class=u"btn"):
+        super(ActionButton, self).__init__(path, title)
+        self.action = action
+        self.no_children = no_children
         self.css_class = css_class
 
 

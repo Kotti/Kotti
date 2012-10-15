@@ -58,7 +58,7 @@
         </fieldset>
 
         <div class="form-actions">
-          <button type="submit" name="change-state" value="change-state" 
+          <button type="submit" name="change_state" value="change_state"
                   class="btn btn-primary" i18n:translate="">Apply changes</button>
           <button type="submit" name="cancel" value="cancel" 
                   class="btn" i18n:translate="">Cancel</button>

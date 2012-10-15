@@ -106,18 +106,25 @@ class TestNodeRename(UnitTestBase):
         request.POST = MultiDict()
         id1 = str(root['child1'].id)
         id2 = str(root['child2'].id)
+        request.POST.add('children-to-rename', id1)
+        request.POST.add('children-to-rename', id2)
         request.POST.add(id1 + '-name', u'')
         request.POST.add(id1 + '-title', u'Unhappy Child')
         request.POST.add(id2 + '-name', u'happy-child')
-        request.POST.add(id2 + '-title', u'Happy Child')
-        request.POST.add('children-to-rename', id1)
-        request.POST.add('children-to-rename', id2)
-        request.POST.add('rename', u'on')
+        request.POST.add(id2 + '-title', u'')
+        request.POST.add('rename_nodes', u'rename_nodes')
         rename_nodes(root, request)
         assert request.session.pop_flash('error') ==\
             [u'Name and title are required.']
+
+        request.POST.add(id1 + '-name', u'unhappy-child')
+        request.POST.add(id1 + '-title', u'Unhappy Child')
+        request.POST.add(id2 + '-name', u'happy-child')
+        request.POST.add(id2 + '-title', u'Happy Child')
+        request.POST.add('rename_nodes', u'rename_nodes')
+        rename_nodes(root, request)
         assert request.session.pop_flash('success') ==\
-            [u'Item renamed.']
+            [u'Your changes have been saved.']
 
 
 class TestNodeDelete(UnitTestBase):
@@ -136,7 +143,7 @@ class TestNodeDelete(UnitTestBase):
         request.POST = MultiDict()
         id1 = str(root['child1'].id)
         id2 = str(root['child2'].id)
-        request.POST.add('delete', u'on')
+        request.POST.add('delete_nodes', u'delete_nodes')
         delete_nodes(root, request)
         assert request.session.pop_flash('error') ==\
             [u'Nothing deleted.']

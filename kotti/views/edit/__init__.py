@@ -7,7 +7,7 @@ from kotti.resources import Node
 from kotti.resources import get_root
 from kotti.util import _
 from kotti.util import title_to_name
-from kotti.util import ButtonLink
+from kotti.util import ActionButton
 from kotti.util import ViewLink
 from kotti.views.form import AddFormView
 from kotti.views.form import ContentSchema
@@ -79,48 +79,50 @@ def actions(context, request):
 
 
 def contents_buttons(context, request):
+    """Buttons for the actions of the contents view.
+    """
     buttons = []
     if get_paste_item(context, request):
-        buttons.append(ButtonLink('paste', title=_(u'Paste'),
-                                  ontop=True))
+        buttons.append(ActionButton('paste', title=_(u'Paste'),
+                                    action=paste_node, no_children=True))
     if context.children:
-        buttons.append(ButtonLink('copy', title=_(u'Copy')))
-        buttons.append(ButtonLink('cut', title=_(u'Cut')))
-        buttons.append(ButtonLink('rename', title=_(u'Rename')))
-        buttons.append(ButtonLink('delete', title=_(u'Delete'),
-                                  css_class=u'btn btn-danger'))
+        buttons.append(ActionButton('copy', title=_(u'Copy')))
+        buttons.append(ActionButton('cut', title=_(u'Cut')))
+        buttons.append(ActionButton('rename_nodes', title=_(u'Rename')))
+        buttons.append(ActionButton('delete_nodes', title=_(u'Delete'),
+                                    css_class=u'btn btn-danger'))
         if get_workflow(context) is not None:
-            buttons.append(ButtonLink('change_state', title=_(u'Change State')))
+            buttons.append(ActionButton('change_state',
+                                        title=_(u'Change State')))
     return [button for button in buttons
         if button.permitted(context, request)]
 
 
 def contents(context, request):
-    if 'copy' in request.POST:
-        return copy_node(context, request)
-    if 'cut' in request.POST:
-        return cut_node(context, request)
-    if 'paste' in request.POST:
-        return paste_node(context, request)
-    if 'delete' in request.POST:
-        location = resource_url(context, request) + '@@delete_nodes'
-        request.session['delete-nodes'] = request.POST.getall('children')
-        return HTTPFound(location, request=request)
-    if 'rename' in request.POST:
-        location = resource_url(context, request) + '@@rename_nodes'
-        request.session['rename-nodes'] = request.POST.getall('children')
-        return HTTPFound(location, request=request)
-    if 'change_state' in request.POST:
-        location = resource_url(context, request) + '@@change_state'
-        request.session['change-state-nodes'] = request.POST.getall('children')
-        return HTTPFound(location, request=request)
+    """Choose the current action for our contents view. Gets called when you
+       click on the "Contents" Tab, or when you do an action in the "Contents" view.
+    """
+    request.session['default_view'] = '@@contents'
+    buttons = contents_buttons(context, request)
+    for button in buttons:
+        if button.path in request.POST:
+            children = request.POST.getall('children')
+            if not children and button.path != u'paste':
+                request.session.flash(_(u'You have to choose items to perform an action.'), 'info')
+                location = resource_url(context, request) + '@@contents'
+                return HTTPFound(location=location)
+            request.session[button.path + '-children'] = children
+            location = button.url(context, request)
+            return HTTPFound(location, request=request)
 
     return {'children': context.children_with_permission(request),
-            'buttons': contents_buttons(context, request),
+            'buttons': buttons,
             }
 
 
 def _all_children(item, request, permission='view'):
+    """Get recursive all children of the given item.
+    """
     children = item.children_with_permission(request, permission)
     for child in children:
         if child.children:
@@ -188,8 +190,11 @@ def workflow_change(context, request):
 
 
 def copy_node(context, request):
-    ids = request.POST.getall('children')
-    if not ids:
+    if 'copy-children' in request.session and\
+        request.session['copy-children']:
+        ids = request.session['copy-children']
+        del request.session['copy-children']
+    else:
         ids = [context.id, ]
     request.session['kotti.paste'] = (ids, 'copy')
     for id in ids:
@@ -198,14 +203,16 @@ def copy_node(context, request):
                                 mapping=dict(title=item.title)), 'success')
     if not request.is_xhr:
         location = resource_url(context, request)
-        if request.POST.get('contents', None) is not None:
-            location += '@@contents'
+        location += request.session.get('default_view', '')
         return HTTPFound(location=location)
 
 
 def cut_node(context, request):
-    ids = request.POST.getall('children')
-    if not ids:
+    if 'cut-children' in request.session and\
+        request.session['cut-children']:
+        ids = request.session['cut-children']
+        del request.session['cut-children']
+    else:
         ids = [context.id, ]
     request.session['kotti.paste'] = (ids, 'cut')
     for id in ids:
@@ -214,8 +221,7 @@ def cut_node(context, request):
                                 mapping=dict(title=item.title)), 'success')
     if not request.is_xhr:
         location = resource_url(context, request)
-        if request.POST.get('contents', None) is not None:
-            location += '@@contents'
+        location += request.session.get('default_view', '')
         return HTTPFound(location=location)
 
 
@@ -246,8 +252,7 @@ def paste_node(context, request):
                 _(u'Could not paste node. It does not exist anymore.'), 'error')
     if not request.is_xhr:
         location = resource_url(context, request)
-        if request.POST.get('contents', None) is not None:
-            location += '@@contents'
+        location += request.session.get('default_view', '')
         return HTTPFound(location=location)
 
 
@@ -293,14 +298,15 @@ def delete_node(context, request):
                                 mapping=dict(title=context.title)), 'success')
         del parent[context.name]
         location = resource_url(parent, request)
+        location += request.session.get('default_view', '')
         return HTTPFound(location=location)
     return {}
 
 
 def delete_nodes(context, request):
-    if 'delete' in request.POST:
-        if 'delete-nodes' in request.session:
-            del request.session['delete-nodes']
+    if 'delete_nodes' in request.POST:
+        if 'delete_nodes-children' in request.session:
+            del request.session['delete_nodes-children']
         ids = request.POST.getall('children-to-delete')
         if not ids:
             request.session.flash(_(u"Nothing deleted."), 'error')
@@ -309,16 +315,16 @@ def delete_nodes(context, request):
             request.session.flash(_(u'${title} deleted.',
                                     mapping=dict(title=item.title)), 'success')
             del context[item.name]
-        location = resource_url(context, request) + '@@contents'
+        location = resource_url(context, request)
+        location += request.session.get('default_view', '')
         return HTTPFound(location=location)
 
-    ids = items = []
-    if 'delete-nodes' in request.session:
-        ids = request.session['delete-nodes']
-        if ids:
-            items = DBSession.query(Node).filter(Node.id.in_(ids)).order_by(Node.position).all()
-            return {'items': items,
-                    'states': _states(context, request)}
+    if 'delete_nodes-children' in request.session and\
+        request.session['delete_nodes-children']:
+        ids = request.session['delete_nodes-children']
+        items = DBSession.query(Node).filter(Node.id.in_(ids)).order_by(Node.position).all()
+        return {'items': items,
+                'states': _states(context, request)}
     return {}
 
 
@@ -338,9 +344,9 @@ def rename_node(context, request):
 
 
 def rename_nodes(context, request):
-    if 'rename' in request.POST:
-        if 'rename-nodes' in request.session:
-            del request.session['rename-nodes']
+    if 'rename_nodes' in request.POST:
+        if 'rename_nodes-children' in request.session:
+            del request.session['rename_nodes-children']
         ids = request.POST.getall('children-to-rename')
         for id in ids:
             item = DBSession.query(Node).get(id)
@@ -348,25 +354,31 @@ def rename_nodes(context, request):
             title = request.POST[id + '-title']
             if not name or not title:
                 request.session.flash(_(u'Name and title are required.'), 'error')
+                location = resource_url(context, request) + '@@rename_nodes'
+                return HTTPFound(location=location)
             else:
-                item.name = name.replace('/', '')  # TODO: check if name already exists
+                item.name = title_to_name(name, blacklist=context.keys())
                 item.title = title
-                request.session.flash(_(u'Item renamed.'), 'success')
-        location = resource_url(context, request) + '@@contents'
+        if not ids:
+            request.session.flash(_(u'No changes made.'), 'success')
+        else:
+            request.session.flash(_(u'Your changes have been saved.'), 'success')
+        location = resource_url(context, request)
+        location += request.session.get('default_view', '')
         return HTTPFound(location=location)
-    ids = items = []
-    if 'rename-nodes' in request.session:
-        ids = request.session['rename-nodes']
-        if ids:
-            items = DBSession.query(Node).filter(Node.id.in_(ids)).all()
-            return {'items': items}
+
+    if 'rename_nodes-children' in request.session and\
+        request.session['rename_nodes-children']:
+        ids = request.session['rename_nodes-children']
+        items = DBSession.query(Node).filter(Node.id.in_(ids)).all()
+        return {'items': items}
     return {}
 
 
 def change_state(context, request):
-    if 'change-state' in request.POST:
-        if 'change-state-nodes' in request.session:
-            del request.session['change-state-nodes']
+    if 'change_state' in request.POST:
+        if 'change_state-children' in request.session:
+            del request.session['change_state-children']
         ids = request.POST.getall('children-to-change-state')
         to_state = request.POST.get('to-state', u'no-change')
         include_children = request.POST.get('include-children', None)
@@ -385,17 +397,17 @@ def change_state(context, request):
             request.session.flash(_(u'Your changes have been saved.'), 'success')
         else:
             request.session.flash(_(u'No changes made.'), 'success')
-        location = resource_url(context, request) + '@@contents'
+        location = resource_url(context, request)
+        location += request.session.get('default_view', '')
         return HTTPFound(location=location)
 
-    ids = items = transitions = []
-    if 'change-state-nodes' in request.session:
-        ids = request.session['change-state-nodes']
-        if ids:
-            items = DBSession.query(Node).filter(Node.id.in_(ids)).all()
-
+    if 'change_state-children' in request.session and\
+        request.session['change_state-children']:
         wf = get_workflow(context)
         if wf is not None:
+            ids = request.session['change_state-children']
+            items = DBSession.query(Node).filter(Node.id.in_(ids)).all()
+            transitions = []
             for item in items:
                     trans_info = wf.get_transitions(item, request)
                     for tran_info in trans_info:
