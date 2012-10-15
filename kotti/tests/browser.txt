@@ -566,7 +566,10 @@ Contents view change state actions
   True
 
   >>> browser.getLink('My Third Child').click()
-  >>> browser.getLink("Make Public", index=1).click()
+  >>> 'http://localhost:6543/second-child-1/third-child/child-one/@@workflow-change?new_state=public' in browser.contents
+  True
+  >>> browser.open(testing.BASE_URL + '/second-child-1/third-child/child-one/@@workflow-change?new_state=public')
+  >>> browser.open(testing.BASE_URL + '/second-child-1/third-child/@@contents')
   >>> 'http://localhost:6543/second-child-1/third-child/child-one/@@workflow-change?new_state=private' in browser.contents
   True
 
