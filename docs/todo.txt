@@ -1,6 +1,8 @@
 Bigger tasks
 ============
 
+- (API-) Documentation
+
 - A pluggable settings screen for content items for things like 'allow
   discussion', 'default page'.
 
@@ -32,3 +34,14 @@ Smaller tasks
   cruft in them.  Clean up.
 
 - Make a proper LICENSE.txt file, listing all licenses of components we use.
+
+- Make better use of calls to fanstatic's need().  Only need() stuff where
+  it's actually needed.  Partially already implemented in
+  https://github.com/disko/Kotti/tree/feature/lighter_jqueryui_dependency_injection.
+
+Upstream tasks
+==============
+
+- Implement ``css_class`` in ``deform.widget.Button.__init__`` which is in
+  the docs but not in the codebase.
+  http://docs.pylonsproject.org/projects/deform/en/latest/api.html#deform.Button
