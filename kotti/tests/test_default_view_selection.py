@@ -14,7 +14,7 @@ class TestDefaultViewSelection(UnitTestBase):
 
         self.config.add_view(
             context=IContent,
-            name='contents',
+            name='folder_view',
             permission='view',
             renderer='kotti:templates/view/folder.pt',
         )
@@ -24,14 +24,14 @@ class TestDefaultViewSelection(UnitTestBase):
 
         view = DefaultViewSelection(context, request)
 
-        assert view._is_valid_view("contents") is True
+        assert view._is_valid_view("folder_view") is True
         assert view._is_valid_view("foo") is False
 
     def test_default_view_selection(self):
 
         self.config.add_view(
             context=IContent,
-            name='contents',
+            name='folder_view',
             permission='view',
             renderer='kotti:templates/view/folder.pt',
         )
@@ -45,7 +45,7 @@ class TestDefaultViewSelection(UnitTestBase):
 
         assert 'selectable_default_views' in sviews
 
-        # the root should have at least the default view and the contents view
+        # the root should have at least the default view and the folder_view
         assert len(sviews['selectable_default_views']) > 1
 
         # the first view is always the default view
@@ -55,12 +55,12 @@ class TestDefaultViewSelection(UnitTestBase):
 
         assert sviews['selectable_default_views'][1]['is_current'] is False
 
-        # set the default view to contents view
-        request = DummyRequest(GET={'view_name': 'contents'})
+        # set the default view to folder_view view
+        request = DummyRequest(GET={'view_name': 'folder_view'})
         view = DefaultViewSelection(context, request)
 
         assert type(view.set_default_view()) == HTTPFound
-        assert context.default_view == 'contents'
+        assert context.default_view == 'folder_view'
 
         # set back to default
         request = DummyRequest(GET={'view_name': 'default'})
@@ -84,4 +84,4 @@ class TestDefaultViewSelection(UnitTestBase):
 
             assert len(w) == 1
             assert issubclass(w[-1].category, UserWarning)
-            assert str(w[-1].message) == "No view called 'contents' is registered for <Document 1 at />"
+            assert str(w[-1].message) == "No view called 'folder_view' is registered for <Document 1 at />"

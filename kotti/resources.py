@@ -335,7 +335,7 @@ class Content(Node):
             ViewLink('share', title=_(u'Share')),
             ],
         selectable_default_views=[
-            ("contents", _(u"Contents view")),
+            ("folder_view", _(u"Folder view")),
             ],
         )
 

@@ -3,6 +3,7 @@ from deform.widget import RichTextWidget
 from kotti import DBSession
 from kotti import get_settings
 from kotti.resources import Document
+from kotti.resources import IContent
 from kotti.resources import Node
 from kotti.resources import get_root
 from kotti.util import _
@@ -524,6 +525,15 @@ def includeme(config):
 
 
 def nodes_includeme(config):
+
+    config.add_view(
+        contents,
+        context=IContent,
+        name='contents',
+        permission='view',
+        renderer='kotti:templates/edit/contents.pt',
+        )
+
     config.add_view(
         copy_node,
         name='copy',

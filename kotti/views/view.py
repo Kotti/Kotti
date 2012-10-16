@@ -52,9 +52,8 @@ def includeme(config):
         )
 
     config.add_view(
-        contents,
         context=IContent,
-        name='contents',
+        name='folder_view',
         permission='view',
         renderer='kotti:templates/view/folder.pt',
         )
