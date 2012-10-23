@@ -23,7 +23,10 @@ install_requires = [
     'formencode',
     'html2text',
     'js.bootstrap>=2.1.5',
+    'js.deform',
+    'js.deform_bootstrap',
     'js.jquery',
+    'js.jquery_form',
     'js.jquery_timepicker_addon',
     'js.jqueryui',
     'js.jqueryui_tagit',
@@ -97,8 +100,6 @@ setup(name='Kotti',
 
       [fanstatic.libraries]
       kotti = kotti.static:lib_kotti
-      deform = kotti.static:lib_deform
-      deform_bootstrap = kotti.static:lib_deform_bootstrap
 
       [console_scripts]
       kotti-migrate = kotti.migrate:kotti_migrate_command
