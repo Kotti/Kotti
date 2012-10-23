@@ -18,3 +18,4 @@ junit*.xml
 .tox
 *~
 *.swp
+.idea

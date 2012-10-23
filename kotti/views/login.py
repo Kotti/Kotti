@@ -36,6 +36,72 @@ def _find_user(login):
             for p in principals.search(email=login):
                 return p
 
+class LoginValidator(object):
+    """ Validator which succeeds if the value passed to it is available
+     as login for new user."""
+
+    def __call__(self, node, value):
+        principals = get_principals()
+        principal = principals.get(value)
+        if principal is not None:
+            name_err = _('Login name "${login}" is not available.',
+                mapping={'login':value})
+            raise colander.Invalid(node, name_err)
+
+
+class EmailValidator(object):
+    """ Validator which succeeds if the value passed to it is available
+     as login for new user."""
+
+    def __call__(self, node, value):
+        principals = get_principals()
+        principal = principals.search(email=value)
+        if principal.count() > 0:
+            name_err = _('Email "${email}" is not available.',
+                mapping={'email':value})
+            raise colander.Invalid(node, name_err)
+
+
+class RegisterSchema(colander.MappingSchema):
+    login = colander.SchemaNode(
+        colander.String(),
+        title=_(u'Login'),
+        validator=LoginValidator(),
+    )
+    email = colander.SchemaNode(
+        colander.String(),
+        title=_(u'Email'),
+        validator=colander.All(colander.Email(), EmailValidator()),
+    )
+
+def register(context, request):
+    form = Form(RegisterSchema(), buttons=(Button('register', _(u'Register')),))
+    rendered_form = None
+
+    if 'register' in request.POST:
+        try:
+            appstruct = form.validate(request.POST.items())
+        except ValidationFailure, e:
+            request.session.flash(_(u"There was an error."), 'error')
+            rendered_form = e.render()
+        else:
+            success_msg = 'You are registered'
+            request.session.flash(success_msg, 'success')
+            return HTTPFound(location='/')
+
+    if rendered_form is None:
+        rendered_form = form.render(request.params.items())
+
+    api = template_api(
+        context, request,
+        page_title=_(u"Sign up! - ${title}",
+            mapping=dict(title=context.title)),
+    )
+
+    return {
+        'api': api,
+        'form': rendered_form,
+        }
 
 def login(context, request):
     principals = get_principals()
@@ -190,10 +256,16 @@ def includeme(config):
         )
 
     config.add_view(
+        register,
+        name='register',
+        renderer='kotti:templates/edit/simpleform.pt',
+        )
+
+    config.add_view(
         login,
         name='login',
         renderer='kotti:templates/login.pt',
-        )
+    )
 
     config.add_view(
         logout,

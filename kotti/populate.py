@@ -40,7 +40,7 @@ _ROOT_ATTRS = dict(
 <h2>Log in</h2>
 
 <p>
-  You can <a href="/edit" class="btn btn-success">log in</a> to your
+  You can <a href="/@@login" class="btn btn-success">log in</a> to your
   site and start changing its contents.  If you haven't chosen a
   password for you admin account yet, it'll likely be <i>qwerty</i>.
 </p>
