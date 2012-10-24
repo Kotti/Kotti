@@ -15,12 +15,16 @@ from pyramid.security import remember
 from pyramid.security import forget
 from pyramid.url import resource_url
 
+from kotti import get_settings
 from kotti.message import validate_token
 from kotti.message import email_set_password
 from kotti.security import get_principals
 from kotti.util import _
 from kotti.views.util import template_api
-
+from kotti.views.users import deferred_email_validator
+from kotti.views.users import name_pattern_validator
+from kotti.views.users import name_new_validator
+from kotti.views.users import UserAddFormView
 
 def _find_user(login):
     principals = get_principals()
@@ -36,46 +40,24 @@ def _find_user(login):
             for p in principals.search(email=login):
                 return p
 
-class LoginValidator(object):
-    """ Validator which succeeds if the value passed to it is available
-     as login for new user."""
-
-    def __call__(self, node, value):
-        principals = get_principals()
-        principal = principals.get(value)
-        if principal is not None:
-            name_err = _('Login name "${login}" is not available.',
-                mapping={'login':value})
-            raise colander.Invalid(node, name_err)
-
-
-class EmailValidator(object):
-    """ Validator which succeeds if the value passed to it is available
-     as login for new user."""
-
-    def __call__(self, node, value):
-        principals = get_principals()
-        principal = principals.search(email=value)
-        if principal.count() > 0:
-            name_err = _('Email "${email}" is not available.',
-                mapping={'email':value})
-            raise colander.Invalid(node, name_err)
-
-
-class RegisterSchema(colander.MappingSchema):
-    login = colander.SchemaNode(
+class RegisterSchema(colander.Schema):
+    title = colander.SchemaNode(
+        colander.String(),
+        title=_(u'Full Name'))
+    name = colander.SchemaNode(
         colander.String(),
         title=_(u'Login'),
-        validator=LoginValidator(),
+        validator=colander.All(name_pattern_validator, name_new_validator)
     )
     email = colander.SchemaNode(
         colander.String(),
         title=_(u'Email'),
-        validator=colander.All(colander.Email(), EmailValidator()),
+        validator=deferred_email_validator,
     )
 
 def register(context, request):
-    form = Form(RegisterSchema(), buttons=(Button('register', _(u'Register')),))
+    schema = RegisterSchema().bind(request=request)
+    form = Form(schema, buttons=(Button('register', _(u'Register')),))
     rendered_form = None
 
     if 'register' in request.POST:
@@ -85,7 +67,21 @@ def register(context, request):
             request.session.flash(_(u"There was an error."), 'error')
             rendered_form = e.render()
         else:
-            success_msg = 'You are registered'
+            settings = get_settings()
+            if settings['kotti.register.group']:
+                appstruct['groups'] = [settings['kotti.register.group']]
+            else:
+                appstruct['groups'] = ''
+            if settings['kotti.register.role']:
+                appstruct['roles'] = set(['role:'+settings['kotti.register.role']])
+            else:
+                appstruct['roles'] = ''
+            appstruct['send_email'] = True
+            form = UserAddFormView(context, request)
+            form.add_user_success(appstruct)
+            success_msg = _('Congratulations! You are successfully registered. '
+            'You should receive an email with a link to set your '
+            'password momentarily.')
             request.session.flash(success_msg, 'success')
             return HTTPFound(location='/')
 
@@ -144,6 +140,7 @@ def login(context, request):
         'came_from': came_from,
         'login': login,
         'password': password,
+        'register': get_settings()['kotti.register'],
         }
 
 

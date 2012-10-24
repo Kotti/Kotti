@@ -85,6 +85,9 @@ conf_defaults = {
     'kotti.static.edit_needed': 'kotti.static.edit_needed',
     'kotti.static.view_needed': 'kotti.static.view_needed',
     'kotti.alembic_dirs': 'kotti:alembic',
+    'kotti.register': False,
+    'kotti.register.group': '',
+    'kotti.register.role': '',
     'pyramid_deform.template_search_path': 'kotti:templates/deform',
     }
 
