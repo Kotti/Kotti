@@ -311,12 +311,18 @@ def delete_nodes(context, request):
             del request.session['delete_nodes-children']
         ids = request.POST.getall('children-to-delete')
         if not ids:
-            request.session.flash(_(u"Nothing deleted."), 'error')
+            request.session.flash(_(u"Nothing deleted."), 'info')
         for id in ids:
             item = DBSession.query(Node).get(id)
             request.session.flash(_(u'${title} deleted.',
                                     mapping=dict(title=item.title)), 'success')
             del context[item.name]
+        location = resource_url(context, request)
+        location += request.session.get('current_view', '')
+        return HTTPFound(location=location)
+
+    if 'cancel' in request.POST:
+        request.session.flash(_(u'No changes made.'), 'info')
         location = resource_url(context, request)
         location += request.session.get('current_view', '')
         return HTTPFound(location=location)
@@ -362,9 +368,15 @@ def rename_nodes(context, request):
                 item.name = title_to_name(name, blacklist=context.keys())
                 item.title = title
         if not ids:
-            request.session.flash(_(u'No changes made.'), 'success')
+            request.session.flash(_(u'No changes made.'), 'info')
         else:
             request.session.flash(_(u'Your changes have been saved.'), 'success')
+        location = resource_url(context, request)
+        location += request.session.get('current_view', '')
+        return HTTPFound(location=location)
+
+    if 'cancel' in request.POST:
+        request.session.flash(_(u'No changes made.'), 'info')
         location = resource_url(context, request)
         location += request.session.get('current_view', '')
         return HTTPFound(location=location)
@@ -398,7 +410,13 @@ def change_state(context, request):
                             wf.transition_to_state(child, request, to_state, )
             request.session.flash(_(u'Your changes have been saved.'), 'success')
         else:
-            request.session.flash(_(u'No changes made.'), 'success')
+            request.session.flash(_(u'No changes made.'), 'info')
+        location = resource_url(context, request)
+        location += request.session.get('current_view', '')
+        return HTTPFound(location=location)
+
+    if 'cancel' in request.POST:
+        request.session.flash(_(u'No changes made.'), 'info')
         location = resource_url(context, request)
         location += request.session.get('current_view', '')
         return HTTPFound(location=location)

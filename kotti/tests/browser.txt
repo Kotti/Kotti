@@ -506,7 +506,15 @@ Contents view actions
   >>> childs = ctrl(name='children')
   >>> childs.value = childs.options[0:2]
   >>> ctrl(name='rename_nodes').click()
+  >>> ctrl(name='cancel').click()
+  >>> u'No changes made.' in browser.contents
+  True
+  >>> browser.url == testing.BASE_URL + '/forth-child/@@contents'
+  True
 
+  >>> childs = ctrl(name='children')
+  >>> childs.value = childs.options[0:2]
+  >>> ctrl(name='rename_nodes').click()
   >>> ctrl(name='%s-name' % childs.options[0]).value = 'child-the-third'
   >>> ctrl(name='%s-title' % childs.options[0]).value = 'child, the third'
   >>> ctrl(name='%s-name' % childs.options[1]).value = 'hello-bob'
@@ -522,6 +530,15 @@ Contents view actions
   >>> 'child-the-third' in browser.contents
   True
   >>> 'Hello Bob' in browser.contents
+  True
+
+  >>> childs = ctrl(name='children')
+  >>> childs.value = childs.options[0:2]
+  >>> ctrl(name='delete_nodes').click()
+  >>> ctrl(name='cancel').click()
+  >>> u'No changes made.' in browser.contents
+  True
+  >>> browser.url == testing.BASE_URL + '/forth-child/@@contents'
   True
 
   >>> childs = ctrl(name='children')
@@ -553,7 +570,15 @@ Contents view change state actions
   >>> ctrl(name='change_state').click()
   >>> 'Change workflow state' in browser.contents
   True
+  >>> ctrl(name='cancel').click()
+  >>> u'No changes made.' in browser.contents
+  True
+  >>> browser.url == testing.BASE_URL + '/second-child-1/@@contents'
+  True
 
+  >>> childs = ctrl(name='children')
+  >>> childs.value = childs.options[0:3]
+  >>> ctrl(name='change_state').click()
   >>> ctrl(name='to-state').value = ['private']
   >>> ctrl(name='change_state').click()
   >>> 'Your changes have been saved.' in browser.contents
