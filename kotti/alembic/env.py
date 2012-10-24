@@ -35,7 +35,7 @@ def run_migrations_online():
 
 try:  # Alembic's "if __name__ == '__main__'"
     offline_mode = context.is_offline_mode()
-except AttributeError:
+except (AttributeError, NameError):
     pass
 else:
     if offline_mode:  # pragma: no cover
