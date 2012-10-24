@@ -515,6 +515,16 @@ class TestNodesTree(UnitTestBase):
         assert [ch.id for ch in tree.children[0].children] == [
             ab.id, aa.id, ac.id]
 
+    def test_tolist(self):
+        from kotti.views.util import nodes_tree
+
+        a, aa, ab, ac, aca, acb = create_contents()
+        tree = nodes_tree(DummyRequest(), context=a)
+        assert [ch for ch in tree.tolist()] == [a, aa, ab, ac, aca, acb]
+
+        tree = nodes_tree(DummyRequest(), context=ac)
+        assert [ch for ch in tree.tolist()] == [ac, aca, acb]
+
 
 class TestTemplateStructure(UnitTestBase):
     def test_getattr(self):
