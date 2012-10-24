@@ -41,9 +41,8 @@ class ViewLink(object):
 
 
 class ActionButton(ViewLink):
-    def __init__(self, path, title=None, action=None, no_children=False, css_class=u"btn"):
+    def __init__(self, path, title=None, no_children=False, css_class=u"btn"):
         super(ActionButton, self).__init__(path, title)
-        self.action = action
         self.no_children = no_children
         self.css_class = css_class
 

@@ -85,7 +85,7 @@ def contents_buttons(context, request):
     buttons = []
     if get_paste_item(context, request):
         buttons.append(ActionButton('paste', title=_(u'Paste'),
-                                    action=paste_node, no_children=True))
+                                    no_children=True))
     if context.children:
         buttons.append(ActionButton('copy', title=_(u'Copy')))
         buttons.append(ActionButton('cut', title=_(u'Cut')))
