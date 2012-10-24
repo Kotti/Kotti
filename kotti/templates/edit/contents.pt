@@ -63,14 +63,12 @@
           </tbody>
         </table>
 
-        <div class="btn-group">
-          <tal:button tal:repeat="button buttons">
-            <button name="${button.path}" type="submit" class="${button.css_class}"
-                    tal:condition="children or button.no_children">
-              ${button.title}
-            </button>
-          </tal:button>
-        </div>
+        <tal:button tal:repeat="button buttons">
+          <button name="${button.path}" type="submit" class="${button.css_class}"
+                  tal:condition="children or button.no_children">
+            ${button.title}
+          </button>
+        </tal:button>
 
       </form>
     </div>
