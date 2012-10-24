@@ -318,6 +318,7 @@ Copy and paste
 
 We can paste twice since we copied:
 
+  >>> browser.open(testing.BASE_URL)
   >>> browser.getLink('Paste').click()
   >>> "Second Child pasted" in browser.contents
   True
@@ -377,8 +378,8 @@ property:
   >>> browser.open(testing.BASE_URL + '/child-one/second-child')
   >>> browser.getLink('Paste').click()
   >>> Document.type_info.addable_to = ()
+  >>> browser.open(testing.BASE_URL + '/child-one/second-child')
   >>> try:
-  ...     browser.reload()
   ...     browser.getLink('Paste')
   ... finally:
   ...     Document.type_info.addable_to = save_addable_document

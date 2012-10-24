@@ -112,7 +112,7 @@ def contents(context, request):
                 request.session.flash(_(u'You have to choose items to perform an action.'), 'info')
                 location = resource_url(context, request) + '@@contents'
                 return HTTPFound(location=location)
-            request.session[button.path + '-children'] = children
+            request.session['kotti.selected-children'] = children
             location = button.url(context, request)
             return HTTPFound(location, request=request)
 
@@ -187,40 +187,35 @@ def workflow_change(context, request):
     return HTTPFound(location=url)
 
 
-def copy_node(context, request):
-    location = resource_url(context, request)
-    if 'copy-children' in request.session and\
-        request.session['copy-children']:
-        ids = request.session['copy-children']
-        del request.session['copy-children']
-        location += '@@contents'
-    else:
+def _selected_children(context, request, add_context=True):
+    ids = request.session.pop('kotti.selected-children')
+    if ids is None and add_context:
         ids = [context.id, ]
+    return ids
+
+
+def copy_node(context, request):
+    ids = _selected_children(context, request)
     request.session['kotti.paste'] = (ids, 'copy')
     for id in ids:
         item = DBSession.query(Node).get(id)
         request.session.flash(_(u'${title} copied.',
                                 mapping=dict(title=item.title)), 'success')
     if not request.is_xhr:
-        return HTTPFound(location=location)
+        url = request.referrer or request.resource_url(context)
+        return HTTPFound(location=url)
 
 
 def cut_node(context, request):
-    location = resource_url(context, request)
-    if 'cut-children' in request.session and\
-        request.session['cut-children']:
-        ids = request.session['cut-children']
-        del request.session['cut-children']
-        location += '@@contents'
-    else:
-        ids = [context.id, ]
+    ids = _selected_children(context, request)
     request.session['kotti.paste'] = (ids, 'cut')
     for id in ids:
         item = DBSession.query(Node).get(id)
         request.session.flash(_(u'${title} cut.',
                                 mapping=dict(title=item.title)), 'success')
     if not request.is_xhr:
-        return HTTPFound(location=location)
+        url = request.referrer or request.resource_url(context)
+        return HTTPFound(location=url)
 
 
 def paste_node(context, request):
@@ -249,11 +244,8 @@ def paste_node(context, request):
             request.session.flash(
                 _(u'Could not paste node. It does not exist anymore.'), 'error')
     if not request.is_xhr:
-        location = resource_url(context, request)
-        if 'paste-children' in request.session:
-            del request.session['paste-children']
-            location += '@@contents'
-        return HTTPFound(location=location)
+        url = request.referrer or request.resource_url(context)
+        return HTTPFound(location=url)
 
 
 def order_node(context, request):
@@ -304,8 +296,6 @@ def delete_node(context, request):
 
 def delete_nodes(context, request):
     if 'delete_nodes' in request.POST:
-        if 'delete_nodes-children' in request.session:
-            del request.session['delete_nodes-children']
         ids = request.POST.getall('children-to-delete')
         if not ids:
             request.session.flash(_(u"Nothing deleted."), 'info')
@@ -314,17 +304,16 @@ def delete_nodes(context, request):
             request.session.flash(_(u'${title} deleted.',
                                     mapping=dict(title=item.title)), 'success')
             del context[item.name]
-        location = resource_url(context, request) + '@@contents'
-        return HTTPFound(location=location)
+        url = request.referrer or request.resource_url(context)
+        return HTTPFound(location=url)
 
     if 'cancel' in request.POST:
         request.session.flash(_(u'No changes made.'), 'info')
-        location = resource_url(context, request) + '@@contents'
-        return HTTPFound(location=location)
+        url = request.referrer or request.resource_url(context)
+        return HTTPFound(location=url)
 
-    if 'delete_nodes-children' in request.session and\
-        request.session['delete_nodes-children']:
-        ids = request.session['delete_nodes-children']
+    ids = _selected_children(context, request, add_context=False)
+    if ids is not None:
         items = DBSession.query(Node).filter(Node.id.in_(ids)).order_by(Node.position).all()
         return {'items': items,
                 'states': _states(context, request)}
@@ -366,17 +355,16 @@ def rename_nodes(context, request):
             request.session.flash(_(u'No changes made.'), 'info')
         else:
             request.session.flash(_(u'Your changes have been saved.'), 'success')
-        location = resource_url(context, request) + '@@contents'
-        return HTTPFound(location=location)
+        url = request.referrer or request.resource_url(context)
+        return HTTPFound(location=url)
 
     if 'cancel' in request.POST:
         request.session.flash(_(u'No changes made.'), 'info')
-        location = resource_url(context, request) + '@@contents'
-        return HTTPFound(location=location)
+        url = request.referrer or request.resource_url(context)
+        return HTTPFound(location=url)
 
-    if 'rename_nodes-children' in request.session and\
-        request.session['rename_nodes-children']:
-        ids = request.session['rename_nodes-children']
+    ids = _selected_children(context, request, add_context=False)
+    if ids is not None:
         items = DBSession.query(Node).filter(Node.id.in_(ids)).all()
         return {'items': items}
     return {}
@@ -404,19 +392,18 @@ def change_state(context, request):
             request.session.flash(_(u'Your changes have been saved.'), 'success')
         else:
             request.session.flash(_(u'No changes made.'), 'info')
-        location = resource_url(context, request) + '@@contents'
-        return HTTPFound(location=location)
+        url = request.referrer or request.resource_url(context)
+        return HTTPFound(location=url)
 
     if 'cancel' in request.POST:
         request.session.flash(_(u'No changes made.'), 'info')
-        location = resource_url(context, request) + '@@contents'
-        return HTTPFound(location=location)
+        url = request.referrer or request.resource_url(context)
+        return HTTPFound(location=url)
 
-    if 'change_state-children' in request.session and\
-        request.session['change_state-children']:
+    ids = _selected_children(context, request, add_context=False)
+    if ids is not None:
         wf = get_workflow(context)
         if wf is not None:
-            ids = request.session['change_state-children']
             items = DBSession.query(Node).filter(Node.id.in_(ids)).all()
             transitions = []
             for item in items:
