@@ -89,7 +89,8 @@ def contents_buttons(context, request):
     if context.children:
         buttons.append(ActionButton('copy', title=_(u'Copy')))
         buttons.append(ActionButton('cut', title=_(u'Cut')))
-        buttons.append(ActionButton('rename_nodes', title=_(u'Rename')))
+        buttons.append(ActionButton('rename_nodes', title=_(u'Rename'),
+                                    css_class=u'btn btn-warning'))
         buttons.append(ActionButton('delete_nodes', title=_(u'Delete'),
                                     css_class=u'btn btn-danger'))
         if get_workflow(context) is not None:

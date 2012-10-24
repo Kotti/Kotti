@@ -27,7 +27,7 @@
         </tal:items>
         <div class="form-actions">
           <button type="submit" name="rename_nodes" value="rename_nodes"
-                  class="btn btn-primary" i18n:translate="">Rename</button>
+                  class="btn btn-warning" i18n:translate="">Rename</button>
           <button type="submit" name="cancel" value="cancel"
                   class="btn" i18n:translate="">Cancel</button>
         </div>
