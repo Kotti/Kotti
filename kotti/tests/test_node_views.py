@@ -145,7 +145,7 @@ class TestNodeDelete(UnitTestBase):
         id2 = str(root['child2'].id)
         request.POST.add('delete_nodes', u'delete_nodes')
         delete_nodes(root, request)
-        assert request.session.pop_flash('error') ==\
+        assert request.session.pop_flash('info') ==\
             [u'Nothing deleted.']
 
         request.POST.add('children-to-delete', id1)
