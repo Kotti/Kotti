@@ -121,6 +121,7 @@ def contents(context, request):
             }
 
 
+# TODO: check NavigationNodeWrapper to get a flat list of items
 def _all_children(item, request, permission='view'):
     """Get recursive all children of the given item.
     """
