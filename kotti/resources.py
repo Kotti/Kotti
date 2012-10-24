@@ -5,8 +5,8 @@ from kotti import DBSession
 from kotti import get_settings
 from kotti import metadata
 from kotti.migrate import stamp_heads
-from kotti.security import has_permission
 from kotti.security import PersistentACLMixin
+from kotti.security import has_permission
 from kotti.security import view_permitted
 from kotti.sqla import ACLType
 from kotti.sqla import JsonType
@@ -358,6 +358,17 @@ class Content(Node):
         tags = getattr(self, 'tags', None)
         kwargs['tags'] = tags
         return super(Content, self).copy(**kwargs)
+
+    @classmethod
+    def add_selectable_default_view(cls, name, title):
+        """Add a view to the list of default views selectable by the
+           user in the UI.
+
+           - name (str): name the view is registered with
+
+           - title (Unicode): title to be displayed in the UI"""
+
+        cls.type_info.selectable_default_views.append((name, title))
 
 
 class Document(Content):

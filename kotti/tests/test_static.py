@@ -5,8 +5,8 @@ class TestStatic(UnitTestBase):
 
     def test_NeededGroup(self):
 
-        from kotti.static import deform_bootstrap_js
-        from kotti.static import deform_js
+        from js.deform_bootstrap import deform_bootstrap_js
+        from js.deform import deform_js
         from kotti.static import kotti_js
         from kotti.static import NeededGroup
 
