@@ -121,20 +121,6 @@ def contents(context, request):
             }
 
 
-# TODO: check NavigationNodeWrapper to get a flat list of items
-def _all_children(item, request, permission='view'):
-    """Get recursive all children of the given item.
-    """
-    children = item.children_with_permission(request, permission)
-    for child in children:
-        if child.children:
-            sub_children = _all_children(child, request, permission)
-            for sub_child in sub_children:
-                if sub_child not in children:
-                    children.append(sub_child)
-    return children
-
-
 def _eval_titles(info):
     result = []
     for d in info:
@@ -368,6 +354,13 @@ def rename_nodes(context, request):
         items = DBSession.query(Node).filter(Node.id.in_(ids)).all()
         return {'items': items}
     return {}
+
+
+def _all_children(item, request, permission='view'):
+    """Get recursive all children of the given item.
+    """
+    tree = nodes_tree(request, context=item, permission='state_change')
+    return tree.tolist()[1:]
 
 
 def change_state(context, request):
