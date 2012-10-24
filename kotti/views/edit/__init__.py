@@ -182,11 +182,7 @@ def workflow_change(context, request):
     wf = get_workflow(context)
     wf.transition_to_state(context, request, new_state)
     request.session.flash(EditFormView.success_message, 'success')
-    if request.referrer is not None and\
-        request.referrer.endswith('@@contents'):
-        url = request.referrer
-    else:
-        url = request.resource_url(context)
+    url = request.referrer or request.resource_url(context)
     return HTTPFound(location=url)
 
 
