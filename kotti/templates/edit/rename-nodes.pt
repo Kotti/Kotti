@@ -10,20 +10,18 @@
     <div class="tab-pane" id="rename-nodes">
 
       <form action="${request.url}" method="post" id="form-rename-nodes">
-        <legend i18n:translate="">Each content item has a name, whats also used to create the url, and a title. You can change both by entering the new details below.</legend>
+        <span class="help-block" i18n:translate="">Each content item has a name, whats also used to create the url, and a title. You can change both by entering the new details below.</span>
 
         <tal:items tal:repeat="item items">
           <input type="hidden" name="children-to-rename" value="${item.id}" />
 
           <fieldset>
             <legend>${item.title}(${item.name})</legend>
-            <label class="control-label desc" for="move-new-name" i18n:translate="">New name <input type="text" name="${item.id}-name"
-                     value="${request.POST.get(str(item.id) + '-name') or item.name}" /></label>
+            <label class="control-label desc" for="${item.id}-name" i18n:translate="">New name</label>
+            <input type="text" name="${item.id}-name" value="${request.POST.get(str(item.id) + '-name') or item.name}" />
               
-            <label class="control-label desc" for="move-new-title" i18n:translate="">
-              New title
-              <input type="text" name="${item.id}-title" value="${request.POST.get(str(item.id) + '-title') or item.title}" />
-            </label>
+            <label class="control-label desc" for="${item.id}-title" i18n:translate="">New title</label>
+            <input type="text" name="${item.id}-title" value="${request.POST.get(str(item.id) + '-title') or item.title}" />
           </fieldset>
 
         </tal:items>
@@ -33,7 +31,7 @@
           <button type="submit" name="cancel" value="cancel"
                   class="btn" i18n:translate="">Cancel</button>
         </div>
-      </form>    
+      </form>
     </div>
   </div>
 </html>
