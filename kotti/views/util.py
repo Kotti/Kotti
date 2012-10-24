@@ -314,12 +314,14 @@ def ensure_view_selector(func):
     return wrapper
 
 
-class NavigationNodeWrapper(object):
-    def __init__(self, node, request, item_mapping, item_to_children):
+class NodesTree(object):
+    def __init__(self, node, request, item_mapping, item_to_children,
+                 permission):
         self._node = node
         self._request = request
         self._item_mapping = item_mapping
         self._item_to_children = item_to_children
+        self._permission = permission
 
     @property
     def __parent__(self):
@@ -328,16 +330,32 @@ class NavigationNodeWrapper(object):
 
     @property
     def children(self):
-        return [NavigationNodeWrapper(
-            child, self._request, self._item_mapping, self._item_to_children)
+        return [
+            NodesTree(
+                child,
+                self._request,
+                self._item_mapping,
+                self._item_to_children,
+                self._permission,
+                )
             for child in self._item_to_children[self.id]
-            if has_permission('view', child, self._request)]
+            if has_permission(self._permission, child, self._request)
+            ]
+
+    def _flatten(self, item):
+        yield item._node
+        for ch in item.children:
+            for item in self._flatten(ch):
+                yield item
+
+    def tolist(self):
+        return list(self._flatten(self))
 
     def __getattr__(self, name):
         return getattr(self._node, name)
 
 
-def nodes_tree(request):
+def nodes_tree(request, context=None, permission='view'):
     item_mapping = {}
     item_to_children = defaultdict(lambda: [])
     for node in DBSession.query(Content).with_polymorphic(Content):
@@ -348,11 +366,17 @@ def nodes_tree(request):
     for children in item_to_children.values():
         children.sort(key=lambda ch: ch.position)
 
-    return NavigationNodeWrapper(
-        item_to_children[None][0],
+    if context is None:
+        node = item_to_children[None][0]
+    else:
+        node = context
+
+    return NodesTree(
+        node,
         request,
         item_mapping,
         item_to_children,
+        permission,
         )
 
 
