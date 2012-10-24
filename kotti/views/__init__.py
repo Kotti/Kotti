@@ -4,3 +4,4 @@ def includeme(config):
     # deform stuff
     config.include('pyramid_deform')
     config.include('deform_bootstrap')
+    config.include('js.deform')

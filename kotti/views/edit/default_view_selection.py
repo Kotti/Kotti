@@ -1,5 +1,10 @@
 # -*- coding: utf-8 -*-
 
+"""
+Created on 2012-10-04
+:summary: Default view selctor views
+"""
+
 import warnings
 from kotti.util import _
 from pyramid.compat import map_
@@ -47,7 +52,10 @@ class DefaultViewSelection(object):
     @view_config(name='default-view-selector',
                  renderer='kotti:templates/default-view-selector.pt')
     def default_view_selector(self):
-        """Submenu for selection of the node's default view.
+        """
+        :summary: Submenu for selection of the node's default view.
+        :result: Dictionary with a selectable_default_views list.
+        :rtype: dict
         """
 
         sviews = []
@@ -77,7 +85,10 @@ class DefaultViewSelection(object):
 
     @view_config(name='set-default-view')
     def set_default_view(self):
-        """Set the node's default view and redirect to it.
+        """
+        :summary: Set the node's default view and redirect to it.
+        :result: Redirect to the context URL.
+        :rtype: pyramid.httpexceptions.HTTPFound
         """
 
         if 'view_name' in self.request.GET:
