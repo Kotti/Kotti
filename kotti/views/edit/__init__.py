@@ -103,7 +103,7 @@ def contents(context, request):
     """Choose the current action for our contents view. Gets called when you
        click on the "Contents" Tab, or when you do an action in the "Contents" view.
     """
-    request.session['default_view'] = '@@contents'
+    request.session['current_view'] = '@@contents'
     buttons = contents_buttons(context, request)
     for button in buttons:
         if button.path in request.POST:
@@ -204,7 +204,7 @@ def copy_node(context, request):
                                 mapping=dict(title=item.title)), 'success')
     if not request.is_xhr:
         location = resource_url(context, request)
-        location += request.session.get('default_view', '')
+        location += request.session.get('current_view', '')
         return HTTPFound(location=location)
 
 
@@ -222,7 +222,7 @@ def cut_node(context, request):
                                 mapping=dict(title=item.title)), 'success')
     if not request.is_xhr:
         location = resource_url(context, request)
-        location += request.session.get('default_view', '')
+        location += request.session.get('current_view', '')
         return HTTPFound(location=location)
 
 
@@ -253,7 +253,7 @@ def paste_node(context, request):
                 _(u'Could not paste node. It does not exist anymore.'), 'error')
     if not request.is_xhr:
         location = resource_url(context, request)
-        location += request.session.get('default_view', '')
+        location += request.session.get('current_view', '')
         return HTTPFound(location=location)
 
 
@@ -299,7 +299,7 @@ def delete_node(context, request):
                                 mapping=dict(title=context.title)), 'success')
         del parent[context.name]
         location = resource_url(parent, request)
-        location += request.session.get('default_view', '')
+        location += request.session.get('current_view', '')
         return HTTPFound(location=location)
     return {}
 
@@ -317,7 +317,7 @@ def delete_nodes(context, request):
                                     mapping=dict(title=item.title)), 'success')
             del context[item.name]
         location = resource_url(context, request)
-        location += request.session.get('default_view', '')
+        location += request.session.get('current_view', '')
         return HTTPFound(location=location)
 
     if 'delete_nodes-children' in request.session and\
@@ -365,7 +365,7 @@ def rename_nodes(context, request):
         else:
             request.session.flash(_(u'Your changes have been saved.'), 'success')
         location = resource_url(context, request)
-        location += request.session.get('default_view', '')
+        location += request.session.get('current_view', '')
         return HTTPFound(location=location)
 
     if 'rename_nodes-children' in request.session and\
@@ -399,7 +399,7 @@ def change_state(context, request):
         else:
             request.session.flash(_(u'No changes made.'), 'success')
         location = resource_url(context, request)
-        location += request.session.get('default_view', '')
+        location += request.session.get('current_view', '')
         return HTTPFound(location=location)
 
     if 'change_state-children' in request.session and\

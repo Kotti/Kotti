@@ -16,9 +16,14 @@ def view_content_default(context, request):
     per instance.  If a instance level view is not defined for
     'context' (in 'context.defaultview'), we will fall back to a view
     with the name 'view'.
+
+    The session variable 'current_view' can be set by other views. This way
+    it is possible to get back to this view. Currently this is used by the
+    'contents' view. If this view is called we get back to the normal behavior
+    to get the 'default' view view itself.
     """
-    if 'default_view' in request.session:
-        del request.session['default_view']
+    if 'current_view' in request.session:
+        del request.session['current_view']
     view_name = context.default_view or 'view'
     response = render_view_to_response(context, request, name=view_name)
     if response is None:  # pragma: no coverage
