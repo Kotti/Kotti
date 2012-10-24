@@ -66,7 +66,7 @@ class Form(deform.Form):
     def render(self, appstruct=None, readonly=False):
         if appstruct is None:
             appstruct = getattr(self, 'appstruct', colander.null)
-        return super(Form, self).render(appstruct, readonly)
+        return super(Form, self).render(appstruct, readonly=readonly)
 
 
 class BaseFormView(FormView):
