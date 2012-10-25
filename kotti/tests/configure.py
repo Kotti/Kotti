@@ -74,12 +74,8 @@ def events(config, request):
 
 
 def setup_app():
-    from mock import patch
-    from kotti import main
-    with patch('kotti.resources.initialize_sql'):
-        with patch('kotti.engine_from_config'):
-            app = main({}, **settings())
-    return app
+    from kotti import base_configure
+    return base_configure({}, **settings()).make_wsgi_app()
 
 
 @fixture

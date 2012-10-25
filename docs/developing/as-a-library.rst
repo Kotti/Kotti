@@ -26,6 +26,8 @@ code to set up essential parts of Kotti:
       settings2 = default_settings.copy()
       settings2.update(settings)
       config = kotti.base_configure(global_config, **settings2)
+      engine = sqlalchemy.engine_from_config(config.registry.settings, 'sqlalchemy.')
+      kotti.resources.initialize_sql(engine)
       return config.make_wsgi_app()
 
 The above example configures Kotti so that its user database and
