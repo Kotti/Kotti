@@ -1,10 +1,8 @@
-from unittest import TestCase
-
 from mock import MagicMock
 from pyramid.security import ALL_PERMISSIONS
 
 
-class TestNestedMutationDict(TestCase):
+class TestNestedMutationDict:
     def test_dictwrapper_basics(self):
         from kotti.sqla import NestedMutationDict
 
@@ -98,7 +96,7 @@ class TestNestedMutationDict(TestCase):
         assert mdict.setdefault('bar', []).__parent__ is mdict
 
 
-class TestJsonType(TestCase):
+class TestJsonType:
     def make(self):
         from kotti.sqla import JsonType
         return JsonType()
@@ -128,7 +126,7 @@ class TestJsonType(TestCase):
         assert value == [{"foo": "bar"}]
 
 
-class TestACLType(TestCase):
+class TestACLType:
     def make(self):
         from kotti.sqla import ACLType
         return ACLType()
@@ -173,7 +171,7 @@ class TestACLType(TestCase):
             ]
 
 
-class TestMutationList(TestCase):
+class TestMutationList:
     def test_radd(self):
         from kotti.sqla import MutationList
         mlist = MutationList(['foo'])
