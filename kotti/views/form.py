@@ -1,4 +1,8 @@
+from StringIO import StringIO
+from UserDict import DictMixin
+
 import colander
+from colander import Invalid
 import deform
 from deform import Button
 from deform.widget import TextAreaWidget
@@ -8,6 +12,7 @@ from pyramid.httpexceptions import HTTPFound
 from pyramid_deform import FormView
 from pyramid_deform import CSRFSchema
 
+from kotti import get_settings
 from kotti.resources import Tag
 from kotti.util import _
 from kotti.util import title_to_name
@@ -45,7 +50,8 @@ def deferred_tag_it_widget(node, kw):
 class ContentSchema(colander.MappingSchema):
     title = colander.SchemaNode(
         colander.String(),
-        title=_(u'Title'))
+        title=_(u'Title'),
+        )
     description = colander.SchemaNode(
         colander.String(),
         title=_('Description'),
@@ -172,3 +178,39 @@ class CommaSeparatedListWidget(Widget):
         if pstruct is colander.null:
             return colander.null
         return [item.strip() for item in pstruct.split(',') if item]
+
+
+class FileUploadTempStore(DictMixin):
+    def __init__(self, request):
+        self.session = request.session
+
+    def keys(self):
+        return [k for k in self.session.keys() if not k.startswith('_')]
+
+    def __setitem__(self, name, value):
+        value = value.copy()
+        fp = value.pop('fp')
+        value['file_contents'] = fp.read()
+        fp.seek(0)
+        self.session[name] = value
+
+    def __getitem__(self, name):
+        value = self.session[name].copy()
+        value['fp'] = StringIO(value.pop('file_contents'))
+        return value
+
+    def __delitem__(self, name):
+        del self.session[name]
+
+    def preview_url(self, name):
+        return None
+
+
+def validate_file_size_limit(node, value):
+    value['fp'].seek(0, 2)
+    size = value['fp'].tell()
+    value['fp'].seek(0)
+    max_size = get_settings()['kotti.max_file_size']
+    if size > int(max_size) * 1024 * 1024:
+        msg = _('Maximum file size: ${size}MB', mapping={'size': max_size})
+        raise Invalid(node, msg)
