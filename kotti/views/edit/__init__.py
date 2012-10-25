@@ -150,20 +150,6 @@ def workflow(context, request):
         }
 
 
-def _selected_children(context, request, add_context=True):
-    ids = request.session.pop('kotti.selected-children')
-    if ids is None and add_context:
-        ids = [context.id]
-    return ids
-
-
-def _all_children(item, request, permission='view'):
-    """Get recursive all children of the given item.
-    """
-    tree = nodes_tree(request, context=item, permission='state_change')
-    return tree.tolist()[1:]
-
-
 @deprecate(
 """'generic_edit' is deprecated as of Kotti 0.8.0.  Use a form class
 derived from 'kotti.views.form.EditFormView' instead.  See
