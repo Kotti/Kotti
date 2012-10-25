@@ -44,21 +44,21 @@ class TestNodePaste(UnitTestBase):
     def test_paste_non_existing_node(self):
         from kotti import DBSession
         from kotti.resources import Node
-        from kotti.views.edit import paste_node
+        from kotti.views.edit.node_actions import NodeActions
 
         root = DBSession.query(Node).get(1)
         request = DummyRequest()
 
         for index, action in enumerate(['copy', 'cut']):
             request.session['kotti.paste'] = ([1701], 'copy')
-            response = paste_node(root, request)
+            response = NodeActions(root, request).paste_node()
             self.assertEqual(response.status, '302 Found')
             self.assertEqual(len(request.session['_f_error']), index + 1)
 
     def test_paste_without_edit_permission(self):
         from kotti import DBSession
         from kotti.resources import Node
-        from kotti.views.edit import paste_node
+        from kotti.views.edit.node_actions import NodeActions
 
         root = DBSession.query(Node).get(1)
         request = DummyRequest()
@@ -68,11 +68,13 @@ class TestNodePaste(UnitTestBase):
         # We need to have the 'edit' permission on the original object
         # to be able to cut and paste:
         request.session['kotti.paste'] = ([1], 'cut')
-        self.assertRaises(Forbidden, paste_node, root, request)
+        view = NodeActions(root, request)
+
+        self.assertRaises(Forbidden, view.paste_node)
 
         # We don't need 'edit' permission if we're just copying:
         request.session['kotti.paste'] = ([1], 'copy')
-        response = paste_node(root, request)
+        response = NodeActions(root, request).paste_node()
         self.assertEqual(response.status, '302 Found')
 
 
@@ -81,7 +83,7 @@ class TestNodeRename(UnitTestBase):
         from kotti import DBSession
         from kotti.resources import Node
         from kotti.resources import Document
-        from kotti.views.edit import rename_node
+        from kotti.views.edit.node_actions import NodeActions
 
         root = DBSession.query(Node).get(1)
         child = root['child'] = Document(title=u"Child")
@@ -89,7 +91,7 @@ class TestNodeRename(UnitTestBase):
         request.params['rename'] = u'on'
         request.params['name'] = u''
         request.params['title'] = u'foo'
-        rename_node(child, request)
+        NodeActions(child, request).rename_node()
         self.assertEqual(request.session.pop_flash('error'),
                          [u'Name and title are required.'])
 
@@ -97,7 +99,7 @@ class TestNodeRename(UnitTestBase):
         from kotti import DBSession
         from kotti.resources import Node
         from kotti.resources import Document
-        from kotti.views.edit import rename_nodes
+        from kotti.views.edit.node_actions import NodeActions
 
         root = DBSession.query(Node).get(1)
         root['child1'] = Document(title=u"Child 1")
@@ -113,7 +115,7 @@ class TestNodeRename(UnitTestBase):
         request.POST.add(id2 + '-name', u'happy-child')
         request.POST.add(id2 + '-title', u'')
         request.POST.add('rename_nodes', u'rename_nodes')
-        rename_nodes(root, request)
+        NodeActions(root, request).rename_nodes()
         assert request.session.pop_flash('error') ==\
             [u'Name and title are required.']
 
@@ -122,7 +124,7 @@ class TestNodeRename(UnitTestBase):
         request.POST.add(id2 + '-name', u'happy-child')
         request.POST.add(id2 + '-title', u'Happy Child')
         request.POST.add('rename_nodes', u'rename_nodes')
-        rename_nodes(root, request)
+        NodeActions(root, request).rename_nodes()
         assert request.session.pop_flash('success') ==\
             [u'Your changes have been saved.']
 
@@ -133,7 +135,7 @@ class TestNodeDelete(UnitTestBase):
         from kotti import DBSession
         from kotti.resources import Node
         from kotti.resources import Document
-        from kotti.views.edit import delete_nodes
+        from kotti.views.edit.node_actions import NodeActions
 
         root = DBSession.query(Node).get(1)
         root['child1'] = Document(title=u"Child 1")
@@ -144,13 +146,13 @@ class TestNodeDelete(UnitTestBase):
         id1 = str(root['child1'].id)
         id2 = str(root['child2'].id)
         request.POST.add('delete_nodes', u'delete_nodes')
-        delete_nodes(root, request)
+        NodeActions(root, request).delete_nodes()
         assert request.session.pop_flash('info') ==\
             [u'Nothing deleted.']
 
         request.POST.add('children-to-delete', id1)
         request.POST.add('children-to-delete', id2)
-        delete_nodes(root, request)
+        NodeActions(root, request).delete_nodes()
         assert request.session.pop_flash('success') ==\
             [u'${title} deleted.', u'${title} deleted.']
 
