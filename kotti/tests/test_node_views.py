@@ -12,7 +12,7 @@ class TestAddableTypes(UnitTestBase):
         from kotti.resources import Document
 
         self.config.testing_securitypolicy(permissive=True)
-        self.config.include('kotti.views.edit')
+        self.config.include('kotti.views.edit.content')
         root = DBSession.query(Node).get(1)
         request = DummyRequest()
         self.assertEquals(Document.type_info.addable(root, request), True)
@@ -23,7 +23,7 @@ class TestAddableTypes(UnitTestBase):
         from kotti.resources import Document
 
         self.config.testing_securitypolicy(permissive=False)
-        self.config.include('kotti.views.edit')
+        self.config.include('kotti.views.edit.content')
         root = DBSession.query(Node).get(1)
         request = DummyRequest()
         self.assertEquals(Document.type_info.addable(root, request), False)
@@ -44,7 +44,7 @@ class TestNodePaste(UnitTestBase):
     def test_paste_non_existing_node(self):
         from kotti import DBSession
         from kotti.resources import Node
-        from kotti.views.edit.node_actions import NodeActions
+        from kotti.views.edit.actions import NodeActions
 
         root = DBSession.query(Node).get(1)
         request = DummyRequest()
@@ -58,7 +58,7 @@ class TestNodePaste(UnitTestBase):
     def test_paste_without_edit_permission(self):
         from kotti import DBSession
         from kotti.resources import Node
-        from kotti.views.edit.node_actions import NodeActions
+        from kotti.views.edit.actions import NodeActions
 
         root = DBSession.query(Node).get(1)
         request = DummyRequest()
@@ -83,7 +83,7 @@ class TestNodeRename(UnitTestBase):
         from kotti import DBSession
         from kotti.resources import Node
         from kotti.resources import Document
-        from kotti.views.edit.node_actions import NodeActions
+        from kotti.views.edit.actions import NodeActions
 
         root = DBSession.query(Node).get(1)
         child = root['child'] = Document(title=u"Child")
@@ -99,7 +99,7 @@ class TestNodeRename(UnitTestBase):
         from kotti import DBSession
         from kotti.resources import Node
         from kotti.resources import Document
-        from kotti.views.edit.node_actions import NodeActions
+        from kotti.views.edit.actions import NodeActions
 
         root = DBSession.query(Node).get(1)
         root['child1'] = Document(title=u"Child 1")
@@ -135,7 +135,7 @@ class TestNodeDelete(UnitTestBase):
         from kotti import DBSession
         from kotti.resources import Node
         from kotti.resources import Document
-        from kotti.views.edit.node_actions import NodeActions
+        from kotti.views.edit.actions import NodeActions
 
         root = DBSession.query(Node).get(1)
         root['child1'] = Document(title=u"Child 1")

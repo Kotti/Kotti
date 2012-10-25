@@ -246,6 +246,7 @@ class Node(Base, ContainerMixin, PersistentACLMixin):
 
 class TypeInfo(object):
     addable_to = ()
+    selectable_default_views = ()
 
     def __init__(self, **kwargs):
         self.__dict__.update(kwargs)

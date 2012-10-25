@@ -60,8 +60,7 @@ class DefaultViewSelection(object):
 
         sviews = []
 
-        for v in getattr(self.context.type_info, "selectable_default_views", []):
-
+        for v in self.context.type_info.selectable_default_views:
             name, title = v
             if self._is_valid_view(name):
                 sviews.append({
@@ -117,3 +116,7 @@ class DefaultViewSelection(object):
         return HTTPFound(
             location=self.request.resource_url(self.context)
         )
+
+
+def includeme(config):
+    config.scan('.default_views')

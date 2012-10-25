@@ -7,10 +7,8 @@ from kotti import DBSession
 from kotti import get_settings
 from kotti.resources import IContent
 from kotti.resources import Node
-from kotti.resources import get_root
 from kotti.util import _
 from kotti.util import ActionButton
-from kotti.util import ViewLink
 from kotti.views.edit.content import ContentSchema
 from kotti.views.edit.content import DocumentSchema
 from kotti.views.form import AddFormView
@@ -51,25 +49,6 @@ def get_paste_items(context, request):
                 continue
             items.append(item)
     return items
-
-
-def actions(context, request):
-    """Drop down menu for Actions button in editor bar.
-    """
-    root = get_root()
-    actions = [ViewLink('copy', title=_(u'Copy'))]
-    is_root = context is root
-    if not is_root:
-        actions.append(ViewLink('cut', title=_(u'Cut')))
-    if get_paste_items(context, request):
-        actions.append(ViewLink('paste', title=_(u'Paste')))
-    if not is_root:
-        actions.append(ViewLink('rename', title=_(u'Rename')))
-        actions.append(ViewLink('delete', title=_(u'Delete')))
-    if len(context.children) >= 1:
-        actions.append(ViewLink('order', title=_(u'Order')))
-    return {'actions': [action for action in actions
-                        if action.permitted(context, request)]}
 
 
 def contents_buttons(context, request):
@@ -210,8 +189,6 @@ def render_tree_navigation(context, request):
 
 
 def includeme(config):
-    nodes_includeme(config)
-
     config.add_view(
         render_tree_navigation,
         name='render_tree_navigation',
@@ -234,13 +211,6 @@ def includeme(config):
         )
 
     config.add_view(
-        actions,
-        name='actions-dropdown',
-        permission='view',
-        renderer='kotti:templates/actions-dropdown.pt',
-        )
-
-    config.add_view(
         workflow,
         name='workflow-dropdown',
         permission='edit',
@@ -254,11 +224,3 @@ def includeme(config):
         permission='view',
         renderer='kotti:templates/edit/contents.pt',
         )
-
-
-def nodes_includeme(config):
-
-    config.scan("kotti.views.edit.default_view_selection")
-    config.scan("kotti.views.edit.node_actions")
-
-    config.include('kotti.views.edit.content')
