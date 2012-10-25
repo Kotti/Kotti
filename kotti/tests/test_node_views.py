@@ -1,7 +1,9 @@
+from webob.multidict import MultiDict
 from pytest import raises
 from pyramid.exceptions import Forbidden
 
 from kotti.testing import DummyRequest
+from kotti.testing import UnitTestBase
 
 
 class TestAddableTypes:
@@ -32,32 +34,32 @@ class TestNodePaste:
     def test_get_non_existing_paste_item(self):
         from kotti import DBSession
         from kotti.resources import Node
-        from kotti.views.edit import get_paste_item
+        from kotti.views.edit import get_paste_items
 
         root = DBSession.query(Node).get(1)
         request = DummyRequest()
-        request.session['kotti.paste'] = (1701, 'copy')
-        item = get_paste_item(root, request)
-        assert item is None
+        request.session['kotti.paste'] = ([1701], 'copy')
+        item = get_paste_items(root, request)
+        assert item == []
 
     def test_paste_non_existing_node(self):
         from kotti import DBSession
         from kotti.resources import Node
-        from kotti.views.edit import paste_node
+        from kotti.views.edit.node_actions import NodeActions
 
         root = DBSession.query(Node).get(1)
         request = DummyRequest()
 
         for index, action in enumerate(['copy', 'cut']):
-            request.session['kotti.paste'] = (1701, 'copy')
-            response = paste_node(root, request)
+            request.session['kotti.paste'] = ([1701], 'copy')
+            response = NodeActions(root, request).paste_node()
             assert response.status == '302 Found'
             assert len(request.session['_f_error']) == index + 1
 
     def test_paste_without_edit_permission(self, config, db_session):
         from kotti import DBSession
         from kotti.resources import Node
-        from kotti.views.edit import paste_node
+        from kotti.views.edit.node_actions import NodeActions
 
         root = DBSession.query(Node).get(1)
         request = DummyRequest()
@@ -66,13 +68,14 @@ class TestNodePaste:
 
         # We need to have the 'edit' permission on the original object
         # to be able to cut and paste:
-        request.session['kotti.paste'] = (1, 'cut')
+        request.session['kotti.paste'] = ([1], 'cut')
+        view = NodeActions(root, request)
         with raises(Forbidden):
-            paste_node(root, request)
+            view.paste_node()
 
         # We don't need 'edit' permission if we're just copying:
-        request.session['kotti.paste'] = (1, 'copy')
-        response = paste_node(root, request)
+        request.session['kotti.paste'] = ([1], 'copy')
+        response = NodeActions(root, request).paste_node()
         assert response.status == '302 Found'
 
 
@@ -81,7 +84,7 @@ class TestNodeRename:
         from kotti import DBSession
         from kotti.resources import Node
         from kotti.resources import Document
-        from kotti.views.edit import rename_node
+        from kotti.views.edit.node_actions import NodeActions
 
         root = DBSession.query(Node).get(1)
         child = root['child'] = Document(title=u"Child")
@@ -89,9 +92,70 @@ class TestNodeRename:
         request.params['rename'] = u'on'
         request.params['name'] = u''
         request.params['title'] = u'foo'
-        rename_node(child, request)
+        NodeActions(child, request).rename_node()
         assert (request.session.pop_flash('error') ==
             [u'Name and title are required.'])
+
+    def test_multi_rename(self):
+        from kotti import DBSession
+        from kotti.resources import Node
+        from kotti.resources import Document
+        from kotti.views.edit.node_actions import NodeActions
+
+        root = DBSession.query(Node).get(1)
+        root['child1'] = Document(title=u"Child 1")
+        root['child2'] = Document(title=u"Child 2")
+        request = DummyRequest()
+        request.POST = MultiDict()
+        id1 = str(root['child1'].id)
+        id2 = str(root['child2'].id)
+        request.POST.add('children-to-rename', id1)
+        request.POST.add('children-to-rename', id2)
+        request.POST.add(id1 + '-name', u'')
+        request.POST.add(id1 + '-title', u'Unhappy Child')
+        request.POST.add(id2 + '-name', u'happy-child')
+        request.POST.add(id2 + '-title', u'')
+        request.POST.add('rename_nodes', u'rename_nodes')
+        NodeActions(root, request).rename_nodes()
+        assert request.session.pop_flash('error') ==\
+            [u'Name and title are required.']
+
+        request.POST.add(id1 + '-name', u'unhappy-child')
+        request.POST.add(id1 + '-title', u'Unhappy Child')
+        request.POST.add(id2 + '-name', u'happy-child')
+        request.POST.add(id2 + '-title', u'Happy Child')
+        request.POST.add('rename_nodes', u'rename_nodes')
+        NodeActions(root, request).rename_nodes()
+        assert request.session.pop_flash('success') ==\
+            [u'Your changes have been saved.']
+
+
+class TestNodeDelete(UnitTestBase):
+
+    def test_multi_delete(self):
+        from kotti import DBSession
+        from kotti.resources import Node
+        from kotti.resources import Document
+        from kotti.views.edit.node_actions import NodeActions
+
+        root = DBSession.query(Node).get(1)
+        root['child1'] = Document(title=u"Child 1")
+        root['child2'] = Document(title=u"Child 2")
+
+        request = DummyRequest()
+        request.POST = MultiDict()
+        id1 = str(root['child1'].id)
+        id2 = str(root['child2'].id)
+        request.POST.add('delete_nodes', u'delete_nodes')
+        NodeActions(root, request).delete_nodes()
+        assert request.session.pop_flash('info') ==\
+            [u'Nothing deleted.']
+
+        request.POST.add('children-to-delete', id1)
+        request.POST.add('children-to-delete', id2)
+        NodeActions(root, request).delete_nodes()
+        assert request.session.pop_flash('success') ==\
+            [u'${title} deleted.', u'${title} deleted.']
 
 
 class TestNodeShare:

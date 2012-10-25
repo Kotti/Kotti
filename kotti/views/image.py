@@ -1,10 +1,5 @@
-# -*- coding: utf-8 -*-
-
 import PIL
-from kotti.util import _
 from kotti.util import extract_from_settings
-from kotti.views.file import AddFileFormView, EditFileFormView
-from kotti.resources import Image
 from kotti.resources import IImage
 from plone.scale.scale import scaleImage
 from pyramid.response import Response
@@ -27,29 +22,6 @@ image_scales = {
     'span11': [1060, 2120],
     'span12': [1160, 2320],
     }
-
-
-class EditImageFormView(EditFileFormView):
-
-    pass
-
-
-class AddImageFormView(AddFileFormView):
-
-    item_type = _(u"Image")
-
-    def add(self, **appstruct):
-
-        buf = appstruct['file']['fp'].read()
-
-        return Image(
-            title=appstruct['title'],
-            description=appstruct['description'],
-            tags=appstruct['tags'],
-            data=buf,
-            filename=appstruct['file']['filename'],
-            mimetype=appstruct['file']['mimetype'],
-            size=len(buf), )
 
 
 class ImageView(object):
@@ -124,16 +96,3 @@ def includeme(config):
     _load_image_scales(config.registry.settings)
 
     config.scan("kotti.views.image")
-    config.add_view(
-        AddImageFormView,
-        name=Image.type_info.add_view,
-        permission='add',
-        renderer='kotti:templates/edit/node.pt',
-        )
-    config.add_view(
-        EditImageFormView,
-        context=Image,
-        name='edit',
-        permission='edit',
-        renderer='kotti:templates/edit/node.pt',
-        )

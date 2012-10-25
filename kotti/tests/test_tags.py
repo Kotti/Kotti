@@ -6,7 +6,7 @@ from kotti.testing import DummyRequest
 
 class DummyContext(object):
     view_name = u'view_name'
-    tags = [u'tag 1', u'tag 2', u'tag 3', ]
+    tags = [u'tag 1', u'tag 2', u'tag 3']
 
 
 class TestTags:
@@ -47,8 +47,8 @@ class TestTags:
 
         root = get_root()
         root[u'content_1'] = Content()
-        root[u'content_1'].tags = [u'tag 1', u'tag 2', ]
-        assert root[u'content_1'].tags == [u'tag 1', u'tag 2', ]
+        root[u'content_1'].tags = [u'tag 1', u'tag 2']
+        assert root[u'content_1'].tags == [u'tag 1', u'tag 2']
         assert type(root[u'content_1']._tags[0]) == TagsToContents
         assert type(root[u'content_1']._tags[0].tag) == Tag
         assert root[u'content_1']._tags[0].tag.title == u'tag 1'
@@ -146,7 +146,7 @@ class TestTags:
         from kotti import DBSession
         from kotti.resources import get_root
         from kotti.resources import Tag, TagsToContents, Content
-        from kotti.views.edit import paste_node
+        from kotti.views.edit.node_actions import NodeActions
 
         ses = DBSession
         root = get_root()
@@ -158,8 +158,8 @@ class TestTags:
 
         request = DummyRequest()
         request.params['paste'] = u'on'
-        request.session['kotti.paste'] = (root[u'content_1'].id, 'cut')
-        paste_node(root[u'folder_1'], request)
+        request.session['kotti.paste'] = ([root[u'content_1'].id], 'cut')
+        NodeActions(root[u'folder_1'], request).paste_node()
         assert root[u'folder_1'][u'content_1'].tags == [u'my tag']
         assert ses.query(Tag).count() == 1
         assert ses.query(TagsToContents).count() == 1
@@ -168,7 +168,7 @@ class TestTags:
         from kotti import DBSession
         from kotti.resources import get_root
         from kotti.resources import Tag, TagsToContents, Content
-        from kotti.views.edit import paste_node
+        from kotti.views.edit.node_actions import NodeActions
 
         ses = DBSession
         root = get_root()
@@ -180,8 +180,8 @@ class TestTags:
 
         request = DummyRequest()
         request.params['paste'] = u'on'
-        request.session['kotti.paste'] = (root[u'content_1'].id, 'copy')
-        paste_node(root[u'folder_1'], request)
+        request.session['kotti.paste'] = ([root[u'content_1'].id], 'copy')
+        NodeActions(root[u'folder_1'], request).paste_node()
         assert root[u'content_1'].tags == [u'my tag']
         assert root[u'folder_1'][u'content_1'].tags == [u'my tag']
         assert ses.query(Tag).count() == 1
@@ -191,7 +191,7 @@ class TestTags:
         from kotti import DBSession
         from kotti.resources import get_root
         from kotti.resources import Tag, TagsToContents, Content
-        from kotti.views.edit import delete_node
+        from kotti.views.edit.node_actions import NodeActions
 
         ses = DBSession
         root = get_root()
@@ -206,7 +206,7 @@ class TestTags:
 
         request = DummyRequest()
         request.POST['delete'] = 'on'
-        delete_node(root[u'folder_1'], request)
+        NodeActions(root[u'folder_1'], request).delete_node()
         assert ses.query(Tag).count() == 0
         assert ses.query(TagsToContents).count() == 0
 
@@ -220,7 +220,7 @@ class TestTags:
         root[u'folder_1'] = Content()
         root[u'folder_1'].tags = [u'first tag', u'second tag']
         root[u'folder_1'][u'content_1'] = Content()
-        root[u'folder_1'][u'content_1'].tags = [u'third tag', ]
+        root[u'folder_1'][u'content_1'].tags = [u'third tag']
         root[u'folder_1'][u'content_2'] = Content()
         root[u'folder_1'][u'content_2'].tags = [u'first tag', u'third tag']
         first_tag = ses.query(Tag).filter(Tag.title == u'first tag').one()
@@ -242,7 +242,7 @@ class TestTags:
         root[u'folder_1'] = Content()
         root[u'folder_1'].tags = [u'first tag', u'second tag']
         root[u'folder_1'][u'content_1'] = Content()
-        root[u'folder_1'][u'content_1'].tags = [u'third tag', ]
+        root[u'folder_1'][u'content_1'].tags = [u'third tag']
         root[u'folder_1'][u'content_2'] = Content()
         root[u'folder_1'][u'content_2'].tags = [u'first tag', u'third tag']
 

@@ -1,8 +1,26 @@
 Change History
 ==============
 
-0.7.2 - Unreleased
+0.8.0 - Unreleased
 ------------------
+
+- Add children_with_permission method to ContainerMixin.
+
+- Add UI for default_view selection.
+
+- Deprecate 'kotti.views.edit.generic_add' and 'generic_edit'.  Just
+  use class-based forms instead.
+
+0.7.2 - 2012-10-02
+------------------
+
+- Improve installation instructions.  Now uses tagged requirements.txt
+  file.
+
+- Added event request POST vars to the request for the slot viewlet.
+
+- Added IFile and IImage interfaces to allow for file and image
+  subclasses to reuse the same view (registrations).
 
 0.7.1 - 2012-08-30
 ------------------

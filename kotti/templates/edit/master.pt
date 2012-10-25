@@ -16,9 +16,6 @@
     <!-- Fav icons -->
     <link rel="shortcut icon" href="${request.static_url('kotti:static/favicon.ico')}" />
 
-    <!-- Scripts -->
-    <link href="${request.static_url('deform:static/css/ui-lightness/jquery-ui-1.8.11.custom.css')}" rel="stylesheet" />
-
     <more tal:omit-tag="" metal:define-slot="head-more"></more>
 
     <!-- 'edit_inhead' slots: support third party injection of things that

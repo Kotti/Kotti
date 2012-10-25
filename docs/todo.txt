@@ -1,11 +1,10 @@
 Bigger tasks
 ============
 
+- (API-) Documentation
+
 - A pluggable settings screen for content items for things like 'allow
   discussion', 'default page'.
-
-- Create add-ons kotti_disqus, kotti_feed (RSS), kotti_blog that make
-  use of some of the features above.
 
 - Allow in-page macros for things like 'table of contents' (for
   listing all contained pages in a TOC style).  See
@@ -15,20 +14,32 @@ Bigger tasks
   application exceptions.  Possibly other introspectable features,
   like version numbers etc.
 
+- Multilingual support (in core or kotti_multilingual add-on?), probably
+  based on annotations.
+
 Have an idea for this list?  Discuss at
 http://groups.google.com/group/kotti or #kotti on IRC.
 
 Smaller tasks
 =============
 
-- To allow for easier integration with 'repoze.workflow', add a
-  'state' attribute to the Content class.  Write a cookbook entry for
-  using 'repoze.workflow'.
+- Many of the templates used in 'kotti/views/edit.py' have some legacy
+  cruft in them.  Clean up.
+
+- Make better use of calls to fanstatic's need().  Only need() stuff where
+  it's actually needed.  Partially already implemented in
+  https://github.com/disko/Kotti/tree/feature/lighter_jqueryui_dependency_injection.
 
 - Move more navigation related functionality out of TemplateAPI and
   into snippets.
 
-- Many of the templates used in 'kotti/views/edit.py' have some legacy
-  cruft in them.  Clean up.
-
 - Make a proper LICENSE.txt file, listing all licenses of components we use.
+
+- Define and document annotation "best practice".  I.e. add-on "namespaces"?
+
+- Define and document control panel "best practice" for add-ons.
+
+Upstream tasks
+==============
+
+- Release deform 0.9.6 to be able to use Button(css_class="btn-foo") feature.

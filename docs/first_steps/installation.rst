@@ -20,7 +20,7 @@ It's recommended to install Kotti inside a virtualenv_:
 
   virtualenv mysite --no-site-packages
   cd mysite
-  bin/pip install Kotti
+  bin/pip install Kotti==0.7.2 -r https://raw.github.com/Pylons/Kotti/0.7.2/requirements.txt
 
 Kotti uses `Paste Deploy`_ for configuration and deployment.  An
 example configuration file is included with Kotti's source
@@ -35,16 +35,6 @@ Finally, to run Kotti:
 .. code-block:: bash
 
   bin/pserve app.ini
-
-.. note::
-
-  To run the application with older versions of Pyramid, you might
-  need to do instead:
-
-  .. code-block:: bash
-  
-    bin/pip install PasteScript
-    bin/paster serve app.ini
 
 .. _other SQL databases: http://www.sqlalchemy.org/docs/core/engines.html#supported-databases
 .. _variety of web servers: http://wsgi.org/wsgi/Servers

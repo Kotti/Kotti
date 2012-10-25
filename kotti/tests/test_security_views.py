@@ -3,11 +3,7 @@ import pytest
 from mock import patch
 from pytest import raises
 
-from kotti.testing import (
-    DummyRequest,
-    UnitTestBase,
-    EventTestBase,
-)
+from kotti.testing import DummyRequest
 
 
 class TestUserManagement:

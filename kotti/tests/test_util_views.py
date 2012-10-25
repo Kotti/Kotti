@@ -105,6 +105,7 @@ class TestTemplateAPI:
 
         api = self.make()
         assert (api.edit_links == [
+            ViewLink('contents', u'Contents'),
             ViewLink('edit', u'Edit'),
             ViewLink('share', u'Share'),
             ])
@@ -250,6 +251,20 @@ class TestTemplateAPI:
         config.add_view(my_viewlet, name='my-viewlet')
         api = self.make()
         assert api.slots.right == [u"Hello world!"]
+
+    def test_slot_request_has_parameters(self):
+        from kotti.views.slots import assign_slot
+
+        def foo(context, request):
+            bar = request.POST['bar']
+            return Response(u"{0} world!".format(bar))
+        self.config.add_view(foo, name='foo')
+        assign_slot('foo', 'left', params=dict(greeting=u"Y\u0153"))
+
+        request = DummyRequest()
+        request.params['bar'] = u'Hello'
+        api = self.make(request=request)
+        assert api.slots.left == [u"Hello world!"]
 
     def test_deprecated_slots(self):
         from kotti.views.slots import register, RenderAboveContent
@@ -419,21 +434,9 @@ class TestViewUtil:
         assert 'api' in event
 
 
-class TestUtil:
-    def test_ensure_view_selector(self):
-        from kotti.views.util import ensure_view_selector
-        wrapper = ensure_view_selector(None)
-        request = DummyRequest(path='/edit')
-        # Ignoring the result since it's not useful with DummyRequest.
-        # We check that path_info was set accordingly though:
-        wrapper(None, request)
-        assert request.path_info == u'/@@edit'
-
-
 class TestLocalNavigationSlot:
     def test_it(self, config, db_session):
-        renderer = config.testing_add_renderer(
-            'kotti:templates/view/nav-local.pt')
+        config.testing_add_renderer('kotti:templates/view/nav-local.pt')
         from kotti.views.slots import local_navigation
         a, aa, ab, ac, aca, acb = create_contents()
 
@@ -491,6 +494,16 @@ class TestNodesTree:
             0, 1, 2]
         assert [ch.id for ch in tree.children[0].children] == [
             ab.id, aa.id, ac.id]
+
+    def test_tolist(self):
+        from kotti.views.util import nodes_tree
+
+        a, aa, ab, ac, aca, acb = create_contents()
+        tree = nodes_tree(DummyRequest(), context=a)
+        assert [ch for ch in tree.tolist()] == [a, aa, ab, ac, aca, acb]
+
+        tree = nodes_tree(DummyRequest(), context=ac)
+        assert [ch for ch in tree.tolist()] == [ac, aca, acb]
 
 
 class TestTemplateStructure:
