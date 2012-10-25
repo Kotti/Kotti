@@ -1,8 +1,12 @@
-import colander
-from deform.widget import RichTextWidget
+from pyramid.exceptions import Forbidden
+from pyramid.httpexceptions import HTTPFound
+from pyramid.location import inside
+from pyramid.security import has_permission
+from pyramid.url import resource_url
+from zope.deprecation.deprecation import deprecate
+
 from kotti import DBSession
 from kotti import get_settings
-from kotti.resources import Document
 from kotti.resources import IContent
 from kotti.resources import Node
 from kotti.resources import get_root
@@ -11,25 +15,10 @@ from kotti.util import title_to_name
 from kotti.util import ActionButton
 from kotti.util import ViewLink
 from kotti.views.form import AddFormView
-from kotti.views.form import ContentSchema
 from kotti.views.form import EditFormView
 from kotti.views.util import ensure_view_selector
 from kotti.views.util import nodes_tree
 from kotti.workflow import get_workflow
-from pyramid.exceptions import Forbidden
-from pyramid.httpexceptions import HTTPFound
-from pyramid.location import inside
-from pyramid.security import has_permission
-from pyramid.url import resource_url
-
-
-class DocumentSchema(ContentSchema):
-    body = colander.SchemaNode(
-        colander.String(),
-        title=_(u'Body'),
-        widget=RichTextWidget(theme='advanced', width=790, height=500),
-        missing=u"",
-        )
 
 
 def content_type_factories(context, request):
@@ -410,8 +399,11 @@ def change_state(context, request):
     return {}
 
 
-# XXX These and the make_generic_edit functions below can probably be
-# simplified quite a bit.
+@deprecate(
+"""'generic_edit' is deprecated as of Kotti 0.8.0.  Use a form class
+derived from 'kotti.views.form.EditFormView' instead.  See
+'kotti.views.edit.content' for an example.
+""")
 def generic_edit(context, request, schema, **kwargs):
     return EditFormView(
         context,
@@ -421,6 +413,11 @@ def generic_edit(context, request, schema, **kwargs):
         )()
 
 
+@deprecate(
+"""'generic_edit' is deprecated as of Kotti 0.8.0.  Use a form class
+derived from 'kotti.views.form.AddFormView' instead.  See
+'kotti.views.edit.content' for an example.
+""")
 def generic_add(context, request, schema, add, title, **kwargs):
     return AddFormView(
         context,
@@ -456,21 +453,6 @@ def render_tree_navigation(context, request):
 
 def includeme(config):
     nodes_includeme(config)
-
-    config.add_view(
-        make_generic_edit(DocumentSchema()),
-        context=Document,
-        name='edit',
-        permission='edit',
-        renderer='kotti:templates/edit/node.pt',
-        )
-
-    config.add_view(
-        make_generic_add(DocumentSchema(), Document),
-        name=Document.type_info.add_view,
-        permission='add',
-        renderer='kotti:templates/edit/node.pt',
-        )
 
     config.add_view(
         render_tree_navigation,
@@ -515,7 +497,6 @@ def includeme(config):
 
 
 def nodes_includeme(config):
-
     config.add_view(
         contents,
         context=IContent,
@@ -585,3 +566,5 @@ def nodes_includeme(config):
         )
 
     config.scan("kotti.views.edit.default_view_selection")
+
+    config.include('kotti.views.edit.content')

@@ -8,6 +8,9 @@ Change History
 
 - Add UI for default_view selection.
 
+- Deprecate 'kotti.views.edit.generic_add' and 'generic_edit'.  Just
+  use class-based forms instead.
+
 0.7.3 - Unreleased
 ------------------
 

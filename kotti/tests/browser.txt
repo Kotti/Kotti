@@ -37,7 +37,7 @@ Editing is locked down to authenticated users:
   >>> ctrl(name="submit").click()
   >>> "Welcome, Administrator" in browser.contents
   True
-  >>> browser.url == testing.BASE_URL + '/@@edit'
+  >>> browser.url == testing.BASE_URL + '/edit'
   True
 
 Logging out redirects us to the URL we came from and presents us with
@@ -61,7 +61,7 @@ Log in again, this time force an error:
   >>> ctrl(name="submit").click()
   >>> "Welcome, Administrator" in browser.contents
   True
-  >>> browser.url == testing.BASE_URL + '/@@edit'
+  >>> browser.url == testing.BASE_URL + '/edit'
   True
 
 Add a document
