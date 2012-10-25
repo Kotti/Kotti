@@ -1,8 +1,8 @@
 Change History
 ==============
 
-0.8 - Unreleased
-----------------
+0.8.0 - Unreleased
+------------------
 
 - Add children_with_permission method to ContainerMixin.
 
@@ -10,9 +10,6 @@ Change History
 
 - Deprecate 'kotti.views.edit.generic_add' and 'generic_edit'.  Just
   use class-based forms instead.
-
-0.7.3 - Unreleased
-------------------
 
 0.7.2 - 2012-10-02
 ------------------

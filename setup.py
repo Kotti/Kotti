@@ -28,7 +28,7 @@ install_requires = [
     'js.jquery',
     'js.jquery_form',
     'js.jquery_timepicker_addon',
-    'js.jqueryui',
+    'js.jqueryui>=1.8.24',
     'js.jqueryui_tagit',
     'kotti_tinymce>=0.2.3',
     'lingua>=1.3',
@@ -71,7 +71,7 @@ if sys.version_info[:3] < (2, 7, 0):
     install_requires.append('ordereddict')
 
 setup(name='Kotti',
-      version='0.7.3dev',
+      version='0.8.0dev',
       description="Kotti is a high-level, 'Pythonic' web application framework. It includes a small and extensible CMS application called the Kotti CMS.",
       long_description='\n\n'.join([README, AUTHORS, CHANGES]),
       classifiers=[
