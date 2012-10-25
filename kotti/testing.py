@@ -8,13 +8,31 @@ Inheritance Diagram
 """
 
 import os
+from os.path import join, dirname
 from unittest import TestCase
+from pytest import mark
 
 from pyramid import testing
 from pyramid.config import DEFAULT_RENDERERS
 from pyramid.events import NewResponse
 from pyramid.security import ALL_PERMISSIONS
+from zope.deprecation.deprecation import deprecate
 import transaction
+
+
+# re-enable deprecation warnings during test runs
+# however, let the `ImportWarning` produced by Babel's
+# `localedata.py` vs `localedata/` show up once...
+from warnings import resetwarnings
+from babel import localedata
+import compiler
+localedata, compiler    # make pyflakes happy... :p
+resetwarnings()
+
+
+# py.test markers (see http://pytest.org/latest/example/markers.html)
+user = mark.user
+
 
 BASE_URL = 'http://localhost:6543'
 
@@ -33,6 +51,33 @@ class DummyRequest(testing.DummyRequest):
     def is_response(self, ob):
         return (hasattr(ob, 'app_iter') and hasattr(ob, 'headerlist') and
                 hasattr(ob, 'status'))
+
+
+def asset(name):
+    import kotti
+    return open(join(dirname(kotti.__file__), 'tests', name), 'rb')
+
+
+def includeme_login(config):
+    config.add_view(
+        login_view,
+        name='login',
+        renderer='kotti:templates/login.pt')
+
+
+def includeme_layout(config):
+    # override edit master layout with view master layout
+    config.override_asset(
+        to_override='kotti:templates/edit/master.pt',
+        override_with='kotti:templates/view/master.pt')
+
+
+def login_view(request):
+    return {}
+
+
+def dummy_search(search_term, request):
+    return u"Not found. Sorry!"
 
 
 def testing_db_url():
@@ -181,6 +226,8 @@ class FunctionalTestBase(TestCase):
             status=302,
             )
 
+    @deprecate('login_testbrowser is deprecated as of Kotti 0.7.  Please use '
+            'the `browser` funcarg in conjunction with the `@user` decorator.')
     def login_testbrowser(self, login=u'admin', password=u'secret'):
         browser = self.Browser()
         browser.open(BASE_URL + '/edit')
@@ -242,3 +289,11 @@ def registerDummyMailer():
     mailer = DummyMailer()
     _inject_mailer.append(mailer)
     return mailer
+
+
+# set up deprecation warnings
+from zope.deprecation.deprecation import deprecated
+for item in UnitTestBase, EventTestBase, FunctionalTestBase, _initTestingDB:
+    name = getattr(item, '__name__', item)
+    deprecated(name, 'Unittest-style tests are deprecated as of Kotti 0.7. '
+        'Please use pytest function arguments instead.')

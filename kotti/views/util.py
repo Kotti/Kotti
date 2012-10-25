@@ -7,7 +7,6 @@ from babel.dates import format_date
 from babel.dates import format_datetime
 from babel.dates import format_time
 from pyramid.decorator import reify
-from pyramid.httpexceptions import HTTPFound
 from pyramid.i18n import get_localizer
 from pyramid.i18n import get_locale_name
 from pyramid.i18n import make_localizer
@@ -29,7 +28,6 @@ from kotti import get_settings
 from kotti import DBSession
 from kotti.util import disambiguate_name
 disambiguate_name  # BBB
-from kotti.util import _
 from kotti.events import objectevent_listeners
 from kotti.resources import Content
 from kotti.resources import Document
@@ -149,13 +147,13 @@ class TemplateAPI(object):
 
     @reify
     def edit_needed(self):
-        if 'kotti.static.edit_needed' in self.S:
-            return [r.need() for r in self.S['kotti.static.edit_needed']]
+        if 'kotti.fanstatic.edit_needed' in self.S:
+            return [r.need() for r in self.S['kotti.fanstatic.edit_needed']]
 
     @reify
     def view_needed(self):
-        if 'kotti.static.view_needed' in self.S:
-            return [r.need() for r in self.S['kotti.static.view_needed']]
+        if 'kotti.fanstatic.view_needed' in self.S:
+            return [r.need() for r in self.S['kotti.fanstatic.view_needed']]
 
     def macro(self, asset_spec, macro_name='main'):
         if self.bare and asset_spec in (
