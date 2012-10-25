@@ -33,12 +33,12 @@ class TestNodePaste(UnitTestBase):
     def test_get_non_existing_paste_item(self):
         from kotti import DBSession
         from kotti.resources import Node
-        from kotti.views.edit import get_paste_item
+        from kotti.views.edit import get_paste_items
 
         root = DBSession.query(Node).get(1)
         request = DummyRequest()
-        request.session['kotti.paste'] = ([1701, ], 'copy')
-        item = get_paste_item(root, request)
+        request.session['kotti.paste'] = ([1701], 'copy')
+        item = get_paste_items(root, request)
         self.assertEqual(item, [])
 
     def test_paste_non_existing_node(self):
@@ -50,7 +50,7 @@ class TestNodePaste(UnitTestBase):
         request = DummyRequest()
 
         for index, action in enumerate(['copy', 'cut']):
-            request.session['kotti.paste'] = ([1701, ], 'copy')
+            request.session['kotti.paste'] = ([1701], 'copy')
             response = paste_node(root, request)
             self.assertEqual(response.status, '302 Found')
             self.assertEqual(len(request.session['_f_error']), index + 1)
@@ -67,11 +67,11 @@ class TestNodePaste(UnitTestBase):
 
         # We need to have the 'edit' permission on the original object
         # to be able to cut and paste:
-        request.session['kotti.paste'] = ([1, ], 'cut')
+        request.session['kotti.paste'] = ([1], 'cut')
         self.assertRaises(Forbidden, paste_node, root, request)
 
         # We don't need 'edit' permission if we're just copying:
-        request.session['kotti.paste'] = ([1, ], 'copy')
+        request.session['kotti.paste'] = ([1], 'copy')
         response = paste_node(root, request)
         self.assertEqual(response.status, '302 Found')
 

@@ -5,7 +5,6 @@ from docopt import docopt
 from plone.i18n.normalizer import urlnormalizer
 from pyramid.i18n import get_locale_name
 from pyramid.i18n import TranslationStringFactory
-from pyramid.httpexceptions import HTTPFound
 from pyramid.paster import bootstrap
 from pyramid.threadlocal import get_current_request
 from pyramid.url import resource_url

@@ -16,21 +16,21 @@ from js.deform_bootstrap import deform_bootstrap_js
 lib_kotti = Library("kotti", "static")
 kotti_js = Resource(lib_kotti,
     "kotti.js",
-    depends=[deform_bootstrap_js, ],
+    depends=[deform_bootstrap_js],
     minified="kotti.min.js",
     bottom=True)
 base_css = Resource(lib_kotti,
     "base.css",
-    depends=[bootstrap_responsive_css, ],
+    depends=[bootstrap_responsive_css],
     minified="base.min.css",
     dont_bundle=True)
 edit_css = Resource(lib_kotti,
     "edit.css",
-    depends=[base_css, ],
+    depends=[base_css],
     minified="edit.min.css")
 view_css = Resource(lib_kotti,
     "view.css",
-    depends=[base_css, ],
+    depends=[base_css],
     minified="view.min.css")
 
 
@@ -68,24 +68,30 @@ class NeededGroup(object):
         Group(self.resources).need()
 
 view_needed_css = NeededGroup([
-    view_css, ])
+    view_css,
+    ])
 view_needed_js = NeededGroup([
     jquery,
-    bootstrap_js, ])
+    bootstrap_js,
+    ])
 view_needed = NeededGroup([
     view_needed_css,
-    view_needed_js, ])
+    view_needed_js,
+    ])
 
 edit_needed_css = NeededGroup([
     edit_css,
-    jqueryui_bootstrap_theme, ])
+    jqueryui_bootstrap_theme,
+    ])
 edit_needed_js = NeededGroup([
     jquery,
     bootstrap_js,
     tagit,
     kotti_js,
     jquery_form,
-    deform_bootstrap_js])
+    deform_bootstrap_js,
+    ])
 edit_needed = NeededGroup([
     edit_needed_css,
-    edit_needed_js, ])
+    edit_needed_js,
+    ])

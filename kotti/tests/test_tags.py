@@ -10,7 +10,7 @@ from kotti.testing import (
 
 class DummyContext(object):
     view_name = u'view_name'
-    tags = [u'tag 1', u'tag 2', u'tag 3', ]
+    tags = [u'tag 1', u'tag 2', u'tag 3']
 
 
 class TestTags(EventTestBase, UnitTestBase):
@@ -51,8 +51,8 @@ class TestTags(EventTestBase, UnitTestBase):
 
         root = get_root()
         root[u'content_1'] = Content()
-        root[u'content_1'].tags = [u'tag 1', u'tag 2', ]
-        assert root[u'content_1'].tags == [u'tag 1', u'tag 2', ]
+        root[u'content_1'].tags = [u'tag 1', u'tag 2']
+        assert root[u'content_1'].tags == [u'tag 1', u'tag 2']
         assert type(root[u'content_1']._tags[0]) == TagsToContents
         assert type(root[u'content_1']._tags[0].tag) == Tag
         assert root[u'content_1']._tags[0].tag.title == u'tag 1'
@@ -162,7 +162,7 @@ class TestTags(EventTestBase, UnitTestBase):
 
         request = DummyRequest()
         request.params['paste'] = u'on'
-        request.session['kotti.paste'] = ([root[u'content_1'].id, ], 'cut')
+        request.session['kotti.paste'] = ([root[u'content_1'].id], 'cut')
         paste_node(root[u'folder_1'], request)
         assert root[u'folder_1'][u'content_1'].tags == [u'my tag']
         assert ses.query(Tag).count() == 1
@@ -184,7 +184,7 @@ class TestTags(EventTestBase, UnitTestBase):
 
         request = DummyRequest()
         request.params['paste'] = u'on'
-        request.session['kotti.paste'] = ([root[u'content_1'].id, ], 'copy')
+        request.session['kotti.paste'] = ([root[u'content_1'].id], 'copy')
         paste_node(root[u'folder_1'], request)
         assert root[u'content_1'].tags == [u'my tag']
         assert root[u'folder_1'][u'content_1'].tags == [u'my tag']
@@ -224,7 +224,7 @@ class TestTags(EventTestBase, UnitTestBase):
         root[u'folder_1'] = Content()
         root[u'folder_1'].tags = [u'first tag', u'second tag']
         root[u'folder_1'][u'content_1'] = Content()
-        root[u'folder_1'][u'content_1'].tags = [u'third tag', ]
+        root[u'folder_1'][u'content_1'].tags = [u'third tag']
         root[u'folder_1'][u'content_2'] = Content()
         root[u'folder_1'][u'content_2'].tags = [u'first tag', u'third tag']
         first_tag = ses.query(Tag).filter(Tag.title == u'first tag').one()
@@ -246,7 +246,7 @@ class TestTags(EventTestBase, UnitTestBase):
         root[u'folder_1'] = Content()
         root[u'folder_1'].tags = [u'first tag', u'second tag']
         root[u'folder_1'][u'content_1'] = Content()
-        root[u'folder_1'][u'content_1'].tags = [u'third tag', ]
+        root[u'folder_1'][u'content_1'].tags = [u'third tag']
         root[u'folder_1'][u'content_2'] = Content()
         root[u'folder_1'][u'content_2'].tags = [u'first tag', u'third tag']
 

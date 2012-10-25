@@ -43,7 +43,7 @@ def content_type_factories(context, request):
     return {'factories': factories}
 
 
-def get_paste_item(context, request):
+def get_paste_items(context, request):
     items = []
     info = request.session.get('kotti.paste')
     if info:
@@ -68,7 +68,7 @@ def actions(context, request):
     is_root = context is root
     if not is_root:
         actions.append(ViewLink('cut', title=_(u'Cut')))
-    if get_paste_item(context, request):
+    if get_paste_items(context, request):
         actions.append(ViewLink('paste', title=_(u'Paste')))
     if not is_root:
         actions.append(ViewLink('rename', title=_(u'Rename')))
@@ -83,7 +83,7 @@ def contents_buttons(context, request):
     """Buttons for the actions of the contents view.
     """
     buttons = []
-    if get_paste_item(context, request):
+    if get_paste_items(context, request):
         buttons.append(ActionButton('paste', title=_(u'Paste'),
                                     no_children=True))
     if context.children:
@@ -176,7 +176,7 @@ def workflow_change(context, request):
 def _selected_children(context, request, add_context=True):
     ids = request.session.pop('kotti.selected-children')
     if ids is None and add_context:
-        ids = [context.id, ]
+        ids = [context.id]
     return ids
 
 
