@@ -2,13 +2,15 @@ from mock import patch
 
 from kotti.testing import Dummy
 from kotti.testing import DummyRequest
-from kotti.testing import UnitTestBase
 
 
-class TestSendSetPassword(UnitTestBase):
-    def setUp(self):
-        super(TestSendSetPassword, self).setUp()
+# filter deprecation warnings for code that is still tested...
+from warnings import filterwarnings
+filterwarnings('ignore', '^send_set_password is deprecated')
 
+
+class TestSendSetPassword:
+    def setup_method(self, method):
         get_settings_patcher = patch('kotti.message.get_settings')
         self.get_settings = get_settings_patcher.start()
         self.get_settings.return_value = {
@@ -22,11 +24,11 @@ class TestSendSetPassword(UnitTestBase):
 
         self.patchers = (get_settings_patcher, get_mailer_patcher)
 
-    def tearDown(self):
+    def teardown_method(self, method):
         for patcher in self.patchers:
             patcher.stop()
 
-    def test_email_set_password_basic(self):
+    def test_email_set_password_basic(self, db_session):
         from kotti.message import email_set_password
 
         user = Dummy(name=u'joe', email='joe@bar.com', title=u'Joe')
@@ -63,7 +65,7 @@ class TestSendSetPassword(UnitTestBase):
         assert message.subject == 'Hey there Joe'
         assert message.body == 'This is Awesome site speaking'
 
-    def test_email_set_password_add_query(self):
+    def test_email_set_password_add_query(self, db_session):
         from kotti.message import email_set_password
 
         user = Dummy(name=u'joe', email='joe@bar.com', title=u'Joe')
@@ -85,10 +87,8 @@ class TestSendSetPassword(UnitTestBase):
         assert 'another=param' in message.body
 
 
-class TestEmailSetPassword(UnitTestBase):
-    def setUp(self):
-        super(TestEmailSetPassword, self).setUp()
-
+class TestEmailSetPassword:
+    def setup_method(self, method):
         get_settings_patcher = patch('kotti.message.get_settings')
         self.get_settings = get_settings_patcher.start()
         self.get_settings.return_value = {
@@ -102,11 +102,11 @@ class TestEmailSetPassword(UnitTestBase):
 
         self.patchers = (get_settings_patcher, get_mailer_patcher)
 
-    def tearDown(self):
+    def teardown_method(self, method):
         for patcher in self.patchers:
             patcher.stop()
 
-    def test_email_set_password_basic(self):
+    def test_email_set_password_basic(self, db_session):
         from kotti.message import email_set_password
 
         user = Dummy(name=u'joe', email='joe@bar.com', title=u'Joe')
@@ -122,7 +122,7 @@ class TestEmailSetPassword(UnitTestBase):
         assert '<p' in message.html
         assert 'Awesome site' in message.body
 
-    def test_email_set_password_other_template(self):
+    def test_email_set_password_other_template(self, db_session):
         from kotti.message import email_set_password
 
         user = Dummy(name=u'joe', email='joe@bar.com', title=u'Joe')
@@ -134,7 +134,7 @@ class TestEmailSetPassword(UnitTestBase):
         message = self.mailer.send.call_args[0][0]
         assert message.subject.startswith('Reset your password')
 
-    def test_email_set_password_add_query(self):
+    def test_email_set_password_add_query(self, db_session):
         from kotti.message import email_set_password
 
         user = Dummy(name=u'joe', email='joe@bar.com', title=u'Joe')

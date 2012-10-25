@@ -100,7 +100,7 @@ setup(name='Kotti',
       main = kotti:main
 
       [fanstatic.libraries]
-      kotti = kotti.static:lib_kotti
+      kotti = kotti.fanstatic:lib_kotti
 
       [console_scripts]
       kotti-migrate = kotti.migrate:kotti_migrate_command

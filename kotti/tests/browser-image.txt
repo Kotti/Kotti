@@ -34,9 +34,7 @@ Add a document as parent node for all images
 Add images
 ----------
 
-  >>> import os
-  >>> from kotti import tests
-  >>> image = open(os.sep.join((os.path.dirname(tests.__file__), "sendeschluss.jpg"))).read()
+  >>> image = testing.asset('sendeschluss.jpg').read()
 
 Image 1
 

@@ -26,14 +26,14 @@ Defining resources in third party addons
 ----------------------------------------
 
 Defining your own resources and have them rendered in the pages produced by Kotti is also easy.
-You just need to define resource objects (`as described in the corresponding Fanstatic documentation`_) and add them to either ``edit_needed`` or ``view_needed`` in kotti.static:
+You just need to define resource objects (`as described in the corresponding Fanstatic documentation`_) and add them to either ``edit_needed`` or ``view_needed`` in kotti.fanstatic:
 
 .. code-block:: python
 
   from fanstatic import Library
   from fanstatic import Resource
-  from kotti.static import edit_needed
-  from kotti.static import view_needed
+  from kotti.fanstatic import edit_needed
+  from kotti.fanstatic import view_needed
 
   my_library = Library('my_package', 'resources')
   my_resource = Resource(my_library, "my.js")
@@ -68,8 +68,8 @@ The defaults are
 
     [app:kotti]
 
-    kotti.static.edit_needed = kotti.static.edit_needed
-    kotti.static.view_needed = kotti.static.view_needed
+    kotti.fanstatic.edit_needed = kotti.fanstatic.edit_needed
+    kotti.fanstatic.view_needed = kotti.fanstatic.view_needed
 
 which ist actually a shortcut for
 
@@ -77,15 +77,15 @@ which ist actually a shortcut for
 
     [app:kotti]
 
-    kotti.static.edit_needed =
-        kotti.static.edit_needed_js
-        kotti.static.edit_needed_css
+    kotti.fanstatic.edit_needed =
+        kotti.fanstatic.edit_needed_js
+        kotti.fanstatic.edit_needed_css
 
-    kotti.static.view_needed =
-        kotti.static.view_needed_js
-        kotti.static.view_needed_css
+    kotti.fanstatic.view_needed =
+        kotti.fanstatic.view_needed_js
+        kotti.fanstatic.view_needed_css
 
-You may add as many ``kotti.static.NeededGroup``, ``fanstatic.Group`` or ``fanstatic.Resource`` (or actually anything that provides a ``.need()`` method) objects in dotted notation as you want.
+You may add as many ``kotti.fanstatic.NeededGroup``, ``fanstatic.Group`` or ``fanstatic.Resource`` (or actually anything that provides a ``.need()`` method) objects in dotted notation as you want.
 
 Say you want to completely abandon Kotti's CSS resources (and use your own for both view and edit views) but use Kotti's JS resources plus an additional JS resource defined within your app (only in edit views). Your configuration file might look like this:
 
@@ -93,14 +93,14 @@ Say you want to completely abandon Kotti's CSS resources (and use your own for b
 
     [app:kotti]
 
-    kotti.static.edit_needed =
-        kotti.static.edit_needed_js
-        myapp.static.js_resource
-        myapp.static.css_resource
+    kotti.fanstatic.edit_needed =
+        kotti.fanstatic.edit_needed_js
+        myapp.fanstatic.js_resource
+        myapp.fanstatic.css_resource
 
-    kotti.static.view_needed =
-        kotti.static.view_needed_js
-        myapp.static.css_resource
+    kotti.fanstatic.view_needed =
+        kotti.fanstatic.view_needed_js
+        myapp.fanstatic.css_resource
 
 
 Using Kotti without Fanstatic

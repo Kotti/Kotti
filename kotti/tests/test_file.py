@@ -1,15 +1,13 @@
-from unittest import TestCase
 from StringIO import StringIO
 
 from colander import null
 from mock import MagicMock
 
 from kotti.testing import DummyRequest
-from kotti.testing import UnitTestBase
 
 
-class TestFileViews(UnitTestBase):
-    def setUp(self):
+class TestFileViews:
+    def setup_method(self, method):
         from kotti.resources import File
         self.file = File("file contents", u"myf\xfcle.png", u"image/png")
 
@@ -39,7 +37,7 @@ class TestFileViews(UnitTestBase):
         assert res.body == 'file contents'
 
 
-class TestFileEditForm(TestCase):
+class TestFileEditForm:
     def make_one(self):
         from kotti.views.edit.content import FileEditForm
         return FileEditForm(MagicMock(), DummyRequest())
@@ -81,7 +79,7 @@ class TestFileEditForm(TestCase):
         assert view.context.size == 777
 
 
-class TestFileAddForm(TestCase):
+class TestFileAddForm:
     def make_one(self):
         from kotti.views.edit.content import FileAddForm
         return FileAddForm(MagicMock(), DummyRequest())
@@ -108,7 +106,7 @@ class TestFileAddForm(TestCase):
         assert file.size == len('filecontents')
 
 
-class TestFileUploadTempStore(TestCase):
+class TestFileUploadTempStore:
     def make_one(self):
         from kotti.views.form import FileUploadTempStore
         return FileUploadTempStore(DummyRequest())
