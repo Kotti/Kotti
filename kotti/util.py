@@ -1,3 +1,12 @@
+# -*- coding: utf-8 -*-
+
+"""
+Inheritance Diagram
+-------------------
+
+.. inheritance-diagram:: kotti.util
+"""
+
 import re
 import urllib
 
