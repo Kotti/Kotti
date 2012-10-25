@@ -280,3 +280,14 @@ class TestLocalGroup(UnitTestBase):
         assert lg.node is lg2.node
         assert lg.principal_name == lg2.principal_name
         assert lg.group_name == lg2.group_name
+
+
+class TestTypeInfo(UnitTestBase):
+    def test_add_selectable_default_view(self):
+        from kotti.resources import TypeInfo
+
+        type_info = TypeInfo(selectable_default_views=[])
+        type_info.add_selectable_default_view('foo', u'Fannick')
+        assert type_info.selectable_default_views == [
+            ('foo', u'Fannick'),
+            ]
