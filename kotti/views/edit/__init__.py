@@ -11,11 +11,15 @@ from kotti.resources import get_root
 from kotti.util import _
 from kotti.util import ActionButton
 from kotti.util import ViewLink
+from kotti.views.edit.content import ContentSchema
 from kotti.views.form import AddFormView
 from kotti.views.form import EditFormView
 from kotti.views.util import ensure_view_selector
 from kotti.views.util import nodes_tree
 from kotti.workflow import get_workflow
+
+
+ContentSchema = ContentSchema  # api
 
 
 def content_type_factories(context, request):
