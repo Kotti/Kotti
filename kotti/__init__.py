@@ -61,6 +61,9 @@ conf_defaults = {
         'kotti.views.image',
         'kotti.views.users',
         ]),
+    'kotti.zcml_includes': ' '.join([
+        'kotti:configure.zcml',
+        ]),
     'kotti.asset_overrides': '',
     'kotti.use_tables': '',
     'kotti.root_factory': 'kotti.resources.default_get_root',
@@ -181,10 +184,15 @@ def base_configure(global_config, **settings):
         config.include(module)
     config.commit()
 
-    # Modules in 'pyramid.includes' may override 'kotti.base_includes':
+    # Modules in 'pyramid.includes' and 'kotti.zcml_includes' may
+    # override 'kotti.base_includes':
     if pyramid_includes:
         for module in pyramid_includes.split():
             config.include(module)
+
+    for name in settings['kotti.zcml_includes'].strip().split():
+        config.load_zcml(name)
+
     config.commit()
 
     engine = engine_from_config(settings, 'sqlalchemy.')

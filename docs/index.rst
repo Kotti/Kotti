@@ -41,6 +41,7 @@ Developing with Kotti
     developing/creating-your-first-kotti-app
     developing/models
     developing/views
+    API documentation <api/index>
 
 -   Advanced topics
 
@@ -55,14 +56,6 @@ Developing with Kotti
         developing/images
         developing/static-resource-management
         developing/workflow
-
-API
----
-
-.. toctree::
-    :maxdepth: 1
-
-    API documentation <api/index>
 
 Changes
 -------

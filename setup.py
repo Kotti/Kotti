@@ -32,7 +32,7 @@ install_requires = [
     'js.jqueryui_tagit',
     'kotti_tinymce>=0.2.3',
     'lingua>=1.3',
-    'Pillow',  # indirect dependency of plone.scale (that doesn't declare this dependency itself)
+    'Pillow',  # dependency of plone.scale
     'plone.i18n<2.0',  # >= 2.0 adds a huge number of dependencies
     'plone.scale',  # needed for image resizing capabilities
     'py-bcrypt',
@@ -45,9 +45,10 @@ install_requires = [
     'pyramid_zcml',
     'repoze.lru',
     'repoze.workflow',
-    'sqlalchemy>=0.7.6',  # avoid "Table 'local_groups' is already defined" error
-    'transaction>=1.1.0',  # ask c-neumann :-)
+    'sqlalchemy>=0.7.6',
+    'transaction>=1.1.0',
     'waitress',
+    'zope.browserresource',
     'zope.deprecation',
     'zope.sqlalchemy',
     ]
