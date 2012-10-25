@@ -279,7 +279,7 @@ class TestLocalGroup:
         assert lg.group_name == lg2.group_name
 
 
-class TestTypeInfo(UnitTestBase):
+class TestTypeInfo:
     def test_add_selectable_default_view(self):
         from kotti.resources import TypeInfo
 
