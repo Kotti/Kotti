@@ -10,6 +10,12 @@ API Documentation
 .. automodule:: kotti.events
    :members:
 
+:mod:`kotti.interfaces`
+-----------------------
+
+.. automodule:: kotti.interfaces
+   :members:
+
 :mod:`kotti.message`
 --------------------
 

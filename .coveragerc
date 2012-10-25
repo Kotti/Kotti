@@ -1,2 +1,4 @@
 [run]
-omit = *test*py
+omit =
+  *test*py
+  kotti/alembic/*

@@ -28,6 +28,8 @@ import sys, os
 extensions = [
     'sphinx.ext.autodoc',
     'sphinx.ext.viewcode',
+    'sphinx.ext.inheritance_diagram',
+    'sphinx.ext.graphviz',
     ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -51,7 +53,7 @@ copyright = u'2012, Daniel Nouri and contributors'
 # built documents.
 #
 # The short X.Y version.
-version = '0.7'
+version = '0.8'
 # The full version, including alpha/beta/rc tags.
 release = version
 

@@ -53,6 +53,7 @@ mail.host                    Email host to send from
 pyramid.includes             List of Python configuration hooks
 kotti.available_types        List of active content types
 kotti.base_includes          List of base Python configuration hooks
+kotti.zcml_includes          List of packages to include the ZCML from
 kotti.configurators          List of advanced functions for config
 kotti.root_factory           Override Kotti's default Pyramid *root factory*
 kotti.populators             List of functions to fill initial database

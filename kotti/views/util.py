@@ -288,11 +288,6 @@ class TemplateAPI(object):
         return [l for l in self.context.type_info.edit_links
                 if l.permitted(self.context, self.request)]
 
-    def more_links(self, name):
-        # completely unused?
-        return [l for l in getattr(self, name)
-                if l.permitted(self.context, self.request)]
-
     @reify
     def site_setup_links(self):
 
@@ -302,7 +297,7 @@ class TemplateAPI(object):
 
 @deprecate("'ensure_view_selector' is deprecated as of Kotti 0.8.0. "
            "There is no replacement.")
-def ensure_view_selector(func):
+def ensure_view_selector(func):  # pragma: no cover
     return func
 
 

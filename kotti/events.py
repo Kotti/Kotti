@@ -28,6 +28,12 @@ Notifying listeners of an event is as simple as calling the
 
 Listeners are generally called in the order in which they are
 registered.
+
+Inheritance Diagram
+-------------------
+
+.. inheritance-diagram:: kotti.events
+
 """
 
 from collections import defaultdict

@@ -1,10 +1,3 @@
-# -*- coding: utf-8 -*-
-
-"""
-Created on 2012-10-25
-:summary: Node action views
-"""
-
 from pyramid.exceptions import Forbidden
 from pyramid.httpexceptions import HTTPFound
 from pyramid.security import has_permission
@@ -12,11 +5,14 @@ from pyramid.url import resource_url
 from pyramid.view import view_config
 from pyramid.view import view_defaults
 
+from kotti.resources import get_root
 from kotti import DBSession
 from kotti.resources import Node
 from kotti.util import _
+from kotti.util import ViewLink
 from kotti.util import title_to_name
 from kotti.views.edit import _states
+from kotti.views.edit import get_paste_items
 from kotti.views.form import EditFormView
 from kotti.views.util import nodes_tree
 from kotti.workflow import get_workflow
@@ -295,3 +291,33 @@ class NodeActions(object):
                         'states': _states(self.context, self.request),
                         'transitions': transitions, }
         return {}
+
+
+def actions(context, request):
+    """Drop down menu for Actions button in editor bar.
+    """
+    root = get_root()
+    actions = [ViewLink('copy', title=_(u'Copy'))]
+    is_root = context is root
+    if not is_root:
+        actions.append(ViewLink('cut', title=_(u'Cut')))
+    if get_paste_items(context, request):
+        actions.append(ViewLink('paste', title=_(u'Paste')))
+    if not is_root:
+        actions.append(ViewLink('rename', title=_(u'Rename')))
+        actions.append(ViewLink('delete', title=_(u'Delete')))
+    if len(context.children) >= 1:
+        actions.append(ViewLink('order', title=_(u'Order')))
+    return {'actions': [action for action in actions
+                        if action.permitted(context, request)]}
+
+
+def includeme(config):
+    config.scan('.actions')
+
+    config.add_view(
+        actions,
+        name='actions-dropdown',
+        permission='view',
+        renderer='kotti:templates/actions-dropdown.pt',
+        )

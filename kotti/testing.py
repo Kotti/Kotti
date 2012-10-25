@@ -1,3 +1,12 @@
+# -*- coding: utf-8 -*-
+
+"""
+Inheritance Diagram
+-------------------
+
+.. inheritance-diagram:: kotti.testing
+"""
+
 import os
 from os.path import join, dirname
 from unittest import TestCase

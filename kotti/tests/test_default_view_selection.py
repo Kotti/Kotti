@@ -4,7 +4,7 @@ from kotti.resources import get_root
 from kotti.resources import IContent
 from kotti.testing import DummyRequest
 from kotti.testing import UnitTestBase
-from kotti.views.edit.default_view_selection import DefaultViewSelection
+from kotti.views.edit.default_views import DefaultViewSelection
 from pyramid.httpexceptions import HTTPFound
 
 
@@ -27,14 +27,13 @@ class TestDefaultViewSelection(UnitTestBase):
         assert view._is_valid_view("folder_view") is True
         assert view._is_valid_view("foo") is False
 
-    def test_default_view_selection(self):
-
+    def test_default_views(self):
         self.config.add_view(
             context=IContent,
             name='folder_view',
             permission='view',
             renderer='kotti:templates/view/folder.pt',
-        )
+            )
 
         context = get_root()
         request = DummyRequest()

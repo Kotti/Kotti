@@ -146,7 +146,7 @@ class TestTags:
         from kotti import DBSession
         from kotti.resources import get_root
         from kotti.resources import Tag, TagsToContents, Content
-        from kotti.views.edit.node_actions import NodeActions
+        from kotti.views.edit.actions import NodeActions
 
         ses = DBSession
         root = get_root()
@@ -168,7 +168,7 @@ class TestTags:
         from kotti import DBSession
         from kotti.resources import get_root
         from kotti.resources import Tag, TagsToContents, Content
-        from kotti.views.edit.node_actions import NodeActions
+        from kotti.views.edit.actions import NodeActions
 
         ses = DBSession
         root = get_root()
@@ -191,7 +191,7 @@ class TestTags:
         from kotti import DBSession
         from kotti.resources import get_root
         from kotti.resources import Tag, TagsToContents, Content
-        from kotti.views.edit.node_actions import NodeActions
+        from kotti.views.edit.actions import NodeActions
 
         ses = DBSession
         root = get_root()
