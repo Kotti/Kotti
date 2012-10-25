@@ -7,7 +7,6 @@ from babel.dates import format_date
 from babel.dates import format_datetime
 from babel.dates import format_time
 from pyramid.decorator import reify
-from pyramid.httpexceptions import HTTPFound
 from pyramid.i18n import get_localizer
 from pyramid.i18n import get_locale_name
 from pyramid.i18n import make_localizer
@@ -29,7 +28,6 @@ from kotti import get_settings
 from kotti import DBSession
 from kotti.util import disambiguate_name
 disambiguate_name  # BBB
-from kotti.util import _
 from kotti.events import objectevent_listeners
 from kotti.resources import Content
 from kotti.resources import Document
