@@ -1,13 +1,19 @@
+"""
+Views for image content objects.
+"""
+
 import PIL
-from kotti.util import extract_from_settings
-from kotti.resources import IImage
 from plone.scale.scale import scaleImage
 from pyramid.response import Response
 from pyramid.view import view_config
+from pyramid.view import view_defaults
+
+from kotti.util import extract_from_settings
+from kotti.resources import IImage
 
 PIL.ImageFile.MAXBLOCK = 33554432
 
-# default image scales
+#: Default image scales
 image_scales = {
     'span1': [60, 120],
     'span2': [160, 320],
@@ -24,26 +30,42 @@ image_scales = {
     }
 
 
+@view_defaults(context=IImage, permission='view')
 class ImageView(object):
+    """The ImageView class is registered for the :class:`IImage` context."""
 
     def __init__(self, context, request):
 
         self.context = context
         self.request = request
 
-    @view_config(context=IImage,
-                 name='view',
-                 permission='view',
+    @view_config(name='view',
                  renderer='kotti:templates/view/image.pt')
     def view(self):
+        """
+        :result: Empty dictionary to be handed to the image.pt template for rendering.
+        :rtype: dict
+        """
+
         return {}
 
-    @view_config(context=IImage,
-                 name="image",
-                 permission='view')
+    @view_config(name="image",)
     def image(self, subpath=None):
         """Return the image in a specific scale, either inline
-        (default) or as attachment."""
+        (default) or as attachment.
+
+        :param subpath: [<image_scale>]/download] (optional).
+                        When 'download' is the last element in subpath,
+                        the image is served with a 'Content-Disposition: attachment'
+                        header.  <image_scale> has to be one of the predefined
+                        image_scales - either from the defaults in this module
+                        or one set with a kotti.image_scales.<scale_name> in your
+                        app config ini file.
+        :type subpath: str
+
+        :result: complete response object
+        :rtype: pyramid.response.Response
+        """
 
         if subpath is None:
             subpath = self.request.subpath
