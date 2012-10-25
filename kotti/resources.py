@@ -367,8 +367,7 @@ class Content(Node):
         self.tags = tags or []
 
     def copy(self, **kwargs):
-        tags = getattr(self, 'tags', None)
-        kwargs['tags'] = tags
+        kwargs['tags'] = self.tags
         return super(Content, self).copy(**kwargs)
 
 
