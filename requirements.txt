@@ -32,7 +32,7 @@ iso8601==0.1.4
 js.bootstrap==2.1.5
 js.jquery==1.7.1
 js.jquery-timepicker-addon==0.9.8
-js.jqueryui==1.8.16-1
+js.jqueryui==1.8.24
 js.jqueryui-tagit==2.0.24-1
 js.tinymce==3.5.2-1
 kotti-tinymce==0.2.5
