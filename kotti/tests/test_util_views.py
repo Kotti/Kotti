@@ -103,6 +103,7 @@ class TestTemplateAPI(UnitTestBase):
 
         api = self.make()
         self.assertEqual(api.edit_links, [
+            ViewLink('contents', u'Contents'),
             ViewLink('edit', u'Edit'),
             ViewLink('share', u'Share'),
             ])
