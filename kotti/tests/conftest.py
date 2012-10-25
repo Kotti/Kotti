@@ -62,7 +62,7 @@ def pytest_funcarg__db_session(request):
     return DBSession()
 
 
-def pytest_funcarg__request(request):
+def pytest_funcarg__dummy_request(request):
     from kotti.testing import DummyRequest
     config = request.getfuncargvalue('config')
     config.manager.get()['request'] = request = DummyRequest()

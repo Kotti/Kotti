@@ -2,7 +2,7 @@ from mock import patch
 
 
 class TestEvents:
-    def test_owner(self, db_session, events, request):
+    def test_owner(self, db_session, events, dummy_request):
         from kotti import DBSession
         from kotti.resources import get_root
         from kotti.resources import Content

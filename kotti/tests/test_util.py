@@ -8,7 +8,7 @@ class TestRequestCache(object):
         from kotti.util import request_cache
         self.cache_decorator = request_cache
 
-    def test_it(self, request):
+    def test_it(self, dummy_request):
         from kotti.util import clear_cache
 
         called = []
@@ -27,7 +27,7 @@ class TestRequestCache(object):
         my_fun(1, 2)
         assert len(called) == 3
 
-    def test_dont_cache(self, request):
+    def test_dont_cache(self, dummy_request):
         from kotti.util import DontCache
         called = []
 
