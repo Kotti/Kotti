@@ -264,6 +264,18 @@ class TypeInfo(object):
         else:
             return False
 
+    def add_selectable_default_view(self, name, title):
+        """Add a view to the list of default views selectable by the
+        user in the UI.
+
+        :param name: Name the view is registered with
+        :type name: str
+
+        :param title: Title for the view for display in the UI.
+        :type title: unicode or TranslationString
+        """
+        self.selectable_default_views.append((name, title))
+
 
 class Tag(Base):
     id = Column(Integer, primary_key=True)
@@ -358,17 +370,6 @@ class Content(Node):
         tags = getattr(self, 'tags', None)
         kwargs['tags'] = tags
         return super(Content, self).copy(**kwargs)
-
-    @classmethod
-    def add_selectable_default_view(cls, name, title):
-        """Add a view to the list of default views selectable by the
-           user in the UI.
-
-           - name (str): name the view is registered with
-
-           - title (Unicode): title to be displayed in the UI"""
-
-        cls.type_info.selectable_default_views.append((name, title))
 
 
 class Document(Content):

@@ -5,7 +5,6 @@ import colander
 from colander import Invalid
 import deform
 from deform import Button
-from deform.widget import TextAreaWidget
 from deform.widget import Widget
 from pyramid.decorator import reify
 from pyramid.httpexceptions import HTTPFound
@@ -45,25 +44,6 @@ def deferred_tag_it_widget(node, kw):
         available_tags=available_tags,
         )
     return widget
-
-
-class ContentSchema(colander.MappingSchema):
-    title = colander.SchemaNode(
-        colander.String(),
-        title=_(u'Title'),
-        )
-    description = colander.SchemaNode(
-        colander.String(),
-        title=_('Description'),
-        widget=TextAreaWidget(cols=40, rows=5),
-        missing=u"",
-        )
-    tags = colander.SchemaNode(
-        ObjectType(),
-        title=_('Tags'),
-        widget=deferred_tag_it_widget,
-        missing=[],
-        )
 
 
 class Form(deform.Form):
