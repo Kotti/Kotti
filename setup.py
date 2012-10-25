@@ -24,7 +24,7 @@ install_requires = [
     'html2text',
     'js.bootstrap>=2.1.5',
     'js.deform',
-    'js.deform_bootstrap',
+    'js.deform_bootstrap>=0.2.4-1',
     'js.jquery',
     'js.jquery_form',
     'js.jquery_timepicker_addon',

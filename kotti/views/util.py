@@ -302,16 +302,10 @@ class TemplateAPI(object):
                 if l.permitted(self.root, self.request)]
 
 
+@deprecate("'ensure_view_selector' is deprecated as of Kotti 0.8.0. "
+           "There is no replacement.")
 def ensure_view_selector(func):
-    def wrapper(context, request):
-        path_els = request.path_info.split(u'/')
-        if not path_els[-1].startswith('@@'):
-            path_els[-1] = '@@' + path_els[-1]
-            request.path_info = u'/'.join(path_els)
-            return HTTPFound(location=request.url)
-        return func(context, request)
-    wrapper.__doc__ = func.__doc__
-    return wrapper
+    return func
 
 
 class NodesTree(object):

@@ -103,6 +103,7 @@ class TestTemplateAPI(UnitTestBase):
 
         api = self.make()
         self.assertEqual(api.edit_links, [
+            ViewLink('contents', u'Contents'),
             ViewLink('edit', u'Edit'),
             ViewLink('share', u'Share'),
             ])
@@ -438,17 +439,6 @@ class TestViewUtil(UnitTestBase):
             }
         add_renderer_globals(event)
         self.assertTrue('api' in event)
-
-
-class TestUtil(UnitTestBase):
-    def test_ensure_view_selector(self):
-        from kotti.views.util import ensure_view_selector
-        wrapper = ensure_view_selector(None)
-        request = DummyRequest(path='/edit')
-        # Ignoring the result since it's not useful with DummyRequest.
-        # We check that path_info was set accordingly though:
-        wrapper(None, request)
-        self.assertEqual(request.path_info, u'/@@edit')
 
 
 class TestLocalNavigationSlot(UnitTestBase):
