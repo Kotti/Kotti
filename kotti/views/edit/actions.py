@@ -1,3 +1,7 @@
+"""
+Action views
+"""
+
 from pyramid.exceptions import Forbidden
 from pyramid.httpexceptions import HTTPFound
 from pyramid.security import has_permission

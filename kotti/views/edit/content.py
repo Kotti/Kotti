@@ -1,6 +1,10 @@
+"""
+Content edit views
+"""
+
 import colander
-from colander import null
 from colander import SchemaNode
+from colander import null
 from deform import FileData
 from deform.widget import FileUploadWidget
 from deform.widget import RichTextWidget
