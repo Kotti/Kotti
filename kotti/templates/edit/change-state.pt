@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      i18n:domain="Kotti"
+      metal:use-macro="api.macro('kotti:templates/edit/master.pt')">
+
+  <div metal:fill-slot="content">
+    <h1 i18n:translate="">Change workflow state</h1>
+
+    <div class="tab-pane" id="change-state">
+         
+      <form action="${request.url}" method="post" id="form-change-state">
+
+        <span class="help-block" i18n:translate="">An item's workflow state determines who can see, edit and/or manage it.</span>
+
+        <table class="table table-condensed" tal:condition="items">
+          <thead>
+            <tr>
+              <th></th>
+              <th i18n:translate="">Title</th>
+              <th i18n:translate="">Type</th>
+              <th i18n:translate="">State</th>
+              <th i18n:translate="">Creation Date</th>
+              <th i18n:translate="">Modification Date</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr tal:repeat="item items">
+              <tal:block tal:define="url string:${request.resource_url(item)}@@contents">
+                <td><input name="children-to-change-state" type="checkbox" value="${item.id}" checked="checked" /></td>
+                <td><a href="${url}">${item.title}</a></td>
+                <td>${item.type_info.title}</td>
+                <td>${states[item.state]['title']}</td>
+                <td>${api.format_date(item.creation_date)}</td>
+                <td>${api.format_date(item.modification_date)}</td>
+              </tal:block>
+            </tr>
+          </tbody>
+        </table>
+
+        <fieldset>
+          <legend i18n:translate="">Include children</legend>
+          <span class="help-block" i18n:translate="">If checked, this will attempt to modify the status of all children in any selected documents and their subdocuments.</span>
+          <label class="checkbox">
+            <input type="checkbox" name="include-children" value="include-children" /> <span  i18n:translate="">Include children</span>
+          </label>
+        </fieldset>
+
+        <fieldset>
+          <legend i18n:translate="">Change state to</legend>
+          <span class="help-block" i18n:translate="">Select the new state where all choosen items should be set.</span>
+          <label class="radio">
+            <input type="radio" name="to-state" value="no-change" checked="checked" /> <span i18n:translate="">No change</span>
+          </label>
+          <label class="radio" tal:repeat="transition transitions">
+            <input type="radio" name="to-state" value="${transition['to_state']}" /> ${states[transition['to_state']]['title']}
+          </label>
+        </fieldset>
+
+        <div class="form-actions">
+          <button type="submit" name="change_state" value="change_state"
+                  class="btn btn-primary" i18n:translate="">Apply changes</button>
+          <button type="submit" name="cancel" value="cancel" 
+                  class="btn" i18n:translate="">Cancel</button>
+        </div>
+      </form>    
+    </div>
+  </div>
+</html>

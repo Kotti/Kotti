@@ -110,7 +110,6 @@ class ContainerMixin(object, DictMixin):
         """Return only those children for which the user initiating
            the request has the asked permission.
         """
-
         return [
             c for c in self.children
             if has_permission(permission, c, request)
@@ -331,6 +330,7 @@ class Content(Node):
         add_view=None,
         addable_to=[],
         edit_links=[
+            ViewLink('contents', title=_(u'Contents')),
             ViewLink('edit', title=_(u'Edit')),
             ViewLink('share', title=_(u'Share')),
             ],

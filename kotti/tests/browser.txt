@@ -318,6 +318,7 @@ Copy and paste
 
 We can paste twice since we copied:
 
+  >>> browser.open(testing.BASE_URL)
   >>> browser.getLink('Paste').click()
   >>> "Second Child pasted" in browser.contents
   True
@@ -377,8 +378,8 @@ property:
   >>> browser.open(testing.BASE_URL + '/child-one/second-child')
   >>> browser.getLink('Paste').click()
   >>> Document.type_info.addable_to = ()
+  >>> browser.open(testing.BASE_URL + '/child-one/second-child')
   >>> try:
-  ...     browser.reload()
   ...     browser.getLink('Paste')
   ... finally:
   ...     Document.type_info.addable_to = save_addable_document
@@ -437,12 +438,197 @@ On setup pages we can't use the actions:
   LinkNotFoundError
 
 
+Contents view actions
+---------------------
+
+  >>> browser.open(testing.BASE_URL + '/child-one')
+  >>> browser.getLink('Contents').click()
+  >>> browser.url == testing.BASE_URL + '/child-one/@@contents'
+  True
+
+  >>> childs = ctrl(name='children')
+  >>> childs.value = childs.options[0:1]
+  >>> ctrl(name='copy').click()
+  >>> 'copied.' in browser.contents
+  True
+
+  >>> browser.open(testing.BASE_URL + '/second-child-1/@@contents')
+  >>> 'My Third Child' in browser.contents
+  False
+  >>> ctrl(name='paste').click()
+  >>> "My Third Child" in browser.contents
+  True
+
+  >>> childs = ctrl(name='children')
+  >>> childs.value = childs.options[0:1]
+  >>> ctrl(name='cut').click()
+  >>> 'cut.' in browser.contents  # TODO: this should be show all names
+  True
+
+  >>> browser.open(testing.BASE_URL + '/child-one/@@contents')
+  >>> "Grandchild" in browser.contents
+  False
+  >>> ctrl(name='paste').click()
+  >>> "Grandchild" in browser.contents
+  True
+  >>> with pytest.raises(LookupError): ctrl(name='paste')
+
+  >>> childs = ctrl(name='children')
+  >>> childs.value = childs.options[0:2]
+  >>> ctrl(name='cut').click()
+  >>> browser.open(testing.BASE_URL)
+  >>> browser.getLink('Document').click()
+  >>> ctrl('Title').value = 'Forth child'
+  >>> ctrl(name='save').click()
+  >>> browser.open(testing.BASE_URL + '/forth-child/@@contents')
+
+  >>> "Grandchild" in browser.contents
+  False
+  >>> "My Third Child" in browser.contents
+  False
+  >>> ctrl(name='paste').click()
+  >>> "Grandchild" in browser.contents
+  True
+  >>> "My Third Child" in browser.contents
+  True
+  >>> browser.open(testing.BASE_URL + '/child-one/@@contents')
+  >>> "Grandchild" in browser.contents
+  False
+
+  >>> browser.open(testing.BASE_URL + '/forth-child/@@contents')
+  >>> 'third-child' in browser.contents
+  True
+  >>> 'Grandchild' in browser.contents
+  True
+  >>> 'child-the-third' in browser.contents
+  False
+  >>> 'Hello Bob' in browser.contents
+  False
+  >>> childs = ctrl(name='children')
+  >>> childs.value = childs.options[0:2]
+  >>> ctrl(name='rename_nodes').click()
+  >>> ctrl(name='cancel').click()
+  >>> u'No changes made.' in browser.contents
+  True
+  >>> browser.url == testing.BASE_URL + '/forth-child/@@contents'
+  True
+
+  >>> childs = ctrl(name='children')
+  >>> childs.value = childs.options[0:2]
+  >>> ctrl(name='rename_nodes').click()
+  >>> ctrl(name='%s-name' % childs.options[0]).value = 'child-the-third'
+  >>> ctrl(name='%s-title' % childs.options[0]).value = 'child, the third'
+  >>> ctrl(name='%s-name' % childs.options[1]).value = 'hello-bob'
+  >>> ctrl(name='%s-title' % childs.options[1]).value = 'Hello Bob'
+  >>> ctrl(name='rename_nodes').click()
+
+  >>> browser.url == testing.BASE_URL + '/forth-child/@@contents'
+  True
+  >>> 'third-child' in browser.contents
+  False
+  >>> 'Grandchild' in browser.contents
+  False
+  >>> 'child-the-third' in browser.contents
+  True
+  >>> 'Hello Bob' in browser.contents
+  True
+
+  >>> childs = ctrl(name='children')
+  >>> childs.value = childs.options[0:2]
+  >>> ctrl(name='delete_nodes').click()
+  >>> ctrl(name='cancel').click()
+  >>> u'No changes made.' in browser.contents
+  True
+  >>> browser.url == testing.BASE_URL + '/forth-child/@@contents'
+  True
+
+  >>> childs = ctrl(name='children')
+  >>> childs.value = childs.options[0:2]
+  >>> ctrl(name='delete_nodes').click()
+  >>> "Are you sure" in browser.contents
+  True
+
+  >>> ctrl(name='children-to-delete').value = childs.options[0:2]
+  >>> ctrl(name='delete_nodes').click()
+  >>> "child, the third deleted." in browser.contents
+  True
+  >>> "Hello Bob deleted." in browser.contents
+  True
+
+Contents view change state actions
+----------------------------------
+
+  >>> browser.getLink("Second Child").click()
+  >>> browser.getLink("Contents").click()
+  >>> 'http://localhost:6543/second-child-1/third-child/@@workflow-change?new_state=public' in browser.contents
+  True
+  >>> browser.getLink("Make Public", index=1).click()
+  >>> 'http://localhost:6543/second-child-1/third-child/@@workflow-change?new_state=private' in browser.contents
+  True
+
+  >>> childs = ctrl(name='children')
+  >>> childs.value = childs.options[0:3]
+  >>> ctrl(name='change_state').click()
+  >>> 'Change workflow state' in browser.contents
+  True
+  >>> ctrl(name='cancel').click()
+  >>> u'No changes made.' in browser.contents
+  True
+  >>> browser.url == testing.BASE_URL + '/second-child-1/@@contents'
+  True
+
+  >>> childs = ctrl(name='children')
+  >>> childs.value = childs.options[0:3]
+  >>> ctrl(name='change_state').click()
+  >>> ctrl(name='to-state').value = ['private']
+  >>> ctrl(name='change_state').click()
+  >>> 'Your changes have been saved.' in browser.contents
+  True
+  >>> 'http://localhost:6543/second-child-1/third-child/@@workflow-change?new_state=public' in browser.contents
+  True
+  >>> 'http://localhost:6543/second-child-1/grandchild-2/@@workflow-change?new_state=public' in browser.contents
+  True
+  >>> 'http://localhost:6543/second-child-1/grandchild-3/@@workflow-change?new_state=public' in browser.contents
+  True
+
+  >>> browser.getLink('My Third Child').click()
+  >>> 'http://localhost:6543/second-child-1/third-child/child-one/@@workflow-change?new_state=public' in browser.contents
+  True
+  >>> browser.open(testing.BASE_URL + '/second-child-1/third-child/child-one/@@workflow-change?new_state=public')
+  >>> browser.open(testing.BASE_URL + '/second-child-1/third-child/@@contents')
+  >>> 'http://localhost:6543/second-child-1/third-child/child-one/@@workflow-change?new_state=private' in browser.contents
+  True
+
+  >>> browser.getLink('First Child', index=1).click()
+  >>> browser.getLink('Document').click()
+  >>> ctrl('Title').value = 'Sub child'
+  >>> ctrl(name='save').click()
+  >>> 'http://localhost:6543/second-child-1/third-child/child-one/sub-child/@@workflow-change?new_state=public' in browser.contents
+  True
+
+  >>> browser.getLink("Second Child").click()
+  >>> browser.getLink("Contents").click()
+  >>> childs = ctrl(name='children')
+  >>> childs.value = childs.options[0:3]
+  >>> ctrl(name='change_state').click()
+  >>> ctrl(name='include-children').value = ['include-children']
+  >>> ctrl(name='to-state').value = ['public']
+  >>> ctrl(name='change_state').click()
+  >>> 'Your changes have been saved.' in browser.contents
+  True
+  >>> 'http://localhost:6543/second-child-1/third-child/@@workflow-change?new_state=private' in browser.contents
+  True
+  >>> browser.open(testing.BASE_URL + '/second-child-1/third-child/child-one/sub-child/')
+  >>> 'http://localhost:6543/second-child-1/third-child/child-one/sub-child/@@workflow-change?new_state=private' in browser.contents
+  True
+
+
 Navigation
 ----------
 
   >>> browser.getLink("Navigate").click()
-  >>> browser.getLink("My Third Child").click()
-  >>> browser.url == testing.BASE_URL + '/child-one/third-child/'
+  >>> browser.getLink("Second Child").click()
+  >>> browser.url == testing.BASE_URL + '/second-child-1/'
   True
 
 User management

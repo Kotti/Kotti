@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-
 import warnings
 from kotti.resources import get_root
 from kotti.resources import IContent
@@ -26,7 +25,7 @@ class TestDefaultViewSelection(UnitTestBase):
         view = DefaultViewSelection(context, request)
 
         assert view._is_valid_view("folder_view") is True
-        assert view._is_valid_view("foo_view") is False
+        assert view._is_valid_view("foo") is False
 
     def test_default_view_selection(self):
 
@@ -46,7 +45,7 @@ class TestDefaultViewSelection(UnitTestBase):
 
         assert 'selectable_default_views' in sviews
 
-        # the root should have at least the default view and te folder_view
+        # the root should have at least the default view and the folder_view
         assert len(sviews['selectable_default_views']) > 1
 
         # the first view is always the default view
@@ -56,7 +55,7 @@ class TestDefaultViewSelection(UnitTestBase):
 
         assert sviews['selectable_default_views'][1]['is_current'] is False
 
-        # set the default view to folder_view
+        # set the default view to folder_view view
         request = DummyRequest(GET={'view_name': 'folder_view'})
         view = DefaultViewSelection(context, request)
 
