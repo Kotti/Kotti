@@ -39,6 +39,9 @@ Smaller tasks
 
 - Define and document control panel "best practice" for add-ons.
 
+- Add ordering of children and hide/show(Content.in_navigation) to the contents
+  view.
+
 Upstream tasks
 ==============
 

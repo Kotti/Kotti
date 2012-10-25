@@ -29,19 +29,16 @@
             </thead>
             <tbody>
             <tr tal:repeat="child children">
-              <tal:block tal:define="url string:${request.resource_url(child)}@@contents">
               <td>
                   <input name="children" type="checkbox" value="${child.id}" />
               </td>
               <td>
-                  <a href="${url}">
+                  <a href="${request.resource_url(child, '@@contents')}">
                       ${child.title}
                   </a>
               </td>
               <td>
-                  <a href="${url}">
-                      ${child.type_info.title}
-                  </a>
+                ${child.type_info.title}
               </td>
               <td>
                 <ul class="nav">
@@ -49,16 +46,11 @@
                 </ul>
               </td>
               <td>
-                  <a href="${url}">
-                      ${api.format_date(child.creation_date)}
-                  </a>
+                ${api.format_date(child.creation_date)}
               </td>
               <td>
-                  <a href="${url}">
-                      ${api.format_date(child.modification_date)}
-                  </a>
+                ${api.format_date(child.modification_date)}
               </td>
-              </tal:block>
             </tr>
           </tbody>
         </table>
