@@ -162,7 +162,7 @@ class TestTags(EventTestBase, UnitTestBase):
 
         request = DummyRequest()
         request.params['paste'] = u'on'
-        request.session['kotti.paste'] = (root[u'content_1'].id, 'cut')
+        request.session['kotti.paste'] = ([root[u'content_1'].id, ], 'cut')
         paste_node(root[u'folder_1'], request)
         assert root[u'folder_1'][u'content_1'].tags == [u'my tag']
         assert ses.query(Tag).count() == 1
@@ -184,7 +184,7 @@ class TestTags(EventTestBase, UnitTestBase):
 
         request = DummyRequest()
         request.params['paste'] = u'on'
-        request.session['kotti.paste'] = (root[u'content_1'].id, 'copy')
+        request.session['kotti.paste'] = ([root[u'content_1'].id, ], 'copy')
         paste_node(root[u'folder_1'], request)
         assert root[u'content_1'].tags == [u'my tag']
         assert root[u'folder_1'][u'content_1'].tags == [u'my tag']
