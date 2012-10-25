@@ -1,3 +1,10 @@
+# -*- coding: utf-8 -*-
+
+"""
+Created on 2012-10-25
+:summary: Node action views
+"""
+
 from pyramid.exceptions import Forbidden
 from pyramid.httpexceptions import HTTPFound
 from pyramid.security import has_permission
@@ -9,10 +16,9 @@ from kotti import DBSession
 from kotti.resources import Node
 from kotti.util import _
 from kotti.util import title_to_name
-from kotti.views.edit import _all_children
-from kotti.views.edit import _selected_children
 from kotti.views.edit import _states
 from kotti.views.form import EditFormView
+from kotti.views.util import nodes_tree
 from kotti.workflow import get_workflow
 
 
@@ -22,6 +28,23 @@ class NodeActions(object):
     def __init__(self, context, request):
         self.context = context
         self.request = request
+
+    def _selected_children(self, add_context=True):
+        ids = self.request.session.pop('kotti.selected-children')
+        if ids is None and add_context:
+            ids = [self.context.id]
+        return ids
+
+    def _all_children(self, context, permission='view'):
+        """
+        :summary: Get recursive all children of the given context.
+        :result: List with all children of a given context.
+        :rtype: list
+        """
+        tree = nodes_tree(self.request,
+                          context=context,
+                          permission=permission)
+        return tree.tolist()[1:]
 
     def back(self):
         """
@@ -44,7 +67,7 @@ class NodeActions(object):
 
     @view_config(name='copy')
     def copy_node(self):
-        ids = _selected_children(self.context, self.request)
+        ids = self._selected_children()
         self.request.session['kotti.paste'] = (ids, 'copy')
         for id in ids:
             item = DBSession.query(Node).get(id)
@@ -55,7 +78,7 @@ class NodeActions(object):
 
     @view_config(name='cut')
     def cut_node(self):
-        ids = _selected_children(self.context, self.request)
+        ids = self._selected_children()
         self.request.session['kotti.paste'] = (ids, 'cut')
         for id in ids:
             item = DBSession.query(Node).get(id)
@@ -160,7 +183,7 @@ class NodeActions(object):
             self.request.session.flash(_(u'No changes made.'), 'info')
             return self.back()
 
-        ids = _selected_children(self.context, self.request, add_context=False)
+        ids = self._selected_children(add_context=False)
         if ids is not None:
             items = DBSession.query(Node).filter(Node.id.in_(ids)).\
                 order_by(Node.position).all()
@@ -217,7 +240,7 @@ class NodeActions(object):
             self.request.session.flash(_(u'No changes made.'), 'info')
             return self.back()
 
-        ids = _selected_children(self.context, self.request, add_context=False)
+        ids = self._selected_children(add_context=False)
         if ids is not None:
             items = DBSession.query(Node).filter(Node.id.in_(ids)).all()
             return {'items': items}
@@ -239,9 +262,8 @@ class NodeActions(object):
                     if wf is not None:
                         wf.transition_to_state(item, self.request, to_state)
                     if include_children:
-                        childs = _all_children(item,
-                                               self.request,
-                                               'state_change')
+                        childs = self._all_children(item,
+                                                    permission='state_change')
                         for child in childs:
                             wf = get_workflow(child)
                             if wf is not None:
@@ -258,7 +280,7 @@ class NodeActions(object):
             self.request.session.flash(_(u'No changes made.'), 'info')
             return self.back()
 
-        ids = _selected_children(self.context, self.request, add_context=False)
+        ids = self._selected_children(add_context=False)
         if ids is not None:
             wf = get_workflow(self.context)
             if wf is not None:
