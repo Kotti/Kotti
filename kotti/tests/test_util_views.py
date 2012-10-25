@@ -252,13 +252,13 @@ class TestTemplateAPI:
         api = self.make()
         assert api.slots.right == [u"Hello world!"]
 
-    def test_slot_request_has_parameters(self):
+    def test_slot_request_has_parameters(self, config, db_session):
         from kotti.views.slots import assign_slot
 
         def foo(context, request):
             bar = request.POST['bar']
             return Response(u"{0} world!".format(bar))
-        self.config.add_view(foo, name='foo')
+        config.add_view(foo, name='foo')
         assign_slot('foo', 'left', params=dict(greeting=u"Y\u0153"))
 
         request = DummyRequest()
@@ -495,7 +495,7 @@ class TestNodesTree:
         assert [ch.id for ch in tree.children[0].children] == [
             ab.id, aa.id, ac.id]
 
-    def test_tolist(self):
+    def test_tolist(self, db_session):
         from kotti.views.util import nodes_tree
 
         a, aa, ab, ac, aca, acb = create_contents()
