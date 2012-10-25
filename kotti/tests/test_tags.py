@@ -150,7 +150,7 @@ class TestTags(EventTestBase, UnitTestBase):
         from kotti import DBSession
         from kotti.resources import get_root
         from kotti.resources import Tag, TagsToContents, Content
-        from kotti.views.edit import paste_node
+        from kotti.views.edit.node_actions import NodeActions
 
         ses = DBSession
         root = get_root()
@@ -163,7 +163,7 @@ class TestTags(EventTestBase, UnitTestBase):
         request = DummyRequest()
         request.params['paste'] = u'on'
         request.session['kotti.paste'] = ([root[u'content_1'].id], 'cut')
-        paste_node(root[u'folder_1'], request)
+        NodeActions(root[u'folder_1'], request).paste_node()
         assert root[u'folder_1'][u'content_1'].tags == [u'my tag']
         assert ses.query(Tag).count() == 1
         assert ses.query(TagsToContents).count() == 1
@@ -172,7 +172,7 @@ class TestTags(EventTestBase, UnitTestBase):
         from kotti import DBSession
         from kotti.resources import get_root
         from kotti.resources import Tag, TagsToContents, Content
-        from kotti.views.edit import paste_node
+        from kotti.views.edit.node_actions import NodeActions
 
         ses = DBSession
         root = get_root()
@@ -185,7 +185,7 @@ class TestTags(EventTestBase, UnitTestBase):
         request = DummyRequest()
         request.params['paste'] = u'on'
         request.session['kotti.paste'] = ([root[u'content_1'].id], 'copy')
-        paste_node(root[u'folder_1'], request)
+        NodeActions(root[u'folder_1'], request).paste_node()
         assert root[u'content_1'].tags == [u'my tag']
         assert root[u'folder_1'][u'content_1'].tags == [u'my tag']
         assert ses.query(Tag).count() == 1
@@ -195,7 +195,7 @@ class TestTags(EventTestBase, UnitTestBase):
         from kotti import DBSession
         from kotti.resources import get_root
         from kotti.resources import Tag, TagsToContents, Content
-        from kotti.views.edit import delete_node
+        from kotti.views.edit.node_actions import NodeActions
 
         ses = DBSession
         root = get_root()
@@ -210,7 +210,7 @@ class TestTags(EventTestBase, UnitTestBase):
 
         request = DummyRequest()
         request.POST['delete'] = 'on'
-        delete_node(root[u'folder_1'], request)
+        NodeActions(root[u'folder_1'], request).delete_node()
         assert ses.query(Tag).count() == 0
         assert ses.query(TagsToContents).count() == 0
 

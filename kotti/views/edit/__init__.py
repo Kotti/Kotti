@@ -1,7 +1,5 @@
-from pyramid.exceptions import Forbidden
 from pyramid.httpexceptions import HTTPFound
 from pyramid.location import inside
-from pyramid.security import has_permission
 from pyramid.url import resource_url
 from zope.deprecation.deprecation import deprecate
 
@@ -11,7 +9,6 @@ from kotti.resources import IContent
 from kotti.resources import Node
 from kotti.resources import get_root
 from kotti.util import _
-from kotti.util import title_to_name
 from kotti.util import ActionButton
 from kotti.util import ViewLink
 from kotti.views.form import AddFormView
@@ -90,15 +87,17 @@ def contents_buttons(context, request):
 
 
 def contents(context, request):
-    """Choose the current action for our contents view. Gets called when you
-       click on the "Contents" Tab, or when you do an action in the "Contents" view.
+    """Choose the current action for our contents view. Gets called when
+       you click on the "Contents" Tab, or when you do an action in the
+       "Contents" view.
     """
     buttons = contents_buttons(context, request)
     for button in buttons:
         if button.path in request.POST:
             children = request.POST.getall('children')
             if not children and button.path != u'paste':
-                request.session.flash(_(u'You have to choose items to perform an action.'), 'info')
+                request.session.flash(_(u'You have to choose items to \
+                                        perform an action.'), 'info')
                 location = resource_url(context, request) + '@@contents'
                 return HTTPFound(location=location)
             request.session['kotti.selected-children'] = children
@@ -151,17 +150,6 @@ def workflow(context, request):
         }
 
 
-def workflow_change(context, request):
-    """Handle workflow change requests from workflow dropdown
-    """
-    new_state = request.params['new_state']
-    wf = get_workflow(context)
-    wf.transition_to_state(context, request, new_state)
-    request.session.flash(EditFormView.success_message, 'success')
-    url = request.referrer or request.resource_url(context)
-    return HTTPFound(location=url)
-
-
 def _selected_children(context, request, add_context=True):
     ids = request.session.pop('kotti.selected-children')
     if ids is None and add_context:
@@ -169,234 +157,11 @@ def _selected_children(context, request, add_context=True):
     return ids
 
 
-def copy_node(context, request):
-    ids = _selected_children(context, request)
-    request.session['kotti.paste'] = (ids, 'copy')
-    for id in ids:
-        item = DBSession.query(Node).get(id)
-        request.session.flash(_(u'${title} copied.',
-                                mapping=dict(title=item.title)), 'success')
-    if not request.is_xhr:
-        url = request.referrer or request.resource_url(context)
-        return HTTPFound(location=url)
-
-
-def cut_node(context, request):
-    ids = _selected_children(context, request)
-    request.session['kotti.paste'] = (ids, 'cut')
-    for id in ids:
-        item = DBSession.query(Node).get(id)
-        request.session.flash(_(u'${title} cut.',
-                                mapping=dict(title=item.title)), 'success')
-    if not request.is_xhr:
-        url = request.referrer or request.resource_url(context)
-        return HTTPFound(location=url)
-
-
-def paste_node(context, request):
-    ids, action = request.session['kotti.paste']
-    for count, id in enumerate(ids):
-        item = DBSession.query(Node).get(id)
-        if item is not None:
-            if action == 'cut':
-                if not has_permission('edit', item, request):
-                    raise Forbidden()
-                item.__parent__.children.remove(item)
-                context.children.append(item)
-                if count is len(ids) - 1:
-                    del request.session['kotti.paste']
-            elif action == 'copy':
-                copy = item.copy()
-                name = copy.name
-                if not name:  # for root
-                    name = copy.title
-                name = title_to_name(name, blacklist=context.keys())
-                copy.name = name
-                context.children.append(copy)
-            request.session.flash(_(u'${title} pasted.',
-                                    mapping=dict(title=item.title)), 'success')
-        else:
-            request.session.flash(
-                _(u'Could not paste node. It does not exist anymore.'), 'error')
-    if not request.is_xhr:
-        url = request.referrer or request.resource_url(context)
-        return HTTPFound(location=url)
-
-
-def order_node(context, request):
-    P = request.POST
-
-    if 'order-up' in P or 'order-down' in P:
-        up, down = P.get('order-up'), P.get('order-down')
-        child = DBSession.query(Node).get(int(down or up))
-        if up is not None:
-            mod = -1
-        else:  # pragma: no cover
-            mod = 1
-        index = context.children.index(child)
-        context.children.pop(index)
-        context.children.insert(index + mod, child)
-        request.session.flash(_(u'${title} moved.',
-                                mapping=dict(title=child.title)), 'success')
-        if not request.is_xhr:
-            return HTTPFound(location=request.url)
-
-    elif 'toggle-visibility' in P:
-        child = DBSession.query(Node).get(int(P['toggle-visibility']))
-        child.in_navigation ^= True
-        mapping = dict(title=child.title)
-        if child.in_navigation:
-            msg = _(u'${title} is now visible in the navigation.',
-                    mapping=mapping)
-        else:
-            msg = _(u'${title} is no longer visible in the navigation.',
-                    mapping=mapping)
-        request.session.flash(msg, 'success')
-        if not request.is_xhr:
-            return HTTPFound(location=request.url)
-
-    return {}
-
-
-def delete_node(context, request):
-    if 'delete' in request.POST:
-        parent = context.__parent__
-        request.session.flash(_(u'${title} deleted.',
-                                mapping=dict(title=context.title)), 'success')
-        del parent[context.name]
-        location = resource_url(parent, request)
-        return HTTPFound(location=location)
-    return {}
-
-
-def delete_nodes(context, request):
-    if 'delete_nodes' in request.POST:
-        ids = request.POST.getall('children-to-delete')
-        if not ids:
-            request.session.flash(_(u"Nothing deleted."), 'info')
-        for id in ids:
-            item = DBSession.query(Node).get(id)
-            request.session.flash(_(u'${title} deleted.',
-                                    mapping=dict(title=item.title)), 'success')
-            del context[item.name]
-        url = request.referrer or request.resource_url(context)
-        return HTTPFound(location=url)
-
-    if 'cancel' in request.POST:
-        request.session.flash(_(u'No changes made.'), 'info')
-        url = request.referrer or request.resource_url(context)
-        return HTTPFound(location=url)
-
-    ids = _selected_children(context, request, add_context=False)
-    if ids is not None:
-        items = DBSession.query(Node).filter(Node.id.in_(ids)).order_by(Node.position).all()
-        return {'items': items,
-                'states': _states(context, request)}
-    return {}
-
-
-def rename_node(context, request):
-    if 'rename' in request.POST:
-        name = request.POST['name']
-        title = request.POST['title']
-        if not name or not title:
-            request.session.flash(_(u'Name and title are required.'), 'error')
-        else:
-            context.name = name.replace('/', '')
-            context.title = title
-            request.session.flash(_(u'Item renamed'), 'success')
-            location = resource_url(context, request)
-            return HTTPFound(location=location)
-    return {}
-
-
-def rename_nodes(context, request):
-    if 'rename_nodes' in request.POST:
-        if 'rename_nodes-children' in request.session:
-            del request.session['rename_nodes-children']
-        ids = request.POST.getall('children-to-rename')
-        for id in ids:
-            item = DBSession.query(Node).get(id)
-            name = request.POST[id + '-name']
-            title = request.POST[id + '-title']
-            if not name or not title:
-                request.session.flash(_(u'Name and title are required.'), 'error')
-                location = resource_url(context, request) + '@@rename_nodes'
-                return HTTPFound(location=location)
-            else:
-                item.name = title_to_name(name, blacklist=context.keys())
-                item.title = title
-        if not ids:
-            request.session.flash(_(u'No changes made.'), 'info')
-        else:
-            request.session.flash(_(u'Your changes have been saved.'), 'success')
-        url = request.referrer or request.resource_url(context)
-        return HTTPFound(location=url)
-
-    if 'cancel' in request.POST:
-        request.session.flash(_(u'No changes made.'), 'info')
-        url = request.referrer or request.resource_url(context)
-        return HTTPFound(location=url)
-
-    ids = _selected_children(context, request, add_context=False)
-    if ids is not None:
-        items = DBSession.query(Node).filter(Node.id.in_(ids)).all()
-        return {'items': items}
-    return {}
-
-
 def _all_children(item, request, permission='view'):
     """Get recursive all children of the given item.
     """
     tree = nodes_tree(request, context=item, permission='state_change')
     return tree.tolist()[1:]
-
-
-def change_state(context, request):
-    if 'change_state' in request.POST:
-        if 'change_state-children' in request.session:
-            del request.session['change_state-children']
-        ids = request.POST.getall('children-to-change-state')
-        to_state = request.POST.get('to-state', u'no-change')
-        include_children = request.POST.get('include-children', None)
-        if to_state != u'no-change':
-            items = DBSession.query(Node).filter(Node.id.in_(ids)).all()
-            for item in items:
-                wf = get_workflow(item)
-                if wf is not None:
-                    wf.transition_to_state(item, request, to_state)
-                if include_children:
-                    childs = _all_children(item, request, 'state_change')
-                    for child in childs:
-                        wf = get_workflow(child)
-                        if wf is not None:
-                            wf.transition_to_state(child, request, to_state, )
-            request.session.flash(_(u'Your changes have been saved.'), 'success')
-        else:
-            request.session.flash(_(u'No changes made.'), 'info')
-        url = request.referrer or request.resource_url(context)
-        return HTTPFound(location=url)
-
-    if 'cancel' in request.POST:
-        request.session.flash(_(u'No changes made.'), 'info')
-        url = request.referrer or request.resource_url(context)
-        return HTTPFound(location=url)
-
-    ids = _selected_children(context, request, add_context=False)
-    if ids is not None:
-        wf = get_workflow(context)
-        if wf is not None:
-            items = DBSession.query(Node).filter(Node.id.in_(ids)).all()
-            transitions = []
-            for item in items:
-                    trans_info = wf.get_transitions(item, request)
-                    for tran_info in trans_info:
-                        if tran_info not in transitions:
-                            transitions.append(tran_info)
-            return {'items': items,
-                    'states': _states(context, request),
-                    'transitions': transitions, }
-    return {}
 
 
 @deprecate(
@@ -483,20 +248,12 @@ def includeme(config):
         )
 
     config.add_view(
-        workflow_change,
-        name='workflow-change',
-        permission='state_change',
-        )
-
-    config.add_view(
         workflow,
         name='workflow-dropdown',
         permission='edit',
         renderer='kotti:templates/workflow-dropdown.pt',
         )
 
-
-def nodes_includeme(config):
     config.add_view(
         contents,
         context=IContent,
@@ -505,66 +262,10 @@ def nodes_includeme(config):
         renderer='kotti:templates/edit/contents.pt',
         )
 
-    config.add_view(
-        copy_node,
-        name='copy',
-        permission='edit',
-        )
 
-    config.add_view(
-        cut_node,
-        name='cut',
-        permission='edit',
-        )
-
-    config.add_view(
-        paste_node,
-        name='paste',
-        permission='edit',
-        )
-
-    config.add_view(
-        order_node,
-        name='order',
-        permission='edit',
-        renderer='kotti:templates/edit/order.pt',
-        )
-
-    config.add_view(
-        delete_node,
-        name='delete',
-        permission='edit',
-        renderer='kotti:templates/edit/delete.pt',
-        )
-
-    config.add_view(
-        delete_nodes,
-        name='delete_nodes',
-        permission='edit',
-        renderer='kotti:templates/edit/delete-nodes.pt',
-        )
-
-    config.add_view(
-        rename_node,
-        name='rename',
-        permission='edit',
-        renderer='kotti:templates/edit/rename.pt',
-        )
-
-    config.add_view(
-        rename_nodes,
-        name='rename_nodes',
-        permission='edit',
-        renderer='kotti:templates/edit/rename-nodes.pt',
-        )
-
-    config.add_view(
-        change_state,
-        name='change_state',
-        permission='edit',
-        renderer='kotti:templates/edit/change-state.pt',
-        )
+def nodes_includeme(config):
 
     config.scan("kotti.views.edit.default_view_selection")
+    config.scan("kotti.views.edit.node_actions")
 
     config.include('kotti.views.edit.content')
