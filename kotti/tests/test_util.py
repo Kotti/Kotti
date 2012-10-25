@@ -4,9 +4,11 @@ from kotti.testing import UnitTestBase
 
 
 class TestRequestCache(object):
-    def setup_method(self, method):
+
+    @property
+    def cache_decorator(self):
         from kotti.util import request_cache
-        self.cache_decorator = request_cache
+        return request_cache
 
     def test_it(self, dummy_request):
         from kotti.util import clear_cache
@@ -44,11 +46,11 @@ class TestRequestCache(object):
 
 
 class TestLRUCache(TestRequestCache):
-    def setup_method(self, method):
-        from kotti.util import lru_cache
 
-        super(TestLRUCache, self).setup_method(method)
-        self.cache_decorator = lru_cache
+    @property
+    def cache_decorator(self):
+        from kotti.util import lru_cache
+        return lru_cache
 
 
 class TestTitleToName:
