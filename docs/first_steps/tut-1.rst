@@ -1,6 +1,6 @@
 .. _tut-1:
 
-Tutorial part 1: Customize the Look and Feel
+Tutorial Part 1: Customize the Look and Feel
 ============================================
 
 Let's learn by example.  We'll create an add-on package that will:
@@ -62,7 +62,7 @@ enter for every question to accept the defaults.  When finished,
 observe that a new directory called ``kotti_mysite`` was added to the
 current working directory, as mysite/kotti_mysite.
 
-Installing our New Add-On
+Installing Our New Add-On
 -------------------------
 
 To install the add-on (or any add-on, as discussed above) into our Kotti
@@ -187,7 +187,7 @@ the ``[app:kotti]`` section of our ``app.ini``, plus the defaults.  The values
 of this dictionary are merely strings.  Notice how we add to the string
 ``kotti.fanstatic.view_needed``.
 
-..note:
+.. note::
 
    Note the initial space in ' kotti_mysite.static.kotti_mysite_group', which
    allows a handy use of += on different lines -- after concatenation of the
