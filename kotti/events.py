@@ -37,12 +37,12 @@ Inheritance Diagram
 """
 
 from collections import defaultdict
+from datetime import datetime
 try:  # pragma: no cover
     from collections import OrderedDict
     OrderedDict  # pyflakes
 except ImportError:  # pragma: no cover
     from ordereddict import OrderedDict
-from datetime import datetime
 
 import sqlalchemy.event
 from sqlalchemy.orm import mapper
