@@ -170,7 +170,7 @@ class AddFormView(BaseFormView):
             return _(u'Add ${type}', mapping=dict(type=translate(type_title)))
 
 
-class CommaSeparatedListWidget(deform.Widget):
+class CommaSeparatedListWidget(deform.widget.Widget):
     def serialize(self, field, cstruct, readonly=False):
         if cstruct in (colander.null, None):
             cstruct = []
