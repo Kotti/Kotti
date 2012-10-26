@@ -117,4 +117,4 @@ def _load_image_scales(settings):
 def includeme(config):
     _load_image_scales(config.registry.settings)
 
-    config.scan("kotti.views.image")
+    config.scan(__name__)
