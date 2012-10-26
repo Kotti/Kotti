@@ -1,3 +1,7 @@
+"""
+Edit views.
+"""
+
 from pyramid.httpexceptions import HTTPFound
 from pyramid.location import inside
 from pyramid.url import resource_url

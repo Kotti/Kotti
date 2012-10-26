@@ -82,6 +82,30 @@ API Documentation
 .. automodule:: kotti.views.cache
    :members:
 
+:mod:`kotti.views.edit`
+-----------------------
+
+.. automodule:: kotti.views.edit
+   :members:
+
+:mod:`kotti.views.edit.actions`
+-------------------------------
+
+.. automodule:: kotti.views.edit.actions
+   :members:
+
+:mod:`kotti.views.edit.content`
+-------------------------------
+
+.. automodule:: kotti.views.edit.content
+   :members:
+
+:mod:`kotti.views.edit.default_views`
+-------------------------------------
+
+.. automodule:: kotti.views.edit.default_views
+   :members:
+
 :mod:`kotti.views.file`
 -----------------------
 
