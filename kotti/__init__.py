@@ -132,17 +132,17 @@ def _resolve_dotted(d, keys=conf_dotted):
 
 
 def main(global_config, **settings):
-    """ This function is a 'paste.app_factory' and returns a WSGI
-    application.
-    """
+    # This function is a 'paste.app_factory' and returns a WSGI
+    # application.
+
     config = base_configure(global_config, **settings)
     return config.make_wsgi_app()
 
 
 def base_configure(global_config, **settings):
-    """Resolve dotted names in settings, include plug-ins and create a
-    Configurator.
-    """
+    # Resolve dotted names in settings, include plug-ins and create a
+    # Configurator.
+
     from kotti.resources import appmaker
 
     for key, value in conf_defaults.items():
