@@ -12,34 +12,34 @@ Let's learn by example.  We'll create an add-on package that will:
 .. note::
 
     If have questions going through this tutorial, please post
-    a message to the `mailing list`__ or join the `#kotti channel on
-    irc.freenode.net`__ to chat with other Kotti users who might be
+    a message to the `mailing list`_ or join the `#kotti`_ channel on
+    irc.freenode.net to chat with other Kotti users who might be
     able to help.
 
 In this part of the tutorial, we'll concentrate on how to create the
 new add-on package, how to install and register it with our site, and how
 to manage static resources in Kotti.
 
-Kotti add-ons are proper Python packages. They include `kotti_media`__, for
-adding a set of video and audio content types to a site, `kotti_gallery`__,
-for adding a photo album content type, `kotti_blog`__, for blog and blog entry
+Kotti add-ons are proper Python packages. They include `kotti_media`_, for
+adding a set of video and audio content types to a site, `kotti_gallery`_,
+for adding a photo album content type, `kotti_blog`_, for blog and blog entry
 content types, etc.
 
 The add-on we will make, kotti_mysite, will be just like those, in that it will
 be a proper Python package created with the same tools used to make
-`kotti_media`__, kotti_blog, and the others. We will install kotti_mysite into
+`kotti_media`_, kotti_blog, and the others. We will install kotti_mysite into
 our virtualenv, in the same way that we might wish later to install
-`kotti_media`__.
+`kotti_media`_.
 
 So, we are working in the mysite directory, a virtualenv. We will create the
 add-on as mysite/kotti_mysite. kotti_mysite will be a proper Python package,
 installable to our virtualenv.
 
-__ mailing list: http://groups.google.com/group/kotti
-__ irc://irc.freenode.net/#kotti
-__ kotti_media: http://pypi.python.org/pypi/kotti_media/
-__ kotti_gallery:http://pypi.python.org/pypi/kotti_gallery/
-__ kotti_blog:http://pypi.python.org/pypi/kotti_blog/
+.. _mailing list: http://groups.google.com/group/kotti
+.. _#kotti: //irc.freenode.net/#kotti
+.. _kotti_media: http://pypi.python.org/pypi/kotti_media/
+.. _kotti_gallery: http://pypi.python.org/pypi/kotti_gallery/
+.. _kotti_blog: http://pypi.python.org/pypi/kotti_blog/
 
 Creating the Add-On Package
 ---------------------------
