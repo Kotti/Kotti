@@ -11,11 +11,14 @@ Requirements
 - ``build_essential`` and ``python-dev`` (on Debian or Ubuntu)
 - or ``Xcode`` (on OSX)
 - Includes support for PostgreSQL, MySQL and SQLite (tested regularly), and a
-  list of `other SQL databases`_. SQLite may be used for easy development, and
-  for many use cases. Install other databases as needed.
+  list of `other SQL databases`_. SQLite is available in the default install,
+  so may be used for easy development, and may prove to be adequate for some
+  deployments. However, Kotti is flexible for installation of your choice of
+  database during development or at deployment.
 - Kotti takes advantage of Pyramid's built-in WSGI server called Waitress, as
   a default server. Install other WSGI servers such as Apache and Nginx as
-  needed.
+  needed. See the Pyramid documentation for a variety of server and server
+  configuration options.
 
 Installation using ``virtualenv``
 ---------------------------------
