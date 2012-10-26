@@ -13,6 +13,7 @@ from deform.widget import CheckedPasswordWidget
 from deform.widget import SequenceWidget
 from pyramid.exceptions import Forbidden
 from pyramid.httpexceptions import HTTPFound
+from pyramid.view import view_config
 
 from kotti.events import UserDeleted
 from kotti.events import notify
@@ -100,6 +101,8 @@ def search_principals(request, context=None, ignore=None, extra=()):
     return entries
 
 
+@view_config(name='share', permission='manage',
+             renderer='kotti:templates/edit/share.pt')
 def share_node(context, request):
     # Allow roles_form_handler to do processing on 'apply':
     changed = roles_form_handler(
@@ -355,6 +358,9 @@ class GroupAddFormView(UserAddFormView):
         return self.add_user_success(appstruct)
 
 
+@view_config(name='setup-users', permission='admin',
+             custom_predicates=(is_root,),
+             renderer='kotti:templates/site-setup/users.pt')
 def users_manage(context, request):
     api = template_api(
         context, request,
@@ -454,6 +460,9 @@ class GroupManageFormView(UserManageFormView):
         return schema
 
 
+@view_config(name='setup-user', permission='admin',
+             custom_predicates=(is_root, ),
+             renderer='kotti:templates/site-setup/user.pt')
 def user_manage(context, request):
     user_or_group = request.params['name']
     principal = get_principals()[user_or_group]
@@ -481,6 +490,9 @@ def user_manage(context, request):
         }
 
 
+@view_config(name='delete-user', permission='admin',
+             custom_predicates=(is_root,),
+             renderer='kotti:templates/site-setup/delete-user.pt')
 def user_delete(context, request):
     principals = get_principals()
 
@@ -526,6 +538,8 @@ class PreferencesFormView(UserEditFormView):
     cancel_failure = cancel_success
 
 
+@view_config(name='prefs', custom_predicates=(is_root, ),
+             renderer='kotti:templates/edit/simpleform.pt')
 def preferences(context, request):
     user = request.user
     if user is None:
@@ -548,40 +562,4 @@ def preferences(context, request):
 
 
 def includeme(config):
-    config.add_view(
-        share_node,
-        name='share',
-        permission='manage',
-        renderer='kotti:templates/edit/share.pt',
-        )
-
-    config.add_view(
-        users_manage,
-        name='setup-users',
-        permission='admin',
-        custom_predicates=(is_root,),
-        renderer='kotti:templates/site-setup/users.pt',
-        )
-
-    config.add_view(
-        user_delete,
-        name='delete-user',
-        permission='admin',
-        custom_predicates=(is_root,),
-        renderer='kotti:templates/site-setup/delete-user.pt',
-    )
-
-    config.add_view(
-        user_manage,
-        name='setup-user',
-        permission='admin',
-        custom_predicates=(is_root,),
-        renderer='kotti:templates/site-setup/user.pt',
-        )
-
-    config.add_view(
-        preferences,
-        name='prefs',
-        custom_predicates=(is_root,),
-        renderer='kotti:templates/edit/simpleform.pt',
-        )
+    config.scan(__name__)
