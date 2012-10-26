@@ -20,15 +20,16 @@ In this part of the tutorial, we'll concentrate on how to create the
 new add-on package, how to install and register it with our site, and how
 to manage static resources in Kotti.
 
-Kotti add-ons are proper Python packages. They include kotti_media, for
-adding a set of video and audio content types to a site, kotti_gallery,
-for adding a photo album content type, kotti_blog, for blog and blog entry
+Kotti add-ons are proper Python packages. They include `kotti_media`__, for
+adding a set of video and audio content types to a site, `kotti_gallery`__,
+for adding a photo album content type, `kotti_blog`__, for blog and blog entry
 content types, etc.
 
-The add-on we will make, kotti_mysite, is just like those, in that it will be
-a proper Python package created with the same tools used to make kotti_media,
-kotti_blog, and the others. We will install kotti_mysite into our virtualenv,
-in the same way that we might wish later to install kotti_media.
+The add-on we will make, kotti_mysite, will be just like those, in that it will
+be a proper Python package created with the same tools used to make
+`kotti_media`__, kotti_blog, and the others. We will install kotti_mysite into
+our virtualenv, in the same way that we might wish later to install
+`kotti_media`__.
 
 So, we are working in the mysite directory, a virtualenv. We will create the
 add-on as mysite/kotti_mysite. kotti_mysite will be a proper Python package,
@@ -36,7 +37,9 @@ installable to our virtualenv.
 
 __ mailing list: http://groups.google.com/group/kotti
 __ irc://irc.freenode.net/#kotti
-
+__ kotti_media: http://pypi.python.org/pypi/kotti_media/
+__ kotti_gallery:http://pypi.python.org/pypi/kotti_gallery/
+__ kotti_blog:http://pypi.python.org/pypi/kotti_blog/
 
 Creating the Add-On Package
 ---------------------------
