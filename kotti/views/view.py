@@ -47,7 +47,7 @@ def search_results(context, request):
              renderer='kotti:templates/view/search.pt')
 @view_config(name='folder_view', context=IContent, permission='view',
              renderer='kotti:templates/view/folder.pt')
-@view_config(name='view', context=Document, permission='view',
+@view_config(name='view', context=IContent, permission='view',
              renderer='kotti:templates/view/document.pt')
 def view(context, request):
     return {}

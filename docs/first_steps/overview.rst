@@ -16,10 +16,10 @@ developer.
 .. _Pyramid: http://docs.pylonsproject.org/projects/pyramid/dev/
 .. _SQLAlchemy: http://www.sqlalchemy.org/
 
-CMS Features
-------------
+Features
+--------
 
-You can **try out the built-in CMS** on `Kotti's demo page`_.
+You can **try out the default installation** on `Kotti's demo page`_.
 
 The Kotti CMS is a content management system that's heavily inspired
 by Plone_.  Its **main features** are:
@@ -32,8 +32,8 @@ by Plone_.  Its **main features** are:
 - **Responsive design**: Kotti builds on `Twitter Bootstrap`_, which
   looks good both on desktop and mobile
 
-- **Templating**: you can extend the CMS with your own look & feel
-  with almost no programming required (see :ref:`adjust_look_feel`)
+- **Templating**: easily extend the CMS with your own look & feel with
+  little programming required (see :ref:`static resources`)
 
 - **Add-ons**: install a variety of add-ons and customize them as well
   as many aspects of the built-in CMS by use of an INI configuration
@@ -48,8 +48,6 @@ by Plone_.  Its **main features** are:
 .. _Kotti's demo page: http://kottidemo.danielnouri.org/
 .. _Plone: http://plone.org/
 .. _Twitter Bootstrap: http://twitter.github.com/bootstrap/
-
-.. _developer_overview:
 
 For developers
 --------------
@@ -84,6 +82,15 @@ source code via its GitHub repository.  Use this command:
 *PostgreSQL*, *MySQL* and *SQLite* and a complete test coverage make
 Kotti a **stable** platform to work with.  |build status|_
 
+Support
+-------
+
+- Python 2.6 or 2.7
+- Support for PostgreSQL, MySQL and SQLite (tested regularly), and a
+  list of `other SQL databases`_
+- Support for WSGI and a `variety of web servers`_, including Apache
+
+
 
 .. _repoze.workflow: http://docs.repoze.org/workflow/
 .. _Chameleon: http://chameleon.repoze.org/
@@ -94,3 +101,5 @@ Kotti a **stable** platform to work with.  |build status|_
 .. |build status| image:: https://secure.travis-ci.org/Pylons/Kotti.png?branch=master
 .. _build status: http://travis-ci.org/Pylons/Kotti
 .. _installation:
+.. _other SQL databases: http://www.sqlalchemy.org/docs/core/engines.html#supported-databases
+.. _variety of web servers: http://wsgi.org/wsgi/Servers

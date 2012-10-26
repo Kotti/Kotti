@@ -31,4 +31,4 @@ What's left is to register the ``front-page`` view:
 
   If you want to override instead the template of *all pages*, not
   only that of a particluar page, you should look at the
-  ``kotti.override_assets`` setting (:ref:`adjust_look_feel`).
+  ``kotti.override_assets`` setting (:ref:`asset_overrides`).

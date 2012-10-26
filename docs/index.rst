@@ -25,11 +25,11 @@ First steps
 
     first_steps/overview
     first_steps/installation
-    first_steps/tutorial
-    first_steps/deployment
+    first_steps/tut-1
+    first_steps/tut-2
 
-Developing with Kotti
----------------------
+Topics
+------
 
 .. toctree::
     :maxdepth: 1
@@ -38,9 +38,6 @@ Developing with Kotti
     developing/configuration
     developing/testing
     developing/translations
-    developing/creating-your-first-kotti-app
-    developing/models
-    developing/views
     API documentation <api/index>
 
 -   Advanced topics
@@ -52,10 +49,8 @@ Developing with Kotti
         developing/close-for-anonymous
         developing/default-views
         developing/frontpage-different-template
-        developing/i18n
         developing/images
         developing/static-resource-management
-        developing/workflow
 
 Changes
 -------
