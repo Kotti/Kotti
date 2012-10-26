@@ -17,7 +17,7 @@ Requirements
   so may be used for easy development, and may prove to be adequate for some
   deployments. However, Kotti is flexible for installation of your choice of
   database during development or at deployment.
-- Kotti takes advantage of Pyramid's built-in WSGI server called Waitress, as
+- Kotti takes advantage of Pyramid's WSGI server called Waitress, as
   a default server. Install other WSGI servers such as Apache and Nginx as
   needed. See the Pyramid documentation for a variety of server and server
   configuration options.
