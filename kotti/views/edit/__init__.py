@@ -9,10 +9,10 @@ from zope.deprecation.deprecation import deprecate
 
 from kotti import DBSession
 from kotti import get_settings
-from kotti.resources import IContent
+from kotti.interfaces import IContent
 from kotti.resources import Node
-from kotti.util import _
 from kotti.util import ActionButton
+from kotti.util import _
 from kotti.views.edit.content import ContentSchema
 from kotti.views.edit.content import DocumentSchema
 from kotti.views.form import AddFormView

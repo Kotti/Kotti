@@ -2,13 +2,15 @@ import warnings
 
 from pyramid.exceptions import NotFound
 from pyramid.view import render_view_to_response
+from pyramid.view import view_config
 
-from kotti.resources import IContent
+from kotti.interfaces import IContent
 from kotti.resources import Document
 
 from kotti.views.util import search_content
 
 
+@view_config(context=IContent)
 def view_content_default(context, request):
     """This view is always registered as the default view for any Content.
 
@@ -17,6 +19,7 @@ def view_content_default(context, request):
     'context' (in 'context.defaultview'), we will fall back to a view
     with the name 'view'.
     """
+
     view_name = context.default_view or 'view'
     response = render_view_to_response(context, request, name=view_name)
     if response is None:  # pragma: no coverage
@@ -30,6 +33,8 @@ def view_node(context, request):  # pragma: no coverage
     return {}  # BBB
 
 
+@view_config(name='search-results', permission='view',
+             renderer='kotti:templates/view/search-results.pt')
 def search_results(context, request):
     results = []
     if u'search-term' in request.POST:
@@ -38,32 +43,15 @@ def search_results(context, request):
     return {'results': results}
 
 
+@view_config(name='search', permission='view',
+             renderer='kotti:templates/view/search.pt')
+@view_config(name='folder_view', context=IContent, permission='view',
+             renderer='kotti:templates/view/folder.pt')
+@view_config(name='view', context=Document, permission='view',
+             renderer='kotti:templates/view/document.pt')
+def view(context, request):
+    return {}
+
+
 def includeme(config):
-    config.add_view('kotti.views.view.view_content_default', context=IContent)
-
-    config.add_view(
-        context=Document,
-        name='view',
-        permission='view',
-        renderer='kotti:templates/view/document.pt',
-        )
-
-    config.add_view(
-        context=IContent,
-        name='folder_view',
-        permission='view',
-        renderer='kotti:templates/view/folder.pt',
-        )
-
-    config.add_view(
-        name='search',
-        permission='view',
-        renderer='kotti:templates/view/search.pt',
-        )
-
-    config.add_view(
-        search_results,
-        name='search-results',
-        permission='view',
-        renderer='kotti:templates/view/search-results.pt',
-        )
+    config.scan(__name__)

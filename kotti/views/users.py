@@ -4,36 +4,34 @@
 import re
 from urllib import urlencode
 
-from pyramid.httpexceptions import HTTPFound
-from pyramid.exceptions import Forbidden
 import colander
-import deform
 from deform import Button
+from deform import Set
 from deform.widget import AutocompleteInputWidget
-from deform.widget import CheckedPasswordWidget
 from deform.widget import CheckboxChoiceWidget
+from deform.widget import CheckedPasswordWidget
 from deform.widget import SequenceWidget
+from pyramid.exceptions import Forbidden
+from pyramid.httpexceptions import HTTPFound
 
-from kotti.events import (
-    UserDeleted,
-    notify,
-)
+from kotti.events import UserDeleted
+from kotti.events import notify
 from kotti.message import email_set_password
 from kotti.resources import get_root
-from kotti.security import USER_MANAGEMENT_ROLES
 from kotti.security import ROLES
 from kotti.security import SHARING_ROLES
+from kotti.security import USER_MANAGEMENT_ROLES
 from kotti.security import get_principals
-from kotti.security import map_principals_with_local_roles
-from kotti.security import list_groups_raw
 from kotti.security import list_groups_ext
+from kotti.security import list_groups_raw
+from kotti.security import map_principals_with_local_roles
 from kotti.security import set_groups
 from kotti.util import _
 from kotti.views.form import AddFormView
 from kotti.views.form import EditFormView
 from kotti.views.site_setup import CONTROL_PANEL_LINKS
-from kotti.views.util import template_api
 from kotti.views.util import is_root
+from kotti.views.util import template_api
 
 
 def roles_form_handler(context, request, available_role_names, groups_lister):
@@ -221,7 +219,7 @@ class PrincipalFull(PrincipalBasic):
         description=_(u"Untick this to deactivate the account."),
         )
     roles = colander.SchemaNode(
-        deform.Set(allow_empty=True),
+        Set(allow_empty=True),
         validator=roleset_validator,
         missing=[],
         title=_(u"Global roles"),

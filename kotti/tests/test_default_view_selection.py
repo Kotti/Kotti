@@ -1,11 +1,13 @@
 # -*- coding: utf-8 -*-
 import warnings
+
+from pyramid.httpexceptions import HTTPFound
+
+from kotti.interfaces import IContent
 from kotti.resources import get_root
-from kotti.resources import IContent
 from kotti.testing import DummyRequest
 from kotti.testing import UnitTestBase
 from kotti.views.edit.default_views import DefaultViewSelection
-from pyramid.httpexceptions import HTTPFound
 
 
 class TestDefaultViewSelection(UnitTestBase):
