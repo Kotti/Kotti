@@ -61,6 +61,8 @@ kotti.search_content         Override Kotti's default search function
 
 kotti.asset_overrides        Override Kotti's templates, CSS files and images.
 kotti.templates.api          Override ``api`` used by all templates
+kotti.fanstatic.view_needed  List of static resources used for public interface
+kotti.fanstatic.edit_needed  List of static resources used for edit interface
 
 kotti.authn_policy_factory   Component used for authentication
 kotti.authz_policy_factory   Component used for authorization
@@ -102,18 +104,18 @@ Here's an example:
 
 .. note:: Do not use these values in your site
 
-.. _adjust_look_feel:
+.. _asset_overrides:
 
-Adjust the look & feel (``kotti.asset_overrides``)
---------------------------------------------------
+Override templates (``kotti.asset_overrides``)
+----------------------------------------------
 
 In your settings file, set ``kotti.asset_overrides`` to a list of
 *asset specifications*.  This allows you to set up a directory in your
 package that will mirror Kotti's own and that allows you to override
-Kotti's templates, CSS files and images on a case by case basis.
+Kotti's templates on a case by case basis.
 
 As an example, image that we wanted to override Kotti's master layout
-template.  Inside the Kotti source, the layout template is at
+template.  Inside the Kotti source, the layout template is located at
 ``kotti/templates/view/master.pt``.  To override this, we would add a
 directory to our own package called ``kotti-overrides`` and therein
 put our own version of the template so that the full path to our own

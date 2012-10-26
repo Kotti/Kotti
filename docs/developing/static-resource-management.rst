@@ -1,3 +1,5 @@
+.. _static resources:
+
 Static resource management
 ==========================
 
