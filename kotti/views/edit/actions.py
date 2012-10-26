@@ -150,7 +150,6 @@ class NodeActions(object):
             self.request.session.flash(msg, 'success')
             if not self.request.is_xhr:
                 return HTTPFound(location=self.request.url)
-
         return {}
 
     @view_config(name='delete',
@@ -184,12 +183,12 @@ class NodeActions(object):
             return self.back()
 
         ids = self._selected_children(add_context=False)
+        items = []
         if ids is not None:
             items = DBSession.query(Node).filter(Node.id.in_(ids)).\
                 order_by(Node.position).all()
-            return {'items': items,
-                    'states': _states(self.context, self.request)}
-        return {}
+        return {'items': items,
+                'states': _states(self.context, self.request)}
 
     @view_config(name='rename',
                  renderer='kotti:templates/edit/rename.pt')
@@ -212,8 +211,6 @@ class NodeActions(object):
                  renderer='kotti:templates/edit/rename-nodes.pt')
     def rename_nodes(self):
         if 'rename_nodes' in self.request.POST:
-            if 'rename_nodes-children' in self.request.session:
-                del self.request.session['rename_nodes-children']
             ids = self.request.POST.getall('children-to-rename')
             for id in ids:
                 item = DBSession.query(Node).get(id)
@@ -229,11 +226,8 @@ class NodeActions(object):
                     item.name = title_to_name(name,
                                               blacklist=self.context.keys())
                     item.title = title
-            if not ids:
-                self.request.session.flash(_(u'No changes made.'), 'info')
-            else:
-                self.request.session.flash(
-                    _(u'Your changes have been saved.'), 'success')
+            self.request.session.flash(
+                _(u'Your changes have been saved.'), 'success')
             return self.back()
 
         if 'cancel' in self.request.POST:
@@ -241,17 +235,15 @@ class NodeActions(object):
             return self.back()
 
         ids = self._selected_children(add_context=False)
+        items = []
         if ids is not None:
             items = DBSession.query(Node).filter(Node.id.in_(ids)).all()
-            return {'items': items}
-        return {}
+        return {'items': items}
 
     @view_config(name='change_state',
                  renderer='kotti:templates/edit/change-state.pt')
     def change_state(self):
         if 'change_state' in self.request.POST:
-            if 'change_state-children' in self.request.session:
-                del self.request.session['change_state-children']
             ids = self.request.POST.getall('children-to-change-state')
             to_state = self.request.POST.get('to-state', u'no-change')
             include_children = self.request.POST.get('include-children', None)
@@ -281,20 +273,19 @@ class NodeActions(object):
             return self.back()
 
         ids = self._selected_children(add_context=False)
+        items = transitions = []
         if ids is not None:
             wf = get_workflow(self.context)
             if wf is not None:
                 items = DBSession.query(Node).filter(Node.id.in_(ids)).all()
-                transitions = []
                 for item in items:
                         trans_info = wf.get_transitions(item, self.request)
                         for tran_info in trans_info:
                             if tran_info not in transitions:
                                 transitions.append(tran_info)
-                return {'items': items,
-                        'states': _states(self.context, self.request),
-                        'transitions': transitions, }
-        return {}
+        return {'items': items,
+                'states': _states(self.context, self.request),
+                'transitions': transitions, }
 
 
 def actions(context, request):
