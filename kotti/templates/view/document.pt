@@ -7,7 +7,7 @@
     <p class="description">
       ${context.description}
     </p>
-    <div class="body" tal:content="structure context.body">
+    <div class="body" tal:content="structure context.body | None">
     </div>
   </article>
 
