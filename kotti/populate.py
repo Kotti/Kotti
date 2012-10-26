@@ -76,6 +76,9 @@ _ROOT_ATTRS = dict(
                Configuration manual
             </a>
         </p>
+    </div>
+    <div class="span4">
+        <h2>Add-ons</h2>
         <p>
             A number of add-ons allow you to extend the functionality of your Kotti site.
         </p>
@@ -83,18 +86,6 @@ _ROOT_ATTRS = dict(
             <a class="btn btn-info"
                href="http://pypi.python.org/pypi?%3Aaction=search&amp;term=kotti">
                 Kotti add-ons
-            </a>
-        </p>
-    </div>
-    <div class="span4">
-        <h2>Develop</h2>
-        <p>
-            Kotti aims to be easy and extensible. Check out the developer manual.
-        </p>
-        <p>
-            <a class="btn btn-info"
-               href="http://kotti.readthedocs.org/en/latest/developer-manual.html">
-                Developer Manual
             </a>
         </p>
     </div>
