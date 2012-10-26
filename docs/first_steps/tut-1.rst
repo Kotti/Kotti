@@ -157,7 +157,8 @@ add-ons have a chance to configure themselves.  The function in
 .. code-block:: python
 
   def kotti_configure(settings):
-      settings['kotti.fanstatic.view_needed'] += ' kotti_mysite.static.kotti_mysite_group'
+     settings['kotti.fanstatic.view_needed'] += (
+         ' kotti_mysite.static.kotti_mysite_group')
 
 Here, ``settings`` is a dictionary with all configuration variables in
 the ``[app:kotti]`` section out our ``app.ini``, plus the defaults.
