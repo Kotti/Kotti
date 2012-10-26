@@ -580,6 +580,15 @@ Contents view change state actions
   >>> childs = ctrl(name='children')
   >>> childs.value = childs.options[0:3]
   >>> ctrl(name='change_state').click()
+  >>> childs = ctrl(name='children-to-change-state')
+  >>> childs.value = []
+  >>> ctrl(name='change_state').click()
+  >>> u'No changes made.' in browser.contents
+  True
+
+  >>> childs = ctrl(name='children')
+  >>> childs.value = childs.options[0:3]
+  >>> ctrl(name='change_state').click()
   >>> ctrl(name='to-state').value = ['private']
   >>> ctrl(name='change_state').click()
   >>> 'Your changes have been saved.' in browser.contents
