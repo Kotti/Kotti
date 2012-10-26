@@ -15,6 +15,7 @@ API Documentation
 
 .. automodule:: kotti.interfaces
    :members:
+   :member-order: bysource
 
 :mod:`kotti.message`
 --------------------
