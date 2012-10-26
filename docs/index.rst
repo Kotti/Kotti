@@ -38,9 +38,6 @@ Topics
     developing/configuration
     developing/testing
     developing/translations
-    developing/creating-your-first-kotti-app
-    developing/models
-    developing/views
     API documentation <api/index>
 
 -   Advanced topics
@@ -54,7 +51,6 @@ Topics
         developing/frontpage-different-template
         developing/images
         developing/static-resource-management
-        developing/workflow
 
 Changes
 -------

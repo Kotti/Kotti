@@ -32,8 +32,8 @@ by Plone_.  Its **main features** are:
 - **Responsive design**: Kotti builds on `Twitter Bootstrap`_, which
   looks good both on desktop and mobile
 
-- **Templating**: you can extend the CMS with your own look & feel
-  with almost no programming required (see :ref:`adjust_look_feel`)
+- **Templating**: easily extend the CMS with your own look & feel with
+  little programming required (see :ref:`static resources`)
 
 - **Add-ons**: install a variety of add-ons and customize them as well
   as many aspects of the built-in CMS by use of an INI configuration

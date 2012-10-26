@@ -39,43 +39,43 @@ This table provides an overview of available settings.  All these
 settings must go into the ``[app:kotti]`` section of your Paste Deploy
 configuration file.
 
-===========================  ===================================================
-Setting                      Description
-===========================  ===================================================
-**kotti.site_title**         The title of your site
-**kotti.secret**             Secret token used for the initial admin password
-kotti.secret2                Secret token used for email password reset token
+============================  ==================================================
+Setting                       Description
+============================  ==================================================
+**kotti.site_title**          The title of your site
+**kotti.secret**              Secret token used for the initial admin password
+kotti.secret2                 Secret token used for email password reset token
 
-**sqlalchemy.url**           `SQLAlchemy database URL`_
-**mail.default_sender**      Sender address for outgoing email
-mail.host                    Email host to send from
+**sqlalchemy.url**            `SQLAlchemy database URL`_
+**mail.default_sender**       Sender address for outgoing email
+mail.host                     Email host to send from
 
-pyramid.includes             List of Python configuration hooks
-kotti.available_types        List of active content types
-kotti.base_includes          List of base Python configuration hooks
-kotti.zcml_includes          List of packages to include the ZCML from
-kotti.configurators          List of advanced functions for config
-kotti.root_factory           Override Kotti's default Pyramid *root factory*
-kotti.populators             List of functions to fill initial database
-kotti.search_content         Override Kotti's default search function
+pyramid.includes              List of Python configuration hooks
+kotti.available_types         List of active content types
+kotti.base_includes           List of base Python configuration hooks
+kotti.zcml_includes           List of packages to include the ZCML from
+kotti.configurators           List of advanced functions for config
+kotti.root_factory            Override Kotti's default Pyramid *root factory*
+kotti.populators              List of functions to fill initial database
+kotti.search_content          Override Kotti's default search function
 
-kotti.asset_overrides        Override Kotti's templates, CSS files and images.
-kotti.templates.api          Override ``api`` used by all templates
-kotti.fanstatic.view_needed  List of static resources used for public interface
-kotti.fanstatic.edit_needed  List of static resources used for edit interface
+kotti.asset_overrides         Override Kotti's templates
+kotti.templates.api           Override ``api`` object available in templates
+kotti.fanstatic.view_needed   List of static resources used for public interface
+kotti.fanstatic.edit_needed   List of static resources used for edit interface
 
-kotti.authn_policy_factory   Component used for authentication
-kotti.authz_policy_factory   Component used for authorization
-kotti.session_factory        Component used for sessions
-kotti.caching_policy_chooser Component for choosing the cache header policy
+kotti.authn_policy_factory    Component used for authentication
+kotti.authz_policy_factory    Component used for authorization
+kotti.session_factory         Component used for sessions
+kotti.caching_policy_chooser  Component for choosing the cache header policy
 
-kotti.date_format            Date format to use, default: ``medium``
-kotti.datetime_format        Datetime format to use, default: ``medium``
-kotti.time_format            Time format to use, default: ``medium``
-kotti.max_file_size          Max size for file uploads, default: ```10`` (MB)
+kotti.date_format             Date format to use, default: ``medium``
+kotti.datetime_format         Datetime format to use, default: ``medium``
+kotti.time_format             Time format to use, default: ``medium``
+kotti.max_file_size           Max size for file uploads, default: ```10`` (MB)
 
-pyramid.default_locale_name  Set the user interface language, default ``en``
-===========================  ===================================================
+pyramid.default_locale_name   Set the user interface language, default ``en``
+============================  ==================================================
 
 Only the settings in bold letters required.  The rest has defaults.
 
