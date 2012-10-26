@@ -63,28 +63,32 @@ from kotti.security import get_principals
 
 
 class ObjectEvent(object):
+    """ """
     def __init__(self, object, request=None):
         self.object = object
         self.request = request
 
 
 class ObjectInsert(ObjectEvent):
-    pass
+    """This event is emitted when an object is inserted into the DB."""
 
 
 class ObjectUpdate(ObjectEvent):
-    pass
+    """This event is emitted when an object in the DB is updated."""
 
 
 class ObjectDelete(ObjectEvent):
+    """This event is emitted when an object is deleted from the DB."""
     pass
 
 
 class ObjectAfterDelete(ObjectEvent):
+    """This event is emitted after an object has been deleted from the DB."""
     pass
 
 
 class UserDeleted(ObjectEvent):
+    """This event is emitted when an user object is deleted from the DB."""
     pass
 
 
