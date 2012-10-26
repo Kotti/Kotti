@@ -52,7 +52,7 @@ class TestNodePaste:
 
         for index, action in enumerate(['copy', 'cut']):
             request.session['kotti.paste'] = ([1701], 'copy')
-            response = NodeActions(root, request).paste_node()
+            response = NodeActions(root, request).paste_nodes()
             assert response.status == '302 Found'
             assert len(request.session['_f_error']) == index + 1
 
@@ -71,11 +71,11 @@ class TestNodePaste:
         request.session['kotti.paste'] = ([1], 'cut')
         view = NodeActions(root, request)
         with raises(Forbidden):
-            view.paste_node()
+            view.paste_nodes()
 
         # We don't need 'edit' permission if we're just copying:
         request.session['kotti.paste'] = ([1], 'copy')
-        response = NodeActions(root, request).paste_node()
+        response = NodeActions(root, request).paste_nodes()
         assert response.status == '302 Found'
 
 

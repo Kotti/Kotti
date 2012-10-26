@@ -159,7 +159,7 @@ class TestTags:
         request = DummyRequest()
         request.params['paste'] = u'on'
         request.session['kotti.paste'] = ([root[u'content_1'].id], 'cut')
-        NodeActions(root[u'folder_1'], request).paste_node()
+        NodeActions(root[u'folder_1'], request).paste_nodes()
         assert root[u'folder_1'][u'content_1'].tags == [u'my tag']
         assert ses.query(Tag).count() == 1
         assert ses.query(TagsToContents).count() == 1
@@ -181,7 +181,7 @@ class TestTags:
         request = DummyRequest()
         request.params['paste'] = u'on'
         request.session['kotti.paste'] = ([root[u'content_1'].id], 'copy')
-        NodeActions(root[u'folder_1'], request).paste_node()
+        NodeActions(root[u'folder_1'], request).paste_nodes()
         assert root[u'content_1'].tags == [u'my tag']
         assert root[u'folder_1'][u'content_1'].tags == [u'my tag']
         assert ses.query(Tag).count() == 1
