@@ -9,7 +9,6 @@ from js.bootstrap import bootstrap_js
 from js.bootstrap import bootstrap_responsive_css
 from js.jquery import jquery
 from js.jqueryui import bootstrap as jqueryui_bootstrap_theme
-from js.jqueryui_tagit import tagit
 from js.jquery_form import jquery_form
 from js.deform_bootstrap import deform_bootstrap_js
 
@@ -88,7 +87,6 @@ edit_needed_css = NeededGroup([
 edit_needed_js = NeededGroup([
     jquery,
     bootstrap_js,
-    tagit,
     kotti_js,
     jquery_form,
     deform_bootstrap_js,
