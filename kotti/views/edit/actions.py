@@ -2,19 +2,23 @@
 Action views
 """
 
-from pyramid.exceptions import Forbidden
 from pyramid.httpexceptions import HTTPFound
-from pyramid.security import has_permission
 from pyramid.url import resource_url
 from pyramid.view import view_config
+from pyramid.exceptions import Forbidden
+from pyramid.security import has_permission
 from pyramid.view import view_defaults
 
-from kotti.resources import get_root
 from kotti import DBSession
+from kotti import get_settings
+from kotti.interfaces import IContent
+from kotti.resources import get_root
 from kotti.resources import Node
 from kotti.util import _
+from kotti.util import ActionButton
 from kotti.util import ViewLink
 from kotti.util import title_to_name
+from kotti.views.edit import _state_info
 from kotti.views.edit import _states
 from kotti.views.edit import get_paste_items
 from kotti.views.form import EditFormView
@@ -30,6 +34,13 @@ class NodeActions(object):
         self.request = request
 
     def _selected_children(self, add_context=True):
+        """
+        Get the selected children of the given context. This are either
+        the selected nodes of the contents view or the context itself.
+
+        :result: List with select children.
+        :rtype: list
+        """
         ids = self.request.session.pop('kotti.selected-children')
         if ids is None and add_context:
             ids = [self.context.id]
@@ -37,7 +48,8 @@ class NodeActions(object):
 
     def _all_children(self, context, permission='view'):
         """
-        :summary: Get recursive all children of the given context.
+        Get recursive all children of the given context.
+
         :result: List with all children of a given context.
         :rtype: list
         """
@@ -48,7 +60,8 @@ class NodeActions(object):
 
     def back(self):
         """
-        :summary: Redirect to the referrer or the default_view of the context.
+        Redirect to the referrer or the default_view of the context.
+
         :rtype: pyramid.httpexceptions.HTTPFound
         """
         url = self.request.referrer or self.request.resource_url(self.context)
@@ -57,7 +70,11 @@ class NodeActions(object):
     @view_config(name='workflow-change',
                  permission='state-change')
     def workflow_change(self):
-        """Handle workflow change requests from workflow dropdown.
+        """
+        Handle workflow change requests from workflow dropdown.
+
+        :result: Redirect response to the referrer of the request.
+        :rtype: pyramid.httpexceptions.HTTPFound
         """
         new_state = self.request.params['new_state']
         wf = get_workflow(self.context)
@@ -67,6 +84,13 @@ class NodeActions(object):
 
     @view_config(name='copy')
     def copy_node(self):
+        """
+        Copy nodes view. Copy the current node or the selected nodes in the
+        contents view and save the result in the session of the request.
+
+        :result: Redirect response to the referrer of the request.
+        :rtype: pyramid.httpexceptions.HTTPFound
+        """
         ids = self._selected_children()
         self.request.session['kotti.paste'] = (ids, 'copy')
         for id in ids:
@@ -77,7 +101,14 @@ class NodeActions(object):
             return self.back()
 
     @view_config(name='cut')
-    def cut_node(self):
+    def cut_nodes(self):
+        """
+        Cut nodes view. Cut the current node or the selected nodes in the
+        contents view and save the result in the session of the request.
+
+        :result: Redirect response to the referrer of the request.
+        :rtype: pyramid.httpexceptions.HTTPFound
+        """
         ids = self._selected_children()
         self.request.session['kotti.paste'] = (ids, 'cut')
         for id in ids:
@@ -88,7 +119,14 @@ class NodeActions(object):
             return self.back()
 
     @view_config(name='paste')
-    def paste_node(self):
+    def paste_nodes(self):
+        """
+        Paste nodes view. Paste formerly copied or cutted nodes into the
+        current context. Note that a cutted node can not be pasted into itself.
+
+        :result: Redirect response to the referrer of the request.
+        :rtype: pyramid.httpexceptions.HTTPFound
+        """
         ids, action = self.request.session['kotti.paste']
         for count, id in enumerate(ids):
             item = DBSession.query(Node).get(id)
@@ -120,6 +158,16 @@ class NodeActions(object):
     @view_config(name='order',
                  renderer='kotti:templates/edit/order.pt')
     def order_node(self):
+        """
+        Order node view. Renders a view to order nodes or toggle its
+        visibility.
+        These actions will be implemented in the contents view and the
+        order view will be removed than.
+
+        :result: Either a redirect response or a dictionary passed to the
+                 template for rendering.
+        :rtype: pyramid.httpexceptions.HTTPFound or dict
+        """
         P = self.request.POST
 
         if 'order-up' in P or 'order-down' in P:
@@ -155,6 +203,15 @@ class NodeActions(object):
     @view_config(name='delete',
                  renderer='kotti:templates/edit/delete.pt')
     def delete_node(self):
+        """
+        Delete node view. Renders either a view to delete the current node
+        or handle the deletion of the current node and get back to the
+        default view of the node.
+
+        :result: Either a redirect response or a dictionary passed to the
+                 template for rendering.
+        :rtype: pyramid.httpexceptions.HTTPFound or dict
+        """
         if 'delete' in self.request.POST:
             parent = self.context.__parent__
             self.request.session.flash(_(u'${title} deleted.',
@@ -167,6 +224,14 @@ class NodeActions(object):
     @view_config(name='delete_nodes',
                  renderer='kotti:templates/edit/delete-nodes.pt')
     def delete_nodes(self):
+        """
+        Delete nodes view. Renders either a view to delete multiple nodes or
+        delete the selected nodes and get back to the referrer of the request.
+
+        :result: Either a redirect response or a dictionary passed to the
+                 template for rendering.
+        :rtype: pyramid.httpexceptions.HTTPFound or dict
+        """
         if 'delete_nodes' in self.request.POST:
             ids = self.request.POST.getall('children-to-delete')
             if not ids:
@@ -193,6 +258,15 @@ class NodeActions(object):
     @view_config(name='rename',
                  renderer='kotti:templates/edit/rename.pt')
     def rename_node(self):
+        """
+        Rename node view. Renders either a view to change the title and
+        name for the current node or handle the changes and get back to the
+        default view of the node.
+
+        :result: Either a redirect response or a dictionary passed to the
+                 template for rendering.
+        :rtype: pyramid.httpexceptions.HTTPFound or dict
+        """
         if 'rename' in self.request.POST:
             name = self.request.POST['name']
             title = self.request.POST['title']
@@ -210,6 +284,15 @@ class NodeActions(object):
     @view_config(name='rename_nodes',
                  renderer='kotti:templates/edit/rename-nodes.pt')
     def rename_nodes(self):
+        """
+        Rename nodes view. Renders either a view to change the titles and
+        names for multiple nodes or handle the changes and get back to the
+        referrer of the request.
+
+        :result: Either a redirect response or a dictionary passed to the
+                 template for rendering.
+        :rtype: pyramid.httpexceptions.HTTPFound or dict
+        """
         if 'rename_nodes' in self.request.POST:
             ids = self.request.POST.getall('children-to-rename')
             for id in ids:
@@ -243,6 +326,15 @@ class NodeActions(object):
     @view_config(name='change_state',
                  renderer='kotti:templates/edit/change-state.pt')
     def change_state(self):
+        """
+        Change state view. Renders either a view to handle workflow changes
+        for multiple nodes or handle the selected workflow changes and get
+        back to the referrer of the request.
+
+        :result: Either a redirect response or a dictionary passed to the
+                 template for rendering.
+        :rtype: pyramid.httpexceptions.HTTPFound or dict
+        """
         if 'change_state' in self.request.POST:
             ids = self.request.POST.getall('children-to-change-state')
             to_state = self.request.POST.get('to-state', u'no-change')
@@ -288,8 +380,130 @@ class NodeActions(object):
                 'transitions': transitions, }
 
 
+def contents_buttons(context, request):
+    """
+    Build the action buttons for the contents view based on the current
+    state and the persmissions of the user.
+
+    :result: List of ActionButtons.
+    :rtype: list
+    """
+    buttons = []
+    if get_paste_items(context, request):
+        buttons.append(ActionButton('paste', title=_(u'Paste'),
+                                    no_children=True))
+    if context.children:
+        buttons.append(ActionButton('copy', title=_(u'Copy')))
+        buttons.append(ActionButton('cut', title=_(u'Cut')))
+        buttons.append(ActionButton('rename_nodes', title=_(u'Rename'),
+                                    css_class=u'btn btn-warning'))
+        buttons.append(ActionButton('delete_nodes', title=_(u'Delete'),
+                                    css_class=u'btn btn-danger'))
+        if get_workflow(context) is not None:
+            buttons.append(ActionButton('change_state',
+                                        title=_(u'Change State')))
+    return [button for button in buttons
+        if button.permitted(context, request)]
+
+
+@view_config(name='add-dropdown', permission='add',
+             renderer='kotti:templates/add-dropdown.pt')
+def content_type_factories(context, request):
+    """
+    Renders the drop down menu for Add button in editor bar.
+
+    :result: Dictionary passed to the template for rendering.
+    :rtype: pyramid.httpexceptions.HTTPFound or dict
+    """
+    all_types = get_settings()['kotti.available_types']
+    factories = []
+    for factory in all_types:
+        if factory.type_info.addable(context, request):
+            factories.append(factory)
+    return {'factories': factories}
+
+
+@view_config(context=IContent, name='contents', permission='view',
+             renderer='kotti:templates/edit/contents.pt')
+def contents(context, request):
+    """
+    Contents view. Renders either the contents view or handle the action
+    button actions of the view.
+
+    :result: Either a redirect response or a dictionary passed to the
+             template for rendering.
+    :rtype: pyramid.httpexceptions.HTTPFound or dict
+    """
+    buttons = contents_buttons(context, request)
+    for button in buttons:
+        if button.path in request.POST:
+            children = request.POST.getall('children')
+            if not children and button.path != u'paste':
+                request.session.flash(_(u'You have to select items to \
+                                        perform an action.'), 'info')
+                location = resource_url(context, request) + '@@contents'
+                return HTTPFound(location=location)
+            request.session['kotti.selected-children'] = children
+            location = button.url(context, request)
+            return HTTPFound(location, request=request)
+
+    return {'children': context.children_with_permission(request),
+            'buttons': buttons,
+            }
+
+
+@view_config(name='workflow-dropdown', permission='edit',
+             renderer='kotti:templates/workflow-dropdown.pt')
+def workflow(context, request):
+    """
+    Renders the drop down menu for workflow actions.
+
+    :result: Dictionary passed to the template for rendering.
+    :rtype: dict
+    """
+    wf = get_workflow(context)
+    if wf is not None:
+        state_info = _state_info(context, request)
+        curr_state = [i for i in state_info if i['current']][0]
+        trans_info = wf.get_transitions(context, request)
+        return {
+            'states': _states(context, request),
+            'transitions': trans_info,
+            'current_state': curr_state,
+            }
+
+    return {
+        'current_state': None
+        }
+
+
+@view_config(name='render_tree_navigation', permission='view',
+             renderer='kotti:templates/edit/nav-tree.pt')
+@view_config(name='navigate', permission='view',
+             renderer='kotti:templates/edit/nav-tree-view.pt')
+def render_tree_navigation(context, request):
+    """
+    Renders the navigation view.
+
+    :result: Dictionary passed to the template for rendering.
+    :rtype: dict
+    """
+    tree = nodes_tree(request)
+    return {
+        'tree': {
+            'children': [tree],
+            },
+        }
+
+
+@view_config(name='actions-dropdown', permission='edit',
+             renderer='kotti:templates/actions-dropdown.pt')
 def actions(context, request):
-    """Drop down menu for Actions button in editor bar.
+    """
+    Renders the drop down menu for Actions button in editor bar.
+
+    :result: Dictionary passed to the template for rendering.
+    :rtype: dict
     """
     root = get_root()
     actions = [ViewLink('copy', title=_(u'Copy'))]
@@ -308,11 +522,4 @@ def actions(context, request):
 
 
 def includeme(config):
-    config.scan('.actions')
-
-    config.add_view(
-        actions,
-        name='actions-dropdown',
-        permission='view',
-        renderer='kotti:templates/actions-dropdown.pt',
-        )
+    config.scan(__name__)

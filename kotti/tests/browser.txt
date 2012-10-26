@@ -446,6 +446,10 @@ Contents view actions
   >>> browser.url == testing.BASE_URL + '/child-one/@@contents'
   True
 
+  >>> ctrl(name='copy').click()
+  >>> u'You have to select items' in browser.contents
+  True
+
   >>> childs = ctrl(name='children')
   >>> childs.value = childs.options[0:1]
   >>> ctrl(name='copy').click()
