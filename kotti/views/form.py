@@ -12,6 +12,7 @@ from UserDict import DictMixin
 
 import colander
 import deform
+from js.jqueryui_tagit import tagit
 from pyramid.decorator import reify
 from pyramid.httpexceptions import HTTPFound
 from pyramid_deform import CSRFSchema
@@ -43,6 +44,7 @@ class ObjectType(colander.SchemaType):
 
 @colander.deferred
 def deferred_tag_it_widget(node, kw):
+    tagit.need()
     all_tags = Tag.query.all()
     available_tags = [tag.title.encode('utf-8') for tag in all_tags]
     widget = CommaSeparatedListWidget(
