@@ -1,6 +1,6 @@
 .. _tut-2:
 
-Tutorial part 2: A content type
+Tutorial part 2: A Content Type
 ===============================
 
 Kotti's default content types include ``Document``, ``Image`` and
