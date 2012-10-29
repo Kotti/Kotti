@@ -233,3 +233,8 @@ man_pages = [
     ('index', 'kotti', u'Kotti Documentation',
      [u'Daniel Nouri'], 1)
 ]
+
+# -- Options for inheritance diagrams -----------------------------------------
+inheritance_graph_attrs = dict(rankdir='TB', nodesep=0.1,
+                               ratio='auto', size=11.0)
+inheritance_node_attrs = dict(height=0.7, margin='0.06, 0.03')

@@ -23,7 +23,7 @@ install_requires = [
     'formencode',
     'html2text',
     'js.bootstrap>=2.1.5',
-    'js.deform>=0.9.5-3',
+    'js.deform>=0.9.5-4',
     'js.deform_bootstrap>=0.2.4-1',
     'js.jquery',
     'js.jquery_form',

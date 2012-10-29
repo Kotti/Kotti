@@ -29,7 +29,7 @@ gunicorn==0.13.4
 html2text==3.200.3
 iso8601==0.1.4
 js.bootstrap==2.1.5
-js.deform==0.9.5-3
+js.deform==0.9.5-4
 js.deform_bootstrap==0.2.4-1
 js.jquery==1.7.1
 js.jquery_form==3.09
