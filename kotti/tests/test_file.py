@@ -1,16 +1,13 @@
-from unittest import TestCase
 from StringIO import StringIO
 
 from colander import null
 from mock import MagicMock
-from mock import patch
 
 from kotti.testing import DummyRequest
-from kotti.testing import UnitTestBase
 
 
-class TestFileViews(UnitTestBase):
-    def setUp(self):
+class TestFileViews:
+    def setup_method(self, method):
         from kotti.resources import File
         self.file = File("file contents", u"myf\xfcle.png", u"image/png")
 
@@ -40,10 +37,10 @@ class TestFileViews(UnitTestBase):
         assert res.body == 'file contents'
 
 
-class TestEditFileFormView(TestCase):
+class TestFileEditForm:
     def make_one(self):
-        from kotti.views.file import EditFileFormView
-        return EditFileFormView(MagicMock(), DummyRequest())
+        from kotti.views.edit.content import FileEditForm
+        return FileEditForm(MagicMock(), DummyRequest())
 
     def test_edit_with_file(self):
         view = self.make_one()
@@ -82,10 +79,10 @@ class TestEditFileFormView(TestCase):
         assert view.context.size == 777
 
 
-class TestAddFileFormView(TestCase):
+class TestFileAddForm:
     def make_one(self):
-        from kotti.views.file import AddFileFormView
-        return AddFileFormView(MagicMock(), DummyRequest())
+        from kotti.views.edit.content import FileAddForm
+        return FileAddForm(MagicMock(), DummyRequest())
 
     def test_add(self):
         view = self.make_one()
@@ -108,33 +105,10 @@ class TestAddFileFormView(TestCase):
         assert file.mimetype == u'image/png'
         assert file.size == len('filecontents')
 
-    @patch('kotti.views.file.AddFormView.save_success')
-    def test_save_success_title_default(self, save_success):
-        view = self.make_one()
-        appstruct = dict(
-            title=u'', description=u'A description',
-            tags=[],
-            file=dict(
-                fp=StringIO('filecontents'),
-                filename=u'myfile.png',
-                mimetype=u'image/png',
-                ),
-            )
-        view.save_success(appstruct)
-        save_success.assert_called_with(dict(
-            title=u'myfile.png', description=u'A description',
-            tags=[],
-            file=dict(
-                fp=appstruct['file']['fp'],
-                filename=u'myfile.png',
-                mimetype=u'image/png',
-                ),
-            ))
 
-
-class TestFileUploadTempStore(TestCase):
+class TestFileUploadTempStore:
     def make_one(self):
-        from kotti.views.file import FileUploadTempStore
+        from kotti.views.form import FileUploadTempStore
         return FileUploadTempStore(DummyRequest())
 
     def test_keys(self):

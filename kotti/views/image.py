@@ -1,18 +1,19 @@
-# -*- coding: utf-8 -*-
+"""
+Views for image content objects.
+"""
 
 import PIL
-from kotti.util import _
-from kotti.util import extract_from_settings
-from kotti.views.file import AddFileFormView, EditFileFormView
-from kotti.resources import Image
-from kotti.resources import IImage
 from plone.scale.scale import scaleImage
 from pyramid.response import Response
 from pyramid.view import view_config
+from pyramid.view import view_defaults
+
+from kotti.interfaces import IImage
+from kotti.util import extract_from_settings
 
 PIL.ImageFile.MAXBLOCK = 33554432
 
-# default image scales
+#: Default image scales
 image_scales = {
     'span1': [60, 120],
     'span2': [160, 320],
@@ -29,49 +30,42 @@ image_scales = {
     }
 
 
-class EditImageFormView(EditFileFormView):
-
-    pass
-
-
-class AddImageFormView(AddFileFormView):
-
-    item_type = _(u"Image")
-
-    def add(self, **appstruct):
-
-        buf = appstruct['file']['fp'].read()
-
-        return Image(
-            title=appstruct['title'],
-            description=appstruct['description'],
-            tags=appstruct['tags'],
-            data=buf,
-            filename=appstruct['file']['filename'],
-            mimetype=appstruct['file']['mimetype'],
-            size=len(buf), )
-
-
+@view_defaults(context=IImage, permission='view')
 class ImageView(object):
+    """The ImageView class is registered for the :class:`IImage` context."""
 
     def __init__(self, context, request):
 
         self.context = context
         self.request = request
 
-    @view_config(context=IImage,
-                 name='view',
-                 permission='view',
+    @view_config(name='view',
                  renderer='kotti:templates/view/image.pt')
     def view(self):
+        """
+        :result: Empty dictionary to be handed to the image.pt template for rendering.
+        :rtype: dict
+        """
+
         return {}
 
-    @view_config(context=IImage,
-                 name="image",
-                 permission='view')
+    @view_config(name="image",)
     def image(self, subpath=None):
         """Return the image in a specific scale, either inline
-        (default) or as attachment."""
+        (default) or as attachment.
+
+        :param subpath: [<image_scale>]/download] (optional).
+                        When 'download' is the last element in subpath,
+                        the image is served with a 'Content-Disposition: attachment'
+                        header.  <image_scale> has to be one of the predefined
+                        image_scales - either from the defaults in this module
+                        or one set with a kotti.image_scales.<scale_name> in your
+                        app config ini file.
+        :type subpath: str
+
+        :result: complete response object
+        :rtype: pyramid.response.Response
+        """
 
         if subpath is None:
             subpath = self.request.subpath
@@ -123,17 +117,4 @@ def _load_image_scales(settings):
 def includeme(config):
     _load_image_scales(config.registry.settings)
 
-    config.scan("kotti.views.image")
-    config.add_view(
-        AddImageFormView,
-        name=Image.type_info.add_view,
-        permission='add',
-        renderer='kotti:templates/edit/node.pt',
-        )
-    config.add_view(
-        EditImageFormView,
-        context=Image,
-        name='edit',
-        permission='edit',
-        renderer='kotti:templates/edit/node.pt',
-        )
+    config.scan(__name__)

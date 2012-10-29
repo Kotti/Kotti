@@ -1,3 +1,12 @@
+# -*- coding: utf-8 -*-
+
+"""
+Inheritance Diagram
+-------------------
+
+.. inheritance-diagram:: kotti.util
+"""
+
 import re
 import urllib
 
@@ -24,19 +33,26 @@ class ViewLink(object):
     def url(self, context, request):
         return resource_url(context, request) + '@@' + self.path
 
-    def selected(self, context, request):
-        return urllib.unquote(request.url).startswith(
-            self.url(context, request))
-
     def permitted(self, context, request):
         from kotti.security import view_permitted
         return view_permitted(context, request, self.path)
+
+    def selected(self, context, request):
+        return urllib.unquote(request.url).startswith(
+            self.url(context, request))
 
     def __eq__(self, other):
         return isinstance(other, ViewLink) and repr(self) == repr(other)
 
     def __repr__(self):
         return "ViewLink(%r, %r)" % (self.path, self.title)
+
+
+class ActionButton(ViewLink):
+    def __init__(self, path, title=None, no_children=False, css_class=u"btn"):
+        super(ActionButton, self).__init__(path, title)
+        self.no_children = no_children
+        self.css_class = css_class
 
 
 class DontCache(Exception):

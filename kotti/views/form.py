@@ -1,13 +1,24 @@
+"""
+Form related base views from which you can inherit.
+
+Inheritance Diagram
+-------------------
+
+.. inheritance-diagram:: kotti.views.form
+"""
+
+from StringIO import StringIO
+from UserDict import DictMixin
+
 import colander
 import deform
-from deform import Button
-from deform.widget import TextAreaWidget
-from deform.widget import Widget
+from js.jqueryui_tagit import tagit
 from pyramid.decorator import reify
 from pyramid.httpexceptions import HTTPFound
-from pyramid_deform import FormView
 from pyramid_deform import CSRFSchema
+from pyramid_deform import FormView
 
+from kotti import get_settings
 from kotti.resources import Tag
 from kotti.util import _
 from kotti.util import title_to_name
@@ -33,6 +44,7 @@ class ObjectType(colander.SchemaType):
 
 @colander.deferred
 def deferred_tag_it_widget(node, kw):
+    tagit.need()
     all_tags = Tag.query.all()
     available_tags = [tag.title.encode('utf-8') for tag in all_tags]
     widget = CommaSeparatedListWidget(
@@ -42,37 +54,26 @@ def deferred_tag_it_widget(node, kw):
     return widget
 
 
-class ContentSchema(colander.MappingSchema):
-    title = colander.SchemaNode(
-        colander.String(),
-        title=_(u'Title'))
-    description = colander.SchemaNode(
-        colander.String(),
-        title=_('Description'),
-        widget=TextAreaWidget(cols=40, rows=5),
-        missing=u"",
-        )
-    tags = colander.SchemaNode(
-        ObjectType(),
-        title=_('Tags'),
-        widget=deferred_tag_it_widget,
-        missing=[],
-        )
-
-
 class Form(deform.Form):
-    """A deform Form that allows 'appstruct' to be set on the instance.
     """
+    A deform Form that allows 'appstruct' to be set on the instance.
+    """
+
     def render(self, appstruct=None, readonly=False):
         if appstruct is None:
             appstruct = getattr(self, 'appstruct', colander.null)
-
-        return super(Form, self).render(appstruct, readonly)
+        return super(Form, self).render(appstruct, readonly=readonly)
 
 
 class BaseFormView(FormView):
+    """
+    A basic view for forms with save and cancel buttons.
+    """
+
     form_class = Form
-    buttons = (Button('save', _(u'Save')), Button('cancel', _(u'Cancel')))
+    buttons = (
+        deform.Button('save', _(u'Save')),
+        deform.Button('cancel', _(u'Cancel')))
     success_message = _(u"Your changes have been saved.")
     success_url = None
     schema_factory = None
@@ -107,6 +108,10 @@ class BaseFormView(FormView):
 
 
 class EditFormView(BaseFormView):
+    """
+    A base form for content editing purposes
+    """
+
     add_template_vars = ('first_heading',)
 
     def before(self, form):
@@ -131,6 +136,10 @@ class EditFormView(BaseFormView):
 
 
 class AddFormView(BaseFormView):
+    """
+    A base form for content adding purposes
+    """
+
     success_message = _(u"Successfully added item.")
     item_type = None
     add_template_vars = ('first_heading',)
@@ -163,7 +172,7 @@ class AddFormView(BaseFormView):
             return _(u'Add ${type}', mapping=dict(type=translate(type_title)))
 
 
-class CommaSeparatedListWidget(Widget):
+class CommaSeparatedListWidget(deform.widget.Widget):
     def serialize(self, field, cstruct, readonly=False):
         if cstruct in (colander.null, None):
             cstruct = []
@@ -173,3 +182,54 @@ class CommaSeparatedListWidget(Widget):
         if pstruct is colander.null:
             return colander.null
         return [item.strip() for item in pstruct.split(',') if item]
+
+
+class FileUploadTempStore(DictMixin):
+    """
+    A temporary storage for file file uploads
+
+    File uploads are stored in the session so that you don't need
+    to upload your file again if validation of another schema node
+    fails.
+    """
+
+    def __init__(self, request):
+        self.session = request.session
+
+    def keys(self):
+        return [k for k in self.session.keys() if not k.startswith('_')]
+
+    def __setitem__(self, name, value):
+        value = value.copy()
+        fp = value.pop('fp')
+        value['file_contents'] = fp.read()
+        fp.seek(0)
+        self.session[name] = value
+
+    def __getitem__(self, name):
+        value = self.session[name].copy()
+        value['fp'] = StringIO(value.pop('file_contents'))
+        return value
+
+    def __delitem__(self, name):
+        del self.session[name]
+
+    def preview_url(self, name):
+        return None
+
+
+def validate_file_size_limit(node, value):
+    """
+    File size limit validator.
+
+    You can configure the maximum size by setting the kotti.max_file_size
+    option to the maximum number of bytes that you want to allow.
+    """
+
+    value['fp'].seek(0, 2)
+    size = value['fp'].tell()
+    value['fp'].seek(0)
+    max_size = get_settings()['kotti.max_file_size']
+    if size > int(max_size) * 1024 * 1024:
+        msg = _('Maximum file size: ${size}MB', mapping={'size': max_size})
+        raise colander.Invalid(node, msg)

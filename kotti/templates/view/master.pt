@@ -24,11 +24,11 @@
                tal:replace="structure snippet" />
   </head>
 
-  <body class="${api.user is not None and 'logged-in'}
+  <body class="${request.user is not None and 'logged-in'}
                view-${request.view_name or 'default'}
                ${api.body_css_class}">
     <nav tal:replace="api.render_template('kotti:templates/view/nav.pt')" />
-    <div tal:condition="api.user is not None"
+    <div tal:condition="request.user is not None"
          tal:replace="api.render_template('kotti:templates/editor-bar.pt')" />
 
     <div class="container">

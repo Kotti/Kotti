@@ -1,3 +1,12 @@
+# -*- coding: utf-8 -*-
+
+"""
+Inheritance Diagram
+-------------------
+
+.. inheritance-diagram:: kotti.sqla
+"""
+
 from pyramid.compat import json
 from pyramid.security import ALL_PERMISSIONS
 from pyramid.security import Allow

@@ -1,15 +1,14 @@
-from collections import defaultdict
-from datetime import datetime
 import hashlib
 import urllib
+from collections import defaultdict
+from datetime import datetime
 
 from babel.dates import format_date
 from babel.dates import format_datetime
 from babel.dates import format_time
 from pyramid.decorator import reify
-from pyramid.httpexceptions import HTTPFound
-from pyramid.i18n import get_localizer
 from pyramid.i18n import get_locale_name
+from pyramid.i18n import get_localizer
 from pyramid.i18n import make_localizer
 from pyramid.interfaces import ITranslationDirectories
 from pyramid.location import inside
@@ -19,29 +18,28 @@ from pyramid.renderers import render
 from pyramid.threadlocal import get_current_registry
 from pyramid.threadlocal import get_current_request
 from pyramid.view import render_view_to_response
-from zope.deprecation import deprecated
 from sqlalchemy import and_
 from sqlalchemy import not_
 from sqlalchemy import or_
+from zope.deprecation import deprecated
 from zope.deprecation.deprecation import deprecate
 
-from kotti import get_settings
 from kotti import DBSession
-from kotti.util import disambiguate_name
-disambiguate_name  # BBB
-from kotti.util import _
+from kotti import get_settings
 from kotti.events import objectevent_listeners
 from kotti.resources import Content
 from kotti.resources import Document
 from kotti.security import get_user
 from kotti.security import has_permission
 from kotti.security import view_permitted
-from kotti.views.form import get_appstruct
-from kotti.views.form import BaseFormView
+from kotti.util import disambiguate_name
+disambiguate_name  # BBB
 from kotti.views.form import AddFormView
+from kotti.views.form import BaseFormView
 from kotti.views.form import EditFormView
-from kotti.views.slots import slot_events
+from kotti.views.form import get_appstruct
 from kotti.views.site_setup import CONTROL_PANEL_LINKS
+from kotti.views.slots import slot_events
 
 
 def template_api(context, request, **kwargs):
@@ -149,13 +147,13 @@ class TemplateAPI(object):
 
     @reify
     def edit_needed(self):
-        if 'kotti.static.edit_needed' in self.S:
-            return [r.need() for r in self.S['kotti.static.edit_needed']]
+        if 'kotti.fanstatic.edit_needed' in self.S:
+            return [r.need() for r in self.S['kotti.fanstatic.edit_needed']]
 
     @reify
     def view_needed(self):
-        if 'kotti.static.view_needed' in self.S:
-            return [r.need() for r in self.S['kotti.static.view_needed']]
+        if 'kotti.fanstatic.view_needed' in self.S:
+            return [r.need() for r in self.S['kotti.fanstatic.view_needed']]
 
     def macro(self, asset_spec, macro_name='main'):
         if self.bare and asset_spec in (
@@ -290,11 +288,6 @@ class TemplateAPI(object):
         return [l for l in self.context.type_info.edit_links
                 if l.permitted(self.context, self.request)]
 
-    def more_links(self, name):
-        # completely unused?
-        return [l for l in getattr(self, name)
-                if l.permitted(self.context, self.request)]
-
     @reify
     def site_setup_links(self):
 
@@ -302,24 +295,20 @@ class TemplateAPI(object):
                 if l.permitted(self.root, self.request)]
 
 
-def ensure_view_selector(func):
-    def wrapper(context, request):
-        path_els = request.path_info.split(u'/')
-        if not path_els[-1].startswith('@@'):
-            path_els[-1] = '@@' + path_els[-1]
-            request.path_info = u'/'.join(path_els)
-            return HTTPFound(location=request.url)
-        return func(context, request)
-    wrapper.__doc__ = func.__doc__
-    return wrapper
+@deprecate("'ensure_view_selector' is deprecated as of Kotti 0.8.0. "
+           "There is no replacement.")
+def ensure_view_selector(func):  # pragma: no cover
+    return func
 
 
-class NavigationNodeWrapper(object):
-    def __init__(self, node, request, item_mapping, item_to_children):
+class NodesTree(object):
+    def __init__(self, node, request, item_mapping, item_to_children,
+                 permission):
         self._node = node
         self._request = request
         self._item_mapping = item_mapping
         self._item_to_children = item_to_children
+        self._permission = permission
 
     @property
     def __parent__(self):
@@ -328,16 +317,32 @@ class NavigationNodeWrapper(object):
 
     @property
     def children(self):
-        return [NavigationNodeWrapper(
-            child, self._request, self._item_mapping, self._item_to_children)
+        return [
+            NodesTree(
+                child,
+                self._request,
+                self._item_mapping,
+                self._item_to_children,
+                self._permission,
+                )
             for child in self._item_to_children[self.id]
-            if has_permission('view', child, self._request)]
+            if has_permission(self._permission, child, self._request)
+            ]
+
+    def _flatten(self, item):
+        yield item._node
+        for ch in item.children:
+            for item in self._flatten(ch):
+                yield item
+
+    def tolist(self):
+        return list(self._flatten(self))
 
     def __getattr__(self, name):
         return getattr(self._node, name)
 
 
-def nodes_tree(request):
+def nodes_tree(request, context=None, permission='view'):
     item_mapping = {}
     item_to_children = defaultdict(lambda: [])
     for node in DBSession.query(Content).with_polymorphic(Content):
@@ -348,11 +353,17 @@ def nodes_tree(request):
     for children in item_to_children.values():
         children.sort(key=lambda ch: ch.position)
 
-    return NavigationNodeWrapper(
-        item_to_children[None][0],
+    if context is None:
+        node = item_to_children[None][0]
+    else:
+        node = context
+
+    return NodesTree(
+        node,
         request,
         item_mapping,
         item_to_children,
+        permission,
         )
 
 

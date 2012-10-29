@@ -1,5 +1,3 @@
-from unittest import TestCase
-
 from mock import patch
 from mock import MagicMock
 
@@ -7,7 +5,7 @@ from kotti.testing import Dummy
 from kotti.testing import DummyRequest
 
 
-class TestBaseFormView(TestCase):
+class TestBaseFormView:
     def make(self):
         from kotti.views.form import BaseFormView
         return BaseFormView(Dummy(), DummyRequest())
@@ -40,7 +38,7 @@ class TestBaseFormView(TestCase):
         assert not schema.children.append.called
 
 
-class TestGetAppstruct(TestCase):
+class TestGetAppstruct:
     def call(self, *args, **kwargs):
         from kotti.views.form import get_appstruct
         return get_appstruct(*args, **kwargs)
@@ -56,7 +54,7 @@ class TestGetAppstruct(TestCase):
         assert self.call(context, schema) == {'first': 'firstvalue'}
 
 
-class TestEditFormView(TestCase):
+class TestEditFormView:
     def make(self):
         from kotti.views.form import EditFormView
         return EditFormView(
@@ -92,7 +90,7 @@ class TestEditFormView(TestCase):
         assert result.location == 'Dummy'
 
 
-class TestAddFormView(TestCase):
+class TestAddFormView:
     def make(self):
         from kotti.views.form import AddFormView
         return AddFormView(Dummy(), DummyRequest())

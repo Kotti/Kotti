@@ -56,10 +56,16 @@ conf_defaults = {
         'kotti.views.cache',
         'kotti.views.view',
         'kotti.views.edit',
+        'kotti.views.edit.actions',
+        'kotti.views.edit.content',
+        'kotti.views.edit.default_views',
         'kotti.views.login',
         'kotti.views.file',
         'kotti.views.image',
         'kotti.views.users',
+        ]),
+    'kotti.zcml_includes': ' '.join([
+        'kotti:configure.zcml',
         ]),
     'kotti.asset_overrides': '',
     'kotti.use_tables': '',
@@ -82,8 +88,8 @@ conf_defaults = {
     'kotti.datetime_format': 'medium',
     'kotti.time_format': 'medium',
     'kotti.max_file_size': '10',
-    'kotti.static.edit_needed': 'kotti.static.edit_needed',
-    'kotti.static.view_needed': 'kotti.static.view_needed',
+    'kotti.fanstatic.edit_needed': 'kotti.fanstatic.edit_needed',
+    'kotti.fanstatic.view_needed': 'kotti.fanstatic.view_needed',
     'kotti.alembic_dirs': 'kotti:alembic',
     'pyramid_deform.template_search_path': 'kotti:templates/deform',
     }
@@ -101,8 +107,8 @@ conf_dotted = set([
     'kotti.session_factory',
     'kotti.principals_factory',
     'kotti.caching_policy_chooser',
-    'kotti.static.edit_needed',
-    'kotti.static.view_needed',
+    'kotti.fanstatic.edit_needed',
+    'kotti.fanstatic.view_needed',
     ])
 
 
@@ -126,17 +132,17 @@ def _resolve_dotted(d, keys=conf_dotted):
 
 
 def main(global_config, **settings):
-    """ This function is a 'paste.app_factory' and returns a WSGI
-    application.
-    """
+    # This function is a 'paste.app_factory' and returns a WSGI
+    # application.
+
     config = base_configure(global_config, **settings)
     return config.make_wsgi_app()
 
 
 def base_configure(global_config, **settings):
-    """Resolve dotted names in settings, include plug-ins and create a
-    Configurator.
-    """
+    # Resolve dotted names in settings, include plug-ins and create a
+    # Configurator.
+
     from kotti.resources import appmaker
 
     for key, value in conf_defaults.items():
@@ -181,10 +187,15 @@ def base_configure(global_config, **settings):
         config.include(module)
     config.commit()
 
-    # Modules in 'pyramid.includes' may override 'kotti.base_includes':
+    # Modules in 'pyramid.includes' and 'kotti.zcml_includes' may
+    # override 'kotti.base_includes':
     if pyramid_includes:
         for module in pyramid_includes.split():
             config.include(module)
+
+    for name in settings['kotti.zcml_includes'].strip().split():
+        config.load_zcml(name)
+
     config.commit()
 
     engine = engine_from_config(settings, 'sqlalchemy.')
