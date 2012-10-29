@@ -1,17 +1,18 @@
 .. _tut-2:
 
-Tutorial part 2: A Content Type
+Tutorial Part 2: A Content Type
 ===============================
 
-Kotti's default content types include ``Document``, ``Image`` and
-``File``.  In this part of the tutorial, we'll add a ``Poll`` content
-type which will allow visitors to view polls and vote on them.
+Kotti's default content types include ``Document``, ``Image`` and ``File``.  In
+this part of the tutorial, we'll add add to these built-in content types by
+making a ``Poll`` content type which will allow visitors to view polls and vote
+on them.
 
-Adding models
+Adding Models
 -------------
 
 Let's create a new file at ``kotti_mysite/kotti_mysite/resources.py``
-and put the definition of the ``Poll`` content type therein:
+and add the definition of the ``Poll`` content type:
 
 .. code-block:: python
 
@@ -33,21 +34,22 @@ and put the definition of the ``Poll`` content type therein:
 
 Things to note here:
 
-- Kotti's content types use SQLAlchemy_ for persistence
+- Kotti's content types use SQLAlchemy_ for definition of persistence.
 
 - ``Poll`` derives from :class:`kotti.resources.Content`, which is the
   common base class for all content types.
 
-- ``Poll`` declares a single columns ``id``, which is required to hook
-  it up with SQLAlchemy's inheritance.  We don't define any additional
-  columns since all we need is a title, and that's already defined as
-  part of ``Content``, our base class.
+- ``Poll`` declares a sqla.Column ``id``, which is required to hook
+  it up with SQLAlchemy's inheritance. 
+  
+- The type_info class attribute does essential configuration. We
+  refer to name and title, two properties already defined as part of
+  ``Content``, our base class.  The ``add_view`` defines the name of the add
+  view, which we'll come to in a second.  Finally, ``addable_to`` defines which
+  content types we can add ``Poll`` items to.
 
-- The ``type_info`` class attribute defines the ``title`` of a poll as
-  it'll be used in the user interface.  The ``add_view`` defines the
-  name of the add view, which we'll come to in a second.  Finally,
-  ``addable_to`` defines which content types we can add ``Poll`` items
-  to.
+- We do not need to define any additional sqlaColumn() properties, as the title
+  is the only property we need for this content type.
 
 We'll add another content class to hold the choices for the poll.  Add
 this into the same ``resources.py`` file:
@@ -73,25 +75,20 @@ this into the same ``resources.py`` file:
 The ``Choice`` class looks very similar to ``Poll``.  Notable
 differences are:
 
-- It has an additional column called ``votes``.  We'll use this to
-  store how many votes were given for the particular choice.  We'll
-  again use the inherited ``title`` column to store the title of our
-  choice.
+- It has an additional sqla.Column property called ``votes``.  We'll use this
+  to store how many votes were given for the particular choice.  We'll again
+  use the inherited ``title`` column to store the title of our choice.
 
+- The ``type_info`` defines the title, the ``add_view`` view, and that
+  choices may only be added *into* ``Poll`` items, with the line
+  ``addable_to=[u'Poll']``.
 
-- It has different columns, namely ``choice`` and ``votes`` are
-  different.
-
-- The ``type_info`` defines a different title and ``add_view``.  It
-  also defines that choices may only be added *into* ``Poll`` items
-  through ``addable_to=[u'Poll']``.
-
-Adding forms and a view
+Adding Forms and a View
 -----------------------
 
 Views (including forms) are typically put into a module called
-``views``.  Let's create a new file at
-``kotti_mysite/kotti_mysite/views.py`` and put inside the following:
+``views``.  Let's create a new file for this module at
+``kotti_mysite/kotti_mysite/views.py`` and add the following code:
 
 .. code-block:: python
 
@@ -109,13 +106,13 @@ Views (including forms) are typically put into a module called
           title=u'Choice',
           )
 
-These two classes define the schema for our add and edit forms.  That
-is, they represent which fields we want to display in the form.
-
 Colander_ is the library that we use to define our schemas.  Colander
 allows us to validate schemas against form data.
 
-Let's move on to building our actual forms.  Add this to ``views.py``:
+The two classes define the schemas for our add and edit forms.  That
+is, they specify which fields we want to display in the forms.
+
+Let's move on to building the actual forms.  Add this to ``views.py``:
 
 .. code-block:: python
 
@@ -143,19 +140,20 @@ Let's move on to building our actual forms.  Add this to ``views.py``:
  
 
 Using the ``AddFormView`` and ``EditFormView`` base classes from
-Kotti, these forms become pretty simple.
+Kotti, these forms are simple to define. We associate the schemas
+defined above, setting them as the schema_factory for each form,
+and we specify the content types to be added by each.
 
-Wiring up the content types and forms
+Wiring up the Content Types and Forms
 -------------------------------------
 
-It's time for us to see things in action.  Let's configure our content
-types and forms, so that we can see things in action.
+It's time for us to see things in action. For that, some configuration
+of the types and forms is in order.
 
-Let's go back to ``kotti_mysite/kotti_mysite/__init__.py`` and add a
-little more configuration to register our new code so that it can be
-used in our Kotti site.
+Find ``kotti_mysite/kotti_mysite/__init__.py`` and add configuration that
+registers our new code in the Kotti site.
 
-We change the ``kotti_configure`` function to look like so:
+We change the ``kotti_configure`` function to look like:
 
 .. code-block:: python
 
@@ -166,7 +164,10 @@ We change the ``kotti_configure`` function to look like so:
          ' kotti_mysite.resources.Poll kotti_mysite.resources.Choice')
      settings['pyramid.includes'] += ' kotti_mysite'
 
-Now we'll add another function in the same file called ``includeme``:
+Here, we've added our two content types to the site's available_types, a glogal
+registry.
+
+Now add a function called ``includeme`` to the same file:
 
 .. code-block:: python
 
@@ -205,7 +206,12 @@ def includeme(config):
         renderer='kotti:templates/edit/node.pt',
         )
 
-Here, we call ``config.add_view`` once for each form.  XXX
+Here, we call ``config.add_view`` once for each form. The first argument
+of each call is the form class. The second argument gives the name of the
+view. The names of each add view, `add_poll` and `add_choice`, match the
+names set in the type_info class attribute of the types (Compare to the
+classes where Poll() and Choice() are defined). The names of the edit views
+are simply `edit`, 
 
 
 .. _SQLAlchemy: http://www.sqlalchemy.org/
