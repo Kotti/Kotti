@@ -1,12 +1,13 @@
 # -*- coding: utf-8 -*-
-
 import warnings
+
+from pyramid.httpexceptions import HTTPFound
+
+from kotti.interfaces import IContent
 from kotti.resources import get_root
-from kotti.resources import IContent
 from kotti.testing import DummyRequest
 from kotti.testing import UnitTestBase
-from kotti.views.edit.default_view_selection import DefaultViewSelection
-from pyramid.httpexceptions import HTTPFound
+from kotti.views.edit.default_views import DefaultViewSelection
 
 
 class TestDefaultViewSelection(UnitTestBase):
@@ -26,16 +27,15 @@ class TestDefaultViewSelection(UnitTestBase):
         view = DefaultViewSelection(context, request)
 
         assert view._is_valid_view("folder_view") is True
-        assert view._is_valid_view("foo_view") is False
+        assert view._is_valid_view("foo") is False
 
-    def test_default_view_selection(self):
-
+    def test_default_views(self):
         self.config.add_view(
             context=IContent,
             name='folder_view',
             permission='view',
             renderer='kotti:templates/view/folder.pt',
-        )
+            )
 
         context = get_root()
         request = DummyRequest()
@@ -46,7 +46,7 @@ class TestDefaultViewSelection(UnitTestBase):
 
         assert 'selectable_default_views' in sviews
 
-        # the root should have at least the default view and te folder_view
+        # the root should have at least the default view and the folder_view
         assert len(sviews['selectable_default_views']) > 1
 
         # the first view is always the default view
@@ -56,7 +56,7 @@ class TestDefaultViewSelection(UnitTestBase):
 
         assert sviews['selectable_default_views'][1]['is_current'] is False
 
-        # set the default view to folder_view
+        # set the default view to folder_view view
         request = DummyRequest(GET={'view_name': 'folder_view'})
         view = DefaultViewSelection(context, request)
 

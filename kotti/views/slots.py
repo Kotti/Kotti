@@ -20,10 +20,12 @@ inside an ``includeme`` function and not on a module level, to allow
 users of your package to include your slot assignments through the
 ``pyramid.includes`` configuration setting.  """
 
+import urllib
+
 from pyramid.exceptions import PredicateMismatch
 from pyramid.request import Request
 from pyramid.view import render_view
-import urllib
+from pyramid.view import view_config
 from zope.deprecation import deprecate
 
 from kotti.events import ObjectEvent
@@ -147,6 +149,8 @@ slot_events = [
     ]
 
 
+@view_config(name='local-navigation',
+             renderer='kotti:templates/view/nav-local.pt')
 def local_navigation(context, request):
     from kotti.resources import get_root
 
@@ -166,8 +170,5 @@ def local_navigation(context, request):
 
 
 def includeme_local_navigation(config):
-    config.add_view(
-        local_navigation,
-        name='local-navigation',
-        renderer='kotti:templates/view/nav-local.pt')
+    config.scan(__name__)
     assign_slot('local-navigation', 'right')

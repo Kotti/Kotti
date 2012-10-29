@@ -1,3 +1,5 @@
+.. _developer_manual:
+
 Developer manual
 ================
 
@@ -5,42 +7,6 @@ Read the :ref:`Configuration` section first to understand which hooks
 both integrators and developers can use to customize and extend Kotti.
 
 .. contents::
-
-Fork and Repo Setup
--------------------
-
-To contribute to Kotti, and to test and run against Master, fork pylons/Kotti to
-your github account, and follow the usual steps to get a local clone, with origin
-as your fork, and with upstream as the pylons/Kotti repo. Then, you will be able
-to make branches for contributing, etc. Steps would be something like this:
-
-.. code-block:: bash
-
-  git clone https://github.com/your_github/Kotti.git
-
-  cd Kotti
-
-  git remote add upstream git://github.com/Pylons/Kotti.git
-
-Now you should be set up to make branches for this and that, doing a pull request
-from a branch, and the usual git procedures. You may wish to read the 
-`Github fork-a-repo help`_.
-
-.. _Github fork-a-repo help: https://help.github.com/articles/fork-a-repo
-
-To run and develop within your clone, do these steps:
-
-.. code-block:: bash
-
-  virtualenv . --no-site-packages 
-
-  bin/python setup.py develop
-
-This will create a new virtualenv "in place" and do the python develop steps to
-use the Kotti code in the repo.
-
-Run bin/pip install kotti_someaddon, and add a kotti_someaddon entry to app.ini,
-as you would do normally, to use add-ons.
 
 Screencast tutorial
 -------------------
@@ -137,7 +103,7 @@ application start-up.  An example:
 Working with content objects
 ----------------------------
 
-.. include:: ../kotti/tests/nodes.txt
+.. include:: ../../kotti/tests/nodes.txt
   :start-after: # end of setup
   :end-before: # start of teardown
 
@@ -174,7 +140,7 @@ the INI file:
 And this is how your users would hook it up in their INI file:
 
 .. code-block:: ini
-  
+
   kotti.configurators = mypackage.kotti_configure
 
 .. _develop-security:
@@ -219,12 +185,49 @@ a different factory.  The default setting here is:
 
   kotti.principals_factory = kotti.security.principals_factory
 
+Fork and Repo Setup
+-------------------
+
+To contribute to Kotti itself, and to test and run against Master,
+fork pylons/Kotti to your github account, and follow the usual steps
+to get a local clone, with origin as your fork, and with upstream as
+the pylons/Kotti repo. Then, you will be able to make branches for
+contributing, etc. Steps would be something like this:
+
+.. code-block:: bash
+
+  git clone https://github.com/your_github/Kotti.git
+
+  cd Kotti
+
+  git remote add upstream git://github.com/Pylons/Kotti.git
+
+Now you should be set up to make branches for this and that, doing a pull request
+from a branch, and the usual git procedures. You may wish to read the
+`Github fork-a-repo help`_.
+
+.. _Github fork-a-repo help: https://help.github.com/articles/fork-a-repo
+
+To run and develop within your clone, do these steps:
+
+.. code-block:: bash
+
+  virtualenv . --no-site-packages
+
+  bin/python setup.py develop
+
+This will create a new virtualenv "in place" and do the python develop steps to
+use the Kotti code in the repo.
+
+Run bin/pip install kotti_someaddon, and add a kotti_someaddon entry to app.ini,
+as you would do normally, to use add-ons.
+
 API
 ---
 
 .. toctree::
 
-   api.rst
+   ../api/index.rst
 
 
 .. _Pyramid's security API: http://docs.pylonsproject.org/projects/pyramid/dev/api/security.html

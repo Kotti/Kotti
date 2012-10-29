@@ -15,7 +15,9 @@ junit*.xml
 *.pt.py
 .coverage
 .installed.cfg
+.pip.log
 .tox
 *~
 *.swp
 .idea
+.cache

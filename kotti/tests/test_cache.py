@@ -4,12 +4,12 @@ from mock import patch
 from mock import MagicMock
 import pytest
 
-from kotti.testing import Dummy
 from kotti.testing import UnitTestBase
+from kotti.testing import Dummy
 from kotti.views.cache import set_max_age
 
 
-class TestSetMaxAge(UnitTestBase):
+class TestSetMaxAge:
     def test_preserve_existing_headers(self):
         response = Dummy(headers={
             "cache-control": "max-age=17,s-max-age=42,foo,bar=42"})

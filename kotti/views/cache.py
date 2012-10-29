@@ -117,4 +117,4 @@ def set_cache_headers(event):
 
 
 def includeme(config):
-    config.scan('kotti.views.cache')
+    config.scan(__name__)

@@ -1,32 +1,11 @@
 /** Put here CSS that should apply to both public and editor screens. **/
 
-body {
-  /* Add padding for 1 fixed navbar (navigation) */
-  padding-top: 60px;
-}
-
-body.logged-in {
-  /* Add padding for 2 fixed navbars (navigation + editor-bar) when logged in */
-  padding-top: 100px;
-}
-
-body.logged-in .navbar-inner {
-  /* Remove shadows from navbars when logged in (looks bad with 2 navbars) */
-  -webkit-box-shadow: none;
-  -moz-box-shadow: none;
-  box-shadow: none;
-}
-
 span.brand a, span.brand a:hover {
   /* The site title in the navbar (a.k.a. "home") */
   color: white;
   text-decoration: none;
 }
 
-#editor-bar {
-  /* place the editor bar below the navbar */
-  top: 40px;
-}
 #user-dropdown .dropdown-submenu > .dropdown-menu {
   /* make the "site settings" submenu open to the left */
   left: -100%;

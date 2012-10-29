@@ -26,7 +26,10 @@ import sys, os
 # Add any Sphinx extension module names here, as strings. They can be extensions
 # coming with Sphinx (named 'sphinx.ext.*') or your custom ones.
 extensions = [
+    'repoze.sphinx.autointerface',
     'sphinx.ext.autodoc',
+    'sphinx.ext.graphviz',
+    'sphinx.ext.inheritance_diagram',
     'sphinx.ext.viewcode',
     ]
 
@@ -51,7 +54,7 @@ copyright = u'2012, Daniel Nouri and contributors'
 # built documents.
 #
 # The short X.Y version.
-version = '0.7'
+version = '0.8'
 # The full version, including alpha/beta/rc tags.
 release = version
 

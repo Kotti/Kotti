@@ -1,15 +1,19 @@
 Change History
 ==============
 
-0.8 - Unreleased
-----------------
+0.8.0 - Unreleased
+------------------
+
+- Cleanup node edit actions and use decorated view classes.
+
+- Add contents view with actions for multiple items.
 
 - Add children_with_permission method to ContainerMixin.
 
 - Add UI for default_view selection.
 
-0.7.3 - Unreleased
-------------------
+- Deprecate 'kotti.views.edit.generic_add' and 'generic_edit'.  Just
+  use class-based forms instead.
 
 0.7.2 - 2012-10-02
 ------------------

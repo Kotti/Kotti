@@ -1,3 +1,8 @@
+"""
+Populate contains two functions that are called on application startup
+(if you haven't modified kotti.populators).
+"""
+
 from kotti import get_settings
 from kotti.resources import DBSession
 from kotti.resources import Node
@@ -8,6 +13,11 @@ from kotti.workflow import get_workflow
 
 
 def populate_users():
+    """
+    Create the admin user with the password from the ``kotti.secret`` option
+    if there is no user with name 'admin' yet.
+    """
+
     principals = get_principals()
     if u'admin' not in principals:
         principals[u'admin'] = {
@@ -19,6 +29,11 @@ def populate_users():
 
 
 def populate():
+    """
+    Create the root node (Document) and the 'about' subnode in the nodes tree
+    if there are no nodes yet.
+    """
+
     if DBSession.query(Node).count() == 0:
         root = Document(**_ROOT_ATTRS)
         root.__acl__ = SITE_ACL
@@ -38,55 +53,56 @@ _ROOT_ATTRS = dict(
     description=u'Congratulations! You have successfully installed Kotti.',
     body=u"""
 <h2>Log in</h2>
-
 <p>
-  You can <a href="/@@login" class="btn btn-success">log in</a> to your
-  site and start changing its contents.  If you haven't chosen a
-  password for you admin account yet, it'll likely be <i>qwerty</i>.
-</p>
-
-<p>
-  Once you're logged in, you'll see the black editor bar on the top
-  of the page.  It will allow you to switch between editing and
-  viewing the current page as it will appear to your visitors.
-</p>
-
-<h2>Configure</h2>
-<p>
-  Find out how to configure your Kotti's title and many other settings
-  using a simple text file in your file system.
+    You can <a class="btn btn-success" href="/login">log in</a> to your site
+    and start changing its contents.  If you haven't chosen a password for
+    your admin account yet, it'll likely be <em>qwerty</em>.
 </p>
 <p>
-  <a href="http://kotti.readthedocs.org/en/latest/configuration.html"
-     class="btn btn-info">Configuration manual</a>
+    Once you're logged in, you'll see the grey editor bar below the top
+    navigation bar.  It will allow you to switch between editing and viewing the
+    current page as it will appear to your visitors.
 </p>
-<p>
-  A number of add-ons allow you to extend the functionality of your
-  Kotti site.
-</p>
-<p>
-  <a href="http://pypi.python.org/pypi?%3Aaction=search&term=kotti"
-     class="btn btn-info">Kotti add-ons</a>
-</p>
-
-<h2>Develop</h2>
-<p>
-  Kotti aims to be easy and extensible.  Check out the developer manual.
-</p>
-<p>
-  <a href="http://kotti.readthedocs.org/en/latest/developer-manual.html"
-     class="btn btn-info">Developer Manual</a>
-</p>
-
-<h2>Documentation</h2>
-<p>
-  Wonder what more you can do with Kotti?  What license it has?  Read
-  the manual for more information.
-</p>
-<p>
-  <a href="http://kotti.readthedocs.org/en/latest/"
-     class="btn btn-info">Documentation</a>
-</p>
+<div class="row">
+    <div class="span4">
+        <h2>Configure</h2>
+        <p>
+            Find out how to configure your Kotti's title and many other settings using a
+            simple text file in your file system.
+        </p>
+        <p>
+            <a class="btn btn-info"
+               href="http://kotti.readthedocs.org/en/latest/configuration.html">
+               Configuration manual
+            </a>
+        </p>
+    </div>
+    <div class="span4">
+        <h2>Add-ons</h2>
+        <p>
+            A number of add-ons allow you to extend the functionality of your Kotti site.
+        </p>
+        <p>
+            <a class="btn btn-info"
+               href="http://pypi.python.org/pypi?%3Aaction=search&amp;term=kotti">
+                Kotti add-ons
+            </a>
+        </p>
+    </div>
+    <div class="span4">
+        <h2>Documentation</h2>
+        <p>
+            Wonder what more you can do with Kotti?  What license it has?  Read the
+            manual for more information.
+        </p>
+        <p>
+            <a class="btn btn-info"
+               href="http://kotti.readthedocs.org/en/latest/">
+               Documentation
+            </a>
+        </p>
+    </div>
+</div>
 """)
 
 _ABOUT_ATTRS = dict(

@@ -23,11 +23,8 @@ Some convenience functions:
 
 Add a file and an image:
 
-  >>> from os import path
-  >>> from kotti import tests
   >>> from kotti.resources import File, Image
-  >>> image_path = path.join(path.dirname(tests.__file__), 'sendeschluss.jpg')
-  >>> image = open(image_path, 'rb').read()
+  >>> image = testing.asset('sendeschluss.jpg').read()
   >>> root['textfile'] = File("file contents", u"mytext.txt", u"text/plain")
   >>> root['image'] = Image(image, u"sendeschluss.jpg", u"image/jpeg")
 

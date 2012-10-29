@@ -23,16 +23,16 @@ install_requires = [
     'formencode',
     'html2text',
     'js.bootstrap>=2.1.5',
-    'js.deform',
-    'js.deform_bootstrap',
+    'js.deform>=0.9.5-3',
+    'js.deform_bootstrap>=0.2.4-1',
     'js.jquery',
     'js.jquery_form',
     'js.jquery_timepicker_addon',
-    'js.jqueryui',
+    'js.jqueryui>=1.8.24',
     'js.jqueryui_tagit',
-    'kotti_tinymce>=0.2.3',
+    'kotti_tinymce>=0.3',
     'lingua>=1.3',
-    'Pillow',  # indirect dependency of plone.scale (that doesn't declare this dependency itself)
+    'Pillow',  # dependency of plone.scale
     'plone.i18n<2.0',  # >= 2.0 adds a huge number of dependencies
     'plone.scale',  # needed for image resizing capabilities
     'py-bcrypt',
@@ -45,9 +45,10 @@ install_requires = [
     'pyramid_zcml',
     'repoze.lru',
     'repoze.workflow',
-    'sqlalchemy>=0.7.6',  # avoid "Table 'local_groups' is already defined" error
-    'transaction>=1.1.0',  # ask c-neumann :-)
+    'sqlalchemy>=0.7.6',
+    'transaction>=1.1.0',
     'waitress',
+    'zope.browserresource',
     'zope.deprecation',
     'zope.sqlalchemy',
     ]
@@ -71,7 +72,7 @@ if sys.version_info[:3] < (2, 7, 0):
     install_requires.append('ordereddict')
 
 setup(name='Kotti',
-      version='0.7.3dev',
+      version='0.8.0dev',
       description="Kotti is a high-level, 'Pythonic' web application framework. It includes a small and extensible CMS application called the Kotti CMS.",
       long_description='\n\n'.join([README, AUTHORS, CHANGES]),
       classifiers=[
@@ -99,7 +100,7 @@ setup(name='Kotti',
       main = kotti:main
 
       [fanstatic.libraries]
-      kotti = kotti.static:lib_kotti
+      kotti = kotti.fanstatic:lib_kotti
 
       [console_scripts]
       kotti-migrate = kotti.migrate:kotti_migrate_command

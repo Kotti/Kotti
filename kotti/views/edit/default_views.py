@@ -1,12 +1,9 @@
-# -*- coding: utf-8 -*-
-
 """
-Created on 2012-10-04
 :summary: Default view selctor views
 """
 
 import warnings
-from kotti.util import _
+
 from pyramid.compat import map_
 from pyramid.httpexceptions import HTTPFound
 from pyramid.interfaces import IView
@@ -15,6 +12,8 @@ from pyramid.threadlocal import get_current_registry
 from pyramid.view import view_config
 from pyramid.view import view_defaults
 from zope.interface import providedBy
+
+from kotti.util import _
 
 
 @view_defaults(permission='edit')
@@ -60,8 +59,7 @@ class DefaultViewSelection(object):
 
         sviews = []
 
-        for v in getattr(self.context.type_info, "selectable_default_views", []):
-
+        for v in self.context.type_info.selectable_default_views:
             name, title = v
             if self._is_valid_view(name):
                 sviews.append({
@@ -117,3 +115,7 @@ class DefaultViewSelection(object):
         return HTTPFound(
             location=self.request.resource_url(self.context)
         )
+
+
+def includeme(config):
+    config.scan('.default_views')

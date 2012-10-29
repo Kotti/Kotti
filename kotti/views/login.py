@@ -1,3 +1,9 @@
+# -*- coding: utf-8 -*-
+
+"""
+Login / logout and forbidden views and forms.
+"""
+
 from datetime import datetime
 
 import colander
@@ -8,16 +14,17 @@ from deform.widget import CheckedPasswordWidget
 from deform.widget import HiddenWidget
 from formencode.validators import Email
 from pyramid.encode import urlencode
-from pyramid.httpexceptions import HTTPFound
 from pyramid.httpexceptions import HTTPForbidden
+from pyramid.httpexceptions import HTTPFound
 from pyramid.security import authenticated_userid
-from pyramid.security import remember
 from pyramid.security import forget
+from pyramid.security import remember
 from pyramid.url import resource_url
+from pyramid.view import view_config
 
 from kotti import get_settings
-from kotti.message import validate_token
 from kotti.message import email_set_password
+from kotti.message import validate_token
 from kotti.security import get_principals
 from kotti.util import _
 from kotti.views.util import template_api
@@ -99,7 +106,17 @@ def register(context, request):
         'form': rendered_form,
         }
 
+@view_config(name='login', renderer='kotti:templates/login.pt')
 def login(context, request):
+    """
+    Login view.  Renders either the login or password forgot form templates or
+    handles their form submission and redirects to came_from on success.
+
+    :result: Either a redirect response or a dictionary passed to the template
+             for rendering
+    :rtype: pyramid.httpexceptions.HTTPFound or dict
+    """
+
     principals = get_principals()
 
     came_from = request.params.get(
@@ -144,7 +161,15 @@ def login(context, request):
         }
 
 
+@view_config(name='logout')
 def logout(context, request):
+    """
+    Logout view.  Always redirects the user to where he came from.
+
+    :result: Redirect to came_from
+    :rtype: pyramid.httpexceptions.HTTPFound
+    """
+
     headers = forget(request)
     request.session.flash(_(u"You have been logged out."))
     location = request.params.get('came_from', request.application_url)
@@ -152,21 +177,29 @@ def logout(context, request):
 
 
 class SetPasswordSchema(colander.MappingSchema):
+    """
+    Schema for the set password form
+    """
+
+    #: colander.String
     password = colander.SchemaNode(
         colander.String(),
         title=_(u'Password'),
         validator=colander.Length(min=5),
         widget=CheckedPasswordWidget(),
         )
+    #: colander.String
     token = colander.SchemaNode(
         colander.String(),
         widget=HiddenWidget(),
         )
+    #: colander.String
     email = colander.SchemaNode(
         colander.String(),
         title=_(u'Email'),
         widget=HiddenWidget(),
         )
+    #: colander.String
     continue_to = colander.SchemaNode(
         colander.String(),
         widget=HiddenWidget(),
@@ -174,8 +207,21 @@ class SetPasswordSchema(colander.MappingSchema):
         )
 
 
+@view_config(name='set-password', renderer='kotti:templates/edit/simpleform.pt')
 def set_password(context, request,
                  success_msg=_(u"You've reset your password successfully.")):
+    """
+    Set password view.  Displays the set password form and handles its form
+    submission.
+
+    :param success_msg: Message to display on successful submission handling
+    :type success_msg: str or TranslationString
+
+    :result: Redirect response or dictionary passed to the template for
+             rendering.
+    :rtype: pyramid.httpexceptions.HTTPFound or dict
+    """
+
     form = Form(SetPasswordSchema(), buttons=(Button('submit', _(u'Submit')),))
     rendered_form = None
 
@@ -222,7 +268,16 @@ def set_password(context, request,
         }
 
 
+@view_config(context=HTTPForbidden, accept='text/html',)
 def forbidden_redirect(context, request):
+    """
+    Forbidden redirect view.  Redirects to the login form for anonymous users or
+    to the forbidden view for authenticated users.
+
+    :result: Redirect to one of the above.
+    :rtype: pyramid.httpexceptions.HTTPFound
+    """
+
     if authenticated_userid(request):
         location = request.application_url + '/@@forbidden'
     else:
@@ -231,46 +286,30 @@ def forbidden_redirect(context, request):
     return HTTPFound(location=location)
 
 
+@view_config(context=HTTPForbidden)
 def forbidden_view(request):
+    """
+    Forbidden view.  Raises 403 for requests not originating from a web browser
+    like device.
+
+    :result: 403
+    :rtype: pyramid.httpexceptions.HTTPForbidden
+    """
+
     return request.exception
 
 
+@view_config(name='forbidden', renderer='kotti:templates/forbidden.pt')
+def forbidden_view_html(request):
+    """
+    Forbidden view for browsers.
+
+    :result: empty dictionary passed to the template for rendering
+    :rtype: dict
+    """
+
+    return {}
+
+
 def includeme(config):
-    config.add_view(
-        forbidden_redirect,
-        context=HTTPForbidden,
-        accept='text/html',
-        )
-
-    config.add_view(
-        forbidden_view,
-        context=HTTPForbidden,
-        )
-
-    config.add_view(
-        name='forbidden',
-        renderer='kotti:templates/forbidden.pt',
-        )
-
-    config.add_view(
-        register,
-        name='register',
-        renderer='kotti:templates/edit/simpleform.pt',
-        )
-
-    config.add_view(
-        login,
-        name='login',
-        renderer='kotti:templates/login.pt',
-    )
-
-    config.add_view(
-        logout,
-        name='logout',
-        )
-
-    config.add_view(
-        set_password,
-        name='set-password',
-        renderer='kotti:templates/edit/simpleform.pt',
-        )
+    config.scan(__name__)
