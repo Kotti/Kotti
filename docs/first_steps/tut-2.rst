@@ -42,7 +42,7 @@ Things to note here:
 - ``Poll`` declares a sqla.Column ``id``, which is required to hook
   it up with SQLAlchemy's inheritance. 
   
-- The type_info class attribute statement does essential configuration. We
+- The type_info class attribute does essential configuration. We
   refer to name and title, two properties already defined as part of
   ``Content``, our base class.  The ``add_view`` defines the name of the add
   view, which we'll come to in a second.  Finally, ``addable_to`` defines which
