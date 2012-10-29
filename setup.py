@@ -64,6 +64,12 @@ development_requires = [
     'minify',
     ]
 
+docs_require = [
+    'Sphinx',
+    'docutils',
+    'repoze.sphinx.autointerface',
+    ]
+
 if sys.version_info[:3] < (2, 7, 0):
     install_requires.append('ordereddict')
 
@@ -107,6 +113,7 @@ setup(name='Kotti',
       extras_require={
           'testing': tests_require,
           'development': development_requires,
+          'docs': docs_require,
           },
       message_extractors={'kotti': [
             ('**.py', 'lingua_python', None),
