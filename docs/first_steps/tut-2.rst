@@ -171,40 +171,40 @@ Now add a function called ``includeme`` to the same file:
 
 .. code-block:: python
 
-def includeme(config):
-    from .resources import Poll
-    from .resources import Choice
-    from .views import PollAddForm
-    from .views import PollEditForm
-    from .views import ChoiceAddForm
-    from .views import ChoiceEditForm
+  def includeme(config):
+      from .resources import Poll
+      from .resources import Choice
+      from .views import PollAddForm
+      from .views import PollEditForm
+      from .views import ChoiceAddForm
+      from .views import ChoiceEditForm
 
-    config.add_view(
-        PollAddForm,
-        name='add_poll',
-        permission='add',
-        renderer='kotti:templates/edit/node.pt',
-        )
-    config.add_view(
-        PollEditForm,
-        context=Poll,
-        name='edit',
-        permission='edit',
-        renderer='kotti:templates/edit/node.pt',
-        )
-    config.add_view(
-        ChoiceAddForm,
-        name='add_choice',
-        permission='add',
-        renderer='kotti:templates/edit/node.pt',
-        )
-    config.add_view(
-        ChoiceEditForm,
-        context=Choice,
-        name='edit',
-        permission='edit',
-        renderer='kotti:templates/edit/node.pt',
-        )
+      config.add_view(
+          PollAddForm,
+          name='add_poll',
+          permission='add',
+          renderer='kotti:templates/edit/node.pt',
+          )
+      config.add_view(
+          PollEditForm,
+          context=Poll,
+          name='edit',
+          permission='edit',
+          renderer='kotti:templates/edit/node.pt',
+          )
+      config.add_view(
+          ChoiceAddForm,
+          name='add_choice',
+          permission='add',
+          renderer='kotti:templates/edit/node.pt',
+          )
+      config.add_view(
+          ChoiceEditForm,
+          context=Choice,
+          name='edit',
+          permission='edit',
+          renderer='kotti:templates/edit/node.pt',
+          )
 
 Here, we call ``config.add_view`` once for each form. The first argument
 of each call is the form class. The second argument gives the name of the
