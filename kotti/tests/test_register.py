@@ -20,9 +20,9 @@ class TestRegister:
 
         root = get_root()
         request = DummyRequest()
-        request.POST['register'] = 'register'
+        request.POST['register'] = u'register'
         res = register(root, request)
-        assert(res['form'].find('There was a problem with your submission') > 0)
+        assert 'There was a problem with your submission' in res['form']
 
     def test_register_submit(self, db_session):
         from kotti.resources import get_root
@@ -31,19 +31,19 @@ class TestRegister:
 
         root = get_root()
         request = DummyRequest()
-        request.POST['title'] = 'Test User'
-        request.POST['name'] = 'test'
-        request.POST['email'] = 'test@example.com'
-        request.POST['register'] = 'register',
+        request.POST['title'] = u'Test User'
+        request.POST['name'] = u'test'
+        request.POST['email'] = u'test@example.com'
+        request.POST['register'] = u'register',
 
         with patch('kotti.views.login.UserAddFormView') as form:
             res = register(root, request)
             form.assert_has_calls([call().add_user_success({
                 'name': u'test',
-                'roles': '',
+                'roles': u'',
                 'title': u'Test User',
                 'send_email': True,
-                'groups': '',
+                'groups': u'',
                 'email': u'test@example.com'})]
             )
         assert(isinstance(res, HTTPFound))
@@ -55,10 +55,10 @@ class TestRegister:
 
         root = get_root()
         request = DummyRequest()
-        request.POST['title'] = 'Test User'
-        request.POST['name'] = 'test'
-        request.POST['email'] = 'test@example.com'
-        request.POST['register'] = 'register',
+        request.POST['title'] = u'Test User'
+        request.POST['name'] = u'test'
+        request.POST['email'] = u'test@example.com'
+        request.POST['register'] = u'register',
 
         with patch('kotti.views.login.UserAddFormView') as form:
             with patch('kotti.views.login.get_settings') as get_settings:
