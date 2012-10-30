@@ -80,20 +80,26 @@ def register(context, request):
             rendered_form = e.render()
         else:
             settings = get_settings()
-            if settings['kotti.register.group']:
-                appstruct['groups'] = [settings['kotti.register.group']]
-            else:
-                appstruct['groups'] = ''
-            if settings['kotti.register.role']:
-                appstruct['roles'] = set(['role:' + settings['kotti.register.role']])
-            else:
-                appstruct['roles'] = ''
+
+            appstruct['groups'] = u''
+            appstruct['roles'] = u''
+
+            register_groups = settings['kotti.register.group']
+            if register_groups:
+                appstruct['groups'] = [register_groups]
+
+            register_roles = settings['kotti.register.role']
+            if register_roles:
+                appstruct['roles'] = set(['role:' + register_roles])
+
             appstruct['send_email'] = True
             form = UserAddFormView(context, request)
             form.add_user_success(appstruct)
-            success_msg = _('Congratulations! You are successfully registered. '
-            'You should receive an email with a link to set your '
-            'password momentarily.')
+            success_msg = _(
+                'Congratulations! You are successfully registered. '
+                'You should receive an email with a link to set your '
+                'password momentarily.'
+                )
             request.session.flash(success_msg, 'success')
             return HTTPFound(location=request.application_url)
 

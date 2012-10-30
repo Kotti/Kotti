@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 from kotti.testing import DummyRequest
 from mock import patch
 from mock import call
@@ -48,4 +46,36 @@ class TestRegister:
                 'groups': '',
                 'email': u'test@example.com'})]
             )
+        assert(isinstance(res, HTTPFound))
+
+    def test_register_submit_groups_and_roles(self, db_session):
+        from kotti.resources import get_root
+        from kotti.views.login import register
+        from pyramid.httpexceptions import HTTPFound
+
+        root = get_root()
+        request = DummyRequest()
+        request.POST['title'] = 'Test User'
+        request.POST['name'] = 'test'
+        request.POST['email'] = 'test@example.com'
+        request.POST['register'] = 'register',
+
+        with patch('kotti.views.login.UserAddFormView') as form:
+            with patch('kotti.views.login.get_settings') as get_settings:
+                get_settings.return_value = {
+                    'kotti.register.group': 'mygroup',
+                    'kotti.register.role': 'myrole',
+                    }
+
+                res = register(root, request)
+
+        form.assert_has_calls([
+            call().add_user_success({
+                'name': u'test',
+                'roles': set([u'role:myrole']),
+                'title': u'Test User',
+                'send_email': True,
+                'groups': [u'mygroup'],
+                'email': u'test@example.com',
+                })])
         assert(isinstance(res, HTTPFound))
