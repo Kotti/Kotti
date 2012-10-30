@@ -97,7 +97,7 @@ pygments_style = 'sphinx'
 
 # Add and use Pylons theme
 sys_argv = ' '.join(sys.argv)  # protect against dumb importers
-if any(map(lambda x: x in sys_argv, ['sphinx-build','build_sphinx'])):
+if any(map(lambda x: x in sys_argv, ['sphinx-build', 'build_sphinx'])):
     from subprocess import call, Popen, PIPE
 
     p = Popen('which git', shell=True, stdout=PIPE)
@@ -106,7 +106,7 @@ if any(map(lambda x: x in sys_argv, ['sphinx-build','build_sphinx'])):
     _themes = os.path.join(cwd, '_themes')
 
     if not os.path.isdir(_themes):
-        call([git, 'clone', 'git://github.com/Pylons/pylons_sphinx_theme.git',
+        call([git, 'clone', 'git://github.com/scotch/sphinx-bootstrap.git',
                 '_themes'])
     else:
         os.chdir(_themes)
