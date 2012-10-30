@@ -33,6 +33,7 @@ from kotti.views.users import name_pattern_validator
 from kotti.views.users import name_new_validator
 from kotti.views.users import UserAddFormView
 
+
 def _find_user(login):
     principals = get_principals()
     principal = principals.get(login)
@@ -46,6 +47,7 @@ def _find_user(login):
         else:
             for p in principals.search(email=login):
                 return p
+
 
 class RegisterSchema(colander.Schema):
     title = colander.SchemaNode(
@@ -61,6 +63,7 @@ class RegisterSchema(colander.Schema):
         title=_(u'Email'),
         validator=deferred_email_validator,
     )
+
 
 @view_config(name='register', renderer='kotti:templates/edit/simpleform.pt')
 def register(context, request):
@@ -81,7 +84,7 @@ def register(context, request):
             else:
                 appstruct['groups'] = ''
             if settings['kotti.register.role']:
-                appstruct['roles'] = set(['role:'+settings['kotti.register.role']])
+                appstruct['roles'] = set(['role:' + settings['kotti.register.role']])
             else:
                 appstruct['roles'] = ''
             appstruct['send_email'] = True
@@ -106,6 +109,7 @@ def register(context, request):
         'api': api,
         'form': rendered_form,
         }
+
 
 @view_config(name='login', renderer='kotti:templates/login.pt')
 def login(context, request):
