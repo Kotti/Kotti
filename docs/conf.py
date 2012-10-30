@@ -117,8 +117,16 @@ if any(map(lambda x: x in sys_argv, ['sphinx-build','build_sphinx'])):
     sys.path.append(os.path.abspath('_themes'))
 
 html_theme_path = ['_themes']
-html_theme = 'pylons'
-html_theme_options = dict(github_url='https://github.com/Pylons/Kotti')
+#html_theme = 'pylons'
+#html_theme_options = dict(github_url='https://github.com/Pylons/Kotti')
+html_theme = 'bootstrap'
+html_theme_options = {
+    'github_user': 'Pylons',
+    'github_repo': 'Kotti',
+    'twitter_username': 'KottiCMS',
+    'home_url': 'http://kotti.pylonsproject.org/',
+    #'disqus_shortname': 'scotchmedia',
+}
 
 # The name for this set of Sphinx documents.  If None, it defaults to
 # "<project> v<release> documentation".
