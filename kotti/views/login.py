@@ -62,6 +62,7 @@ class RegisterSchema(colander.Schema):
         validator=deferred_email_validator,
     )
 
+@view_config(name='register', renderer='kotti:templates/edit/simpleform.pt')
 def register(context, request):
     schema = RegisterSchema().bind(request=request)
     form = Form(schema, buttons=(Button('register', _(u'Register')),))

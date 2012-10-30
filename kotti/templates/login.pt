@@ -34,7 +34,7 @@
         </button>
         <span tal:condition="register">
             Don't registered  yet?
-            <a type="submit" class="btn btn-success" i18n:translate="" href='@@register'>
+            <a type="submit" class="btn btn-success" i18n:translate="" href='register'>
             Sign up!</a> It's free.
         </span>
       </div>
