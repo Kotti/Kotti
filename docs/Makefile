@@ -130,4 +130,4 @@ doctest:
 	      "results in $(BUILDDIR)/doctest/output.txt."
 
 _themes:
-	git clone git://github.com/scotch/sphinx-bootstrap _themes
+	git clone git://github.com/scotch/sphinx-bootstrap.git _themes
