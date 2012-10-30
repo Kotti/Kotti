@@ -21,12 +21,18 @@ from pyramid.security import forget
 from pyramid.security import remember
 from pyramid.url import resource_url
 from pyramid.view import view_config
+from paste.deploy.converters import asbool
 
+from kotti import get_settings
 from kotti.message import email_set_password
 from kotti.message import validate_token
 from kotti.security import get_principals
 from kotti.util import _
 from kotti.views.util import template_api
+from kotti.views.users import deferred_email_validator
+from kotti.views.users import name_pattern_validator
+from kotti.views.users import name_new_validator
+from kotti.views.users import UserAddFormView
 
 
 def _find_user(login):
@@ -42,6 +48,74 @@ def _find_user(login):
         else:
             for p in principals.search(email=login):
                 return p
+
+
+class RegisterSchema(colander.Schema):
+    title = colander.SchemaNode(
+        colander.String(),
+        title=_(u'Full Name'))
+    name = colander.SchemaNode(
+        colander.String(),
+        title=_(u'Login'),
+        validator=colander.All(name_pattern_validator, name_new_validator)
+    )
+    email = colander.SchemaNode(
+        colander.String(),
+        title=_(u'Email'),
+        validator=deferred_email_validator,
+    )
+
+
+@view_config(name='register', renderer='kotti:templates/edit/simpleform.pt')
+def register(context, request):
+    schema = RegisterSchema().bind(request=request)
+    form = Form(schema, buttons=(Button('register', _(u'Register')),))
+    rendered_form = None
+
+    if 'register' in request.POST:
+        try:
+            appstruct = form.validate(request.POST.items())
+        except ValidationFailure, e:
+            request.session.flash(_(u"There was an error."), 'error')
+            rendered_form = e.render()
+        else:
+            settings = get_settings()
+
+            appstruct['groups'] = u''
+            appstruct['roles'] = u''
+
+            register_groups = settings['kotti.register.group']
+            if register_groups:
+                appstruct['groups'] = [register_groups]
+
+            register_roles = settings['kotti.register.role']
+            if register_roles:
+                appstruct['roles'] = set(['role:' + register_roles])
+
+            appstruct['send_email'] = True
+            form = UserAddFormView(context, request)
+            form.add_user_success(appstruct)
+            success_msg = _(
+                'Congratulations! You are successfully registered. '
+                'You should receive an email with a link to set your '
+                'password momentarily.'
+                )
+            request.session.flash(success_msg, 'success')
+            return HTTPFound(location=request.application_url)
+
+    if rendered_form is None:
+        rendered_form = form.render(request.params.items())
+
+    api = template_api(
+        context, request,
+        page_title=_(u"Sign up! - ${title}",
+            mapping=dict(title=context.title)),
+    )
+
+    return {
+        'api': api,
+        'form': rendered_form,
+        }
 
 
 @view_config(name='login', renderer='kotti:templates/login.pt')
@@ -95,6 +169,7 @@ def login(context, request):
         'came_from': came_from,
         'login': login,
         'password': password,
+        'register': asbool(get_settings()['kotti.register']),
         }
 
 
