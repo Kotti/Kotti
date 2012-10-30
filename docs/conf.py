@@ -119,7 +119,7 @@ if any(map(lambda x: x in sys_argv, ['sphinx-build','build_sphinx'])):
 html_theme_path = ['_themes']
 #html_theme = 'pylons'
 #html_theme_options = dict(github_url='https://github.com/Pylons/Kotti')
-html_theme = 'bootstrap'
+html_theme = 'sphinx-bootstrap'
 html_theme_options = {
     'github_user': 'Pylons',
     'github_repo': 'Kotti',
