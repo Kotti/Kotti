@@ -21,6 +21,7 @@ from pyramid.security import forget
 from pyramid.security import remember
 from pyramid.url import resource_url
 from pyramid.view import view_config
+from paste.deploy.converters import asbool
 
 from kotti import get_settings
 from kotti.message import email_set_password
@@ -94,7 +95,7 @@ def register(context, request):
             'You should receive an email with a link to set your '
             'password momentarily.')
             request.session.flash(success_msg, 'success')
-            return HTTPFound(location='/')
+            return HTTPFound(location=request.application_url)
 
     if rendered_form is None:
         rendered_form = form.render(request.params.items())
@@ -162,7 +163,7 @@ def login(context, request):
         'came_from': came_from,
         'login': login,
         'password': password,
-        'register': get_settings()['kotti.register'],
+        'register': asbool(get_settings()['kotti.register']),
         }
 
 
