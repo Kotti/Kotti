@@ -6,17 +6,6 @@ Kotti documentation
 
 Kotti is a user-friendly, light-weight and extensible web content management system, based on Pyramid and SQLAlchemy.
 
-.. sidebar:: Getting Help
-
-    Please report any bugs that you find to the `issue tracker`_.
-
-    If you've got questions that aren't answered by this documentation,
-    contact the `Kotti mailing list`_ or join the `#kotti IRC channel`_.
-
-.. _issue tracker: https://github.com/Pylons/Kotti/issues
-.. _Kotti mailing list: http://groups.google.com/group/kotti
-.. _#kotti IRC channel: irc://irc.freenode.net/#kotti
-
 First steps
 -----------
 
