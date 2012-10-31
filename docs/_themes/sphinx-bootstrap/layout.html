@@ -292,6 +292,9 @@
                     on {{ last_updated }}.{% endtrans %}
             {%- endif %}
             {%- if show_sphinx %}
+                {%- if show_copyright or last_updated %}
+                    <br />
+                {%- endif %}
                 {% trans sphinx_version=sphinx_version|e %}Created using <a
                         href="http://sphinx.pocoo.org/">Sphinx</a> {{ sphinx_version }}
                     .{% endtrans %}
