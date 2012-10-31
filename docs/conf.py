@@ -49,37 +49,13 @@ pygments_style = 'sphinx'
 
 # -- Options for HTML output ---------------------------------------------------
 
-## Add and use Pylons theme
-#sys_argv = ' '.join(sys.argv)  # protect against dumb importers
-#if any(map(lambda x: x in sys_argv, ['sphinx-build', 'build_sphinx'])):
-#    from subprocess import call, Popen, PIPE
-#
-#    p = Popen('which git', shell=True, stdout=PIPE)
-#    git = p.stdout.read().strip()
-#    cwd = os.getcwd()
-#    _themes = os.path.join(cwd, '_themes')
-#
-#    if not os.path.isdir(_themes):
-#        call([git, 'clone', 'git://github.com/scotch/sphinx-bootstrap.git',
-#                '_themes'])
-#    else:
-#        os.chdir(_themes)
-#        call([git, 'checkout', 'master'])
-#        call([git, 'pull'])
-#        os.chdir(cwd)
-#
-#    sys.path.append(os.path.abspath('_themes'))
-#
 html_theme_path = ['_themes']
-#html_theme = 'pylons'
-#html_theme_options = dict(github_url='https://github.com/Pylons/Kotti')
 html_theme = 'sphinx-bootstrap'
 html_theme_options = {
     'github_user': 'Pylons',
     'github_repo': 'Kotti',
     'twitter_username': 'KottiCMS',
     'home_url': 'http://kotti.pylonsproject.org/',
-    #'disqus_shortname': 'scotchmedia',
 }
 # The name for this set of Sphinx documents.  If None, it defaults to
 # "<project> v<release> documentation".
