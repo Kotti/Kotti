@@ -115,4 +115,5 @@ intersphinx_mapping = {
     'colander': ('http://python.readthedocs.org/en/latest/', None),
     'deform': ('http://deform.readthedocs.org/en/latest/', None),
     'pyramid': ('http://pyramid.readthedocs.org/en/latest/', None),
+    'sqlalchemy': ('http://sqlalchemy.readthedocs.org/en/latest/', None),
 }
