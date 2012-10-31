@@ -38,7 +38,6 @@ Topics
     developing/configuration
     developing/testing
     developing/translations
-    API documentation <api/index>
 
 -   Advanced topics
 
@@ -51,6 +50,14 @@ Topics
         developing/frontpage-different-template
         developing/images
         developing/static-resource-management
+
+API
+---
+
+.. toctree::
+    :maxdepth: 1
+
+    API documentation <api/index>
 
 Changes
 -------
