@@ -5,7 +5,6 @@ build/
 develop-eggs/
 dist/
 docs/_build/
-docs/_themes/
 eggs/
 include/
 lib/
