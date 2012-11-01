@@ -58,13 +58,18 @@ class NodeActions(object):
                           permission=permission)
         return tree.tolist()[1:]
 
-    def back(self):
+    def back(self, view=None):
         """
-        Redirect to the referrer or the default_view of the context.
+        Redirect to the given view of the context, the referrer of the request
+        or the default_view of the context.
 
         :rtype: pyramid.httpexceptions.HTTPFound
         """
-        url = self.request.referrer or self.request.resource_url(self.context)
+        url = self.request.resource_url(self.context)
+        if view is not None:
+            url += view
+        elif self.request.referrer:
+            url = self.request.referrer
         return HTTPFound(location=url)
 
     @view_config(name='workflow-change',
@@ -241,11 +246,11 @@ class NodeActions(object):
                 self.request.session.flash(_(u'${title} deleted.',
                                 mapping=dict(title=item.title)), 'success')
                 del self.context[item.name]
-            return self.back()
+            return self.back('@@contents')
 
         if 'cancel' in self.request.POST:
             self.request.session.flash(_(u'No changes made.'), 'info')
-            return self.back()
+            return self.back('@@contents')
 
         ids = self._selected_children(add_context=False)
         items = []
@@ -277,8 +282,7 @@ class NodeActions(object):
                 self.context.name = name.replace('/', '')
                 self.context.title = title
                 self.request.session.flash(_(u'Item renamed'), 'success')
-                location = resource_url(self.context, self.request)
-                return HTTPFound(location=location)
+                return self.back('')
         return {}
 
     @view_config(name='rename_nodes',
@@ -311,11 +315,11 @@ class NodeActions(object):
                     item.title = title
             self.request.session.flash(
                 _(u'Your changes have been saved.'), 'success')
-            return self.back()
+            return self.back('@@contents')
 
         if 'cancel' in self.request.POST:
             self.request.session.flash(_(u'No changes made.'), 'info')
-            return self.back()
+            return self.back('@@contents')
 
         ids = self._selected_children(add_context=False)
         items = []
@@ -358,11 +362,11 @@ class NodeActions(object):
                     _(u'Your changes have been saved.'), 'success')
             else:
                 self.request.session.flash(_(u'No changes made.'), 'info')
-            return self.back()
+            return self.back('@@contents')
 
         if 'cancel' in self.request.POST:
             self.request.session.flash(_(u'No changes made.'), 'info')
-            return self.back()
+            return self.back('@@contents')
 
         ids = self._selected_children(add_context=False)
         items = transitions = []
