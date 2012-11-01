@@ -160,6 +160,51 @@ class NodeActions(object):
         if not self.request.is_xhr:
             return self.back()
 
+    def move(self, move):
+        ids = self._selected_children()
+        for id in ids:
+            child = DBSession.query(Node).get(id)
+            index = self.context.children.index(child)
+            self.context.children.pop(index)
+            self.context.children.insert(index + move, child)
+            self.request.session.flash(_(u'${title} moved.',
+                                    mapping=dict(title=child.title)), 'success')
+        if not self.request.is_xhr:
+            return self.back()
+
+    @view_config(name='up')
+    def up(self):
+        return self.move(1)
+
+    @view_config(name='down')
+    def down(self):
+        return self.move(-1)
+
+    def set_visibility(self, show):
+        ids = self._selected_children()
+        for id in ids:
+            child = DBSession.query(Node).get(id)
+            if child.in_navigation != show:
+                child.in_navigation = show
+                mapping = dict(title=child.title)
+                if show:
+                    msg = _(u'${title} is now visible in the navigation.',
+                            mapping=mapping)
+                else:
+                    msg = _(u'${title} is no longer visible in the navigation.',
+                            mapping=mapping)
+                self.request.session.flash(msg, 'success')
+        if not self.request.is_xhr:
+            return self.back()
+
+    @view_config(name='show')
+    def show(self):
+        return self.set_visibility(True)
+
+    @view_config(name='hide')
+    def hide(self):
+        return self.set_visibility(False)
+
     @view_config(name='order',
                  renderer='kotti:templates/edit/order.pt')
     def order_node(self):
@@ -406,6 +451,10 @@ def contents_buttons(context, request):
         if get_workflow(context) is not None:
             buttons.append(ActionButton('change_state',
                                         title=_(u'Change State')))
+        buttons.append(ActionButton('up', title=_(u'Move up')))
+        buttons.append(ActionButton('down', title=_(u'Move down')))
+        buttons.append(ActionButton('show', title=_(u'Show')))
+        buttons.append(ActionButton('hide', title=_(u'Hide')))
     return [button for button in buttons
         if button.permitted(context, request)]
 

@@ -23,6 +23,7 @@
               <th i18n:translate="">Title</th>
               <th i18n:translate="">Type</th>
               <th i18n:translate="">State</th>
+              <th i18n:translate="">Visibility</th>
               <th i18n:translate="">Creation Date</th>
               <th i18n:translate="">Modification Date</th>
             </tr>
@@ -44,6 +45,18 @@
                 <ul class="nav">
                   <li tal:replace="api.render_view('workflow-dropdown', context=child)" />
                 </ul>
+              </td>
+              <td>
+                <tal:visibility tal:switch="child.in_navigation">
+                  <tal:visible tal:case="True">
+                    <i class="icon-eye-open"></i>
+                    <span i18n:translate="">Visible</span>
+                  </tal:visible>
+                  <tal:hidden tal:case="False">
+                    <i class="icon-eye-close"></i>
+                    <span i18n:translate="">Hidden</span>
+                  </tal:hidden>
+                </tal:visibility>
               </td>
               <td>
                 ${api.format_date(child.creation_date)}
