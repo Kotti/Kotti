@@ -11,7 +11,7 @@
     <div class="tab-pane" id="delete-nodes">
       <form action="${request.url}" method="post">
 
-        <legend>Are you sure you want to delete the following items?</legend>
+        <legend i18n:translate="">Are you sure you want to delete the following items?</legend>
 
         <fieldset>
           <table class="table table-condensed" tal:condition="items">

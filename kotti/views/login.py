@@ -56,7 +56,7 @@ class RegisterSchema(colander.Schema):
         title=_(u'Full Name'))
     name = colander.SchemaNode(
         colander.String(),
-        title=_(u'Login'),
+        title=_(u'Username'),
         validator=colander.All(name_pattern_validator, name_new_validator)
     )
     email = colander.SchemaNode(
