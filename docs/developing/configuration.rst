@@ -24,6 +24,7 @@ this:
   pyramid.debug_templates = true
   pyramid.default_locale_name = en
   pyramid.includes = pyramid_debugtoolbar
+                     pyramid_tm
   mail.default_sender = yourname@yourhost
   sqlalchemy.url = sqlite:///%(here)s/Kotti.db
   kotti.site_title = Kotti

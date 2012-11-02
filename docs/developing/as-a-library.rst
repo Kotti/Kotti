@@ -42,6 +42,7 @@ directly, maybe like this:
 
   [app:myapp]
   use = egg:myapp
+  pyramid.includes = pyramid_tm
   mail.default_sender = yourname@yourhost
   sqlalchemy.url = sqlite:///%(here)s/myapp.db
   kotti.secret = secret

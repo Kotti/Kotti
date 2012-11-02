@@ -1,5 +1,4 @@
 import pkg_resources
-import sys
 import warnings
 
 from sqlalchemy import engine_from_config
@@ -183,9 +182,6 @@ def base_configure(global_config, **settings):
 
     config.hook_zca()
     config.include('pyramid_zcml')
-    if not hasattr(sys, '_called_from_test'):
-        # pyramid_tm must not be included when running tests
-        config.include('pyramid_tm')
 
     config.registry.settings['pyramid.includes'] = pyramid_includes
 
