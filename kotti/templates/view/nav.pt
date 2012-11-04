@@ -12,7 +12,7 @@
       <div tal:replace="api.render_template('kotti:templates/view/search.pt')" />
       <div class="nav-collapse">
         <ul class="nav">
-          <li tal:define="items [i for i in api.list_children(api.root) if i.in_navigation]"
+          <li tal:define="items [i for i in api.list_children(api.root) if hasattr(i, 'in_navigation') and i.in_navigation]"
               tal:repeat="item items"
               class="${api.inside(context, item) and 'active' or None}">
             <a href="${api.url(item)}" title="${item.description}">${item.title}</a>
