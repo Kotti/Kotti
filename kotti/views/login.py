@@ -36,6 +36,7 @@ from kotti.views.users import UserAddFormView
 from kotti.events import ObjectEvent
 from kotti.events import notify
 
+
 def _find_user(login):
     principals = get_principals()
     principal = principals.get(login)
@@ -53,6 +54,7 @@ def _find_user(login):
 
 class UserRegistered(ObjectEvent):
     pass
+
 
 class RegisterSchema(colander.Schema):
     title = colander.SchemaNode(
