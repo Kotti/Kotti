@@ -126,3 +126,8 @@ tr > td:nth-child(2) {
 .navbar-fixed-bottom .pull-right a.brand {
     padding-right: 20px;
 }
+
+.section,
+.sphinxsidebar {
+    padding-top: 30px;
+}
