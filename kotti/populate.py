@@ -54,7 +54,7 @@ _ROOT_ATTRS = dict(
     body=u"""
 <h2>Log in</h2>
 <p>
-    You can <a class="btn btn-success" href="/login">log in</a> to your site
+    You can <a class="btn btn-success" href="login">log in</a> to your site
     and start changing its contents.  If you haven't chosen a password for
     your admin account yet, it'll likely be <em>qwerty</em>.
 </p>
