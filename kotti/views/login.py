@@ -33,7 +33,8 @@ from kotti.views.users import deferred_email_validator
 from kotti.views.users import name_pattern_validator
 from kotti.views.users import name_new_validator
 from kotti.views.users import UserAddFormView
-
+from kotti.events import ObjectEvent
+from kotti.events import notify
 
 def _find_user(login):
     principals = get_principals()
@@ -49,6 +50,9 @@ def _find_user(login):
             for p in principals.search(email=login):
                 return p
 
+
+class UserRegistered(ObjectEvent):
+    pass
 
 class RegisterSchema(colander.Schema):
     title = colander.SchemaNode(
@@ -101,6 +105,8 @@ def register(context, request):
                 'password momentarily.'
                 )
             request.session.flash(success_msg, 'success')
+            name = appstruct['name']
+            notify(UserRegistered(get_principals()[name], request))
             return HTTPFound(location=request.application_url)
 
     if rendered_form is None:
