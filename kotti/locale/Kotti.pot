@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Kotti 0.8.0dev\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2012-10-30 15:00+0200\n"
+"POT-Creation-Date: 2012-10-31 11:27+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -127,7 +127,7 @@ msgstr ""
 msgid "Click here to set your password and log in: ${url}"
 msgstr ""
 
-#: kotti/templates/login.pt:10 kotti/views/login.py:59
+#: kotti/templates/login.pt:10
 msgid "Login"
 msgstr ""
 
@@ -135,7 +135,7 @@ msgstr ""
 msgid "Username or email"
 msgstr ""
 
-#: kotti/templates/login.pt:22 kotti/views/login.py:193 kotti/views/users.py:213
+#: kotti/templates/login.pt:22 kotti/views/login.py:199 kotti/views/users.py:213
 msgid "Password"
 msgstr ""
 
@@ -185,28 +185,28 @@ msgstr ""
 msgid "An item's workflow state determines who can see, edit and/or manage it."
 msgstr ""
 
-#: kotti/templates/edit/change-state.pt:20 kotti/templates/edit/contents.pt:23
+#: kotti/templates/edit/change-state.pt:20 kotti/templates/edit/contents.pt:22
 #: kotti/templates/edit/delete-nodes.pt:21 kotti/views/users.py:197
 #: kotti/views/edit/content.py:28
 msgid "Title"
 msgstr ""
 
-#: kotti/templates/edit/change-state.pt:21 kotti/templates/edit/contents.pt:24
+#: kotti/templates/edit/change-state.pt:21 kotti/templates/edit/contents.pt:23
 #: kotti/templates/edit/delete-nodes.pt:22
 msgid "Type"
 msgstr ""
 
-#: kotti/templates/edit/change-state.pt:22 kotti/templates/edit/contents.pt:25
+#: kotti/templates/edit/change-state.pt:22 kotti/templates/edit/contents.pt:24
 #: kotti/templates/edit/delete-nodes.pt:23
 msgid "State"
 msgstr ""
 
-#: kotti/templates/edit/change-state.pt:23 kotti/templates/edit/contents.pt:26
+#: kotti/templates/edit/change-state.pt:23 kotti/templates/edit/contents.pt:25
 #: kotti/templates/edit/delete-nodes.pt:24
 msgid "Creation Date"
 msgstr ""
 
-#: kotti/templates/edit/change-state.pt:24 kotti/templates/edit/contents.pt:27
+#: kotti/templates/edit/change-state.pt:24 kotti/templates/edit/contents.pt:26
 #: kotti/templates/edit/delete-nodes.pt:25
 msgid "Modification Date"
 msgstr ""
@@ -244,8 +244,8 @@ msgstr ""
 msgid "Cancel"
 msgstr ""
 
-#: kotti/templates/edit/contents.pt:17
-msgid "No contents."
+#: kotti/templates/edit/contents.pt:15
+msgid "No content in document."
 msgstr ""
 
 #: kotti/templates/edit/delete-nodes.pt:9 kotti/templates/edit/delete-nodes.pt:45
@@ -253,6 +253,10 @@ msgstr ""
 #: kotti/views/users.py:426 kotti/views/edit/actions.py:400
 #: kotti/views/edit/actions.py:517
 msgid "Delete"
+msgstr ""
+
+#: kotti/templates/edit/delete-nodes.pt:14
+msgid "Are you sure you want to delete the following items?"
 msgstr ""
 
 #: kotti/templates/edit/delete.pt:9 kotti/templates/site-setup/delete-user.pt:9
@@ -417,7 +421,11 @@ msgstr ""
 msgid "Full Name"
 msgstr ""
 
-#: kotti/views/login.py:64 kotti/views/login.py:205 kotti/views/users.py:200
+#: kotti/views/login.py:59
+msgid "Username"
+msgstr ""
+
+#: kotti/views/login.py:64 kotti/views/login.py:211 kotti/views/users.py:200
 msgid "Email"
 msgstr ""
 
@@ -425,53 +433,53 @@ msgstr ""
 msgid "Register"
 msgstr ""
 
-#: kotti/views/login.py:79 kotti/views/login.py:238
+#: kotti/views/login.py:79 kotti/views/login.py:244
 msgid "There was an error."
 msgstr ""
 
-#: kotti/views/login.py:94
+#: kotti/views/login.py:98
 msgid ""
 "Congratulations! You are successfully registered. You should receive an email"
 " with a link to set your password momentarily."
 msgstr ""
 
-#: kotti/views/login.py:105
+#: kotti/views/login.py:111
 msgid "Sign up! - ${title}"
 msgstr ""
 
-#: kotti/views/login.py:141
+#: kotti/views/login.py:147
 msgid "Welcome, ${user}!"
 msgstr ""
 
-#: kotti/views/login.py:145
+#: kotti/views/login.py:151
 msgid "Login failed."
 msgstr ""
 
-#: kotti/views/login.py:154
+#: kotti/views/login.py:160
 msgid "You should receive an email with a link to reset your password momentarily."
 msgstr ""
 
-#: kotti/views/login.py:159
+#: kotti/views/login.py:165
 msgid "That username or email is not known to us."
 msgstr ""
 
-#: kotti/views/login.py:180
+#: kotti/views/login.py:186
 msgid "You have been logged out."
 msgstr ""
 
-#: kotti/views/login.py:218
+#: kotti/views/login.py:224
 msgid "You've reset your password successfully."
 msgstr ""
 
-#: kotti/views/login.py:231
+#: kotti/views/login.py:237
 msgid "Submit"
 msgstr ""
 
-#: kotti/views/login.py:260
+#: kotti/views/login.py:266
 msgid "Your password reset token may have expired."
 msgstr ""
 
-#: kotti/views/login.py:267
+#: kotti/views/login.py:273
 msgid "Reset your password - ${title}"
 msgstr ""
 

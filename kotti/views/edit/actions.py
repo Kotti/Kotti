@@ -58,13 +58,18 @@ class NodeActions(object):
                           permission=permission)
         return tree.tolist()[1:]
 
-    def back(self):
+    def back(self, view=None):
         """
-        Redirect to the referrer or the default_view of the context.
+        Redirect to the given view of the context, the referrer of the request
+        or the default_view of the context.
 
         :rtype: pyramid.httpexceptions.HTTPFound
         """
-        url = self.request.referrer or self.request.resource_url(self.context)
+        url = self.request.resource_url(self.context)
+        if view is not None:
+            url += view
+        elif self.request.referrer:
+            url = self.request.referrer
         return HTTPFound(location=url)
 
     @view_config(name='workflow-change',
@@ -155,6 +160,51 @@ class NodeActions(object):
         if not self.request.is_xhr:
             return self.back()
 
+    def move(self, move):
+        ids = self._selected_children()
+        for id in ids:
+            child = DBSession.query(Node).get(id)
+            index = self.context.children.index(child)
+            self.context.children.pop(index)
+            self.context.children.insert(index + move, child)
+            self.request.session.flash(_(u'${title} moved.',
+                                    mapping=dict(title=child.title)), 'success')
+        if not self.request.is_xhr:
+            return self.back()
+
+    @view_config(name='up')
+    def up(self):
+        return self.move(1)
+
+    @view_config(name='down')
+    def down(self):
+        return self.move(-1)
+
+    def set_visibility(self, show):
+        ids = self._selected_children()
+        for id in ids:
+            child = DBSession.query(Node).get(id)
+            if child.in_navigation != show:
+                child.in_navigation = show
+                mapping = dict(title=child.title)
+                if show:
+                    msg = _(u'${title} is now visible in the navigation.',
+                            mapping=mapping)
+                else:
+                    msg = _(u'${title} is no longer visible in the navigation.',
+                            mapping=mapping)
+                self.request.session.flash(msg, 'success')
+        if not self.request.is_xhr:
+            return self.back()
+
+    @view_config(name='show')
+    def show(self):
+        return self.set_visibility(True)
+
+    @view_config(name='hide')
+    def hide(self):
+        return self.set_visibility(False)
+
     @view_config(name='order',
                  renderer='kotti:templates/edit/order.pt')
     def order_node(self):
@@ -241,11 +291,11 @@ class NodeActions(object):
                 self.request.session.flash(_(u'${title} deleted.',
                                 mapping=dict(title=item.title)), 'success')
                 del self.context[item.name]
-            return self.back()
+            return self.back('@@contents')
 
         if 'cancel' in self.request.POST:
             self.request.session.flash(_(u'No changes made.'), 'info')
-            return self.back()
+            return self.back('@@contents')
 
         ids = self._selected_children(add_context=False)
         items = []
@@ -277,8 +327,7 @@ class NodeActions(object):
                 self.context.name = name.replace('/', '')
                 self.context.title = title
                 self.request.session.flash(_(u'Item renamed'), 'success')
-                location = resource_url(self.context, self.request)
-                return HTTPFound(location=location)
+                return self.back('')
         return {}
 
     @view_config(name='rename_nodes',
@@ -311,11 +360,11 @@ class NodeActions(object):
                     item.title = title
             self.request.session.flash(
                 _(u'Your changes have been saved.'), 'success')
-            return self.back()
+            return self.back('@@contents')
 
         if 'cancel' in self.request.POST:
             self.request.session.flash(_(u'No changes made.'), 'info')
-            return self.back()
+            return self.back('@@contents')
 
         ids = self._selected_children(add_context=False)
         items = []
@@ -358,11 +407,11 @@ class NodeActions(object):
                     _(u'Your changes have been saved.'), 'success')
             else:
                 self.request.session.flash(_(u'No changes made.'), 'info')
-            return self.back()
+            return self.back('@@contents')
 
         if 'cancel' in self.request.POST:
             self.request.session.flash(_(u'No changes made.'), 'info')
-            return self.back()
+            return self.back('@@contents')
 
         ids = self._selected_children(add_context=False)
         items = transitions = []
@@ -402,6 +451,10 @@ def contents_buttons(context, request):
         if get_workflow(context) is not None:
             buttons.append(ActionButton('change_state',
                                         title=_(u'Change State')))
+        buttons.append(ActionButton('up', title=_(u'Move up')))
+        buttons.append(ActionButton('down', title=_(u'Move down')))
+        buttons.append(ActionButton('show', title=_(u'Show')))
+        buttons.append(ActionButton('hide', title=_(u'Hide')))
     return [button for button in buttons
         if button.permitted(context, request)]
 

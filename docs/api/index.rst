@@ -10,6 +10,12 @@ API Documentation
 .. automodule:: kotti.events
    :members:
 
+:mod:`kotti.fanstatic`
+----------------------
+
+.. automodule:: kotti.fanstatic
+   :members:
+
 :mod:`kotti.interfaces`
 -----------------------
 
@@ -51,12 +57,6 @@ API Documentation
 -----------------
 
 .. automodule:: kotti.sqla
-   :members:
-
-:mod:`kotti.static`
--------------------
-
-.. automodule:: kotti.static
    :members:
 
 :mod:`kotti.testing`
