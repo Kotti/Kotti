@@ -8,6 +8,7 @@ from sqlalchemy.orm import scoped_session
 from sqlalchemy.orm import sessionmaker
 from zope.sqlalchemy import ZopeTransactionExtension
 from pyramid.authentication import AuthTktAuthenticationPolicy
+from pyramid.authorization import ACLAuthorizationPolicy
 from pyramid.config import Configurator
 from pyramid.events import BeforeRender
 from pyramid.threadlocal import get_current_registry
@@ -15,7 +16,6 @@ from pyramid.util import DottedNameResolver
 from pyramid_beaker import session_factory_from_settings
 
 from kotti.sqla import Base as KottiBase
-from kotti.authorization import OwnerACLAuthorizationPolicy
 
 
 metadata = MetaData()
@@ -34,7 +34,7 @@ def authtkt_factory(**settings):
 
 
 def acl_factory(**settings):
-    return OwnerACLAuthorizationPolicy()
+    return ACLAuthorizationPolicy()
 
 
 def beaker_session_factory(**settings):

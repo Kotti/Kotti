@@ -51,7 +51,6 @@ _ROOT_ATTRS = dict(
     name=u'',  # (at the time of writing) root must have empty name!
     title=u'Welcome to Kotti',
     description=u'Congratulations! You have successfully installed Kotti.',
-    owner='admin',
     body=u"""
 <h2>Log in</h2>
 <p>
@@ -109,7 +108,6 @@ _ROOT_ATTRS = dict(
 _ABOUT_ATTRS = dict(
     title=u'About',
     description=u'Our company is the leading manufacturer of foo widgets used in a wide variety of aviation and and industrial products.',
-    owner='admin',
     body=u"""
 <p>
   <img alt="five colorful Extra EA300 airplanes flying in formation"

@@ -163,7 +163,6 @@ class AbstractPrincipals(object):
 
 ROLES = {
     u'role:viewer': Principal(u'role:viewer', title=_(u'Viewer')),
-    u'role:author': Principal(u'role:author', title=_(u'Author')),
     u'role:editor': Principal(u'role:editor', title=_(u'Editor')),
     u'role:owner': Principal(u'role:owner', title=_(u'Owner')),
     u'role:admin': Principal(u'role:admin', title=_(u'Admin')),
@@ -171,7 +170,7 @@ ROLES = {
 _DEFAULT_ROLES = ROLES.copy()
 
 # These roles are visible in the sharing tab
-SHARING_ROLES = [u'role:viewer', u'role:author', u'role:editor']
+SHARING_ROLES = [u'role:viewer', u'role:editor', u'role:owner']
 USER_MANAGEMENT_ROLES = SHARING_ROLES + ['role:admin']
 _DEFAULT_SHARING_ROLES = SHARING_ROLES[:]
 _DEFAULT_USER_MANAGEMENT_ROLES = USER_MANAGEMENT_ROLES[:]
@@ -182,9 +181,8 @@ _DEFAULT_USER_MANAGEMENT_ROLES = USER_MANAGEMENT_ROLES[:]
 SITE_ACL = [
     ['Allow', 'system.Everyone', ['view']],
     ['Allow', 'role:viewer', ['view']],
-    ['Allow', 'role:author', ['view', 'add']],
     ['Allow', 'role:editor', ['view', 'add', 'edit', 'state_change']],
-    ['Allow', 'role:owner', ['view', 'edit', 'manage', 'state_change']],
+    ['Allow', 'role:owner', ['view', 'add', 'edit', 'manage', 'state_change']],
     ]
 
 

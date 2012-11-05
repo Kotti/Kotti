@@ -472,14 +472,6 @@ class Content(Node):
         self.modification_date = modification_date
         self.tags = tags or []
 
-    @property
-    def __owner__(self):
-        return self.owner
-
-    @__owner__.setter
-    def __owner__(self, value):
-        self.owner = value
-
     def copy(self, **kwargs):
         # Same as `Node.copy` with additional tag support.
         kwargs['tags'] = self.tags
