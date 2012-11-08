@@ -161,6 +161,13 @@ class NodeActions(object):
             return self.back()
 
     def move(self, move):
+        """
+        Do the real work to move the selected nodes up or down. Called
+        by the up and the down view.
+
+        :result: Redirect response to the referrer of the request.
+        :rtype: pyramid.httpexceptions.HTTPFound
+        """
         ids = self._selected_children()
         if move == 1:
             ids.reverse()
@@ -176,13 +183,34 @@ class NodeActions(object):
 
     @view_config(name='up')
     def up(self):
+        """
+        Move up nodes view. Move the selected nodes up by 1 position
+        and get back to the referrer of the request.
+
+        :result: Redirect response to the referrer of the request.
+        :rtype: pyramid.httpexceptions.HTTPFound
+        """
         return self.move(-1)
 
     @view_config(name='down')
     def down(self):
+        """
+        Move down nodes view. Move the selected nodes down by 1 position
+        and get back to the referrer of the request.
+
+        :result: Redirect response to the referrer of the request.
+        :rtype: pyramid.httpexceptions.HTTPFound
+        """
         return self.move(1)
 
     def set_visibility(self, show):
+        """
+        Do the real work to set the visibility of nodes in the menu. Called
+        by the show and the hide view.
+
+        :result: Redirect response to the referrer of the request.
+        :rtype: pyramid.httpexceptions.HTTPFound
+        """
         ids = self._selected_children()
         for id in ids:
             child = DBSession.query(Node).get(id)
@@ -201,10 +229,24 @@ class NodeActions(object):
 
     @view_config(name='show')
     def show(self):
+        """
+        Show nodes view. Switch the in_navigation attribute of selected nodes to true
+        and get back to the referrer of the request.
+
+        :result: Redirect response to the referrer of the request.
+        :rtype: pyramid.httpexceptions.HTTPFound
+        """
         return self.set_visibility(True)
 
     @view_config(name='hide')
     def hide(self):
+        """
+        Hide nodes view. Switch the in_navigation attribute of selected nodes to false
+        and get back to the referrer of the request.
+
+        :result: Redirect response to the referrer of the request.
+        :rtype: pyramid.httpexceptions.HTTPFound
+        """
         return self.set_visibility(False)
 
     @view_config(name='order',
