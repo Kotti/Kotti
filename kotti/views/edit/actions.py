@@ -249,51 +249,6 @@ class NodeActions(object):
         """
         return self.set_visibility(False)
 
-    @view_config(name='order',
-                 renderer='kotti:templates/edit/order.pt')
-    def order_node(self):
-        """
-        Order node view. Renders a view to order nodes or toggle its
-        visibility.
-        These actions will be implemented in the contents view and the
-        order view will be removed than.
-
-        :result: Either a redirect response or a dictionary passed to the
-                 template for rendering.
-        :rtype: pyramid.httpexceptions.HTTPFound or dict
-        """
-        P = self.request.POST
-
-        if 'order-up' in P or 'order-down' in P:
-            up, down = P.get('order-up'), P.get('order-down')
-            child = DBSession.query(Node).get(int(down or up))
-            if up is not None:
-                mod = -1
-            else:  # pragma: no cover
-                mod = 1
-            index = self.context.children.index(child)
-            self.context.children.pop(index)
-            self.context.children.insert(index + mod, child)
-            self.request.session.flash(_(u'${title} moved.',
-                                    mapping=dict(title=child.title)), 'success')
-            if not self.request.is_xhr:
-                return HTTPFound(location=self.request.url)
-
-        elif 'toggle-visibility' in P:
-            child = DBSession.query(Node).get(int(P['toggle-visibility']))
-            child.in_navigation ^= True
-            mapping = dict(title=child.title)
-            if child.in_navigation:
-                msg = _(u'${title} is now visible in the navigation.',
-                        mapping=mapping)
-            else:
-                msg = _(u'${title} is no longer visible in the navigation.',
-                        mapping=mapping)
-            self.request.session.flash(msg, 'success')
-            if not self.request.is_xhr:
-                return HTTPFound(location=self.request.url)
-        return {}
-
     @view_config(name='delete',
                  renderer='kotti:templates/edit/delete.pt')
     def delete_node(self):
@@ -612,8 +567,6 @@ def actions(context, request):
     if not is_root:
         actions.append(ViewLink('rename', title=_(u'Rename')))
         actions.append(ViewLink('delete', title=_(u'Delete')))
-    if len(context.children) >= 1:
-        actions.append(ViewLink('order', title=_(u'Order')))
     return {'actions': [action for action in actions
                         if action.permitted(context, request)]}
 
