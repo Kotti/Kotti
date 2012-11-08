@@ -162,6 +162,8 @@ class NodeActions(object):
 
     def move(self, move):
         ids = self._selected_children()
+        if move == 1:
+            ids.reverse()
         for id in ids:
             child = DBSession.query(Node).get(id)
             index = self.context.children.index(child)
@@ -174,11 +176,11 @@ class NodeActions(object):
 
     @view_config(name='up')
     def up(self):
-        return self.move(1)
+        return self.move(-1)
 
     @view_config(name='down')
     def down(self):
-        return self.move(-1)
+        return self.move(1)
 
     def set_visibility(self, show):
         ids = self._selected_children()
