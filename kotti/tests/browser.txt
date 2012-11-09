@@ -233,51 +233,6 @@ Add tags to a document:
   >>> 'value="tag 1,tag 4,tag 5,tag 6,tag 7,übertag"' in browser.contents
   True
 
-
-Reorder documents
------------------
-
-  >>> browser.open(testing.BASE_URL)
-  >>> index = browser.contents.index
-  >>> index("First Child") > index("Second Child")
-  False
-  >>> browser.open(testing.BASE_URL)
-  >>> "/@@order" in browser.contents
-  True
-  >>> browser.getLink('Order').click()
-  >>> ctrl(name="order-up", index=1).click()
-  >>> "Second Child moved" in browser.contents
-  True
-  >>> browser.getLink("View").click()
-  >>> index = browser.contents.index
-  >>> index("First Child") > index("Second Child")
-  True
-
-Hide and show documents
------------------------
-
-  >>> browser.open(testing.BASE_URL)
-  >>> "First Child" in browser.contents
-  True
-  >>> browser.open(testing.BASE_URL)
-  >>> "/@@order" in browser.contents
-  True
-  >>> browser.getLink('Order').click()
-  >>> ctrl(name="toggle-visibility", index=1).click()
-  >>> "First Child is no longer visible in the navigation" in browser.contents
-  True
-  >>> browser.getLink("View").click()
-  >>> "First Child" in browser.contents
-  False
-  >>> browser.getLink('Order').click()
-  >>> ctrl(name="toggle-visibility", index=1).click()
-  >>> "First Child is now visible in the navigation" in browser.contents
-  True
-  >>> browser.getLink("View").click()
-  >>> "First Child" in browser.contents
-  True
-
-
 Delete a document
 -----------------
 
@@ -566,7 +521,7 @@ Contents view change state actions
   >>> browser.getLink("Contents").click()
   >>> 'http://localhost:6543/second-child-1/third-child/@@workflow-change?new_state=public' in browser.contents
   True
-  >>> browser.getLink("Make Public", index=1).click()
+  >>> browser.getLink("Make Public", index=2).click()
   >>> 'http://localhost:6543/second-child-1/third-child/@@workflow-change?new_state=private' in browser.contents
   True
 
