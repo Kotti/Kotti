@@ -170,7 +170,7 @@ class TestNodeMove:
         assert root['child1'].position < root['child2'].position
 
         request = DummyRequest()
-        request.session['kotti.selected-children'] = [str(root['child1'].id)]
+        request.session['kotti.selected-children'] = [str(root['child2'].id)]
         NodeActions(root, request).up()
         assert request.session.pop_flash('success') ==\
             [u'${title} moved.']
@@ -185,17 +185,17 @@ class TestNodeMove:
         root['child1'] = Document(title=u"Child 1")
         root['child2'] = Document(title=u"Child 2")
         root['child3'] = Document(title=u"Child 3")
-        assert root['child1'].position < root['child2'].position
         assert root['child1'].position < root['child3'].position
+        assert root['child2'].position < root['child3'].position
 
         request = DummyRequest()
-        ids = [str(root['child2'].id), str(root['child3'].id)]
+        ids = [str(root['child1'].id), str(root['child2'].id)]
         request.session['kotti.selected-children'] = ids
         NodeActions(root, request).down()
         assert request.session.pop_flash('success') ==\
             [u'${title} moved.', u'${title} moved.']
-        assert root['child1'].position > root['child2'].position
         assert root['child1'].position > root['child3'].position
+        assert root['child2'].position > root['child3'].position
 
 
 class TestNodeShowHide:
