@@ -616,5 +616,5 @@ for iface in ("INode", "IContent", "IDocument", "IFile", "IImage",
               "IDefaultWorkflow"):
 
     deprecated(iface,
-               "%s has been moved to kotti.interfaces as of Kotti 0.8.0. " \
+               "%s has been moved to kotti.interfaces as of Kotti 0.8.0. "
                "Import from there instead." % iface)
