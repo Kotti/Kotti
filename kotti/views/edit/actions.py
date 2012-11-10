@@ -161,7 +161,16 @@ class NodeActions(object):
             return self.back()
 
     def move(self, move):
+        """
+        Do the real work to move the selected nodes up or down. Called
+        by the up and the down view.
+
+        :result: Redirect response to the referrer of the request.
+        :rtype: pyramid.httpexceptions.HTTPFound
+        """
         ids = self._selected_children()
+        if move == 1:
+            ids.reverse()
         for id in ids:
             child = DBSession.query(Node).get(id)
             index = self.context.children.index(child)
@@ -174,13 +183,34 @@ class NodeActions(object):
 
     @view_config(name='up')
     def up(self):
-        return self.move(1)
+        """
+        Move up nodes view. Move the selected nodes up by 1 position
+        and get back to the referrer of the request.
+
+        :result: Redirect response to the referrer of the request.
+        :rtype: pyramid.httpexceptions.HTTPFound
+        """
+        return self.move(-1)
 
     @view_config(name='down')
     def down(self):
-        return self.move(-1)
+        """
+        Move down nodes view. Move the selected nodes down by 1 position
+        and get back to the referrer of the request.
+
+        :result: Redirect response to the referrer of the request.
+        :rtype: pyramid.httpexceptions.HTTPFound
+        """
+        return self.move(1)
 
     def set_visibility(self, show):
+        """
+        Do the real work to set the visibility of nodes in the menu. Called
+        by the show and the hide view.
+
+        :result: Redirect response to the referrer of the request.
+        :rtype: pyramid.httpexceptions.HTTPFound
+        """
         ids = self._selected_children()
         for id in ids:
             child = DBSession.query(Node).get(id)
@@ -199,56 +229,25 @@ class NodeActions(object):
 
     @view_config(name='show')
     def show(self):
+        """
+        Show nodes view. Switch the in_navigation attribute of selected nodes to true
+        and get back to the referrer of the request.
+
+        :result: Redirect response to the referrer of the request.
+        :rtype: pyramid.httpexceptions.HTTPFound
+        """
         return self.set_visibility(True)
 
     @view_config(name='hide')
     def hide(self):
+        """
+        Hide nodes view. Switch the in_navigation attribute of selected nodes to false
+        and get back to the referrer of the request.
+
+        :result: Redirect response to the referrer of the request.
+        :rtype: pyramid.httpexceptions.HTTPFound
+        """
         return self.set_visibility(False)
-
-    @view_config(name='order',
-                 renderer='kotti:templates/edit/order.pt')
-    def order_node(self):
-        """
-        Order node view. Renders a view to order nodes or toggle its
-        visibility.
-        These actions will be implemented in the contents view and the
-        order view will be removed than.
-
-        :result: Either a redirect response or a dictionary passed to the
-                 template for rendering.
-        :rtype: pyramid.httpexceptions.HTTPFound or dict
-        """
-        P = self.request.POST
-
-        if 'order-up' in P or 'order-down' in P:
-            up, down = P.get('order-up'), P.get('order-down')
-            child = DBSession.query(Node).get(int(down or up))
-            if up is not None:
-                mod = -1
-            else:  # pragma: no cover
-                mod = 1
-            index = self.context.children.index(child)
-            self.context.children.pop(index)
-            self.context.children.insert(index + mod, child)
-            self.request.session.flash(_(u'${title} moved.',
-                                    mapping=dict(title=child.title)), 'success')
-            if not self.request.is_xhr:
-                return HTTPFound(location=self.request.url)
-
-        elif 'toggle-visibility' in P:
-            child = DBSession.query(Node).get(int(P['toggle-visibility']))
-            child.in_navigation ^= True
-            mapping = dict(title=child.title)
-            if child.in_navigation:
-                msg = _(u'${title} is now visible in the navigation.',
-                        mapping=mapping)
-            else:
-                msg = _(u'${title} is no longer visible in the navigation.',
-                        mapping=mapping)
-            self.request.session.flash(msg, 'success')
-            if not self.request.is_xhr:
-                return HTTPFound(location=self.request.url)
-        return {}
 
     @view_config(name='delete',
                  renderer='kotti:templates/edit/delete.pt')
@@ -568,8 +567,6 @@ def actions(context, request):
     if not is_root:
         actions.append(ViewLink('rename', title=_(u'Rename')))
         actions.append(ViewLink('delete', title=_(u'Delete')))
-    if len(context.children) >= 1:
-        actions.append(ViewLink('order', title=_(u'Order')))
     return {'actions': [action for action in actions
                         if action.permitted(context, request)]}
 
