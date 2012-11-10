@@ -158,6 +158,70 @@ class TestNodeDelete(UnitTestBase):
             [u'${title} deleted.', u'${title} deleted.']
 
 
+class TestNodeMove:
+    def test_move_up(self, db_session):
+        from kotti.resources import get_root
+        from kotti.resources import Document
+        from kotti.views.edit.actions import NodeActions
+
+        root = get_root()
+        root['child1'] = Document(title=u"Child 1")
+        root['child2'] = Document(title=u"Child 2")
+        assert root['child1'].position < root['child2'].position
+
+        request = DummyRequest()
+        request.session['kotti.selected-children'] = [str(root['child2'].id)]
+        NodeActions(root, request).up()
+        assert request.session.pop_flash('success') ==\
+            [u'${title} moved.']
+        assert root['child1'].position > root['child2'].position
+
+    def test_move_down(self, db_session):
+        from kotti.resources import get_root
+        from kotti.resources import Document
+        from kotti.views.edit.actions import NodeActions
+
+        root = get_root()
+        root['child1'] = Document(title=u"Child 1")
+        root['child2'] = Document(title=u"Child 2")
+        root['child3'] = Document(title=u"Child 3")
+        assert root['child1'].position < root['child3'].position
+        assert root['child2'].position < root['child3'].position
+
+        request = DummyRequest()
+        ids = [str(root['child1'].id), str(root['child2'].id)]
+        request.session['kotti.selected-children'] = ids
+        NodeActions(root, request).down()
+        assert request.session.pop_flash('success') ==\
+            [u'${title} moved.', u'${title} moved.']
+        assert root['child1'].position > root['child3'].position
+        assert root['child2'].position > root['child3'].position
+
+
+class TestNodeShowHide:
+    def test_show_hide(self, db_session):
+        from kotti.resources import get_root
+        from kotti.resources import Document
+        from kotti.views.edit.actions import NodeActions
+
+        root = get_root()
+        root['child1'] = Document(title=u"Child 1")
+        assert root['child1'].in_navigation is True
+
+        request = DummyRequest()
+        request.session['kotti.selected-children'] = [str(root['child1'].id)]
+        NodeActions(root, request).hide()
+        assert request.session.pop_flash('success') ==\
+            [u'${title} is no longer visible in the navigation.']
+        assert root['child1'].in_navigation is False
+
+        request.session['kotti.selected-children'] = [str(root['child1'].id)]
+        NodeActions(root, request).show()
+        assert request.session.pop_flash('success') ==\
+            [u'${title} is now visible in the navigation.']
+        assert root['child1'].in_navigation is True
+
+
 class TestNodeShare:
     def test_roles(self, db_session):
         from kotti.views.users import share_node

@@ -58,13 +58,18 @@ class NodeActions(object):
                           permission=permission)
         return tree.tolist()[1:]
 
-    def back(self):
+    def back(self, view=None):
         """
-        Redirect to the referrer or the default_view of the context.
+        Redirect to the given view of the context, the referrer of the request
+        or the default_view of the context.
 
         :rtype: pyramid.httpexceptions.HTTPFound
         """
-        url = self.request.referrer or self.request.resource_url(self.context)
+        url = self.request.resource_url(self.context)
+        if view is not None:
+            url += view
+        elif self.request.referrer:
+            url = self.request.referrer
         return HTTPFound(location=url)
 
     @view_config(name='workflow-change',
@@ -155,50 +160,94 @@ class NodeActions(object):
         if not self.request.is_xhr:
             return self.back()
 
-    @view_config(name='order',
-                 renderer='kotti:templates/edit/order.pt')
-    def order_node(self):
+    def move(self, move):
         """
-        Order node view. Renders a view to order nodes or toggle its
-        visibility.
-        These actions will be implemented in the contents view and the
-        order view will be removed than.
+        Do the real work to move the selected nodes up or down. Called
+        by the up and the down view.
 
-        :result: Either a redirect response or a dictionary passed to the
-                 template for rendering.
-        :rtype: pyramid.httpexceptions.HTTPFound or dict
+        :result: Redirect response to the referrer of the request.
+        :rtype: pyramid.httpexceptions.HTTPFound
         """
-        P = self.request.POST
-
-        if 'order-up' in P or 'order-down' in P:
-            up, down = P.get('order-up'), P.get('order-down')
-            child = DBSession.query(Node).get(int(down or up))
-            if up is not None:
-                mod = -1
-            else:  # pragma: no cover
-                mod = 1
+        ids = self._selected_children()
+        if move == 1:
+            ids.reverse()
+        for id in ids:
+            child = DBSession.query(Node).get(id)
             index = self.context.children.index(child)
             self.context.children.pop(index)
-            self.context.children.insert(index + mod, child)
+            self.context.children.insert(index + move, child)
             self.request.session.flash(_(u'${title} moved.',
                                     mapping=dict(title=child.title)), 'success')
-            if not self.request.is_xhr:
-                return HTTPFound(location=self.request.url)
+        if not self.request.is_xhr:
+            return self.back()
 
-        elif 'toggle-visibility' in P:
-            child = DBSession.query(Node).get(int(P['toggle-visibility']))
-            child.in_navigation ^= True
-            mapping = dict(title=child.title)
-            if child.in_navigation:
-                msg = _(u'${title} is now visible in the navigation.',
-                        mapping=mapping)
-            else:
-                msg = _(u'${title} is no longer visible in the navigation.',
-                        mapping=mapping)
-            self.request.session.flash(msg, 'success')
-            if not self.request.is_xhr:
-                return HTTPFound(location=self.request.url)
-        return {}
+    @view_config(name='up')
+    def up(self):
+        """
+        Move up nodes view. Move the selected nodes up by 1 position
+        and get back to the referrer of the request.
+
+        :result: Redirect response to the referrer of the request.
+        :rtype: pyramid.httpexceptions.HTTPFound
+        """
+        return self.move(-1)
+
+    @view_config(name='down')
+    def down(self):
+        """
+        Move down nodes view. Move the selected nodes down by 1 position
+        and get back to the referrer of the request.
+
+        :result: Redirect response to the referrer of the request.
+        :rtype: pyramid.httpexceptions.HTTPFound
+        """
+        return self.move(1)
+
+    def set_visibility(self, show):
+        """
+        Do the real work to set the visibility of nodes in the menu. Called
+        by the show and the hide view.
+
+        :result: Redirect response to the referrer of the request.
+        :rtype: pyramid.httpexceptions.HTTPFound
+        """
+        ids = self._selected_children()
+        for id in ids:
+            child = DBSession.query(Node).get(id)
+            if child.in_navigation != show:
+                child.in_navigation = show
+                mapping = dict(title=child.title)
+                if show:
+                    msg = _(u'${title} is now visible in the navigation.',
+                            mapping=mapping)
+                else:
+                    msg = _(u'${title} is no longer visible in the navigation.',
+                            mapping=mapping)
+                self.request.session.flash(msg, 'success')
+        if not self.request.is_xhr:
+            return self.back()
+
+    @view_config(name='show')
+    def show(self):
+        """
+        Show nodes view. Switch the in_navigation attribute of selected nodes to true
+        and get back to the referrer of the request.
+
+        :result: Redirect response to the referrer of the request.
+        :rtype: pyramid.httpexceptions.HTTPFound
+        """
+        return self.set_visibility(True)
+
+    @view_config(name='hide')
+    def hide(self):
+        """
+        Hide nodes view. Switch the in_navigation attribute of selected nodes to false
+        and get back to the referrer of the request.
+
+        :result: Redirect response to the referrer of the request.
+        :rtype: pyramid.httpexceptions.HTTPFound
+        """
+        return self.set_visibility(False)
 
     @view_config(name='delete',
                  renderer='kotti:templates/edit/delete.pt')
@@ -241,11 +290,11 @@ class NodeActions(object):
                 self.request.session.flash(_(u'${title} deleted.',
                                 mapping=dict(title=item.title)), 'success')
                 del self.context[item.name]
-            return self.back()
+            return self.back('@@contents')
 
         if 'cancel' in self.request.POST:
             self.request.session.flash(_(u'No changes made.'), 'info')
-            return self.back()
+            return self.back('@@contents')
 
         ids = self._selected_children(add_context=False)
         items = []
@@ -277,8 +326,7 @@ class NodeActions(object):
                 self.context.name = name.replace('/', '')
                 self.context.title = title
                 self.request.session.flash(_(u'Item renamed'), 'success')
-                location = resource_url(self.context, self.request)
-                return HTTPFound(location=location)
+                return self.back('')
         return {}
 
     @view_config(name='rename_nodes',
@@ -311,11 +359,11 @@ class NodeActions(object):
                     item.title = title
             self.request.session.flash(
                 _(u'Your changes have been saved.'), 'success')
-            return self.back()
+            return self.back('@@contents')
 
         if 'cancel' in self.request.POST:
             self.request.session.flash(_(u'No changes made.'), 'info')
-            return self.back()
+            return self.back('@@contents')
 
         ids = self._selected_children(add_context=False)
         items = []
@@ -358,11 +406,11 @@ class NodeActions(object):
                     _(u'Your changes have been saved.'), 'success')
             else:
                 self.request.session.flash(_(u'No changes made.'), 'info')
-            return self.back()
+            return self.back('@@contents')
 
         if 'cancel' in self.request.POST:
             self.request.session.flash(_(u'No changes made.'), 'info')
-            return self.back()
+            return self.back('@@contents')
 
         ids = self._selected_children(add_context=False)
         items = transitions = []
@@ -402,6 +450,10 @@ def contents_buttons(context, request):
         if get_workflow(context) is not None:
             buttons.append(ActionButton('change_state',
                                         title=_(u'Change State')))
+        buttons.append(ActionButton('up', title=_(u'Move up')))
+        buttons.append(ActionButton('down', title=_(u'Move down')))
+        buttons.append(ActionButton('show', title=_(u'Show')))
+        buttons.append(ActionButton('hide', title=_(u'Hide')))
     return [button for button in buttons
         if button.permitted(context, request)]
 
@@ -515,8 +567,6 @@ def actions(context, request):
     if not is_root:
         actions.append(ViewLink('rename', title=_(u'Rename')))
         actions.append(ViewLink('delete', title=_(u'Delete')))
-    if len(context.children) >= 1:
-        actions.append(ViewLink('order', title=_(u'Order')))
     return {'actions': [action for action in actions
                         if action.permitted(context, request)]}
 

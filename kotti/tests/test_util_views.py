@@ -72,6 +72,7 @@ class TestTemplateAPI:
         # Now try it on a little graph:
         a, aa, ab, ac, aca, acb = create_contents(root)
         with patch('kotti.views.util.has_permission', return_value=True):
+            assert api.list_children() == [a]
             assert api.list_children(root) == [a]
             assert api.list_children(a) == [aa, ab, ac]
             assert api.list_children(aca) == []

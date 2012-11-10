@@ -19,12 +19,12 @@ the 'kotti-reset-workflow' command to reset all your content's workflow.
       name="simple"
       state_attr="state"
       initial_state="private"
-      content_types="kotti.resources.IDefaultWorkflow"
+      content_types="kotti.interfaces.IDefaultWorkflow"
       permission_checker="pyramid.security.has_permission"
       >
 
     <state name="private" callback="kotti.workflow.workflow_callback">
-      
+
       <key name="title" value="_(u'Private')" />
       <key name="order" value="1" />
 
@@ -37,7 +37,7 @@ the 'kotti-reset-workflow' command to reset all your content's workflow.
     </state>
 
     <state name="public" callback="kotti.workflow.workflow_callback">
-      
+
       <key name="title" value="_(u'Public')" />
       <key name="order" value="2" />
 

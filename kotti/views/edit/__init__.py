@@ -65,7 +65,7 @@ def get_paste_items(context, request):
 derived from 'kotti.views.form.EditFormView' instead.  See
 'kotti.views.edit.content' for an example.
 """)
-def generic_edit(context, request, schema, **kwargs):
+def generic_edit(context, request, schema, **kwargs):  # pragma: no cover
     return EditFormView(
         context,
         request,
@@ -75,11 +75,11 @@ def generic_edit(context, request, schema, **kwargs):
 
 
 @deprecate(
-"""'generic_edit' is deprecated as of Kotti 0.8.0.  Use a form class
+"""'generic_add' is deprecated as of Kotti 0.8.0.  Use a form class
 derived from 'kotti.views.form.AddFormView' instead.  See
 'kotti.views.edit.content' for an example.
 """)
-def generic_add(context, request, schema, add, title, **kwargs):
+def generic_add(context, request, schema, add, title, **kwargs):  # pragma: no cover
     return AddFormView(
         context,
         request,
@@ -90,14 +90,14 @@ def generic_add(context, request, schema, add, title, **kwargs):
         )()
 
 
-def make_generic_edit(schema, **kwargs):
+def make_generic_edit(schema, **kwargs):  # pragma: no cover
     @ensure_view_selector
     def view(context, request):
         return generic_edit(context, request, schema, **kwargs)
     return view
 
 
-def make_generic_add(schema, add, title=None, **kwargs):
+def make_generic_add(schema, add, title=None, **kwargs):  # pragma: no cover
     def view(context, request):
         return generic_add(context, request, schema, add, title, **kwargs)
     return view

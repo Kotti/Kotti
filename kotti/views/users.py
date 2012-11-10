@@ -157,7 +157,6 @@ def deferred_email_validator(node, kw):
     def raise_invalid_email(node, value):
         raise colander.Invalid(
             node, _(u"A user with that email already exists."))
-
     request = kw['request']
     if request.POST:
         email = request.params.get('email')

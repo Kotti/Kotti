@@ -7,7 +7,7 @@
         <span class="icon-bar"></span>
       </a>
       <span class="brand">
-        <a href="/">Kotti</a>
+        <a href="${request.application_url}/">${api.site_title}</a>
       </span>
       <div tal:replace="api.render_template('kotti:templates/view/search.pt')" />
       <div class="nav-collapse">

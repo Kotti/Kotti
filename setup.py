@@ -23,14 +23,14 @@ install_requires = [
     'formencode',
     'html2text',
     'js.bootstrap>=2.1.5',
-    'js.deform>=0.9.5-3',
+    'js.deform>=0.9.5-4',
     'js.deform_bootstrap>=0.2.4-1',
     'js.jquery',
     'js.jquery_form',
     'js.jquery_timepicker_addon',
     'js.jqueryui>=1.8.24',
     'js.jqueryui_tagit',
-    'kotti_tinymce>=0.3',
+    'kotti_tinymce>=0.3.1',
     'lingua>=1.3',
     'Pillow',  # dependency of plone.scale
     'plone.i18n<2.0',  # >= 2.0 adds a huge number of dependencies
@@ -66,6 +66,12 @@ tests_require = [
 
 development_requires = [
     'minify',
+    ]
+
+docs_require = [
+    'Sphinx',
+    'docutils',
+    'repoze.sphinx.autointerface',
     ]
 
 if sys.version_info[:3] < (2, 7, 0):
@@ -109,6 +115,7 @@ setup(name='Kotti',
       extras_require={
           'testing': tests_require,
           'development': development_requires,
+          'docs': docs_require,
           },
       message_extractors={'kotti': [
             ('**.py', 'lingua_python', None),
