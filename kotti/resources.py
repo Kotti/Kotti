@@ -35,6 +35,7 @@ from sqlalchemy.sql import and_
 from sqlalchemy.sql import select
 from sqlalchemy.util import classproperty
 from transaction import commit
+from zope.deprecation.deprecation import deprecated
 from zope.interface import implements
 
 from kotti import Base
@@ -609,3 +610,11 @@ def initialize_sql(engine, drop_all=False):
 def appmaker(engine):
     initialize_sql(engine)
     return get_root
+
+
+for iface in ("INode", "IContent", "IDocument", "IFile", "IImage",
+              "IDefaultWorkflow"):
+
+    deprecated(iface,
+               "%s has been moved to kotti.interfaces as of Kotti 0.8.0. " \
+               "Import from there instead." % iface)
