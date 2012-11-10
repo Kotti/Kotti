@@ -4,6 +4,9 @@ Change History
 0.8.0 - Unreleased
 ------------------
 
+- Make language-dependent URL normalization the default.  (How to do
+  this used to be a cookbook entry.)
+
 - Cleanup node edit actions and use decorated view classes.
 
 - Add contents view with actions for multiple items.
