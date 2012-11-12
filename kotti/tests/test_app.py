@@ -4,6 +4,7 @@ from unittest import TestCase
 import warnings
 
 from mock import patch
+from pytest import raises
 
 from pyramid.interfaces import IAuthenticationPolicy
 from pyramid.interfaces import IAuthorizationPolicy
@@ -80,6 +81,60 @@ class TestApp:
         settings['kotti.asset_overrides'] = 'pyramid:scaffold/ pyramid.fixers'
         with patch('kotti.resources.initialize_sql'):
             main({}, **settings)
+
+    def test_kotti_static_deprecated(self):
+        with warnings.catch_warnings(record=True) as w:
+            from kotti.static import edit_needed
+            edit_needed  # pyflakes
+            assert len(w) == 1
+            assert issubclass(w[-1].category, DeprecationWarning)
+            msg = str(w[-1].message)
+            assert "The module kotti.static has been moved to kotti.fanstatic as of Kotti" in msg
+
+    def test_kotti_static_needed_deprecation_warning(self, db_session):
+        from kotti import main
+
+        settings = self.required_settings()
+        settings['kotti.static.view_needed'] = (' kotti.fanstatic.view_needed')
+        with warnings.catch_warnings(record=True) as w:
+            warnings.simplefilter('always')
+            with patch('kotti.resources.initialize_sql'):
+                main({}, **settings)
+            assert len(w) == 1
+            assert issubclass(w[-1].category, DeprecationWarning)
+            msg = str(w[-1].message)
+            assert "The 'kotti.static.view_needed' setting has been deprecated" in msg
+
+    def test_kotti_static_needed_merged_to_kotti_fanstatic_needed(self, db_session):
+        from kotti import main
+
+        settings = self.required_settings()
+        settings['kotti.static.needed'] = 'kotti.fanstatic.edit_needed'
+
+        with patch('kotti.resources.initialize_sql'):
+            app = main({}, **settings)
+
+        groups = app.registry.settings['kotti.fanstatic.view_needed']
+        resource_names = [[r.relpath for r in group.resources] for group in groups]
+        resource_names = [name for names in resource_names for name in names]
+        assert 'view.css' in resource_names
+
+        settings = self.required_settings()
+        settings['kotti.fanstatic.view_needed'] = 'kotti.fanstatic.view_needed'
+        settings['kotti.static.view_needed'] = ' kotti.fanstatic.edit_needed'
+        with patch('kotti.resources.initialize_sql'):
+            app = main({}, **settings)
+        regsettings = app.registry.settings
+
+        assert len(regsettings['kotti.fanstatic.view_needed']) == 2
+
+        with raises(KeyError):
+            regsettings['kotti.static.view_needed']
+
+        groups = regsettings['kotti.fanstatic.view_needed']
+        resource_names = [[r.relpath for r in group.resources] for group in groups]
+        resource_names = [name for names in resource_names for name in names]
+        assert 'edit.css' in resource_names
 
     def test_kotti_includes_deprecation_warning(self, db_session):
         from kotti import main
