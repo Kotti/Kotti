@@ -29,13 +29,12 @@ TRUE_VALUES = ('1', 'y', 'yes', 't', 'true')
 FALSE_VALUES = ('0', 'n', 'no', 'f', 'false', 'none')
 
 
-# module deprecation
+# BBB module deprecation
 from kotti import fanstatic
 sys.modules['kotti.static'] = deprecation.deprecated(
     fanstatic,
     "The module kotti.static has been moved to kotti.fanstatic as of Kotti "
-    "0.8.0. Import from there instead. The module kotti.static will be "
-    "removed in Kotti 1.0.")
+    "0.8. Import from there instead.")
 
 
 def authtkt_factory(**settings):

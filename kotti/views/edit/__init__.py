@@ -61,7 +61,7 @@ def get_paste_items(context, request):
 
 
 @deprecate(
-"""'generic_edit' is deprecated as of Kotti 0.8.0.  Use a form class
+"""'generic_edit' is deprecated as of Kotti 0.8.  Use a form class
 derived from 'kotti.views.form.EditFormView' instead.  See
 'kotti.views.edit.content' for an example.
 """)
@@ -75,7 +75,7 @@ def generic_edit(context, request, schema, **kwargs):  # pragma: no cover
 
 
 @deprecate(
-"""'generic_add' is deprecated as of Kotti 0.8.0.  Use a form class
+"""'generic_add' is deprecated as of Kotti 0.8.  Use a form class
 derived from 'kotti.views.form.AddFormView' instead.  See
 'kotti.views.edit.content' for an example.
 """)
