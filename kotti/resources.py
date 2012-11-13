@@ -612,9 +612,9 @@ def appmaker(engine):
     return get_root
 
 
+# BBB
 for iface in ("INode", "IContent", "IDocument", "IFile", "IImage",
               "IDefaultWorkflow"):
-
     deprecated(iface,
-               "%s has been moved to kotti.interfaces as of Kotti 0.8.0. "
+               "%s has been moved to kotti.interfaces as of Kotti 0.8. "
                "Import from there instead." % iface)

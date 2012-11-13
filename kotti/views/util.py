@@ -295,7 +295,7 @@ class TemplateAPI(object):
                 if l.permitted(self.root, self.request)]
 
 
-@deprecate("'ensure_view_selector' is deprecated as of Kotti 0.8.0. "
+@deprecate("'ensure_view_selector' is deprecated as of Kotti 0.8. "
            "There is no replacement.")
 def ensure_view_selector(func):  # pragma: no cover
     return func
