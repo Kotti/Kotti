@@ -111,6 +111,9 @@ setup(name='Kotti',
       [console_scripts]
       kotti-migrate = kotti.migrate:kotti_migrate_command
       kotti-reset-workflow = kotti.workflow:reset_workflow_command
+
+      [pytest11]
+      kotti = kotti.tests.configure
       """,
       extras_require={
           'testing': tests_require,
