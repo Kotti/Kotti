@@ -1,7 +1,7 @@
 Change History
 ==============
 
-0.8.0 - Unreleased
+0.8a1 - 2012-11-13
 ------------------
 
 - Make language-dependent URL normalization the default.  (How to do
