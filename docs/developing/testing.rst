@@ -32,3 +32,22 @@ tests, you only need to "include" them with a line like this in your
 
   pytest_plugins = "kotti"
 
+Continuous Integration
+----------------------
+
+Kotti itself is tested against Python versions 2.6 and 2.7 as well as SQLite,
+mySQL and PostgreSQL (in every possible combination of those) on every commit
+(and pull request) via the excellent `GitHub`_ / `Travis CI`_ hook.
+
+If you want your add-on packages' to be tested the same way with additional
+testing against multiple versions of Kotti (including the current master), you
+can add a ``.travis.yml`` file to your repo that looks similar to this:
+https://raw.github.com/disko/kotti_media/master/.travis.yml.
+
+The packages under http://kottipackages.xo7.de/ include all Kotti versions
+released on `PyPI` (synced every night at 00:15 CET) and a package built from
+the current master on GitHub (created every 15 minutes).
+
+.. _GitHub: https://github.com/
+.. _Travis CI: https://travis-ci.org/
+.. _PyPI: http://pypi.python.org/pypi
