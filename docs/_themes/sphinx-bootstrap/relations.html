@@ -1,0 +1,14 @@
+{%- if prev %}
+  <li class="nav-header">{{ _('Previous topic') }}</li>
+  <li>
+    <a href="{{ prev.link|e }}"
+       title="{{ _('previous chapter') }}">{{ prev.title }}</a>
+  </li>
+{%- endif %}
+{%- if next %}
+  <li class="nav-header">{{ _('Next topic') }}</li>
+  <li>
+    <a href="{{ next.link|e }}"
+       title="{{ _('next chapter') }}">{{ next.title }}</a>
+  </li>
+{%- endif %}

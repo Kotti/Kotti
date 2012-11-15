@@ -30,7 +30,7 @@
 {%- macro sidebar() %}
     {%- if render_sidebar %}
         <div class="sphinxsidebar">
-            <div class="sphinxsidebarwrapper">
+            <ul class="nav nav-list well">
                 {%- if sidebars != None %}
                     {#- new style sidebar: explicitly include/exclude templates #}
                     {%- for sidebartemplate in sidebars %}
@@ -44,13 +44,56 @@
                     {%- block sidebarrel %}
                         {%- include "relations.html" %}
                     {%- endblock %}
-                    {%- block sidebarsourcelink %}
-                        {%- include "sourcelink.html" %}
-                    {%- endblock %}
                     {%- if customsidebar %}
                         {%- include customsidebar %}
                     {%- endif %}
                 {%- endif %}
+            </ul>
+            <p>&nbsp;</p>
+            <ul class="nav nav-list well">
+                <li class="nav-header">GitHub</li>
+                <li>
+                    <a href="https://github.com/{{ theme_github_user }}/{{ theme_github_repo }}/">Repo</a>
+                </li>
+                <li>
+                    <a href="https://github.com/{{ theme_github_user }}/{{ theme_github_repo }}/issues?state=open">Issues</a>
+                </li>
+                <li>
+                    <iframe class="github-btn"
+                            src="http://ghbtns.com/github-btn.html?user={{ theme_github_user }}&repo={{ theme_github_repo }}&type=watch&count=true"
+                            allowtransparency="true" frameborder="0" scrolling="0"
+                            width="110px" height="20px"></iframe>
+                </li>
+                <li>
+                    <iframe class="github-btn"
+                            src="http://ghbtns.com/github-btn.html?user={{ theme_github_user }}&repo={{ theme_github_repo }}&type=fork&count=true"
+                            allowtransparency="true" frameborder="0" scrolling="0"
+                            width="94px" height="20px"></iframe>
+                </li>
+                <li class="nav-header">Help</li>
+                <li>
+                    <a href="http://groups.google.com/group/kotti">Mailing list</a>
+                </li>
+                <li>
+                    <a href="irc://irc.freenode.net/#kotti">IRC (#kotti)</a>
+                </li>
+                <li class="nav-header">Social</li>
+                <li class="follow-btn">
+                    <a href="https://twitter.com/{{ theme_twitter_username }}"
+                       class="twitter-follow-button" data-width="145px"
+                       data-link-color="#0069D6" data-show-count="false">Follow
+                        @{{ theme_twitter_username }}</a>
+                </li>
+                <li class="tweet-btn">
+                    <a href="https://twitter.com/share" class="twitter-share-button"
+                       data-url="{{ theme_home_url }}" data-count="horizontal"
+                       data-via="twbootstrap"
+                       data-related="{{ theme_twitter_username }}:Creator of {{ project|e }}">Tweet</a>
+                </li>
+                <li class="plusone-container">
+                    <g:plusone size="medium"></g:plusone>
+                </li>
+            </ul>
             </div>
         </div>
     {%- endif %}
@@ -188,62 +231,6 @@
                 {%- block relbar1 %}{{ relbar() }}{% endblock %}
                 <div class="pull-right">
                     {{ seachbox() }}
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="navbar navbar-fixed-bottom">
-        <div class="navbar-inner">
-            <div class="container">
-                <a class="brand" href="#">GitHub</a>
-                <ul class="nav">
-                    <li>
-                        <a href="https://github.com/{{ theme_github_user }}/{{ theme_github_repo }}/">Repo</a>
-                    </li>
-                    <li>
-                        <a href="https://github.com/{{ theme_github_user }}/{{ theme_github_repo }}/issues?state=open">Issues</a>
-                    </li>
-                    <li>
-                        <iframe class="github-btn"
-                                src="http://ghbtns.com/github-btn.html?user={{ theme_github_user }}&repo={{ theme_github_repo }}&type=watch&count=true"
-                                allowtransparency="true" frameborder="0" scrolling="0"
-                                width="110px" height="20px"></iframe>
-                    </li>
-                    <li>
-                        <iframe class="github-btn"
-                                src="http://ghbtns.com/github-btn.html?user={{ theme_github_user }}&repo={{ theme_github_repo }}&type=fork&count=true"
-                                allowtransparency="true" frameborder="0" scrolling="0"
-                                width="94px" height="20px"></iframe>
-                    </li>
-                </ul>
-                <a class="brand" href="#">Help</a>
-                <ul class="nav">
-                    <li>
-                        <a href="http://groups.google.com/group/kotti">Mailing list</a>
-                    </li>
-                    <li>
-                        <a href="irc://irc.freenode.net/#kotti">IRC (#kotti)</a>
-                    </li>
-                </ul>
-                <div class="pull-right">
-                    <a class="brand" href="#">Social</a>
-                    <ul class="nav">
-                        <li class="follow-btn">
-                            <a href="https://twitter.com/{{ theme_twitter_username }}"
-                               class="twitter-follow-button" data-width="145px"
-                               data-link-color="#0069D6" data-show-count="false">Follow
-                                @{{ theme_twitter_username }}</a>
-                        </li>
-                        <li class="tweet-btn">
-                            <a href="https://twitter.com/share" class="twitter-share-button"
-                               data-url="{{ theme_home_url }}" data-count="horizontal"
-                               data-via="twbootstrap"
-                               data-related="{{ theme_twitter_username }}:Creator of {{ project|e }}">Tweet</a>
-                        </li>
-                        <li class="plusone-container">
-                            <g:plusone size="medium"></g:plusone>
-                        </li>
-                    </ul>
                 </div>
             </div>
         </div>
