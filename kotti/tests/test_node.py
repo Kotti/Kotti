@@ -6,7 +6,7 @@ from sqlalchemy.exc import SQLAlchemyError
 
 
 class TestNode:
-    def test_root_acl(self, db_session):
+    def test_root_acl(self, db_session, cleanup):
         from kotti.resources import get_root
         root = get_root()
 

@@ -4,7 +4,6 @@ from mock import patch
 from mock import MagicMock
 import pytest
 
-from kotti.testing import UnitTestBase
 from kotti.testing import Dummy
 from kotti.views.cache import set_max_age
 
@@ -21,7 +20,7 @@ class TestSetMaxAge:
             "bar=42,foo,max-age=86400,s-max-age=42")
 
 
-class TestSetCacheHeaders(UnitTestBase):
+class TestSetCacheHeaders:
     def test_caching_policy_chooser(self):
         from kotti.views.cache import set_cache_headers
 

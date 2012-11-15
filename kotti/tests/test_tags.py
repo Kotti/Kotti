@@ -10,16 +10,16 @@ class DummyContext(object):
 
 
 class TestTags:
-    def test_empty(self, db_session, events):
+    def test_empty(self, db_session):
         from kotti.resources import get_root
         assert get_root().tags == []
 
-    def test_tags(self, db_session, events):
+    def test_tags(self, db_session):
         from kotti.resources import Tag
         new_tag = Tag(title=u"test tag")
         assert str(new_tag) == "<Tag ('test tag')>"
 
-    def test_add(self, db_session, events):
+    def test_add(self, db_session):
         from kotti import DBSession
         from kotti.resources import get_root
         from kotti.resources import Tag, TagsToContents
@@ -31,7 +31,7 @@ class TestTags:
         assert root.tags == [u'tag 1', u'tag 2']
         assert len(DBSession.query(Tag).all()) == 2
 
-    def test_edit(self, db_session, events):
+    def test_edit(self, db_session):
         from kotti.resources import get_root
 
         root = get_root()
@@ -40,7 +40,7 @@ class TestTags:
         root.tags = [u'edited tag', u'tag_2']
         assert root._tags[0].tag.title == u'edited tag'
 
-    def test_association_proxy(self, db_session, events):
+    def test_association_proxy(self, db_session):
         from kotti import DBSession
         from kotti.resources import get_root
         from kotti.resources import Tag, TagsToContents, Content
@@ -66,7 +66,7 @@ class TestTags:
         assert root[u'content_2']._tags[1].position == 1
         assert len(DBSession.query(Tag).all()) == 3
 
-    def test_delete_tag_doesnt_touch_content(self, db_session, events):
+    def test_delete_tag_doesnt_touch_content(self, db_session):
         from kotti import DBSession
         from kotti.resources import get_root
         from kotti.resources import Tag, Content
@@ -94,7 +94,7 @@ class TestTags:
         del root[u'content_1']
         assert DBSession.query(Tag).one().title == u'tag 2'
 
-    def test_delete_tag_assignment_doesnt_touch_content(self, db_session, events):
+    def test_delete_tag_assignment_doesnt_touch_content(self, db_session):
         from kotti import DBSession
         from kotti.resources import get_root
         from kotti.resources import Tag, TagsToContents, Content
@@ -123,7 +123,7 @@ class TestTags:
         ses.delete(ses.query(TagsToContents).one())
         assert ses.query(Tag).count() == 0
 
-    def test_copy_content_copy_tags(self, db_session, events):
+    def test_copy_content_copy_tags(self, db_session):
         from kotti import DBSession
         from kotti.resources import get_root
         from kotti.resources import Tag, TagsToContents, Content
@@ -142,7 +142,7 @@ class TestTags:
         assert ses.query(Tag).count() == 1
         assert ses.query(TagsToContents).count() == 2
 
-    def test_cut_and_paste_content_copy_tags(self, db_session, events):
+    def test_cut_and_paste_content_copy_tags(self, db_session):
         from kotti import DBSession
         from kotti.resources import get_root
         from kotti.resources import Tag, TagsToContents, Content
@@ -210,7 +210,7 @@ class TestTags:
         assert ses.query(Tag).count() == 0
         assert ses.query(TagsToContents).count() == 0
 
-    def test_get_content_items_from_tag(self, db_session, events):
+    def test_get_content_items_from_tag(self, db_session):
         from kotti import DBSession
         from kotti.resources import get_root
         from kotti.resources import Tag, Content
@@ -232,7 +232,7 @@ class TestTags:
         assert [rel.name for rel in third_tag.items] == [
             u'content_1', u'content_2']
 
-    def test_get_content_items_for_tag_title(self, db_session, events):
+    def test_get_content_items_for_tag_title(self, db_session):
         from kotti import DBSession
         from kotti.resources import get_root
         from kotti.resources import Tag, TagsToContents, Content

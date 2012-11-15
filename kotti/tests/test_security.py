@@ -387,7 +387,7 @@ class TestPrincipals:
     def test_hash_password_non_ascii(self, db_session):
         self.get_principals().hash_password(u'\xd6TEst')
 
-    def test_default_admin(self, db_session):
+    def test_default_admin(self, db_session, cleanup):
         admin = self.get_principals()[u'admin']
         assert self.get_principals().validate_password(u'secret', admin.password)
         assert admin.groups == [u'role:admin']

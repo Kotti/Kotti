@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-from unittest import TestCase
 import warnings
 
 from mock import patch
@@ -122,8 +121,9 @@ class TestApp:
         settings = self.required_settings()
         settings['kotti.fanstatic.view_needed'] = 'kotti.fanstatic.view_needed'
         settings['kotti.static.view_needed'] = ' kotti.fanstatic.edit_needed'
-        with patch('kotti.resources.initialize_sql'):
-            app = main({}, **settings)
+        with warnings.catch_warnings(record=True):
+            with patch('kotti.resources.initialize_sql'):
+                app = main({}, **settings)
         regsettings = app.registry.settings
 
         assert len(regsettings['kotti.fanstatic.view_needed']) == 2
@@ -262,7 +262,7 @@ class TestApp:
         assert tuple(res)  # a version_num should exist
 
 
-class TestGetVersion(TestCase):
+class TestGetVersion:
     def test_it(self):
         from kotti import get_version
         assert isinstance(get_version(), str)

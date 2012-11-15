@@ -91,14 +91,16 @@ def app(db_session):
 @fixture
 def browser(db_session, request):
     from wsgi_intercept import add_wsgi_intercept, zope_testbrowser
-    add_wsgi_intercept('example.com', 80, app)
-    browser = zope_testbrowser.WSGI_Browser('http://example.com/')
+    from kotti.testing import BASE_URL
+    host, port = BASE_URL.split(':')[-2:]
+    add_wsgi_intercept(host[2:], int(port), lambda: setup_app())
+    browser = zope_testbrowser.WSGI_Browser(BASE_URL + '/')
     if 'user' in request.keywords:
         # set auth cookie directly on the browser instance...
         from pyramid.security import remember
         from pyramid.testing import DummyRequest
         login = request.keywords['user'].args[0]
-        environ = dict(HTTP_HOST='example.com')
+        environ = dict(HTTP_HOST=host[2:])
         for _, value in remember(DummyRequest(environ=environ), login):
             cookie, _ = value.split(';', 1)
             name, value = cookie.split('=')
@@ -117,3 +119,35 @@ def extra_principals(db_session):
     P[u'group:bobsgroup'] = dict(name=u'group:bobsgroup', title=u"Bob's Group")
     P[u'group:franksgroup'] = dict(name=u'group:franksgroup',
         title=u"Frank's Group")
+
+
+@fixture
+def root(db_session):
+    from kotti.resources import get_root
+    return get_root()
+
+
+@fixture
+def workflow(root):
+    from zope.configuration import xmlconfig
+    import kotti
+    xmlconfig.file('workflow.zcml', kotti, execute=True)
+    from kotti.workflow import get_workflow
+    wf = get_workflow(root)
+    if wf is not None:
+        wf.transition_to_state(root, None, u'public')
+
+
+@fixture
+def cleanup():
+    # XXX helper, can hopefully be removed when scope for
+    # tests is fixed
+    from kotti import DBSession
+    from kotti.resources import get_root
+    from kotti.security import get_principals
+    root = get_root()
+    admin = get_principals()['admin']
+    DBSession.delete(root)
+    DBSession.delete(admin)
+    for populate in settings()['kotti.populators']:
+        populate()

@@ -3,7 +3,6 @@ from pytest import raises
 from pyramid.exceptions import Forbidden
 
 from kotti.testing import DummyRequest
-from kotti.testing import UnitTestBase
 
 
 class TestAddableTypes:
@@ -130,9 +129,9 @@ class TestNodeRename:
             [u'Your changes have been saved.']
 
 
-class TestNodeDelete(UnitTestBase):
+class TestNodeDelete:
 
-    def test_multi_delete(self):
+    def test_multi_delete(self, db_session):
         from kotti import DBSession
         from kotti.resources import Node
         from kotti.resources import Document

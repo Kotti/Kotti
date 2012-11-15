@@ -6,15 +6,14 @@ from pyramid.httpexceptions import HTTPFound
 from kotti.interfaces import IContent
 from kotti.resources import get_root
 from kotti.testing import DummyRequest
-from kotti.testing import UnitTestBase
 from kotti.views.edit.default_views import DefaultViewSelection
 
 
-class TestDefaultViewSelection(UnitTestBase):
+class TestDefaultViewSelection:
 
-    def test__is_valid_view(self):
+    def test__is_valid_view(self, db_session, config):
 
-        self.config.add_view(
+        config.add_view(
             context=IContent,
             name='folder_view',
             permission='view',
@@ -29,8 +28,8 @@ class TestDefaultViewSelection(UnitTestBase):
         assert view._is_valid_view("folder_view") is True
         assert view._is_valid_view("foo") is False
 
-    def test_default_views(self):
-        self.config.add_view(
+    def test_default_views(self, db_session, config):
+        config.add_view(
             context=IContent,
             name='folder_view',
             permission='view',
@@ -77,7 +76,7 @@ class TestDefaultViewSelection(UnitTestBase):
         assert type(view.set_default_view()) == HTTPFound
         assert context.default_view is None
 
-    def test_warning_for_non_registered_views(self):
+    def test_warning_for_non_registered_views(self, db_session):
 
         with warnings.catch_warnings(record=True) as w:
 
