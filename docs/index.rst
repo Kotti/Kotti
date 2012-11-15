@@ -27,6 +27,7 @@ Topics
     developing/configuration
     developing/testing
     developing/translations
+    developing/deployment
 
 -   Advanced topics
 
