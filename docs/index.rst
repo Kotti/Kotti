@@ -27,6 +27,7 @@ Topics
     developing/configuration
     developing/testing
     developing/translations
+    developing/deployment
 
 -   Advanced topics
 
@@ -39,7 +40,6 @@ Topics
         developing/frontpage-different-template
         developing/images
         developing/static-resource-management
-        developing/deployment
 
 API
 ---
