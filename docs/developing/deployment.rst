@@ -44,11 +44,9 @@ Get the fabfile::
 
     wget https://gist.github.com/gists/4079191/download
 
-Without modifications it will only work against a fresh install of Ubuntu 12.04
-with SSH service enabled.  Read and modify the file to fit your needs.  Then run
-it against your server::
+Read and modify the file to fit your needs.  Then run it against your server::
 
-    fab deploy_kotti
+    fab install_all
 
 You're done.  Everything is installed and configured to serve Kotti under
 http://kotti.yourdomain.com/
