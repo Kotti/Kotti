@@ -52,8 +52,7 @@ class TestRegister:
     def test_register_event(self, db_session):
         from kotti.resources import get_root
         from kotti.views.login import register
-        from kotti.views.login import UserRegistered
-
+        from kotti.views.login import UserSelfRegistered
         root = get_root()
         request = DummyRequest()
         request.POST['title'] = u'Test User'
