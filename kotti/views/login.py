@@ -52,8 +52,12 @@ def _find_user(login):
                 return p
 
 
-class UserRegistered(ObjectEvent):
-    pass
+class UserSelfRegistered(ObjectEvent):
+    """ This event is emitted just after user self registered. Intended use
+        is to allow addons to do some preparation for such user - create custom
+        contents, nodes etc.
+        Event handler object parameter is a Principal object
+    """
 
 
 class RegisterSchema(colander.Schema):
@@ -108,7 +112,7 @@ def register(context, request):
                 )
             request.session.flash(success_msg, 'success')
             name = appstruct['name']
-            notify(UserRegistered(get_principals()[name], request))
+            notify(UserSelfRegistered(get_principals()[name], request))
             return HTTPFound(location=request.application_url)
 
     if rendered_form is None:
