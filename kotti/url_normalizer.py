@@ -14,6 +14,7 @@ EXTRA_DASHES_REGEX = re.compile(r"(^\-+)|(\-+$)", re.U)
 MAX_LENGTH = 50
 MAX_URL_LENGTH = 255
 
+
 def cropName(base, maxLength=MAX_LENGTH):
     baseLength = len(base)
 
@@ -29,6 +30,7 @@ def cropName(base, maxLength=MAX_LENGTH):
 
     return base
 
+
 def url_normalizer(text, locale=None, max_length=MAX_URL_LENGTH):
 
     map_non_ascii = get_settings()['kotti.url_normalizer.map_non_ascii_characters']
@@ -37,12 +39,12 @@ def url_normalizer(text, locale=None, max_length=MAX_URL_LENGTH):
 
     # lowercase text
     base = text.lower()
-    ext  = ''
+    ext = ''
 
     m = FILENAME_REGEX.match(base)
     if m is not None:
         base = m.groups()[0]
-        ext  = m.groups()[1]
+        ext = m.groups()[1]
 
     base = base.replace(u' ', '-')
     base = IGNORE_REGEX.sub(u'', base)
@@ -56,4 +58,3 @@ def url_normalizer(text, locale=None, max_length=MAX_URL_LENGTH):
         base = base + u'.' + ext
 
     return base
-

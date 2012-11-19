@@ -156,7 +156,7 @@ def title_to_name(title, blacklist=()):
     else:
         locale_name = 'en'
     from kotti import get_settings
-    urlnormalizer = get_settings()['kotti.url_normalzier']
+    urlnormalizer = get_settings()['kotti.url_normalizer']
     name = unicode(urlnormalizer(title, locale_name, max_length=40))
     while name in blacklist:
         name = disambiguate_name(name)
