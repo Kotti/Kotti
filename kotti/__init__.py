@@ -93,6 +93,8 @@ conf_defaults = {
     'kotti.principals_factory': 'kotti.security.principals_factory',
     'kotti.caching_policy_chooser': (
         'kotti.views.cache.default_caching_policy_chooser'),
+    'kotti.url_normalizer': 'kotti.url_normalizer.url_normalizer',
+    'kotti.url_normalizer.map_non_ascii_characters': False,
     'kotti.use_workflow': 'kotti:workflow.zcml',
     'kotti.date_format': 'medium',
     'kotti.datetime_format': 'medium',
@@ -124,6 +126,7 @@ conf_dotted = set([
     'kotti.caching_policy_chooser',
     'kotti.fanstatic.edit_needed',
     'kotti.fanstatic.view_needed',
+    'kotti.url_normalizer',
     ])
 
 
