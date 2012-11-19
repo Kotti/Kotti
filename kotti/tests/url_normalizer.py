@@ -23,7 +23,6 @@ class URLNormalizerTests(UnitTestBase):
         self.assertEquals(len(url_normalizer(unicode("aa", 'utf-8') * 2000)), 255)
         self.assertEquals(url_normalizer(unicode("short-hello-version", 'utf-8'), max_length=10), unicode("short", 'utf-8'))
 
-
     def test_normalizer_map_non_ascii_characters(self):
         get_settings()['kotti.url_normalizer.map_non_ascii_characters'] = True
         self.assertEquals(url_normalizer(unicode('simpleandsafe', 'utf-8')), unicode('simpleandsafe', 'utf-8'))

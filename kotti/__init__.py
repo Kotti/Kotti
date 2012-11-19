@@ -126,6 +126,7 @@ conf_dotted = set([
     'kotti.caching_policy_chooser',
     'kotti.fanstatic.edit_needed',
     'kotti.fanstatic.view_needed',
+    'kotti.url_normalizer',
     ])
 
 
