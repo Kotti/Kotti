@@ -33,9 +33,6 @@ def cropName(base, maxLength=MAX_LENGTH):
 
 def url_normalizer(text, locale=None, max_length=MAX_URL_LENGTH):
 
-#    if not isinstance(text, basestring):
-#        text = repr(text)
-
     key = 'kotti.url_normalizer.map_non_ascii_characters'
     map_non_ascii = get_settings()[key]
     if map_non_ascii:
