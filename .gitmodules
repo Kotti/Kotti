@@ -1,0 +1,3 @@
+[submodule "docs/_themes/sphinxtheme_bootstrap"]
+	path = docs/_themes/sphinxtheme_bootstrap
+	url = git://github.com/disko/sphinxtheme_bootstrap.git
