@@ -69,7 +69,6 @@ setuptools-git==0.4.2
 six==1.1.0
 transaction==1.3.0
 translationstring==1.1
-unidecode
 venusian==1.0a6
 waitress==0.8.1
 wsgi-intercept==0.5.1
