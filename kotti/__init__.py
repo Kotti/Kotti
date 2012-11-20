@@ -75,7 +75,6 @@ conf_defaults = {
         'kotti.views.users',
         ]),
     'kotti.zcml_includes': ' '.join([
-        'kotti:configure.zcml',
         ]),
     'kotti.asset_overrides': '',
     'kotti.use_tables': '',

@@ -68,6 +68,7 @@ kotti.authn_policy_factory    Component used for authentication
 kotti.authz_policy_factory    Component used for authorization
 kotti.session_factory         Component used for sessions
 kotti.caching_policy_chooser  Component for choosing the cache header policy
+kotti.url_normalizer          Component used for url normalization
 
 kotti.date_format             Date format to use, default: ``medium``
 kotti.datetime_format         Datetime format to use, default: ``medium``

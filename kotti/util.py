@@ -11,7 +11,6 @@ import re
 import urllib
 
 from docopt import docopt
-from plone.i18n.normalizer import urlnormalizer
 from pyramid.i18n import get_locale_name
 from pyramid.i18n import TranslationStringFactory
 from pyramid.paster import bootstrap
@@ -156,7 +155,7 @@ def title_to_name(title, blacklist=()):
     else:
         locale_name = 'en'
     from kotti import get_settings
-    urlnormalizer = get_settings()['kotti.url_normalizer']
+    urlnormalizer = get_settings()['kotti.url_normalizer'][0]
     name = unicode(urlnormalizer(title, locale_name, max_length=40))
     while name in blacklist:
         name = disambiguate_name(name)
