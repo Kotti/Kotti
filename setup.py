@@ -46,7 +46,7 @@ install_requires = [
     'repoze.workflow',
     'sqlalchemy>=0.7.6',
     'transaction>=1.1.0',
-    'unidecode'
+    'unidecode',
     'waitress',
     'zope.browserresource',
     'zope.deprecation',
