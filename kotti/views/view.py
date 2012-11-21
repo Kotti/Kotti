@@ -8,6 +8,7 @@ from kotti.interfaces import IContent
 from kotti.resources import Document
 
 from kotti.views.util import search_content
+from kotti.views.util import search_content_for_tags
 
 
 @view_config(context=IContent)
@@ -40,6 +41,16 @@ def search_results(context, request):
     if u'search-term' in request.POST:
         search_term = request.POST[u'search-term']
         results = search_content(search_term, request)
+    return {'results': results}
+
+
+@view_config(name='search-results-for-tags', permission='view',
+             renderer='kotti:templates/view/search-results.pt')
+def search_results_for_tags(context, request):
+    results = []
+    if u'tag_terms' in request.GET:
+        tag_terms = request.GET[u'tag_terms'].split(';')
+        results = search_content_for_tags(tag_terms, request)
     return {'results': results}
 
 

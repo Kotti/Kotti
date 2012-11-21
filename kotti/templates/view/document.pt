@@ -7,6 +7,26 @@
     <p class="description">
       ${context.description}
     </p>
+    <ul class="breadcrumb"
+        xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+        i18n:domain="Kotti"
+        tal:define="tags [i for i in context.tags]"
+        tal:condition="len(tags) > 1">
+      <span>Tagged with:</span>
+      <tal:repeat tal:repeat="tag tags">
+        <li tal:define="first repeat.tag.start; last repeat.tag.end"
+            class="${last and 'active' or None}">
+    
+          <a href="${api.url(api.root)}@@search-results-for-tags?tag_terms=${';'.join(context.tags)}">${tag}
+          </a>
+    
+          <span class="divider">,</span>
+        </li>
+      </tal:repeat>
+      <a href="${api.url(api.root)}@@search-results-for-tags?tag_terms=${';'.join(context.tags)}">[Search All]
+      </a>
+    </ul>
+
     <div class="body" tal:content="structure context.body | None">
     </div>
   </article>

@@ -29,6 +29,8 @@ from kotti import get_settings
 from kotti.events import objectevent_listeners
 from kotti.resources import Content
 from kotti.resources import Document
+from kotti.resources import Tag
+from kotti.resources import TagsToContents
 from kotti.security import get_user
 from kotti.security import has_permission
 from kotti.security import view_permitted
@@ -401,6 +403,28 @@ def default_search_content(search_term, request=None):
                 title=result.title,
                 description=result.description,
                 path=request.resource_path(result)))
+    return result_dicts
+
+
+def search_content_for_tags(tags, request=None):
+
+    filter_clauses = []
+    for tag in tags:
+        filter_clauses.append(Tag.title == tag)
+
+    results = DBSession.query(Content).join(TagsToContents).join(Tag).filter(
+                 *filter_clauses).all()
+
+    result_dicts = []
+
+    for result in results:
+        if has_permission('view', result, request):
+            result_dicts.append(dict(
+                name=result.name,
+                title=result.title,
+                description=result.description,
+                path=request.resource_path(result)))
+
     return result_dicts
 
 
