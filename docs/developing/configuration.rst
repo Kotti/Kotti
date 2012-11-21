@@ -318,6 +318,27 @@ configuration variable.  The default is:
 
   kotti.caching_policy_chooser = kotti.views.cache.default_caching_policy_chooser
 
+Url normalization
+-----------------
+
+Kotti normalizes document titles to URLs by replacing language specific 
+characters like umlauts or accented characters with its ascii equivalents.
+You can change this default behavour by setting 
+``kotti.url_normalizer.map_non_ascii_characters`` configuration variable
+to ``False``. If you do, Kotti will leave national characters in URLs.
+
+You may also replace default component used for url normalization by setting
+``kotti.url_normalizer`` configuation variable.
+
+The default configuration here is:
+
+.. code-block:: ini
+  
+  kotti.url_normalzier = kotti.url_normalizer.url_normalizer
+  kotti.url_normalizer.map_non_ascii_characters = True
+
+
+
 Local navigation
 ----------------
 

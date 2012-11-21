@@ -93,7 +93,7 @@ conf_defaults = {
     'kotti.caching_policy_chooser': (
         'kotti.views.cache.default_caching_policy_chooser'),
     'kotti.url_normalizer': 'kotti.url_normalizer.url_normalizer',
-    'kotti.url_normalizer.map_non_ascii_characters': False,
+    'kotti.url_normalizer.map_non_ascii_characters': True,
     'kotti.use_workflow': 'kotti:workflow.zcml',
     'kotti.date_format': 'medium',
     'kotti.datetime_format': 'medium',

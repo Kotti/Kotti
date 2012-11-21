@@ -43,14 +43,12 @@ class TestUploadFile(FunctionalTestBase):
 
     def test_it(self):
         browser = self.get_browser()
-        browser.getControl("Title").value = 'A title'
         self.add_file(browser)
         assert "Successfully added item" in browser.contents
         return browser
 
     def test_view_uploaded_file(self):
         browser = self.get_browser()
-        browser.getControl("Title").value = 'A title'
         self.add_file(browser)
         browser.getLink("View").click()
         browser.getLink("Download file").click()
@@ -58,7 +56,6 @@ class TestUploadFile(FunctionalTestBase):
 
     def test_tempstorage(self):
         browser = self.get_browser()
-        browser.getControl("Title").value = 'A title'
         self.add_file(browser)
         browser.getLink("Edit").click()
         browser.getControl("Title").value = ''  # the error

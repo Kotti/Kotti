@@ -15,7 +15,7 @@ MAX_LENGTH = 50
 MAX_URL_LENGTH = 255
 
 
-def cropName(base, maxLength=MAX_LENGTH):
+def crop_name(base, maxLength=MAX_LENGTH):
     baseLength = len(base)
 
     index = baseLength
@@ -53,7 +53,7 @@ def url_normalizer(text, locale=None, max_length=MAX_URL_LENGTH):
     base = EXTRA_DASHES_REGEX.sub(u'', base)
     base = MULTIPLE_DASHES_REGEX.sub(u'-', base)
 
-    base = cropName(base, maxLength=max_length)
+    base = crop_name(base, maxLength=max_length)
 
     if ext != '':
         base = base + u'.' + ext
