@@ -17,7 +17,7 @@
         <li tal:define="first repeat.tag.start; last repeat.tag.end"
             class="${last and 'active' or None}">
     
-          <a href="${api.url(api.root)}@@search-results-for-tags?tag_terms=${';'.join(context.tags)}">${tag}
+          <a href="${api.url(api.root)}@@search-results-for-tags?tag_terms=${tag}">${tag}
           </a>
     
           <span class="divider">,</span>
