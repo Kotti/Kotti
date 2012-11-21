@@ -106,6 +106,7 @@ conf_defaults = {
     'kotti.register': 'False',
     'kotti.register.group': '',
     'kotti.register.role': '',
+    'kotti.login_redirect': '',
     'pyramid_deform.template_search_path': 'kotti:templates/deform',
     }
 
@@ -124,6 +125,7 @@ conf_dotted = set([
     'kotti.caching_policy_chooser',
     'kotti.fanstatic.edit_needed',
     'kotti.fanstatic.view_needed',
+    'kotti.login_redirect',
     ])
 
 

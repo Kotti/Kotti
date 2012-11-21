@@ -147,7 +147,10 @@ def login(context, request):
                 _(u"Welcome, ${user}!",
                   mapping=dict(user=user.title or user.name)), 'success')
             user.last_login_date = datetime.now()
-            return HTTPFound(location=came_from, headers=headers)
+            callback = get_settings()['kotti.login_redirect']
+            location = callback[0](request, user) if callback else ''
+            location = location if location else came_from
+            return HTTPFound(location=location, headers=headers)
         request.session.flash(_(u"Login failed."), 'error')
 
     if 'reset-password' in request.POST:

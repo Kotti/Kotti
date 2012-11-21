@@ -73,6 +73,9 @@ kotti.date_format             Date format to use, default: ``medium``
 kotti.datetime_format         Datetime format to use, default: ``medium``
 kotti.time_format             Time format to use, default: ``medium``
 kotti.max_file_size           Max size for file uploads, default: ```10`` (MB)
+kotti.login_redirect          Callback called after user login with two parameters:
+                              request and user object. Request will be redirected
+                              to location callback returned as string.
 
 pyramid.default_locale_name   Set the user interface language, default ``en``
 ============================  ==================================================
