@@ -78,7 +78,7 @@ if sys.version_info[:3] < (2, 7, 0):
     install_requires.append('ordereddict')
 
 setup(name='Kotti',
-      version='0.8.0dev',
+      version='0.8dev2',
       description="Kotti is a high-level, 'Pythonic' web application framework. It includes a small and extensible CMS application called the Kotti CMS.",
       long_description='\n\n'.join([README, AUTHORS, CHANGES]),
       classifiers=[
@@ -111,6 +111,9 @@ setup(name='Kotti',
       [console_scripts]
       kotti-migrate = kotti.migrate:kotti_migrate_command
       kotti-reset-workflow = kotti.workflow:reset_workflow_command
+
+      [pytest11]
+      kotti = kotti.tests.configure
       """,
       extras_require={
           'testing': tests_require,

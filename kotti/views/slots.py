@@ -6,11 +6,11 @@ A simple example that'll include the output of the 'hello_world' view
 in in the left column of every page::
 
   from kotti.views.slots import assign_slot
-  assign_slot('hello_world', 'left_slot')
+  assign_slot('hello_world', 'left')
 
 It is also possible to pass parameters to the view:
 
-  assign_slot('last_tweets', 'right_slot', params=dict(user='foo'))
+  assign_slot('last_tweets', 'right', params=dict(user='foo'))
 
 If no view can be found for the given request and slot, the slot
 remains empty.

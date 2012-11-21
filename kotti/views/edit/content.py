@@ -102,6 +102,11 @@ class FileAddForm(AddFormView):
         tmpstore = FileUploadTempStore(self.request)
         return FileSchema(tmpstore, title_missing=null)
 
+    def save_success(self, appstruct):
+        if not appstruct['title']:
+            appstruct['title'] = appstruct['file']['filename']
+        return super(FileAddForm, self).save_success(appstruct)
+
     def add(self, **appstruct):
         buf = appstruct['file']['fp'].read()
         filename = appstruct['file']['filename']

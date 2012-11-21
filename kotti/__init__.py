@@ -1,5 +1,6 @@
 import pkg_resources
 import warnings
+import sys
 
 from sqlalchemy import engine_from_config
 from sqlalchemy import MetaData
@@ -7,6 +8,7 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import scoped_session
 from sqlalchemy.orm import sessionmaker
 from zope.sqlalchemy import ZopeTransactionExtension
+from zope.deprecation import deprecation
 from pyramid.authentication import AuthTktAuthenticationPolicy
 from pyramid.authorization import ACLAuthorizationPolicy
 from pyramid.config import Configurator
@@ -25,6 +27,14 @@ Base.metadata = metadata
 Base.query = DBSession.query_property()
 TRUE_VALUES = ('1', 'y', 'yes', 't', 'true')
 FALSE_VALUES = ('0', 'n', 'no', 'f', 'false', 'none')
+
+
+# BBB module deprecation
+from kotti import fanstatic
+sys.modules['kotti.static'] = deprecation.deprecated(
+    fanstatic,
+    "The module kotti.static has been moved to kotti.fanstatic as of Kotti "
+    "0.8. Import from there instead.")
 
 
 def authtkt_factory(**settings):
@@ -90,6 +100,8 @@ conf_defaults = {
     'kotti.max_file_size': '10',
     'kotti.fanstatic.edit_needed': 'kotti.fanstatic.edit_needed',
     'kotti.fanstatic.view_needed': 'kotti.fanstatic.view_needed',
+    'kotti.static.edit_needed': '',  # BBB
+    'kotti.static.view_needed': '',  # BBB
     'kotti.alembic_dirs': 'kotti:alembic',
     'kotti.register': 'False',
     'kotti.register.group': '',
@@ -159,6 +171,23 @@ def base_configure(global_config, **settings):
     _resolve_dotted(settings, keys=('kotti.configurators',))
     for func in settings['kotti.configurators']:
         func(settings)
+
+    # BBB: Merge ``kotti.static.x`` into kotti.fanstatic.x
+    deprecated_fanstatic_settings = {
+        'kotti.static.view_needed': 'kotti.fanstatic.view_needed',
+        'kotti.static.edit_needed': 'kotti.fanstatic.edit_needed',
+    }
+    for old, new in deprecated_fanstatic_settings.items():
+        if old in settings:
+            if settings[old]:
+                warnings.warn(
+                    "The '%(old)s' setting has been deprecated as of "
+                    "Kotti 0.8 and will be removed in Kotti 1.0.  Use "
+                    "'%(new)s' instead." % {'old': old, 'new': new},
+                    DeprecationWarning)
+                settings.setdefault(new, '')
+                settings[new] += ' ' + settings[old]
+            del settings[old]
 
     _resolve_dotted(settings)
     secret1 = settings['kotti.secret']

@@ -180,14 +180,13 @@ Add a file
 
   >>> browser.open(testing.BASE_URL + '/')
   >>> browser.getLink(url="/add_file").click()
-  >>> ctrl("Title").value = "Tiny File"
   >>> ctrl("Description").value = "A tiny file"
   >>> ctrl("File").add_file('tiny', 'text/plain', 'tiny.txt')
   >>> ctrl("save").click()
   >>> "Successfully added item" in browser.contents
   True
-  >>> browser.url == testing.BASE_URL + '/tiny-file/'
-  True
+  >>> print browser.url
+  http://localhost:6543/tiny.txt/
 
 Add a file larger than maximum file size
 ----------------------------------------
