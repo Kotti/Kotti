@@ -12,8 +12,8 @@
         i18n:domain="Kotti"
         tal:define="tags [i for i in context.tags]"
         tal:condition="len(tags) > 1">
-      <span>Tagged with:</span>
-      <tal:repeat tal:repeat="tag tags">
+     <span tal:omit-tag="" i18n:translate="">Tagged with:</span>
+     <tal:repeat tal:repeat="tag tags">
         <li tal:define="first repeat.tag.start; last repeat.tag.end"
             class="${last and 'active' or None}">
     
