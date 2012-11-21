@@ -413,7 +413,7 @@ def search_content_for_tags(tags, request=None):
         filter_clauses.append(Tag.title == tag)
 
     results = DBSession.query(Content).join(TagsToContents).join(Tag).filter(
-                 or_(*filter_clauses)).all()
+                 *filter_clauses).all()
 
     result_dicts = []
 
