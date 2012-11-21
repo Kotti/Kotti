@@ -391,8 +391,10 @@ def default_search_content(search_term, request=None):
         and_(Document.body.like(searchstring),
              not_(generic_filter)))
 
-    all_results = [c for c in generic_results.all()] \
+    all_results = list(set(
+          [c for c in generic_results.all()] \
         + [c for c in document_results.all()]
+        + results_for_tags(search_term.split())))
 
     result_dicts = []
 
@@ -403,21 +405,21 @@ def default_search_content(search_term, request=None):
                 title=result.title,
                 description=result.description,
                 path=request.resource_path(result)))
+
     return result_dicts
+
+
+def results_for_tags(tags):
+
+    return DBSession.query(Content).join(TagsToContents).join(Tag).filter(
+                 or_(*[Tag.title == tag for tag in tags])).all()
 
 
 def search_content_for_tags(tags, request=None):
 
-    filter_clauses = []
-    for tag in tags:
-        filter_clauses.append(Tag.title == tag)
-
-    results = DBSession.query(Content).join(TagsToContents).join(Tag).filter(
-                 or_(*filter_clauses)).all()
-
     result_dicts = []
 
-    for result in results:
+    for result in results_for_tags(tags):
         if has_permission('view', result, request):
             result_dicts.append(dict(
                 name=result.name,
