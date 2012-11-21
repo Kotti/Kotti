@@ -23,7 +23,7 @@
           <span class="divider">,</span>
         </li>
       </tal:repeat>
-      <a href="${api.url(api.root)}@@search-results-for-tags?tag_terms=${';'.join(tags)}">[All]
+      <a href="${api.url(api.root)}@@search-results-for-tags?tag_terms=${','.join(tags)}">[All]
       </a>
     </ul>
 

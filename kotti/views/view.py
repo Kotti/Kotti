@@ -49,7 +49,7 @@ def search_results(context, request):
 def search_results_for_tags(context, request):
     results = []
     if u'tag_terms' in request.GET:
-        tag_terms = [tt.strip() for tt in request.GET[u'tag_terms'].split(';')]
+        tag_terms = [tt.strip() for tt in request.GET[u'tag_terms'].split(',')]
         results = search_content_for_tags(tag_terms, request)
     return {'results': results}
 
