@@ -49,8 +49,10 @@ pygments_style = 'sphinx'
 
 # -- Options for HTML output ---------------------------------------------------
 
-html_theme_path = ['_themes']
-html_theme = 'sphinxtheme_bootstrap'
+import kotti_docs_theme
+
+html_theme_path = [kotti_docs_theme.get_theme_dir()]
+html_theme = 'kotti_docs_theme'
 html_theme_options = {
     'github_user': 'Pylons',
     'github_repo': 'Kotti',

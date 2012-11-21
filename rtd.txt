@@ -1,2 +1,3 @@
+kotti_docs_theme
 repoze.sphinx.autointerface
 repoze.lru
