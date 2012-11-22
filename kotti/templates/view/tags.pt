@@ -14,5 +14,4 @@
       <span tal:condition="len(tags) > 1" class="divider">,</span>
     </li>
   </tal:repeat>
-  </a>
 </ul>
