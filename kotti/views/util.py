@@ -394,7 +394,7 @@ def default_search_content(search_term, request=None):
     all_results = list(set(
           [c for c in generic_results.all()] \
         + [c for c in document_results.all()]
-        + results_for_tags(search_term.split())))
+        + content_with_tags(search_term.split())))
 
     result_dicts = []
 
@@ -409,7 +409,7 @@ def default_search_content(search_term, request=None):
     return result_dicts
 
 
-def results_for_tags(tags):
+def content_with_tags(tags):
 
     return DBSession.query(Content).join(TagsToContents).join(Tag).filter(
                  or_(*[Tag.title == tag for tag in tags])).all()
@@ -419,7 +419,7 @@ def search_content_for_tags(tags, request=None):
 
     result_dicts = []
 
-    for result in results_for_tags(tags):
+    for result in content_with_tags(tags):
         if has_permission('view', result, request):
             result_dicts.append(dict(
                 name=result.name,

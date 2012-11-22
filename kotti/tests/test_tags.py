@@ -236,6 +236,7 @@ class TestTags:
         from kotti import DBSession
         from kotti.resources import get_root
         from kotti.resources import Tag, TagsToContents, Content
+        from kotti.views.util import content_with_tags
 
         ses = DBSession
         root = get_root()
@@ -255,6 +256,19 @@ class TestTags:
         result = ses.query(Content).join(TagsToContents).join(Tag).filter(
             Tag.title == u'third tag').all()
         assert [res.name for res in result] == [u'content_1', u'content_2']
+
+        # The same tests again, with contents_for_tags():
+        result = content_with_tags([u'first tag'])
+        assert [res.name for res in result] == [u'folder_1', u'content_2']
+        result = content_with_tags([u'second tag'])
+        assert [res.name for res in result] == [u'folder_1']
+        result = content_with_tags(u['third tag'])
+        assert [res.name for res in result] == [u'content_1', u'content_2']
+
+        # And with multiple tags:
+        result = content_with_tags([u'first tag', 'second tag', u'third tag'])
+        assert ([res.name for res in result] == 
+                    [u'folder_1', u'content_1', u'content_2'])
 
 
 class TestCommaSeparatedListWidget:
