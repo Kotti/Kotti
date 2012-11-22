@@ -24,6 +24,7 @@ Topics
     :maxdepth: 1
 
     developing/developer-manual
+    developing/security
     developing/configuration
     developing/testing
     developing/translations
