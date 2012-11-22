@@ -14,6 +14,5 @@
       <span tal:condition="len(tags) > 1" class="divider">,</span>
     </li>
   </tal:repeat>
-  <a tal:condition="len(tags) > 1" href="${api.url(api.root)}@@search-results-for-tags?tag_terms=${','.join(tags)}">[All]
   </a>
 </ul>
