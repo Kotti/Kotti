@@ -32,7 +32,8 @@ class TestSearch:
         assert results[0]['title'] == u'First Document'
         results = search_content(u'Document', request)
         # The frontpage contains 'Documentation' in its body!
-        assert len(results) == 5
+        print 'RESULTS', results
+        assert len(results) == 4
         assert results[1]['name'] == u'doc11'
         assert results[1]['title'] == u'Second Document'
         assert results[1]['path'] == '/doc1/doc11/'
