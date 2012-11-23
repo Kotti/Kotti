@@ -19,7 +19,7 @@ class TestSearch:
     def test_search_empty_content(self, db_session):
         from kotti.views.util import search_content
         request = DummyRequest()
-        results = search_content(request, u'teststring')
+        results = search_content(u'teststring', request)
         assert results == []
 
     def test_search_content(self, db_session):
