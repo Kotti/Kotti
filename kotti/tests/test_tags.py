@@ -262,7 +262,7 @@ class TestTags:
         assert [res.name for res in result] == [u'folder_1', u'content_2']
         result = content_with_tags([u'second tag'])
         assert [res.name for res in result] == [u'folder_1']
-        result = content_with_tags(u['third tag'])
+        result = content_with_tags([u'third tag'])
         assert [res.name for res in result] == [u'content_1', u'content_2']
 
         # And with multiple tags:
