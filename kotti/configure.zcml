@@ -1,5 +1,0 @@
-<configure xmlns="http://pylonshq.com/pyramid">
-  <include package="zope.browserresource" file="meta.zcml" />
-  <include package="zope.browserresource" />
-  <include package="plone.i18n" />
-</configure>
