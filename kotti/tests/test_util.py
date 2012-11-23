@@ -54,11 +54,21 @@ class TestLRUCache(TestRequestCache):
 
 
 class TestTitleToName:
+    def setUp(self):
+        from pyramid.threadlocal import get_current_registry
+        from kotti.url_normalizer import url_normalizer
+        r = get_current_registry()
+        settings = r.settings = {}
+        settings['kotti.url_normalizer'] = [url_normalizer]
+        settings['kotti.url_normalizer.map_non_ascii_characters'] = False
+
     def test_max_length(self):
+        self.setUp()
         from kotti.util import title_to_name
         assert len(title_to_name(u'a' * 50)) == 40
 
     def test_normal(self):
+        self.setUp()
         from kotti.util import title_to_name
         assert title_to_name(u'Foo Bar') == u'foo-bar'
 
