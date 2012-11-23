@@ -36,7 +36,7 @@ class TestSearch:
         assert results[1]['name'] == u'doc11'
         assert results[1]['title'] == u'Second Document'
         assert results[1]['path'] == '/doc1/doc11/'
-        assert results[-1]['path'] == '/'
+        assert results[1]['path'][-1] == '/'
 
         # Tag searching first splits the search term on blanks, then uses
         # kotti.views.util.content_with_tags(tags) to find content tagged by
