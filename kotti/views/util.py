@@ -392,7 +392,7 @@ def default_search_content(search_term, request=None):
              not_(generic_filter)))
 
     all_results = list(set(
-          [c for c in generic_results.all()] \
+          [c for c in generic_results.all()]
         + [c for c in document_results.all()]
         + content_with_tags(search_term.split())))
 
