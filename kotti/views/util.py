@@ -392,7 +392,7 @@ def default_search_content(search_term, request=None):
              not_(generic_filter)))
 
     all_results = list(set(
-          [c for c in generic_results.all()]
+        [c for c in generic_results.all()]
         + [c for c in document_results.all()]
         + content_with_tags(search_term.split())))
 
@@ -412,7 +412,7 @@ def default_search_content(search_term, request=None):
 def content_with_tags(tags):
 
     return DBSession.query(Content).join(TagsToContents).join(Tag).filter(
-                 or_(*[Tag.title == tag for tag in tags])).all()
+                or_(*[Tag.title == tag for tag in tags])).all()
 
 
 def search_content_for_tags(tags, request=None):

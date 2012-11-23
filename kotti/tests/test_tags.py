@@ -267,8 +267,9 @@ class TestTags:
 
         # And with multiple tags:
         result = content_with_tags([u'first tag', 'second tag', u'third tag'])
-        assert ([res.name for res in result] == 
-                    [u'folder_1', u'content_1', u'content_2'])
+        assert [res.name for res in result] == [u'folder_1',
+                                                u'content_1',
+                                                u'content_2']
 
 
 class TestCommaSeparatedListWidget:

@@ -56,7 +56,6 @@ class TestSearch:
         results = search_content(u'health', request)
         assert len(results) == 2
 
-
     def test_search_file_description(self, db_session):
         from kotti.views.util import search_content
         request = DummyRequest()
