@@ -259,17 +259,19 @@ class TestTags:
 
         # The same tests again, with contents_for_tags():
         result = content_with_tags([u'first tag'])
-        assert [res.name for res in result] == [u'folder_1', u'content_2']
+        assert sorted([res.name for res in result]) == sorted([u'folder_1',
+                                                               u'content_2'])
         result = content_with_tags([u'second tag'])
         assert [res.name for res in result] == [u'folder_1']
         result = content_with_tags([u'third tag'])
-        assert [res.name for res in result] == [u'content_1', u'content_2']
+        assert sorted([res.name for res in result]) == sorted([u'content_1',
+                                                               u'content_2'])
 
         # And with multiple tags:
         result = content_with_tags([u'first tag', 'second tag', u'third tag'])
-        assert [res.name for res in result] == [u'folder_1',
-                                                u'content_1',
-                                                u'content_2']
+        assert sorted([res.name for res in result]) == sorted([u'folder_1',
+                                                               u'content_1',
+                                                               u'content_2'])
 
 
 class TestCommaSeparatedListWidget:
