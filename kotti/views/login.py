@@ -33,6 +33,8 @@ from kotti.views.users import deferred_email_validator
 from kotti.views.users import name_pattern_validator
 from kotti.views.users import name_new_validator
 from kotti.views.users import UserAddFormView
+from kotti.events import ObjectEvent
+from kotti.events import notify
 
 
 def _find_user(login):
@@ -48,6 +50,14 @@ def _find_user(login):
         else:
             for p in principals.search(email=login):
                 return p
+
+
+class UserSelfRegistered(ObjectEvent):
+    """ This event is emitted just after user self registered. Intended use
+        is to allow addons to do some preparation for such user - create custom
+        contents, nodes etc.
+        Event handler object parameter is a Principal object
+    """
 
 
 class RegisterSchema(colander.Schema):
@@ -101,6 +111,8 @@ def register(context, request):
                 'password momentarily.'
                 )
             request.session.flash(success_msg, 'success')
+            name = appstruct['name']
+            notify(UserSelfRegistered(get_principals()[name], request))
             return HTTPFound(location=request.application_url)
 
     if rendered_form is None:

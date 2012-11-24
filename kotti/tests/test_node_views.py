@@ -80,6 +80,14 @@ class TestNodePaste:
 
 
 class TestNodeRename:
+    def setUp(self):
+        from pyramid.threadlocal import get_current_registry
+        from kotti.url_normalizer import url_normalizer
+        r = get_current_registry()
+        settings = r.settings = {}
+        settings['kotti.url_normalizer'] = [url_normalizer]
+        settings['kotti.url_normalizer.map_non_ascii_characters'] = False
+
     def test_rename_to_empty_name(self):
         from kotti import DBSession
         from kotti.resources import Node
@@ -101,7 +109,7 @@ class TestNodeRename:
         from kotti.resources import Node
         from kotti.resources import Document
         from kotti.views.edit.actions import NodeActions
-
+        self.setUp()
         root = DBSession.query(Node).get(1)
         root['child1'] = Document(title=u"Child 1")
         root['child2'] = Document(title=u"Child 2")
