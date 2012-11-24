@@ -391,13 +391,11 @@ def default_search_content(search_term, request=None):
         and_(Document.body.like(searchstring),
              not_(generic_filter)))
 
-    seen = generic_results.all()
+    all_results = generic_results.all()
+
     for results_set in [content_with_tags(search_term.split()),
                         document_results.all()]:
-        for c in results_set:
-            if not c in seen:
-                seen.append(c)
-    all_results = seen
+        [all_results.append(c) for c in results_set if not c in all_results]
 
     result_dicts = []
 

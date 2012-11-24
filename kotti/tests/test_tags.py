@@ -268,7 +268,7 @@ class TestTags:
                                                                u'content_2'])
 
         # And with multiple tags:
-        result = content_with_tags([u'first tag', 'second tag', u'third tag'])
+        result = content_with_tags([u'first tag', u'second tag', u'third tag'])
         assert sorted([res.name for res in result]) == sorted([u'folder_1',
                                                                u'content_1',
                                                                u'content_2'])
