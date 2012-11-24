@@ -14,6 +14,29 @@ def create_contents(root=None):
     return doc1, doc11, doc12, file1
 
 
+def create_contents_with_tags(root=None):
+    from kotti.resources import get_root
+    from kotti.resources import Content, File
+    if root is None:
+        root = get_root()
+
+    animals = root['animals'] = Content(title=u'Animals')
+    cat = root['animals']['cat'] = Content(title=u'Cat')
+    dog = root['animals']['dog'] = Content(title=u'Dog')
+    monkey = root['animals']['monkey'] = Content(title=u'Monkey')
+    gorilla = root['animals']['gorilla'] = Content(title=u'Gorilla')
+    monkey_file = root['animals']['monkey_file'] = File(title=u'Monkey File',
+        description=u'A Rhesus Macaque and a Green Monkey walk into a bar...')
+
+    root[u'animals'][u'cat'].tags = [u'Animals', u'Cat']
+    root[u'animals'][u'dog'].tags = [u'Animals', u'Dog']
+    root[u'animals'][u'monkey'].tags = [u'Animals', u'Monkey', u'Primate']
+    root[u'animals'][u'monkey_file'].tags = [u'Animals', u'Monkey', u'Primate']
+    root[u'animals'][u'gorilla'].tags = [u'Animals', u'Gorilla', u'Primate']
+
+    return animals, cat, dog, monkey, gorilla, monkey_file
+
+
 class TestSearch:
 
     def test_search_empty_content(self, db_session):
@@ -47,21 +70,35 @@ class TestSearch:
         # the single word terms resulting from the split. Tags with blanks in
         # them are not identified in the simple default treatment, so here we
         # use single-word tags in the same way that the default Search works.
-        root = get_root()
-        root[u'doc1'].tags = [u'animal', u'cat']
-        root[u'doc1'][u'doc11'].tags = [u'animal', u'dog']
-        root[u'doc1'][u'doc12'].tags = [u'animal', u'monkey', u'health']
-        root[u'doc1'][u'file1'].tags = [u'animal', u'monkey', u'health']
+        animals, cat, dog, \
+            monkey, gorilla, monkey_file = create_contents_with_tags()
+
         tags = DBSession.query(Tag).all()
-        assert len(tags) == 5
-        results = search_content(u'animal', request)
-        assert len(results) == 4
-        results = search_content(u'cat', request)
+        assert len(tags) == 6
+        results = search_content(u'Animals', request)
+        assert len(results) == 6
+        results = search_content(u'Cat', request)
         assert len(results) == 1
-        results = search_content(u'dog monkey health', request)
+        results = search_content(u'Dog Monkey Primate', request)
+        assert len(results) == 4
+        results = search_content(u'Primate', request)
         assert len(results) == 3
-        results = search_content(u'health', request)
-        assert len(results) == 2
+
+        # Tags were included in general search by modifying the pre-existing
+        # approach, wherein searching first worked on title and description,
+        # then on body, so that the search order became:
+        #
+        #     first on title + description
+        #         then on tags
+        #             then on body
+        #
+        # So we test here to assure search results come back in that order.
+        # Searching on 'Animals', we should find all 6 content items, and the
+        # first item should be the Animals folder, found with a title hit, and
+        # the other items were found via tags.
+        results = search_content(u'Animals', request)
+        assert len(results) == 6
+        assert results[0]['name'] == 'animals'
 
     def test_search_file_description(self, db_session):
         from kotti.views.util import search_content

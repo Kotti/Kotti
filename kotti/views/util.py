@@ -382,7 +382,7 @@ def default_search_content(search_term, request=None):
                          Content.title.like(searchstring),
                          Content.description.like(searchstring))
 
-    generic_results = DBSession.query(Content).filter(generic_filter)
+    generic_results = DBSession.query(Content).filter(generic_filter).all()
 
     # specific result contain objects matching additional criteria
     # but must not match the generic criteria (because these objects
@@ -391,7 +391,7 @@ def default_search_content(search_term, request=None):
         and_(Document.body.like(searchstring),
              not_(generic_filter)))
 
-    all_results = generic_results.all()
+    all_results = generic_results
 
     for results_set in [content_with_tags(search_term.split()),
                         document_results.all()]:
