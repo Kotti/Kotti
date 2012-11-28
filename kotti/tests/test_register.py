@@ -98,3 +98,9 @@ class TestRegister:
                 'email': u'test@example.com',
                 })])
         assert(isinstance(res, HTTPFound))
+
+
+class TestNotRegister:
+    def test_it(self, app):
+        res = app.post('/register', status=404)
+        assert res.status == '404 Not Found'
