@@ -30,7 +30,7 @@ install_requires = [
     'js.jquery_timepicker_addon',
     'js.jqueryui>=1.8.24',
     'js.jqueryui_tagit',
-    'kotti_tinymce>=0.3.1',
+    'kotti_tinymce>=0.3.2',
     'lingua>=1.3',
     'Pillow',  # dependency of plone.scale
     'plone.scale',  # needed for image resizing capabilities
