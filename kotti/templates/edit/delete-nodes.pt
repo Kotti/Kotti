@@ -31,7 +31,7 @@
                   <td><input name="children-to-delete" type="checkbox" value="${item.id}" checked="checked" /></td>
                   <td><a href="${url}">${item.title}</a></td>
                   <td>${item.type_info.title}</td>
-                  <td>${states[item.state]['title']}</td>
+                  <td>${item.state in states and states[item.state]['title']}</td>
                   <td>${api.format_date(item.creation_date)}</td>
                   <td>${api.format_date(item.modification_date)}</td>
                 </tal:block>
