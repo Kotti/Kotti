@@ -144,16 +144,19 @@ class TestNodeDelete(UnitTestBase):
         from kotti import DBSession
         from kotti.resources import Node
         from kotti.resources import Document
+        from kotti.resources import File
         from kotti.views.edit.actions import NodeActions
 
         root = DBSession.query(Node).get(1)
         root['child1'] = Document(title=u"Child 1")
         root['child2'] = Document(title=u"Child 2")
+        root['file1'] = File(title=u"File 1")
 
         request = DummyRequest()
         request.POST = MultiDict()
         id1 = str(root['child1'].id)
         id2 = str(root['child2'].id)
+        id3 = str(root['file1'].id)
         request.POST.add('delete_nodes', u'delete_nodes')
         NodeActions(root, request).delete_nodes()
         assert request.session.pop_flash('info') ==\
@@ -161,9 +164,10 @@ class TestNodeDelete(UnitTestBase):
 
         request.POST.add('children-to-delete', id1)
         request.POST.add('children-to-delete', id2)
+        request.POST.add('children-to-delete', id3)
         NodeActions(root, request).delete_nodes()
         assert request.session.pop_flash('success') ==\
-            [u'${title} deleted.', u'${title} deleted.']
+            [u'${title} deleted.', u'${title} deleted.', u'${title} deleted.']
 
 
 class TestNodeMove:

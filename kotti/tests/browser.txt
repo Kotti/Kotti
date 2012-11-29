@@ -491,8 +491,13 @@ Contents view actions
   >>> 'Hello Bob' in browser.contents
   True
 
+  >>> browser.getLink('File').click()
+  >>> ctrl('Description').value = 'A file'
+  >>> ctrl('File').add_file('something', 'text/plain', 'some.txt')
+  >>> ctrl('save').click()
+  >>> browser.open(testing.BASE_URL + '/forth-child/@@contents')
   >>> childs = ctrl(name='children')
-  >>> childs.value = childs.options[0:2]
+  >>> childs.value = childs.options[0:3]
   >>> ctrl(name='delete_nodes').click()
   >>> ctrl(name='cancel').click()
   >>> u'No changes made.' in browser.contents
@@ -501,16 +506,18 @@ Contents view actions
   True
 
   >>> childs = ctrl(name='children')
-  >>> childs.value = childs.options[0:2]
+  >>> childs.value = childs.options[0:3]
   >>> ctrl(name='delete_nodes').click()
   >>> "Are you sure" in browser.contents
   True
 
-  >>> ctrl(name='children-to-delete').value = childs.options[0:2]
+  >>> ctrl(name='children-to-delete').value = childs.options[0:3]
   >>> ctrl(name='delete_nodes').click()
   >>> "child, the third deleted." in browser.contents
   True
   >>> "Hello Bob deleted." in browser.contents
+  True
+  >>> "some.txt deleted." in browser.contents
   True
 
 Contents view change state actions
