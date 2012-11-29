@@ -48,7 +48,6 @@ install_requires = [
     'transaction>=1.1.0',
     'unidecode',
     'waitress',
-    'zope.browserresource',
     'zope.deprecation',
     'zope.sqlalchemy',
     ]
@@ -58,7 +57,7 @@ tests_require = [
     'mock',
     'pytest',
     'pytest-cov',
-    'pytest-pep8',
+    'pytest-pep8==1.0.2',
     'pytest-xdist',
     'wsgi_intercept',
     'zope.testbrowser',

@@ -8,6 +8,7 @@ env:
   - KOTTI_TEST_DB_STRING=sqlite://
 install:
   - pip install -e . -r requirements.txt
+  - python setup.py dev
   - pip install psycopg2 oursql
 before_script:
   - psql -c 'create database kotti_testing;' -U postgres
