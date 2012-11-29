@@ -21,7 +21,7 @@ from pyramid.security import forget
 from pyramid.security import remember
 from pyramid.url import resource_url
 from pyramid.view import view_config
-from paste.deploy.converters import asbool
+from pyramid.settings import asbool
 
 from kotti import get_settings
 from kotti.message import email_set_password
@@ -76,7 +76,9 @@ class RegisterSchema(colander.Schema):
     )
 
 
-@view_config(name='register', renderer='kotti:templates/edit/simpleform.pt')
+@view_config(name='register', renderer='kotti:templates/edit/simpleform.pt',
+    custom_predicates=(lambda info, request:
+        asbool(request.registry.settings['kotti.register']),))
 def register(context, request):
     schema = RegisterSchema().bind(request=request)
     form = Form(schema, buttons=(Button('register', _(u'Register')),))
