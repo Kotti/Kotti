@@ -4,6 +4,13 @@ Change History
 0.8 - Unreleased
 ----------------
 
+- Remove test related dependencies on requirements.txt.
+  So now we need to run `python setup.py dev` to get testing
+  dependencies.
+
+- Update packages versions on requirements.txt for latest working
+  versions.
+
 0.8a1 - 2012-11-13
 ------------------
 
