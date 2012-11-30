@@ -264,9 +264,9 @@ class TestTags:
         #         In the first set of tests below, where we search by single
         #         tags, the query in the content_with_tags() function returns 
         #         results in hierarchical order, from root. However, the call
-        #         with multiple tags will return results in n order that
-        #         is probably not accidental, but is within the realm of
-        #         sqlalchemy internals, so we sort before making the check.
+        #         with multiple tags will return results in an order that
+        #         depends on sqlalchemy internals, so we sort before making
+        #         the list comparison. Perhaps this can be refined.
         #
         # With single tags:
         result = content_with_tags([u'first tag'])
