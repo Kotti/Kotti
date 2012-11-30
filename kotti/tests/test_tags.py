@@ -262,7 +262,7 @@ class TestTags:
         #     About expected sort order:
         #
         #         In the first set of tests below, where we search by single
-        #         tags, the query in the content_with_tags() function returns 
+        #         tags, the query in the content_with_tags() function returns
         #         results in hierarchical order, from root. However, the call
         #         with multiple tags will return results in an order that
         #         depends on sqlalchemy internals, so we sort before making
