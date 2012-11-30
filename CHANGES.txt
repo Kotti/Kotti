@@ -15,7 +15,7 @@ Change History
   where they show up as a horizontal list between description and body.
 
 - Modified general search to include simple tags searching, so that it
-  now gets results in order of hits on title and desciption, followed
+  now gets results in order of hits on title and description, followed
   by hits on tags (single word tags only), followed by hits on body content.
 
 0.8a1 - 2012-11-13
