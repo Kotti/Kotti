@@ -382,7 +382,7 @@ def default_search_content(search_term, request=None):
                          Content.title.like(searchstring),
                          Content.description.like(searchstring))
 
-    generic_results = DBSession.query(Content).filter(generic_filter)
+    generic_results = DBSession.query(Content).filter(generic_filter).all()
 
     # specific result contain objects matching additional criteria
     # but must not match the generic criteria (because these objects
@@ -391,10 +391,11 @@ def default_search_content(search_term, request=None):
         and_(Document.body.like(searchstring),
              not_(generic_filter)))
 
-    all_results = list(set(
-        [c for c in generic_results.all()]
-        + [c for c in document_results.all()]
-        + content_with_tags(search_term.split())))
+    all_results = generic_results
+
+    for results_set in [content_with_tags(search_term.split()),
+                        document_results.all()]:
+        [all_results.append(c) for c in results_set if not c in all_results]
 
     result_dicts = []
 
@@ -412,7 +413,7 @@ def default_search_content(search_term, request=None):
 def content_with_tags(tags):
 
     return DBSession.query(Content).join(TagsToContents).join(Tag).filter(
-                or_(*[Tag.title == tag for tag in tags])).all()
+        or_(*[Tag.title == tag for tag in tags])).all()
 
 
 def search_content_for_tags(tags, request=None):

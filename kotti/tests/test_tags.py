@@ -257,21 +257,32 @@ class TestTags:
             Tag.title == u'third tag').all()
         assert [res.name for res in result] == [u'content_1', u'content_2']
 
-        # The same tests again, with contents_for_tags():
+        # The same tests again, using contents_with_tags():
+        #
+        #     About expected sort order:
+        #
+        #         In the first set of tests below, where we search by single
+        #         tags, the query in the content_with_tags() function returns 
+        #         results in hierarchical order, from root. However, the call
+        #         with multiple tags will return results in n order that
+        #         is probably not accidental, but is within the realm of
+        #         sqlalchemy internals, so we sort before making the check.
+        #
+        # With single tags:
         result = content_with_tags([u'first tag'])
-        assert sorted([res.name for res in result]) == sorted([u'folder_1',
-                                                               u'content_2'])
+        assert [res.name for res in result] == [u'folder_1', u'content_2']
         result = content_with_tags([u'second tag'])
         assert [res.name for res in result] == [u'folder_1']
         result = content_with_tags([u'third tag'])
-        assert sorted([res.name for res in result]) == sorted([u'content_1',
-                                                               u'content_2'])
+        assert [res.name for res in result] == [u'content_1', u'content_2']
 
-        # And with multiple tags:
-        result = content_with_tags([u'first tag', 'second tag', u'third tag'])
+        # With multiple tags:
+        result = content_with_tags([u'first tag',
+                                    u'second tag',
+                                    u'third tag'])
         assert sorted([res.name for res in result]) == sorted([u'folder_1',
-                                                               u'content_1',
-                                                               u'content_2'])
+                                                               u'content_2',
+                                                               u'content_1'])
 
 
 class TestCommaSeparatedListWidget:

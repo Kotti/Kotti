@@ -11,6 +11,13 @@ Change History
 - Update packages versions on requirements.txt for latest working
   versions.
 
+- Added a tags display in views for documents, files, folders, and images,
+  where they show up as a horizontal list between description and body.
+
+- Modified general search to include simple tags searching, so that it
+  now gets results in order of hits on title and desciption, followed
+  by hits on tags (single word tags only), followed by hits on body content.
+
 0.8a1 - 2012-11-13
 ------------------
 
