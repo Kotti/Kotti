@@ -57,7 +57,7 @@ tests_require = [
     'mock',
     'pytest',
     'pytest-cov',
-    'pytest-pep8==1.0.2',
+    'pytest-pep8!=1.0.3',
     'pytest-xdist',
     'wsgi_intercept',
     'zope.testbrowser',
