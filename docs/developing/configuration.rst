@@ -68,6 +68,7 @@ kotti.authn_policy_factory    Component used for authentication
 kotti.authz_policy_factory    Component used for authorization
 kotti.session_factory         Component used for sessions
 kotti.caching_policy_chooser  Component for choosing the cache header policy
+kotti.url_normalizer          Component used for url normalization
 
 kotti.date_format             Date format to use, default: ``medium``
 kotti.datetime_format         Datetime format to use, default: ``medium``
@@ -316,6 +317,27 @@ configuration variable.  The default is:
 .. code-block:: ini
 
   kotti.caching_policy_chooser = kotti.views.cache.default_caching_policy_chooser
+
+Url normalization
+-----------------
+
+Kotti normalizes document titles to URLs by replacing language specific 
+characters like umlauts or accented characters with its ascii equivalents.
+You can change this default behavour by setting 
+``kotti.url_normalizer.map_non_ascii_characters`` configuration variable
+to ``False``. If you do, Kotti will leave national characters in URLs.
+
+You may also replace default component used for url normalization by setting
+``kotti.url_normalizer`` configuation variable.
+
+The default configuration here is:
+
+.. code-block:: ini
+  
+  kotti.url_normalzier = kotti.url_normalizer.url_normalizer
+  kotti.url_normalizer.map_non_ascii_characters = True
+
+
 
 Local navigation
 ----------------
