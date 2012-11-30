@@ -48,8 +48,7 @@ class TestSearch:
     def test_search_content(self, db_session):
         from kotti.views.util import search_content
         from kotti import DBSession
-        from kotti.resources import get_root
-        from kotti.resources import Tag, TagsToContents
+        from kotti.resources import Tag
 
         request = DummyRequest()
         doc1, doc11, doc12, file1 = create_contents()
