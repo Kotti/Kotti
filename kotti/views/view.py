@@ -43,7 +43,7 @@ def search_results(context, request):
     return {'results': results}
 
 
-@view_config(name='search-results-for-tags', permission='view',
+@view_config(name='search-tags', permission='view',
              renderer='kotti:templates/view/search-results.pt')
 def search_results_for_tags(context, request):
     results = []

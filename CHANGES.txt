@@ -16,7 +16,12 @@ Change History
 
 - Modified general search to include simple tags searching, so that it
   now gets results in order of hits on title and description, followed
-  by hits on tags (single word tags only), followed by hits on body content.
+  by hits on tags, followed by hits on body content. The default search
+  in Kotti works on a simple search term matching basis. Tags searching
+  is added here in the simplest fashion also, whereby the search term is
+  split on blanks, then tags are matched for single words only. More
+  sophisticated tags searching, just as for general search, is left to
+  dedicated add-ons. 
 
 0.8a1 - 2012-11-13
 ------------------
