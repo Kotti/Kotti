@@ -64,11 +64,6 @@ class TestSearch:
         assert results[1]['path'] == '/doc1/doc11/'
         assert results[1]['path'][-1] == '/'
 
-        # Tag searching first splits the search term on blanks, then uses
-        # kotti.views.util.content_with_tags(tags) to find content tagged by
-        # the single word terms resulting from the split. Tags with blanks in
-        # them are not identified in the simple default treatment, so here we
-        # use single-word tags in the same way that the default Search works.
         animals, cat, dog, \
             monkey, gorilla, monkey_file = create_contents_with_tags()
 
@@ -78,8 +73,6 @@ class TestSearch:
         assert len(results) == 6
         results = search_content(u'Cat', request)
         assert len(results) == 1
-        results = search_content(u'Dog Monkey Primate', request)
-        assert len(results) == 4
         results = search_content(u'Primate', request)
         assert len(results) == 3
 
@@ -95,6 +88,10 @@ class TestSearch:
         # Searching on 'Animals', we should find all 6 content items, and the
         # first item should be the Animals folder, found with a title hit, and
         # the other items were found via tags.
+        #
+        # Note: this ordering is done to have some method, but it does not
+        #       necessarily constitute a specification.
+        #
         results = search_content(u'Animals', request)
         assert len(results) == 6
         assert results[0]['name'] == 'animals'

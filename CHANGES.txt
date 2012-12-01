@@ -14,18 +14,14 @@ Change History
 - Added a tags display in views for documents, files, folders, and images,
   where they show up as a horizontal list between description and body.
 
-- Modified general search to include simple tags searching, so that it
-  now gets results in order of hits on title and description, followed
-  by hits on tags, followed by hits on body content. The default search
-  in Kotti works on a simple search term matching basis. Tags searching
-  is added here in a simple fashion also, but with a goal to provide a
-  default multiple tags search compromise. You can search on single tags
-  by clicking an individual tag in the tags display of an item, or you
-  can search on the single tag using the general search. To search for
-  items matching multiple tags, tags may be entered in the general search
-  field, but here is the compromise: multiple tags searching works only for
-  single-word tags. More sophisticated tags searching, just as for general
-  search, is left to dedicated add-ons. 
+- Modified general search to include simple tags searching. The default
+  search in Kotti works on a simple search term matching basis. Tags
+  searching is added here in a simple fashion also, such that you can only
+  search for one tag at a time, but partial matches work: searching for 'foo'
+  finds content tagged 'foo bar'.  You can also search on single tags by
+  clicking an individual tag in the tags display of an item. More
+  sophisticated tags searching, just as for general search, is left to
+  dedicated add-ons.
 
 0.8a1 - 2012-11-13
 ------------------

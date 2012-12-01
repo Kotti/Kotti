@@ -263,26 +263,19 @@ class TestTags:
         #
         #         In the first set of tests below, where we search by single
         #         tags, the query in the content_with_tags() function returns
-        #         results in hierarchical order, from root. However, the call
-        #         with multiple tags will return results in an order that
-        #         depends on sqlalchemy internals, so we sort before making
-        #         the list comparison. Perhaps this can be refined.
+        #         results in hierarchical order, from root.
         #
-        # With single tags:
+        # content_with_tags() is written to take a list of tags, but in the
+        # default Kotti, presently, after some consideration about specialized
+        # add-ons for searching, we do not support multiple tags searching, in
+        # part to avoid establishing a specification.
+        #
         result = content_with_tags([u'first tag'])
         assert [res.name for res in result] == [u'folder_1', u'content_2']
         result = content_with_tags([u'second tag'])
         assert [res.name for res in result] == [u'folder_1']
         result = content_with_tags([u'third tag'])
         assert [res.name for res in result] == [u'content_1', u'content_2']
-
-        # With multiple tags:
-        result = content_with_tags([u'first tag',
-                                    u'second tag',
-                                    u'third tag'])
-        assert sorted([res.name for res in result]) == sorted([u'folder_1',
-                                                               u'content_2',
-                                                               u'content_1'])
 
 
 class TestCommaSeparatedListWidget:
