@@ -257,7 +257,7 @@ class TestTags:
             Tag.title == u'third tag').all()
         assert [res.name for res in result] == [u'content_1', u'content_2']
 
-        # The same tests again, using contents_with_tags():
+        # The same tests again, using content_with_tags():
         #
         #     About expected sort order:
         #

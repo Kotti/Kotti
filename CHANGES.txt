@@ -20,7 +20,8 @@ Change History
   in Kotti works on a simple search term matching basis. Tags searching
   is added here in a simple fashion also, but with a goal to provide a
   default multiple tags search compromise. You can search on single tags
-  by clicking an individual tag in the tags display of an item. To search for
+  by clicking an individual tag in the tags display of an item, or you
+  can search on the single tag using the general search. To search for
   items matching multiple tags, tags may be entered in the general search
   field, but here is the compromise: multiple tags searching works only for
   single-word tags. More sophisticated tags searching, just as for general

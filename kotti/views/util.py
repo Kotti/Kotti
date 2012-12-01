@@ -393,7 +393,13 @@ def default_search_content(search_term, request=None):
 
     all_results = generic_results
 
-    for results_set in [content_with_tags(search_term.split()),
+    # For tags searching use the full search term string, along with
+    # single-words split from the search term. This will allow at least some
+    # level of multiple tags matching, although it is limited to single-word
+    # tags. More sophisticated tags searching is left to add-ons.
+    tag_terms = [search_term] + search_term.split()
+
+    for results_set in [content_with_tags(tag_terms),
                         document_results.all()]:
         [all_results.append(c) for c in results_set if not c in all_results]
 
@@ -410,10 +416,10 @@ def default_search_content(search_term, request=None):
     return result_dicts
 
 
-def content_with_tags(tags):
+def content_with_tags(tag_terms):
 
     return DBSession.query(Content).join(TagsToContents).join(Tag).filter(
-        or_(*[Tag.title == tag for tag in tags])).all()
+        or_(*[Tag.title == tag_term for tag_term in tag_terms])).all()
 
 
 def search_content_for_tags(tags, request=None):
