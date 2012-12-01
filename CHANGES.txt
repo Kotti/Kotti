@@ -18,10 +18,13 @@ Change History
   now gets results in order of hits on title and description, followed
   by hits on tags, followed by hits on body content. The default search
   in Kotti works on a simple search term matching basis. Tags searching
-  is added here in the simplest fashion also, whereby the search term is
-  split on blanks, then tags are matched for single words only. More
-  sophisticated tags searching, just as for general search, is left to
-  dedicated add-ons. 
+  is added here in a simple fashion also, but with a goal to provide a
+  default multiple tags search compromise. You can search on single tags
+  by clicking an individual tag in the tags display of an item. To search for
+  items matching multiple tags, tags may be entered in the general search
+  field, but here is the compromise: multiple tags searching works only for
+  single-word tags. More sophisticated tags searching, just as for general
+  search, is left to dedicated add-ons. 
 
 0.8a1 - 2012-11-13
 ------------------
