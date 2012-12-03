@@ -43,13 +43,16 @@ def search_results(context, request):
     return {'results': results}
 
 
-@view_config(name='search-tags', permission='view',
+@view_config(name='search-tag', permission='view',
              renderer='kotti:templates/view/search-results.pt')
-def search_results_for_tags(context, request):
+def search_results_for_tag(context, request):
     results = []
-    if u'tag_terms' in request.GET:
-        tag_terms = [tt.strip() for tt in request.GET[u'tag_terms'].split(',')]
-        results = search_content_for_tags(tag_terms, request)
+    if u'tag' in request.GET:
+        # Single tag searching only, is allowed in default Kotti. Add-ons can
+        # utilize search_content_for_tags(tags) to enable multiple tags
+        # searching, but here it is called with a single tag.
+        tags = [request.GET[u'tag'].strip()]
+        results = search_content_for_tags(tags, request)
     return {'results': results}
 
 

@@ -382,7 +382,7 @@ def default_search_content(search_term, request=None):
                          Content.title.like(searchstring),
                          Content.description.like(searchstring))
 
-    generic_results = DBSession.query(Content).filter(generic_filter).all()
+    results = DBSession.query(Content).filter(generic_filter).all()
 
     # specific result contain objects matching additional criteria
     # but must not match the generic criteria (because these objects
@@ -391,15 +391,13 @@ def default_search_content(search_term, request=None):
         and_(Document.body.like(searchstring),
              not_(generic_filter)))
 
-    all_results = generic_results
-
     for results_set in [content_with_tags([searchstring]),
                         document_results.all()]:
-        [all_results.append(c) for c in results_set if not c in all_results]
+        [results.append(c) for c in results_set if not c in results]
 
     result_dicts = []
 
-    for result in all_results:
+    for result in results:
         if has_permission('view', result, request):
             result_dicts.append(dict(
                 name=result.name,
