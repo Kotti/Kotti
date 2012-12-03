@@ -7,10 +7,8 @@
   <tal:repeat tal:repeat="tag tags">
     <li tal:define="first repeat.tag.start; last repeat.tag.end"
         class="${last and 'active' or None}">
-      <span>
-        <a href="${api.url(api.root)}@@search-tag?tag=${tag}">${tag}
-        </a>
-      </span>
+      <a class="label" href="${api.url(api.root)}@@search-tag?tag=${tag}">${tag}
+      </a>
     </li>
   </tal:repeat>
 </ul>
