@@ -30,10 +30,9 @@ install_requires = [
     'js.jquery_timepicker_addon',
     'js.jqueryui>=1.8.24',
     'js.jqueryui_tagit',
-    'kotti_tinymce>=0.3.1',
+    'kotti_tinymce>=0.3.2',
     'lingua>=1.3',
     'Pillow',  # dependency of plone.scale
-    'plone.i18n<2.0',  # >= 2.0 adds a huge number of dependencies
     'plone.scale',  # needed for image resizing capabilities
     'py-bcrypt',
     'pyramid>=1.3',  # needed for kotti_tinymce
@@ -47,8 +46,8 @@ install_requires = [
     'repoze.workflow',
     'sqlalchemy>=0.7.6',
     'transaction>=1.1.0',
+    'unidecode',
     'waitress',
-    'zope.browserresource',
     'zope.deprecation',
     'zope.sqlalchemy',
     ]
@@ -58,7 +57,7 @@ tests_require = [
     'mock',
     'pytest',
     'pytest-cov',
-    'pytest-pep8',
+    'pytest-pep8!=1.0.3',
     'pytest-xdist',
     'wsgi_intercept',
     'zope.testbrowser',

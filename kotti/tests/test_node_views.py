@@ -79,6 +79,14 @@ class TestNodePaste:
 
 
 class TestNodeRename:
+    def setUp(self):
+        from pyramid.threadlocal import get_current_registry
+        from kotti.url_normalizer import url_normalizer
+        r = get_current_registry()
+        settings = r.settings = {}
+        settings['kotti.url_normalizer'] = [url_normalizer]
+        settings['kotti.url_normalizer.map_non_ascii_characters'] = False
+
     def test_rename_to_empty_name(self):
         from kotti import DBSession
         from kotti.resources import Node
@@ -100,7 +108,7 @@ class TestNodeRename:
         from kotti.resources import Node
         from kotti.resources import Document
         from kotti.views.edit.actions import NodeActions
-
+        self.setUp()
         root = DBSession.query(Node).get(1)
         root['child1'] = Document(title=u"Child 1")
         root['child2'] = Document(title=u"Child 2")
@@ -135,16 +143,19 @@ class TestNodeDelete:
         from kotti import DBSession
         from kotti.resources import Node
         from kotti.resources import Document
+        from kotti.resources import File
         from kotti.views.edit.actions import NodeActions
 
         root = DBSession.query(Node).get(1)
         root['child1'] = Document(title=u"Child 1")
         root['child2'] = Document(title=u"Child 2")
+        root['file1'] = File(title=u"File 1")
 
         request = DummyRequest()
         request.POST = MultiDict()
         id1 = str(root['child1'].id)
         id2 = str(root['child2'].id)
+        id3 = str(root['file1'].id)
         request.POST.add('delete_nodes', u'delete_nodes')
         NodeActions(root, request).delete_nodes()
         assert request.session.pop_flash('info') ==\
@@ -152,9 +163,10 @@ class TestNodeDelete:
 
         request.POST.add('children-to-delete', id1)
         request.POST.add('children-to-delete', id2)
+        request.POST.add('children-to-delete', id3)
         NodeActions(root, request).delete_nodes()
         assert request.session.pop_flash('success') ==\
-            [u'${title} deleted.', u'${title} deleted.']
+            [u'${title} deleted.', u'${title} deleted.', u'${title} deleted.']
 
 
 class TestNodeMove:

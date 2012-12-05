@@ -49,13 +49,17 @@ pygments_style = 'sphinx'
 
 # -- Options for HTML output ---------------------------------------------------
 
-html_theme_path = ['_themes']
-html_theme = 'sphinx-bootstrap'
+import kotti_docs_theme
+
+html_theme_path = [kotti_docs_theme.get_theme_dir()]
+html_theme = 'kotti_docs_theme'
 html_theme_options = {
     'github_user': 'Pylons',
     'github_repo': 'Kotti',
     'twitter_username': 'KottiCMS',
     'home_url': 'http://kotti.pylonsproject.org/',
+    'mailing_list_url': 'http://groups.google.com/group/kotti',
+    'irc_channel_url': 'irc://irc.freenode.net/#kotti',
 }
 # The name for this set of Sphinx documents.  If None, it defaults to
 # "<project> v<release> documentation".

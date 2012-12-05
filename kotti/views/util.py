@@ -63,7 +63,7 @@ def add_renderer_globals(event):
 
 
 def is_root(context, request):
-    return context is TemplateAPI(context, request).root
+    return context is request.root
 
 
 def get_localizer_for_locale_name(locale_name):

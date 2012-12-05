@@ -21,7 +21,7 @@ from pyramid.security import forget
 from pyramid.security import remember
 from pyramid.url import resource_url
 from pyramid.view import view_config
-from paste.deploy.converters import asbool
+from pyramid.settings import asbool
 
 from kotti import get_settings
 from kotti.message import email_set_password
@@ -33,6 +33,8 @@ from kotti.views.users import deferred_email_validator
 from kotti.views.users import name_pattern_validator
 from kotti.views.users import name_new_validator
 from kotti.views.users import UserAddFormView
+from kotti.events import ObjectEvent
+from kotti.events import notify
 
 
 def _find_user(login):
@@ -48,6 +50,14 @@ def _find_user(login):
         else:
             for p in principals.search(email=login):
                 return p
+
+
+class UserSelfRegistered(ObjectEvent):
+    """ This event is emitted just after user self registered. Intended use
+        is to allow addons to do some preparation for such user - create custom
+        contents, nodes etc.
+        Event handler object parameter is a Principal object
+    """
 
 
 class RegisterSchema(colander.Schema):
@@ -66,7 +76,9 @@ class RegisterSchema(colander.Schema):
     )
 
 
-@view_config(name='register', renderer='kotti:templates/edit/simpleform.pt')
+@view_config(name='register', renderer='kotti:templates/edit/simpleform.pt',
+    custom_predicates=(lambda info, request:
+        asbool(request.registry.settings['kotti.register']),))
 def register(context, request):
     schema = RegisterSchema().bind(request=request)
     form = Form(schema, buttons=(Button('register', _(u'Register')),))
@@ -101,6 +113,8 @@ def register(context, request):
                 'password momentarily.'
                 )
             request.session.flash(success_msg, 'success')
+            name = appstruct['name']
+            notify(UserSelfRegistered(get_principals()[name], request))
             return HTTPFound(location=request.application_url)
 
     if rendered_form is None:
