@@ -30,8 +30,8 @@ def populate_users():
 
 def populate():
     """
-    Create the root node (Document) and the 'about' subnode in the nodes tree
-    if there are no nodes yet.
+    Create the root node (:class:`~kotti.resources.Document`) and the 'about'
+    subnode in the nodes tree if there are no nodes yet.
     """
 
     if DBSession.query(Node).count() == 0:

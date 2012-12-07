@@ -116,8 +116,9 @@ inheritance_node_attrs = dict(height=0.7, margin='0.06, 0.03')
 
 # -- Options for Intersphinx ---------------------------------------------------
 intersphinx_mapping = {
-    'colander': ('http://python.readthedocs.org/en/latest/', None),
+    'colander': ('http://colander.readthedocs.org/en/latest/', None),
     'deform': ('http://deform.readthedocs.org/en/latest/', None),
+    'fanstatic': ('http://www.fanstatic.org/en/latest/', None),
     'pyramid': ('http://pyramid.readthedocs.org/en/latest/', None),
     'sqlalchemy': ('http://sqlalchemy.readthedocs.org/en/latest/', None),
 }

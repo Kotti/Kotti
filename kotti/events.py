@@ -8,16 +8,16 @@ To subscribe to any event, write::
       print event
   kotti.events.listeners[object].append(all_events_handler)
 
-To subscribe only to *ObjectInsert* events of *Document* types,
-write::
+To subscribe only to :class:`~kotti.events.ObjectInsert` events of
+:class:`~kotti.resources.Document` types, write::
 
   def document_insert_handler(event):
       print event.object, event.request
   kotti.events.objectevent_listeners[(ObjectInsert, Document)].append(
       document_insert_handler)
 
-Events of type ``ObjectEvent`` have ``object`` and ``request``
-attributes.  ``event.request`` may be ``None`` when no request is
+Events of type :class:`~kotti.events.ObjectEvent` have ``object`` and
+``request`` attributes.  ``event.request`` may be ``None`` when no request is
 available.
 
 Notifying listeners of an event is as simple as calling the
