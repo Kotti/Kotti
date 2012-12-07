@@ -88,10 +88,10 @@ htmlhelp_basename = 'Kottidoc'
 
 #latex_paper_size = 'a4'
 #latex_font_size = '10pt'
-latex_documents = [
-  ('index', 'Kotti.tex', u'Kotti Documentation',
-   u'Daniel Nouri', 'manual'),
-]
+#latex_documents = [
+#  ('index', 'Kotti.tex', u'Kotti Documentation',
+#   u'Daniel Nouri', 'manual'),
+#]
 #latex_logo = None
 #latex_use_parts = False
 #latex_show_pagerefs = False
@@ -105,9 +105,9 @@ latex_documents = [
 
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
-man_pages = [
-    ('index', 'kotti', u'Kotti Documentation', [u'Daniel Nouri'], 1)
-]
+#man_pages = [
+#    ('index', 'kotti', u'Kotti Documentation', [u'Daniel Nouri'], 1)
+#]
 
 # -- Options for inheritance diagrams ------------------------------------------
 inheritance_graph_attrs = dict(rankdir='TB', nodesep=0.1,

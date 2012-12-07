@@ -613,10 +613,29 @@ class Image(File):
 
 
 def get_root(request=None):
+    """Call the function defined by the ``kotti.root_factory`` setting and
+       return its result.
+
+    :param request: current request (optional)
+    :type request: :class:`pyramid.request.Request`
+
+    :result: a node in the node tree
+    :rtype: :class:`~kotti.resources.Node` or descendant;
+    """
     return get_settings()['kotti.root_factory'][0](request)
 
 
 def default_get_root(request=None):
+    """Default implementation for :function:`~kotti.resources.get_root`.
+
+    :param request: Current request (optional)
+    :type request: :class:`pyramid.request.Request`
+
+    :result: Node in the object tree that has no parent.
+    :rtype: :class:`~kotti.resources.Node` or descendant; in a fresh Kotti site
+            with Kotti's :function:`default populator <kotti.populate.populate>`
+            this will be an instance of :class:`~kotti.resources.Document`.
+    """
     return DBSession.query(Node).filter(Node.parent_id == None).one()
 
 
