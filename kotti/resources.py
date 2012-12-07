@@ -391,16 +391,16 @@ class TagsToContents(Base):
     #: Foreign key referencing :attribute:`Content.id`
     #: (:class:`sqlalchemy.types.Integer`)
     content_id = Column(Integer, ForeignKey('contents.id'), primary_key=True)
-    #: Relation that adds a ``content_tags`` :class:`sqlalchemy.orm.backref` to
-    #: :class:`~kotti.resources.Tag` instances to allow easy access to all
+    #: Relation that adds a ``content_tags`` :function:`sqlalchemy.orm.backref`
+    #: to :class:`~kotti.resources.Tag` instances to allow easy access to all
     #: content tagged with that tag.
-    #: (:class:`sqlalchemy.orm.relation`)
+    #: (:function:`sqlalchemy.orm.relationship`)
     tag = relation(Tag, backref=backref('content_tags', cascade='all'))
     #: Ordering position of the tag
     #: :class:`sqlalchemy.types.Integer`
     position = Column(Integer, nullable=False)
     #: title of the associated :class:`~kotti.resources.Tag` instance
-    #: (:class:`sqlalchemy.ext.association_proxy`)
+    #: (:function:`sqlalchemy.ext.associationproxy.association_proxy`)
     title = association_proxy('tag', 'title')
 
     @classmethod
