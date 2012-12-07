@@ -385,22 +385,22 @@ class TagsToContents(Base):
 
     __tablename__ = 'tags_to_contents'
 
-    #: Foreign key referencing :attribute:`Tag.id`
+    #: Foreign key referencing :attr:`Tag.id`
     #: (:class:`sqlalchemy.types.Integer`)
     tag_id = Column(Integer, ForeignKey('tags.id'), primary_key=True)
-    #: Foreign key referencing :attribute:`Content.id`
+    #: Foreign key referencing :attr:`Content.id`
     #: (:class:`sqlalchemy.types.Integer`)
     content_id = Column(Integer, ForeignKey('contents.id'), primary_key=True)
-    #: Relation that adds a ``content_tags`` :function:`sqlalchemy.orm.backref`
+    #: Relation that adds a ``content_tags`` :func:`sqlalchemy.orm.backref`
     #: to :class:`~kotti.resources.Tag` instances to allow easy access to all
     #: content tagged with that tag.
-    #: (:function:`sqlalchemy.orm.relationship`)
+    #: (:func:`sqlalchemy.orm.relationship`)
     tag = relation(Tag, backref=backref('content_tags', cascade='all'))
     #: Ordering position of the tag
     #: :class:`sqlalchemy.types.Integer`
     position = Column(Integer, nullable=False)
     #: title of the associated :class:`~kotti.resources.Tag` instance
-    #: (:function:`sqlalchemy.ext.associationproxy.association_proxy`)
+    #: (:class:`sqlalchemy.ext.associationproxy.association_proxy`)
     title = association_proxy('tag', 'title')
 
     @classmethod
@@ -626,14 +626,14 @@ def get_root(request=None):
 
 
 def default_get_root(request=None):
-    """Default implementation for :function:`~kotti.resources.get_root`.
+    """Default implementation for :func:`~kotti.resources.get_root`.
 
     :param request: Current request (optional)
     :type request: :class:`pyramid.request.Request`
 
     :result: Node in the object tree that has no parent.
     :rtype: :class:`~kotti.resources.Node` or descendant; in a fresh Kotti site
-            with Kotti's :function:`default populator <kotti.populate.populate>`
+            with Kotti's :func:`default populator <kotti.populate.populate>`
             this will be an instance of :class:`~kotti.resources.Document`.
     """
     return DBSession.query(Node).filter(Node.parent_id == None).one()
