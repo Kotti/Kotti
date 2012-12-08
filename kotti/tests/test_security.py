@@ -6,29 +6,23 @@ from kotti.testing import DummyRequest
 
 
 class TestGroups:
-    def test_root_default(self, db_session):
-        from kotti.resources import get_root
+    def test_root_default(self, db_session, root):
         from kotti.security import list_groups
         from kotti.security import list_groups_raw
 
-        root = get_root()
         assert list_groups('admin', root) == ['role:admin']
         assert list_groups_raw(u'admin', root) == set([])
 
-    def test_empty(self, db_session):
-        from kotti.resources import get_root
+    def test_empty(self, db_session, root):
         from kotti.security import list_groups
 
-        root = get_root()
         assert list_groups('bob', root) == []
 
-    def test_simple(self, db_session):
-        from kotti.resources import get_root
+    def test_simple(self, db_session, root):
         from kotti.security import list_groups
         from kotti.security import list_groups_raw
         from kotti.security import set_groups
 
-        root = get_root()
         set_groups('bob', root, ['role:editor'])
         assert list_groups('bob', root) == ['role:editor']
         assert list_groups_raw(u'bob', root) == set(['role:editor'])
@@ -38,13 +32,12 @@ class TestGroups:
 
         assert list_groups_raw(u'bob', object()) == set()
 
-    def test_overwrite_and_delete(self, db_session):
+    def test_overwrite_and_delete(self, db_session, root):
         from kotti.resources import get_root
         from kotti.security import list_groups
         from kotti.security import list_groups_raw
         from kotti.security import set_groups
 
-        root = get_root()
         set_groups('bob', root, ['role:editor'])
         assert list_groups('bob', root) == ['role:editor']
         assert list_groups_raw(u'bob', root) == set(['role:editor'])
@@ -57,17 +50,14 @@ class TestGroups:
         assert list_groups('bob', root) == []
         assert get_root() is root
 
-    def test_inherit(self, db_session):
-        from kotti import DBSession
-        from kotti.resources import get_root
+    def test_inherit(self, db_session, root):
         from kotti.resources import Node
         from kotti.security import list_groups
         from kotti.security import list_groups_raw
         from kotti.security import set_groups
 
-        root = get_root()
         child = root[u'child'] = Node()
-        DBSession.flush()
+        db_session.flush()
 
         assert list_groups('bob', child) == []
         set_groups('bob', root, ['role:editor'])
@@ -84,16 +74,13 @@ class TestGroups:
         assert list_groups_raw(u'bob', child) == set(['group:somegroup'])
 
     @staticmethod
-    def add_some_groups():
-        from kotti import DBSession
-        from kotti.resources import get_root
+    def add_some_groups(db_session, root):
         from kotti.resources import Node
         from kotti.security import set_groups
 
-        root = get_root()
         child = root[u'child'] = Node()
         grandchild = child[u'grandchild'] = Node()
-        DBSession.flush()
+        db_session.flush()
 
         # root:
         #   bob               -> group:bobsgroup
@@ -121,13 +108,11 @@ class TestGroups:
         set_groups('group:franksgroup', grandchild,
                    ['role:owner', 'group:bobsgroup'])
 
-    def test_nested_groups(self, db_session):
-        from kotti.resources import get_root
+    def test_nested_groups(self, db_session, root):
         from kotti.security import list_groups
         from kotti.security import list_groups_ext
 
-        self.add_some_groups()
-        root = get_root()
+        self.add_some_groups(db_session, root)
         child = root[u'child']
         grandchild = child[u'grandchild']
 
@@ -169,17 +154,14 @@ class TestGroups:
             set(['group:bobsgroup', 'role:owner', 'role:editor']))
         assert inherited == ['role:editor']
 
-    def test_works_with_auth(self, db_session):
-        from kotti import DBSession
-        from kotti.resources import get_root
+    def test_works_with_auth(self, db_session, root):
         from kotti.resources import Node
         from kotti.security import get_principals
         from kotti.security import list_groups_callback
         from kotti.security import set_groups
 
-        root = get_root()
         child = root[u'child'] = Node()
-        DBSession.flush()
+        db_session.flush()
 
         request = DummyRequest()
         auth = CallbackAuthenticationPolicy()
@@ -247,17 +229,14 @@ class TestGroups:
         assert list_groups_callback(u'bob', request) == []
         assert list_groups_callback(u'group:bobsgroup', request) is None
 
-    def test_principals_with_local_roles(self, db_session):
-        from kotti import DBSession
-        from kotti.resources import get_root
+    def test_principals_with_local_roles(self, db_session, root):
         from kotti.resources import Node
         from kotti.security import map_principals_with_local_roles
         from kotti.security import principals_with_local_roles
         from kotti.security import set_groups
 
-        root = get_root()
         child = root[u'child'] = Node()
-        DBSession.flush()
+        db_session.flush()
 
         assert principals_with_local_roles(root) == []
         assert principals_with_local_roles(child) == []
@@ -281,14 +260,11 @@ class TestGroups:
             set(['bob', 'group:franksgroup'])
             )
 
-    def test_copy_local_groups(self, db_session):
-        from kotti import DBSession
-        from kotti.resources import get_root
+    def test_copy_local_groups(self, db_session, root):
         from kotti.security import principals_with_local_roles
         from kotti.security import set_groups
 
-        self.test_principals_with_local_roles(db_session)
-        root = get_root()
+        self.test_principals_with_local_roles(db_session, root)
         child = root[u'child']
         assert (
             set(principals_with_local_roles(child)) ==
@@ -298,7 +274,7 @@ class TestGroups:
         # We make a copy of 'child', and we expect the local roles set
         # on 'child' to not be copied over:
         child2 = root['child2'] = child.copy()
-        DBSession.flush()
+        db_session.flush()
         assert (
             set(principals_with_local_roles(child2)) ==
             set([u'bob', u'group:franksgroup']))
@@ -310,13 +286,11 @@ class TestGroups:
         assert len(principals_with_local_roles(child)) == 2
         assert len(principals_with_local_roles(child2)) == 2
 
-    def test_map_principals_with_local_roles(self, db_session):
-        from kotti.resources import get_root
+    def test_map_principals_with_local_roles(self, db_session, root):
         from kotti.security import get_principals
         from kotti.security import map_principals_with_local_roles
 
-        self.test_principals_with_local_roles(db_session)
-        root = get_root()
+        self.test_principals_with_local_roles(db_session, root)
         child = root[u'child']
         P = get_principals()
 
@@ -341,26 +315,23 @@ class TestGroups:
         assert bobsgroup_all == ['role:editor']
         assert bobsgroup_inherited == []
 
-    def test_local_roles_db_cascade(self, db_session):
-        from kotti import DBSession
-        from kotti.resources import get_root
+    def test_local_roles_db_cascade(self, db_session, root):
         from kotti.resources import LocalGroup
         from kotti.resources import Node
         from kotti.security import set_groups
 
-        root = get_root()
         child = root[u'child'] = Node()
-        DBSession.flush()
+        db_session.flush()
 
         # We set a local group on child and delete child.  We then
         # expect the LocalGroup entry to have been deleted from the
         # database:
-        assert DBSession.query(LocalGroup).count() == 0
+        assert db_session.query(LocalGroup).count() == 0
         set_groups('group:bobsgroup', child, ['role:editor'])
-        assert DBSession.query(LocalGroup).count() == 1
+        assert db_session.query(LocalGroup).count() == 1
         del root[u'child']
-        DBSession.flush()
-        assert DBSession.query(LocalGroup).count() == 0
+        db_session.flush()
+        assert db_session.query(LocalGroup).count() == 0
 
 
 class TestPrincipals:
@@ -387,9 +358,10 @@ class TestPrincipals:
     def test_hash_password_non_ascii(self, db_session):
         self.get_principals().hash_password(u'\xd6TEst')
 
-    def test_default_admin(self, db_session, cleanup):
+    def test_default_admin(self, db_session):
         admin = self.get_principals()[u'admin']
-        assert self.get_principals().validate_password(u'secret', admin.password)
+        assert self.get_principals().validate_password(
+            u'secret', admin.password)
         assert admin.groups == [u'role:admin']
 
     def test_users_empty(self, db_session):
@@ -426,17 +398,14 @@ class TestPrincipals:
             users.search(name=u"bob", foo=u"bar")
         assert list(users.search()) == []
 
-    def test_groups_from_users(self, db_session):
-        from kotti import DBSession
-        from kotti.resources import get_root
+    def test_groups_from_users(self, db_session, root):
         from kotti.resources import Node
         from kotti.security import list_groups
         from kotti.security import set_groups
 
         self.make_bob()
-        root = get_root()
         child = root[u'child'] = Node()
-        DBSession.flush()
+        db_session.flush()
 
         assert list_groups('bob', root) == ['group:bobsgroup']
 
@@ -471,7 +440,8 @@ class TestPrincipals:
         # When we set the 'password' attribute directly, we have to do
         # the hashing ourselves.  This won't work:
         bob.password = u'anothersecret'
-        assert principals.validate_password(u"anothersecret", bob.password) is False
+        assert principals.validate_password(
+            u"anothersecret", bob.password) is False
 
         # This will:
         bob.password = principals.hash_password(u"anothersecret")
@@ -491,7 +461,8 @@ class TestPrincipals:
         request.params['reset-password'] = u'on'
         request.params['login'] = u'bob'
         request.params['password'] = u'secret'
-        with patch('kotti.views.login.email_set_password') as email_set_password:
+        with patch(
+            'kotti.views.login.email_set_password') as email_set_password:
             login(None, request)
         assert (request.session.pop_flash('success') == [
             u"You should receive an email with a link to reset your "
@@ -506,7 +477,8 @@ class TestPrincipals:
         request.params['reset-password'] = u'on'
         request.params['login'] = u'bob'
         request.params['password'] = u'secret'
-        with patch('kotti.views.login.email_set_password') as email_set_password:
+        with patch(
+            'kotti.views.login.email_set_password') as email_set_password:
             login(None, request)
         assert (request.session.pop_flash('error') ==
             [u"That username or email is not known to us."])

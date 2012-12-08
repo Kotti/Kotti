@@ -124,6 +124,14 @@ def extra_principals(db_session):
 @fixture
 def root(db_session):
     from kotti.resources import get_root
+    from kotti.security import get_principals
+
+    root = get_root()
+    db_session.delete(root)
+    admin = get_principals()['admin']
+    db_session.delete(admin)
+    for populate in settings()['kotti.populators']:
+        populate()
     return get_root()
 
 
@@ -136,18 +144,3 @@ def workflow(root):
     wf = get_workflow(root)
     if wf is not None:
         wf.transition_to_state(root, None, u'public')
-
-
-@fixture
-def cleanup():
-    # XXX helper, can hopefully be removed when scope for
-    # tests is fixed
-    from kotti import DBSession
-    from kotti.resources import get_root
-    from kotti.security import get_principals
-    root = get_root()
-    admin = get_principals()['admin']
-    DBSession.delete(root)
-    DBSession.delete(admin)
-    for populate in settings()['kotti.populators']:
-        populate()
