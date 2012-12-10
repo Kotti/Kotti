@@ -6,14 +6,11 @@ from kotti.testing import DummyRequest
 
 
 class TestAddableTypes:
-    def test_view_permitted_yes(self, config, db_session):
-        from kotti import DBSession
-        from kotti.resources import Node
+    def test_view_permitted_yes(self, config, db_session, root):
         from kotti.resources import Document
 
         config.testing_securitypolicy(permissive=True)
         config.include('kotti.views.edit.content')
-        root = DBSession.query(Node).get(1)
         request = DummyRequest()
         assert Document.type_info.addable(root, request) is True
 
@@ -55,12 +52,11 @@ class TestNodePaste:
             assert response.status == '302 Found'
             assert len(request.session['_f_error']) == index + 1
 
-    def test_paste_without_edit_permission(self, config, db_session):
-        from kotti import DBSession
-        from kotti.resources import Node
+    def test_paste_without_edit_permission(self, config, db_session, root):
+        from kotti.resources import get_root
         from kotti.views.edit.actions import NodeActions
 
-        root = DBSession.query(Node).get(1)
+        root = get_root()
         request = DummyRequest()
         request.params['paste'] = u'on'
         config.testing_securitypolicy(permissive=False)
@@ -87,13 +83,10 @@ class TestNodeRename:
         settings['kotti.url_normalizer'] = [url_normalizer]
         settings['kotti.url_normalizer.map_non_ascii_characters'] = False
 
-    def test_rename_to_empty_name(self):
-        from kotti import DBSession
-        from kotti.resources import Node
+    def test_rename_to_empty_name(self, db_session, root):
         from kotti.resources import Document
         from kotti.views.edit.actions import NodeActions
 
-        root = DBSession.query(Node).get(1)
         child = root['child'] = Document(title=u"Child")
         request = DummyRequest()
         request.params['rename'] = u'on'
@@ -103,13 +96,10 @@ class TestNodeRename:
         assert (request.session.pop_flash('error') ==
             [u'Name and title are required.'])
 
-    def test_multi_rename(self):
-        from kotti import DBSession
-        from kotti.resources import Node
+    def test_multi_rename(self, root):
         from kotti.resources import Document
         from kotti.views.edit.actions import NodeActions
         self.setUp()
-        root = DBSession.query(Node).get(1)
         root['child1'] = Document(title=u"Child 1")
         root['child2'] = Document(title=u"Child 2")
         request = DummyRequest()
@@ -139,14 +129,11 @@ class TestNodeRename:
 
 class TestNodeDelete:
 
-    def test_multi_delete(self, db_session):
-        from kotti import DBSession
-        from kotti.resources import Node
+    def test_multi_delete(self, db_session, root):
         from kotti.resources import Document
         from kotti.resources import File
         from kotti.views.edit.actions import NodeActions
 
-        root = DBSession.query(Node).get(1)
         root['child1'] = Document(title=u"Child 1")
         root['child2'] = Document(title=u"Child 2")
         root['file1'] = File(title=u"File 1")

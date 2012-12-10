@@ -38,17 +38,16 @@ def create_contents(root=None):
 
 class TestTemplateAPI:
     def make(self, context=None, request=None, id=1, **kwargs):
-        from kotti import DBSession
-        from kotti.resources import Node
+        from kotti.resources import get_root
         from kotti.views.util import TemplateAPI
 
         if context is None:
-            context = DBSession.query(Node).get(id)
+            context = get_root()
         if request is None:
             request = DummyRequest()
         return TemplateAPI(context, request, **kwargs)
 
-    def test_page_title(self, db_session):
+    def test_page_title(self, db_session, root):
         api = self.make()
         api.context.title = u"Hello, world!"
         assert api.page_title == u"Hello, world! - Hello, world!"
@@ -267,7 +266,7 @@ class TestTemplateAPI:
         api = self.make(request=request)
         assert api.slots.left == [u"Hello world!"]
 
-    def test_deprecated_slots(self):
+    def test_deprecated_slots(self, db_session):
         from kotti.views.slots import register, RenderAboveContent
 
         def render_something(context, request):
@@ -390,14 +389,14 @@ class TestTemplateAPI:
         assert api.get_type('Document') == Document
         assert api.get_type('NoExist') is None
 
-    def test_avatar_url(self):
+    def test_avatar_url(self, db_session):
         api = self.make()
         user = Dummy(email='daniel.nouri@gmail.com')
         result = api.avatar_url(user)
         assert result.startswith('https://secure.gravatar.com/avatar/'
                                 'd3aeefdd7afe103ab70875172135cab7')
 
-    def test_avatar_url_request_user(self):
+    def test_avatar_url_request_user(self, db_session):
         api = self.make()
         api.request.user = Dummy(email='daniel.nouri@gmail.com')
         result = api.avatar_url()

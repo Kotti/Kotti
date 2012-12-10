@@ -250,9 +250,9 @@ class TestApp:
             main({}, **settings)
         assert search_content(u"Nuno") == u"Not found. Sorry!"
 
-    def test_stamp_heads(self):
-        from kotti import main
+    def test_stamp_heads(self, db_session):
         from kotti import DBSession
+        from kotti import main
 
         settings = self.required_settings()
         main({}, **settings)
