@@ -70,7 +70,7 @@ Create a virtualenv in the new user's home directory::
 
 Install Kotti and its dependencies in the virtualenv::
 
-    sudo -u kotti /home/kotti/bin/pip install -r https://raw.github.com/Pylons/Kotti/0.8a1/requirements.txt
+    sudo -u kotti /home/kotti/bin/pip install -r https://raw.github.com/Kotti/Kotti/0.8a1/requirements.txt
     sudo -u kotti /home/kotti/bin/pip install Kotti==0.8a1
 
 Create an ini file in ``/home/kotti/kotti.ini``::

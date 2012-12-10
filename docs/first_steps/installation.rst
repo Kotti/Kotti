@@ -20,7 +20,7 @@ It is recommended to install Kotti inside a virtualenv:
 
   virtualenv mysite
   cd mysite
-  bin/pip install -r https://raw.github.com/Pylons/Kotti/0.7.2/requirements.txt
+  bin/pip install -r https://raw.github.com/Kotti/Kotti/0.7.2/requirements.txt
 
 Kotti uses `Paste Deploy`_ for configuration and deployment.  An
 example configuration file is included with Kotti's source
@@ -28,7 +28,7 @@ distribution.  Download it to your virtualenv directory (mysite):
 
 .. code-block:: bash
 
-  wget https://github.com/Pylons/Kotti/raw/master/app.ini
+  wget https://github.com/Kotti/Kotti/raw/master/app.ini
 
 To run Kotti using this example configuration file:
 

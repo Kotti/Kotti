@@ -17,8 +17,8 @@ notably Pyramid_ and SQLAlchemy_, Kotti introduces only a few concepts
 of its own, thus hopefully keeping the learning curve flat for the
 developer.
 
-.. |build status| image:: https://secure.travis-ci.org/Pylons/Kotti.png?branch=master
-.. _build status: http://travis-ci.org/Pylons/Kotti
+.. |build status| image:: https://secure.travis-ci.org/Kotti/Kotti.png?branch=master
+.. _build status: http://travis-ci.org/Kotti/Kotti
 .. _Pyramid: http://docs.pylonsproject.org/projects/pyramid/dev/
 .. _SQLAlchemy: http://www.sqlalchemy.org/
 
