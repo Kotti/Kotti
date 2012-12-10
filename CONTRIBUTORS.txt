@@ -89,3 +89,4 @@ Contributors
 - Wim Boucquaert, 2012/12/10
 - Jeff Pittman, 2012/12/10
 - Marco Scheidhuber, 2012/12/10
+- Nuno Teixeira, 2012/12/10
