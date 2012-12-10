@@ -85,3 +85,4 @@ Contributors
 ------------
 
 - Daniel Nouri, 2012/12/10
+- Andreas Kaiser, 2012/12/10
