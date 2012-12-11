@@ -101,10 +101,16 @@ class TestTemplateAPI:
             api.has_permission('drink')
             has_permission.assert_called_with('drink', api.root, api.request)
 
-    def test_edit_links(self, db_session):
+    def test_edit_links(self, config, db_session):
+        from kotti.views.edit import actions, content
+        from kotti.views import users
         from kotti.util import ViewLink
 
         api = self.make()
+        config.include(actions)
+        config.include(content)
+        config.include(users)
+
         assert (api.edit_links == [
             ViewLink('contents', u'Contents'),
             ViewLink('edit', u'Edit'),
