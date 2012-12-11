@@ -90,3 +90,4 @@ Contributors
 - Jeff Pittman, 2012/12/10
 - Marco Scheidhuber, 2012/12/10
 - Nuno Teixeira, 2012/12/10
+- Tetsuya Morimoto, 2012/12/11
