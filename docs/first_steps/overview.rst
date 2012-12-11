@@ -76,7 +76,7 @@ source code via its GitHub repository.  Use this command:
 
 .. code-block:: bash
 
-  git clone git@github.com:Pylons/Kotti
+  git clone git@github.com:Kotti/Kotti
 
 `Continuous testing`_ against different versions of Python and with
 *PostgreSQL*, *MySQL* and *SQLite* and a complete test coverage make
@@ -95,11 +95,11 @@ Support
 .. _repoze.workflow: http://docs.repoze.org/workflow/
 .. _Chameleon: http://chameleon.repoze.org/
 .. _Colander: http://docs.pylonsproject.org/projects/colander/en/latest/
-.. _continuous testing: http://travis-ci.org/Pylons/Kotti
+.. _continuous testing: http://travis-ci.org/Kotti/Kotti
 .. _Deform: http://docs.pylonsproject.org/projects/deform/en/latest/
-.. _developed on Github: https://github.com/Pylons/Kotti
-.. |build status| image:: https://secure.travis-ci.org/Pylons/Kotti.png?branch=master
-.. _build status: http://travis-ci.org/Pylons/Kotti
+.. _developed on Github: https://github.com/Kotti/Kotti
+.. |build status| image:: https://secure.travis-ci.org/Kotti/Kotti.png?branch=master
+.. _build status: http://travis-ci.org/Kotti/Kotti
 .. _installation:
 .. _other SQL databases: http://www.sqlalchemy.org/docs/core/engines.html#supported-databases
 .. _variety of web servers: http://wsgi.org/wsgi/Servers

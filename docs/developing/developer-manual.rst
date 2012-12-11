@@ -200,7 +200,7 @@ contributing, etc. Steps would be something like this:
 
   cd Kotti
 
-  git remote add upstream git://github.com/Pylons/Kotti.git
+  git remote add upstream git://github.com/Kotti/Kotti.git
 
 Now you should be set up to make branches for this and that, doing a pull request
 from a branch, and the usual git procedures. You may wish to read the

@@ -39,8 +39,17 @@ sys.modules['kotti.static'] = deprecation.deprecated(
 
 def authtkt_factory(**settings):
     from kotti.security import list_groups_callback
-    return AuthTktAuthenticationPolicy(
-        secret=settings['kotti.secret2'], callback=list_groups_callback)
+    kwargs = dict(
+        secret=settings['kotti.secret2'],
+        hashalg='sha512',
+        callback=list_groups_callback,
+        )
+    try:
+        return AuthTktAuthenticationPolicy(**kwargs)
+    except TypeError:
+        # BBB with Pyramid < 1.4
+        kwargs.pop('hashalg')
+        return AuthTktAuthenticationPolicy(**kwargs)
 
 
 def acl_factory(**settings):

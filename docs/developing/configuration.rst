@@ -279,7 +279,7 @@ You can configure Kotti to serve a German user interface by saying:
   pyramid.default_locale_name = de_DE
 
 The list of available languages is `here
-<https://github.com/Pylons/Kotti/tree/master/kotti/locale>`_.
+<https://github.com/Kotti/Kotti/tree/master/kotti/locale>`_.
 
 Configure authentication and authorization
 ------------------------------------------

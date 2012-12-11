@@ -22,5 +22,5 @@ To extract messages and update the existing .pot and .po files, do:
 
   bin/python setup.py extract_messages update_catalog
 
-.. _find the list of Kotti's translations here: https://github.com/Pylons/Kotti/tree/master/kotti/locale
+.. _find the list of Kotti's translations here: https://github.com/Kotti/Kotti/tree/master/kotti/locale
 .. _GNU gettext: http://www.gnu.org/software/gettext/

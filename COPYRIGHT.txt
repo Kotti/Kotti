@@ -1,0 +1,2 @@
+Copyright (c) 2010-2013 Daniel Nouri and Contributors.
+All Rights Reserved

@@ -52,8 +52,9 @@ class NeededGroup(object):
 
     def add(self, resource):
         """resource may be a:
-            - fanstatic.Resource object
-            - fanstatic.Group object"""
+
+            - :class:`fanstatic.Resource` object or
+            - :class:`fanstatic.Group` object"""
 
         if isinstance(resource, self.__class__):
             self.resources = self.resources + resource.resources

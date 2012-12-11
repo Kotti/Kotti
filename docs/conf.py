@@ -24,6 +24,7 @@ extensions = [
     'sphinx.ext.autodoc',
     'sphinx.ext.graphviz',
     'sphinx.ext.inheritance_diagram',
+    'sphinx.ext.intersphinx',
     'sphinx.ext.viewcode',
     ]
 
@@ -32,7 +33,7 @@ source_suffix = '.rst'
 #source_encoding = 'utf-8-sig'
 master_doc = 'index'
 project = u'Kotti'
-copyright = u'2012, Daniel Nouri and contributors'
+copyright = u'2012, Kotti developers'
 version = '0.8'
 # The full version, including alpha/beta/rc tags.
 release = version
@@ -54,7 +55,7 @@ import kotti_docs_theme
 html_theme_path = [kotti_docs_theme.get_theme_dir()]
 html_theme = 'kotti_docs_theme'
 html_theme_options = {
-    'github_user': 'Pylons',
+    'github_user': 'Kotti',
     'github_repo': 'Kotti',
     'twitter_username': 'KottiCMS',
     'home_url': 'http://kotti.pylonsproject.org/',
@@ -88,10 +89,10 @@ htmlhelp_basename = 'Kottidoc'
 
 #latex_paper_size = 'a4'
 #latex_font_size = '10pt'
-latex_documents = [
-  ('index', 'Kotti.tex', u'Kotti Documentation',
-   u'Daniel Nouri', 'manual'),
-]
+#latex_documents = [
+#  ('index', 'Kotti.tex', u'Kotti Documentation',
+#   u'Daniel Nouri', 'manual'),
+#]
 #latex_logo = None
 #latex_use_parts = False
 #latex_show_pagerefs = False
@@ -105,9 +106,9 @@ latex_documents = [
 
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
-man_pages = [
-    ('index', 'kotti', u'Kotti Documentation', [u'Daniel Nouri'], 1)
-]
+#man_pages = [
+#    ('index', 'kotti', u'Kotti Documentation', [u'Daniel Nouri'], 1)
+#]
 
 # -- Options for inheritance diagrams ------------------------------------------
 inheritance_graph_attrs = dict(rankdir='TB', nodesep=0.1,
@@ -116,8 +117,9 @@ inheritance_node_attrs = dict(height=0.7, margin='0.06, 0.03')
 
 # -- Options for Intersphinx ---------------------------------------------------
 intersphinx_mapping = {
-    'colander': ('http://python.readthedocs.org/en/latest/', None),
+    'colander': ('http://colander.readthedocs.org/en/latest/', None),
     'deform': ('http://deform.readthedocs.org/en/latest/', None),
+    'fanstatic': ('http://www.fanstatic.org/en/latest/', None),
     'pyramid': ('http://pyramid.readthedocs.org/en/latest/', None),
     'sqlalchemy': ('http://sqlalchemy.readthedocs.org/en/latest/', None),
 }
