@@ -25,7 +25,7 @@ def config(request):
     return config
 
 
-@fixture(scope='session')
+@fixture(scope='module')
 def connection():
     # the following setup is based on `kotti.resources.initialize_sql`,
     # except that it explicitly binds the session to a specific connection

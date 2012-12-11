@@ -52,7 +52,7 @@ class TestNodePaste:
             assert response.status == '302 Found'
             assert len(request.session['_f_error']) == index + 1
 
-    def test_paste_without_edit_permission(self, config, db_session, root):
+    def test_paste_without_edit_permission(self, config, db_session):
         from kotti.resources import get_root
         from kotti.views.edit.actions import NodeActions
 
