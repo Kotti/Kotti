@@ -9,11 +9,8 @@ class TestLogin:
     def test_it(self, app):
         res = app.post('/@@login', dict(login='admin',
                 password='secret', submit='submit'))
-        # XXX the behavior changes if we run only this or all tests
-        # assert res.status == '302 Found'
-        # res = res.follow()
-        if res.status == '302 Found':
-            res = res.follow()
+        assert res.status == '302 Found'
+        res = res.follow()
         assert res.status == '200 OK'
 
 
