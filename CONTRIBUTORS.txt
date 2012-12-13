@@ -93,3 +93,4 @@ Contributors
 - Tetsuya Morimoto, 2012/12/11
 - Andreas Zeidler, 2012/12/11
 - Daniel Newton, 2012/12/12
+- Florian Schulze, 2012/12/13
