@@ -29,6 +29,8 @@ from kotti import get_settings
 from kotti.events import objectevent_listeners
 from kotti.resources import Content
 from kotti.resources import Document
+from kotti.resources import Tag
+from kotti.resources import TagsToContents
 from kotti.security import get_user
 from kotti.security import has_permission
 from kotti.security import view_permitted
@@ -380,7 +382,7 @@ def default_search_content(search_term, request=None):
                          Content.title.like(searchstring),
                          Content.description.like(searchstring))
 
-    generic_results = DBSession.query(Content).filter(generic_filter)
+    results = DBSession.query(Content).filter(generic_filter).all()
 
     # specific result contain objects matching additional criteria
     # but must not match the generic criteria (because these objects
@@ -389,18 +391,41 @@ def default_search_content(search_term, request=None):
         and_(Document.body.like(searchstring),
              not_(generic_filter)))
 
-    all_results = [c for c in generic_results.all()] \
-        + [c for c in document_results.all()]
+    for results_set in [content_with_tags([searchstring]),
+                        document_results.all()]:
+        [results.append(c) for c in results_set if not c in results]
 
     result_dicts = []
 
-    for result in all_results:
+    for result in results:
         if has_permission('view', result, request):
             result_dicts.append(dict(
                 name=result.name,
                 title=result.title,
                 description=result.description,
                 path=request.resource_path(result)))
+
+    return result_dicts
+
+
+def content_with_tags(tag_terms):
+
+    return DBSession.query(Content).join(TagsToContents).join(Tag).filter(
+        or_(*[Tag.title.like(tag_term) for tag_term in tag_terms])).all()
+
+
+def search_content_for_tags(tags, request=None):
+
+    result_dicts = []
+
+    for result in content_with_tags(tags):
+        if has_permission('view', result, request):
+            result_dicts.append(dict(
+                name=result.name,
+                title=result.title,
+                description=result.description,
+                path=request.resource_path(result)))
+
     return result_dicts
 
 
