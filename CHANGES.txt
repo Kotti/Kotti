@@ -1,8 +1,8 @@
 Change History
 ==============
 
-0.8 - Unreleased
-----------------
+0.8a2 - 2012-12-15
+------------------
 
 - Remove test related dependencies on requirements.txt.
   So now we need to run `python setup.py dev` to get testing
