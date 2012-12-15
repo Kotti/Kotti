@@ -11,6 +11,18 @@ Change History
 - Update packages versions on requirements.txt for latest working
   versions.
 
+- Added a tags display in views for documents, files, folders, and images,
+  where they show up as a horizontal list between description and body.
+
+- Modified general search to include simple tags searching. The default
+  search in Kotti works on a simple search term matching basis. Tags
+  searching is added here in a simple fashion also, such that you can only
+  search for one tag at a time, but partial matches work: searching for 'foo'
+  finds content tagged 'foo bar'.  You can also search on single tags by
+  clicking an individual tag in the tags display of an item. More
+  sophisticated tags searching, just as for general search, is left to
+  dedicated add-ons.
+
 0.8a1 - 2012-11-13
 ------------------
 
