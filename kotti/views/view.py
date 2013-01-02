@@ -5,9 +5,9 @@ from pyramid.view import render_view_to_response
 from pyramid.view import view_config
 
 from kotti.interfaces import IContent
-from kotti.resources import Document
 
 from kotti.views.util import search_content
+from kotti.views.util import search_content_for_tags
 
 
 @view_config(context=IContent)
@@ -40,6 +40,19 @@ def search_results(context, request):
     if u'search-term' in request.POST:
         search_term = request.POST[u'search-term']
         results = search_content(search_term, request)
+    return {'results': results}
+
+
+@view_config(name='search-tag', permission='view',
+             renderer='kotti:templates/view/search-results.pt')
+def search_results_for_tag(context, request):
+    results = []
+    if u'tag' in request.GET:
+        # Single tag searching only, is allowed in default Kotti. Add-ons can
+        # utilize search_content_for_tags(tags) to enable multiple tags
+        # searching, but here it is called with a single tag.
+        tags = [request.GET[u'tag'].strip()]
+        results = search_content_for_tags(tags, request)
     return {'results': results}
 
 
