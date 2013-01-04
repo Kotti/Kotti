@@ -2,10 +2,12 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xml:lang="en"
       xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      i18n:domain="Kotti"
       metal:use-macro="api.macro('kotti:templates/edit/master.pt')">
 
   <div metal:fill-slot="content" class="forbidden">
-    <h1>Forbidden</h1>
+    <h1 i18n:translate="">Forbidden</h1>
   </div>
 
 </html>
