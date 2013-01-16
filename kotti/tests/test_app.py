@@ -255,7 +255,8 @@ class TestApp:
         from kotti import main
 
         settings = self.required_settings()
-        main({}, **settings)
+        with patch('kotti.resources.DBSession'):
+            main({}, **settings)
 
         res = DBSession.execute(select(
             columns=['version_num'], from_obj=['kotti_alembic_version']))
