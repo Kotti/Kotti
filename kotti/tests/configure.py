@@ -93,7 +93,7 @@ def browser(db_session, request):
     from wsgi_intercept import add_wsgi_intercept, zope_testbrowser
     from kotti.testing import BASE_URL
     host, port = BASE_URL.split(':')[-2:]
-    add_wsgi_intercept(host[2:], int(port), lambda: setup_app())
+    add_wsgi_intercept(host[2:], int(port), setup_app)
     browser = zope_testbrowser.WSGI_Browser(BASE_URL + '/')
     if 'user' in request.keywords:
         # set auth cookie directly on the browser instance...
