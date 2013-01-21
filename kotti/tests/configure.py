@@ -25,7 +25,7 @@ def config(request):
     return config
 
 
-@fixture(scope='module')
+@fixture(scope='session')
 def connection():
     # the following setup is based on `kotti.resources.initialize_sql`,
     # except that it explicitly binds the session to a specific connection
@@ -74,12 +74,8 @@ def events(config, request):
 
 
 def setup_app():
-    from mock import patch
-    from kotti import main
-    with patch('kotti.resources.initialize_sql'):
-        with patch('kotti.engine_from_config'):
-            app = main({}, **settings())
-    return app
+    from kotti import base_configure
+    return base_configure({}, **settings()).make_wsgi_app()
 
 
 @fixture
@@ -93,7 +89,7 @@ def browser(db_session, request):
     from wsgi_intercept import add_wsgi_intercept, zope_testbrowser
     from kotti.testing import BASE_URL
     host, port = BASE_URL.split(':')[-2:]
-    add_wsgi_intercept(host[2:], int(port), lambda: setup_app())
+    add_wsgi_intercept(host[2:], int(port), setup_app)
     browser = zope_testbrowser.WSGI_Browser(BASE_URL + '/')
     if 'user' in request.keywords:
         # set auth cookie directly on the browser instance...
