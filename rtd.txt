@@ -1,6 +1,5 @@
 kotti_docs_theme
 repoze.sphinx.autointerface
-repoze.lru
 setuptools-git
 
 # everything below is just a copy of requirements.txt
