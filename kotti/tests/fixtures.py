@@ -1,3 +1,5 @@
+# public pytest fixtures
+
 from pytest import fixture
 
 
@@ -85,7 +87,8 @@ def db_session(config, content, connection, request):
 @fixture
 def dummy_request(config):
     """ returns a dummy request object after registering it as
-        the currently active request.
+        the currently active request.  This is needed when
+        `pyramid.threadlocal.get_current_request` is used.
     """
     from kotti.testing import DummyRequest
     config.manager.get()['request'] = request = DummyRequest()
@@ -105,12 +108,6 @@ def events(config, request):
 def setup_app():
     from kotti import base_configure
     return base_configure({}, **settings()).make_wsgi_app()
-
-
-@fixture
-def app(db_session):
-    from webtest import TestApp
-    return TestApp(setup_app())
 
 
 @fixture
@@ -137,17 +134,6 @@ def browser(db_session, request):
                 del browser.cookies[name]
             browser.cookies.create(name, value.strip('"'), path='/')
     return browser
-
-
-@fixture
-def extra_principals(db_session):
-    from kotti.security import get_principals
-    P = get_principals()
-    P[u'bob'] = dict(name=u'bob', title=u"Bob")
-    P[u'frank'] = dict(name=u'frank', title=u"Frank")
-    P[u'group:bobsgroup'] = dict(name=u'group:bobsgroup', title=u"Bob's Group")
-    P[u'group:franksgroup'] = dict(name=u'group:franksgroup',
-        title=u"Frank's Group")
 
 
 @fixture
