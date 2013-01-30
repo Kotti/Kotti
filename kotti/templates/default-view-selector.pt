@@ -1,4 +1,4 @@
-<tal:condition tal:condition="len(selectable_default_views) > 1">
+<tal:condition tal:condition="len(selectable_default_views) > 1" i18n:domain="Kotti">
   <li class="divider"></li>
   <li class="dropdown-submenu">
     <a href="#">

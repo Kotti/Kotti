@@ -1,3 +1,7 @@
 kotti_docs_theme
 repoze.sphinx.autointerface
-repoze.lru
+setuptools-git  # needed to make "python setup.py install" on rtd.
+pytest  # needed for kotti.testing apidocs
+
+# include requirements.txt
+-r requirements.txt
