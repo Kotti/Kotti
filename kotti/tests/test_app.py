@@ -251,14 +251,13 @@ class TestApp:
 
     def test_stamp_heads(self, db_session):
         xfail('disabled due to missing DB isolation')
-        from kotti import DBSession
         from kotti import main
 
         settings = self.required_settings()
         with patch('kotti.resources.DBSession'):
             main({}, **settings)
 
-        res = DBSession.execute(select(
+        res = db_session.execute(select(
             columns=['version_num'], from_obj=['kotti_alembic_version']))
         assert tuple(res)  # a version_num should exist
 

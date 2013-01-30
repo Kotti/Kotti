@@ -19,14 +19,13 @@ class TestTags:
         assert str(new_tag) == "<Tag ('test tag')>"
 
     def test_add(self, root):
-        from kotti import DBSession
         from kotti.resources import Tag, TagsToContents
 
         root.tags = [u'tag 1', u'tag 2']
-        result = DBSession.query(Tag).filter(TagsToContents.item == root).all()
+        result = Tag.query.filter(TagsToContents.item == root).all()
         assert result[0].items == [root]
         assert root.tags == [u'tag 1', u'tag 2']
-        assert len(DBSession.query(Tag).all()) == 2
+        assert len(Tag.query.all()) == 2
 
     def test_edit(self, root):
         root.tags = [u'tag 1', u'tag_2']
@@ -35,7 +34,6 @@ class TestTags:
         assert root._tags[0].tag.title == u'edited tag'
 
     def test_association_proxy(self, root):
-        from kotti import DBSession
         from kotti.resources import Tag, TagsToContents, Content
 
         root[u'content_1'] = Content()
@@ -56,105 +54,92 @@ class TestTags:
         assert root[u'content_2']._tags[0].position == 0
         assert root[u'content_2']._tags[1].tag.title == u'tag 3'
         assert root[u'content_2']._tags[1].position == 1
-        assert len(DBSession.query(Tag).all()) == 3
+        assert len(Tag.query.all()) == 3
 
-    def test_delete_tag_doesnt_touch_content(self, root):
-        from kotti import DBSession
+    def test_delete_tag_doesnt_touch_content(self, root, db_session):
         from kotti.resources import Tag, Content
 
         root[u'content_1'] = Content()
         root[u'content_1'].tags = [u'my tag']
 
-        ses = DBSession
-        assert ses.query(Content).filter_by(name=u'content_1').count() == 1
-        ses.delete(ses.query(Tag).filter_by(title=u'my tag').one())
-        assert ses.query(Content).filter_by(name=u'content_1').count() == 1
+        assert Content.query.filter_by(name=u'content_1').count() == 1
+        db_session.delete(Tag.query.filter_by(title=u'my tag').one())
+        assert Content.query.filter_by(name=u'content_1').count() == 1
 
     def test_delete_content_deletes_orphaned_tags(self, root, events):
-        from kotti import DBSession
         from kotti.resources import Tag, Content
 
         root[u'content_1'] = Content()
         root[u'content_2'] = Content()
         root[u'content_1'].tags = [u'tag 1', u'tag 2']
         root[u'content_2'].tags = [u'tag 2']
-        assert DBSession.query(Tag).count() == 2
+        assert Tag.query.count() == 2
         del root[u'content_1']
-        assert DBSession.query(Tag).one().title == u'tag 2'
+        assert Tag.query.one().title == u'tag 2'
 
-    def test_delete_tag_assignment_doesnt_touch_content(self, root):
-        from kotti import DBSession
+    def test_delete_tag_assignment_doesnt_touch_content(self, root, db_session):
         from kotti.resources import Tag, TagsToContents, Content
 
         root[u'content_1'] = Content()
         root[u'content_1'].tags = [u'my tag']
 
-        ses = DBSession
-        assert ses.query(Tag).count() == 1
-        assert ses.query(Content).filter_by(name=u'content_1').count() == 1
-        ses.delete(ses.query(TagsToContents).one())
-        assert ses.query(Content).filter_by(name=u'content_1').count() == 1
+        assert Tag.query.count() == 1
+        assert Content.query.filter_by(name=u'content_1').count() == 1
+        db_session.delete(TagsToContents.query.one())
+        assert Content.query.filter_by(name=u'content_1').count() == 1
 
-    def test_delete_tag_assignment_delete_tag(self, root, events):
-        from kotti import DBSession
+    def test_delete_tag_assignment_delete_tag(self, root, events, db_session):
         from kotti.resources import Tag, TagsToContents, Content
 
         root[u'content_1'] = Content()
         root[u'content_1'].tags = [u'my tag']
 
-        ses = DBSession
-        assert ses.query(Tag).count() == 1
-        ses.delete(ses.query(TagsToContents).one())
-        assert ses.query(Tag).count() == 0
+        assert Tag.query.count() == 1
+        db_session.delete(TagsToContents.query.one())
+        assert Tag.query.count() == 0
 
-    def test_copy_content_copy_tags(self, root):
-        from kotti import DBSession
+    def test_copy_content_copy_tags(self, root, db_session):
         from kotti.resources import Tag, TagsToContents, Content
 
-        ses = DBSession
         root[u'content_1'] = Content()
         root[u'content_1'].tags = [u'my tag']
-        assert ses.query(Tag).count() == 1
-        assert ses.query(TagsToContents).count() == 1
+        assert Tag.query.count() == 1
+        assert TagsToContents.query.count() == 1
 
         root[u'content_2'] = root[u'content_1'].copy()
-        DBSession.flush()
+        db_session.flush()
         assert root[u'content_1'].tags == [u'my tag']
         assert root[u'content_2'].tags == [u'my tag']
-        assert ses.query(Tag).count() == 1
-        assert ses.query(TagsToContents).count() == 2
+        assert Tag.query.count() == 1
+        assert TagsToContents.query.count() == 2
 
     def test_cut_and_paste_content_copy_tags(self, root):
-        from kotti import DBSession
         from kotti.resources import Tag, TagsToContents, Content
         from kotti.views.edit.actions import NodeActions
 
-        ses = DBSession
         root[u'folder_1'] = Content()
         root[u'content_1'] = Content()
         root[u'content_1'].tags = [u'my tag']
-        assert ses.query(Tag).count() == 1
-        assert ses.query(TagsToContents).count() == 1
+        assert Tag.query.count() == 1
+        assert TagsToContents.query.count() == 1
 
         request = DummyRequest()
         request.params['paste'] = u'on'
         request.session['kotti.paste'] = ([root[u'content_1'].id], 'cut')
         NodeActions(root[u'folder_1'], request).paste_nodes()
         assert root[u'folder_1'][u'content_1'].tags == [u'my tag']
-        assert ses.query(Tag).count() == 1
-        assert ses.query(TagsToContents).count() == 1
+        assert Tag.query.count() == 1
+        assert TagsToContents.query.count() == 1
 
     def test_copy_and_paste_content_copy_tags(self, root, events):
-        from kotti import DBSession
         from kotti.resources import Tag, TagsToContents, Content
         from kotti.views.edit.actions import NodeActions
 
-        ses = DBSession
         root[u'folder_1'] = Content()
         root[u'content_1'] = Content()
         root[u'content_1'].tags = [u'my tag']
-        assert ses.query(Tag).count() == 1
-        assert ses.query(TagsToContents).count() == 1
+        assert Tag.query.count() == 1
+        assert TagsToContents.query.count() == 1
 
         request = DummyRequest()
         request.params['paste'] = u'on'
@@ -162,55 +147,49 @@ class TestTags:
         NodeActions(root[u'folder_1'], request).paste_nodes()
         assert root[u'content_1'].tags == [u'my tag']
         assert root[u'folder_1'][u'content_1'].tags == [u'my tag']
-        assert ses.query(Tag).count() == 1
-        assert ses.query(TagsToContents).count() == 2
+        assert Tag.query.count() == 1
+        assert TagsToContents.query.count() == 2
 
     def test_delete_content_delete_tags_and_assignments(self, root, events):
-        from kotti import DBSession
         from kotti.resources import Tag, TagsToContents, Content
         from kotti.views.edit.actions import NodeActions
 
-        ses = DBSession
         root[u'folder_1'] = Content()
         root[u'folder_1'].tags = [u'first tag']
         root[u'folder_1'][u'content_1'] = Content()
         root[u'folder_1'][u'content_1'].tags = [u'second tag']
         root[u'folder_1'][u'content_2'] = Content()
         root[u'folder_1'][u'content_2'].tags = [u'third tag']
-        assert ses.query(Tag).count() == 3
-        assert ses.query(TagsToContents).count() == 3
+        assert Tag.query.count() == 3
+        assert TagsToContents.query.count() == 3
 
         request = DummyRequest()
         request.POST['delete'] = 'on'
         NodeActions(root[u'folder_1'], request).delete_node()
-        assert ses.query(Tag).count() == 0
-        assert ses.query(TagsToContents).count() == 0
+        assert Tag.query.count() == 0
+        assert TagsToContents.query.count() == 0
 
     def test_get_content_items_from_tag(self, root):
-        from kotti import DBSession
         from kotti.resources import Tag, Content
 
-        ses = DBSession
         root[u'folder_1'] = Content()
         root[u'folder_1'].tags = [u'first tag', u'second tag']
         root[u'folder_1'][u'content_1'] = Content()
         root[u'folder_1'][u'content_1'].tags = [u'third tag']
         root[u'folder_1'][u'content_2'] = Content()
         root[u'folder_1'][u'content_2'].tags = [u'first tag', u'third tag']
-        first_tag = ses.query(Tag).filter(Tag.title == u'first tag').one()
+        first_tag = Tag.query.filter(Tag.title == u'first tag').one()
         assert [rel.name for rel in first_tag.items] == [
             u'folder_1', u'content_2']
-        second_tag = ses.query(Tag).filter(Tag.title == u'second tag').one()
+        second_tag = Tag.query.filter(Tag.title == u'second tag').one()
         assert [rel.name for rel in second_tag.items] == [u'folder_1']
-        third_tag = ses.query(Tag).filter(Tag.title == u'third tag').one()
+        third_tag = Tag.query.filter(Tag.title == u'third tag').one()
         assert [rel.name for rel in third_tag.items] == [
             u'content_1', u'content_2']
 
     def test_get_content_items_for_tag_title(self, root):
-        from kotti import DBSession
         from kotti.resources import Tag, TagsToContents, Content
 
-        ses = DBSession
         root[u'folder_1'] = Content()
         root[u'folder_1'].tags = [u'first tag', u'second tag']
         root[u'folder_1'][u'content_1'] = Content()
@@ -218,13 +197,13 @@ class TestTags:
         root[u'folder_1'][u'content_2'] = Content()
         root[u'folder_1'][u'content_2'].tags = [u'first tag', u'third tag']
 
-        result = ses.query(Content).join(TagsToContents).join(Tag).filter(
+        result = Content.query.join(TagsToContents).join(Tag).filter(
             Tag.title == u'first tag').all()
         assert [res.name for res in result] == [u'folder_1', u'content_2']
-        result = ses.query(Content).join(TagsToContents).join(Tag).filter(
+        result = Content.query.join(TagsToContents).join(Tag).filter(
             Tag.title == u'second tag').all()
         assert [res.name for res in result] == [u'folder_1']
-        result = ses.query(Content).join(TagsToContents).join(Tag).filter(
+        result = Content.query.join(TagsToContents).join(Tag).filter(
             Tag.title == u'third tag').all()
         assert [res.name for res in result] == [u'content_1', u'content_2']
 

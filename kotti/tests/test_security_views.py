@@ -127,21 +127,20 @@ class TestUserDelete:
         assert bob.groups == []
 
     def test_deleted_group_removed_from_localgroups(self, events, extra_principals, root):
-        from kotti import DBSession
         from kotti.security import set_groups
         from kotti.resources import LocalGroup
         from kotti.views.users import user_delete
 
         request = DummyRequest()
         set_groups(u'group:bobsgroup', root, ['role:admin'])
-        local_group = DBSession.query(LocalGroup).first()
+        local_group = LocalGroup.query.first()
         assert local_group.principal_name == u'group:bobsgroup'
         assert local_group.node == root
 
         request.params['name'] = u'group:bobsgroup'
         request.params['delete'] = u'delete'
         user_delete(root, request)
-        assert DBSession.query(LocalGroup).first() == None
+        assert LocalGroup.query.first() == None
 
     def test_reset_owner_to_none(self, events, extra_principals, root):
         from kotti.resources import Content
