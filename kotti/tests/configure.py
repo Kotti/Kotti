@@ -14,6 +14,9 @@ def settings():
 
 @fixture
 def config(request):
+    """ returns a Pyramid `Configurator` object initialized
+        with Kotti's default (test) settings.
+    """
     from pyramid.config import DEFAULT_RENDERERS
     from pyramid import testing
     from kotti import security
@@ -27,6 +30,11 @@ def config(request):
 
 @fixture(scope='session')
 def connection():
+    """ sets up a SQLAlchemy engine and returns a connection
+        to the database.  The connection string used for testing
+        can be specified via the `KOTTI_TEST_DB_STRING` environment
+        variable.
+    """
     # the following setup is based on `kotti.resources.initialize_sql`,
     # except that it explicitly binds the session to a specific connection
     # enabling us to use savepoints independent from the orm, thus allowing
@@ -44,6 +52,8 @@ def connection():
 
 @fixture(scope='session')
 def content(connection):
+    """ sets up some default content using Kotti's testing populator.
+    """
     from transaction import commit
     from kotti import metadata
     metadata.drop_all(connection.engine)
@@ -61,6 +71,9 @@ def content(connection):
 
 @fixture
 def db_session(config, content, connection, request):
+    """ returns a db session object and sets up a db transaction
+        savepoint, which will be rolled back after the test.
+    """
     from transaction import abort
     trans = connection.begin()          # begin a non-orm transaction
     request.addfinalizer(trans.rollback)
@@ -71,6 +84,9 @@ def db_session(config, content, connection, request):
 
 @fixture
 def dummy_request(config):
+    """ returns a dummy request object after registering it as
+        the currently active request.
+    """
     from kotti.testing import DummyRequest
     config.manager.get()['request'] = request = DummyRequest()
     return request
@@ -78,6 +94,8 @@ def dummy_request(config):
 
 @fixture
 def events(config, request):
+    """ sets up Kotti's default event handlers.
+    """
     from kotti.events import clear
     config.include('kotti.events')
     request.addfinalizer(clear)
@@ -97,6 +115,10 @@ def app(db_session):
 
 @fixture
 def browser(db_session, request):
+    """ returns an instance of `zope.testbrowser`.  The `kotti.testing.user`
+        pytest marker (or `pytest.mark.user`) can be used to pre-authenticate
+        the browser with the given login name: `@user('admin')`.
+    """
     from wsgi_intercept import add_wsgi_intercept, zope_testbrowser
     from kotti.testing import BASE_URL
     host, port = BASE_URL.split(':')[-2:]
@@ -130,12 +152,16 @@ def extra_principals(db_session):
 
 @fixture
 def root(db_session):
+    """ returns Kotti's 'root' node.
+    """
     from kotti.resources import get_root
     return get_root()
 
 
 @fixture
 def workflow(config):
+    """ loads and activates Kotti's default workflow rules.
+    """
     from zope.configuration import xmlconfig
     import kotti
     xmlconfig.file('workflow.zcml', kotti, execute=True)
