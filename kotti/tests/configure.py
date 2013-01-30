@@ -31,7 +31,6 @@ def connection():
     # except that it explicitly binds the session to a specific connection
     # enabling us to use savepoints independent from the orm, thus allowing
     # to `rollback` after using `transaction.commit`...
-    from transaction import commit
     from sqlalchemy import create_engine
     from kotti.testing import testing_db_url
     from kotti import metadata, DBSession
@@ -40,16 +39,22 @@ def connection():
     DBSession.registry.clear()
     DBSession.configure(bind=connection)
     metadata.bind = engine
-    metadata.drop_all(engine)
-    metadata.create_all(engine)
-    for populate in settings()['kotti.populators']:
-        populate()
-    commit()
     return connection
 
 
+@fixture(scope='session')
+def content(workflow, connection):
+    from transaction import commit
+    from kotti import metadata
+    metadata.drop_all(connection.engine)
+    metadata.create_all(connection.engine)
+    for populate in settings()['kotti.populators']:
+        populate()
+    commit()
+
+
 @fixture
-def db_session(config, connection, request):
+def db_session(config, content, connection, request):
     from transaction import abort
     trans = connection.begin()          # begin a non-orm transaction
     request.addfinalizer(trans.rollback)
@@ -120,23 +125,11 @@ def extra_principals(db_session):
 @fixture
 def root(db_session):
     from kotti.resources import get_root
-    from kotti.security import get_principals
-
-    root = get_root()
-    db_session.delete(root)
-    admin = get_principals()['admin']
-    db_session.delete(admin)
-    for populate in settings()['kotti.populators']:
-        populate()
     return get_root()
 
 
-@fixture
-def workflow(root):
+@fixture(scope='session')
+def workflow(config):
     from zope.configuration import xmlconfig
     import kotti
     xmlconfig.file('workflow.zcml', kotti, execute=True)
-    from kotti.workflow import get_workflow
-    wf = get_workflow(root)
-    if wf is not None:
-        wf.transition_to_state(root, None, u'public')
