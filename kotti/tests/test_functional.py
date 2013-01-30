@@ -36,13 +36,13 @@ class TestUploadFile:
         browser.getControl('save').click()
 
     @user('admin')
-    def test_it(self, browser, request, root):
+    def test_it(self, browser):
         browser.open(BASE_URL + '/@@add_file')
         self.add_file(browser)
         assert "Successfully added item" in browser.contents
 
     @user('admin')
-    def test_view_uploaded_file(self, browser, request, root):
+    def test_view_uploaded_file(self, browser):
         browser.open(BASE_URL + '/@@add_file')
         self.add_file(browser)
         browser.getLink("View").click()
@@ -50,7 +50,7 @@ class TestUploadFile:
         assert browser.contents == 'ABC'
 
     @user('admin')
-    def test_tempstorage(self, browser, root):
+    def test_tempstorage(self, browser):
         browser.open(BASE_URL + '/@@add_file')
         self.add_file(browser, contents='DEF')
         browser.getLink("Edit").click()

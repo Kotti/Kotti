@@ -47,7 +47,7 @@ class TestTemplateAPI:
             request = DummyRequest()
         return TemplateAPI(context, request, **kwargs)
 
-    def test_page_title(self, db_session, root):
+    def test_page_title(self, db_session):
         api = self.make()
         api.context.title = u"Hello, world!"
         assert api.page_title == u"Hello, world! - Hello, world!"
