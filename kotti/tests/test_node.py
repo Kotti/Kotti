@@ -11,15 +11,21 @@ class TestNode:
         # The root object has a persistent ACL set:
         assert (
             root.__acl__[1:] == [
-                ('Allow', 'system.Everyone', ['view']),
-                ('Allow', 'role:viewer', ['view']),
-                ('Allow', 'role:editor',
-                 ['view', 'add', 'edit', 'state_change']),
-                ('Allow', 'role:owner',
-                 ['view', 'add', 'edit', 'manage', 'state_change']),
-                ])
+                ('Allow', 'role:owner', u'view'),
+                ('Allow', 'role:owner', u'add'),
+                ('Allow', 'role:owner', u'edit'),
+                ('Allow', 'role:owner', u'manage'),
+                ('Allow', 'role:owner', u'state_change'),
+                ('Allow', 'role:viewer', u'view'),
+                ('Allow', 'role:editor', u'view'),
+                ('Allow', 'role:editor', u'add'),
+                ('Allow', 'role:editor', u'edit'),
+                ('Allow', 'role:editor', u'state_change'),
+                ('Allow', 'system.Everyone', u'view'),
+                ('Deny', 'system.Everyone', ALL_PERMISSIONS),
+            ])
 
-        # The first ACE is here to preven lock-out:
+        # The first ACE is here to prevent lock-out:
         assert (
             root.__acl__[0] ==
             (Allow, 'role:admin', ALL_PERMISSIONS))
