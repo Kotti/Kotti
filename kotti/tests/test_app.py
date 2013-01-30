@@ -2,8 +2,8 @@
 
 import warnings
 
-from mock import patch
-from pytest import raises, xfail
+from mock import patch, Mock
+from pytest import raises
 
 from pyramid.interfaces import IAuthenticationPolicy
 from pyramid.interfaces import IAuthorizationPolicy
@@ -249,13 +249,15 @@ class TestApp:
             main({}, **settings)
         assert search_content(u"Nuno") == u"Not found. Sorry!"
 
-    def test_stamp_heads(self, db_session):
-        xfail('disabled due to missing DB isolation')
+    def test_stamp_heads(self, db_session, connection):
         from kotti import main
 
         settings = self.required_settings()
-        with patch('kotti.resources.DBSession'):
-            main({}, **settings)
+        engine = connection.engine
+        engine.table_names = Mock(return_value=[])
+        with patch('kotti.engine_from_config', return_value=engine):
+            with patch('kotti.resources.metadata'):
+                main({}, **settings)
 
         res = db_session.execute(select(
             columns=['version_num'], from_obj=['kotti_alembic_version']))
