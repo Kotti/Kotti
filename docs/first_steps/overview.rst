@@ -1,8 +1,7 @@
 Overview
 ========
 
-Kotti is most useful when you are developing applications CMS-like
-applications that
+Kotti is most useful when you are developing CMS-like applications that
 
 - have complex security requirements,
 - use workflows, and/or

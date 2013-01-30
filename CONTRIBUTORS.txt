@@ -96,3 +96,4 @@ Contributors
 - Florian Schulze, 2012/12/13
 - Christian Neumann, 2012/12/13
 - Gaston TJEBBES, 2012/12/17
+- Gouji Ochiai, 2013/01/04

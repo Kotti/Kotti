@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
-      metal:use-macro="api.macro('kotti:templates/view/master.pt')">
+      metal:use-macro="api.macro('kotti:templates/edit/master.pt')"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      i18n:domain="Kotti">
 
   <article metal:fill-slot="content" class="document-view content">
     <h1>${context.title}</h1>
@@ -8,15 +10,15 @@
       ${context.description}
     </p>
     <div tal:replace="api.render_template('kotti:templates/view/tags.pt')" />
-    <h2>Contents</h2>
+    <h2 i18n:translate="">Contents</h2>
     <div class="body">
       <table class="table table-condensed">
         <thead>
           <tr>
-            <th>Title</th>
-            <th>Type</th>
-            <th>Creation Date</th>
-            <th>Modification Date</th>
+            <th i18n:translate="">Title</th>
+            <th i18n:translate="">Type</th>
+            <th i18n:translate="">Creation Date</th>
+            <th i18n:translate="">Modification Date</th>
           </tr>
         </thead>
         <tbody>
