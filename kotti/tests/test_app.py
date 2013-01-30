@@ -1,9 +1,8 @@
 # -*- coding: utf-8 -*-
 
-from unittest import TestCase
 import warnings
 
-from mock import patch
+from mock import patch, Mock
 from pytest import raises
 
 from pyramid.interfaces import IAuthenticationPolicy
@@ -122,8 +121,9 @@ class TestApp:
         settings = self.required_settings()
         settings['kotti.fanstatic.view_needed'] = 'kotti.fanstatic.view_needed'
         settings['kotti.static.view_needed'] = ' kotti.fanstatic.edit_needed'
-        with patch('kotti.resources.initialize_sql'):
-            app = main({}, **settings)
+        with warnings.catch_warnings(record=True):
+            with patch('kotti.resources.initialize_sql'):
+                app = main({}, **settings)
         regsettings = app.registry.settings
 
         assert len(regsettings['kotti.fanstatic.view_needed']) == 2
@@ -170,9 +170,8 @@ class TestApp:
         assert len(regsettings['pyramid.includes'].split()) == 2
         assert settings['kotti.includes'] in regsettings['pyramid.includes']
 
-    def test_pyramid_includes_overrides_base_includes(self, db_session):
+    def test_pyramid_includes_overrides_base_includes(self, root):
         from kotti import main
-        from kotti.resources import get_root
 
         settings = self.required_settings()
         settings['pyramid.includes'] = ('kotti.testing.includeme_login')
@@ -182,7 +181,7 @@ class TestApp:
         provides = [
             IViewClassifier,
             implementedBy(Request),
-            providedBy(get_root()),
+            providedBy(root),
             ]
         view = app.registry.adapters.lookup(provides, IView, name='login')
         assert view.__module__ == 'kotti.testing'
@@ -198,7 +197,7 @@ class TestApp:
 
     def test_root_factory(self, db_session):
         from kotti import main
-        from kotti.resources import get_root
+        from kotti.resources import get_root    # the `root` fixture doesn't work here
 
         settings = self.required_settings()
         settings['kotti.root_factory'] = (TestingRootFactory,)
@@ -250,19 +249,22 @@ class TestApp:
             main({}, **settings)
         assert search_content(u"Nuno") == u"Not found. Sorry!"
 
-    def test_stamp_heads(self):
+    def test_stamp_heads(self, db_session, connection):
         from kotti import main
-        from kotti import DBSession
 
         settings = self.required_settings()
-        main({}, **settings)
+        engine = connection.engine
+        engine.table_names = Mock(return_value=[])
+        with patch('kotti.engine_from_config', return_value=engine):
+            with patch('kotti.resources.metadata'):
+                main({}, **settings)
 
-        res = DBSession.execute(select(
+        res = db_session.execute(select(
             columns=['version_num'], from_obj=['kotti_alembic_version']))
         assert tuple(res)  # a version_num should exist
 
 
-class TestGetVersion(TestCase):
+class TestGetVersion:
     def test_it(self):
         from kotti import get_version
         assert isinstance(get_version(), str)

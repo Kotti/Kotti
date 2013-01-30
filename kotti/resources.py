@@ -672,11 +672,6 @@ def initialize_sql(engine, drop_all=False):
     return DBSession
 
 
-def appmaker(engine):
-    initialize_sql(engine)
-    return get_root
-
-
 # BBB
 for iface in ("INode", "IContent", "IDocument", "IFile", "IImage",
               "IDefaultWorkflow"):
