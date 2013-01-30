@@ -1,13 +1,12 @@
 .. _tut-1:
 
-Tutorial Part 1: Customize the Look and Feel
-============================================
+Tutorial Part 1: Creating an add-on with a custom Look and Feel
+===============================================================
 
 Let's learn by example.  We'll create an add-on package that will:
 
 - change the look and feel of Kotti by registering an additional CSS file
 - add content types and forms
-- add a portlet
 
 .. note::
 
@@ -25,15 +24,15 @@ PyPI_. They include `kotti_media`_, for adding a set of video and audio content
 types to a site, `kotti_gallery`_, for adding a photo album content type,
 `kotti_blog`_, for blog and blog entry content types, etc.
 
-The add-on we will make, kotti_mysite, will be just like those, in that it will
-be a proper Python package created with the same command line tools used to
-make `kotti_media`_, `kotti_blog`_, and the others. We will install
-kotti_mysite into our virtualenv, in the same way that we might wish later to
-install, for example, `kotti_media`_.
+The add-on we will make, kotti_mysite, will be just like those, in
+that it will be a proper Python package created with the same command
+line tools used to make `kotti_media`_, `kotti_blog`_, and the others.
+We will set up kotti_mysite for our Kotti site, in the same way that
+we might wish later to install, for example, `kotti_media`_.
 
-So, we are working in the mysite directory, a virtualenv. We will create the
-add-on as mysite/kotti_mysite. kotti_mysite will be a proper Python package,
-installable into our virtualenv.
+So, we are working in the ``mysite`` directory, a virtualenv. We will
+create the add-on as ``mysite/kotti_mysite``. kotti_mysite will be a
+proper Python package, installable into our virtualenv.
 
 .. _mailing list: http://groups.google.com/group/kotti
 .. _#kotti: //irc.freenode.net/#kotti
