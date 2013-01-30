@@ -6,7 +6,7 @@ from kotti.testing import DummyRequest
 
 
 class TestAddableTypes:
-    def test_view_permitted_yes(self, config, db_session, root):
+    def test_view_permitted_yes(self, config, root):
         from kotti.resources import Document
 
         config.testing_securitypolicy(permissive=True)
@@ -14,36 +14,27 @@ class TestAddableTypes:
         request = DummyRequest()
         assert Document.type_info.addable(root, request) is True
 
-    def test_view_permitted_no(self, config, db_session):
-        from kotti import DBSession
-        from kotti.resources import Node
+    def test_view_permitted_no(self, config, root):
         from kotti.resources import Document
 
         config.testing_securitypolicy(permissive=False)
         config.include('kotti.views.edit.content')
-        root = DBSession.query(Node).get(1)
         request = DummyRequest()
         assert Document.type_info.addable(root, request) is False
 
 
 class TestNodePaste:
-    def test_get_non_existing_paste_item(self):
-        from kotti import DBSession
-        from kotti.resources import Node
+    def test_get_non_existing_paste_item(self, root):
         from kotti.views.edit import get_paste_items
 
-        root = DBSession.query(Node).get(1)
         request = DummyRequest()
         request.session['kotti.paste'] = ([1701], 'copy')
         item = get_paste_items(root, request)
         assert item == []
 
-    def test_paste_non_existing_node(self):
-        from kotti import DBSession
-        from kotti.resources import Node
+    def test_paste_non_existing_node(self, root):
         from kotti.views.edit.actions import NodeActions
 
-        root = DBSession.query(Node).get(1)
         request = DummyRequest()
 
         for index, action in enumerate(['copy', 'cut']):
@@ -52,11 +43,9 @@ class TestNodePaste:
             assert response.status == '302 Found'
             assert len(request.session['_f_error']) == index + 1
 
-    def test_paste_without_edit_permission(self, config, db_session):
-        from kotti.resources import get_root
+    def test_paste_without_edit_permission(self, config, root):
         from kotti.views.edit.actions import NodeActions
 
-        root = get_root()
         request = DummyRequest()
         request.params['paste'] = u'on'
         config.testing_securitypolicy(permissive=False)
@@ -83,7 +72,7 @@ class TestNodeRename:
         settings['kotti.url_normalizer'] = [url_normalizer]
         settings['kotti.url_normalizer.map_non_ascii_characters'] = False
 
-    def test_rename_to_empty_name(self, db_session, root):
+    def test_rename_to_empty_name(self, root):
         from kotti.resources import Document
         from kotti.views.edit.actions import NodeActions
 
@@ -129,7 +118,7 @@ class TestNodeRename:
 
 class TestNodeDelete:
 
-    def test_multi_delete(self, db_session, root):
+    def test_multi_delete(self, root):
         from kotti.resources import Document
         from kotti.resources import File
         from kotti.views.edit.actions import NodeActions
@@ -157,12 +146,10 @@ class TestNodeDelete:
 
 
 class TestNodeMove:
-    def test_move_up(self, db_session):
-        from kotti.resources import get_root
+    def test_move_up(self, root):
         from kotti.resources import Document
         from kotti.views.edit.actions import NodeActions
 
-        root = get_root()
         root['child1'] = Document(title=u"Child 1")
         root['child2'] = Document(title=u"Child 2")
         assert root['child1'].position < root['child2'].position
@@ -174,12 +161,10 @@ class TestNodeMove:
             [u'${title} moved.']
         assert root['child1'].position > root['child2'].position
 
-    def test_move_down(self, db_session):
-        from kotti.resources import get_root
+    def test_move_down(self, root):
         from kotti.resources import Document
         from kotti.views.edit.actions import NodeActions
 
-        root = get_root()
         root['child1'] = Document(title=u"Child 1")
         root['child2'] = Document(title=u"Child 2")
         root['child3'] = Document(title=u"Child 3")
@@ -197,12 +182,10 @@ class TestNodeMove:
 
 
 class TestNodeShowHide:
-    def test_show_hide(self, db_session):
-        from kotti.resources import get_root
+    def test_show_hide(self, root):
         from kotti.resources import Document
         from kotti.views.edit.actions import NodeActions
 
-        root = get_root()
         root['child1'] = Document(title=u"Child 1")
         assert root['child1'].in_navigation is True
 
@@ -221,26 +204,22 @@ class TestNodeShowHide:
 
 
 class TestNodeShare:
-    def test_roles(self, db_session):
+    def test_roles(self, root):
         from kotti.views.users import share_node
-        from kotti.resources import get_root
         from kotti.security import SHARING_ROLES
 
         # The 'share_node' view will return a list of available roles
         # as defined in 'kotti.security.SHARING_ROLES'
-        root = get_root()
         request = DummyRequest()
         assert (
             [r.name for r in share_node(root, request)['available_roles']] ==
             SHARING_ROLES)
 
-    def test_search(self, extra_principals):
-        from kotti.resources import get_root
+    def test_search(self, extra_principals, root):
         from kotti.security import get_principals
         from kotti.security import set_groups
         from kotti.views.users import share_node
 
-        root = get_root()
         request = DummyRequest()
         P = get_principals()
 
@@ -284,13 +263,11 @@ class TestNodeShare:
         assert len(entries) == 1
         assert entries[0][0] == P['bob']
 
-    def test_apply(self, extra_principals):
-        from kotti.resources import get_root
+    def test_apply(self, extra_principals, root):
         from kotti.security import list_groups
         from kotti.security import set_groups
         from kotti.views.users import share_node
 
-        root = get_root()
         request = DummyRequest()
 
         request.params['apply'] = u''

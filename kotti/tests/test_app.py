@@ -2,8 +2,8 @@
 
 import warnings
 
-from mock import patch
-from pytest import raises, xfail
+from mock import patch, Mock
+from pytest import raises
 
 from pyramid.interfaces import IAuthenticationPolicy
 from pyramid.interfaces import IAuthorizationPolicy
@@ -170,9 +170,8 @@ class TestApp:
         assert len(regsettings['pyramid.includes'].split()) == 2
         assert settings['kotti.includes'] in regsettings['pyramid.includes']
 
-    def test_pyramid_includes_overrides_base_includes(self, db_session):
+    def test_pyramid_includes_overrides_base_includes(self, root):
         from kotti import main
-        from kotti.resources import get_root
 
         settings = self.required_settings()
         settings['pyramid.includes'] = ('kotti.testing.includeme_login')
@@ -182,7 +181,7 @@ class TestApp:
         provides = [
             IViewClassifier,
             implementedBy(Request),
-            providedBy(get_root()),
+            providedBy(root),
             ]
         view = app.registry.adapters.lookup(provides, IView, name='login')
         assert view.__module__ == 'kotti.testing'
@@ -198,7 +197,7 @@ class TestApp:
 
     def test_root_factory(self, db_session):
         from kotti import main
-        from kotti.resources import get_root
+        from kotti.resources import get_root    # the `root` fixture doesn't work here
 
         settings = self.required_settings()
         settings['kotti.root_factory'] = (TestingRootFactory,)
@@ -250,16 +249,17 @@ class TestApp:
             main({}, **settings)
         assert search_content(u"Nuno") == u"Not found. Sorry!"
 
-    def test_stamp_heads(self, db_session):
-        xfail('disabled due to missing DB isolation')
-        from kotti import DBSession
+    def test_stamp_heads(self, db_session, connection):
         from kotti import main
 
         settings = self.required_settings()
-        with patch('kotti.resources.DBSession'):
-            main({}, **settings)
+        engine = connection.engine
+        engine.table_names = Mock(return_value=[])
+        with patch('kotti.engine_from_config', return_value=engine):
+            with patch('kotti.resources.metadata'):
+                main({}, **settings)
 
-        res = DBSession.execute(select(
+        res = db_session.execute(select(
             columns=['version_num'], from_obj=['kotti_alembic_version']))
         assert tuple(res)  # a version_num should exist
 

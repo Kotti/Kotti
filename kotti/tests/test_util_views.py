@@ -14,8 +14,7 @@ from warnings import filterwarnings
 filterwarnings('ignore', '^kotti.views.slots.register is deprecated')
 
 
-def create_contents(root=None):
-    from kotti.resources import get_root
+def create_contents(root):
     from kotti.resources import Content
 
     # root -> a --> aa
@@ -25,8 +24,7 @@ def create_contents(root=None):
     #         \ --> ac --> aca
     #               |
     #               \ --> acb
-    if root is None:
-        root = get_root()
+
     a = root['a'] = Content()
     aa = root['a']['aa'] = Content()
     ab = root['a']['ab'] = Content()
@@ -47,7 +45,7 @@ class TestTemplateAPI:
             request = DummyRequest()
         return TemplateAPI(context, request, **kwargs)
 
-    def test_page_title(self, db_session, root):
+    def test_page_title(self, db_session):
         api = self.make()
         api.context.title = u"Hello, world!"
         assert api.page_title == u"Hello, world! - Hello, world!"
@@ -441,10 +439,10 @@ class TestViewUtil:
 
 
 class TestLocalNavigationSlot:
-    def test_it(self, config, db_session):
+    def test_it(self, config, root):
         config.testing_add_renderer('kotti:templates/view/nav-local.pt')
         from kotti.views.slots import local_navigation
-        a, aa, ab, ac, aca, acb = create_contents()
+        a, aa, ab, ac, aca, acb = create_contents(root)
 
         ret = local_navigation(ac, DummyRequest())
         assert ret == dict(parent=ac, children=[aca, acb])
@@ -455,10 +453,10 @@ class TestLocalNavigationSlot:
         assert local_navigation(a.__parent__,
                 DummyRequest())['parent'] is None
 
-    def test_no_permission(self, config, db_session):
+    def test_no_permission(self, config, root):
         config.testing_add_renderer('kotti:templates/view/nav-local.pt')
         from kotti.views.slots import local_navigation
-        a, aa, ab, ac, aca, acb = create_contents()
+        a, aa, ab, ac, aca, acb = create_contents(root)
 
         with patch('kotti.views.slots.has_permission', return_value=True):
             assert local_navigation(ac, DummyRequest())['parent'] is not None
@@ -466,10 +464,10 @@ class TestLocalNavigationSlot:
         with patch('kotti.views.slots.has_permission', return_value=False):
             assert local_navigation(ac, DummyRequest())['parent'] is None
 
-    def test_in_navigation(self, config, db_session):
+    def test_in_navigation(self, config, root):
         config.testing_add_renderer('kotti:templates/view/nav-local.pt')
         from kotti.views.slots import local_navigation
-        a, aa, ab, ac, aca, acb = create_contents()
+        a, aa, ab, ac, aca, acb = create_contents(root)
 
         assert local_navigation(a, DummyRequest())['parent'] is not None
         aa.in_navigation = False
@@ -479,10 +477,10 @@ class TestLocalNavigationSlot:
 
 
 class TestNodesTree:
-    def test_it(self, db_session):
+    def test_it(self, root):
         from kotti.views.util import nodes_tree
 
-        a, aa, ab, ac, aca, acb = create_contents()
+        a, aa, ab, ac, aca, acb = create_contents(root)
         aa.in_navigation = False  # nodes_tree doesn't care
         tree = nodes_tree(DummyRequest())
         assert tree.id == a.__parent__.id
@@ -490,10 +488,10 @@ class TestNodesTree:
         assert [ch.id for ch in tree.children[0].children] == [
             aa.id, ab.id, ac.id]
 
-    def test_ordering(self, db_session):
+    def test_ordering(self, root):
         from kotti.views.util import nodes_tree
 
-        a, aa, ab, ac, aca, acb = create_contents()
+        a, aa, ab, ac, aca, acb = create_contents(root)
         a.children.insert(1, a.children.pop(0))
         tree = nodes_tree(DummyRequest())
         assert [ch.position for ch in tree.children[0].children] == [
@@ -501,10 +499,10 @@ class TestNodesTree:
         assert [ch.id for ch in tree.children[0].children] == [
             ab.id, aa.id, ac.id]
 
-    def test_tolist(self, db_session):
+    def test_tolist(self, root):
         from kotti.views.util import nodes_tree
 
-        a, aa, ab, ac, aca, acb = create_contents()
+        a, aa, ab, ac, aca, acb = create_contents(root)
         tree = nodes_tree(DummyRequest(), context=a)
         assert [ch for ch in tree.tolist()] == [a, aa, ab, ac, aca, acb]
 
