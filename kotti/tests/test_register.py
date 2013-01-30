@@ -31,7 +31,7 @@ class TestRegister:
         request.POST['register'] = u'register',
 
         with patch('kotti.views.login.UserAddFormView') as form:
-            with patch('kotti.views.login.get_principals') as getp:
+            with patch('kotti.views.login.get_principals'):
                 res = register(root, request)
                 form.assert_has_calls([call().add_user_success({
                     'name': u'test',
@@ -45,17 +45,16 @@ class TestRegister:
 
     def test_register_event(self, root):
         from kotti.views.login import register
-        from kotti.views.login import UserSelfRegistered
         request = DummyRequest()
         request.POST['title'] = u'Test User'
         request.POST['name'] = u'test'
         request.POST['email'] = u'test@example.com'
         request.POST['register'] = u'register',
 
-        with patch('kotti.views.login.UserAddFormView') as form:
-            with patch('kotti.views.login.get_principals') as getp:
+        with patch('kotti.views.login.UserAddFormView'):
+            with patch('kotti.views.login.get_principals'):
                 with patch('kotti.views.login.notify') as notify:
-                    res = register(root, request)
+                    register(root, request)
         assert(notify.call_count == 1)
 
     def test_register_submit_groups_and_roles(self, root):
@@ -69,7 +68,7 @@ class TestRegister:
         request.POST['register'] = u'register',
 
         with patch('kotti.views.login.UserAddFormView') as form:
-            with patch('kotti.views.login.get_principals') as getp:
+            with patch('kotti.views.login.get_principals'):
                 with patch('kotti.views.login.get_settings') as get_settings:
                     get_settings.return_value = {
                         'kotti.register.group': 'mygroup',
