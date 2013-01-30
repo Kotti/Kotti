@@ -1,6 +1,8 @@
 from StringIO import StringIO
 from mock import patch
-from kotti.testing import FunctionalTestBase
+
+from kotti.testing import BASE_URL
+from kotti.testing import user
 
 
 class TestLogin:
@@ -26,37 +28,31 @@ class TestForbidden:
         assert res.location == 'http://localhost/@@forbidden'
 
 
-class TestUploadFile(FunctionalTestBase):
+class TestUploadFile:
+
     def add_file(self, browser, contents='ABC'):
         file_ctrl = browser.getControl("File").mech_control
         file_ctrl.add_file(StringIO(contents), filename='my_image.gif')
         browser.getControl('save').click()
 
-    def get_browser(self):
-        browser = self.Browser()
-        browser.open(self.BASE_URL + '/edit')
-        browser.getControl("Username or email").value = 'admin'
-        browser.getControl("Password").value = 'secret'
-        browser.getControl(name="submit").click()
-        browser.open(self.BASE_URL + '/@@add_file')
-        return browser
-
-    def test_it(self):
-        browser = self.get_browser()
+    @user('admin')
+    def test_it(self, browser):
+        browser.open(BASE_URL + '/@@add_file')
         self.add_file(browser)
         assert "Successfully added item" in browser.contents
-        return browser
 
-    def test_view_uploaded_file(self):
-        browser = self.get_browser()
+    @user('admin')
+    def test_view_uploaded_file(self, browser):
+        browser.open(BASE_URL + '/@@add_file')
         self.add_file(browser)
         browser.getLink("View").click()
         browser.getLink("Download file").click()
         assert browser.contents == 'ABC'
 
-    def test_tempstorage(self):
-        browser = self.get_browser()
-        self.add_file(browser)
+    @user('admin')
+    def test_tempstorage(self, browser):
+        browser.open(BASE_URL + '/@@add_file')
+        self.add_file(browser, contents='DEF')
         browser.getLink("Edit").click()
         browser.getControl("Title").value = ''  # the error
         self.add_file(browser, contents='DEF')

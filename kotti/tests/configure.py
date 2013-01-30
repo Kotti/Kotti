@@ -31,7 +31,6 @@ def connection():
     # except that it explicitly binds the session to a specific connection
     # enabling us to use savepoints independent from the orm, thus allowing
     # to `rollback` after using `transaction.commit`...
-    from transaction import commit
     from sqlalchemy import create_engine
     from kotti.testing import testing_db_url
     from kotti import metadata, DBSession
@@ -40,16 +39,28 @@ def connection():
     DBSession.registry.clear()
     DBSession.configure(bind=connection)
     metadata.bind = engine
-    metadata.drop_all(engine)
-    metadata.create_all(engine)
-    for populate in settings()['kotti.populators']:
-        populate()
-    commit()
     return connection
 
 
+@fixture(scope='session')
+def content(connection):
+    from transaction import commit
+    from kotti import metadata
+    metadata.drop_all(connection.engine)
+    metadata.create_all(connection.engine)
+    # to create the default content with the correct workflow state
+    # the workflow must be initialized first;  please note that these
+    # settings won't persist, though;  use the `workflow` fixture if needed
+    from zope.configuration import xmlconfig
+    import kotti
+    xmlconfig.file('workflow.zcml', kotti, execute=True)
+    for populate in settings()['kotti.populators']:
+        populate()
+    commit()
+
+
 @fixture
-def db_session(config, connection, request):
+def db_session(config, content, connection, request):
     from transaction import abort
     trans = connection.begin()          # begin a non-orm transaction
     request.addfinalizer(trans.rollback)
@@ -74,12 +85,8 @@ def events(config, request):
 
 
 def setup_app():
-    from mock import patch
-    from kotti import main
-    with patch('kotti.resources.initialize_sql'):
-        with patch('kotti.engine_from_config'):
-            app = main({}, **settings())
-    return app
+    from kotti import base_configure
+    return base_configure({}, **settings()).make_wsgi_app()
 
 
 @fixture
@@ -91,14 +98,16 @@ def app(db_session):
 @fixture
 def browser(db_session, request):
     from wsgi_intercept import add_wsgi_intercept, zope_testbrowser
-    add_wsgi_intercept('example.com', 80, app)
-    browser = zope_testbrowser.WSGI_Browser('http://example.com/')
+    from kotti.testing import BASE_URL
+    host, port = BASE_URL.split(':')[-2:]
+    add_wsgi_intercept(host[2:], int(port), setup_app)
+    browser = zope_testbrowser.WSGI_Browser(BASE_URL + '/')
     if 'user' in request.keywords:
         # set auth cookie directly on the browser instance...
         from pyramid.security import remember
         from pyramid.testing import DummyRequest
         login = request.keywords['user'].args[0]
-        environ = dict(HTTP_HOST='example.com')
+        environ = dict(HTTP_HOST=host[2:])
         for _, value in remember(DummyRequest(environ=environ), login):
             cookie, _ = value.split(';', 1)
             name, value = cookie.split('=')
@@ -117,3 +126,16 @@ def extra_principals(db_session):
     P[u'group:bobsgroup'] = dict(name=u'group:bobsgroup', title=u"Bob's Group")
     P[u'group:franksgroup'] = dict(name=u'group:franksgroup',
         title=u"Frank's Group")
+
+
+@fixture
+def root(db_session):
+    from kotti.resources import get_root
+    return get_root()
+
+
+@fixture
+def workflow(config):
+    from zope.configuration import xmlconfig
+    import kotti
+    xmlconfig.file('workflow.zcml', kotti, execute=True)

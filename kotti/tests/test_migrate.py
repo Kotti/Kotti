@@ -1,12 +1,8 @@
-from unittest import TestCase
-
 from alembic.migration import MigrationContext
 from mock import patch
 
-from kotti.testing import UnitTestBase
 
-
-class TestScriptDirectoryWithDefaultEnvPy(TestCase):
+class TestScriptDirectoryWithDefaultEnvPy:
     def make(self):
         from kotti.migrate import ScriptDirectoryWithDefaultEnvPy
         from kotti.migrate import KOTTI_SCRIPT_DIR
@@ -33,14 +29,16 @@ class TestScriptDirectoryWithDefaultEnvPy(TestCase):
             assert lpf.call_args[0][1] == 'env.py'
 
 
-class TestPackageEnvironment(UnitTestBase):
+class TestPackageEnvironment:
     def make(self):
         from kotti.migrate import PackageEnvironment
         from kotti.migrate import DEFAULT_LOCATION
 
-        return PackageEnvironment(DEFAULT_LOCATION)
+        with patch('kotti.migrate.get_settings',
+            return_value={'sqlalchemy.url': u'database_url'}):
+            return PackageEnvironment(DEFAULT_LOCATION)
 
-    def test_pkg_name(self):
+    def test_pkg_name(self, db_session, events):
         assert self.make().pkg_name == 'kotti'
 
     def test_version_table(self):

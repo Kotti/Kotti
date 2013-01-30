@@ -1,18 +1,10 @@
 from mock import patch
 from pyramid.security import ALL_PERMISSIONS
-from zope.configuration import xmlconfig
 
 from kotti.testing import Dummy
-from kotti.testing import EventTestBase
-from kotti.testing import FunctionalTestBase
-from kotti.testing import UnitTestBase
 
 
-class TestWorkflow(EventTestBase, UnitTestBase):
-    def setUp(self):
-        super(TestWorkflow, self).setUp()
-        import kotti
-        xmlconfig.file('workflow.zcml', kotti, execute=True)
+class TestWorkflow:
 
     def test_workflow_callback(self):
         from kotti.workflow import workflow_callback
@@ -30,12 +22,12 @@ class TestWorkflow(EventTestBase, UnitTestBase):
             }
         workflow_callback(context, info)
 
-        self.assertEqual(sorted(context.__acl__), [
+        assert sorted(context.__acl__) == [
             ('Allow', 'role:me', 'myfirstpermission'),
             ('Allow', 'role:me', 'mysecondpermission'),
             ('Allow', 'role:you', 'yourpermission'),
             ('Deny', 'system.Everyone', ALL_PERMISSIONS),
-            ])
+            ]
 
     def test_workflow_callback_with_inheritance(self):
         from kotti.workflow import workflow_callback
@@ -54,11 +46,11 @@ class TestWorkflow(EventTestBase, UnitTestBase):
             }
         workflow_callback(context, info)
 
-        self.assertEqual(sorted(context.__acl__), [
+        assert sorted(context.__acl__) == [
             ('Allow', 'role:me', 'myfirstpermission'),
             ('Allow', 'role:me', 'mysecondpermission'),
             ('Allow', 'role:you', 'yourpermission'),
-            ])
+            ]
 
     def test_workflow_callback_event(self):
         from kotti.events import listeners
@@ -78,14 +70,14 @@ class TestWorkflow(EventTestBase, UnitTestBase):
         info.workflow._state_data = {"next_state": {}}
         workflow_callback(context, info)
 
-        self.assertEqual(len(events), 1)
+        assert len(events) == 1
         [event] = events
-        self.assertEqual(event.object, context)
-        self.assertEqual(event.info, info)
+        assert event.object is context
+        assert event.info is info
         assert isinstance(event, ObjectEvent)
 
 
-class TestResetWorkflow(UnitTestBase):
+class TestResetWorkflow:
     def call(self, *args, **kwargs):
         from kotti.workflow import reset_workflow
         return reset_workflow(*args, **kwargs)
@@ -111,7 +103,7 @@ class TestResetWorkflow(UnitTestBase):
         assert dummy.state == 'partying'
 
 
-class TestResetWorkflowCommand(UnitTestBase):
+class TestResetWorkflowCommand:
     def test_it(self):
         from kotti.workflow import reset_workflow_command
 
@@ -123,33 +115,28 @@ class TestResetWorkflowCommand(UnitTestBase):
                 reset_workflow.assert_called_with(purge_existing=True)
 
 
-class TestDefaultWorkflow(FunctionalTestBase):
-    def setUp(self):
-        from kotti.resources import get_root
+class TestDefaultWorkflow:
 
-        super(TestDefaultWorkflow, self).setUp()
-        self.root = get_root()
-
-    def make_document(self):
+    def make_document(self, root):
         from kotti import DBSession
         from kotti.resources import Document
 
-        content = self.root['document'] = Document()
+        content = root['document'] = Document()
         DBSession.flush()
         DBSession.refresh(content)
         return content
 
-    def test_workflow_root(self):
+    def test_workflow_root(self, root, workflow):
         from kotti.workflow import get_workflow
 
-        wf = get_workflow(self.root)
+        wf = get_workflow(root)
         assert wf.name == u'simple'
-        assert self.root.state == u'public'
+        assert root.state == u'public'
 
-    def test_workflow_new_content(self):
+    def test_workflow_new_content(self, root, workflow, events):
         from kotti.workflow import get_workflow
 
-        content = self.make_document()
+        content = self.make_document(root)
         wf = get_workflow(content)
         assert wf.name == u'simple'
         assert content.state == u'private'
@@ -158,18 +145,18 @@ class TestDefaultWorkflow(FunctionalTestBase):
         assert content.__acl__[-1] == (
             'Deny', 'system.Everyone', ALL_PERMISSIONS)
 
-    def test_workflow_transition(self):
+    def test_workflow_transition(self, root, workflow, events):
         from kotti.workflow import get_workflow
-        content = self.make_document()
+        content = self.make_document(root)
         wf = get_workflow(content)
         wf.transition_to_state(content, None, u'public')
         assert content.state == u'public'
 
-    def test_reset_workflow(self):
+    def test_reset_workflow(self, root, workflow, events):
         from kotti.workflow import get_workflow
         from kotti.workflow import reset_workflow
 
-        content = self.make_document()
+        content = self.make_document(root)
         wf = get_workflow(content)
         wf.transition_to_state(content, None, u'public')
         assert content.state == u'public'
@@ -179,11 +166,11 @@ class TestDefaultWorkflow(FunctionalTestBase):
         assert content.state == u'public'
         assert len(content.__acl__) == len(save_acl)
 
-    def test_reset_workflow_purge_existing(self):
+    def test_reset_workflow_purge_existing(self, root, workflow, events):
         from kotti.workflow import get_workflow
         from kotti.workflow import reset_workflow
 
-        content = self.make_document()
+        content = self.make_document(root)
         wf = get_workflow(content)
         wf.transition_to_state(content, None, u'public')
         assert content.state == u'public'
