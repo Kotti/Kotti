@@ -170,9 +170,8 @@ class TestApp:
         assert len(regsettings['pyramid.includes'].split()) == 2
         assert settings['kotti.includes'] in regsettings['pyramid.includes']
 
-    def test_pyramid_includes_overrides_base_includes(self, db_session):
+    def test_pyramid_includes_overrides_base_includes(self, root):
         from kotti import main
-        from kotti.resources import get_root
 
         settings = self.required_settings()
         settings['pyramid.includes'] = ('kotti.testing.includeme_login')
@@ -182,7 +181,7 @@ class TestApp:
         provides = [
             IViewClassifier,
             implementedBy(Request),
-            providedBy(get_root()),
+            providedBy(root),
             ]
         view = app.registry.adapters.lookup(provides, IView, name='login')
         assert view.__module__ == 'kotti.testing'
@@ -198,7 +197,7 @@ class TestApp:
 
     def test_root_factory(self, db_session):
         from kotti import main
-        from kotti.resources import get_root
+        from kotti.resources import get_root    # the `root` fixture doesn't work here
 
         settings = self.required_settings()
         settings['kotti.root_factory'] = (TestingRootFactory,)

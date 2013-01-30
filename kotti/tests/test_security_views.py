@@ -7,23 +7,19 @@ from kotti.testing import DummyRequest
 
 
 class TestUserManagement:
-    def test_roles(self, db_session):
-        from kotti.resources import get_root
+    def test_roles(self, root):
         from kotti.security import USER_MANAGEMENT_ROLES
         from kotti.views.users import users_manage
 
-        root = get_root()
         request = DummyRequest()
         assert (
             [r.name for r in users_manage(root, request)['available_roles']] ==
             USER_MANAGEMENT_ROLES)
 
-    def test_search(self, extra_principals):
-        from kotti.resources import get_root
+    def test_search(self, extra_principals, root):
         from kotti.security import get_principals
         from kotti.views.users import users_manage
 
-        root = get_root()
         request = DummyRequest()
         P = get_principals()
 
@@ -47,13 +43,11 @@ class TestUserManagement:
             (['group:bobsgroup', 'role:admin'], ['role:admin']))
         assert entries[1][1] == (['role:admin'], [])
 
-    def test_apply(self, extra_principals):
-        from kotti.resources import get_root
+    def test_apply(self, extra_principals, root):
         from kotti.security import get_principals
         from kotti.security import list_groups
         from kotti.views.users import users_manage
 
-        root = get_root()
         request = DummyRequest()
 
         bob = get_principals()[u'bob']
@@ -84,12 +78,10 @@ class TestUserManagement:
 
 
 class TestUserDelete:
-    def test_user_delete(self, events, extra_principals):
-        from kotti.resources import get_root
+    def test_user_delete(self, events, extra_principals, root):
         from kotti.security import get_principals
         from kotti.views.users import user_delete
 
-        root = get_root()
         request = DummyRequest()
         bob = get_principals()[u'bob']
 
@@ -118,12 +110,10 @@ class TestUserDelete:
         with pytest.raises(KeyError):
             get_principals()[u'bob']
 
-    def test_deleted_group_removed_in_usergroups(self, events, extra_principals):
-        from kotti.resources import get_root
+    def test_deleted_group_removed_in_usergroups(self, events, extra_principals, root):
         from kotti.security import get_principals
         from kotti.views.users import user_delete
 
-        root = get_root()
         request = DummyRequest()
         bob = get_principals()[u'bob']
         bob.groups = [u'group:bobsgroup']
@@ -136,14 +126,12 @@ class TestUserDelete:
             get_principals()[u'group:bobsgroup']
         assert bob.groups == []
 
-    def test_deleted_group_removed_from_localgroups(self, events, extra_principals):
+    def test_deleted_group_removed_from_localgroups(self, events, extra_principals, root):
         from kotti import DBSession
-        from kotti.resources import get_root
         from kotti.security import set_groups
         from kotti.resources import LocalGroup
         from kotti.views.users import user_delete
 
-        root = get_root()
         request = DummyRequest()
         set_groups(u'group:bobsgroup', root, ['role:admin'])
         local_group = DBSession.query(LocalGroup).first()
@@ -155,12 +143,10 @@ class TestUserDelete:
         user_delete(root, request)
         assert DBSession.query(LocalGroup).first() == None
 
-    def test_reset_owner_to_none(self, events, extra_principals):
-        from kotti.resources import get_root
+    def test_reset_owner_to_none(self, events, extra_principals, root):
         from kotti.resources import Content
         from kotti.views.users import user_delete
 
-        root = get_root()
         request = DummyRequest()
 
         root[u'content_1'] = Content()
@@ -195,8 +181,7 @@ class TestSetPassword:
     def form_values(self, values):
         self.Form_mock.return_value.validate.return_value = values
 
-    def test_success(self, db_session):
-        from kotti.resources import get_root
+    def test_success(self, root):
         from kotti.security import get_principals
         from kotti.views.login import set_password
 
@@ -208,7 +193,7 @@ class TestSetPassword:
             })
         self.user.confirm_token = 'mytoken'
         self.user.password = 'old_password'
-        context, request = get_root(), DummyRequest(post={'submit': 'submit'})
+        context, request = root, DummyRequest(post={'submit': 'submit'})
         self.user.last_login_date = None
         res = set_password(context, request)
 
@@ -218,8 +203,7 @@ class TestSetPassword:
             'mypassword', self.user.password)
         assert res.status == '302 Found'
 
-    def test_wrong_token(self, db_session):
-        from kotti.resources import get_root
+    def test_wrong_token(self, root):
         from kotti.security import get_principals
         from kotti.views.login import set_password
 
@@ -231,7 +215,7 @@ class TestSetPassword:
             })
         self.user.confirm_token = 'mytoken'
         self.user.password = 'old_password'
-        context, request = get_root(), DummyRequest(post={'submit': 'submit'})
+        context, request = root, DummyRequest(post={'submit': 'submit'})
         res = set_password(context, request)
 
         assert self.user.confirm_token == 'mytoken'
@@ -239,8 +223,7 @@ class TestSetPassword:
             'mypassword', self.user.password)
         assert not request.is_response(res)
 
-    def test_inactive_user(self, db_session):
-        from kotti.resources import get_root
+    def test_inactive_user(self, root):
         from kotti.security import get_principals
         from kotti.views.login import set_password
 
@@ -252,7 +235,7 @@ class TestSetPassword:
             })
         self.user.confirm_token = 'mytoken'
         self.user.password = 'old_password'
-        context, request = get_root(), DummyRequest(post={'submit': 'submit'})
+        context, request = root, DummyRequest(post={'submit': 'submit'})
         self.user.active = False
         self.user.last_login_date = None
         res = set_password(context, request)
@@ -263,8 +246,7 @@ class TestSetPassword:
             'mypassword', self.user.password)
         assert not request.is_response(res)
 
-    def test_success_continue(self, db_session):
-        from kotti.resources import get_root
+    def test_success_continue(self, root):
         from kotti.views.login import set_password
 
         self.form_values({
@@ -274,7 +256,7 @@ class TestSetPassword:
             'continue_to': 'http://example.com/here#there',
             })
         self.user.confirm_token = 'mytoken'
-        context, request = get_root(), DummyRequest(
+        context, request = root, DummyRequest(
             post={'submit': 'submit'})
         res = set_password(context, request)
 

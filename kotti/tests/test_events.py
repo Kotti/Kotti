@@ -2,15 +2,13 @@ from mock import patch
 
 
 class TestEvents:
-    def test_owner(self, db_session, events, dummy_request):
+    def test_owner(self, root, db_session, events, dummy_request):
         from kotti import DBSession
-        from kotti.resources import get_root
         from kotti.resources import Content
         from kotti.security import list_groups
         from kotti.security import list_groups_raw
         from kotti.util import clear_cache
 
-        root = get_root()
         with patch('kotti.events.authenticated_userid', return_value='bob'):
             child = root[u'child'] = Content()
             DBSession.flush()
@@ -26,10 +24,9 @@ class TestEvents:
         assert list_groups(u'bob', grandchild) == [u'role:owner']
         assert len(list_groups_raw(u'bob', grandchild)) == 0
 
-    def test_sqlalchemy_events(self, db_session, events):
+    def test_sqlalchemy_events(self, root, db_session, events):
         from kotti import events
         from kotti import DBSession
-        from kotti.resources import get_root
         from kotti.resources import Content
 
         insert_events = []
@@ -62,7 +59,6 @@ class TestEvents:
         lis[(events.ObjectDelete, None)].append(delete)
         lis[(events.ObjectAfterDelete, None)].append(after_delete)
 
-        root = get_root()
         child = root[u'child'] = Content()
         DBSession.flush()
         assert lengths() == (1, 0, 0, 0)
