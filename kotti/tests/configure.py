@@ -43,11 +43,17 @@ def connection():
 
 
 @fixture(scope='session')
-def content(workflow, connection):
+def content(connection):
     from transaction import commit
     from kotti import metadata
     metadata.drop_all(connection.engine)
     metadata.create_all(connection.engine)
+    # to create the default content with the correct workflow state
+    # the workflow must be initialized first;  please note that these
+    # settings won't persist, though;  use the `workflow` fixture if needed
+    from zope.configuration import xmlconfig
+    import kotti
+    xmlconfig.file('workflow.zcml', kotti, execute=True)
     for populate in settings()['kotti.populators']:
         populate()
     commit()
@@ -128,7 +134,7 @@ def root(db_session):
     return get_root()
 
 
-@fixture(scope='session')
+@fixture
 def workflow(config):
     from zope.configuration import xmlconfig
     import kotti
