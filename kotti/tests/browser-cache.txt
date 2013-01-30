@@ -4,11 +4,8 @@ Caching browser tests
 Setup
 -----
 
-  >>> from kotti.resources import get_root
-  >>> from kotti import testing
-  >>> tools = testing.setUpFunctional()
-  >>> browser = tools['Browser']()
-  >>> root = get_root()
+  >>> browser = get_fixture('browser')
+  >>> root = get_fixture('root')
 
 Some convenience functions:
 
@@ -24,6 +21,7 @@ Some convenience functions:
 Add a file and an image:
 
   >>> from kotti.resources import File, Image
+  >>> from kotti import testing
   >>> image = testing.asset('sendeschluss.jpg').read()
   >>> root['textfile'] = File("file contents", u"mytext.txt", u"text/plain")
   >>> root['image'] = Image(image, u"sendeschluss.jpg", u"image/jpeg")
