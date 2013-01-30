@@ -6,7 +6,7 @@ from pytest import fixture
 @fixture
 def app(db_session):
     from webtest import TestApp
-    from kotti.tests.fixtures import setup_app
+    from kotti.tests import setup_app
     return TestApp(setup_app())
 
 
