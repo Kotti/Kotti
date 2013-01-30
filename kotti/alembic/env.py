@@ -1,6 +1,7 @@
 from alembic import context
 import traceback
 import transaction
+from zope.sqlalchemy import mark_changed
 
 from kotti import DBSession
 from kotti import metadata
@@ -23,6 +24,7 @@ def run_migrations_online():
 
     try:
         context.run_migrations()
+        mark_changed(DBSession())
     except:
         traceback.print_exc()
         transaction.abort()
