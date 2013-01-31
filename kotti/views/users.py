@@ -445,9 +445,8 @@ class UserManageFormView(UserEditFormView):
     cancel_failure = cancel_success
 
     def delete_success(self, appstruct):
-        principals = get_principals()
-        user = principals.search(email=appstruct['email']).first()
-        location = "%s/@@delete-user?name=%s" % (self.request.application_url, user.name)
+        location = "%s/@@delete-user?name=%s" % (
+            self.request.application_url, self.request.params['name'])
         return HTTPFound(location=location)
 
 
