@@ -112,7 +112,7 @@ setup(name='Kotti',
       kotti-reset-workflow = kotti.workflow:reset_workflow_command
 
       [pytest11]
-      kotti = kotti.tests.configure
+      kotti = kotti.tests
       """,
       extras_require={
           'testing': tests_require,
