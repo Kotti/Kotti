@@ -7,11 +7,17 @@ from fanstatic import Library
 from fanstatic import Resource
 from js.bootstrap import bootstrap_js
 from js.bootstrap import bootstrap_responsive_css
-from js.jquery import jquery
-from js.jqueryui import bootstrap as jqueryui_bootstrap_theme
-from js.jquery_form import jquery_form
 from js.deform_bootstrap import deform_bootstrap_js
+from js.jquery import jquery
+from js.jquery_form import jquery_form
+from js.jqueryui import bootstrap as jqueryui_bootstrap_theme
+from js.jqueryui_tagit import tagit as ui_tagit
 
+
+# This is needed until ``kotti.views.form.deferred_tag_it_widget`` is converted
+# to a class with a ``requirements`` attribute (that would be auto_needed by
+# ``js.deform[_bootstrap]``).
+tagit = Group([ui_tagit, jqueryui_bootstrap_theme])
 
 # Kotti's resources
 lib_kotti = Library("kotti", "static")
