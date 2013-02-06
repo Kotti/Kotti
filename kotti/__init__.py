@@ -116,6 +116,11 @@ conf_defaults = {
     'kotti.register': 'False',
     'kotti.register.group': '',
     'kotti.register.role': '',
+    'kotti.user.add_form_view': 'kotti.views.users.UserAddFormView',
+    'kotti.user.manage_form_view': 'kotti.views.users.UserManageFormView',
+    'kotti.group.add_form_view': 'kotti.views.users.GroupAddFormView',
+    'kotti.group.manage_form_view': 'kotti.views.users.GroupManageFormView',
+    'kotti.preferences.form_view': 'kotti.views.users.PreferencesFormView',
     'pyramid_deform.template_search_path': 'kotti:templates/deform',
     }
 
@@ -135,6 +140,11 @@ conf_dotted = set([
     'kotti.fanstatic.edit_needed',
     'kotti.fanstatic.view_needed',
     'kotti.url_normalizer',
+    'kotti.user.add_form_view',
+    'kotti.user.manage_form_view',
+    'kotti.group.add_form_view',
+    'kotti.group.manage_form_view',
+    'kotti.preferences.form_view',
     ])
 
 

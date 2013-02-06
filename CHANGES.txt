@@ -9,6 +9,13 @@ Change History
   until the defered widget is replaced by a widget class that declares its
   requirements in the usual deform style.
 
+- Add settings for registering views used on user and group management
+  as well as user preferences. These are 'kotti.user.add_form_view',
+  'kotti.user.manage_form_view', 'kotti.group.add_form_view',
+  'kotti.group.manage_form_view' and 'kotti.preferences.form_view'.
+  This turns overriding more clean when we want to use a customized
+  schema and/or add some logic on those views.
+
 0.8b1 - 2012-12-30
 ------------------
 

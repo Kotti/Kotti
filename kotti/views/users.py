@@ -15,6 +15,7 @@ from pyramid.exceptions import Forbidden
 from pyramid.httpexceptions import HTTPFound
 from pyramid.view import view_config
 
+from kotti import get_settings
 from kotti.events import UserDeleted
 from kotti.events import notify
 from kotti.message import email_set_password
@@ -393,11 +394,14 @@ def users_manage(context, request):
     available_roles = [ROLES[role_name] for role_name in USER_MANAGEMENT_ROLES]
 
     # Add forms:
-    user_addform = UserAddFormView(context, request)()
+    settings = get_settings()
+    user_addform = settings.get(
+        'kotti.user.add_form_view')[0](context, request)()
     if request.is_response(user_addform):
         return user_addform
 
-    group_addform = GroupAddFormView(context, request)()
+    group_addform = settings.get(
+        'kotti.group.add_form_view')[0](context, request)()
     if request.is_response(group_addform):
         return group_addform
 
@@ -477,7 +481,9 @@ def user_manage(context, request):
         principal=principal,
         )
 
-    form_view = GroupManageFormView if is_group else UserManageFormView
+    settings = get_settings()
+    form_view = settings.get('kotti.group.manage_form_view')[0] \
+        if is_group else settings.get('kotti.user.manage_form_view')[0]
     form = form_view(principal, request)()
     if request.is_response(form):
         return form
@@ -547,7 +553,8 @@ def preferences(context, request):
     api.page_title = _(u"My preferences - ${title}",
                        mapping=dict(title=api.site_title))
 
-    form = PreferencesFormView(user, request)()
+    settings = get_settings()
+    form = settings.get('kotti.preferences.form_view')[0](user, request)()
 
     if request.is_response(form):
         return form
