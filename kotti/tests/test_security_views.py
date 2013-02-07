@@ -9,28 +9,28 @@ from kotti.testing import DummyRequest
 class TestUserManagement:
     def test_roles(self, root):
         from kotti.security import USER_MANAGEMENT_ROLES
-        from kotti.views.users import users_manage
+        from kotti.views.users import UsersManage
 
         request = DummyRequest()
-        assert (
-            [r.name for r in users_manage(root, request)['available_roles']] ==
-            USER_MANAGEMENT_ROLES)
+        assert ([r.name
+                 for r in UsersManage(root, request)()['available_roles']] ==
+                USER_MANAGEMENT_ROLES)
 
     def test_search(self, extra_principals, root):
         from kotti.security import get_principals
-        from kotti.views.users import users_manage
+        from kotti.views.users import UsersManage
 
         request = DummyRequest()
         P = get_principals()
 
         request.params['search'] = u''
         request.params['query'] = u'Joe'
-        entries = users_manage(root, request)['entries']
+        entries = UsersManage(root, request)()['entries']
         assert len(entries) == 0
         assert (request.session.pop_flash('info') ==
             [u'No users or groups found.'])
         request.params['query'] = u'Bob'
-        entries = users_manage(root, request)['entries']
+        entries = UsersManage(root, request)()['entries']
         assert entries[0][0] == P['bob']
         assert entries[0][1] == ([], [])
         assert entries[1][0] == P['group:bobsgroup']
@@ -38,7 +38,7 @@ class TestUserManagement:
 
         P[u'bob'].groups = [u'group:bobsgroup']
         P[u'group:bobsgroup'].groups = [u'role:admin']
-        entries = users_manage(root, request)['entries']
+        entries = UsersManage(root, request)()['entries']
         assert (entries[0][1] ==
             (['group:bobsgroup', 'role:admin'], ['role:admin']))
         assert entries[1][1] == (['role:admin'], [])
@@ -46,14 +46,14 @@ class TestUserManagement:
     def test_apply(self, extra_principals, root):
         from kotti.security import get_principals
         from kotti.security import list_groups
-        from kotti.views.users import users_manage
+        from kotti.views.users import UsersManage
 
         request = DummyRequest()
 
         bob = get_principals()[u'bob']
 
         request.params['apply'] = u''
-        users_manage(root, request)
+        UsersManage(root, request)()
         assert (request.session.pop_flash('info') == [u'No changes made.'])
         assert list_groups('bob') == []
         bob.groups = [u'role:special']
@@ -63,7 +63,7 @@ class TestUserManagement:
         request.params['orig-role::bob::role:owner'] = u''
         request.params['orig-role::bob::role:editor'] = u''
 
-        users_manage(root, request)
+        UsersManage(root, request)()
         assert (request.session.pop_flash('success') ==
             [u'Your changes have been saved.'])
         assert (
