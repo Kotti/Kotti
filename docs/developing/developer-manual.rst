@@ -185,6 +185,19 @@ a different factory.  The default setting here is:
 
   kotti.principals_factory = kotti.security.principals_factory
 
+There are views that you might want to override when you override the
+principal factory. That is, if you use different columns in the
+database, then you will probably want to make changes to the deform
+schema as well.
+
+These views are :class:`kotti.views.users.UsersManage`,
+:class:`kotti.views.users.UserManage` and
+:class:`kotti.views.users.Preferences`. Notice that you should
+override them using the standard way, that is, by overriding
+``setup_users``, ``setup_user`` or ``prefs`` views. Then you can
+override any sub-view used inside them as well as include any logic
+for your usecase when it is called, if needed.
+
 Fork and Repo Setup
 -------------------
 
