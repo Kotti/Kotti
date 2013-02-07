@@ -14,8 +14,8 @@ from deform.widget import SequenceWidget
 from pyramid.exceptions import Forbidden
 from pyramid.httpexceptions import HTTPFound
 from pyramid.view import view_config
+from pyramid_deform import FormView
 
-from kotti import get_settings
 from kotti.events import UserDeleted
 from kotti.events import notify
 from kotti.message import email_set_password
@@ -361,57 +361,64 @@ class GroupAddFormView(UserAddFormView):
 @view_config(name='setup-users', permission='admin',
              custom_predicates=(is_root,),
              renderer='kotti:templates/site-setup/users.pt')
-def users_manage(context, request):
-    api = template_api(
-        context, request,
-        cp_links=CONTROL_PANEL_LINKS,
-        )
-    api.page_title = _(u"User Management - ${title}",
-                       mapping=dict(title=api.site_title))
+class UsersManage(FormView):
 
-    principals = get_principals()
+    UserAddFormView = UserAddFormView
+    GroupAddFormView = GroupAddFormView
 
-    def groups_lister(principal_name, context):
-        return principals[principal_name].groups
+    def __init__(self, context, request):
+        self.context = context
+        self.request = request
 
-    # Handling the user/roles matrix:
-    changed = roles_form_handler(
-        context, request, USER_MANAGEMENT_ROLES, groups_lister)
-    if changed:
-        changed_names = []
-        for (principal_name, context, groups) in changed:
-            principal = principals[principal_name]
-            principal.groups = list(groups)
-            changed_names.append(principal_name)
-        location = request.url.split('?')[0] + '?' + urlencode(
-            {'extra': ','.join(changed_names)})
-        return HTTPFound(location=location)
+    def __call__(self):
+        api = template_api(
+            self.context, self.request,
+            cp_links=CONTROL_PANEL_LINKS,
+            )
+        api.page_title = _(u"User Management - ${title}",
+                           mapping=dict(title=api.site_title))
 
-    extra = request.params.get('extra') or ()
-    if extra:
-        extra = extra.split(',')
-    search_entries = search_principals(request, extra=extra)
-    available_roles = [ROLES[role_name] for role_name in USER_MANAGEMENT_ROLES]
+        principals = get_principals()
 
-    # Add forms:
-    settings = get_settings()
-    user_addform = settings.get(
-        'kotti.user.add_form_view')[0](context, request)()
-    if request.is_response(user_addform):
-        return user_addform
+        def groups_lister(principal_name, context):
+            return principals[principal_name].groups
 
-    group_addform = settings.get(
-        'kotti.group.add_form_view')[0](context, request)()
-    if request.is_response(group_addform):
-        return group_addform
+        # Handling the user/roles matrix:
+        changed = roles_form_handler(
+            self.context, self.request, USER_MANAGEMENT_ROLES, groups_lister)
+        if changed:
+            changed_names = []
+            for (principal_name, context, groups) in changed:
+                principal = principals[principal_name]
+                principal.groups = list(groups)
+                changed_names.append(principal_name)
+            location = self.request.url.split('?')[0] + '?' + urlencode(
+                {'extra': ','.join(changed_names)})
+            return HTTPFound(location=location)
 
-    return {
-        'api': api,
-        'entries': search_entries,
-        'available_roles': available_roles,
-        'user_addform': user_addform['form'],
-        'group_addform': group_addform['form'],
-        }
+        extra = self.request.params.get('extra') or ()
+        if extra:
+            extra = extra.split(',')
+        search_entries = search_principals(self.request, extra=extra)
+        available_roles = [ROLES[role_name]
+                           for role_name in USER_MANAGEMENT_ROLES]
+
+        # Add forms:
+        user_addform = self.UserAddFormView(self.context, self.request)()
+        if self.request.is_response(user_addform):
+            return user_addform
+
+        group_addform = self.GroupAddFormView(self.context, self.request)()
+        if self.request.is_response(group_addform):
+            return group_addform
+
+        return {
+            'api': api,
+            'entries': search_entries,
+            'available_roles': available_roles,
+            'user_addform': user_addform['form'],
+            'group_addform': group_addform['form'],
+            }
 
 
 class UserEditFormView(EditFormView):
@@ -465,33 +472,41 @@ class GroupManageFormView(UserManageFormView):
 @view_config(name='setup-user', permission='admin',
              custom_predicates=(is_root, ),
              renderer='kotti:templates/site-setup/user.pt')
-def user_manage(context, request):
-    user_or_group = request.params['name']
-    principal = get_principals()[user_or_group]
+class UserManage(FormView):
 
-    is_group = user_or_group.startswith("group:")
-    principal_type = _(u"Group") if is_group else _(u"User")
+    GroupManageFormView = GroupManageFormView
+    UserManageFormView = UserManageFormView
 
-    api = template_api(
-        context, request,
-        page_title=_(u"Edit ${principal_type} - ${title}",
-                     mapping=dict(principal_type=principal_type,
-                                  title=context.title)),
-        cp_links=CONTROL_PANEL_LINKS,
-        principal=principal,
-        )
+    def __init__(self, context, request):
+        self.context = context
+        self.request = request
 
-    settings = get_settings()
-    form_view = settings.get('kotti.group.manage_form_view')[0] \
-        if is_group else settings.get('kotti.user.manage_form_view')[0]
-    form = form_view(principal, request)()
-    if request.is_response(form):
-        return form
+    def __call__(self):
+        user_or_group = self.request.params['name']
+        principal = get_principals()[user_or_group]
 
-    return {
-        'api': api,
-        'form': form['form'],
-        }
+        is_group = user_or_group.startswith("group:")
+        principal_type = _(u"Group") if is_group else _(u"User")
+
+        api = template_api(
+            self.context, self.request,
+            page_title=_(u"Edit ${principal_type} - ${title}",
+                         mapping=dict(principal_type=principal_type,
+                                      title=self.context.title)),
+            cp_links=CONTROL_PANEL_LINKS,
+            principal=principal,
+            )
+
+        form_view = self.GroupManageFormView if is_group \
+            else self.UserManageFormView
+        form = form_view(principal, self.request)()
+        if self.request.is_response(form):
+            return form
+
+        return {
+            'api': api,
+            'form': form['form'],
+            }
 
 
 @view_config(name='delete-user', permission='admin',
@@ -544,26 +559,33 @@ class PreferencesFormView(UserEditFormView):
 
 @view_config(name='prefs', custom_predicates=(is_root, ),
              renderer='kotti:templates/edit/simpleform.pt')
-def preferences(context, request):
-    user = request.user
-    if user is None:
-        raise Forbidden()
+class Preferences(FormView):
 
-    api = template_api(context, request)
-    api.page_title = _(u"My preferences - ${title}",
-                       mapping=dict(title=api.site_title))
+    PreferencesFormView = PreferencesFormView
 
-    settings = get_settings()
-    form = settings.get('kotti.preferences.form_view')[0](user, request)()
+    def __init__(self, context, request):
+        self.context = context
+        self.request = request
 
-    if request.is_response(form):
-        return form
+    def __call__(self):
+        user = self.request.user
+        if user is None:
+            raise Forbidden()
 
-    return {
-        'api': api,
-        'form': form['form'],
-        'macro': api.macro('kotti:templates/site-setup/master.pt'),
-        }
+        api = template_api(self.context, self.request)
+        api.page_title = _(u"My preferences - ${title}",
+                           mapping=dict(title=api.site_title))
+
+        form = self.PreferencesFormView(user, self.request)()
+
+        if self.request.is_response(form):
+            return form
+
+        return {
+            'api': api,
+            'form': form['form'],
+            'macro': api.macro('kotti:templates/site-setup/master.pt'),
+            }
 
 
 def includeme(config):
