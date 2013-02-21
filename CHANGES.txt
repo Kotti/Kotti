@@ -4,10 +4,20 @@ Change History
 0.8 - Unreleased
 ----------------
 
+0.8b2 - 2013-02-08
+------------------
+
+- Fix Kotti's tests to no longer trigger deprecation warnings.
+  Kotti's funcargs need to be better documented still, see #141.
+
 - Add a fanstatic.Group 'tagit' and need() it in the defered widget. This is
   needed to make the tags widget render correctly with a theme package enabled
   until the defered widget is replaced by a widget class that declares its
   requirements in the usual deform style.
+
+- Transform ``setup_users``, ``setup_user`` and ``prefs`` views into
+  class-based views. Add a little text at subsection ``Security`` on
+  developer manual mentioning those views.
 
 0.8b1 - 2012-12-30
 ------------------
