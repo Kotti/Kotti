@@ -4,6 +4,10 @@ Change History
 0.8 - Unreleased
 ----------------
 
+- Fix ordering on how ``include_me`` functions are loaded. This puts
+  Kotti's own and Kotti add-on search paths in front of
+  deform_bootstrap's.
+
 0.8b2 - 2013-02-08
 ------------------
 
