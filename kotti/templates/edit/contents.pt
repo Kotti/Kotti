@@ -16,7 +16,8 @@
           <span class="text-info" i18n:translate="">No content in document.</span>
         </tal:no-content>
 
-        <table id="contents-table" class="table table-condensed"
+        <table id="contents-table"
+          class="table table-condensed table-striped table-hover"
           tal:condition="children">
           <thead>
             <tr>
@@ -38,11 +39,11 @@
                   <a href="${request.resource_url(child, '@@contents')}">
                       ${child.title}
                   </a>
-                  <div tal:condition="child.type_info.name == 'Image'">
-                    <img src="${request.resource_url(child, 'image/span1')}"
-                      class="thumb" title="${child.title}"
-                      data-content="<img src='${request.resource_url(child, 'image/span4')}' />" />
-                  </div>
+                  <br tal:condition="child.type_info.name == 'Image'" />
+                  <img src="${request.resource_url(child, 'image/span1')}"
+                    class="thumb" title="${child.title}"
+                    data-content="<img src='${request.resource_url(child, 'image/span4')}' />"
+                    tal:condition="child.type_info.name == 'Image'" />
               </td>
               <td>
                 ${child.type_info.title}

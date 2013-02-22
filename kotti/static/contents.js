@@ -18,7 +18,6 @@ $(function() {
                     break;
                 }
             }
-            console.log("Move from " + oldPosition + " to " + newPosition);
             $.post(
                 'move-child-position',
                 {from: oldPosition, to: newPosition},
