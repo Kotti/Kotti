@@ -37,6 +37,11 @@
                   <a href="${request.resource_url(child, '@@contents')}">
                       ${child.title}
                   </a>
+                  <div tal:condition="child.type_info.name == 'Image'">
+                    <img src="${request.resource_url(child, 'image/span1')}"
+                      class="thumb" title="${child.title}"
+                      data-content="<img src='${request.resource_url(child, 'image/span4')}' />" />
+                  </div>
               </td>
               <td>
                 ${child.type_info.title}
