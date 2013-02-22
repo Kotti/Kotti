@@ -1,5 +1,10 @@
 $(function() {
 
+    // toggle all checkbox
+    $('#toggle-all').change(function(e) {
+        $('input[type=checkbox]').attr('checked', $(this).is(':checked'));
+    });
+
     // image preview popovers in contents view
     $('.document-view.content img.thumb').popover({
         html: true,

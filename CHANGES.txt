@@ -12,6 +12,8 @@ Change History
 
 - Add drag'n'drop ordering support to @@contents view.
 
+- Add "toggle all" checkbox to @@contents view.
+
 0.8b2 - 2013-02-08
 ------------------
 

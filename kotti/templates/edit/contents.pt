@@ -21,7 +21,7 @@
           tal:condition="children">
           <thead>
             <tr>
-              <th></th>
+              <th><input type="checkbox" id="toggle-all" /></th>
               <th i18n:translate="">Title</th>
               <th i18n:translate="">Type</th>
               <th i18n:translate="">State</th>
