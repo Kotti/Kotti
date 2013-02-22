@@ -13,9 +13,10 @@ except IOError:
     README = AUTHORS = CHANGES = ''
 
 install_requires = [
-    'alembic',
     'Babel',
     'Chameleon>=2.7.4',  # Fixes error when raising HTTPFound
+    'Pillow',  # dependency of plone.scale
+    'alembic',
     'colander>=0.9.3',
     'deform>=0.9.4',  # deform_bootstrap (needs fixing there)
     'deform_bootstrap>=0.1',  # checked_input widget
@@ -27,12 +28,12 @@ install_requires = [
     'js.deform_bootstrap>=0.2.4-1',
     'js.jquery',
     'js.jquery_form',
+    'js.jquery_tablednd',
     'js.jquery_timepicker_addon',
     'js.jqueryui>=1.8.24',
     'js.jqueryui_tagit',
     'kotti_tinymce>=0.3.2',
     'lingua>=1.3',
-    'Pillow',  # dependency of plone.scale
     'plone.scale',  # needed for image resizing capabilities
     'py-bcrypt',
     'pyramid>=1.3',  # needed for kotti_tinymce

@@ -11,7 +11,7 @@ from pyramid.view import view_defaults
 
 from kotti import DBSession
 from kotti import get_settings
-from kotti.fanstatic import edit_needed
+from kotti.fanstatic import contents_view_js
 from kotti.interfaces import IContent
 from kotti.resources import get_root
 from kotti.resources import Node
@@ -487,7 +487,7 @@ def contents(context, request):
              template for rendering.
     :rtype: pyramid.httpexceptions.HTTPFound or dict
     """
-    edit_needed.need()
+    contents_view_js.need()
     buttons = contents_buttons(context, request)
     for button in buttons:
         if button.path in request.POST:
