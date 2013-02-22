@@ -506,6 +506,43 @@ def contents(context, request):
             }
 
 
+@view_config(name='move-child-position', permission='edit',
+             request_method="POST", renderer="json")
+def move_child_position(context, request):
+    """ Move the child from one position to another.
+
+    :param context: "Container" node in which the child changes its position.
+    :type context: :class:kotti.resources.Node or descendant
+
+    :param request: Current request (of method POST).  Must contain "from" and
+                    "to" params that contain the 0-based old (i.e. the current
+                    index of the child to be moved) and new position (its new
+                    index) values.
+    :type request:
+    :result: JSON serializable bject with a single attribute ("result") that is
+             either "success" or "error".
+    :rtype: dict
+    """
+
+    data = request.POST
+
+    if ('from' in data) and ('to' in data):
+        try:
+            oldPosition = int(data['from'])
+            newPosition = int(data['to'])
+            # sqlalchemy.ext.orderinglist takes care of the "right" sequence
+            # numbers (immediately consecutive, starting with 0) for us.
+            context._children.insert(newPosition,
+                                     context._children.pop(oldPosition))
+            result = 'success'
+        except:
+            result = 'error'
+    else:
+        result = 'error'
+
+    return {"result": result}
+
+
 @view_config(name='workflow-dropdown', permission='edit',
              renderer='kotti:templates/workflow-dropdown.pt')
 def workflow(context, request):
