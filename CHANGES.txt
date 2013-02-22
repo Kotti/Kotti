@@ -8,6 +8,10 @@ Change History
   Kotti's own and Kotti add-on search paths in front of
   deform_bootstrap's.
 
+- Add image thumbs with preview popovers to @@contents view.
+
+- Add drag'n'drop ordering support to @@contents view.
+
 0.8b2 - 2013-02-08
 ------------------
 
