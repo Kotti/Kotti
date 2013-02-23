@@ -17,7 +17,7 @@ install_requires = [
     'Babel',
     'Chameleon>=2.7.4',  # Fixes error when raising HTTPFound
     'colander>=0.9.3',
-    'deform>=0.9.4',  # deform_bootstrap (needs fixing there)
+    'deform>=0.9.6',  # deform_bootstrap (needs fixing there)
     'deform_bootstrap>=0.1',  # checked_input widget
     'docopt',
     'formencode',
