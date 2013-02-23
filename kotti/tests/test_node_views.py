@@ -180,6 +180,57 @@ class TestNodeMove:
         assert root['child1'].position > root['child3'].position
         assert root['child2'].position > root['child3'].position
 
+    def test_move_child_position(self, root, db_session):
+
+        import transaction
+
+        from kotti.resources import Document
+        from kotti.resources import get_root
+        from kotti.views.edit.actions import move_child_position
+
+        # Create some documents
+        root['child1'] = Document(title=u"Child 1")
+        root['child2'] = Document(title=u"Child 2")
+        root['child3'] = Document(title=u"Child 3")
+        root['child4'] = Document(title=u"Child 4")
+        root['child5'] = Document(title=u"Child 5")
+
+        assert [c.position for c in root._children] == [0, 1, 2, 3, 4]
+        assert [c.name for c in root._children] == [
+            u'child1', u'child2', u'child3', u'child4', u'child5']
+
+        request = DummyRequest()
+
+        # Move down
+        request.POST = {'from': '0', 'to': '3'}
+        result = move_child_position(root, request)
+        transaction.commit()
+        root = get_root()
+        assert result['result'] == 'success'
+        assert [c.position for c in root._children] == [0, 1, 2, 3, 4]
+        assert [c.name for c in root._children] == [
+        u'child2', u'child3', u'child4', u'child1', u'child5']
+
+        # Move up
+        request.POST = {'from': '4', 'to': '0'}
+        move_child_position(root, request)
+        transaction.commit()
+        root = get_root()
+        assert result['result'] == 'success'
+        assert [c.position for c in root._children] == [0, 1, 2, 3, 4]
+        assert [c.name for c in root._children] == [
+        u'child5', u'child2', u'child3', u'child4', u'child1']
+
+        # Invalid param value
+        request.POST = {'from': 'a', 'to': '3'}
+        result = move_child_position(root, request)
+        assert result['result'] == 'error'
+
+        # Missing param
+        request.POST = {'from': 'a', }
+        result = move_child_position(root, request)
+        assert result['result'] == 'error'
+
 
 class TestNodeShowHide:
     def test_show_hide(self, root):
