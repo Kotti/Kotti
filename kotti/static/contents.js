@@ -25,7 +25,10 @@ $(function() {
             }
             $.post(
                 'move-child-position',
-                {from: oldPosition, to: newPosition},
+                {
+                    from: oldPosition,
+                    to: newPosition
+                },
                 function (response) {
                     if (response.result == 'success') {
                         // "renumber" rows on success
