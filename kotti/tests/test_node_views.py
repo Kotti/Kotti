@@ -231,6 +231,14 @@ class TestNodeMove:
         result = move_child_position(root, request)
         assert result['result'] == 'error'
 
+        # we have to clean up, because we committed transactions
+        del root['child1']
+        del root['child2']
+        del root['child3']
+        del root['child4']
+        del root['child5']
+        transaction.commit()
+
 
 class TestNodeShowHide:
     def test_show_hide(self, root):
