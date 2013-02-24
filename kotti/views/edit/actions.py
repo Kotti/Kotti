@@ -11,7 +11,7 @@ from pyramid.view import view_defaults
 
 from kotti import DBSession
 from kotti import get_settings
-from kotti.fanstatic import edit_needed
+from kotti.fanstatic import contents_view_js
 from kotti.interfaces import IContent
 from kotti.resources import get_root
 from kotti.resources import Node
@@ -487,7 +487,7 @@ def contents(context, request):
              template for rendering.
     :rtype: pyramid.httpexceptions.HTTPFound or dict
     """
-    edit_needed.need()
+    contents_view_js.need()
     buttons = contents_buttons(context, request)
     for button in buttons:
         if button.path in request.POST:
@@ -504,6 +504,50 @@ def contents(context, request):
     return {'children': context.children_with_permission(request),
             'buttons': buttons,
             }
+
+
+@view_config(name='move-child-position', permission='edit',
+             request_method="POST", renderer="json")
+def move_child_position(context, request):
+    """ Move the child from one position to another.
+
+    :param context: "Container" node in which the child changes its position.
+    :type context: :class:kotti.resources.Node or descendant
+
+    :param request: Current request (of method POST).  Must contain "from" and
+                    "to" params that contain the 0-based old (i.e. the current
+                    index of the child to be moved) and new position (its new
+                    index) values.
+    :type request:
+    :result: JSON serializable bject with a single attribute ("result") that is
+             either "success" or "error".
+    :rtype: dict
+    """
+
+    data = request.POST
+
+    if ('from' in data) and ('to' in data):
+
+        max_pos = len(context.children) - 1
+
+        try:
+            oldPosition = int(data['from'])
+            newPosition = int(data['to'])
+            if not ((0 <= oldPosition <= max_pos) and
+                    (0 <= newPosition <= max_pos)):
+                raise ValueError
+        except ValueError:
+            return {'result': 'error'}
+
+        # sqlalchemy.ext.orderinglist takes care of the "right" sequence
+        # numbers (immediately consecutive, starting with 0) for us.
+        context.children.insert(newPosition,
+                                context.children.pop(oldPosition))
+        result = 'success'
+    else:
+        result = 'error'
+
+    return {'result': result}
 
 
 @view_config(name='workflow-dropdown', permission='edit',
