@@ -226,6 +226,14 @@ class TestNodeMove:
         result = move_child_position(root, request)
         assert result['result'] == 'error'
 
+        request.POST = {'from': '0', 'to': '10'}
+        result = move_child_position(root, request)
+        assert result['result'] == 'error'
+
+        request.POST = {'from': '10', 'to': '0'}
+        result = move_child_position(root, request)
+        assert result['result'] == 'error'
+
         # Missing param
         request.POST = {'from': 'a', }
         result = move_child_position(root, request)

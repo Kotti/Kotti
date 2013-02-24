@@ -527,20 +527,27 @@ def move_child_position(context, request):
     data = request.POST
 
     if ('from' in data) and ('to' in data):
+
+        max_pos = len(context.children) - 1
+
         try:
             oldPosition = int(data['from'])
             newPosition = int(data['to'])
-            # sqlalchemy.ext.orderinglist takes care of the "right" sequence
-            # numbers (immediately consecutive, starting with 0) for us.
-            context._children.insert(newPosition,
-                                     context._children.pop(oldPosition))
-            result = 'success'
-        except:
-            result = 'error'
+            if not ((0 <= oldPosition <= max_pos) and
+                    (0 <= newPosition <= max_pos)):
+                raise ValueError
+        except ValueError:
+            return {'result': 'error'}
+
+        # sqlalchemy.ext.orderinglist takes care of the "right" sequence
+        # numbers (immediately consecutive, starting with 0) for us.
+        context.children.insert(newPosition,
+                                context.children.pop(oldPosition))
+        result = 'success'
     else:
         result = 'error'
 
-    return {"result": result}
+    return {'result': result}
 
 
 @view_config(name='workflow-dropdown', permission='edit',
