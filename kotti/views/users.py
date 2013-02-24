@@ -434,7 +434,7 @@ class UserManageFormView(UserEditFormView):
 
     buttons = (Button('save', _(u'Save')),
                Button('cancel', _(u'Cancel')),
-               Button('delete', _(u'Delete')))
+               Button('delete', _(u'Delete'), css_class='btn btn-danger'))
 
     def schema_factory(self):
         schema = user_schema()
