@@ -10,6 +10,7 @@ from js.bootstrap import bootstrap_responsive_css
 from js.deform_bootstrap import deform_bootstrap_js
 from js.jquery import jquery
 from js.jquery_form import jquery_form
+from js.jquery_tablednd import jquery_tablednd
 from js.jqueryui import bootstrap as jqueryui_bootstrap_theme
 from js.jqueryui_tagit import tagit as ui_tagit
 
@@ -25,6 +26,11 @@ kotti_js = Resource(lib_kotti,
     "kotti.js",
     depends=[deform_bootstrap_js],
     minified="kotti.min.js",
+    bottom=True)
+contents_view_js = Resource(lib_kotti,
+    "contents.js",
+    depends=[kotti_js, jquery_tablednd, ],
+    minified="contents.min.js",
     bottom=True)
 base_css = Resource(lib_kotti,
     "base.css",

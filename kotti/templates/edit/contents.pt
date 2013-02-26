@@ -16,10 +16,12 @@
           <span class="text-info" i18n:translate="">No content in document.</span>
         </tal:no-content>
 
-        <table class="table table-condensed" tal:condition="children">
+        <table id="contents-table"
+          class="table table-condensed table-striped table-hover"
+          tal:condition="children">
           <thead>
             <tr>
-              <th></th>
+              <th><input type="checkbox" id="toggle-all" /></th>
               <th i18n:translate="">Title</th>
               <th i18n:translate="">Type</th>
               <th i18n:translate="">State</th>
@@ -29,7 +31,7 @@
             </tr>
             </thead>
             <tbody>
-            <tr tal:repeat="child children">
+            <tr tal:repeat="child children" id="${child.position}">
               <td>
                   <input name="children" type="checkbox" value="${child.id}" />
               </td>
@@ -37,11 +39,11 @@
                   <a href="${request.resource_url(child, '@@contents')}">
                       ${child.title}
                   </a>
-                  <div tal:condition="child.type_info.name == 'Image'">
-                    <img src="${request.resource_url(child, 'image/span1')}"
-                      class="thumb" title="${child.title}"
-                      data-content="<img src='${request.resource_url(child, 'image/span4')}' />" />
-                  </div>
+                  <br tal:condition="child.type_info.name == 'Image'" />
+                  <img src="${request.resource_url(child, 'image/span1')}"
+                    class="thumb" title="${child.title}"
+                    data-content="<img src='${request.resource_url(child, 'image/span4')}' />"
+                    tal:condition="child.type_info.name == 'Image'" />
               </td>
               <td>
                 ${child.type_info.title}
