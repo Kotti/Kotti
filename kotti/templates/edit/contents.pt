@@ -11,6 +11,20 @@
 
     <div class="body">
 
+      <div id="contents-path"
+           tal:define="items python: reversed(api.lineage)">
+          <tal:repeat tal:repeat="item items">
+            <a tal:define="first repeat.item.start; last repeat.item.end;"
+               class="btn btn-small" name="${item.name}"
+               href="${request.resource_url(item, '@@contents')}">
+                <i tal:condition="first" class="icon-home"></i>
+                <i tal:condition="not: first or last" class="icon-folder-close"></i>
+                <i tal:condition="last and not first" class="icon-folder-open"></i>
+                ${item.title}
+            </a>
+          </tal:repeat>
+      </div>
+
       <form action="${request.resource_url(context)}@@contents" method="post">
         <tal:no-content tal:condition="not:children">
           <span class="text-info" i18n:translate="">No content in document.</span>
