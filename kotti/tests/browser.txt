@@ -520,6 +520,17 @@ Contents view actions
   >>> "some.txt deleted." in browser.contents
   True
 
+  >>> browser.open(testing.BASE_URL + '/forth-child/@@contents')
+  >>> "Welcome to Kotti" in browser.contents
+  True
+  >>> '<i class="icon-home"></i>' in browser.contents
+  True
+  >>> '<i class="icon-folder-open"></i>' in browser.contents
+  True
+  >>> '<i class="icon-folder-close"></i>' in browser.contents
+  False
+
+
 Contents view change state actions
 ----------------------------------
 

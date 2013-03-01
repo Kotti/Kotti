@@ -14,6 +14,8 @@ Change History
 
 - Add "toggle all" checkbox to @@contents view.
 
+- Add contents path bar to @@contents view.
+
 0.8b2 - 2013-02-08
 ------------------
 
