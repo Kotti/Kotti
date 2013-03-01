@@ -35,7 +35,7 @@ install_requires = [
     'kotti_tinymce>=0.3.2',
     'lingua>=1.3',
     'plone.scale',  # needed for image resizing capabilities
-    'py-bcrypt',
+    'py_bcrypt',
     'pyramid>=1.3',  # needed for kotti_tinymce
     'pyramid_beaker',
     'pyramid_debugtoolbar',
