@@ -1,8 +1,8 @@
 Change History
 ==============
 
-0.8 - Unreleased
-----------------
+0.9a1 - 2013-03-12
+------------------
 
 - Fix ordering on how ``include_me`` functions are loaded. This puts
   Kotti's own and Kotti add-on search paths in front of
@@ -15,6 +15,11 @@ Change History
 - Add "toggle all" checkbox to @@contents view.
 
 - Add contents path bar to @@contents view.
+
+0.8 - 2013-03-12
+----------------
+
+- No changes.
 
 0.8b2 - 2013-02-08
 ------------------
