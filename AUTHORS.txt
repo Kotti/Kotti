@@ -15,4 +15,4 @@ Major contributing authors include:
 - Tom Lazar
 
 For a complete list of contributors, see
-https://github.com/Pylons/Kotti/graphs/contributors
+https://github.com/Kotti/Kotti/graphs/contributors
