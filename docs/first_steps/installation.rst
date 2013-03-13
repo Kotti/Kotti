@@ -20,7 +20,7 @@ It is recommended to install Kotti inside a virtualenv:
 
   virtualenv mysite
   cd mysite
-  bin/pip install -r https://raw.github.com/Kotti/Kotti/0.8b1/requirements.txt
+  bin/pip install -r https://raw.github.com/Kotti/Kotti/master/requirements.txt
 
 Kotti uses `Paste Deploy`_ for configuration and deployment.  An
 example configuration file is included with Kotti's source
@@ -30,7 +30,20 @@ distribution.  Download it to your virtualenv directory (mysite):
 
   wget https://github.com/Kotti/Kotti/raw/master/app.ini
 
-To run Kotti using this example configuration file:
+In the lines above, where you see master, this can be replaced with a tag for a
+given tagged version, e.g.
+``https://raw.github.com/Kotti/Kotti/0.9a1/requirements.txt``. See the list of
+`Kotti tags`_, perhaps to find the latest released version. You can search the
+`Kotti listing on PyPI`_ also, for the latest Kotti release (Kotti with a
+capital K is Kotti itself, kotti_this and kotti_that are add-ons in the list on
+PyPI). Normally when you are just starting with Kotti, or are doing ongoing
+development, you will want master.
+
+.. _Kotti tags: https://github.com/Kotti/Kotti/tags
+
+.. _Kotti listing on PyPI: https://pypi.python.org/pypi?%3Aaction=search&term=kotti&submit=search
+
+To run Kotti using the ``app.ini`` example configuration file:
 
 .. code-block:: bash
 
