@@ -4,7 +4,14 @@
 Kotti documentation
 ===================
 
-Kotti is a user-friendly, light-weight and extensible web content management system, based on Pyramid and SQLAlchemy.
+Kotti is a user-friendly, nimble and extensible web content management system,
+based on Pyramid and SQLAlchemy.
+
+If you are a user of a Kotti system, and either found this page through
+browsing or searching, or were referred here, you will want to go directly to
+the `Kotti User Manual<http://kotti_user_manual.readthedocs.org/>`_. The
+documentation below, ``First Steps``, ``Topics``, and so on, are for developers
+of Kotti. 
 
 First steps
 -----------
@@ -49,6 +56,14 @@ API
     :maxdepth: 1
 
     API documentation <api/index>
+
+Kotti User Manual
+-----------------
+
+.. toctree::
+    :maxdepth: 1
+
+    `Kotti User Manual<http://kotti_user_manual.readthedocs.org/>`_.
 
 Changes
 -------
