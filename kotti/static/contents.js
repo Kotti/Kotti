@@ -1,7 +1,9 @@
-$(function() {
+/*global $, alert*/
+"use strict";
+$(function () {
 
     // toggle all checkbox
-    $('#toggle-all').change(function(e) {
+    $('#toggle-all').change(function (e) {
         $('input[type=checkbox]').attr('checked', $(this).is(':checked'));
     });
 
@@ -13,12 +15,13 @@ $(function() {
 
     // drag'n'drop ordering
     $("#contents-table").tableDnD({
-        onDrop: function(table, row) {
-            var rows = table.tBodies[0].rows;
-            var oldPosition = parseInt(row.id, 10);
-            var newPosition = parseInt(row.id, 10);
-            for (var i=0; i<rows.length; i++) {
-                if (parseInt(rows[i].id, 10) == oldPosition) {
+        onDrop: function (table, row) {
+            var rows = table.tBodies[0].rows,
+                oldPosition = parseInt(row.id, 10),
+                newPosition = parseInt(row.id, 10),
+                i;
+            for (i = 0; i < rows.length; i += 1) {
+                if (parseInt(rows[i].id, 10) === oldPosition) {
                     newPosition = i;
                     break;
                 }
@@ -30,14 +33,14 @@ $(function() {
                     to: newPosition
                 },
                 function (response) {
-                    if (response.result == 'success') {
+                    if (response.result === 'success') {
                         // "renumber" rows on success
-                        for (var i=0; i<rows.length; i++) {
+                        for (i = 0; i < rows.length; i += 1) {
                             rows[i].id = i;
                         }
                     } else {
                         // restore old order and show error
-                        for (var i=0; i<rows.length; i++) {
+                        for (i = 0; i < rows.length; i += 1) {
                             $("tr#" + i).appendTo("#contents-table tbody");
                         }
                         alert("Reordering not successful, previous order has been restored.");
