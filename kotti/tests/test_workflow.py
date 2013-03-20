@@ -210,7 +210,7 @@ class TestContentExtensibleWithWorkflow:
         interface.directlyProvides(content, IDefaultWorkflow)
         DBSession.flush()
         DBSession.refresh(content)
-        browser.open(BASE_URL + '/content')
+        browser.open(BASE_URL + '/contents')
         assert content.state == u'private'
         browser.getLink('Make Public').click()
         assert content.state == u'public'
