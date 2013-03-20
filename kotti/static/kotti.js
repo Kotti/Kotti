@@ -1,5 +1,7 @@
+// JSLint options:
 /*global deform, jQuery, tinyMCE*/
 /*jslint browser:true*/
+
 "use strict";
 var kotti = {
     dom_changed_handlers: []

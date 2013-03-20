@@ -1,4 +1,6 @@
+// JSLint options:
 /*global $, alert*/
+
 "use strict";
 $(function () {
 
