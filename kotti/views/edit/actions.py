@@ -74,7 +74,7 @@ class NodeActions(object):
         return HTTPFound(location=url)
 
     @view_config(name='workflow-change',
-                 permission='state-change')
+                 permission='state_change')
     def workflow_change(self):
         """
         Handle workflow change requests from workflow dropdown.
