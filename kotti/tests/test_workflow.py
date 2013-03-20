@@ -2,6 +2,7 @@ from mock import patch
 from pyramid.security import ALL_PERMISSIONS
 
 from kotti.testing import Dummy
+from kotti.testing import user
 
 
 class TestWorkflow:
@@ -176,3 +177,40 @@ class TestDefaultWorkflow:
         assert content.state == u'public'
         reset_workflow(purge_existing=True)
         assert content.state == u'private'
+
+
+class TestContentExtensibleWithWorkflow:
+
+    def test_add_wf_interface_to_content(self, workflow):
+        from zope import interface
+        from kotti.resources import Content
+        from kotti.workflow import get_workflow
+        from kotti.interfaces import IDefaultWorkflow
+
+        content = Content()
+        assert get_workflow(content) == None
+        assert content.state == None
+
+        interface.directlyProvides(content, IDefaultWorkflow)
+        wf = get_workflow(content)
+        wf.transition_to_state(content, None, u'public')
+        assert content.state == u'public'
+
+    @user('admin')
+    def test_change_workflow_extended_content(self, root, workflow, browser):
+        from zope import interface
+        from kotti import DBSession
+        from kotti.interfaces import IDefaultWorkflow
+        from kotti.resources import Content
+        from kotti.testing import BASE_URL
+
+        content = root['content'] = Content()
+        assert content.state == None
+
+        interface.directlyProvides(content, IDefaultWorkflow)
+        DBSession.flush()
+        DBSession.refresh(content)
+        browser.open(BASE_URL + '/content')
+        assert content.state == u'private'
+        browser.getLink('Make Public').click()
+        assert content.state == u'public'
