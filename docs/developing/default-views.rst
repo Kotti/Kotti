@@ -25,5 +25,5 @@ Registration is done like this:
 
     def includeme(config):
 
-        Document.add_selectable_default_view("media_folder_view",
-                                             _("Media Folder"))
+        Document.type_info.add_selectable_default_view("media_folder_view",
+                                                       _("Media Folder"))
