@@ -62,8 +62,8 @@ var jq = jQuery;
         var node = $('html');
         if (!handlers) {
             handlers = [
-                kotti.ajax_forms, //kotti.dirty_forms,
-                kotti.collapse, kotti.hover_link_enable
+                //kotti.dirty_forms,
+                kotti.hover_link_enable
             ];
         }
         $.each(handlers, function (index, func) {
