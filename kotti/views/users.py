@@ -291,10 +291,11 @@ def _massage_groups_in(appstruct):
     The value in the form is 'name', not 'group:name', so we'll
     need to append that before we save.
     """
-    groups = appstruct['groups']
-    all_groups = list(appstruct['roles']) + [
+    groups = appstruct.get('groups', [])
+    all_groups = list(appstruct.get('roles', [])) + [
         u'group:%s' % g for g in groups if g]
-    del appstruct['roles']
+    if 'roles' in appstruct:
+        del appstruct['roles']
     appstruct['groups'] = all_groups
 
 
