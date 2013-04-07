@@ -28,15 +28,24 @@
       </div>
       <div class="form-actions">
         <input type="hidden" name="came_from" value="${came_from}" />
-        <button type="submit" name="submit" class="btn btn-primary"
-                i18n:translate="">
-          Log in
-        </button>
-        <span tal:condition="register">
-            <span i18n:translate="">Not registered  yet?</span>
-            <a type="submit" class="btn btn-success" i18n:translate="" href='register'>
-            Register</a> <span i18n:translate="">for an account on this site.</span>
-        </span>
+        <ul class="nav nav-list">
+          <li>
+            <button type="submit" name="submit" class="btn btn-primary"
+                    i18n:translate="">
+              Log in
+            </button>
+          </li>
+          <li class="divider" />
+          <li>
+            <span tal:condition="register">
+              <span i18n:translate="">Not registered  yet?</span>
+              <a type="submit" class="btn btn-success" i18n:translate="" href='register'>
+                Register
+              </a>
+              <span i18n:translate="">for an account on this site.</span>
+            </span>
+          </li>
+        </ul>
       </div>
 
       <div>
