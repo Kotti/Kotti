@@ -10,7 +10,7 @@
     <div class="tab-pane" id="rename-nodes">
 
       <form action="${request.url}" method="post" id="form-rename-nodes">
-        <span class="help-block" i18n:translate="">Each content item has a name, whats also used to create the url, and a title. You can change both by entering the new details below.</span>
+        <span class="help-block" i18n:translate="">Each content item has a name, which is used to create the url, and a title. Read the user manual about proper formatting of name and title if needed. You can change both below.</span>
 
         <tal:items tal:repeat="item items">
           <input type="hidden" name="children-to-rename" value="${item.id}" />

@@ -140,7 +140,7 @@ class AddFormView(BaseFormView):
     A base form for content adding purposes
     """
 
-    success_message = _(u"Successfully added item.")
+    success_message = _(u"Item was added.")
     item_type = None
     add_template_vars = ('first_heading',)
 
@@ -166,10 +166,10 @@ class AddFormView(BaseFormView):
         type_title = self.item_type or self.add.type_info.title
         if context_title:
             return _(
-                u'Add ${type} to <em>${title}</em>',
+                u'Add ${type} to <em>${title}</em>.',
                 mapping=dict(type=translate(type_title), title=context_title))
         else:
-            return _(u'Add ${type}', mapping=dict(type=translate(type_title)))
+            return _(u'Add ${type}.', mapping=dict(type=translate(type_title)))
 
 
 class CommaSeparatedListWidget(deform.widget.Widget):

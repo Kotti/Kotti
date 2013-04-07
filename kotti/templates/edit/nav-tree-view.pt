@@ -5,7 +5,7 @@
       i18n:domain="Kotti">
 
   <div metal:fill-slot="content">
-    <h1 i18n:translate="">Navigate</h1>
+    <h1 i18n:translate="">Navigate Site</h1>
 
     <div tal:replace="structure api.render_view('render_tree_navigation')">
     </div>

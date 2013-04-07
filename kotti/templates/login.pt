@@ -35,7 +35,7 @@
         <span tal:condition="register">
             <span i18n:translate="">Not registered  yet?</span>
             <a type="submit" class="btn btn-success" i18n:translate="" href='register'>
-            Sign up!</a> <span i18n:translate="">It's free.</span>
+            Register</a> <span i18n:translate="">for an account on this site.</span>
         </span>
       </div>
 

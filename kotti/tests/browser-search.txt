@@ -27,7 +27,7 @@ Add some documents
   >>> ctrl("Title").value = "Document 1"
   >>> ctrl("Description").value = u'I am the first Document'
   >>> ctrl("save").click()
-  >>> "Successfully added item" in browser.contents
+  >>> "Item was added" in browser.contents
   True
   >>> browser.url == testing.BASE_URL + '/document-1/'
   True
@@ -38,7 +38,7 @@ Add some documents
   >>> ctrl("Title").value = u'Document 2'
   >>> ctrl("Description").value = u'And I am the second Document'
   >>> ctrl("save").click()
-  >>> u'Successfully added item' in browser.contents
+  >>> u'Item was added' in browser.contents
   True
 
 

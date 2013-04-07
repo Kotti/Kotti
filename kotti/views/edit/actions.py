@@ -101,7 +101,7 @@ class NodeActions(object):
         self.request.session['kotti.paste'] = (ids, 'copy')
         for id in ids:
             item = DBSession.query(Node).get(id)
-            self.request.session.flash(_(u'${title} copied.',
+            self.request.session.flash(_(u'${title} was copied.',
                                     mapping=dict(title=item.title)), 'success')
         if not self.request.is_xhr:
             return self.back()
@@ -119,7 +119,7 @@ class NodeActions(object):
         self.request.session['kotti.paste'] = (ids, 'cut')
         for id in ids:
             item = DBSession.query(Node).get(id)
-            self.request.session.flash(_(u'${title} cut.',
+            self.request.session.flash(_(u'${title} was cut.',
                                 mapping=dict(title=item.title)), 'success')
         if not self.request.is_xhr:
             return self.back()
@@ -152,11 +152,11 @@ class NodeActions(object):
                     name = title_to_name(name, blacklist=self.context.keys())
                     copy.name = name
                     self.context.children.append(copy)
-                self.request.session.flash(_(u'${title} pasted.',
+                self.request.session.flash(_(u'${title} was pasted.',
                                     mapping=dict(title=item.title)), 'success')
             else:
                 self.request.session.flash(
-                    _(u'Could not paste node. It does not exist anymore.'),
+                    _(u'Could not paste node. It no longer exists.'),
                     'error')
         if not self.request.is_xhr:
             return self.back()
@@ -177,7 +177,7 @@ class NodeActions(object):
             index = self.context.children.index(child)
             self.context.children.pop(index)
             self.context.children.insert(index + move, child)
-            self.request.session.flash(_(u'${title} moved.',
+            self.request.session.flash(_(u'${title} was moved.',
                                     mapping=dict(title=child.title)), 'success')
         if not self.request.is_xhr:
             return self.back()
@@ -264,7 +264,7 @@ class NodeActions(object):
         """
         if 'delete' in self.request.POST:
             parent = self.context.__parent__
-            self.request.session.flash(_(u'${title} deleted.',
+            self.request.session.flash(_(u'${title} was deleted.',
                             mapping=dict(title=self.context.title)), 'success')
             del parent[self.context.name]
             location = resource_url(parent, self.request)
@@ -285,16 +285,16 @@ class NodeActions(object):
         if 'delete_nodes' in self.request.POST:
             ids = self.request.POST.getall('children-to-delete')
             if not ids:
-                self.request.session.flash(_(u"Nothing deleted."), 'info')
+                self.request.session.flash(_(u"Nothing was deleted."), 'info')
             for id in ids:
                 item = DBSession.query(Node).get(id)
-                self.request.session.flash(_(u'${title} deleted.',
+                self.request.session.flash(_(u'${title} was deleted.',
                                 mapping=dict(title=item.title)), 'success')
                 del self.context[item.name]
             return self.back('@@contents')
 
         if 'cancel' in self.request.POST:
-            self.request.session.flash(_(u'No changes made.'), 'info')
+            self.request.session.flash(_(u'No changes were made.'), 'info')
             return self.back('@@contents')
 
         ids = self._selected_children(add_context=False)
@@ -326,7 +326,7 @@ class NodeActions(object):
             else:
                 self.context.name = name.replace('/', '')
                 self.context.title = title
-                self.request.session.flash(_(u'Item renamed'), 'success')
+                self.request.session.flash(_(u'Item was renamed.'), 'success')
                 return self.back('')
         return {}
 
@@ -363,7 +363,7 @@ class NodeActions(object):
             return self.back('@@contents')
 
         if 'cancel' in self.request.POST:
-            self.request.session.flash(_(u'No changes made.'), 'info')
+            self.request.session.flash(_(u'No changes were made.'), 'info')
             return self.back('@@contents')
 
         ids = self._selected_children(add_context=False)
@@ -406,11 +406,11 @@ class NodeActions(object):
                 self.request.session.flash(
                     _(u'Your changes have been saved.'), 'success')
             else:
-                self.request.session.flash(_(u'No changes made.'), 'info')
+                self.request.session.flash(_(u'No changes were made.'), 'info')
             return self.back('@@contents')
 
         if 'cancel' in self.request.POST:
-            self.request.session.flash(_(u'No changes made.'), 'info')
+            self.request.session.flash(_(u'No changes were made.'), 'info')
             return self.back('@@contents')
 
         ids = self._selected_children(add_context=False)

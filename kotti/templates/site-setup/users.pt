@@ -9,7 +9,7 @@
 
     <form action="${request.url}" method="post">
       <fieldset>
-        <legend i18n:translate="">Search and modify users</legend>
+        <legend i18n:translate="">Find and modify users (Blank search text finds all).</legend>
 
         <div class="control-group">
           <div class="controls">

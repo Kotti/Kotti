@@ -135,14 +135,14 @@ class TestNodeDelete:
         request.POST.add('delete_nodes', u'delete_nodes')
         NodeActions(root, request).delete_nodes()
         assert request.session.pop_flash('info') ==\
-            [u'Nothing deleted.']
+            [u'Nothing was deleted.']
 
         request.POST.add('children-to-delete', id1)
         request.POST.add('children-to-delete', id2)
         request.POST.add('children-to-delete', id3)
         NodeActions(root, request).delete_nodes()
         assert request.session.pop_flash('success') ==\
-            [u'${title} deleted.', u'${title} deleted.', u'${title} deleted.']
+            [u'${title} was deleted.', u'${title} was deleted.', u'${title} was deleted.']
 
 
 class TestNodeMove:
@@ -158,7 +158,7 @@ class TestNodeMove:
         request.session['kotti.selected-children'] = [str(root['child2'].id)]
         NodeActions(root, request).up()
         assert request.session.pop_flash('success') ==\
-            [u'${title} moved.']
+            [u'${title} was moved.']
         assert root['child1'].position > root['child2'].position
 
     def test_move_down(self, root):
@@ -176,7 +176,7 @@ class TestNodeMove:
         request.session['kotti.selected-children'] = ids
         NodeActions(root, request).down()
         assert request.session.pop_flash('success') ==\
-            [u'${title} moved.', u'${title} moved.']
+            [u'${title} was moved.', u'${title} was moved.']
         assert root['child1'].position > root['child3'].position
         assert root['child2'].position > root['child3'].position
 
@@ -320,7 +320,7 @@ class TestNodeShare:
         assert entries[0][0] == P[u'bob']
         assert entries[0][1] == ([u'role:editor'], [])
         assert (request.session.pop_flash('info') ==
-            [u'No users or groups found.'])
+            [u'No users or groups were found.'])
 
         # It does not, however, include entries that have local group
         # assignments only:
@@ -339,7 +339,7 @@ class TestNodeShare:
 
         request.params['apply'] = u''
         share_node(root, request)
-        assert (request.session.pop_flash('info') == [u'No changes made.'])
+        assert (request.session.pop_flash('info') == [u'No changes were made.'])
         assert list_groups('bob', root) == []
         set_groups('bob', root, ['role:special'])
 
