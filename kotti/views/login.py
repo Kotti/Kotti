@@ -122,7 +122,7 @@ def register(context, request):
 
     api = template_api(
         context, request,
-        page_title=_(u"Sign up! - ${title}",
+        page_title=_(u"Register - ${title}",
             mapping=dict(title=context.title)),
     )
 
