@@ -761,7 +761,7 @@ set his own password:
   Your registration for Website des Kottbusser Tors
   >>> print email.body # doctest: +ELLIPSIS +NORMALIZE_WHITESPACE
   Hello, Bob Dabolina!
-  You have been invited to join Website des Kottbusser Tors.
+  You are joining Website des Kottbusser Tors.
   Click here to set your password and log in:
   http://localhost:6543/@@set-password?token=...
 
