@@ -45,7 +45,7 @@ $(function () {
                         for (i = 0; i < rows.length; i += 1) {
                             $("tr#" + i).appendTo("#contents-table tbody");
                         }
-                        alert("Reordering not successful, previous order has been restored.");
+                        alert("Reordering was not successful. Previous order has been restored.");
                     }
                 }
             );

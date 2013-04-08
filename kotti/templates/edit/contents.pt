@@ -27,7 +27,7 @@
 
       <form action="${request.resource_url(context)}@@contents" method="post">
         <tal:no-content tal:condition="not:children">
-          <span class="text-info" i18n:translate="">No content in document.</span>
+          <span class="text-info" i18n:translate="">No content items are contained here.</span>
         </tal:no-content>
 
         <table id="contents-table"

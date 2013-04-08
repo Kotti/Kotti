@@ -39,7 +39,7 @@ class TestUploadFile:
     def test_it(self, browser):
         browser.open(BASE_URL + '/@@add_file')
         self.add_file(browser)
-        assert "Successfully added item" in browser.contents
+        assert "Item was added" in browser.contents
 
     @user('admin')
     def test_view_uploaded_file(self, browser):
