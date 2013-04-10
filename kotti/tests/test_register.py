@@ -2,6 +2,9 @@ from kotti.testing import DummyRequest
 from mock import patch
 from mock import call
 
+from kotti.resources import get_root
+from kotti.resources import Content
+
 
 class TestRegister:
 
@@ -73,6 +76,7 @@ class TestRegister:
                     get_settings.return_value = {
                         'kotti.register.group': 'mygroup',
                         'kotti.register.role': 'myrole',
+                        'kotti.register.continue_to': '',
                         }
 
                     res = register(root, request)
@@ -83,6 +87,43 @@ class TestRegister:
                 'roles': set([u'role:myrole']),
                 'title': u'Test User',
                 'send_email': True,
+                'groups': [u'mygroup'],
+                'email': u'test@example.com',
+                })])
+        assert(isinstance(res, HTTPFound))
+
+    def test_register_continue_to(self, root):
+        from kotti.views.login import register
+        from pyramid.httpexceptions import HTTPFound
+
+        root = get_root()
+
+        landing_page = root[u'landing-page'] = Content(title=u'Landing Page')
+
+        request = DummyRequest()
+        request.POST['title'] = u'Test User'
+        request.POST['name'] = u'test'
+        request.POST['email'] = u'test@example.com'
+        request.POST['register'] = u'register',
+
+        with patch('kotti.views.login.UserAddFormView') as form:
+            with patch('kotti.views.login.get_principals'):
+                with patch('kotti.views.login.get_settings') as get_settings:
+                    get_settings.return_value = {
+                        'kotti.register.group': 'mygroup',
+                        'kotti.register.role': 'myrole',
+                        'kotti.register.continue_to': 'landing-page',
+                        }
+
+                    res = register(root, request)
+
+        form.assert_has_calls([
+            call().add_user_success({
+                'name': u'test',
+                'roles': set([u'role:myrole']),
+                'title': u'Test User',
+                'send_email': True,
+                'continue_to': 'landing-page',
                 'groups': [u'mygroup'],
                 'email': u'test@example.com',
                 })])

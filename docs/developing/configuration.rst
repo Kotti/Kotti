@@ -130,6 +130,45 @@ We can then register our ``kotti-overrides`` directory by use of the
 
   kotti.asset_overrides = mypackage:kotti-overrides/
 
+Activate and Configure Registration
+-----------------------------------
+
+By default the ``Register`` button on the login form is not shown: the default
+configuration assumes that you will create users manually or with a script of
+some kind. To activate self-registration on a site, set the following in your
+configuration file:::
+
+    kotti.register = true
+
+If you have a group and or role that should be set for new users, set the
+following:::
+
+    kotti.register.group = groupname
+    kotti.register.role = rolename
+
+When a user self-registers, they will do the following steps:::
+
+1. Click the ``Register`` button on the login form.
+2. Enter name and email address.
+3. Upon receiving a confirmation email, click the link in the email.
+4. Enter and confirm a password.
+
+After step 4), the user will be sent to the view of the context at which they
+registered. If you would like to set the location where the user is taken after
+step 4), set the following, first shown as a view name relative to the root of
+the site:::
+
+    kotti.register.continue_to = 'new-user-landing-page'
+
+You must have created a content item for which this view name is registered.
+You can also set a path:::
+
+    kotti.register.continue_to = 'path/from/root/new-user-landing-page'
+
+Alternatively, you can provide a full URL:::
+
+    kotti.register.continue_to = 'http://mysite.com/some/path'
+
 Use add-ons
 -----------
 

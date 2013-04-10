@@ -104,6 +104,10 @@ def register(context, request):
             if register_roles:
                 appstruct['roles'] = set(['role:' + register_roles])
 
+            register_continue_to = settings['kotti.register.continue_to']
+            if register_continue_to:
+                appstruct['continue_to'] = register_continue_to
+
             appstruct['send_email'] = True
             form = UserAddFormView(context, request)
             form.add_user_success(appstruct)
