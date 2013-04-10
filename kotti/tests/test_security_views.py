@@ -28,7 +28,7 @@ class TestUserManagement:
         entries = UsersManage(root, request)()['entries']
         assert len(entries) == 0
         assert (request.session.pop_flash('info') ==
-            [u'No users or groups found.'])
+            [u'No users or groups were found.'])
         request.params['query'] = u'Bob'
         entries = UsersManage(root, request)()['entries']
         assert entries[0][0] == P['bob']
@@ -54,7 +54,7 @@ class TestUserManagement:
 
         request.params['apply'] = u''
         UsersManage(root, request)()
-        assert (request.session.pop_flash('info') == [u'No changes made.'])
+        assert (request.session.pop_flash('info') == [u'No changes were made.'])
         assert list_groups('bob') == []
         bob.groups = [u'role:special']
 
@@ -87,7 +87,7 @@ class TestUserDelete:
 
         request.params['name'] = u''
         user_delete(root, request)
-        assert request.session.pop_flash('error') == [u'No name given.']
+        assert request.session.pop_flash('error') == [u'No name was given.']
         assert u'bob' in get_principals().keys()
 
         request.params['name'] = u'bob'
@@ -101,7 +101,7 @@ class TestUserDelete:
         request.params['name'] = u'john'
         request.params['delete'] = u'delete'
         user_delete(root, request)
-        assert request.session.pop_flash('error') == [u"User not found."]
+        assert request.session.pop_flash('error') == [u"User was not found."]
         assert u'bob' in get_principals().keys()
 
         request.params['name'] = u'bob'

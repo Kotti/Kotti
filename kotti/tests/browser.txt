@@ -73,7 +73,7 @@ Add a document
   True
   >>> ctrl("Title").value = "Child One"
   >>> ctrl("save").click()
-  >>> "Successfully added item" in browser.contents
+  >>> "Item was added" in browser.contents
   True
   >>> browser.url == testing.BASE_URL + '/child-one/'
   True
@@ -134,7 +134,7 @@ Add two more documents, at different levels
   >>> browser.getLink("Document").click()
   >>> ctrl("Title").value = "Second Child"
   >>> ctrl("save").click()
-  >>> "Successfully added item" in browser.contents
+  >>> "Item was added" in browser.contents
   True
   >>> browser.url == testing.BASE_URL + '/second-child/'
   True
@@ -183,7 +183,7 @@ Add a file
   >>> ctrl("Description").value = "A tiny file"
   >>> ctrl("File").add_file('tiny', 'text/plain', 'tiny.txt')
   >>> ctrl("save").click()
-  >>> "Successfully added item" in browser.contents
+  >>> "Item was added" in browser.contents
   True
   >>> print browser.url
   http://localhost:6543/tiny.txt/
@@ -238,7 +238,7 @@ Delete a document
   >>> browser.open(testing.BASE_URL + '/second-child/grandchild')
   >>> browser.getLink('Delete').click()
   >>> ctrl("delete").click()
-  >>> "Grandchild deleted" in browser.contents
+  >>> "Grandchild was deleted" in browser.contents
   True
   >>> browser.url == testing.BASE_URL + '/second-child/'
   True
@@ -248,12 +248,12 @@ Copy and paste
 
   >>> browser.open(testing.BASE_URL + '/second-child')
   >>> browser.getLink('Cut').click()
-  >>> "Second Child cut" in browser.contents
+  >>> "Second Child was cut" in browser.contents
   True
 
   >>> browser.open(testing.BASE_URL + '/child-one')
   >>> browser.getLink('Paste').click()
-  >>> "Second Child pasted" in browser.contents
+  >>> "Second Child was pasted" in browser.contents
   True
 
   >>> browser.open(testing.BASE_URL + '/child-one/second-child/')
@@ -263,18 +263,18 @@ Copy and paste
 
   >>> browser.open(testing.BASE_URL + '/child-one/second-child')
   >>> browser.getLink('Copy').click()
-  >>> "Second Child copied" in browser.contents
+  >>> "Second Child was copied" in browser.contents
   True
   >>> browser.open(testing.BASE_URL)
   >>> browser.getLink('Paste').click()
-  >>> "Second Child pasted" in browser.contents
+  >>> "Second Child was pasted" in browser.contents
   True
 
 We can paste twice since we copied:
 
   >>> browser.open(testing.BASE_URL)
   >>> browser.getLink('Paste').click()
-  >>> "Second Child pasted" in browser.contents
+  >>> "Second Child was pasted" in browser.contents
   True
   >>> browser.open(testing.BASE_URL + '/second-child/')
   >>> "Second Child" in browser.contents
@@ -288,11 +288,11 @@ site:
 
   >>> browser.open(testing.BASE_URL)
   >>> browser.getLink('Copy').click()
-  >>> "Welcome to Kotti copied" in browser.contents
+  >>> "Welcome to Kotti was copied" in browser.contents
   True
   >>> browser.open(testing.BASE_URL + '/second-child')
   >>> browser.getLink('Paste').click()
-  >>> "Welcome to Kotti pasted" in browser.contents
+  >>> "Welcome to Kotti was pasted" in browser.contents
   True
   >>> browser.open(
   ...     testing.BASE_URL + '/second-child/welcome-to-kotti/')
@@ -305,7 +305,7 @@ And finally cut and paste a tree:
   >>> browser.getLink('Cut').click()
   >>> browser.open(testing.BASE_URL + '/child-one/second-child')
   >>> browser.getLink('Paste').click()
-  >>> "Second Child pasted" in browser.contents
+  >>> "Second Child was pasted" in browser.contents
   True
   >>> browser.open(testing.BASE_URL + '/second-child/')
   Traceback (most recent call last):
@@ -363,7 +363,7 @@ We can rename an item. Slashes will be stripped out.:
   >>> ctrl("New name").value = "thi/rd-ch/ild"
   >>> ctrl("New title").value = "My Third Child"
   >>> ctrl(name="rename").click()
-  >>> "Item renamed" in browser.contents
+  >>> "Item was renamed" in browser.contents
   True
   >>> browser.url == testing.BASE_URL + '/child-one/third-child/'
   True
@@ -466,7 +466,7 @@ Contents view actions
   >>> childs.value = childs.options[0:2]
   >>> ctrl(name='rename_nodes').click()
   >>> ctrl(name='cancel').click()
-  >>> u'No changes made.' in browser.contents
+  >>> u'No changes were made.' in browser.contents
   True
   >>> browser.url == testing.BASE_URL + '/forth-child/@@contents'
   True
@@ -500,7 +500,7 @@ Contents view actions
   >>> childs.value = childs.options[0:3]
   >>> ctrl(name='delete_nodes').click()
   >>> ctrl(name='cancel').click()
-  >>> u'No changes made.' in browser.contents
+  >>> u'No changes were made.' in browser.contents
   True
   >>> browser.url == testing.BASE_URL + '/forth-child/@@contents'
   True
@@ -513,11 +513,11 @@ Contents view actions
 
   >>> ctrl(name='children-to-delete').value = childs.options[0:3]
   >>> ctrl(name='delete_nodes').click()
-  >>> "child, the third deleted." in browser.contents
+  >>> "child, the third was deleted." in browser.contents
   True
-  >>> "Hello Bob deleted." in browser.contents
+  >>> "Hello Bob was deleted." in browser.contents
   True
-  >>> "some.txt deleted." in browser.contents
+  >>> "some.txt was deleted." in browser.contents
   True
 
   >>> browser.open(testing.BASE_URL + '/forth-child/@@contents')
@@ -548,7 +548,7 @@ Contents view change state actions
   >>> 'Change workflow state' in browser.contents
   True
   >>> ctrl(name='cancel').click()
-  >>> u'No changes made.' in browser.contents
+  >>> u'No changes were made.' in browser.contents
   True
   >>> browser.url == testing.BASE_URL + '/second-child-1/@@contents'
   True
@@ -559,7 +559,7 @@ Contents view change state actions
   >>> childs = ctrl(name='children-to-change-state')
   >>> childs.value = []
   >>> ctrl(name='change_state').click()
-  >>> u'No changes made.' in browser.contents
+  >>> u'No changes were made.' in browser.contents
   True
 
   >>> childs = ctrl(name='children')
@@ -629,7 +629,7 @@ We add Bob's Group and assign the ``Viewer`` role:
   >>> ctrl("Title", index=1).value = "Bob's Group"
   >>> ctrl("Viewer", index=1).click()
   >>> ctrl(name="add_group").click()
-  >>> "Bob's Group added" in browser.contents
+  >>> "Bob's Group was added" in browser.contents
   True
   >>> ctrl(name="role::group:bobsgroup::role:viewer").value
   True
@@ -653,7 +653,7 @@ registration link is ticked:
   >>> ctrl("Send password registration link", index=0).selected
   True
   >>> ctrl(name="add_user").click()
-  >>> "Bob Dabolina added" in browser.contents
+  >>> "Bob Dabolina was added" in browser.contents
   True
 
 We cannot add Bob twice:
@@ -678,7 +678,7 @@ We cannot add Bob Dabolina's email twice:
   True
   >>> ctrl("Email", index=0).value = "bob@gmail.com"
   >>> ctrl(name="add_user").click()
-  >>> "Bobby Brown added" in browser.contents
+  >>> "Bobby Brown was added" in browser.contents
   True
 
 Searching for Bob will return both Bob and Bob's Group:
@@ -720,7 +720,7 @@ If we cancel the edit of the user, we are redirected to the user management
 screen:
 
   >>> ctrl(name="cancel").click()
-  >>> "No changes made." in browser.contents
+  >>> "No changes were made." in browser.contents
   True
   >>> browser.url
   'http://localhost:6543/@@setup-users'
@@ -761,7 +761,7 @@ set his own password:
   Your registration for Website des Kottbusser Tors
   >>> print email.body # doctest: +ELLIPSIS +NORMALIZE_WHITESPACE
   Hello, Bob Dabolina!
-  You've just been invited to join Website des Kottbusser Tors.
+  You are joining Website des Kottbusser Tors.
   Click here to set your password and log in:
   http://localhost:6543/@@set-password?token=...
 
@@ -777,7 +777,7 @@ We'll use that link to set our password:
   True
   >>> ctrl(name='password-confirm').value = "newpassword"
   >>> ctrl(name="submit").click()
-  >>> "You've reset your password successfully" in browser.contents
+  >>> "You have reset your password" in browser.contents
   True
   >>> browser.getLink("Logout").click()
 
@@ -807,11 +807,11 @@ The login form has a "Reset password" button.  Let's try it:
   >>> ctrl("Username or email").value = "bobby" # silly error
   >>> ctrl("Password").value = ""
   >>> ctrl(name="reset-password").click()
-  >>> "That username or email is not known to us" in browser.contents
+  >>> "That username or email is not known by this system" in browser.contents
   True
   >>> ctrl("Username or email").value = "bob"
   >>> ctrl(name="reset-password").click()
-  >>> "You should receive an email" in browser.contents
+  >>> "You should be receiving an email" in browser.contents
   True
 
   >>> [email1, email2, email3] = mailer.outbox
@@ -940,7 +940,7 @@ We add a group and assign the ``Manager`` role to one:
   >>> ctrl("Title", index=1).value = "Pelayo Group"
   >>> ctrl("Admin", index=1).click()
   >>> ctrl(name="add_group").click()
-  >>> "Pelayo Group added" in browser.contents
+  >>> "Pelayo Group was added" in browser.contents
   True
   >>> ctrl(name="role::group:pelayogroup::role:admin").value
   True
@@ -954,7 +954,7 @@ And add some users to this group.
   >>> ctrl("Email", index=0).value = "bruce@pelayno.com"
   >>> ctrl(name="group", index=0).value = "pelayogroup"
   >>> ctrl(name="add_user").click()
-  >>> "Bruce Pelayo added" in browser.contents
+  >>> "Bruce Pelayo was added" in browser.contents
   True
 
   >>> ctrl("Name", index=0).value = "Brian"
@@ -964,7 +964,7 @@ And add some users to this group.
   >>> ctrl("Email", index=0).value = "brian@pelayno.com"
   >>> ctrl(name="group", index=0).value = "pelayogroup"
   >>> ctrl(name="add_user").click()
-  >>> "Brian Pelayo added" in browser.contents
+  >>> "Brian Pelayo was added" in browser.contents
   True
 
 Lets login as Bruce and add some content:
@@ -1005,12 +1005,12 @@ Now let's delete Bruce::
   True
 
   >>> ctrl(name='delete').click()
-  >>> "User Bruce Pelayo deleted." in browser.contents
+  >>> "User Bruce Pelayo was deleted." in browser.contents
   True
 
   >>> ctrl(name="query").value = "Bruce"
   >>> ctrl(name="search").click()
-  >>> "No users or groups found." in browser.contents
+  >>> "No users or groups were found." in browser.contents
   True
 
   >>> testing.tearDown()

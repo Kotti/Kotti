@@ -70,7 +70,7 @@ def roles_form_handler(context, request, available_role_names, groups_lister):
             request.session.flash(
                 _(u'Your changes have been saved.'), 'success')
         else:
-            request.session.flash(_(u'No changes made.'), 'info')
+            request.session.flash(_(u'No changes were made.'), 'info')
 
     return changed
 
@@ -97,7 +97,7 @@ def search_principals(request, context=None, ignore=None, extra=()):
             if p.name not in ignore:
                 entries.append((p, list_groups_ext(p.name, context)))
         if not found:
-            flash(_(u'No users or groups found.'), 'info')
+            flash(_(u'No users or groups were found.'), 'info')
 
     return entries
 
@@ -323,7 +323,7 @@ class UserAddFormView(AddFormView):
         schema.add(colander.SchemaNode(
             colander.Boolean(),
             name=u'send_email',
-            title=_(u'Send password registration link'),
+            title=_(u'Send password registration link.'),
             default=True,
             ))
         return schema
@@ -337,7 +337,7 @@ class UserAddFormView(AddFormView):
         get_principals()[name] = appstruct
         if send_email:
             email_set_password(get_principals()[name], self.request)
-        self.request.session.flash(_(u'${title} added.',
+        self.request.session.flash(_(u'${title} was added.',
             mapping=dict(title=appstruct['title'])), 'success')
         location = self.request.url.split('?')[0] + '?' + urlencode(
             {'extra': name})
@@ -450,7 +450,7 @@ class UserManageFormView(UserEditFormView):
         return super(UserEditFormView, self).save_success(appstruct)
 
     def cancel_success(self, appstruct):
-        self.request.session.flash(_(u'No changes made.'), 'info')
+        self.request.session.flash(_(u'No changes were made.'), 'info')
         location = "%s/@@setup-users" % self.request.application_url
         return HTTPFound(location=location)
     cancel_failure = cancel_success
@@ -519,7 +519,7 @@ def user_delete(context, request):
         user_or_group = request.params['name']
         principal = principals.search(name=user_or_group).first()
         if principal is None:
-            request.session.flash(_(u'User not found.'), 'error')
+            request.session.flash(_(u'User was not found.'), 'error')
         else:
             is_group = user_or_group.startswith("group:")
             principal_type = _(u"Group") if is_group else _(u"User")
@@ -528,7 +528,7 @@ def user_delete(context, request):
             if 'delete' in request.POST:
                 principals.__delitem__(principal.name)
                 notify(UserDeleted(principal, request))
-                request.session.flash(_(u'${principal_type} ${title} deleted.',
+                request.session.flash(_(u'${principal_type} ${title} was deleted.',
                                         mapping=dict(principal_type=principal_type,
                                                      title=principal.title)), 'info')
                 location = "%s/@@setup-users" % request.application_url
@@ -544,7 +544,7 @@ def user_delete(context, request):
                 )
             return {'api': api, }
     else:
-        request.session.flash(_(u'No name given.'), 'error')
+        request.session.flash(_(u'No name was given.'), 'error')
 
     return {'api': template_api(context, request), }
 

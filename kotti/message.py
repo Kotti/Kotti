@@ -16,13 +16,13 @@ SET_PASSWORD_SUBJECT = u"Your registration for %(site_title)s"
 SET_PASSWORD_BODY = u"""Hello, %(user_title)s!
 
 You've just been invited to join %(site_title)s.  Click here to set
-your password and log in: %(url)s
+your password and log in: %(url)s.
 """
 
-RESET_PASSWORD_SUBJECT = u"Reset your password for %(site_title)s"
+RESET_PASSWORD_SUBJECT = u"Reset your password for %(site_title)s."
 RESET_PASSWORD_BODY = u"""Hello, %(user_title)s!
 
-Click this link to reset your password at %(site_title)s: %(url)s
+Click this link to reset your password at %(site_title)s: %(url)s.
 """
 
 message_templates = {

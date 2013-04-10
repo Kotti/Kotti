@@ -465,8 +465,8 @@ class TestPrincipals:
             'kotti.views.login.email_set_password') as email_set_password:
             login(None, request)
         assert (request.session.pop_flash('success') == [
-            u"You should receive an email with a link to reset your "
-            u"password momentarily."])
+            u"You should be receiving an email with a link to reset your "
+            u"password. Doing so will activate your account."])
         assert email_set_password.call_count == 1
 
     def test_reset_password_inactive_user(self, db_session):
@@ -481,7 +481,7 @@ class TestPrincipals:
             'kotti.views.login.email_set_password') as email_set_password:
             login(None, request)
         assert (request.session.pop_flash('error') ==
-            [u"That username or email is not known to us."])
+            [u"That username or email is not known by this system."])
         assert email_set_password.call_count == 0
 
     def test_login(self, db_session):
