@@ -21,21 +21,22 @@ There are two different types of events:
 
     -   Generic events…
 
-        don't have that kind of context.
+        …don't have that kind of context.
 
         Kotti supports such events but doesn't use them anywhere.
 
-In addition to the event types provided by Kotti (see API docs for
-:module:`kotti.events`) you may also create your own event types by subclassing
+The event types provided by Kotti (see API docs for
+:module:`kotti.events`) may be extended with your own event types. Subclass
 :class:`~kotti.events.ObjectEvent` (for object events) or ``object`` (for
-generic events).
+generic events) and follow the subscription instructions below, as you would
+for Kotti-provided events.
 
-Subscribing to events
+Subscribing to Events
 ---------------------
 
 To add a handler for a specific event type, you must implement a function which
-takes a single argument ``event`` and subscribe that to the
-appropriate event type) by decorating it with the
+takes a single argument ``event`` and associate that to the
+appropriate event type by decorating it with the
 :class:`~kotti.events.subscribe` decorator.
 
 That decorator takes up to two arguments that restrict the handler execution
@@ -48,7 +49,7 @@ subscribed to *all* events::
   def all_events_handler(event):
       print event
 
-To subscribe only to specific event types supply the desired type as first
+To subscribe to a specific event type, supply the desired type as the first
 argument to :class:`~kotti.events.subscribe`::
 
   from kotti.events import ObjectInsert
@@ -59,7 +60,7 @@ argument to :class:`~kotti.events.subscribe`::
       print event.object, event.request
 
 You can further narrow the subscription by adding a second argument that limits
-the subscription to specific object types.  E.g. to only subscribe to
+the subscription to specific object types. For example, to subscribe to
 :class:`~kotti.events.ObjectDelete` events of
 :class:`~kotti.resources.Document` types, write::
 
@@ -71,7 +72,7 @@ the subscription to specific object types.  E.g. to only subscribe to
   def document_delete_handler(event):
       print event.object, event.request
 
-Triggering event handler execution
+Triggering Event Handler Execution
 ----------------------------------
 
 Notifying listeners of an event is as simple as calling
