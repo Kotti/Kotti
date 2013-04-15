@@ -182,7 +182,7 @@ def _before_insert(mapper, connection, target):
     :type connection: :class:`sqlalchemy.engine.base.Connection`
 
     :param target: SQLAlchemy declarative class that is used
-    :type target: :class:`sqlalchemy.ext.declarative.Base` or descendant
+    :type target: Class as returned by ``declarative_base()``
     """
 
     notify(ObjectInsert(target, get_current_request()))
@@ -198,7 +198,7 @@ def _before_update(mapper, connection, target):
     :type connection: :class:`sqlalchemy.engine.base.Connection`
 
     :param target: SQLAlchemy declarative class that is used
-    :type target: :class:`sqlalchemy.ext.declarative.Base` or descendant
+    :type target: Class as returned by ``declarative_base()``
     """
 
     session = DBSession.object_session(target)
@@ -216,7 +216,7 @@ def _before_delete(mapper, connection, target):
     :type connection: :class:`sqlalchemy.engine.base.Connection`
 
     :param target: SQLAlchemy declarative class that is used
-    :type target: :class:`sqlalchemy.ext.declarative.Base` or descendant
+    :type target: Class as returned by ``declarative_base()``
     """
 
     notify(ObjectDelete(target, get_current_request()))
@@ -232,7 +232,7 @@ def _after_delete(mapper, connection, target):
     :type connection: :class:`sqlalchemy.engine.base.Connection`
 
     :param target: SQLAlchemy declarative class that is used
-    :type target: :class:`sqlalchemy.ext.declarative.Base` or descendant
+    :type target: Class as returned by ``declarative_base()``
     """
 
     notify(ObjectAfterDelete(target, get_current_request()))

@@ -26,7 +26,7 @@ There are two different types of events:
         Kotti supports such events but doesn't use them anywhere.
 
 The event types provided by Kotti (see API docs for
-:module:`kotti.events`) may be extended with your own event types. Subclass
+:mod:`kotti.events`) may be extended with your own event types. Subclass
 :class:`~kotti.events.ObjectEvent` (for object events) or ``object`` (for
 generic events) and follow the subscription instructions below, as you would
 for Kotti-provided events.
@@ -76,7 +76,7 @@ Triggering Event Handler Execution
 ----------------------------------
 
 Notifying listeners of an event is as simple as calling
-:fun:`~kotti.events.notify`::
+:func:`~kotti.events.notify`::
 
   from kotti.events import notify
   notify(MyFunnyEvent())
