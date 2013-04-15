@@ -10,7 +10,7 @@ based on Pyramid and SQLAlchemy.
 If you are a user of a Kotti system, and either found this page through
 browsing or searching, or were referred here, you will want to go directly to
 the `Kotti User Manual`_ The documentation below, ``First Steps``, ``Topics``,
-and so on, are for developers of Kotti. 
+and so on, are for developers of Kotti.
 
 .. _Kotti User Manual: http://kotti_user_manual.readthedocs.org/
 
@@ -46,6 +46,7 @@ Topics
         developing/as-a-library
         developing/close-for-anonymous
         developing/default-views
+        developing/events
         developing/frontpage-different-template
         developing/images
         developing/static-resource-management
