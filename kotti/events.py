@@ -175,29 +175,30 @@ clear()
 def _before_insert(mapper, connection, target):
     """ Trigger the Kotti event :class:``ObjectInsert``.
 
-    :param mapper: Mapper factory
-    :type mapper: :func:`sqlalchemy.orm.mapper`
+    :param mapper: SQLAlchemy mapper
+    :type mapper: :class:`sqlalchemy.orm.mapper.Mapper`
 
     :param connection: SQLAlchemy connection
-    :type connection: :class:`sqlalchemy.engine.connection`
+    :type connection: :class:`sqlalchemy.engine.base.Connection`
 
-    :param target: ??
-    :type target: ??
+    :param target: SQLAlchemy declarative class that is used
+    :type target: :class:`sqlalchemy.ext.declarative.Base` or descendant
     """
+
     notify(ObjectInsert(target, get_current_request()))
 
 
 def _before_update(mapper, connection, target):
     """ Trigger the Kotti event :class:``ObjectUpdate``.
 
-    :param mapper: Mapper factory
-    :type mapper: :func:`sqlalchemy.orm.mapper`
+    :param mapper: SQLAlchemy mapper
+    :type mapper: :class:`sqlalchemy.orm.mapper.Mapper`
 
     :param connection: SQLAlchemy connection
-    :type connection: :class:`sqlalchemy.engine.connection`
+    :type connection: :class:`sqlalchemy.engine.base.Connection`
 
-    :param target: ??
-    :type target: ??
+    :param target: SQLAlchemy declarative class that is used
+    :type target: :class:`sqlalchemy.ext.declarative.Base` or descendant
     """
 
     session = DBSession.object_session(target)
@@ -208,14 +209,14 @@ def _before_update(mapper, connection, target):
 def _before_delete(mapper, connection, target):
     """ Trigger the Kotti event :class:``ObjectDelete``.
 
-    :param mapper: Mapper factory
-    :type mapper: :func:`sqlalchemy.orm.mapper`
+    :param mapper: SQLAlchemy mapper
+    :type mapper: :class:`sqlalchemy.orm.mapper.Mapper`
 
     :param connection: SQLAlchemy connection
-    :type connection: :class:`sqlalchemy.engine.connection`
+    :type connection: :class:`sqlalchemy.engine.base.Connection`
 
-    :param target: ??
-    :type target: ??
+    :param target: SQLAlchemy declarative class that is used
+    :type target: :class:`sqlalchemy.ext.declarative.Base` or descendant
     """
 
     notify(ObjectDelete(target, get_current_request()))
@@ -224,14 +225,14 @@ def _before_delete(mapper, connection, target):
 def _after_delete(mapper, connection, target):
     """ Trigger the Kotti event :class:``ObjectAfterDelete``.
 
-    :param mapper: Mapper factory
-    :type mapper: :func:`sqlalchemy.orm.mapper`
+    :param mapper: SQLAlchemy mapper
+    :type mapper: :class:`sqlalchemy.orm.mapper.Mapper`
 
     :param connection: SQLAlchemy connection
-    :type connection: :class:`sqlalchemy.engine.connection`
+    :type connection: :class:`sqlalchemy.engine.base.Connection`
 
-    :param target: ??
-    :type target: ??
+    :param target: SQLAlchemy declarative class that is used
+    :type target: :class:`sqlalchemy.ext.declarative.Base` or descendant
     """
 
     notify(ObjectAfterDelete(target, get_current_request()))
