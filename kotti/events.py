@@ -331,6 +331,11 @@ class subscribe(object):
         from kotti.events import subscribe
         from kotti.resurces import Document
 
+        @subscribe()
+        def on_all_events(event):
+            # this will be executed on *every* event
+            print "Some kind of event occured"
+
         @subscribe(ObjectInsert)
         def on_insert(event):
             # this will be executed on every object insert
@@ -350,7 +355,7 @@ class subscribe(object):
 
     venusian = venusian  # needed for testing
 
-    def __init__(self, evttype=None, objtype=None):
+    def __init__(self, evttype=object, objtype=None):
         """Constructor.
 
         :param evttype: Event to subscribe to.
@@ -363,16 +368,16 @@ class subscribe(object):
         self.evttype = evttype
         self.objtype = objtype
 
+    def register(self, context, name, obj):
+
+        if issubclass(self.evttype, ObjectEvent):
+            objectevent_listeners[(self.evttype, self.objtype)].append(obj)
+        else:
+            listeners[self.evttype].append(obj)
+
     def __call__(self, wrapped):
 
-        def callback(context, name, obj):
-
-            if issubclass(self.evttype, ObjectEvent):
-                objectevent_listeners[(self.evttype, self.objtype)].append(obj)
-            else:
-                listeners[self.evttype].append(obj)
-
-        self.venusian.attach(wrapped, callback, category='kotti')
+        self.venusian.attach(wrapped, self.register, category='kotti')
 
         return wrapped
 

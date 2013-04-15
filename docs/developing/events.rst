@@ -34,7 +34,7 @@ Subscribing to events
 ---------------------
 
 To add a handler for a specific event type, you must implement a function which
-takes a single argument ``event`` and (optionally subscribe that to the
+takes a single argument ``event`` and subscribe that to the
 appropriate event type) by decorating it with the
 :class:`~kotti.events.subscribe` decorator.
 
