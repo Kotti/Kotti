@@ -2,32 +2,7 @@
 subscribe to specific events, and more particularly to *object events*
 of specific object types.
 
-To subscribe to any event, write::
-
-  def all_events_handler(event):
-      print event
-  kotti.events.listeners[object].append(all_events_handler)
-
-To subscribe only to :class:`~kotti.events.ObjectInsert` events of
-:class:`~kotti.resources.Document` types, write::
-
-  def document_insert_handler(event):
-      print event.object, event.request
-  kotti.events.objectevent_listeners[(ObjectInsert, Document)].append(
-      document_insert_handler)
-
-Events of type :class:`~kotti.events.ObjectEvent` have ``object`` and
-``request`` attributes.  ``event.request`` may be ``None`` when no request is
-available.
-
-Notifying listeners of an event is as simple as calling the
-``listeners_notify`` function::
-
-  from kotti events import listeners
-  listeners.notify(MyFunnyEvent())
-
-Listeners are generally called in the order in which they are
-registered.
+See also: :ref:`events`.
 
 Inheritance Diagram
 -------------------
@@ -45,6 +20,7 @@ except ImportError:  # pragma: no cover
     from ordereddict import OrderedDict
 
 import sqlalchemy.event
+import venusian
 from sqlalchemy.orm import mapper
 from pyramid.threadlocal import get_current_request
 from pyramid.security import authenticated_userid
@@ -63,8 +39,21 @@ from kotti.security import get_principals
 
 
 class ObjectEvent(object):
-    """ """
+    """Event related to an object."""
+
     def __init__(self, object, request=None):
+        """Constructor.
+
+        :param object: The (content) object related to the event.  This is an
+                       instance of :class:`kotti.resources.Node` or one its
+                       descendants for content related events, but it can be
+                       anything.
+        :type object: arbitrary
+
+        :param request: current request
+        :type request: :class:`pyramid.request.Request`
+        """
+
         self.object = object
         self.request = request
 
@@ -79,20 +68,19 @@ class ObjectUpdate(ObjectEvent):
 
 class ObjectDelete(ObjectEvent):
     """This event is emitted when an object is deleted from the DB."""
-    pass
 
 
 class ObjectAfterDelete(ObjectEvent):
     """This event is emitted after an object has been deleted from the DB."""
-    pass
 
 
 class UserDeleted(ObjectEvent):
     """This event is emitted when an user object is deleted from the DB."""
-    pass
 
 
 class DispatcherDict(defaultdict, OrderedDict):
+    """Base class for dispatchers"""
+
     def __init__(self, *args, **kwargs):
         defaultdict.__init__(self, list)
         OrderedDict.__init__(self, *args, **kwargs)
@@ -185,24 +173,78 @@ clear()
 
 
 def _before_insert(mapper, connection, target):
+    """ Trigger the Kotti event :class:``ObjectInsert``.
+
+    :param mapper: SQLAlchemy mapper
+    :type mapper: :class:`sqlalchemy.orm.mapper.Mapper`
+
+    :param connection: SQLAlchemy connection
+    :type connection: :class:`sqlalchemy.engine.base.Connection`
+
+    :param target: SQLAlchemy declarative class that is used
+    :type target: :class:`sqlalchemy.ext.declarative.Base` or descendant
+    """
+
     notify(ObjectInsert(target, get_current_request()))
 
 
 def _before_update(mapper, connection, target):
+    """ Trigger the Kotti event :class:``ObjectUpdate``.
+
+    :param mapper: SQLAlchemy mapper
+    :type mapper: :class:`sqlalchemy.orm.mapper.Mapper`
+
+    :param connection: SQLAlchemy connection
+    :type connection: :class:`sqlalchemy.engine.base.Connection`
+
+    :param target: SQLAlchemy declarative class that is used
+    :type target: :class:`sqlalchemy.ext.declarative.Base` or descendant
+    """
+
     session = DBSession.object_session(target)
     if session.is_modified(target, include_collections=False):
         notify(ObjectUpdate(target, get_current_request()))
 
 
-def _before_delete(mapper, conection, target):
+def _before_delete(mapper, connection, target):
+    """ Trigger the Kotti event :class:``ObjectDelete``.
+
+    :param mapper: SQLAlchemy mapper
+    :type mapper: :class:`sqlalchemy.orm.mapper.Mapper`
+
+    :param connection: SQLAlchemy connection
+    :type connection: :class:`sqlalchemy.engine.base.Connection`
+
+    :param target: SQLAlchemy declarative class that is used
+    :type target: :class:`sqlalchemy.ext.declarative.Base` or descendant
+    """
+
     notify(ObjectDelete(target, get_current_request()))
 
 
-def _after_delete(mapper, conection, target):
+def _after_delete(mapper, connection, target):
+    """ Trigger the Kotti event :class:``ObjectAfterDelete``.
+
+    :param mapper: SQLAlchemy mapper
+    :type mapper: :class:`sqlalchemy.orm.mapper.Mapper`
+
+    :param connection: SQLAlchemy connection
+    :type connection: :class:`sqlalchemy.engine.base.Connection`
+
+    :param target: SQLAlchemy declarative class that is used
+    :type target: :class:`sqlalchemy.ext.declarative.Base` or descendant
+    """
+
     notify(ObjectAfterDelete(target, get_current_request()))
 
 
 def set_owner(event):
+    """Set ``owner`` of the object that triggered the event.
+
+    :param event: event that trigerred this handler.
+    :type event: :class:`ObjectInsert`
+    """
+
     obj, request = event.object, event.request
     if request is not None and isinstance(obj, Node) and obj.owner is None:
         userid = authenticated_userid(request)
@@ -217,23 +259,46 @@ def set_owner(event):
 
 
 def set_creation_date(event):
+    """Set ``creation_date`` of the object that triggered the event.
+
+    :param event: event that trigerred this handler.
+    :type event: :class:`ObjectInsert`
+    """
+
     obj = event.object
     if obj.creation_date is None:
         obj.creation_date = obj.modification_date = datetime.now()
 
 
 def set_modification_date(event):
+    """Update ``modification_date`` of the object that triggered the event.
+
+    :param event: event that trigerred this handler.
+    :type event: :class:`ObjectUpdate`
+    """
+
     event.object.modification_date = datetime.now()
 
 
 def delete_orphaned_tags(event):
+    """Delete Tag instances / records when they are not associated with any
+    content.
+
+    :param event: event that trigerred this handler.
+    :type event: :class:`ObjectAfterDelete`
+    """
+
     DBSession.query(Tag).filter(~Tag.content_tags.any()).delete(
         synchronize_session=False)
 
 
 def cleanup_user_groups(event):
     """Remove a deleted group from the groups of a user/group and remove
-       all local group entries of it."""
+       all local group entries of it.
+
+       :param event: event that trigerred this handler.
+       :type event: :class:`UserDeleted`
+       """
     name = event.object.name
 
     if name.startswith("group:"):
@@ -247,17 +312,84 @@ def cleanup_user_groups(event):
 
 
 def reset_content_owner(event):
-    """Reset the owner of the content from the deleted owner."""
+    """Reset the owner of the content from the deleted owner.
+
+    :param event: event that trigerred this handler.
+    :type event: :class:`UserDeleted`
+    """
+
     contents = DBSession.query(Content).filter(
         Content.owner == event.object.name).all()
     for content in contents:
         content.owner = None
 
 
+class subscribe(object):
+    """Function decorator to attach the decorated function as a handler for a
+    Kotti event.  Example::
+
+        from kotti.events import ObjectInsert
+        from kotti.events import subscribe
+        from kotti.resurces import Document
+
+        @subscribe()
+        def on_all_events(event):
+            # this will be executed on *every* event
+            print "Some kind of event occured"
+
+        @subscribe(ObjectInsert)
+        def on_insert(event):
+            # this will be executed on every object insert
+            context = event.object
+            request = event.request
+            print "Object insert"
+
+        @subscribe(ObjectInsert, Document)
+        def on_document_insert(event):
+            # this will only be executed on object inserts if the object is
+            # is an instance of Document
+            context = event.object
+            request = event.request
+            print "Document insert"
+
+    """
+
+    venusian = venusian  # needed for testing
+
+    def __init__(self, evttype=object, objtype=None):
+        """Constructor.
+
+        :param evttype: Event to subscribe to.
+        :type evttype: class:`ObjectEvent` or descendant
+
+        :param objtype: Object type on which the handler will be called
+        :type objtype: class:`kotti.resources.Node` or descendant.
+        """
+
+        self.evttype = evttype
+        self.objtype = objtype
+
+    def register(self, context, name, obj):
+
+        if issubclass(self.evttype, ObjectEvent):
+            objectevent_listeners[(self.evttype, self.objtype)].append(obj)
+        else:
+            listeners[self.evttype].append(obj)
+
+    def __call__(self, wrapped):
+
+        self.venusian.attach(wrapped, self.register, category='kotti')
+
+        return wrapped
+
+
 _WIRED_SQLALCHMEY = False
 
 
 def wire_sqlalchemy():  # pragma: no cover
+    """ Connect SQLAlchemy events to their respective handler function (that
+    fires the corresponding Kotti event). """
+
     global _WIRED_SQLALCHMEY
     if _WIRED_SQLALCHMEY:
         return
@@ -270,20 +402,41 @@ def wire_sqlalchemy():  # pragma: no cover
 
 
 def includeme(config):
+    """ Pyramid includeme hook.
+
+    :param config: app config
+    :type config: :class:`pyramid.config.Configurator`
+    """
+
     from kotti.workflow import initialize_workflow
 
+    # Subscribe to SQLAlchemy events and map these to Kotti events
     wire_sqlalchemy()
+
+    # Set content owner on content creation
     objectevent_listeners[
         (ObjectInsert, Content)].append(set_owner)
+
+    # Set content creation date on content creation
     objectevent_listeners[
         (ObjectInsert, Content)].append(set_creation_date)
+
+    # Set content modification date on content updates
     objectevent_listeners[
         (ObjectUpdate, Content)].append(set_modification_date)
+
+    # Delete orphaned tags after a tag association has ben deleted
     objectevent_listeners[
         (ObjectAfterDelete, TagsToContents)].append(delete_orphaned_tags)
+
+    # Initialze the workflow on content creation.
     objectevent_listeners[
         (ObjectInsert, Content)].append(initialize_workflow)
+
+    # Perform some cleanup when a user or group is deleted
     objectevent_listeners[
         (UserDeleted, Principal)].append(cleanup_user_groups)
+
+    # Remove the owner from content when the corresponding user is deleted
     objectevent_listeners[
         (UserDeleted, Principal)].append(reset_content_owner)
