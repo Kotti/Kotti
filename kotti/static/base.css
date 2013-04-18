@@ -32,3 +32,21 @@ span.brand a, span.brand a:hover {
     width: 160px;
   }
 }
+
+/* Top margin for first well styling of first slot */
+
+.left-column .well:first-of-type {
+  margin-top: 1em;
+}
+
+.right-column .well:first-of-type {
+  margin-top: 1em;
+}
+
+.above-content .well:first-of-type {
+  margin-top: 1em;
+}
+
+.below-content .well:first-of-type {
+  margin-top: 1em;
+}

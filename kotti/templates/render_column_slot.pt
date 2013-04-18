@@ -1,2 +1,2 @@
-<div tal:repeat="snippet slot" tal:content="structure snippet">
+<div class="well well-small" tal:repeat="snippet slot" tal:content="structure snippet">
 </div>
