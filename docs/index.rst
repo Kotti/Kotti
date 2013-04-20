@@ -50,6 +50,7 @@ Topics
         developing/frontpage-different-template
         developing/images
         developing/static-resource-management
+        developing/understanding-kotti-startup
 
 API
 ---
