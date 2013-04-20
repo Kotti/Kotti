@@ -361,6 +361,7 @@ class Tag(Base):
     #: Primary key column in the DB
     #: (:class:`sqlalchemy.types.Integer`)
     id = Column(Integer, primary_key=True)
+
     #: Title of the tag
     #: :class:`sqlalchemy.types.Unicode`
     title = Column(Unicode(100), unique=True, nullable=False)
