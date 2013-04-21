@@ -70,7 +70,8 @@ conf_defaults = {
     'pyramid.includes': '',
     'kotti.includes': '',  # BBB
     'kotti.base_includes': ' '.join([
-        'kotti kotti.events',
+        'kotti',
+        'kotti.events',
         'kotti.views',
         'kotti.views.cache',
         'kotti.views.view',
