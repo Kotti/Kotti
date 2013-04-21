@@ -109,7 +109,28 @@ class BaseFormView(FormView):
 
 class EditFormView(BaseFormView):
     """
-    A base form for content editing purposes
+    A base form for content editing purposes.
+
+    Set `self.schema_factory` to the context's schema.  Values of
+    fields in this schema will be set as attributes on the context.
+    An example::
+
+        import colander
+        from deform.widget import RichTextWidget
+
+        from kotti.edit.content import ContentSchema
+        from kotti.edit.content import EditFormView
+
+        class DocumentSchema(ContentSchema):
+            body = colander.SchemaNode(
+                colander.String(),
+                title=u'Body',
+                widget=RichTextWidget(),
+                missing=u'',
+                )
+
+        class DocumentEditForm(EditFormView):
+            schema_factory = DocumentSchema
     """
 
     add_template_vars = ('first_heading',)
@@ -137,7 +158,15 @@ class EditFormView(BaseFormView):
 
 class AddFormView(BaseFormView):
     """
-    A base form for content adding purposes
+    A base form for content adding purposes.
+
+    Set `self.schema_factory` as with EditFormView.  Also set
+    `item_type` to your model class.  An example::
+
+        class DocumentAddForm(AddFormView):
+            schema_factory = DocumentSchema
+            add = Document
+            item_type = u'Document'
     """
 
     success_message = _(u"Item was added.")
