@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
-      metal:use-macro="api.macro('kotti:templates/edit/master.pt')"
+      metal:use-macro="api.macro('kotti:templates/view/master.pt')"
       xmlns:i18n="http://xml.zope.org/namespaces/i18n"
       i18n:domain="Kotti">
 
