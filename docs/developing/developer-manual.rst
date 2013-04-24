@@ -297,7 +297,7 @@ is used for making screen captures, and thereby helps to actually test Kotti in
 the process. `blockdiag`_ is used to make flow charts and diagrams interjected
 into the docs.
 
-.. _Kotti User Manual: https://kotti_user_manual.readthedocs.org
+.. _Kotti User Manual: https://kotti-user-manual.readthedocs.org
 
 .. _Selenium: http://selenium-python.readthedocs.org
 
