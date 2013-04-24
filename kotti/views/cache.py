@@ -4,6 +4,7 @@ from logging import getLogger
 from pyramid.events import subscriber
 from pyramid.events import NewResponse
 from pyramid.response import FileResponse
+from sqlalchemy.orm.exc import DetachedInstanceError
 
 from kotti import get_settings
 from kotti.security import get_user
@@ -74,12 +75,19 @@ caching_policies = {
 }
 
 
+def _safe_get_user(request):
+    try:
+        return get_user(request)
+    except DetachedInstanceError:  # XXX need to understand what's happening
+        return not None
+
+
 def default_caching_policy_chooser(context, request, response):
     if request.method != 'GET' or response.status_int != 200:
         return None
     elif isinstance(response, FileResponse):
         return 'Cache Resource'
-    elif get_user(request) is not None:
+    elif _safe_get_user(request) is not None:
         return 'No Cache'
     elif response.headers['content-type'].startswith('text/html'):
         return 'Cache HTML'

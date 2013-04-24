@@ -4,6 +4,8 @@ Change History
 0.9a2 - Unreleased
 ------------------
 
+- A temporary fix for #187.  Basically suppresses DetachedInstanceError.
+
 - Add ``kotti.events.subscribe`` decorator.  See the also updated docs on that
   topic / module for details.
 
