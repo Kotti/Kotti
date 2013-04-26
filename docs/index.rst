@@ -12,7 +12,7 @@ browsing or searching, or were referred here, you will want to go directly to
 the `Kotti User Manual`_ The documentation below, ``First Steps``, ``Topics``,
 and so on, are for developers of Kotti.
 
-.. _Kotti User Manual: http://kotti_user_manual.readthedocs.org/
+.. _Kotti User Manual: http://kotti-user-manual.readthedocs.org/
 
 First Steps
 -----------
@@ -68,7 +68,7 @@ The `Kotti User Manual`_ is rendered and hosted on readthedocs.org.
 Developers, please see the :ref:`developer_manual` for instructions on
 contributing to the user manual.
 
-.. _Kotti User Manual: http://kotti_user_manual.readthedocs.org/
+.. _Kotti User Manual: http://kotti-user-manual.readthedocs.org/
 
 Changes
 -------
