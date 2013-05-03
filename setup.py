@@ -26,6 +26,7 @@ install_requires = [
     'js.bootstrap>=2.1.5',
     'js.deform>=0.9.5-4',
     'js.deform_bootstrap>=0.2.4-1',
+    'js.html5shiv',
     'js.jquery',
     'js.jquery_form',
     'js.jquery_tablednd',

@@ -21,6 +21,7 @@ js.bootstrap==2.3.0
 js.chosen==0.9.11
 js.deform==0.9.6
 js.deform_bootstrap==0.2.4-1
+js.html5shiv==3.6.2-1
 js.jquery==1.8.2
 js.jquery_form==3.09
 js.jquery_maskedinput==1.3

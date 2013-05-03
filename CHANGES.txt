@@ -4,6 +4,9 @@ Change History
 0.9a2 - Unreleased
 ------------------
 
+- Remove the html5shim from the master templates and use the fanstatic
+  package js.html5shiv instead.
+
 - A temporary fix for #187.  Basically suppresses DetachedInstanceError.
 
 - Add ``kotti.events.subscribe`` decorator.  See the also updated docs on that
