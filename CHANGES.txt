@@ -1,7 +1,7 @@
 Change History
 ==============
 
-0.9a2 - Unreleased
+0.9a2 - 2013-05-04
 ------------------
 
 - Fix #222: Use SQLAlchemy's `before_flush` event for object events.
