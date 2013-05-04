@@ -4,6 +4,16 @@ Change History
 0.9a2 - Unreleased
 ------------------
 
+- Fix #222: Use SQLAlchemy's `before_flush` event for object events.
+
+  We were using the wrong events previously.  The problem with
+  `before_insert`, `before_update`, and `before_delete` was that event
+  handlers could not reliably call `Session.add`, `Session.delete`,
+  and change mapped relationships.  But only SQLAlchemy 0.8 started
+  emitting a warning when that was done.
+
+  Also deprecated `ObjectAfterDelete` because I don't think it's useful.
+
 - Remove the html5shim from the master templates and use the fanstatic
   package js.html5shiv instead.
 

@@ -24,6 +24,7 @@ import venusian
 from sqlalchemy.orm import mapper
 from pyramid.threadlocal import get_current_request
 from pyramid.security import authenticated_userid
+from zope.deprecation.deprecation import deprecated
 
 from kotti import DBSession
 from kotti.resources import Node
@@ -71,7 +72,13 @@ class ObjectDelete(ObjectEvent):
 
 
 class ObjectAfterDelete(ObjectEvent):
-    """This event is emitted after an object has been deleted from the DB."""
+    """This event is emitted after an object has been deleted from the DB.
+
+    .. deprecated:: 0.9
+    """
+deprecated('ObjectAfterDelete',
+           "The ObjectAfterDelete event is deprecated and will be no longer "
+           "available starting with Kotti 0.10.")
 
 
 class UserDeleted(ObjectEvent):
@@ -172,56 +179,6 @@ objectevent_listeners = ObjectEventDispatcher()
 clear()
 
 
-def _before_insert(mapper, connection, target):
-    """ Trigger the Kotti event :class:``ObjectInsert``.
-
-    :param mapper: SQLAlchemy mapper
-    :type mapper: :class:`sqlalchemy.orm.mapper.Mapper`
-
-    :param connection: SQLAlchemy connection
-    :type connection: :class:`sqlalchemy.engine.base.Connection`
-
-    :param target: SQLAlchemy declarative class that is used
-    :type target: Class as returned by ``declarative_base()``
-    """
-
-    notify(ObjectInsert(target, get_current_request()))
-
-
-def _before_update(mapper, connection, target):
-    """ Trigger the Kotti event :class:``ObjectUpdate``.
-
-    :param mapper: SQLAlchemy mapper
-    :type mapper: :class:`sqlalchemy.orm.mapper.Mapper`
-
-    :param connection: SQLAlchemy connection
-    :type connection: :class:`sqlalchemy.engine.base.Connection`
-
-    :param target: SQLAlchemy declarative class that is used
-    :type target: Class as returned by ``declarative_base()``
-    """
-
-    session = DBSession.object_session(target)
-    if session.is_modified(target, include_collections=False):
-        notify(ObjectUpdate(target, get_current_request()))
-
-
-def _before_delete(mapper, connection, target):
-    """ Trigger the Kotti event :class:``ObjectDelete``.
-
-    :param mapper: SQLAlchemy mapper
-    :type mapper: :class:`sqlalchemy.orm.mapper.Mapper`
-
-    :param connection: SQLAlchemy connection
-    :type connection: :class:`sqlalchemy.engine.base.Connection`
-
-    :param target: SQLAlchemy declarative class that is used
-    :type target: Class as returned by ``declarative_base()``
-    """
-
-    notify(ObjectDelete(target, get_current_request()))
-
-
 def _after_delete(mapper, connection, target):
     """ Trigger the Kotti event :class:``ObjectAfterDelete``.
 
@@ -236,6 +193,25 @@ def _after_delete(mapper, connection, target):
     """
 
     notify(ObjectAfterDelete(target, get_current_request()))
+
+
+def _before_flush(session, flush_context, instances):
+    """Trigger the following Kotti :class:``ObjectEvent`` events in
+    this order:
+
+    - :class:``ObjectUpdate``
+    - :class:``ObjectInsert``
+    - :class:``ObjectDelete``
+    """
+    req = get_current_request()
+
+    for obj in session.dirty:
+        if session.is_modified(obj, include_collections=False):  # XXX ?
+            notify(ObjectUpdate(obj, req))
+    for obj in session.new:
+        notify(ObjectInsert(obj, req))
+    for obj in session.deleted:
+        notify(ObjectDelete(obj, req))
 
 
 def set_owner(event):
@@ -395,10 +371,8 @@ def wire_sqlalchemy():  # pragma: no cover
         return
     else:
         _WIRED_SQLALCHMEY = True
-    sqlalchemy.event.listen(mapper, 'before_insert', _before_insert)
-    sqlalchemy.event.listen(mapper, 'before_update', _before_update)
-    sqlalchemy.event.listen(mapper, 'before_delete', _before_delete)
     sqlalchemy.event.listen(mapper, 'after_delete', _after_delete)
+    sqlalchemy.event.listen(DBSession, 'before_flush', _before_flush)
 
 
 def includeme(config):

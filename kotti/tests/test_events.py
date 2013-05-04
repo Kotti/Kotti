@@ -1,3 +1,5 @@
+import warnings
+
 from mock import patch
 
 
@@ -63,7 +65,8 @@ class TestEvents:
         lis[(events.ObjectInsert, None)].append(insert)
         lis[(events.ObjectUpdate, None)].append(update)
         lis[(events.ObjectDelete, None)].append(delete)
-        lis[(events.ObjectAfterDelete, None)].append(after_delete)
+        with warnings.catch_warnings(record=True):
+            lis[(events.ObjectAfterDelete, None)].append(after_delete)
 
         child = root[u'child'] = Content()
         db_session.flush()
