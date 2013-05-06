@@ -8,7 +8,7 @@
       <li tal:repeat="v selectable_default_views">
         <a tal:condition="v.is_current">
           ${v.title}
-          <b class="icon icon-ok"></b>
+          <b class="icon icon-ok pull-right"></b>
         </a>
         <a tal:condition="not: v.is_current"
            href="${request.resource_url(context)}set-default-view?view_name=${v.name}">
