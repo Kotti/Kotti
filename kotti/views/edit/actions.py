@@ -8,6 +8,7 @@ from pyramid.view import view_config
 from pyramid.exceptions import Forbidden
 from pyramid.security import has_permission
 from pyramid.view import view_defaults
+from zope.deprecation import deprecated
 
 from kotti import DBSession
 from kotti import get_settings
@@ -23,16 +24,19 @@ from kotti.views.edit import _state_info
 from kotti.views.edit import _states
 from kotti.views.edit import get_paste_items
 from kotti.views.form import EditFormView
+from kotti.views.navigation import render_tree_navigation
 from kotti.views.util import nodes_tree
 from kotti.workflow import get_workflow
 
 
 @view_defaults(permission='edit')
 class NodeActions(object):
+    """Actions related to content nodes."""
 
     def __init__(self, context, request):
         self.context = context
         self.request = request
+        self.flash = self.request.session.flash
 
     def _selected_children(self, add_context=True):
         """
@@ -85,7 +89,7 @@ class NodeActions(object):
         new_state = self.request.params['new_state']
         wf = get_workflow(self.context)
         wf.transition_to_state(self.context, self.request, new_state)
-        self.request.session.flash(EditFormView.success_message, 'success')
+        self.flash(EditFormView.success_message, 'success')
         return self.back()
 
     @view_config(name='copy')
@@ -101,8 +105,8 @@ class NodeActions(object):
         self.request.session['kotti.paste'] = (ids, 'copy')
         for id in ids:
             item = DBSession.query(Node).get(id)
-            self.request.session.flash(_(u'${title} was copied.',
-                                    mapping=dict(title=item.title)), 'success')
+            self.flash(_(u'${title} was copied.',
+                         mapping=dict(title=item.title)), 'success')
         if not self.request.is_xhr:
             return self.back()
 
@@ -119,8 +123,8 @@ class NodeActions(object):
         self.request.session['kotti.paste'] = (ids, 'cut')
         for id in ids:
             item = DBSession.query(Node).get(id)
-            self.request.session.flash(_(u'${title} was cut.',
-                                mapping=dict(title=item.title)), 'success')
+            self.flash(_(u'${title} was cut.', mapping=dict(title=item.title)),
+                       'success')
         if not self.request.is_xhr:
             return self.back()
 
@@ -152,12 +156,11 @@ class NodeActions(object):
                     name = title_to_name(name, blacklist=self.context.keys())
                     copy.name = name
                     self.context.children.append(copy)
-                self.request.session.flash(_(u'${title} was pasted.',
-                                    mapping=dict(title=item.title)), 'success')
+                self.flash(_(u'${title} was pasted.',
+                             mapping=dict(title=item.title)), 'success')
             else:
-                self.request.session.flash(
-                    _(u'Could not paste node. It no longer exists.'),
-                    'error')
+                self.flash(_(u'Could not paste node. It no longer exists.'),
+                           'error')
         if not self.request.is_xhr:
             return self.back()
 
@@ -177,8 +180,8 @@ class NodeActions(object):
             index = self.context.children.index(child)
             self.context.children.pop(index)
             self.context.children.insert(index + move, child)
-            self.request.session.flash(_(u'${title} was moved.',
-                                    mapping=dict(title=child.title)), 'success')
+            self.flash(_(u'${title} was moved.',
+                         mapping=dict(title=child.title)), 'success')
         if not self.request.is_xhr:
             return self.back()
 
@@ -224,15 +227,15 @@ class NodeActions(object):
                 else:
                     msg = _(u'${title} is no longer visible in the navigation.',
                             mapping=mapping)
-                self.request.session.flash(msg, 'success')
+                self.flash(msg, 'success')
         if not self.request.is_xhr:
             return self.back()
 
     @view_config(name='show')
     def show(self):
         """
-        Show nodes view. Switch the in_navigation attribute of selected nodes to true
-        and get back to the referrer of the request.
+        Show nodes view.  Switch the in_navigation attribute of selected nodes
+        to ``True`` and get back to the referrer of the request.
 
         :result: Redirect response to the referrer of the request.
         :rtype: pyramid.httpexceptions.HTTPFound
@@ -242,8 +245,8 @@ class NodeActions(object):
     @view_config(name='hide')
     def hide(self):
         """
-        Hide nodes view. Switch the in_navigation attribute of selected nodes to false
-        and get back to the referrer of the request.
+        Hide nodes view. Switch the in_navigation attribute of selected nodes
+        to ``False`` and get back to the referrer of the request.
 
         :result: Redirect response to the referrer of the request.
         :rtype: pyramid.httpexceptions.HTTPFound
@@ -264,8 +267,8 @@ class NodeActions(object):
         """
         if 'delete' in self.request.POST:
             parent = self.context.__parent__
-            self.request.session.flash(_(u'${title} was deleted.',
-                            mapping=dict(title=self.context.title)), 'success')
+            self.flash(_(u'${title} was deleted.',
+                         mapping=dict(title=self.context.title)), 'success')
             del parent[self.context.name]
             location = resource_url(parent, self.request)
             return HTTPFound(location=location)
@@ -285,16 +288,16 @@ class NodeActions(object):
         if 'delete_nodes' in self.request.POST:
             ids = self.request.POST.getall('children-to-delete')
             if not ids:
-                self.request.session.flash(_(u"Nothing was deleted."), 'info')
+                self.flash(_(u"Nothing was deleted."), 'info')
             for id in ids:
                 item = DBSession.query(Node).get(id)
-                self.request.session.flash(_(u'${title} was deleted.',
-                                mapping=dict(title=item.title)), 'success')
+                self.flash(_(u'${title} was deleted.',
+                             mapping=dict(title=item.title)), 'success')
                 del self.context[item.name]
             return self.back('@@contents')
 
         if 'cancel' in self.request.POST:
-            self.request.session.flash(_(u'No changes were made.'), 'info')
+            self.flash(_(u'No changes were made.'), 'info')
             return self.back('@@contents')
 
         ids = self._selected_children(add_context=False)
@@ -321,12 +324,11 @@ class NodeActions(object):
             name = self.request.POST['name']
             title = self.request.POST['title']
             if not name or not title:
-                self.request.session.flash(
-                    _(u'Name and title are required.'), 'error')
+                self.flash(_(u'Name and title are required.'), 'error')
             else:
                 self.context.name = name.replace('/', '')
                 self.context.title = title
-                self.request.session.flash(_(u'Item was renamed.'), 'success')
+                self.flash(_(u'Item was renamed.'), 'success')
                 return self.back('')
         return {}
 
@@ -349,8 +351,7 @@ class NodeActions(object):
                 name = self.request.POST[id + '-name']
                 title = self.request.POST[id + '-title']
                 if not name or not title:
-                    self.request.session.flash(
-                        _(u'Name and title are required.'), 'error')
+                    self.flash(_(u'Name and title are required.'), 'error')
                     location = resource_url(self.context,
                                             self.request) + '@@rename_nodes'
                     return HTTPFound(location=location)
@@ -358,12 +359,11 @@ class NodeActions(object):
                     item.name = title_to_name(name,
                                               blacklist=self.context.keys())
                     item.title = title
-            self.request.session.flash(
-                _(u'Your changes have been saved.'), 'success')
+            self.flash(_(u'Your changes have been saved.'), 'success')
             return self.back('@@contents')
 
         if 'cancel' in self.request.POST:
-            self.request.session.flash(_(u'No changes were made.'), 'info')
+            self.flash(_(u'No changes were made.'), 'info')
             return self.back('@@contents')
 
         ids = self._selected_children(add_context=False)
@@ -403,14 +403,13 @@ class NodeActions(object):
                                 wf.transition_to_state(child,
                                                        self.request,
                                                        to_state, )
-                self.request.session.flash(
-                    _(u'Your changes have been saved.'), 'success')
+                self.flash(_(u'Your changes have been saved.'), 'success')
             else:
-                self.request.session.flash(_(u'No changes were made.'), 'info')
+                self.flash(_(u'No changes were made.'), 'info')
             return self.back('@@contents')
 
         if 'cancel' in self.request.POST:
-            self.request.session.flash(_(u'No changes were made.'), 'info')
+            self.flash(_(u'No changes were made.'), 'info')
             return self.back('@@contents')
 
         ids = self._selected_children(add_context=False)
@@ -455,8 +454,7 @@ def contents_buttons(context, request):
         buttons.append(ActionButton('down', title=_(u'Move down')))
         buttons.append(ActionButton('show', title=_(u'Show')))
         buttons.append(ActionButton('hide', title=_(u'Hide')))
-    return [button for button in buttons
-        if button.permitted(context, request)]
+    return [button for button in buttons if button.permitted(context, request)]
 
 
 @view_config(name='add-dropdown', permission='add',
@@ -568,30 +566,11 @@ def workflow(context, request):
             'states': _states(context, request),
             'transitions': trans_info,
             'current_state': curr_state,
-            }
+        }
 
     return {
         'current_state': None
-        }
-
-
-@view_config(name='render_tree_navigation', permission='view',
-             renderer='kotti:templates/edit/nav-tree.pt')
-@view_config(name='navigate', permission='view',
-             renderer='kotti:templates/edit/nav-tree-view.pt')
-def render_tree_navigation(context, request):
-    """
-    Renders the navigation view.
-
-    :result: Dictionary passed to the template for rendering.
-    :rtype: dict
-    """
-    tree = nodes_tree(request)
-    return {
-        'tree': {
-            'children': [tree],
-            },
-        }
+    }
 
 
 @view_config(name='actions-dropdown', permission='edit',
@@ -618,4 +597,18 @@ def actions(context, request):
 
 
 def includeme(config):
-    config.scan(__name__)
+    import warnings
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore")
+        config.scan(__name__)
+
+
+# BBB starts here --- --- --- --- --- ---
+
+render_tree_navigation = render_tree_navigation
+
+deprecated(
+    'render_tree_navigation',
+    'render_tree_navigation has been moved to kotti.views.navigation as of '
+    'Kotti 0.9.  Import from there instead.'
+)

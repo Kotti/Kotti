@@ -270,28 +270,28 @@ class TestTemplateAPI:
         api = self.make(request=request)
         assert api.slots.left == [u"Hello world!"]
 
-    def test_deprecated_slots(self, db_session):
-        from kotti.views.slots import register, RenderAboveContent
+    # def test_deprecated_slots(self, db_session):
+    #     from kotti.views.slots import register, RenderAboveContent
 
-        def render_something(context, request):
-            return u"Hello, %s!" % context.title
-        register(RenderAboveContent, None, render_something)
+    #     def render_something(context, request):
+    #         return u"Hello, %s!" % context.title
+    #     register(RenderAboveContent, None, render_something)
 
-        api = self.make()
-        assert (api.slots.abovecontent == [u'Hello, %s!' % api.context.title])
+    #     api = self.make()
+    #     assert (api.slots.abovecontent == [u'Hello, %s!' % api.context.title])
 
-        # Slot renderers may also return lists:
-        def render_a_list(context, request):
-            return [u"a", u"list"]
-        register(RenderAboveContent, None, render_a_list)
-        api = self.make()
-        assert (
-            api.slots.abovecontent ==
-            [u'Hello, %s!' % api.context.title, u'a', u'list']
-            )
+    #     # Slot renderers may also return lists:
+    #     def render_a_list(context, request):
+    #         return [u"a", u"list"]
+    #     register(RenderAboveContent, None, render_a_list)
+    #     api = self.make()
+    #     assert (
+    #         api.slots.abovecontent ==
+    #         [u'Hello, %s!' % api.context.title, u'a', u'list']
+    #         )
 
-        with raises(AttributeError):
-            api.slots.foobar
+    #     with raises(AttributeError):
+    #         api.slots.foobar
 
     def test_slots_only_rendered_when_accessed(self, config, events):
         from kotti.views.slots import assign_slot
@@ -441,7 +441,7 @@ class TestViewUtil:
 class TestLocalNavigationSlot:
     def test_it(self, config, root):
         config.testing_add_renderer('kotti:templates/view/nav-local.pt')
-        from kotti.views.slots import local_navigation
+        from kotti.views.navigation import local_navigation
         a, aa, ab, ac, aca, acb = create_contents(root)
 
         ret = local_navigation(ac, DummyRequest())
@@ -455,18 +455,18 @@ class TestLocalNavigationSlot:
 
     def test_no_permission(self, config, root):
         config.testing_add_renderer('kotti:templates/view/nav-local.pt')
-        from kotti.views.slots import local_navigation
+        from kotti.views.navigation import local_navigation
         a, aa, ab, ac, aca, acb = create_contents(root)
 
-        with patch('kotti.views.slots.has_permission', return_value=True):
+        with patch('kotti.views.navigation.has_permission', return_value=True):
             assert local_navigation(ac, DummyRequest())['parent'] is not None
 
-        with patch('kotti.views.slots.has_permission', return_value=False):
+        with patch('kotti.views.navigation.has_permission', return_value=False):
             assert local_navigation(ac, DummyRequest())['parent'] is None
 
     def test_in_navigation(self, config, root):
         config.testing_add_renderer('kotti:templates/view/nav-local.pt')
-        from kotti.views.slots import local_navigation
+        from kotti.views.navigation import local_navigation
         a, aa, ab, ac, aca, acb = create_contents(root)
 
         assert local_navigation(a, DummyRequest())['parent'] is not None

@@ -32,3 +32,8 @@ class IImage(IFile):
 class IDefaultWorkflow(Interface):
     """Marker interface for content classes that want to use the
        default workflow"""
+
+
+class INavigationRoot(Interface):
+    """Marker interface for content nodes / classes that want to be the root
+       for the navigation."""
