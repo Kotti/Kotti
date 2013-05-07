@@ -92,6 +92,19 @@ class TestTemplateAPI:
         assert self.make().root == root
         assert self.make(acb).root == root
 
+    def test_navigation_root(self, db_session):
+        from zope.interface import alsoProvides
+        from kotti.interfaces import INavigationRoot
+
+        api = self.make()
+        root = api.context
+        a, aa, ab, ac, aca, acb = create_contents(root)
+        assert self.make().navigation_root == root
+        assert self.make(acb).navigation_root == root
+
+        alsoProvides(a, INavigationRoot)
+        assert self.make(acb).navigation_root == a
+
     def test_has_permission(self, db_session):
         with patch('kotti.views.util.has_permission') as has_permission:
             api = self.make()
