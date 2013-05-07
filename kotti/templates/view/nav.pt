@@ -1,4 +1,6 @@
-<div class="navbar navbar-inverse navbar-static-top">
+<div xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+     xmlns:tal="http://xml.zope.org/namespaces/tal"
+     class="navbar navbar-inverse navbar-static-top">
   <div class="navbar-inner">
     <div class="container">
       <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
@@ -12,7 +14,7 @@
       <div tal:replace="api.render_template('kotti:templates/view/search.pt')" />
       <div class="nav-collapse">
         <ul class="nav">
-          <li tal:define="items [i for i in api.list_children(api.root) if i.in_navigation]"
+          <li tal:define="items [i for i in api.list_children(api.navigation_root) if i.in_navigation]"
               tal:repeat="item items"
               class="${api.inside(context, item) and 'active' or None}">
             <a href="${api.url(item)}" title="${item.description}">${item.title}</a>

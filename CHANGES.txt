@@ -4,6 +4,19 @@ Change History
 0.9a3 - Unreleased
 ------------------
 
+- Add ``INavigationRoot`` interface and ``TemplateAPI.navigation_root``
+  property.  The latter returns the first content node in the lineage that
+  implements ``INavigationRoot`` or the root node if ``INavigationRoot`` is not
+  implemented by any node in the lineage.  Make the ``nav.pt`` template use
+  ``api.navigation_root`` instead of ``api.root``.  This allows third party
+  add-ons to define content types that can reside somewhere in the content tree
+  while still being the root for the navigation.
+
+- Move navigation related view code to new module ``kotti.views.navigation``.
+  Deprecate imports from the old locations.
+
+- Remove *some* code that has been deprecated in 0.6 or 0.7.
+
 0.9a2 - 2013-05-04
 ------------------
 
