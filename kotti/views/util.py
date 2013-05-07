@@ -195,12 +195,6 @@ class TemplateAPI(object):
     def breadcrumbs(self):
         return reversed(self.lineage)
 
-    # @reify
-    # @deprecate('api.user is deprecated as of Kotti 0.7.0.  '
-    #            'Use ``request.user`` instead.')
-    # def user(self):  # pragma: no cover
-    #     return get_user(self.request)
-
     def has_permission(self, permission, context=None):
         if context is None:
             context = self.context
