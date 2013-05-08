@@ -57,7 +57,7 @@ class TestTemplateAPI:
 
     def test_site_title(self, db_session):
         with patch('kotti.views.util.get_settings',
-                return_value={'kotti.site_title': u'This is it.'}):
+                   return_value={'kotti.site_title': u'This is it.'}):
             api = self.make()
             assert api.site_title == u'This is it.'
 
@@ -124,8 +124,7 @@ class TestTemplateAPI:
         assert (api.edit_links == [
             ViewLink('contents', u'Contents'),
             ViewLink('edit', u'Edit'),
-            ViewLink('share', u'Share'),
-            ])
+            ViewLink('share', u'Share'), ])
 
         # Edit links are controlled through
         # 'root.type_info.edit_links' and the permissions that guard
@@ -234,7 +233,8 @@ class TestTemplateAPI:
         api = self.make()
         assert api.slots.left == [u"Y\u0153 world!"]
 
-    def test_assign_to_slot_predicate_mismatch(self, config, db_session, events):
+    def test_assign_to_slot_predicate_mismatch(self, config, db_session,
+                                               events):
         from kotti.views.slots import assign_slot
 
         def special(context, request):
@@ -411,14 +411,14 @@ class TestTemplateAPI:
         user = Dummy(email='daniel.nouri@gmail.com')
         result = api.avatar_url(user)
         assert result.startswith('https://secure.gravatar.com/avatar/'
-                                'd3aeefdd7afe103ab70875172135cab7')
+                                 'd3aeefdd7afe103ab70875172135cab7')
 
     def test_avatar_url_request_user(self, db_session):
         api = self.make()
         api.request.user = Dummy(email='daniel.nouri@gmail.com')
         result = api.avatar_url()
         assert result.startswith('https://secure.gravatar.com/avatar/'
-                                'd3aeefdd7afe103ab70875172135cab7')
+                                 'd3aeefdd7afe103ab70875172135cab7')
 
 
 class TestViewUtil:
@@ -445,8 +445,7 @@ class TestViewUtil:
         event = {
             'request': request,
             'context': object(),
-            'renderer_name': 'foo',
-            }
+            'renderer_name': 'foo', }
         add_renderer_globals(event)
         assert 'api' in event
 
@@ -454,6 +453,8 @@ class TestViewUtil:
 class TestLocalNavigationSlot:
     def test_it(self, config, root):
         config.testing_add_renderer('kotti:templates/view/nav-local.pt')
+        from zope.interface import alsoProvides
+        from kotti.interfaces import INavigationRoot
         from kotti.views.navigation import local_navigation
         a, aa, ab, ac, aca, acb = create_contents(root)
 
@@ -463,8 +464,10 @@ class TestLocalNavigationSlot:
         ret = local_navigation(acb, DummyRequest())
         assert ret == dict(parent=ac, children=[aca, acb])
 
-        assert local_navigation(a.__parent__,
-                DummyRequest())['parent'] is None
+        assert local_navigation(a.__parent__, DummyRequest())['parent'] is None
+
+        alsoProvides(ac, INavigationRoot)
+        assert local_navigation(ac, DummyRequest())['parent'] is None
 
     def test_no_permission(self, config, root):
         config.testing_add_renderer('kotti:templates/view/nav-local.pt')
