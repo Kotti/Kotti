@@ -36,4 +36,18 @@ class IDefaultWorkflow(Interface):
 
 class INavigationRoot(Interface):
     """Marker interface for content nodes / classes that want to be the root
-       for the navigation."""
+       for the navigation.
+
+       Considering a content tree like this::
+
+        - /a
+          - /a/a
+          - /a/b (provides INavigationRoot)
+            - /a/b/a
+            - /a/b/b
+            - /a/b/c
+          - a/c
+
+        The root item for the navigation will be ``/a/b`` for everey context in
+        or below ``/a/b`` and ``/a`` for every other item.
+        """
