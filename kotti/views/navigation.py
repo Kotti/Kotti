@@ -6,6 +6,7 @@ This module contains navigation related views.
 
 from pyramid.view import view_config
 
+from kotti.interfaces import INavigationRoot
 from kotti.resources import get_root
 from kotti.security import has_permission
 
@@ -48,7 +49,8 @@ def local_navigation(context, request):
     if not children and context.__parent__ is not None:
         parent = context.__parent__
         children = ch(parent)
-    if len(children) and parent != get_root():
+    if len(children) and parent != get_root() and not \
+            INavigationRoot.providedBy(parent):
         return dict(parent=parent, children=children)
     return dict(parent=None)
 
