@@ -105,6 +105,26 @@ class TestTemplateAPI:
         alsoProvides(a, INavigationRoot)
         assert self.make(acb).navigation_root == a
 
+    def test_breadcrumbs(self, db_session):
+        api = self.make()
+        root = api.context
+        a, aa, ab, ac, aca, acb = create_contents(root)
+        api.context = acb
+        breadcrumbs = [b for b in api.breadcrumbs]
+        assert breadcrumbs == [root, a, ac, acb]
+
+    def test_breadcrumbs_with_navigation_root(self, db_session):
+        from zope.interface import alsoProvides
+        from kotti.interfaces import INavigationRoot
+
+        api = self.make()
+        root = api.context
+        a, aa, ab, ac, aca, acb = create_contents(root)
+        api.context = acb
+        alsoProvides(a, INavigationRoot)
+        breadcrumbs = [b for b in api.breadcrumbs]
+        assert breadcrumbs == [a, ac, acb]
+
     def test_has_permission(self, db_session):
         with patch('kotti.views.util.has_permission') as has_permission:
             api = self.make()
