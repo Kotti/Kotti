@@ -193,7 +193,11 @@ class TemplateAPI(object):
 
     @reify
     def breadcrumbs(self):
-        return reversed(self.lineage)
+        breadcrumbs = self.lineage
+        if self.root != self.navigation_root:
+            index = breadcrumbs.index(self.navigation_root)
+            breadcrumbs = breadcrumbs[:index + 1]
+        return reversed(breadcrumbs)
 
     def has_permission(self, permission, context=None):
         if context is None:
