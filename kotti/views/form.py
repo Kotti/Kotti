@@ -47,10 +47,8 @@ def deferred_tag_it_widget(node, kw):
     tagit.need()
     all_tags = Tag.query.all()
     available_tags = [tag.title.encode('utf-8') for tag in all_tags]
-    widget = CommaSeparatedListWidget(
-        template='tag_it',
-        available_tags=available_tags,
-        )
+    widget = CommaSeparatedListWidget(template='tag_it',
+                                      available_tags=available_tags)
     return widget
 
 
@@ -194,9 +192,9 @@ class AddFormView(BaseFormView):
         context_title = getattr(self.request.context, 'title', None)
         type_title = self.item_type or self.add.type_info.title
         if context_title:
-            return _(
-		u'Add ${type} to ${title}.',
-                mapping=dict(type=translate(type_title), title=context_title))
+            return _(u'Add ${type} to <em>${title}</em>.',
+                     mapping=dict(type=translate(type_title),
+                                  title=context_title))
         else:
             return _(u'Add ${type}.', mapping=dict(type=translate(type_title)))
 

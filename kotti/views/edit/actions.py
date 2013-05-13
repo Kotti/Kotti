@@ -352,8 +352,8 @@ class NodeActions(object):
                 title = self.request.POST[id + '-title']
                 if not name or not title:
                     self.flash(_(u'Name and title are required.'), 'error')
-		    location = resource_url(self.context, self.request,
-					    '@@rename_nodes')
+                    location = resource_url(self.context, self.request,
+                                            '@@rename_nodes')
                     return HTTPFound(location=location)
                 else:
                     item.name = title_to_name(name,
@@ -491,9 +491,9 @@ def contents(context, request):
         if button.path in request.POST:
             children = request.POST.getall('children')
             if not children and button.path != u'paste':
-		request.session.flash(
-		    _(u'You have to select items to perform an action.'),
-		    'info')
+                request.session.flash(
+                    _(u'You have to select items to perform an action.'),
+                    'info')
                 location = resource_url(context, request) + '@@contents'
                 return HTTPFound(location=location)
             request.session['kotti.selected-children'] = children

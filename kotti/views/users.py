@@ -268,7 +268,7 @@ def user_schema(base=PrincipalFull()):
     if has_password:
         schema['password'].description = _(
             u"Leave this empty and tick the 'Send password registration' "
-	    u"box below to have the user set their own password.")
+            u"box below to have the user set their own password.")
     schema['title'].title = _(u"Full Name")
     return schema
 
@@ -336,8 +336,9 @@ class UserAddFormView(AddFormView):
         get_principals()[name] = appstruct
         if send_email:
             email_set_password(get_principals()[name], self.request)
-        self.request.session.flash(_(u'${title} was added.',
-            mapping=dict(title=appstruct['title'])), 'success')
+        self.request.session.flash(
+            _(u'${title} was added.',
+              mapping=dict(title=appstruct['title'])), 'success')
         location = self.request.url.split('?')[0] + '?' + urlencode(
             {'extra': name})
         return HTTPFound(location=location)
@@ -370,11 +371,10 @@ class UsersManage(FormView):
         self.request = request
 
     def __call__(self):
-        api = template_api(
-            self.context, self.request,
-            cp_links=CONTROL_PANEL_LINKS,
-            )
-	api.page_title = _(u"User Management")
+        api = template_api(self.context, self.request,
+                           cp_links=CONTROL_PANEL_LINKS)
+
+        api.page_title = _(u"User Management")
 
         principals = get_principals()
 
@@ -488,12 +488,11 @@ class UserManage(FormView):
 
         api = template_api(
             self.context, self.request,
-	    page_title=_(u"Edit ${principal_type} ${title}",
+            page_title=_(u"Edit ${principal_type} ${title}",
                          mapping=dict(principal_type=principal_type,
                                       title=self.context.title)),
             cp_links=CONTROL_PANEL_LINKS,
-            principal=principal,
-            )
+            principal=principal)
 
         form_view = self.GroupManageFormView if is_group \
             else self.UserManageFormView
@@ -526,20 +525,20 @@ def user_delete(context, request):
             if 'delete' in request.POST:
                 principals.__delitem__(principal.name)
                 notify(UserDeleted(principal, request))
-                request.session.flash(_(u'${principal_type} ${title} was deleted.',
-                                        mapping=dict(principal_type=principal_type,
-                                                     title=principal.title)), 'info')
+                request.session.flash(
+                    _(u'${principal_type} ${title} was deleted.',
+                      mapping=dict(principal_type=principal_type,
+                                   title=principal.title)), 'info')
                 location = "%s/@@setup-users" % request.application_url
                 return HTTPFound(location=location)
 
             api = template_api(
                 context, request,
-		page_title=_(u"Delete ${principal_type} ${title}",
+                page_title=_(u"Delete ${principal_type} ${title}",
                              mapping=dict(principal_type=principal_type,
                                           title=principal.title)),
                 principal_type=principal_type,
-                principal=principal,
-                )
+                principal=principal)
             return {'api': api, }
     else:
         request.session.flash(_(u'No name was given.'), 'error')
