@@ -195,7 +195,7 @@ class AddFormView(BaseFormView):
         type_title = self.item_type or self.add.type_info.title
         if context_title:
             return _(
-                u'Add ${type} to <em>${title}</em>.',
+		u'Add ${type} to ${title}.',
                 mapping=dict(type=translate(type_title), title=context_title))
         else:
             return _(u'Add ${type}.', mapping=dict(type=translate(type_title)))

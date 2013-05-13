@@ -268,9 +268,8 @@ def user_schema(base=PrincipalFull()):
     if has_password:
         schema['password'].description = _(
             u"Leave this empty and tick the 'Send password registration' "
-            "box below to have the user set their own password."
-            )
-    schema['title'].title = _(u"Full name")
+	    u"box below to have the user set their own password.")
+    schema['title'].title = _(u"Full Name")
     return schema
 
 
@@ -375,8 +374,7 @@ class UsersManage(FormView):
             self.context, self.request,
             cp_links=CONTROL_PANEL_LINKS,
             )
-        api.page_title = _(u"User Management - ${title}",
-                           mapping=dict(title=api.site_title))
+	api.page_title = _(u"User Management")
 
         principals = get_principals()
 
@@ -490,7 +488,7 @@ class UserManage(FormView):
 
         api = template_api(
             self.context, self.request,
-            page_title=_(u"Edit ${principal_type} - ${title}",
+	    page_title=_(u"Edit ${principal_type} ${title}",
                          mapping=dict(principal_type=principal_type,
                                       title=self.context.title)),
             cp_links=CONTROL_PANEL_LINKS,
@@ -536,7 +534,7 @@ def user_delete(context, request):
 
             api = template_api(
                 context, request,
-                page_title=_(u"Delete ${principal_type} - ${title}",
+		page_title=_(u"Delete ${principal_type} ${title}",
                              mapping=dict(principal_type=principal_type,
                                           title=principal.title)),
                 principal_type=principal_type,
