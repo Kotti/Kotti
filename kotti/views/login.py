@@ -63,7 +63,7 @@ class UserSelfRegistered(ObjectEvent):
 class RegisterSchema(colander.Schema):
     title = colander.SchemaNode(
         colander.String(),
-        title=_(u'Full Name'))
+        title=_(u'Full name'))
     name = colander.SchemaNode(
         colander.String(),
         title=_(u'Username'),

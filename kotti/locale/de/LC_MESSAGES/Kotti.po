@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Kotti 0.7dev4\n"
 "Report-Msgid-Bugs-To: kotti@googlegroups.com\n"
-"POT-Creation-Date: 2013-05-13 18:19+0200\n"
+"POT-Creation-Date: 2013-05-13 21:41+0200\n"
 "PO-Revision-Date: 2012-08-23 17:56+0200\n"
 "Last-Translator: Marco Scheidhuber <j23d@jusid.de>\n"
 "Language-Team: de <kotti@googlegroups.com>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 0.9.6\n"
 
-#: kotti/views/users.py:531
+#: kotti/views/users.py:529
 #, fuzzy
 msgid "${principal_type} ${title} was deleted."
 msgstr "${principal_type} ${title} gelöscht."
@@ -60,10 +60,6 @@ msgstr "${title} verschoben."
 msgid "${title} was pasted."
 msgstr "${title} eingefügt."
 
-#: kotti/templates/view/search.pt:13
-msgid "&#8594;"
-msgstr "&#8594;"
-
 #: kotti/views/users.py:160
 msgid "A user with that email already exists."
 msgstr "Ein Benutzer mit dieser E-Mail Adresse existiert bereits."
@@ -84,12 +80,12 @@ msgstr "Aktiv"
 msgid "Add"
 msgstr "Hinzufügen"
 
-#: kotti/views/form.py:197
+#: kotti/views/form.py:195
 #, fuzzy
 msgid "Add ${type} to <em>${title}</em>."
 msgstr "${type} in ${title} erstellen"
 
-#: kotti/views/form.py:201
+#: kotti/views/form.py:199
 #, fuzzy
 msgid "Add ${type}."
 msgstr "${type} erstellen"
@@ -98,7 +94,7 @@ msgstr "${type} erstellen"
 msgid "Add Group"
 msgstr "Neue Gruppe"
 
-#: kotti/views/users.py:317
+#: kotti/views/users.py:316
 msgid "Add User"
 msgstr "Neuer Benutzer"
 
@@ -116,7 +112,9 @@ msgstr "Administrator"
 
 #: kotti/templates/edit/change-state.pt:14
 msgid "An item's workflow state determines who can see, edit and/or manage it."
-msgstr "Der Workflowstatus eines Dokumentes bestimmt, wer es sehen, bearbeiten und/oder verwalten kann."
+msgstr ""
+"Der Workflowstatus eines Dokumentes bestimmt, wer es sehen, bearbeiten "
+"und/oder verwalten kann."
 
 #: kotti/templates/edit/change-state.pt:61 kotti/templates/edit/share.pt:58
 #: kotti/templates/site-setup/users.pt:60
@@ -149,8 +147,8 @@ msgstr "Inhalt"
 
 #: kotti/templates/edit/change-state.pt:63
 #: kotti/templates/edit/delete-nodes.pt:47
-#: kotti/templates/edit/rename-nodes.pt:31 kotti/views/form.py:76
-#: kotti/views/users.py:318 kotti/views/users.py:349 kotti/views/users.py:436
+#: kotti/templates/edit/rename-nodes.pt:31 kotti/views/form.py:74
+#: kotti/views/users.py:317 kotti/views/users.py:349 kotti/views/users.py:434
 msgid "Cancel"
 msgstr "Abbrechen"
 
@@ -168,17 +166,25 @@ msgstr "Workflowstatus ändern"
 
 #: kotti/templates/email-set-password.pt:6
 msgid "Click here to set your password and log in: ${url}"
-msgstr "Besuchen Sie bitte folgende Seite, um Ihr Passwort zu setzen und sich anzumelden: ${url}"
+msgstr ""
+"Besuchen Sie bitte folgende Seite, um Ihr Passwort zu setzen und sich "
+"anzumelden: ${url}"
 
 #: kotti/templates/email-reset-password.pt:5
 msgid "Click this link to reset your password at ${site_title}: ${url}"
-msgstr "Besuchen Sie bitte folgende Seite, um Ihr Passwort bei ${site_title} zurückzusetzen: ${url}"
+msgstr ""
+"Besuchen Sie bitte folgende Seite, um Ihr Passwort bei ${site_title} "
+"zurückzusetzen: ${url}"
 
 #: kotti/views/login.py:110
 #, fuzzy
-msgid "Congratulations! You are successfully registered. You should be receiving an email with a link to set your password. Doing so will activate your account."
+msgid ""
+"Congratulations! You are successfully registered. You should be receiving"
+" an email with a link to set your password. Doing so will activate your "
+"account."
 msgstr ""
-"Ihre Registrierung war erfolgreich. Sie sollten in Kürze eine E-Mail mit einem Link zur Aktivierung und zum Setzen Ihres Passwortes erhalten."
+"Ihre Registrierung war erfolgreich. Sie sollten in Kürze eine E-Mail mit "
+"einem Link zur Aktivierung und zum Setzen Ihres Passwortes erhalten."
 
 #: kotti/resources.py:486 kotti/templates/view/folder.pt:15
 msgid "Contents"
@@ -220,13 +226,14 @@ msgstr "Standardansicht wurde gesetzt."
 
 #: kotti/templates/edit/delete-nodes.pt:9
 #: kotti/templates/edit/delete-nodes.pt:45 kotti/templates/edit/delete.pt:22
-#: kotti/templates/site-setup/delete-user.pt:19 kotti/views/users.py:437
+#: kotti/templates/site-setup/delete-user.pt:19 kotti/views/users.py:435
 #: kotti/views/edit/actions.py:448 kotti/views/edit/actions.py:595
 msgid "Delete"
 msgstr "Löschen"
 
-#: kotti/views/users.py:539
-msgid "Delete ${principal_type} - ${title}"
+#: kotti/views/users.py:537
+#, fuzzy
+msgid "Delete ${principal_type} ${title}"
 msgstr "Bearbeite ${principal_type} ${title}"
 
 #: kotti/templates/edit/delete.pt:9 kotti/templates/site-setup/delete-user.pt:9
@@ -243,14 +250,20 @@ msgstr "Dokument"
 
 #: kotti/templates/edit/rename-nodes.pt:13
 #, fuzzy
-msgid "Each content item has a name, which is used to create the url, and a title. Read the user manual about proper formatting of name and title if needed. You can change both below."
-msgstr "Jeder Inhalt hat einen Namen, der auch Bestandteil der URL ist, und einen Titel. Sie können beides ändern, indem Sie unten einen neuen Namen und/oder Titel angeben."
+msgid ""
+"Each content item has a name, which is used to create the url, and a "
+"title. Read the user manual about proper formatting of name and title if "
+"needed. You can change both below."
+msgstr ""
+"Jeder Inhalt hat einen Namen, der auch Bestandteil der URL ist, und einen"
+" Titel. Sie können beides ändern, indem Sie unten einen neuen Namen "
+"und/oder Titel angeben."
 
 #: kotti/resources.py:487 kotti/templates/edit/nav-tree.pt:8
 msgid "Edit"
 msgstr "Bearbeiten"
 
-#: kotti/views/users.py:493
+#: kotti/views/users.py:491
 msgid "Edit ${principal_type} ${title}"
 msgstr "Bearbeite ${principal_type} ${title}"
 
@@ -258,7 +271,7 @@ msgstr "Bearbeite ${principal_type} ${title}"
 msgid "Edit ${title}"
 msgstr "Bearbeite ${title}"
 
-#: kotti/views/form.py:154
+#: kotti/views/form.py:152
 msgid "Edit <em>${title}</em>"
 msgstr "<em>${title}</em> bearbeiten"
 
@@ -276,8 +289,13 @@ msgid "File"
 msgstr "Datei"
 
 #: kotti/templates/login.pt:54
-msgid "Fill out your username or email above and click ${reset_password} below to receive an email with a link to reset your password."
-msgstr "Geben Sie oben Ihren Benutzernamen oder Ihre E-Mail Adresse oben an und klicken Sie auf ${reset_password}. Sie werden daraufhin eine E-Mail erhalten, die einen Link zum zurücksetzen Ihres Passworts enthält."
+msgid ""
+"Fill out your username or email above and click ${reset_password} below "
+"to receive an email with a link to reset your password."
+msgstr ""
+"Geben Sie oben Ihren Benutzernamen oder Ihre E-Mail Adresse oben an und "
+"klicken Sie auf ${reset_password}. Sie werden daraufhin eine E-Mail "
+"erhalten, die einen Link zum zurücksetzen Ihres Passworts enthält."
 
 #: kotti/templates/site-setup/users.pt:12
 msgid "Find and modify users (Blank search text finds all)."
@@ -296,11 +314,8 @@ msgstr "Zugriff verweigert"
 msgid "Forgot your password?"
 msgstr "Passwort vergessen?"
 
-#: kotti/views/login.py:66
-msgid "Full Name"
-msgstr "Vollständiger Name"
-
-#: kotti/views/users.py:273
+#: kotti/views/login.py:66 kotti/views/users.py:272
+#, fuzzy
 msgid "Full name"
 msgstr "Vollständiger Name"
 
@@ -312,7 +327,7 @@ msgstr "Globale Rollen"
 msgid "Gravatar"
 msgstr "Gravatar"
 
-#: kotti/views/users.py:190 kotti/views/users.py:489 kotti/views/users.py:525
+#: kotti/views/users.py:190 kotti/views/users.py:487 kotti/views/users.py:522
 msgid "Group"
 msgstr "Gruppe"
 
@@ -322,7 +337,8 @@ msgstr "Gruppen"
 
 #: kotti/templates/email-reset-password.pt:4
 #: kotti/templates/email-set-password.pt:4
-msgid "Hello ${user_title}!"
+#, fuzzy
+msgid "Hello, ${user_title}!"
 msgstr "Hallo ${user_title}!"
 
 #: kotti/views/edit/actions.py:456
@@ -330,8 +346,12 @@ msgid "Hide"
 msgstr "Verstecken"
 
 #: kotti/templates/edit/change-state.pt:43
-msgid "If checked, this will attempt to modify the status of all children in any selected documents and their subdocuments."
-msgstr "Wenn Sie diese Option anwählen, wirkt sich die Statusänderung sowohl auf alle ausgewählte als auch auf die darin enthaltenen Dokumente aus."
+msgid ""
+"If checked, this will attempt to modify the status of all children in any"
+" selected documents and their subdocuments."
+msgstr ""
+"Wenn Sie diese Option anwählen, wirkt sich die Statusänderung sowohl auf "
+"alle ausgewählte als auch auf die darin enthaltenen Dokumente aus."
 
 #: kotti/resources.py:609 kotti/views/edit/content.py:129
 msgid "Image"
@@ -346,7 +366,7 @@ msgstr "Unterordner einbeziehen"
 msgid "Invalid value"
 msgstr "Ungültige Eingabe"
 
-#: kotti/views/form.py:172
+#: kotti/views/form.py:170
 #, fuzzy
 msgid "Item was added."
 msgstr "${title} hinzugefügt."
@@ -357,8 +377,13 @@ msgid "Item was renamed."
 msgstr "Objekt umbenannt."
 
 #: kotti/views/users.py:269
-msgid "Leave this empty and tick the 'Send password registration' box below to have the user set their own password."
-msgstr "Lassen Sie die Passwort-Felder leer und aktivieren sie unten \"Schicke Passwort-Registrierung\" um den Benutzer das Passwort selbst auswählen zu lassen."
+msgid ""
+"Leave this empty and tick the 'Send password registration' box below to "
+"have the user set their own password."
+msgstr ""
+"Lassen Sie die Passwort-Felder leer und aktivieren sie unten \"Schicke "
+"Passwort-Registrierung\" um den Benutzer das Passwort selbst auswählen zu"
+" lassen."
 
 #: kotti/templates/login.pt:33
 msgid "Log in"
@@ -380,7 +405,7 @@ msgstr "Abmelden"
 msgid "Make ${state}"
 msgstr "Setze ${state}"
 
-#: kotti/views/form.py:263
+#: kotti/views/form.py:261
 msgid "Maximum file size: ${size}MB"
 msgstr "Maximale Dateigröße: ${size}MB"
 
@@ -397,7 +422,7 @@ msgstr "Nach unten verschieben"
 msgid "Move up"
 msgstr "Nach oben verschieben"
 
-#: kotti/views/users.py:576
+#: kotti/views/users.py:573
 msgid "My preferences - ${title}"
 msgstr "Meine Einstellungen - ${title}"
 
@@ -431,7 +456,7 @@ msgstr "Neuer Titel"
 msgid "No change"
 msgstr "Keine Änderungen."
 
-#: kotti/views/users.py:73 kotti/views/users.py:453
+#: kotti/views/users.py:73 kotti/views/users.py:451
 #: kotti/views/edit/actions.py:300 kotti/views/edit/actions.py:366
 #: kotti/views/edit/actions.py:408 kotti/views/edit/actions.py:412
 #, fuzzy
@@ -442,7 +467,7 @@ msgstr "Keine Änderungen."
 msgid "No content items are contained here."
 msgstr "Kein sichtbarer Inhalt."
 
-#: kotti/views/users.py:547
+#: kotti/views/users.py:544
 #, fuzzy
 msgid "No name was given."
 msgstr "Kein Name übergeben."
@@ -523,7 +548,7 @@ msgstr "Passwort zurücksetzen - ${title}"
 msgid "Reset your password for ${site_title}."
 msgstr "Passwort zurücksetzen bei ${site_title}"
 
-#: kotti/views/form.py:75 kotti/views/users.py:435
+#: kotti/views/form.py:73 kotti/views/users.py:433
 msgid "Save"
 msgstr "Übernehmen"
 
@@ -544,10 +569,13 @@ msgid "Search..."
 msgstr "Suche..."
 
 #: kotti/templates/edit/change-state.pt:51
-msgid "Select the new state where all choosen items should be set."
-msgstr "Wählen Sie den neuen Status, der für alle ausgwählten Dokumente gesetzt werden soll."
+#, fuzzy
+msgid "Select the new state where all chosen items should be set."
+msgstr ""
+"Wählen Sie den neuen Status, der für alle ausgwählten Dokumente gesetzt "
+"werden soll."
 
-#: kotti/views/users.py:326
+#: kotti/views/users.py:325
 #, fuzzy
 msgid "Send password registration link."
 msgstr "Schicke Passwort-Registrierung"
@@ -613,19 +641,15 @@ msgstr "Typ"
 msgid "Untick this to deactivate the account."
 msgstr "Abwählen um das Konto zu deaktivieren."
 
-#: kotti/views/users.py:315 kotti/views/users.py:489 kotti/views/users.py:525
+#: kotti/views/users.py:314 kotti/views/users.py:487 kotti/views/users.py:522
 msgid "User"
 msgstr "Benutzer"
 
-#: kotti/views/site_setup.py:6
+#: kotti/views/site_setup.py:6 kotti/views/users.py:377
 msgid "User Management"
 msgstr "Benutzerverwaltung"
 
-#: kotti/views/users.py:378
-msgid "User Management - ${title}"
-msgstr "Benutzerverwaltung - ${title}"
-
-#: kotti/views/users.py:522
+#: kotti/views/users.py:519
 #, fuzzy
 msgid "User was not found."
 msgstr "Keine Benutzer oder Gruppen gefunden."
@@ -682,17 +706,22 @@ msgstr "Ihr Passwort wurde erfolgreich zurückgesetzt."
 
 #: kotti/views/edit/actions.py:495
 #, fuzzy
-#| msgid "" "You have to select items to
-#| " "perform an action."
 msgid "You have to select items to perform an action."
 msgstr "Sie müssen Dokumente auswählen, um eine Aktion auszuführen."
 
 #: kotti/views/login.py:174
 #, fuzzy
-msgid "You should be receiving an email with a link to reset your password. Doing so will activate your account."
-msgstr "Sie sollten in Kürze eine E-Mail mit einem Link zum Zurücksetzen Ihres Passwortes erhalten."
+#| msgid "" "Congratulations! You are successfully registered. You should be
+#| receiving" " an email with a link to set your password. Doing so will
+#| activate your " "account."
+msgid ""
+"You should be receiving an email with a link to reset your password. "
+"Doing so will activate your account."
+msgstr ""
+"Ihre Registrierung war erfolgreich. Sie sollten in Kürze eine E-Mail mit "
+"einem Link zur Aktivierung und zum Setzen Ihres Passwortes erhalten."
 
-#: kotti/views/form.py:77 kotti/views/users.py:71
+#: kotti/views/form.py:75 kotti/views/users.py:71
 #: kotti/views/edit/actions.py:362 kotti/views/edit/actions.py:406
 msgid "Your changes have been saved."
 msgstr "Ihre Änderungen wurden übernommen."
@@ -707,5 +736,5 @@ msgstr "Ihre Anmeldung bei ${site_title}"
 
 #: kotti/templates/login.pt:45
 msgid "for an account on this site."
-msgstr ""
+msgstr "für einen Zugang auf dieser Seite."
 

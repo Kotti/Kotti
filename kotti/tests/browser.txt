@@ -817,6 +817,7 @@ The login form has a "Reset password" button.  Let's try it:
   >>> [email1, email2, email3] = mailer.outbox
   >>> print email3.body # doctest: +ELLIPSIS +NORMALIZE_WHITESPACE
   Hello, Bob Dabolina!
+  <BLANKLINE>
   Click this link to reset your password at Website des Kottbusser Tors:...
 
 User preferences

@@ -269,7 +269,7 @@ def user_schema(base=PrincipalFull()):
         schema['password'].description = _(
             u"Leave this empty and tick the 'Send password registration' "
             u"box below to have the user set their own password.")
-    schema['title'].title = _(u"Full Name")
+    schema['title'].title = _(u"Full name")
     return schema
 
 

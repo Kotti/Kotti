@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Kotti 0.8\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2013-05-13 18:19+0200\n"
+"POT-Creation-Date: 2013-05-13 21:41+0200\n"
 "PO-Revision-Date: 2012-01-16 12:02+0000\n"
 "Last-Translator: Nuno Teixeira <teixas@gmail.com>\n"
 "Language-Team: pt <LL@li.org>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 0.9.6\n"
 
-#: kotti/views/users.py:531
+#: kotti/views/users.py:529
 #, fuzzy
 msgid "${principal_type} ${title} was deleted."
 msgstr "${principal_type} ${title} apagado."
@@ -60,10 +60,6 @@ msgstr "${title} movido."
 msgid "${title} was pasted."
 msgstr "${title} colado."
 
-#: kotti/templates/view/search.pt:13
-msgid "&#8594;"
-msgstr ""
-
 #: kotti/views/users.py:160
 msgid "A user with that email already exists."
 msgstr "Esse utilizador com esse e-mail já existe."
@@ -84,12 +80,12 @@ msgstr "Activo"
 msgid "Add"
 msgstr "Adicionar"
 
-#: kotti/views/form.py:197
+#: kotti/views/form.py:195
 #, fuzzy
 msgid "Add ${type} to <em>${title}</em>."
 msgstr "Adicionar ${type} em <em>${title}</em>"
 
-#: kotti/views/form.py:201
+#: kotti/views/form.py:199
 #, fuzzy
 msgid "Add ${type}."
 msgstr "Adicionar ${type}"
@@ -98,7 +94,7 @@ msgstr "Adicionar ${type}"
 msgid "Add Group"
 msgstr "Adicionar Grupo"
 
-#: kotti/views/users.py:317
+#: kotti/views/users.py:316
 msgid "Add User"
 msgstr "Adicionar Utilizador"
 
@@ -151,8 +147,8 @@ msgstr "Corpo"
 
 #: kotti/templates/edit/change-state.pt:63
 #: kotti/templates/edit/delete-nodes.pt:47
-#: kotti/templates/edit/rename-nodes.pt:31 kotti/views/form.py:76
-#: kotti/views/users.py:318 kotti/views/users.py:349 kotti/views/users.py:436
+#: kotti/templates/edit/rename-nodes.pt:31 kotti/views/form.py:74
+#: kotti/views/users.py:317 kotti/views/users.py:349 kotti/views/users.py:434
 msgid "Cancel"
 msgstr "Cancelar"
 
@@ -226,13 +222,14 @@ msgstr "Vista por defeito foi alterada."
 
 #: kotti/templates/edit/delete-nodes.pt:9
 #: kotti/templates/edit/delete-nodes.pt:45 kotti/templates/edit/delete.pt:22
-#: kotti/templates/site-setup/delete-user.pt:19 kotti/views/users.py:437
+#: kotti/templates/site-setup/delete-user.pt:19 kotti/views/users.py:435
 #: kotti/views/edit/actions.py:448 kotti/views/edit/actions.py:595
 msgid "Delete"
 msgstr "Apagar"
 
-#: kotti/views/users.py:539
-msgid "Delete ${principal_type} - ${title}"
+#: kotti/views/users.py:537
+#, fuzzy
+msgid "Delete ${principal_type} ${title}"
 msgstr "Apagar ${principal_type} - ${title}"
 
 #: kotti/templates/edit/delete.pt:9 kotti/templates/site-setup/delete-user.pt:9
@@ -261,15 +258,16 @@ msgstr ""
 msgid "Edit"
 msgstr "Editar"
 
-#: kotti/views/users.py:493
-msgid "Edit ${principal_type} - ${title}"
+#: kotti/views/users.py:491
+#, fuzzy
+msgid "Edit ${principal_type} ${title}"
 msgstr "Editar ${principal_type} - ${title}"
 
 #: kotti/templates/site-setup/user.pt:14
 msgid "Edit ${title}"
 msgstr "Editar ${title}"
 
-#: kotti/views/form.py:154
+#: kotti/views/form.py:152
 msgid "Edit <em>${title}</em>"
 msgstr "Editar <em>${title}</em>"
 
@@ -312,11 +310,8 @@ msgstr "Escondido"
 msgid "Forgot your password?"
 msgstr "Esqueceu-se da palavra passe?"
 
-#: kotti/views/login.py:66
-msgid "Full Name"
-msgstr "Nome completo"
-
-#: kotti/views/users.py:273
+#: kotti/views/login.py:66 kotti/views/users.py:272
+#, fuzzy
 msgid "Full name"
 msgstr "Nome completo"
 
@@ -328,7 +323,7 @@ msgstr "Papéis globais"
 msgid "Gravatar"
 msgstr "Gravatar"
 
-#: kotti/views/users.py:190 kotti/views/users.py:489 kotti/views/users.py:525
+#: kotti/views/users.py:190 kotti/views/users.py:487 kotti/views/users.py:522
 msgid "Group"
 msgstr "Grupo"
 
@@ -366,7 +361,7 @@ msgstr "Incluir nós interiores"
 msgid "Invalid value"
 msgstr "Valor inválido"
 
-#: kotti/views/form.py:172
+#: kotti/views/form.py:170
 #, fuzzy
 msgid "Item was added."
 msgstr "${title} adicionado."
@@ -404,7 +399,7 @@ msgstr "Sair"
 msgid "Make ${state}"
 msgstr "Tornar ${state}"
 
-#: kotti/views/form.py:263
+#: kotti/views/form.py:261
 msgid "Maximum file size: ${size}MB"
 msgstr "Tamanho máximo do ficheiro: ${size}MB"
 
@@ -421,7 +416,7 @@ msgstr "Mover para baixo"
 msgid "Move up"
 msgstr "Mover para cima"
 
-#: kotti/views/users.py:576
+#: kotti/views/users.py:573
 msgid "My preferences - ${title}"
 msgstr "Minhas preferências - ${title}"
 
@@ -455,7 +450,7 @@ msgstr "Novo título"
 msgid "No change"
 msgstr "Não foram efectuadas nenhumas alterações"
 
-#: kotti/views/users.py:73 kotti/views/users.py:453
+#: kotti/views/users.py:73 kotti/views/users.py:451
 #: kotti/views/edit/actions.py:300 kotti/views/edit/actions.py:366
 #: kotti/views/edit/actions.py:408 kotti/views/edit/actions.py:412
 #, fuzzy
@@ -466,7 +461,7 @@ msgstr "Não foram efectuadas nenhumas alterações"
 msgid "No content items are contained here."
 msgstr ""
 
-#: kotti/views/users.py:547
+#: kotti/views/users.py:544
 #, fuzzy
 msgid "No name was given."
 msgstr "Nenhum nome foi indicado."
@@ -547,7 +542,7 @@ msgstr "Reiniciar a sua palavra passe - ${title}"
 msgid "Reset your password for ${site_title}."
 msgstr "Reiniciar a sua palavra passe em ${site_title}"
 
-#: kotti/views/form.py:75 kotti/views/users.py:435
+#: kotti/views/form.py:73 kotti/views/users.py:433
 msgid "Save"
 msgstr "Guardar"
 
@@ -568,10 +563,11 @@ msgid "Search..."
 msgstr "Procurar..."
 
 #: kotti/templates/edit/change-state.pt:51
-msgid "Select the new state where all choosen items should be set."
+#, fuzzy
+msgid "Select the new state where all chosen items should be set."
 msgstr "Selecione o novo estado para os items selecionados."
 
-#: kotti/views/users.py:326
+#: kotti/views/users.py:325
 #, fuzzy
 msgid "Send password registration link."
 msgstr "Enviar ligação para registo de palavra passe"
@@ -637,19 +633,15 @@ msgstr "Tipo"
 msgid "Untick this to deactivate the account."
 msgstr "Retirar para desactivar a conta."
 
-#: kotti/views/users.py:315 kotti/views/users.py:489 kotti/views/users.py:525
+#: kotti/views/users.py:314 kotti/views/users.py:487 kotti/views/users.py:522
 msgid "User"
 msgstr "Utilizador"
 
-#: kotti/views/site_setup.py:6
+#: kotti/views/site_setup.py:6 kotti/views/users.py:377
 msgid "User Management"
 msgstr "Gestão de Utilizadores"
 
-#: kotti/views/users.py:378
-msgid "User Management - ${title}"
-msgstr "Gestão de Utilizadores - ${title}"
-
-#: kotti/views/users.py:522
+#: kotti/views/users.py:519
 #, fuzzy
 msgid "User was not found."
 msgstr "Utilizador não encontrado."
@@ -706,8 +698,6 @@ msgstr "Você reinicializour a palavra passe com sucesso"
 
 #: kotti/views/edit/actions.py:495
 #, fuzzy
-#| msgid "" "You have to select items to
-#| " "perform an action."
 msgid "You have to select items to perform an action."
 msgstr "Terá de escolher items para executar a ação."
 
@@ -720,7 +710,7 @@ msgstr ""
 "Você deverá receber um e-mail com uma ligação temporária para reiniciar a"
 " sua palavra passe."
 
-#: kotti/views/form.py:77 kotti/views/users.py:71
+#: kotti/views/form.py:75 kotti/views/users.py:71
 #: kotti/views/edit/actions.py:362 kotti/views/edit/actions.py:406
 msgid "Your changes have been saved."
 msgstr "As suas alterações foram guardadas."
