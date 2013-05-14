@@ -80,7 +80,7 @@ if sys.version_info[:3] < (2, 7, 0):
 
 setup(name='Kotti',
       version='0.9a3dev',
-      description="Kotti is a high-level, 'Pythonic' web application framework. It includes a small and extensible CMS application called the Kotti CMS.",
+      description="A user-friendly, light-weight and extensible web content management system. Based on Pyramid and SQLAlchemy.",
       long_description='\n\n'.join([README, AUTHORS, CHANGES]),
       classifiers=[
         "Programming Language :: Python",
