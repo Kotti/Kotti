@@ -1,5 +1,6 @@
 from pyramid.security import DENY_ALL
 from repoze.workflow import get_workflow as base_get_workflow
+import transaction
 
 from kotti import TRUE_VALUES
 from kotti import DBSession
@@ -28,6 +29,7 @@ def reset_workflow(objs=None, purge_existing=False):
         workflow = get_workflow(obj)
         if workflow is not None:
             workflow.reset(obj)
+    transaction.commit()
 
 
 def initialize_workflow(event):

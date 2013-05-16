@@ -12,6 +12,13 @@ It is also possible to pass parameters to the view:
 
   assign_slot('last_tweets', 'right', params=dict(user='foo'))
 
+In the view you can get the slot in that the view is rendered from
+the request:
+
+    @view_config(name='last_tweets')
+    def view(request, context):
+        slot = request.kotti_slot
+
 If no view can be found for the given request and slot, the slot
 remains empty.
 
@@ -55,7 +62,7 @@ def _render_view_on_slot_event(view_name, event, params):
     # This is quite brittle:
     for name in REQUEST_ATTRS_TO_COPY:
         setattr(view_request, name, getattr(request, name))
-    setattr(view_request, 'slot', event.name)
+    setattr(view_request, 'kotti_slot', event.name)
 
     try:
         result = render_view(context, view_request, view_name)

@@ -19,6 +19,8 @@ Change History
 
 - A view assigned to a slot can access the slot name where its rendered.
 
+- Add missing `transaction.commit()` in `kotti-reset-workflow`.
+
 0.9a2 - 2013-05-04
 ------------------
 

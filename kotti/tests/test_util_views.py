@@ -307,7 +307,7 @@ class TestTemplateAPI:
         from kotti.views.slots import assign_slot
 
         def foo(context, request):
-            slot = request.slot
+            slot = request.kotti_slot
             return Response(u"I'm in slot {0}.".format(slot))
         config.add_view(foo, name='foo')
         assign_slot('foo', 'beforebodyend')

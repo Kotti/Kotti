@@ -77,12 +77,13 @@ class TestWorkflow:
         assert isinstance(event, ObjectEvent)
 
 
+@patch('kotti.workflow.transaction.commit')
 class TestResetWorkflow:
     def call(self, *args, **kwargs):
         from kotti.workflow import reset_workflow
         return reset_workflow(*args, **kwargs)
 
-    def test_workflow_reset_calls(self):
+    def test_workflow_reset_calls(self, commit):
         objs = [Dummy(), Dummy()]
 
         with patch('kotti.workflow.get_workflow') as get_workflow:
@@ -92,19 +93,20 @@ class TestResetWorkflow:
             assert wf.reset.call_args_list[0][0][0] is objs[0]
             assert wf.reset.call_args_list[1][0][0] is objs[1]
 
-    def test_reset_purge_existing(self):
+    def test_reset_purge_existing(self, commit):
         dummy = Dummy(state='partying')
         self.call([dummy], purge_existing=True)
         assert dummy.state is None
 
-    def test_reset_no_purge(self):
+    def test_reset_no_purge(self, commit):
         dummy = Dummy(state='partying')
         self.call([dummy], purge_existing=False)
         assert dummy.state == 'partying'
 
 
+@patch('kotti.workflow.transaction.commit')
 class TestResetWorkflowCommand:
-    def test_it(self):
+    def test_it(self, commit):
         from kotti.workflow import reset_workflow_command
 
         with patch('kotti.workflow.command') as command:
@@ -116,7 +118,6 @@ class TestResetWorkflowCommand:
 
 
 class TestDefaultWorkflow:
-
     def make_document(self, root):
         from kotti import DBSession
         from kotti.resources import Document
@@ -162,7 +163,8 @@ class TestDefaultWorkflow:
         assert content.state == u'public'
         save_acl = content.__acl__
         content.__acl__ = []
-        reset_workflow()
+        with patch('kotti.workflow.transaction.commit'):
+            reset_workflow()
         assert content.state == u'public'
         assert len(content.__acl__) == len(save_acl)
 
@@ -174,7 +176,8 @@ class TestDefaultWorkflow:
         wf = get_workflow(content)
         wf.transition_to_state(content, None, u'public')
         assert content.state == u'public'
-        reset_workflow(purge_existing=True)
+        with patch('kotti.workflow.transaction.commit'):
+            reset_workflow(purge_existing=True)
         assert content.state == u'private'
 
 
