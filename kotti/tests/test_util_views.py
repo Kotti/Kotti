@@ -303,6 +303,21 @@ class TestTemplateAPI:
         api = self.make(request=request)
         assert api.slots.left == [u"Hello world!"]
 
+    def test_slot_view_know_slot(self, config, db_session):
+        from kotti.views.slots import assign_slot
+
+        def foo(context, request):
+            slot = request.slot
+            return Response(u"I'm in slot {0}.".format(slot))
+        config.add_view(foo, name='foo')
+        assign_slot('foo', 'beforebodyend')
+        assign_slot('foo', 'right')
+
+        request = DummyRequest()
+        api = self.make(request=request)
+        assert api.slots.beforebodyend == [u"I'm in slot beforebodyend."]
+        assert api.slots.right == [u"I'm in slot right."]
+
     # def test_deprecated_slots(self, db_session):
     #     from kotti.views.slots import register, RenderAboveContent
 

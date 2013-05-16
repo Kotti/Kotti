@@ -55,6 +55,7 @@ def _render_view_on_slot_event(view_name, event, params):
     # This is quite brittle:
     for name in REQUEST_ATTRS_TO_COPY:
         setattr(view_request, name, getattr(request, name))
+    setattr(view_request, 'slot', event.name)
 
     try:
         result = render_view(context, view_request, view_name)
