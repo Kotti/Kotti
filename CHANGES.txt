@@ -17,6 +17,8 @@ Change History
 
 - Remove *some* code that has been deprecated in 0.6 or 0.7.
 
+- Add missing `transaction.commit()` in `kotti-reset-workflow`.
+
 0.9a2 - 2013-05-04
 ------------------
 
