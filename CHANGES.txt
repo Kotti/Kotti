@@ -19,6 +19,9 @@ Change History
 
 - Add missing `transaction.commit()` in `kotti-reset-workflow`.
 
+- Fix bug in `kotti.views.util.render_view` where local roles weren't
+  respected correctly.
+
 0.9a2 - 2013-05-04
 ------------------
 
