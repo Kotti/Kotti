@@ -31,6 +31,7 @@ from kotti.resources import Content
 from kotti.resources import Document
 from kotti.resources import Tag
 from kotti.resources import TagsToContents
+from kotti.security import authz_context
 from kotti.security import has_permission
 from kotti.security import view_permitted
 from kotti.views.site_setup import CONTROL_PANEL_LINKS
@@ -43,7 +44,8 @@ def template_api(context, request, **kwargs):
 
 
 def render_view(context, request, name='', secure=True):
-    response = render_view_to_response(context, request, name, secure)
+    with authz_context(context, request):
+        response = render_view_to_response(context, request, name, secure)
     if response is not None:
         return response.ubody
 
