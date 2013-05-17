@@ -549,7 +549,7 @@ def move_child_position(context, request):
     return {'result': result}
 
 
-@view_config(name='workflow-dropdown', permission='edit',
+@view_config(name='workflow-dropdown', permission='view',
              renderer='kotti:templates/workflow-dropdown.pt')
 def workflow(context, request):
     """
