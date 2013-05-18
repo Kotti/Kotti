@@ -57,6 +57,7 @@ install_requires = [
 tests_require = [
     'WebTest',
     'mock',
+    'pyquery',
     'pytest',
     'pytest-cov',
     'pytest-pep8!=1.0.3',
