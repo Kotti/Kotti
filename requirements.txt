@@ -24,11 +24,11 @@ js.deform-bootstrap==0.2.6
 js.html5shiv==3.6.2-1
 js.jquery==1.9.1
 js.jquery-form==3.09
-js.jquery-maskedinput==1.3
+js.jquery-maskedinput==1.3.1
 js.jquery-maskmoney==1.4.1
 js.jquery-tablednd==0.4
-js.jquery-timepicker-addon==1.2
-js.jqueryui==1.8.24
+js.jquery-timepicker-addon==1.3-1
+js.jqueryui==1.10.3
 js.jqueryui-tagit==2.0.24-2
 js.tinymce==3.5.2-1
 kotti-tinymce==0.3.2
