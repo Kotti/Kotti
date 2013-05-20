@@ -119,8 +119,8 @@ Let's move on to building the actual forms.  Add this to ``views.py``:
   from kotti.views.form import AddFormView
   from kotti.views.form import EditFormView
 
-  from .resources import Choice
-  from .resources import Poll
+  from kotti_mysite.resources import Choice
+  from kotti_mysite.resources import Poll
 
   class PollEditForm(EditFormView):
       schema_factory = PollSchema
@@ -159,12 +159,12 @@ We change the ``kotti_configure`` function to look like:
 
  def kotti_configure(settings):
      settings['kotti.fanstatic.view_needed'] += (
-         ' kotti_mysite.static.kotti_mysite_group')
+         ' kotti_mysite.fanstatic.kotti_mysite_group')
      settings['kotti.available_types'] += (
          ' kotti_mysite.resources.Poll kotti_mysite.resources.Choice')
      settings['pyramid.includes'] += ' kotti_mysite'
 
-Here, we've added our two content types to the site's available_types, a glogal
+Here, we've added our two content types to the site's available_types, a global
 registry.
 
 Now add a function called ``includeme`` to the same file:
@@ -172,12 +172,12 @@ Now add a function called ``includeme`` to the same file:
 .. code-block:: python
 
   def includeme(config):
-      from .resources import Poll
-      from .resources import Choice
-      from .views import PollAddForm
-      from .views import PollEditForm
-      from .views import ChoiceAddForm
-      from .views import ChoiceEditForm
+      from kotti_mysite.resources import Poll
+      from kotti_mysite.resources import Choice
+      from kotti_mysite.views import PollAddForm
+      from kotti_mysite.views import PollEditForm
+      from kotti_mysite.views import ChoiceAddForm
+      from kotti_mysite.views import ChoiceEditForm
 
       config.add_view(
           PollAddForm,
