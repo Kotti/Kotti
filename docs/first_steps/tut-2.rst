@@ -40,8 +40,8 @@ Things to note here:
   common base class for all content types.
 
 - ``Poll`` declares a sqla.Column ``id``, which is required to hook
-  it up with SQLAlchemy's inheritance. 
-  
+  it up with SQLAlchemy's inheritance.
+
 - The type_info class attribute does essential configuration. We
   refer to name and title, two properties already defined as part of
   ``Content``, our base class.  The ``add_view`` defines the name of the add
@@ -137,7 +137,7 @@ Let's move on to building the actual forms.  Add this to ``views.py``:
       schema_factory = ChoiceSchema
       add = Choice
       item_type = u"Choice"
- 
+
 
 Using the ``AddFormView`` and ``EditFormView`` base classes from
 Kotti, these forms are simple to define. We associate the schemas
@@ -211,7 +211,7 @@ of each call is the form class. The second argument gives the name of the
 view. The names of each add view, `add_poll` and `add_choice`, match the
 names set in the type_info class attribute of the types (Compare to the
 classes where Poll() and Choice() are defined). The names of the edit views
-are simply `edit`, 
+are simply `edit`, the names of view views are simply `view`. We can, of course, add our own view names, but `view` and `edit` should be used for viewing and editing. respectively, as Kotti uses those names for its base functionality.
 
 
 .. _SQLAlchemy: http://www.sqlalchemy.org/
