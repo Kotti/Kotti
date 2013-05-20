@@ -136,27 +136,24 @@ How is it hooked up with Kotti?  Kotti uses fanstatic_ for managing
 its static resources.  fanstatic_ has a number of cool features -- you
 may want to check out their homepage to find out more.
 
-Take a look at ``kotti_mysite/kotti_mysite/static.py`` to see how the
+Take a look at ``kotti_mysite/kotti_mysite/fanstatic.py`` to see how the
 creation of the necessary fanstatic components is done:
 
 .. code-block:: python
 
+  from __future__ import absolute_import
+
   from fanstatic import Group
   from fanstatic import Library
   from fanstatic import Resource
-  from kotti.fanstatic import base_css
 
   library = Library("kotti_mysite", "static")
-  kotti_mysite_css = Resource(library, "style.css", depends=[base_css])
+  kotti_mysite_css = Resource(library, "style.css")
   kotti_mysite_group = Group([kotti_mysite_css])
-
-The ``depends=[base_css]`` argument to ``Resource`` is required so
-that your CSS is included after Kotti's own, so that Kotti's styles are
-overridden as needed.
 
 If you wanted to add a JavaScript file, you would do this very
 similarly. To add a JavaScript file called script.js, you would add a
-fanstatic_ resource for it in ``kotti_mysite/kotti_mysite/static.py``
+fanstatic_ resource for it in ``kotti_mysite/kotti_mysite/fanstatic.py``
 like so:
 
 .. code-block:: python
@@ -185,7 +182,7 @@ add-ons have a chance to configure themselves.  The function in
 
   def kotti_configure(settings):
      settings['kotti.fanstatic.view_needed'] += (
-         ' kotti_mysite.static.kotti_mysite_group')
+         ' kotti_mysite.fanstatic.kotti_mysite_group')
 
 Here, ``settings`` is a Python dictionary with all configuration variables in
 the ``[app:kotti]`` section of our ``app.ini``, plus the defaults.  The values
@@ -210,7 +207,7 @@ this:
 .. code-block:: python
 
   def kotti_configure(settings):
-      settings['kotti.fanstatic.view_needed'] = ' kotti_mysite.static.kotti_mysite_group'
+      settings['kotti.fanstatic.view_needed'] = ' kotti_mysite.fanstatic.kotti_mysite_group'
 
 This is useful if you've built your own custom theme.
 Alternatively, you can completely :ref:`override the master template
