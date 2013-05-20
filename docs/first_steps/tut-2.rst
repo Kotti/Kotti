@@ -211,8 +211,30 @@ of each call is the form class. The second argument gives the name of the
 view. The names of each add view, `add_poll` and `add_choice`, match the
 names set in the type_info class attribute of the types (Compare to the
 classes where Poll() and Choice() are defined). The names of the edit views
-are simply `edit`, the names of view views are simply `view`. We can, of course, add our own view names, but `view` and `edit` should be used for viewing and editing. respectively, as Kotti uses those names for its base functionality.
+are simply `edit`, the names of add views are simply `add`. We can, of course, add our own view names, but `add` and `edit` should be used for adding and editing respectively, as Kotti uses those names for its base functionality.
 
+Adding a Poll and Choices to the site
+-------------------------------------
+
+Let's try adding a Poll and some choices to the site. Start the site up with the command
+
+.. code-block:: bash
+
+  bin/pserve app.ini
+
+login with the username *admin* and password *querty* and click on the Add menu button. You should see a few choices, namely the base Kotti classes ``Document``, ``File`` and ``Image`` and the Content Type we added, ``Poll``.
+
+.. note::
+  ``Poll`` appeared here because we added it to the ``kotti.available_types`` registry and ``Poll.type_info`` specifies ``addable_to`` as ``Document``. ``Choice`` doesn't appear here of course, as it is addable only to ``Poll``.
+
+Lets go ahead and click on ``Poll``. For the question, let's write *What is your favourite color?*. Now let's add three choices, *Red*, *Green* and *Blue* in the same way we added the poll.
+
+If we now go to the poll we added, we can see the question, but not our choices, which is definitely not what we wanted. Let us fix this, shall we?
+
+Adding a custom View to the Poll
+--------------------------------
+
+Write a custom view that returns all choices and put it into a template which it displays.
 
 .. _SQLAlchemy: http://www.sqlalchemy.org/
 .. _Colander: http://colander.readthedocs.org/
