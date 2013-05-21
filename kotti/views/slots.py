@@ -18,9 +18,19 @@ the request:
     @view_config(name='last_tweets')
     def view(request, context):
         slot = request.kotti_slot
+        # ...
 
 If no view can be found for the given request and slot, the slot
-remains empty.
+remains empty.  If you want to force your slot not to be rendered,
+raise :class:`pyramid.exceptions.PredicateMismatch` inside your view:
+
+    from pyramid.exceptions import PredicateMismatch
+
+    @view_config(name='last_tweets')
+    def view(request, context):
+        if some_condition:
+            raise PredicateMismatch()
+        return {...}
 
 Usually you'll want to call :func:`kotti.views.slots.assign_slot`
 inside an ``includeme`` function and not on a module level, to allow
