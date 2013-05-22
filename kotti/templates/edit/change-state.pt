@@ -8,7 +8,7 @@
     <h1 i18n:translate="">Change workflow state</h1>
 
     <div class="tab-pane" id="change-state">
-         
+
       <form action="${request.url}" method="post" id="form-change-state">
 
         <span class="help-block" i18n:translate="">An item's workflow state determines who can see, edit and/or manage it.</span>
@@ -48,7 +48,7 @@
 
         <fieldset>
           <legend i18n:translate="">Change state to</legend>
-          <span class="help-block" i18n:translate="">Select the new state where all choosen items should be set.</span>
+	  <span class="help-block" i18n:translate="">Select the new state where all chosen items should be set.</span>
           <label class="radio">
             <input type="radio" name="to-state" value="no-change" checked="checked" /> <span i18n:translate="">No change</span>
           </label>
@@ -60,10 +60,10 @@
         <div class="form-actions">
           <button type="submit" name="change_state" value="change_state"
                   class="btn btn-primary" i18n:translate="">Apply changes</button>
-          <button type="submit" name="cancel" value="cancel" 
+	  <button type="submit" name="cancel" value="cancel"
                   class="btn" i18n:translate="">Cancel</button>
         </div>
-      </form>    
+      </form>
     </div>
   </div>
 </html>

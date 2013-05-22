@@ -1,0 +1,4 @@
+recursive-include kotti/locale *
+recursive-include kotti/static *
+recursive-include kotti/templates *
+recursive-include kotti/tests *

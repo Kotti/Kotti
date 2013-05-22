@@ -47,10 +47,8 @@ def deferred_tag_it_widget(node, kw):
     tagit.need()
     all_tags = Tag.query.all()
     available_tags = [tag.title.encode('utf-8') for tag in all_tags]
-    widget = CommaSeparatedListWidget(
-        template='tag_it',
-        available_tags=available_tags,
-        )
+    widget = CommaSeparatedListWidget(template='tag_it',
+                                      available_tags=available_tags)
     return widget
 
 
@@ -109,7 +107,28 @@ class BaseFormView(FormView):
 
 class EditFormView(BaseFormView):
     """
-    A base form for content editing purposes
+    A base form for content editing purposes.
+
+    Set `self.schema_factory` to the context's schema.  Values of
+    fields in this schema will be set as attributes on the context.
+    An example::
+
+        import colander
+        from deform.widget import RichTextWidget
+
+        from kotti.edit.content import ContentSchema
+        from kotti.edit.content import EditFormView
+
+        class DocumentSchema(ContentSchema):
+            body = colander.SchemaNode(
+                colander.String(),
+                title=u'Body',
+                widget=RichTextWidget(),
+                missing=u'',
+                )
+
+        class DocumentEditForm(EditFormView):
+            schema_factory = DocumentSchema
     """
 
     add_template_vars = ('first_heading',)
@@ -137,10 +156,18 @@ class EditFormView(BaseFormView):
 
 class AddFormView(BaseFormView):
     """
-    A base form for content adding purposes
+    A base form for content adding purposes.
+
+    Set `self.schema_factory` as with EditFormView.  Also set
+    `item_type` to your model class.  An example::
+
+        class DocumentAddForm(AddFormView):
+            schema_factory = DocumentSchema
+            add = Document
+            item_type = u'Document'
     """
 
-    success_message = _(u"Successfully added item.")
+    success_message = _(u"Item was added.")
     item_type = None
     add_template_vars = ('first_heading',)
 
@@ -165,11 +192,11 @@ class AddFormView(BaseFormView):
         context_title = getattr(self.request.context, 'title', None)
         type_title = self.item_type or self.add.type_info.title
         if context_title:
-            return _(
-                u'Add ${type} to <em>${title}</em>',
-                mapping=dict(type=translate(type_title), title=context_title))
+            return _(u'Add ${type} to <em>${title}</em>.',
+                     mapping=dict(type=translate(type_title),
+                                  title=context_title))
         else:
-            return _(u'Add ${type}', mapping=dict(type=translate(type_title)))
+            return _(u'Add ${type}.', mapping=dict(type=translate(type_title)))
 
 
 class CommaSeparatedListWidget(deform.widget.Widget):

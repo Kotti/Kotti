@@ -70,7 +70,7 @@ def roles_form_handler(context, request, available_role_names, groups_lister):
             request.session.flash(
                 _(u'Your changes have been saved.'), 'success')
         else:
-            request.session.flash(_(u'No changes made.'), 'info')
+            request.session.flash(_(u'No changes were made.'), 'info')
 
     return changed
 
@@ -97,7 +97,7 @@ def search_principals(request, context=None, ignore=None, extra=()):
             if p.name not in ignore:
                 entries.append((p, list_groups_ext(p.name, context)))
         if not found:
-            flash(_(u'No users or groups found.'), 'info')
+            flash(_(u'No users or groups were found.'), 'info')
 
     return entries
 
@@ -268,8 +268,7 @@ def user_schema(base=PrincipalFull()):
     if has_password:
         schema['password'].description = _(
             u"Leave this empty and tick the 'Send password registration' "
-            "box below to have the user set their own password."
-            )
+            u"box below to have the user set their own password.")
     schema['title'].title = _(u"Full name")
     return schema
 
@@ -291,10 +290,11 @@ def _massage_groups_in(appstruct):
     The value in the form is 'name', not 'group:name', so we'll
     need to append that before we save.
     """
-    groups = appstruct['groups']
-    all_groups = list(appstruct['roles']) + [
+    groups = appstruct.get('groups', [])
+    all_groups = list(appstruct.get('roles', [])) + [
         u'group:%s' % g for g in groups if g]
-    del appstruct['roles']
+    if 'roles' in appstruct:
+        del appstruct['roles']
     appstruct['groups'] = all_groups
 
 
@@ -323,43 +323,25 @@ class UserAddFormView(AddFormView):
         schema.add(colander.SchemaNode(
             colander.Boolean(),
             name=u'send_email',
-            title=_(u'Send password registration link'),
+            title=_(u'Send password registration link.'),
             default=True,
             ))
         return schema
 
     def add_user_success(self, appstruct):
         appstruct.pop('csrf_token', None)
-
         _massage_groups_in(appstruct)
-
         name = appstruct['name'] = appstruct['name'].lower()
-
         appstruct['email'] = appstruct['email'] and appstruct['email'].lower()
         send_email = appstruct.pop('send_email', False)
-
-        continue_to = appstruct.pop('continue_to', '')
-        if not continue_to.startswith('http'):
-            separator = '/'
-            if continue_to.startswith('/'):
-                separator = ''
-            continue_to = "{0}{1}{2}".format(self.request.application_url,
-                                             separator,
-                                             continue_to)
-
         get_principals()[name] = appstruct
-
         if send_email:
-            email_set_password(get_principals()[name],
-                               self.request,
-                               add_query={'continue_to': continue_to})
-
-        self.request.session.flash(_(u'${title} added.',
-            mapping=dict(title=appstruct['title'])), 'success')
-
+            email_set_password(get_principals()[name], self.request)
+        self.request.session.flash(
+            _(u'${title} was added.',
+              mapping=dict(title=appstruct['title'])), 'success')
         location = self.request.url.split('?')[0] + '?' + urlencode(
             {'extra': name})
-
         return HTTPFound(location=location)
 
 
@@ -390,12 +372,10 @@ class UsersManage(FormView):
         self.request = request
 
     def __call__(self):
-        api = template_api(
-            self.context, self.request,
-            cp_links=CONTROL_PANEL_LINKS,
-            )
-        api.page_title = _(u"User Management - ${title}",
-                           mapping=dict(title=api.site_title))
+        api = template_api(self.context, self.request,
+                           cp_links=CONTROL_PANEL_LINKS)
+
+        api.page_title = _(u"User Management")
 
         principals = get_principals()
 
@@ -469,7 +449,7 @@ class UserManageFormView(UserEditFormView):
         return super(UserEditFormView, self).save_success(appstruct)
 
     def cancel_success(self, appstruct):
-        self.request.session.flash(_(u'No changes made.'), 'info')
+        self.request.session.flash(_(u'No changes were made.'), 'info')
         location = "%s/@@setup-users" % self.request.application_url
         return HTTPFound(location=location)
     cancel_failure = cancel_success
@@ -509,12 +489,11 @@ class UserManage(FormView):
 
         api = template_api(
             self.context, self.request,
-            page_title=_(u"Edit ${principal_type} - ${title}",
+            page_title=_(u"Edit ${principal_type} ${title}",
                          mapping=dict(principal_type=principal_type,
                                       title=self.context.title)),
             cp_links=CONTROL_PANEL_LINKS,
-            principal=principal,
-            )
+            principal=principal)
 
         form_view = self.GroupManageFormView if is_group \
             else self.UserManageFormView
@@ -538,7 +517,7 @@ def user_delete(context, request):
         user_or_group = request.params['name']
         principal = principals.search(name=user_or_group).first()
         if principal is None:
-            request.session.flash(_(u'User not found.'), 'error')
+            request.session.flash(_(u'User was not found.'), 'error')
         else:
             is_group = user_or_group.startswith("group:")
             principal_type = _(u"Group") if is_group else _(u"User")
@@ -547,23 +526,23 @@ def user_delete(context, request):
             if 'delete' in request.POST:
                 principals.__delitem__(principal.name)
                 notify(UserDeleted(principal, request))
-                request.session.flash(_(u'${principal_type} ${title} deleted.',
-                                        mapping=dict(principal_type=principal_type,
-                                                     title=principal.title)), 'info')
+                request.session.flash(
+                    _(u'${principal_type} ${title} was deleted.',
+                      mapping=dict(principal_type=principal_type,
+                                   title=principal.title)), 'info')
                 location = "%s/@@setup-users" % request.application_url
                 return HTTPFound(location=location)
 
             api = template_api(
                 context, request,
-                page_title=_(u"Delete ${principal_type} - ${title}",
+                page_title=_(u"Delete ${principal_type} ${title}",
                              mapping=dict(principal_type=principal_type,
                                           title=principal.title)),
                 principal_type=principal_type,
-                principal=principal,
-                )
+                principal=principal)
             return {'api': api, }
     else:
-        request.session.flash(_(u'No name given.'), 'error')
+        request.session.flash(_(u'No name was given.'), 'error')
 
     return {'api': template_api(context, request), }
 

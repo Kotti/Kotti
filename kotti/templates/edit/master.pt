@@ -1,4 +1,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
       tal:define="page_slots api.slots;
                   dummy api.edit_needed"
       metal:define-macro="main">
@@ -7,11 +10,6 @@
     <title metal:define-slot="page-title">${api.page_title | api.site_title}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content="${context.description | ''}" />
-
-    <!-- HTML5 shim, for IE6-8 support of HTML elements -->
-    <!--[if lt IE 9]>
-        <script src="https://html5shim.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
 
     <!-- Fav icons -->
     <link rel="shortcut icon" href="${request.static_url('kotti:static/favicon.ico')}" />

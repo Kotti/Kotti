@@ -27,7 +27,7 @@
 
       <form action="${request.resource_url(context)}@@contents" method="post">
         <tal:no-content tal:condition="not:children">
-          <span class="text-info" i18n:translate="">No content in document.</span>
+          <span class="text-info" i18n:translate="">No content items are contained here.</span>
         </tal:no-content>
 
         <table id="contents-table"
@@ -80,10 +80,10 @@
                 </tal:visibility>
               </td>
               <td>
-                ${api.format_date(child.creation_date)}
+                ${api.format_datetime(child.creation_date)}
               </td>
               <td>
-                ${api.format_date(child.modification_date)}
+                ${api.format_datetime(child.modification_date)}
               </td>
             </tr>
           </tbody>

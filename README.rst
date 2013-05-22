@@ -2,9 +2,8 @@
 Kotti
 =====
 
-Kotti is a high-level, *Pythonic* web application framework.  It
-includes a small and extensible CMS application called the **Kotti
-CMS**.  |build status|_
+A user-friendly, light-weight and extensible web content management
+system, based on Pyramid and SQLAlchemy.  |build status|_
 
 Kotti is most useful when you are developing applications that
 
@@ -25,10 +24,10 @@ developer.
 Kotti CMS
 =========
 
-You can **try out the built-in CMS** on `Kotti's demo page`_.
+You can **try out Kotti** on `Kotti's demo page`_.
 
-The Kotti CMS is a content management system that's heavily inspired
-by Plone_.  Its **main features** are:
+Kotti CMS is a content management system that's heavily inspired by
+Plone_.  Its **main features** are:
 
 - **User-friendliness**: editors can edit content where it appears;
   thus the edit interface is contextual and intuitive

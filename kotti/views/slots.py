@@ -12,8 +12,25 @@ It is also possible to pass parameters to the view:
 
   assign_slot('last_tweets', 'right', params=dict(user='foo'))
 
+In the view you can get the slot in that the view is rendered from
+the request:
+
+    @view_config(name='last_tweets')
+    def view(request, context):
+        slot = request.kotti_slot
+        # ...
+
 If no view can be found for the given request and slot, the slot
-remains empty.
+remains empty.  If you want to force your slot not to be rendered,
+raise :class:`pyramid.exceptions.PredicateMismatch` inside your view:
+
+    from pyramid.exceptions import PredicateMismatch
+
+    @view_config(name='last_tweets')
+    def view(request, context):
+        if some_condition:
+            raise PredicateMismatch()
+        return {...}
 
 Usually you'll want to call :func:`kotti.views.slots.assign_slot`
 inside an ``includeme`` function and not on a module level, to allow
@@ -25,39 +42,11 @@ import urllib
 from pyramid.exceptions import PredicateMismatch
 from pyramid.request import Request
 from pyramid.view import render_view
-from pyramid.view import view_config
-from zope.deprecation import deprecate
 
 from kotti.events import ObjectEvent
 from kotti.events import objectevent_listeners
-from kotti.security import has_permission
 
 REQUEST_ATTRS_TO_COPY = ('context', 'registry', 'user', 'cookies')
-
-
-@deprecate("""\
-kotti.views.slots.register is deprecated as of Kotti 0.7.0.
-
-Convert your slot renderer function to a normal view, and register it
-using Pyramid's ``config.add_view``.  Then use
-``kotti.views.slots.assign_slot(view_name, slot_name)`` to assign your
-view to a slot, e.g.: ``assign_slot('my-navigation', 'left')``.
-""")
-def register(slot, objtype, renderer):
-    """Register a new slot renderer.
-
-    The ``slot`` argument must be one of ``RenderLeftSlot``,
-    ``RenderRightSlot`` etc.
-
-    The ``objtype`` argument may be specified to limit rendering to
-    special types of contexts.
-
-    The ``renderer`` argument is the callable that receives an
-    ``ObjectEvent`` as its single argument and returns HTML for
-    inclusion.
-    """
-    objectevent_listeners[(slot, objtype)].append(
-        lambda ev: renderer(ev.object, ev.request))
 
 
 def _encode(params):
@@ -74,8 +63,7 @@ def _render_view_on_slot_event(view_name, event, params):
     view_request = Request.blank(
         "{0}/{1}".format(request.path.rstrip('/'), view_name),
         base_url=request.application_url,
-        POST=_encode(params),
-        )
+        POST=_encode(params))
 
     post_items = request.POST.items()
     if post_items:
@@ -84,13 +72,10 @@ def _render_view_on_slot_event(view_name, event, params):
     # This is quite brittle:
     for name in REQUEST_ATTRS_TO_COPY:
         setattr(view_request, name, getattr(request, name))
+    setattr(view_request, 'kotti_slot', event.name)
 
     try:
-        result = render_view(
-            context,
-            view_request,
-            view_name,
-            )
+        result = render_view(context, view_request, view_name)
     except PredicateMismatch:
         return None
     else:
@@ -100,15 +85,18 @@ def _render_view_on_slot_event(view_name, event, params):
 def assign_slot(view_name, slot, params=None):
     """Assign view to slot.
 
-    The ``view_name`` argument is the name of the view to assign.
+    :param view_name: Name of the view to assign.
+    :type view_name: str
 
-    The ``slot`` argument is the name of the slot to assign to.
-    Possible values are: left, right, abovecontent, belowcontent,
-    inhead, beforebodyend, edit_inhead
+    :param slot: Name of the slot to assign to.  Possible values are: left,
+                 right, abovecontent, belowcontent, inhead, beforebodyend,
+                 edit_inhead
+    :type slot: str
 
-    The  ``params`` argument optionally allows to pass POST parameters
-    specified as a dictionary to the view.
+    :param params: Optionally allows to pass POST parameters to the view.
+    :type params: dict
     """
+
     event = [e for e in slot_events if e.name == slot]
     if not event:
         raise KeyError("Unknown slot '{0}'".format(slot))
@@ -145,30 +133,29 @@ class RenderEditInHead(ObjectEvent):
 
 slot_events = [
     RenderLeftSlot, RenderRightSlot, RenderAboveContent, RenderBelowContent,
-    RenderInHead, RenderBeforeBodyEnd, RenderEditInHead,
-    ]
+    RenderInHead, RenderBeforeBodyEnd, RenderEditInHead, ]
 
 
-@view_config(name='local-navigation',
-             renderer='kotti:templates/view/nav-local.pt')
-def local_navigation(context, request):
-    from kotti.resources import get_root
+# BBB starts here --- --- --- --- --- ---
 
-    def ch(node):
-        return [child for child in node.values()
-                if child.in_navigation and
-                has_permission('view', child, request)]
+from zope.deprecation import deprecated
 
-    parent = context
-    children = ch(context)
-    if not children and context.__parent__ is not None:
-        parent = context.__parent__
-        children = ch(parent)
-    if len(children) and parent != get_root():
-        return dict(parent=parent, children=children)
-    return dict(parent=None)
+# The remainder of this file will be removed in Kotti 0.11 or 1.1, whichever
+# will be the version number we chose.
 
+from kotti.views.navigation import local_navigation
+from kotti.views.navigation import includeme_local_navigation
 
-def includeme_local_navigation(config):
-    config.scan(__name__)
-    assign_slot('local-navigation', 'right')
+local_navigation = local_navigation
+includeme_local_navigation = includeme_local_navigation
+
+deprecated(
+    'local_navigation',
+    'deprecated as of Kotti 0.9.  Use '
+    'kotti.views.navigation.local_navigation instead.'
+)
+deprecated(
+    'includeme_local_navigation',
+    'deprecated as of Kotti 0.9.  Use '
+    'kotti.views.navigation.includeme_local_navigation instead.'
+)

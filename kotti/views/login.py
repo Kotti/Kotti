@@ -63,7 +63,7 @@ class UserSelfRegistered(ObjectEvent):
 class RegisterSchema(colander.Schema):
     title = colander.SchemaNode(
         colander.String(),
-        title=_(u'Full Name'))
+        title=_(u'Full name'))
     name = colander.SchemaNode(
         colander.String(),
         title=_(u'Username'),
@@ -113,8 +113,8 @@ def register(context, request):
             form.add_user_success(appstruct)
             success_msg = _(
                 'Congratulations! You are successfully registered. '
-                'You should receive an email with a link to set your '
-                'password momentarily.'
+                'You should be receiving an email with a link to set your '
+                'password. Doing so will activate your account.'
                 )
             request.session.flash(success_msg, 'success')
             name = appstruct['name']
@@ -126,7 +126,7 @@ def register(context, request):
 
     api = template_api(
         context, request,
-        page_title=_(u"Sign up! - ${title}",
+        page_title=_(u"Register - ${title}",
             mapping=dict(title=context.title)),
     )
 
@@ -176,11 +176,11 @@ def login(context, request):
                 user, request,
                 template_name='kotti:templates/email-reset-password.pt')
             request.session.flash(_(
-                u"You should receive an email with a link to reset your "
-                u"password momentarily."), 'success')
+                u"You should be receiving an email with a link to reset your "
+                u"password. Doing so will activate your account."), 'success')
         else:
             request.session.flash(
-                _(u"That username or email is not known to us."), 'error')
+                _(u"That username or email is not known by this system."), 'error')
 
     return {
         'url': request.application_url + '/@@login',
@@ -239,7 +239,7 @@ class SetPasswordSchema(colander.MappingSchema):
 
 @view_config(name='set-password', renderer='kotti:templates/edit/simpleform.pt')
 def set_password(context, request,
-                 success_msg=_(u"You've reset your password successfully.")):
+                 success_msg=_(u"You have reset your password.")):
     """
     Set password view.  Displays the set password form and handles its form
     submission.
@@ -288,7 +288,7 @@ def set_password(context, request,
 
     api = template_api(
         context, request,
-        page_title=_(u"Reset your password - ${title}",
+        page_title=_(u"Reset your password - ${title}.",
                      mapping=dict(title=context.title)),
         )
 

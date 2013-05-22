@@ -5,7 +5,7 @@ Setup and Login
 ---------------
   >>> from kotti import testing
   >>> tools = testing.setUpFunctional(**{
-  ...     'pyramid.includes': 'kotti.views.slots.includeme_local_navigation',
+  ...     'pyramid.includes': 'kotti.views.navigation.includeme_local_navigation',
   ...     })
   >>> browser = tools['Browser']()
   >>> ctrl = browser.getControl
@@ -26,7 +26,7 @@ Add a document as parent node for all images
   >>> browser.getLink("Document").click()
   >>> ctrl("Title").value = "My Gallery"
   >>> ctrl("save").click()
-  >>> "Successfully added item" in browser.contents
+  >>> "Item was added" in browser.contents
   True
   >>> browser.url == testing.BASE_URL + '/my-gallery/'
   True
@@ -47,7 +47,7 @@ Image 1
   >>> ctrl("File").add_file(image, 'image/jpeg', 'sendeschluss.jpg')
 
   >>> ctrl("save").click()
-  >>> "Successfully added item" in browser.contents
+  >>> "Item was added" in browser.contents
   True
 
 Image 2
@@ -61,7 +61,7 @@ Image 2
   >>> ctrl("File").add_file(image, 'image/jpeg', 'sendeschluss.jpg')
 
   >>> ctrl("save").click()
-  >>> "Successfully added item" in browser.contents
+  >>> "Item was added" in browser.contents
   True
 
 Image without file should show error message

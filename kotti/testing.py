@@ -181,6 +181,12 @@ def _functional_includeme(config):
     config.add_subscriber(expire, NewResponse)
 
 
+def _zope_testbrowser_pyquery(self):
+    from pyquery import PyQuery
+    return PyQuery(
+        self.contents.replace('xmlns="http://www.w3.org/1999/xhtml', ''))
+
+
 def setUpFunctional(global_config=None, **settings):
     from kotti import main
     import wsgi_intercept.zope_testbrowser
@@ -202,6 +208,7 @@ def setUpFunctional(global_config=None, **settings):
     app = main({}, **_settings)
     wsgi_intercept.add_wsgi_intercept(host[2:], int(port), lambda: app)
     Browser = wsgi_intercept.zope_testbrowser.WSGI_Browser
+    Browser.pyquery = property(_zope_testbrowser_pyquery)
 
     return dict(
         Browser=Browser,

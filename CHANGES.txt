@@ -1,8 +1,49 @@
 Change History
 ==============
 
-0.9a2 - Unreleased
+0.9a3 - Unreleased
 ------------------
+
+- Add ``INavigationRoot`` interface and ``TemplateAPI.navigation_root``
+  property.  The latter returns the first content node in the lineage that
+  implements ``INavigationRoot`` or the root node if ``INavigationRoot`` is not
+  implemented by any node in the lineage.  Make the ``nav.pt`` template use
+  ``api.navigation_root`` instead of ``api.root``.  This allows third party
+  add-ons to define content types that can reside somewhere in the content tree
+  while still being the root for the navigation.
+
+- Move navigation related view code to new module ``kotti.views.navigation``.
+  Deprecate imports from the old locations.
+
+- Remove *some* code that has been deprecated in 0.6 or 0.7.
+
+- A view assigned to a slot can access the slot name where its rendered.
+
+- Add missing `transaction.commit()` in `kotti-reset-workflow`.
+
+- Fix bug in `kotti.views.util.render_view` where local roles weren't
+  respected correctly.
+
+0.9a2 - 2013-05-04
+------------------
+
+- Fix #222: Use SQLAlchemy's `before_flush` event for object events.
+
+  We were using the wrong events previously.  The problem with
+  `before_insert`, `before_update`, and `before_delete` was that event
+  handlers could not reliably call `Session.add`, `Session.delete`,
+  and change mapped relationships.  But only SQLAlchemy 0.8 started
+  emitting a warning when that was done.
+
+  Also deprecated `ObjectAfterDelete` because I don't think it's useful.
+
+- Remove the html5shim from the master templates and use the fanstatic
+  package js.html5shiv instead.
+
+- A temporary fix for #187.  Basically suppresses DetachedInstanceError.
+
+- Add ``kotti.events.subscribe`` decorator.  See the also updated docs on that
+  topic / module for details.
 
 0.9a1 - 2013-03-12
 ------------------

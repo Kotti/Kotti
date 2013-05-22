@@ -21,25 +21,19 @@ from pyramid.view import render_view_to_response
 from sqlalchemy import and_
 from sqlalchemy import not_
 from sqlalchemy import or_
-from zope.deprecation import deprecated
 from zope.deprecation.deprecation import deprecate
 
 from kotti import DBSession
 from kotti import get_settings
 from kotti.events import objectevent_listeners
+from kotti.interfaces import INavigationRoot
 from kotti.resources import Content
 from kotti.resources import Document
 from kotti.resources import Tag
 from kotti.resources import TagsToContents
-from kotti.security import get_user
+from kotti.security import authz_context
 from kotti.security import has_permission
 from kotti.security import view_permitted
-from kotti.util import disambiguate_name
-disambiguate_name  # BBB
-from kotti.views.form import AddFormView
-from kotti.views.form import BaseFormView
-from kotti.views.form import EditFormView
-from kotti.views.form import get_appstruct
 from kotti.views.site_setup import CONTROL_PANEL_LINKS
 from kotti.views.slots import slot_events
 
@@ -50,7 +44,8 @@ def template_api(context, request, **kwargs):
 
 
 def render_view(context, request, name='', secure=True):
-    response = render_view_to_response(context, request, name, secure)
+    with authz_context(context, request):
+        response = render_view_to_response(context, request, name, secure)
     if response is not None:
         return response.ubody
 
@@ -188,18 +183,23 @@ class TemplateAPI(object):
         return self.lineage[-1]
 
     @reify
+    def navigation_root(self):
+        for o in self.lineage:
+            if INavigationRoot.providedBy(o):
+                return o
+        return self.root
+
+    @reify
     def lineage(self):
         return list(lineage(self.context))
 
     @reify
     def breadcrumbs(self):
-        return reversed(self.lineage)
-
-    @reify
-    @deprecate('api.user is deprecated as of Kotti 0.7.0.  '
-               'Use ``request.user`` instead.')
-    def user(self):  # pragma: no cover
-        return get_user(self.request)
+        breadcrumbs = self.lineage
+        if self.root != self.navigation_root:
+            index = breadcrumbs.index(self.navigation_root)
+            breadcrumbs = breadcrumbs[:index + 1]
+        return reversed(breadcrumbs)
 
     def has_permission(self, permission, context=None):
         if context is None:
@@ -326,10 +326,10 @@ class NodesTree(object):
                 self._item_mapping,
                 self._item_to_children,
                 self._permission,
-                )
+            )
             for child in self._item_to_children[self.id]
             if has_permission(self._permission, child, self._request)
-            ]
+        ]
 
     def _flatten(self, item):
         yield item._node
@@ -366,7 +366,7 @@ def nodes_tree(request, context=None, permission='view'):
         item_mapping,
         item_to_children,
         permission,
-        )
+    )
 
 
 def search_content(search_term, request=None):
@@ -427,38 +427,3 @@ def search_content_for_tags(tags, request=None):
                 path=request.resource_path(result)))
 
     return result_dicts
-
-
-# BBB starts here --- --- --- --- --- ---
-
-appstruct = get_appstruct
-BaseFormView = BaseFormView
-AddFormView = AddFormView
-EditFormView = EditFormView
-
-
-deprecated(
-    'appstruct',
-    'appstruct is deprecated as of Kotti 0.6.2.  Use '
-    '``kotti.views.form.get_appstruct`` instead.'
-    )
-
-deprecated(
-    'get_appstruct',
-    'get_appstruct is deprecated as of Kotti 0.6.3.  Use '
-    '``kotti.views.form.get_appstruct`` instead.'
-    )
-
-deprecated(
-    'disambiguate_name',
-    'disambiguate_name is deprecated as of Kotti 0.6.2.  Use '
-    '``kotti.util.disambiguate_name`` instead.'
-    )
-
-for cls in BaseFormView, AddFormView, EditFormView:
-    new_name = 'kotti.views.form.{0}'.format(cls.__name__)
-    deprecated(
-        cls.__name__,
-        '{0} is deprecated as of Kotti 0.6.3.  Use ``{1}`` instead.'.format(
-            cls.__name__, new_name)
-        )

@@ -70,7 +70,8 @@ conf_defaults = {
     'pyramid.includes': '',
     'kotti.includes': '',  # BBB
     'kotti.base_includes': ' '.join([
-        'kotti kotti.events',
+        'kotti',
+        'kotti.events',
         'kotti.views',
         'kotti.views.cache',
         'kotti.views.view',
@@ -78,9 +79,10 @@ conf_defaults = {
         'kotti.views.edit.actions',
         'kotti.views.edit.content',
         'kotti.views.edit.default_views',
-        'kotti.views.login',
         'kotti.views.file',
         'kotti.views.image',
+        'kotti.views.login',
+        'kotti.views.navigation',
         'kotti.views.users',
         ]),
     'kotti.zcml_includes': ' '.join([

@@ -1,4 +1,14 @@
+import warnings
+
 from mock import patch
+
+
+class DummyVenusian(object):
+    def __init__(self):
+        self.attached = []
+
+    def attach(self, wrapped, fn, category=None):
+        self.attached.append((wrapped, fn, category))
 
 
 class TestEvents:
@@ -55,7 +65,8 @@ class TestEvents:
         lis[(events.ObjectInsert, None)].append(insert)
         lis[(events.ObjectUpdate, None)].append(update)
         lis[(events.ObjectDelete, None)].append(delete)
-        lis[(events.ObjectAfterDelete, None)].append(after_delete)
+        with warnings.catch_warnings(record=True):
+            lis[(events.ObjectAfterDelete, None)].append(after_delete)
 
         child = root[u'child'] = Content()
         db_session.flush()
@@ -72,3 +83,52 @@ class TestEvents:
         assert lengths() == (1, 1, 1, 1)
         assert delete_events[0].object == child
         assert after_delete_events[0].object == child
+
+    def test_subscribe(self, root, db_session):
+
+        from kotti.events import ObjectEvent
+        from kotti.events import clear
+        from kotti.events import listeners
+        from kotti.events import objectevent_listeners
+        from kotti.events import subscribe
+        from kotti.resources import Document
+
+        def handler(event):
+            pass
+
+        dec = subscribe()
+        dec.venusian = DummyVenusian()
+        decorated = dec(handler)
+        dec.register(None, None, handler)
+        assert dec.evttype is object
+        assert dec.objtype is None
+        assert decorated == handler
+        assert (handler, dec.register, 'kotti') in dec.venusian.attached
+        assert handler in listeners[object]
+        assert handler not in objectevent_listeners[object]
+
+        clear()
+
+        dec = subscribe(ObjectEvent)
+        dec.venusian = DummyVenusian()
+        decorated = dec(handler)
+        dec.register(None, None, handler)
+        assert dec.evttype is ObjectEvent
+        assert dec.objtype is None
+        assert decorated == handler
+        assert (handler, dec.register, 'kotti') in dec.venusian.attached
+        assert handler not in listeners[ObjectEvent]
+        assert handler in objectevent_listeners[(ObjectEvent, None)]
+
+        clear()
+
+        dec = subscribe(ObjectEvent, Document)
+        dec.venusian = DummyVenusian()
+        decorated = dec(handler)
+        dec.register(None, None, handler)
+        assert dec.evttype is ObjectEvent
+        assert dec.objtype is Document
+        assert decorated == handler
+        assert (handler, dec.register, 'kotti') in dec.venusian.attached
+        assert handler not in listeners[ObjectEvent]
+        assert handler in objectevent_listeners[(ObjectEvent, Document)]

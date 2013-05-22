@@ -8,6 +8,7 @@ from fanstatic import Resource
 from js.bootstrap import bootstrap_js
 from js.bootstrap import bootstrap_responsive_css
 from js.deform_bootstrap import deform_bootstrap_js
+from js.html5shiv import html5shiv
 from js.jquery import jquery
 from js.jquery_form import jquery_form
 from js.jquery_tablednd import jquery_tablednd
@@ -87,6 +88,7 @@ view_needed_css = NeededGroup([
 view_needed_js = NeededGroup([
     jquery,
     bootstrap_js,
+    html5shiv,
     ])
 view_needed = NeededGroup([
     view_needed_css,
@@ -100,6 +102,7 @@ edit_needed_css = NeededGroup([
 edit_needed_js = NeededGroup([
     jquery,
     bootstrap_js,
+    html5shiv,
     kotti_js,
     jquery_form,
     deform_bootstrap_js,

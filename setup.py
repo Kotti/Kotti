@@ -26,6 +26,7 @@ install_requires = [
     'js.bootstrap>=2.1.5',
     'js.deform>=0.9.5-4',
     'js.deform_bootstrap>=0.2.4-1',
+    'js.html5shiv',
     'js.jquery',
     'js.jquery_form',
     'js.jquery_tablednd',
@@ -56,6 +57,7 @@ install_requires = [
 tests_require = [
     'WebTest',
     'mock',
+    'pyquery',
     'pytest',
     'pytest-cov',
     'pytest-pep8!=1.0.3',
@@ -78,8 +80,8 @@ if sys.version_info[:3] < (2, 7, 0):
     install_requires.append('ordereddict')
 
 setup(name='Kotti',
-      version='0.9a2dev',
-      description="Kotti is a high-level, 'Pythonic' web application framework. It includes a small and extensible CMS application called the Kotti CMS.",
+      version='0.9a3dev',
+      description="A user-friendly, light-weight and extensible web content management system. Based on Pyramid and SQLAlchemy.",
       long_description='\n\n'.join([README, AUTHORS, CHANGES]),
       classifiers=[
         "Programming Language :: Python",
