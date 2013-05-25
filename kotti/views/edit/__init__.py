@@ -35,7 +35,7 @@ def _state_info(context, request):
     state_info = []
     if wf is not None:
         state_info = _eval_titles(wf.state_info(context, request))
-        return state_info
+    return state_info
 
 
 def _states(context, request):
