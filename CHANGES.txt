@@ -4,6 +4,14 @@ Change History
 0.9a3 - Unreleased
 ------------------
 
+- ``kotti.security.view_permitted`` will now check for
+  ``pyramid.security.view_execution_permitted`` with a request method
+  set to 'GET' by default.  It used to check for a view that matches
+  the current request's method.
+
+  This fixes an issue where ``kotti.util.ViewLink.permitted`` would by
+  mistake check for a 'POST' view when the current request was 'POST'.
+
 - Add ``INavigationRoot`` interface and ``TemplateAPI.navigation_root``
   property.  The latter returns the first content node in the lineage that
   implements ``INavigationRoot`` or the root node if ``INavigationRoot`` is not

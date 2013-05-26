@@ -583,6 +583,25 @@ class TestAuthzContextManager:
             assert request.environ['authz_context'] == context2
 
 
+class TestViewPermitted:
+    @patch('kotti.security.view_execution_permitted')
+    def test_with_post_request(self, view_execution_permitted):
+        from kotti.security import view_permitted
+
+        context, request = object(), DummyRequest()
+        request.method = 'POST'
+        calls = []
+
+        def view_execution_permitted_mock(context, request, name):
+            calls.append((context, request, name))
+            assert request.method == 'GET'
+
+        view_execution_permitted.side_effect = view_execution_permitted_mock
+        view_permitted(context, request)
+        assert len(calls) == 1
+        assert request.method == 'POST'
+
+
 class TestHasPermission:
     def test_basic(self):
         from kotti.security import has_permission

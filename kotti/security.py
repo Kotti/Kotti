@@ -351,9 +351,20 @@ def authz_context(context, request):
             request.environ['authz_context'] = before
 
 
-def view_permitted(context, request, name=''):
+@contextmanager
+def request_method(request, method):
+    before = request.method
+    request.method = method
+    try:
+        yield
+    finally:
+        request.method = before
+
+
+def view_permitted(context, request, name='', method='GET'):
     with authz_context(context, request):
-        return view_execution_permitted(context, request, name)
+        with request_method(request, method):
+            return view_execution_permitted(context, request, name)
 
 
 def principals_with_local_roles(context, inherit=True):
