@@ -2,12 +2,10 @@
 Edit views.
 """
 
-from pyramid.location import inside
 from zope.deprecation.deprecation import deprecate
 
 from kotti.util import _
-from kotti import DBSession
-from kotti.resources import Node
+from kotti.util import get_paste_items  # BBB
 from kotti.views.edit.content import ContentSchema
 from kotti.views.edit.content import DocumentSchema
 from kotti.views.form import AddFormView
@@ -41,23 +39,6 @@ def _state_info(context, request):
 def _states(context, request):
     state_info = _state_info(context, request)
     return dict([(i['name'], i) for i in state_info])
-
-
-def get_paste_items(context, request):
-    items = []
-    info = request.session.get('kotti.paste')
-    if info:
-        ids, action = info
-        for id in ids:
-            item = DBSession.query(Node).get(id)
-            if item is None or not item.type_info.addable(context, request):
-                continue
-            if action == 'cut' and inside(context, item):
-                continue
-            if context == item:
-                continue
-            items.append(item)
-    return items
 
 
 @deprecate(

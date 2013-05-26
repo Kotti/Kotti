@@ -288,13 +288,12 @@ class TemplateAPI(object):
         if not hasattr(self.context, 'type_info'):
             return []
         return [l for l in self.context.type_info.edit_links
-                if l.permitted(self.context, self.request)]
+                if l.visible(self.context, self.request)]
 
     @reify
     def site_setup_links(self):
-
         return [l for l in CONTROL_PANEL_LINKS
-                if l.permitted(self.root, self.request)]
+                if l.visible(self.root, self.request)]
 
 
 @deprecate("'ensure_view_selector' is deprecated as of Kotti 0.8. "

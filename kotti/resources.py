@@ -59,6 +59,7 @@ from kotti.sqla import NestedMutationDict
 from kotti.util import ViewLink
 from kotti.util import _
 from kotti.util import camel_case_to_name
+from kotti.util import get_paste_items
 
 
 class ContainerMixin(object, DictMixin):
@@ -297,6 +298,8 @@ class TypeInfo(object):
 
     addable_to = ()
     selectable_default_views = ()
+    edit_links = ()
+    action_links = ()
 
     def __init__(self, **kwargs):
         """
@@ -422,6 +425,33 @@ class TagsToContents(Base):
         return cls(tag=tag)
 
 
+def _not_root(context, request):
+    return not context is get_root()
+
+
+default_type_info = TypeInfo(
+    name=u'Content',
+    title=u'type_info title missing',   # BBB
+    add_view=None,
+    addable_to=[],
+    edit_links=[
+        ViewLink('contents', title=_(u'Contents')),
+        ViewLink('edit', title=_(u'Edit')),
+        ViewLink('share', title=_(u'Share')),
+        ],
+    action_links=[
+        ViewLink('copy', title=_(u'Copy')),
+        ViewLink('cut', title=_(u'Cut'), predicate=_not_root),
+        ViewLink('paste', title=_(u'Paste'), predicate=get_paste_items),
+        ViewLink('rename', title=_(u'Rename'), predicate=_not_root),
+        ViewLink('delete', title=_(u'Delete'), predicate=_not_root),
+        ],
+    selectable_default_views=[
+        ("folder_view", _(u"Folder view")),
+        ],
+    )
+
+
 class Content(Node):
     """Content adds some attributes to :class:`~kotti.resources.Node` that are
        useful for content objects in a CMS.
@@ -477,20 +507,7 @@ class Content(Node):
         creator=TagsToContents._tag_find_or_create,
         )
     #: type_info is a class attribute (:class:`TypeInfo`)
-    type_info = TypeInfo(
-        name=u'Content',
-        title=u'type_info title missing',   # BBB
-        add_view=None,
-        addable_to=[],
-        edit_links=[
-            ViewLink('contents', title=_(u'Contents')),
-            ViewLink('edit', title=_(u'Edit')),
-            ViewLink('share', title=_(u'Share')),
-            ],
-        selectable_default_views=[
-            ("folder_view", _(u"Folder view")),
-            ],
-        )
+    type_info = default_type_info
 
     def __init__(self, name=None, parent=None, title=u"", annotations=None,
                  default_view=None, description=u"", language=None,

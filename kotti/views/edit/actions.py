@@ -583,18 +583,11 @@ def actions(context, request):
     :result: Dictionary passed to the template for rendering.
     :rtype: dict
     """
-    root = get_root()
-    actions = [ViewLink('copy', title=_(u'Copy'))]
-    is_root = context is root
-    if not is_root:
-        actions.append(ViewLink('cut', title=_(u'Cut')))
-    if get_paste_items(context, request):
-        actions.append(ViewLink('paste', title=_(u'Paste')))
-    if not is_root:
-        actions.append(ViewLink('rename', title=_(u'Rename')))
-        actions.append(ViewLink('delete', title=_(u'Delete')))
-    return {'actions': [action for action in actions
-                        if action.permitted(context, request)]}
+    actions = []
+    if hasattr(context, 'type_info'):
+        actions = [a for a in context.type_info.action_links
+                   if a.visible(context, request)]
+    return {'actions': actions}
 
 
 def includeme(config):

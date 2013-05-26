@@ -4,6 +4,12 @@ Change History
 0.9a3 - Unreleased
 ------------------
 
+- Add ``kotti.util.ViewLink.visible`` method for better control over
+  whether a view link should be visible or not.  This allows us to
+  move formerly hardcoded action links defined in
+  ``kotti.views.edit.actions`` into ``TypeInfo.action_links`` and thus
+  make them configurable either globally or per content type.
+
 - ``kotti.security.view_permitted`` will now check for
   ``pyramid.security.view_execution_permitted`` with a request method
   set to 'GET' by default.  It used to check for a view that matches

@@ -13,21 +13,44 @@ import urllib
 from docopt import docopt
 from pyramid.i18n import get_locale_name
 from pyramid.i18n import TranslationStringFactory
+from pyramid.location import inside
 from pyramid.paster import bootstrap
 from pyramid.threadlocal import get_current_request
 from pyramid.url import resource_url
 from repoze.lru import LRUCache
 from zope.deprecation import deprecated
 
+from kotti import DBSession
+
 _ = TranslationStringFactory('Kotti')
 
 
+def get_paste_items(context, request):
+    from kotti.resources import Node
+
+    items = []
+    info = request.session.get('kotti.paste')
+    if info:
+        ids, action = info
+        for id in ids:
+            item = DBSession.query(Node).get(id)
+            if item is None or not item.type_info.addable(context, request):
+                continue
+            if action == 'cut' and inside(context, item):
+                continue
+            if context == item:
+                continue
+            items.append(item)
+    return items
+
+
 class ViewLink(object):
-    def __init__(self, path, title=None):
+    def __init__(self, path, title=None, predicate=None):
         self.path = path
         if title is None:
             title = path.replace('-', ' ').replace('_', ' ').title()
         self.title = title
+        self.predicate = predicate
 
     def url(self, context, request):
         return resource_url(context, request) + '@@' + self.path
@@ -35,6 +58,15 @@ class ViewLink(object):
     def permitted(self, context, request):
         from kotti.security import view_permitted
         return view_permitted(context, request, self.path)
+
+    def visible(self, context, request):
+        permitted = self.permitted(context, request)
+        if permitted:
+            if self.predicate is not None:
+                return self.predicate(context, request)
+            else:
+                return True
+        return False
 
     def selected(self, context, request):
         return urllib.unquote(request.url).startswith(
