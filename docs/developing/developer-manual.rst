@@ -127,15 +127,15 @@ by hand in the Paste Deploy INI file is not ideal.  That's why Kotti
 includes a configuration variable through which extending packages can
 set all other INI settings through Python.  Here's an example of a
 function that programmatically modified ``kotti.base_includes`` and
-``kotti_principals`` which would otherwise be configured by hand in
-the INI file:
+``kotti.principals_factory`` which would otherwise be configured by
+hand in the INI file:
 
 .. code-block:: python
 
   # in mypackage/__init__.py
   def kotti_configure(config):
       config['kotti.base_includes'] += ' mypackage.views'
-      config['kotti.principals'] = 'mypackage.security.principals'
+      config['kotti.principals_factory'] = 'mypackage.security.principals'
 
 And this is how your users would hook it up in their INI file:
 
