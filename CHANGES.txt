@@ -38,6 +38,10 @@ Change History
 - Fix bug in `kotti.views.util.render_view` where local roles weren't
   respected correctly.
 
+- Add helper method `kotti.message.send_email` for sending general
+  emails. These emails must follow a particular structure. Look at
+  `kotti:templates/email-set-password.pt` as an example.
+
 0.9a2 - 2013-05-04
 ------------------
 
