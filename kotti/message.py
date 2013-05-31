@@ -120,6 +120,24 @@ def send_set_password(user, request, templates='set-password', add_query=None):
     mailer.send(message)
 
 
+def send_email(request, template_name, template_vars, recipients):
+    text = render(template_name, template_vars, request)
+    subject, htmlbody = text.strip().split('\n', 1)
+    subject = subject.replace('Subject:', '', 1).strip()
+    html2text = HTML2Text()
+    html2text.body_width = 0
+    textbody = html2text.handle(htmlbody).strip()
+
+    message = Message(
+        recipients=recipients,
+        subject=subject,
+        body=textbody,
+        html=htmlbody,
+        )
+    mailer = get_mailer()
+    mailer.send(message)
+
+
 def email_set_password(user, request,
                        template_name='kotti:templates/email-set-password.pt',
                        add_query=None):
@@ -138,19 +156,5 @@ def email_set_password(user, request,
         site_title=site_title,
         url=url,
         )
-
-    text = render(template_name, variables, request)
-    subject, htmlbody = text.strip().split('\n', 1)
-    subject = subject.replace('Subject:', '', 1).strip()
-    html2text = HTML2Text()
-    html2text.body_width = 0
-    textbody = html2text.handle(htmlbody).strip()
-
-    message = Message(
-        recipients=[u'"%s" <%s>' % (user.title, user.email)],  # XXX naive?
-        subject=subject,
-        body=textbody,
-        html=htmlbody,
-        )
-    mailer = get_mailer()
-    mailer.send(message)
+    recipients = [u'"%s" <%s>' % (user.title, user.email)]  # XXX naive?
+    send_email(request, template_name, variables, recipients)
