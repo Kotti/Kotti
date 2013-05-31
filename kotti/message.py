@@ -120,7 +120,7 @@ def send_set_password(user, request, templates='set-password', add_query=None):
     mailer.send(message)
 
 
-def send_email(request, template_name, template_vars, recipients):
+def send_email(request, recipients, template_name, template_vars={}):
     text = render(template_name, template_vars, request)
     subject, htmlbody = text.strip().split('\n', 1)
     subject = subject.replace('Subject:', '', 1).strip()
@@ -157,4 +157,4 @@ def email_set_password(user, request,
         url=url,
         )
     recipients = [u'"%s" <%s>' % (user.title, user.email)]  # XXX naive?
-    send_email(request, template_name, variables, recipients)
+    send_email(request, recipients, template_name, variables)
