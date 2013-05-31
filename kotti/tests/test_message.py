@@ -9,6 +9,35 @@ from warnings import filterwarnings
 filterwarnings('ignore', '^send_set_password is deprecated')
 
 
+class TestSendEmail:
+    def setup_method(self, method):
+        get_mailer_patcher = patch('kotti.message.get_mailer')
+        get_mailer = get_mailer_patcher.start()
+        self.mailer = get_mailer.return_value
+
+        self.patchers = (get_mailer_patcher, )
+
+    def teardown_method(self, method):
+        for patcher in self.patchers:
+            patcher.stop()
+
+    def test_send_email(self, dummy_request):
+        from kotti.message import send_email
+
+        send_email(dummy_request,
+                   [u'"John Doe" <joedoe@foo.com>'],
+                   'kotti:templates/email-reset-password.pt',
+                   {'site_title': u'My site',
+                    'user_title': u'John Doe',
+                    'url': u'http://foo.com'}
+                   )
+
+        assert self.mailer.send.called
+        message = self.mailer.send.call_args[0][0]
+        assert [u'"John Doe" <joedoe@foo.com>'] == message.recipients
+        assert 'Reset your password' in message.subject
+
+
 class TestSendSetPassword:
     def setup_method(self, method):
         get_settings_patcher = patch('kotti.message.get_settings')
