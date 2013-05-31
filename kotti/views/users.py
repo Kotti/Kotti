@@ -334,9 +334,19 @@ class UserAddFormView(AddFormView):
         name = appstruct['name'] = appstruct['name'].lower()
         appstruct['email'] = appstruct['email'] and appstruct['email'].lower()
         send_email = appstruct.pop('send_email', False)
+        continue_to = appstruct.pop('continue_to', '')
+        if not continue_to.startswith('http'):
+            separator = '/'
+            if continue_to.startswith('/'):
+                separator = ''
+            continue_to = "{0}{1}{2}".format(self.request.application_url,
+                                             separator,
+                                             continue_to)
         get_principals()[name] = appstruct
         if send_email:
-            email_set_password(get_principals()[name], self.request)
+            email_set_password(get_principals()[name],
+                               self.request,
+                               add_query={'continue_to': continue_to})
         self.request.session.flash(
             _(u'${title} was added.',
               mapping=dict(title=appstruct['title'])), 'success')
