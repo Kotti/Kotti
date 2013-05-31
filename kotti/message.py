@@ -121,6 +121,23 @@ def send_set_password(user, request, templates='set-password', add_query=None):
 
 
 def send_email(request, recipients, template_name, template_vars={}):
+    """ General email sender.
+
+    :param request: current request.
+    :type request: :class:`pyramid.request.Request`
+
+    :param recipients: list of email addresses. Each email should be a
+                       string like: u'"John Doe" <joedoe@foo.com>'.
+    :type recipients: list
+
+    :param template_name: asset specification (e.g.
+                          'mypackage:templates/email.pt')
+    :type template_name: string
+
+    :param template_vars: set of variables present on template.
+    :type template_vars: dict
+    """
+
     text = render(template_name, template_vars, request)
     subject, htmlbody = text.strip().split('\n', 1)
     subject = subject.replace('Subject:', '', 1).strip()
