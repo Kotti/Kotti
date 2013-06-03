@@ -229,11 +229,10 @@ Login with the username *admin* and password *qwerty* and click on the Add menu
 button. You should see a few choices, namely the base Kotti classes
 ``Document``, ``File`` and ``Image`` and the Content Type we added, ``Poll``.
 
-.. note::
-
-  ``Poll`` appeared here because we added it to the ``kotti.available_types``
-  registry and ``Poll.type_info`` specifies ``addable_to`` as ``Document``.
-  ``Choice`` doesn't appear here of course, as it is addable only to ``Poll``.
+.. note:: ``Poll`` appeared here because we added it to the
+  ``kotti.available_types`` registry and ``Poll.type_info`` specifies
+  ``addable_to`` as ``Document``. ``Choice`` doesn't appear here of course, as
+  it is addable only to ``Poll``.
 
 Lets go ahead and click on ``Poll``. For the question, let's write
 *What is your favourite color?*. Now let's add three choices,
