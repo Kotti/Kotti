@@ -157,12 +157,12 @@ We change the ``kotti_configure`` function to look like:
 
 .. code-block:: python
 
- def kotti_configure(settings):
-     settings['kotti.fanstatic.view_needed'] += (
-         ' kotti_mysite.fanstatic.kotti_mysite_group')
-     settings['kotti.available_types'] += (
-         ' kotti_mysite.resources.Poll kotti_mysite.resources.Choice')
-     settings['pyramid.includes'] += ' kotti_mysite'
+  def kotti_configure(settings):
+      settings['kotti.fanstatic.view_needed'] += (
+          ' kotti_mysite.fanstatic.kotti_mysite_group')
+      settings['kotti.available_types'] += (
+          ' kotti_mysite.resources.Poll kotti_mysite.resources.Choice')
+      settings['pyramid.includes'] += ' kotti_mysite'
 
 Here, we've added our two content types to the site's available_types, a global
 registry.
@@ -211,78 +211,112 @@ of each call is the form class. The second argument gives the name of the
 view. The names of each add view, `add_poll` and `add_choice`, match the
 names set in the type_info class attribute of the types (Compare to the
 classes where Poll() and Choice() are defined). The names of the edit views
-are simply `edit`, the names of add views are simply `add`. We can, of course, add our own view names, but `add` and `edit` should be used for adding and editing respectively, as Kotti uses those names for its base functionality.
+are simply `edit`, the names of add views are simply `add`. We can, of course,
+add our own view names, but `add` and `edit` should be used for adding and
+editing respectively, as Kotti uses those names for its base functionality.
 
 Adding a Poll and Choices to the site
 -------------------------------------
 
-Let's try adding a Poll and some choices to the site. Start the site up with the command
+Let's try adding a Poll and some choices to the site. Start the site up with
+the command
 
 .. code-block:: bash
 
   bin/pserve app.ini
 
-Login with the username *admin* and password *qwerty* and click on the Add menu button. You should see a few choices, namely the base Kotti classes ``Document``, ``File`` and ``Image`` and the Content Type we added, ``Poll``.
+Login with the username *admin* and password *qwerty* and click on the Add menu
+button. You should see a few choices, namely the base Kotti classes
+``Document``, ``File`` and ``Image`` and the Content Type we added, ``Poll``.
 
 .. note::
-  ``Poll`` appeared here because we added it to the ``kotti.available_types`` registry and ``Poll.type_info`` specifies ``addable_to`` as ``Document``. ``Choice`` doesn't appear here of course, as it is addable only to ``Poll``.
 
-Lets go ahead and click on ``Poll``. For the question, let's write *What is your favourite color?*. Now let's add three choices, *Red*, *Green* and *Blue* in the same way we added the poll.
+  ``Poll`` appeared here because we added it to the ``kotti.available_types``
+  registry and ``Poll.type_info`` specifies ``addable_to`` as ``Document``.
+  ``Choice`` doesn't appear here of course, as it is addable only to ``Poll``.
 
-If we now go to the poll we added, we can see the question, but not our choices, which is definitely not what we wanted. Let us fix this, shall we?
+Lets go ahead and click on ``Poll``. For the question, let's write
+*What is your favourite color?*. Now let's add three choices,
+*Red*, *Green* and *Blue* in the same way we added the poll.
+
+If we now go to the poll we added, we can see the question, but not our choices,
+which is definitely not what we wanted. Let us fix this, shall we?
 
 Adding a custom View to the Poll
 --------------------------------
 
-Since this is not a tutorial for TAL templates, we will not go into details.
+Since there are plenty tutorials on how to write TAL templates, we will not
+write a complete one here, but just a basic one, to show off the general idea.
 
-We will make a simple template, named ``poll.pt`` under our ``templates`` folder, that will list all our poll options.
+First, we need to write a view that will send the needed data (in our case,
+the choices we added to our poll). Here is the code, added to ``view.py``.
+
+.. code-block:: python
+
+  from kotti import DBSession
+  from kotti_mysite.fanstatic import kotti_mysite_group
+
+
+  def poll_view(context, request):
+      kotti_mysite_group.need()
+      choices = DBSession().query(Choice).all()
+      choices = [choice for choice in choices if choice.parent.id == context.id]
+      return {
+          'choices': choices
+      }
+
+As you can see, we simply queried the database for all choices, then went
+through them and selected only the ones that were added to the poll we are
+currently viewing. We do this by comparing the *context.id* with the
+*choice.parent.id*. If they are the same, this particular choice was added
+to the ``Poll`` we are currently viewing.
+Finally, we return a dictionary of all choices under the keyword *choices*.
+
+Next on, we need a template to actually show our data. It could look something
+like this. The file is ``poll.pt`` and goes under the ``templates`` folder.
 
 .. code-block:: html
-    <!DOCTYPE html>
-    <html xmlns:tal="http://xml.zope.org/namespaces/tal"
-          xmlns:metal="http://xml.zope.org/namespaces/metal"
-          metal:use-macro="api.macro('kotti:templates/view/master.pt')">
 
-      <article metal:fill-slot="content" class="poll-view content">
-        <h1>${context.title}</h1>
-        <ul tal:repeat="choice choices">
-            <li><a href="${request.resource_url(choice)}">${choice.title}</a></li>
-        </ul>
-      </article>
+  <!DOCTYPE html>
+  <html xmlns:tal="http://xml.zope.org/namespaces/tal"
+        xmlns:metal="http://xml.zope.org/namespaces/metal"
+        metal:use-macro="api.macro('kotti:templates/view/master.pt')">
 
-    </html>
+    <article metal:fill-slot="content" class="poll-view content">
+      <h1>${context.title}</h1>
+      <ul tal:repeat="choice choices">
+          <li><a href="${request.resource_url(choice)}">${choice.title}</a></li>
+      </ul>
+    </article>
 
+  </html>
 
-view.py
+The first 6 lines are needed so our template plays nicely with the master
+template (so we keep the add/edit bar, base site structure etc.).
+The next line prints out the context.title (our question) inside the <h1> tag
+and then prints all choices (with links to the choice) as an unordered list.
 
-.. code-block:: python
-    from kotti import DBSession
-    from kotti_mysite.fanstatic import kotti_mysite_group
-
-
-    def poll_view(context, request):
-        kotti_mysite_group.need()
-        choices = DBSession().query(Choice).all()
-        choices = [choice for choice in choices if choice.parent.id == context.id]
-        return {
-            'choices': choices
-        }
-
-__init__.py
+Now all that remains is linking the two together. We do this in the
+``__init__.py`` file, like this.
 
 .. code-block:: python
 
-    from kotti_mysite.views import poll_view
+  from kotti_mysite.views import poll_view
 
-    config.add_view(
-        poll_view,
-        context=Poll,
-        name='view',
-        permission='view',
-        renderer='kotti_mysite:templates/poll.pt',
-    )
+  config.add_view(
+      poll_view,
+      context=Poll,
+      name='view',
+      permission='view',
+      renderer='kotti_mysite:templates/poll.pt',
+  )
 
+With this, we are done with the second tutorial. Restart the server instance,
+take a look at the new ``Poll`` view and play around with the template until
+you are completely satisfied with how our data is presented.
+
+In the next tutorial, we will learn how to enable our users to actually vote
+for one of the ``Poll`` options.
 
 .. _SQLAlchemy: http://www.sqlalchemy.org/
 .. _Colander: http://colander.readthedocs.org/
