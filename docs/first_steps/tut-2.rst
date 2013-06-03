@@ -222,7 +222,7 @@ Let's try adding a Poll and some choices to the site. Start the site up with the
 
   bin/pserve app.ini
 
-login with the username *admin* and password *querty* and click on the Add menu button. You should see a few choices, namely the base Kotti classes ``Document``, ``File`` and ``Image`` and the Content Type we added, ``Poll``.
+Login with the username *admin* and password *qwerty* and click on the Add menu button. You should see a few choices, namely the base Kotti classes ``Document``, ``File`` and ``Image`` and the Content Type we added, ``Poll``.
 
 .. note::
   ``Poll`` appeared here because we added it to the ``kotti.available_types`` registry and ``Poll.type_info`` specifies ``addable_to`` as ``Document``. ``Choice`` doesn't appear here of course, as it is addable only to ``Poll``.
@@ -234,7 +234,55 @@ If we now go to the poll we added, we can see the question, but not our choices,
 Adding a custom View to the Poll
 --------------------------------
 
-Write a custom view that returns all choices and put it into a template which it displays.
+Since this is not a tutorial for TAL templates, we will not go into details.
+
+We will make a simple template, named ``poll.pt`` under our ``templates`` folder, that will list all our poll options.
+
+.. code-block:: html
+    <!DOCTYPE html>
+    <html xmlns:tal="http://xml.zope.org/namespaces/tal"
+          xmlns:metal="http://xml.zope.org/namespaces/metal"
+          metal:use-macro="api.macro('kotti:templates/view/master.pt')">
+
+      <article metal:fill-slot="content" class="poll-view content">
+        <h1>${context.title}</h1>
+        <ul tal:repeat="choice choices">
+            <li><a href="${request.resource_url(choice)}">${choice.title}</a></li>
+        </ul>
+      </article>
+
+    </html>
+
+
+view.py
+
+.. code-block:: python
+    from kotti import DBSession
+    from kotti_mysite.fanstatic import kotti_mysite_group
+
+
+    def poll_view(context, request):
+        kotti_mysite_group.need()
+        choices = DBSession().query(Choice).all()
+        choices = [choice for choice in choices if choice.parent.id == context.id]
+        return {
+            'choices': choices
+        }
+
+__init__.py
+
+.. code-block:: python
+
+    from kotti_mysite.views import poll_view
+
+    config.add_view(
+        poll_view,
+        context=Poll,
+        name='view',
+        permission='view',
+        renderer='kotti_mysite:templates/poll.pt',
+    )
+
 
 .. _SQLAlchemy: http://www.sqlalchemy.org/
 .. _Colander: http://colander.readthedocs.org/
