@@ -1,5 +1,6 @@
 <ul class="breadcrumb"
     xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+    xmlns:tal="http://xml.zope.org/namespaces/tal"
     i18n:domain="Kotti"
     tal:define="breadcrumbs [i for i in api.breadcrumbs]"
     tal:condition="len(breadcrumbs) > 1">
@@ -8,10 +9,8 @@
     <li tal:define="first repeat.item.start; last repeat.item.end"
         class="${last and 'active' or None}">
 
-      <a tal:omit-tag="last"
-         href="${api.url(item)}">
-        <span tal:condition="not first">${item.title}</span>
-      </a>
+      <a tal:omit-tag="last" href="${api.url(item)}"><span
+        tal:condition="not first">${item.title}</span></a>
 
       <span class="divider" tal:condition="not (first or last)">/</span>
     </li>
