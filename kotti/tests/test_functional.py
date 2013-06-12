@@ -23,7 +23,8 @@ class TestForbidden:
         assert res.location.startswith('http://localhost/@@login?came_from=')
 
     def test_forbidden_redirect_when_authenticated(self, app):
-        with patch('kotti.views.login.authenticated_userid', return_value='foo'):
+        with patch('kotti.views.login.authenticated_userid',
+                   return_value='foo'):
             res = app.get('/@@edit', status=302)
         assert res.location == 'http://localhost/@@forbidden'
 
@@ -55,7 +56,6 @@ class TestUploadFile:
         self.add_file(browser, contents='DEF')
         browser.getLink("Edit").click()
         browser.getControl("Title").value = ''  # the error
-        self.add_file(browser, contents='DEF')
         assert "Your changes have been saved" not in browser.contents
         browser.getControl("Title").value = 'A title'
         browser.getControl('save').click()
@@ -63,3 +63,12 @@ class TestUploadFile:
         browser.getLink("View").click()
         browser.getLink("Download file").click()
         assert browser.contents == 'DEF'
+
+    @user('admin')
+    def test_edit_uploaded_file(self, browser):
+        browser.open(BASE_URL + '/@@add_file')
+        self.add_file(browser, contents='GHI')
+        browser.getLink("Edit").click()
+        browser.getControl('save').click()
+        browser.getLink("Download file").click()
+        assert browser.contents == 'GHI'
