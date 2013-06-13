@@ -278,8 +278,10 @@ like this. The file is ``poll.pt`` and goes under the ``templates`` folder.
 
     <article metal:fill-slot="content" class="poll-view content">
       <h1>${context.title}</h1>
-      <ul tal:repeat="choice choices">
-          <li><a href="${request.resource_url(choice)}">${choice.title}</a></li>
+      <ul>
+          <li tal:repeat="choice choices">
+            <a href="${request.resource_url(choice)}">${choice.title}</a>
+          </li>
       </ul>
     </article>
 
