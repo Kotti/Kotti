@@ -33,7 +33,8 @@
       </ul>
 
       <ul class="nav pull-right">
-        <li tal:define="url api.url(context, '@@navigate')"
+        <li tal:condition="api.has_permission('view')"
+            tal:define="url api.url(context, '@@navigate')"
             class="${url == request.url and 'active' or None} pull-right">
           <a href="${url}" i18n:translate="">Navigate</a>
         </li>

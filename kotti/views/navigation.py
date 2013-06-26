@@ -26,7 +26,7 @@ def render_tree_navigation(context, request):
     # compatibility imports in slots.py.
     from kotti.views.util import nodes_tree
 
-    tree = nodes_tree(request)
+    tree = nodes_tree(request, context)
 
     return {
         'tree': {
