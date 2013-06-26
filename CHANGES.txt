@@ -1,7 +1,7 @@
 Change History
 ==============
 
-0.9a3 - Unreleased
+0.9b1 - 2013-06-26
 ------------------
 
 - Add ``kotti.util.ViewLink.visible`` method for better control over
