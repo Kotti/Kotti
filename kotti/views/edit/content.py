@@ -2,8 +2,6 @@
 Content edit views
 """
 
-from StringIO import StringIO
-
 import colander
 from colander import SchemaNode
 from colander import null
@@ -52,27 +50,12 @@ class DocumentSchema(ContentSchema):
         )
 
 
-@colander.deferred
-def deferred_file_upload_widget(node, kw):
-    request = kw['request']
-    context = request.context
-    tmpstore = FileUploadTempStore(request)
-    widget = FileUploadWidget(tmpstore)
-    if hasattr(context, 'data') and context.data:
-        context.file = {'fp': StringIO(context.data),
-                        'filename': context.name,
-                        'mimetype': context.mimetype,
-                        'uid': widget.random_id()
-                        }
-    return widget
-
-
 def FileSchema(tmpstore, title_missing=None):
     class FileSchema(ContentSchema):
         file = SchemaNode(
             FileData(),
             title=_(u'File'),
-            widget=deferred_file_upload_widget,
+            widget=FileUploadWidget(tmpstore),
             validator=validate_file_size_limit,
             )
 
