@@ -141,7 +141,7 @@ class EditFormView(BaseFormView):
                 'filename': self.context.name,
                 'mimetype': self.context.mimetype,
                 'uid': str(random.randint(1000000000, 9999999999)),
-            }        
+            } 
         form.appstruct = get_appstruct(self.context, self.schema)
 
     def save_success(self, appstruct):
