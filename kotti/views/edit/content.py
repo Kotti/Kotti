@@ -2,6 +2,8 @@
 Content edit views
 """
 
+import random
+from StringIO import StringIO
 import colander
 from colander import SchemaNode
 from colander import null
@@ -14,6 +16,7 @@ from kotti.resources import Document
 from kotti.resources import File
 from kotti.resources import Image
 from kotti.util import _
+from kotti.views.form import get_appstruct
 from kotti.views.form import AddFormView
 from kotti.views.form import EditFormView
 from kotti.views.form import FileUploadTempStore
@@ -77,6 +80,16 @@ class DocumentAddForm(AddFormView):
 
 
 class FileEditForm(EditFormView):
+    def before(self, form):
+        form.appstruct = get_appstruct(self.context, self.schema)
+        if self.context.data is not None:
+            form.appstruct.update({'file': {
+                'fp': StringIO(self.context.data),
+                'filename': self.context.name,
+                'mimetype': self.context.mimetype,
+                'uid': str(random.randint(1000000000, 9999999999)),
+            }})
+
     def schema_factory(self):
         tmpstore = FileUploadTempStore(self.request)
         return FileSchema(tmpstore)
