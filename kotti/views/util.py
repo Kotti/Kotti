@@ -433,7 +433,8 @@ def default_search_content(search_term, request=None):
                          Content.title.like(searchstring),
                          Content.description.like(searchstring))
 
-    results = DBSession.query(Content).filter(generic_filter).all()
+    results = DBSession.query(Content).filter(generic_filter).\
+        order_by(Content.title.asc()).all()
 
     # specific result contain objects matching additional criteria
     # but must not match the generic criteria (because these objects
