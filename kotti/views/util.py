@@ -160,13 +160,13 @@ class TemplateAPI(object):
 
     @reify
     def site_title(self):
-	"""
-	The site title.
+        """
+        The site title.
 
-	:result: Value of ``kotti.site_title`` (if specified) or the root
-	item's ``title`` attribute.
-	:rtype: unicode
-	"""
+        :result: Value of ``kotti.site_title`` (if specified) or the root
+        item's ``title`` attribute.
+        :rtype: unicode
+        """
         value = get_settings().get('kotti.site_title')
         if not value:
             value = self.root.title
@@ -174,14 +174,14 @@ class TemplateAPI(object):
 
     @reify
     def page_title(self):
-	"""
-	Title for the current page as used in the ``<head>`` section of the
-	default ``master.pt`` template.
+        """
+        Title for the current page as used in the ``<head>`` section of the
+        default ``master.pt`` template.
 
-	:result: '[Human readable view title ]``context.title`` -
-		 :meth:`~TemplateAPI.site_title`''
-	:rtype: unicode
-	"""
+        :result: '[Human readable view title ]``context.title`` -
+                 :meth:`~TemplateAPI.site_title`''
+        :rtype: unicode
+        """
 
         view_title = self.request.view_name.replace('_', ' ').title()
         if view_title:
@@ -190,12 +190,12 @@ class TemplateAPI(object):
         return u'%s - %s' % (view_title, self.site_title)
 
     def url(self, context=None, *elements, **kwargs):
-	"""
-	URL construction helper. Just a convenience wrapper for
-	:func:`pyramid.request.resource_url` with the same signature.  If
-	``context`` is ``None`` the current context is passed to
-	``resource_url``.
-	"""
+        """
+        URL construction helper. Just a convenience wrapper for
+        :func:`pyramid.request.resource_url` with the same signature.  If
+        ``context`` is ``None`` the current context is passed to
+        ``resource_url``.
+        """
 
         if context is None:
             context = self.context
@@ -203,24 +203,24 @@ class TemplateAPI(object):
 
     @reify
     def root(self):
-	"""
-	The site root.
+        """
+        The site root.
 
-	:result: The root object of the site.
-	:rtype: :class:`kotti.resources.Node`
-	"""
+        :result: The root object of the site.
+        :rtype: :class:`kotti.resources.Node`
+        """
         return self.lineage[-1]
 
     @reify
     def navigation_root(self):
-	"""
-	The root node for the navigation.
+        """
+        The root node for the navigation.
 
-	:result: Nearest node in the :meth:`lineage` that provides
-		 :class:`kotti.interfaces.INavigationRoot` or :meth:`root` if
-		 no node provides that interface.
-	:rtype: :class:`kotti.resources.Node`
-	"""
+        :result: Nearest node in the :meth:`lineage` that provides
+                 :class:`kotti.interfaces.INavigationRoot` or :meth:`root` if
+                 no node provides that interface.
+        :rtype: :class:`kotti.resources.Node`
+        """
         for o in self.lineage:
             if INavigationRoot.providedBy(o):
                 return o
@@ -228,22 +228,22 @@ class TemplateAPI(object):
 
     @reify
     def lineage(self):
-	"""
-	Lineage from current context to the root node.
+        """
+        Lineage from current context to the root node.
 
-	:result: List of nodes.
-	:rtype: list of :class:`kotti.resources.Node`
-	"""
+        :result: List of nodes.
+        :rtype: list of :class:`kotti.resources.Node`
+        """
         return list(lineage(self.context))
 
     @reify
     def breadcrumbs(self):
-	"""
-	List of nodes from the :meth:`navigation_root` to the context.
+        """
+        List of nodes from the :meth:`navigation_root` to the context.
 
-	:result: List of nodes.
-	:rtype: list of :class:`kotti.resources.Node`
-	"""
+        :result: List of nodes.
+        :rtype: list of :class:`kotti.resources.Node`
+        """
         breadcrumbs = self.lineage
         if self.root != self.navigation_root:
             index = breadcrumbs.index(self.navigation_root)
@@ -251,9 +251,9 @@ class TemplateAPI(object):
         return reversed(breadcrumbs)
 
     def has_permission(self, permission, context=None):
-	""" Convenience wrapper for :func:`pyramid.security.has_permission`
-	with the same signature.  If ``context`` is ``None`` the current
-	context is passed to ``has_permission``."""
+        """ Convenience wrapper for :func:`pyramid.security.has_permission`
+        with the same signature.  If ``context`` is ``None`` the current
+        context is passed to ``has_permission``."""
         if context is None:
             context = self.context
         return has_permission(permission, context, self.request)
