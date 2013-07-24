@@ -132,24 +132,26 @@ class TestTemplateAPI:
             has_permission.assert_called_with('drink', api.root, api.request)
 
     def test_edit_links(self, config, db_session):
-        from kotti.views.edit import actions, content
+        from kotti.views.edit import actions, content, default_views
         from kotti.views import users
-        from kotti.util import ViewLink
+        from kotti.util import Link
 
         api = self.make()
         config.include(actions)
         config.include(content)
+        config.include(default_views)
         config.include(users)
 
-        assert (api.edit_links == [
-            ViewLink('contents', u'Contents'),
-            ViewLink('edit', u'Edit'),
-            ViewLink('share', u'Share'), ])
+        assert (api.edit_links[:3] == [
+            Link('contents', u'Contents'),
+            Link('edit', u'Edit'),
+            Link('share', u'Share'),
+            ])
 
         # Edit links are controlled through
         # 'root.type_info.edit_links' and the permissions that guard
         # these:
-        class MyLink(ViewLink):
+        class MyLink(Link):
             permit = True
 
             def permitted(self, context, request):

@@ -1,0 +1,13 @@
+<li class="${link.selected(context, request) and 'active' or None} dropdown"
+    tal:condition="link.visible(context, request)">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+    <span>${link.title}</span>
+    <b class="caret"></b>
+  </a>
+
+  <ul class="dropdown-menu">
+    <li tal:repeat="link link.get_visible_children(context, request)">
+      ${link(context, request)}
+    </li>
+  </ul>
+</li>

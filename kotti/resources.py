@@ -56,7 +56,9 @@ from kotti.sqla import ACLType
 from kotti.sqla import JsonType
 from kotti.sqla import MutationList
 from kotti.sqla import NestedMutationDict
-from kotti.util import ViewLink
+from kotti.util import Link
+from kotti.util import LinkParent
+from kotti.util import LinkRenderer
 from kotti.util import _
 from kotti.util import camel_case_to_name
 from kotti.util import get_paste_items
@@ -435,16 +437,17 @@ default_type_info = TypeInfo(
     add_view=None,
     addable_to=[],
     edit_links=[
-        ViewLink('contents', title=_(u'Contents')),
-        ViewLink('edit', title=_(u'Edit')),
-        ViewLink('share', title=_(u'Share')),
-        ],
-    action_links=[
-        ViewLink('copy', title=_(u'Copy')),
-        ViewLink('cut', title=_(u'Cut'), predicate=_not_root),
-        ViewLink('paste', title=_(u'Paste'), predicate=get_paste_items),
-        ViewLink('rename', title=_(u'Rename'), predicate=_not_root),
-        ViewLink('delete', title=_(u'Delete'), predicate=_not_root),
+        Link('contents', title=_(u'Contents')),
+        Link('edit', title=_(u'Edit')),
+        Link('share', title=_(u'Share')),
+        LinkParent(title=_(u'Actions'), children=[
+            Link('copy', title=_(u'Copy')),
+            Link('cut', title=_(u'Cut'), predicate=_not_root),
+            Link('paste', title=_(u'Paste'), predicate=get_paste_items),
+            Link('rename', title=_(u'Rename'), predicate=_not_root),
+            Link('delete', title=_(u'Delete'), predicate=_not_root),
+            LinkRenderer('default-view-selector'),
+            ]),
         ],
     selectable_default_views=[
         ("folder_view", _(u"Folder view")),

@@ -8,16 +8,10 @@ from babel.dates import format_datetime
 from babel.dates import format_time
 from pyramid.decorator import reify
 from pyramid.i18n import get_locale_name
-from pyramid.i18n import get_localizer
-from pyramid.i18n import make_localizer
-from pyramid.interfaces import ITranslationDirectories
 from pyramid.location import inside
 from pyramid.location import lineage
 from pyramid.renderers import get_renderer
 from pyramid.renderers import render
-from pyramid.threadlocal import get_current_registry
-from pyramid.threadlocal import get_current_request
-from pyramid.view import render_view_to_response
 from sqlalchemy import and_
 from sqlalchemy import not_
 from sqlalchemy import or_
@@ -31,9 +25,10 @@ from kotti.resources import Content
 from kotti.resources import Document
 from kotti.resources import Tag
 from kotti.resources import TagsToContents
-from kotti.security import authz_context
 from kotti.security import has_permission
 from kotti.security import view_permitted
+from kotti.util import render_view
+from kotti.util import TemplateStructure
 from kotti.views.site_setup import CONTROL_PANEL_LINKS
 from kotti.views.slots import slot_events
 
@@ -41,13 +36,6 @@ from kotti.views.slots import slot_events
 def template_api(context, request, **kwargs):
     return get_settings()['kotti.templates.api'][0](
         context, request, **kwargs)
-
-
-def render_view(context, request, name='', secure=True):
-    with authz_context(context, request):
-        response = render_view_to_response(context, request, name, secure)
-    if response is not None:
-        return response.ubody
 
 
 def add_renderer_globals(event):
@@ -61,33 +49,6 @@ def add_renderer_globals(event):
 
 def is_root(context, request):
     return context is request.root
-
-
-def get_localizer_for_locale_name(locale_name):
-    registry = get_current_registry()
-    tdirs = registry.queryUtility(ITranslationDirectories, default=[])
-    return make_localizer(locale_name, tdirs)
-
-
-def translate(*args, **kwargs):
-    request = get_current_request()
-    if request is None:
-        localizer = get_localizer_for_locale_name('en')
-    else:
-        localizer = get_localizer(request)
-    return localizer.translate(*args, **kwargs)
-
-
-class TemplateStructure(object):
-    def __init__(self, html):
-        self.html = html
-
-    def __html__(self):
-        return self.html
-    __unicode__ = __html__
-
-    def __getattr__(self, key):
-        return getattr(self.html, key)
 
 
 class Slots(object):

@@ -13,13 +13,11 @@
           <a href="${api.url()}" i18n:translate="">View</a>
         </li>
 
-        <li tal:condition="not disable_context_links"
-            tal:repeat="link api.edit_links"
-            class="${link.selected(context, request) and 'active' or None}">
-          <a href="${link.url(context, request)}">
-            ${link.title}
-          </a>
-        </li>
+        <tal:condition tal:condition="not disable_context_links">
+          <tal:repeat tal:repeat="link api.edit_links">
+            ${link(context, request)}
+          </tal:repeat>
+        </tal:condition>
 
         <tal:condition tal:condition="not disable_context_links">
           <tal:condition tal:condition="api.has_permission('edit')">

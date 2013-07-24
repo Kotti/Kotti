@@ -11,18 +11,39 @@ import re
 import urllib
 
 from docopt import docopt
+from pyramid.i18n import get_localizer
 from pyramid.i18n import get_locale_name
+from pyramid.i18n import make_localizer
 from pyramid.i18n import TranslationStringFactory
+from pyramid.interfaces import ITranslationDirectories
 from pyramid.location import inside
 from pyramid.paster import bootstrap
+from pyramid.renderers import render
+from pyramid.threadlocal import get_current_registry
 from pyramid.threadlocal import get_current_request
 from pyramid.url import resource_url
+from pyramid.view import render_view_to_response
 from repoze.lru import LRUCache
 from zope.deprecation import deprecated
 
 from kotti import DBSession
 
 _ = TranslationStringFactory('Kotti')
+
+
+def get_localizer_for_locale_name(locale_name):
+    registry = get_current_registry()
+    tdirs = registry.queryUtility(ITranslationDirectories, default=[])
+    return make_localizer(locale_name, tdirs)
+
+
+def translate(*args, **kwargs):
+    request = get_current_request()
+    if request is None:
+        localizer = get_localizer_for_locale_name('en')
+    else:
+        localizer = get_localizer(request)
+    return localizer.translate(*args, **kwargs)
 
 
 def get_paste_items(context, request):
@@ -44,20 +65,44 @@ def get_paste_items(context, request):
     return items
 
 
-class ViewLink(object):
-    def __init__(self, path, title=None, predicate=None):
-        self.path = path
-        if title is None:
-            title = path.replace('-', ' ').replace('_', ' ').title()
-        self.title = title
-        self.predicate = predicate
+def render_view(context, request, name='', secure=True):
+    from kotti.security import authz_context
 
-    def url(self, context, request):
-        return resource_url(context, request) + '@@' + self.path
+    with authz_context(context, request):
+        response = render_view_to_response(context, request, name, secure)
+    if response is not None:
+        return response.ubody
+
+
+class TemplateStructure(object):
+    def __init__(self, html):
+        self.html = html
+
+    def __html__(self):
+        return self.html
+    __unicode__ = __html__
+
+    def __getattr__(self, key):
+        return getattr(self.html, key)
+
+
+class LinkBase(object):
+    def __call__(self, context, request):
+        return TemplateStructure(
+            render(
+                self.template,
+                dict(link=self, context=context, request=request),
+                request,
+                )
+            )
+
+    def selected(self, context, request):
+        return urllib.unquote(request.url).startswith(
+            self.url(context, request))
 
     def permitted(self, context, request):
         from kotti.security import view_permitted
-        return view_permitted(context, request, self.path)
+        return view_permitted(context, request, self.name)
 
     def visible(self, context, request):
         permitted = self.permitted(context, request)
@@ -68,18 +113,65 @@ class ViewLink(object):
                 return True
         return False
 
+
+class LinkRenderer(LinkBase):
+    """A menu link that renders a view to render the link.
+    """
+    def __init__(self, name, predicate=None):
+        self.name = name
+        self.predicate = predicate
+
+    def __call__(self, context, request):
+        return TemplateStructure(render_view(context, request, name=self.name))
+
+    def selected(self, context, request):
+        return False
+
+
+class LinkParent(LinkBase):
+    """A menu link that renders sublinks in a dropdown.
+    """
+    template = 'kotti:templates/edit/el-parent.pt'
+
+    def __init__(self, title, children):
+        self.title = title
+        self.children = children
+
+    def visible(self, context, request):
+        return any([ch.visible(context, request) for ch in self.children])
+
+    def selected(self, context, request):
+        return any([ch.selected(context, request) for ch in self.children])
+
+    def get_visible_children(self, context, request):
+        return [ch for ch in self.children if ch.visible(context, request)]
+
+
+class Link(LinkBase):
+    template = 'kotti:templates/edit/el-link.pt'
+
+    def __init__(self, name, title=None, predicate=None):
+        self.name = name
+        if title is None:
+            title = name.replace('-', ' ').replace('_', ' ').title()
+        self.title = title
+        self.predicate = predicate
+
+    def url(self, context, request):
+        return resource_url(context, request) + '@@' + self.name
+
     def selected(self, context, request):
         return urllib.unquote(request.url).startswith(
             self.url(context, request))
 
     def __eq__(self, other):
-        return isinstance(other, ViewLink) and repr(self) == repr(other)
+        return isinstance(other, Link) and repr(self) == repr(other)
 
     def __repr__(self):
-        return "ViewLink(%r, %r)" % (self.path, self.title)
+        return "Link(%r, %r)" % (self.name, self.title)
 
 
-class ActionButton(ViewLink):
+class ActionButton(Link):
     def __init__(self, path, title=None, no_children=False, css_class=u"btn"):
         super(ActionButton, self).__init__(path, title)
         self.no_children = no_children
@@ -237,3 +329,10 @@ for cls in (JsonType, MutationDict, MutationList, NestedMixin,
         "kotti.util.{0} has been moved to the kotti.sqla "
         "module as of Kotti 0.6.0.  Use kotti.sqla.{0} instead".format(name)
         )
+
+
+ViewLink = Link
+deprecated(
+    'ViewLink',
+    "kotti.util.ViewLink has been renamed to Link as of Kotti 0.9."
+    )
