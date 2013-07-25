@@ -23,6 +23,6 @@ textarea.tinymce {
     height: 400px;
 }
 
-ul#form-tabs li.error a {
+ul.form-tabs li.error a {
     color: #b94a48;
 }
