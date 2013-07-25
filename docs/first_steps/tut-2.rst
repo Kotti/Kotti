@@ -94,11 +94,13 @@ Views (including forms) are typically put into a module called
 
   import colander
 
+
   class PollSchema(colander.MappingSchema):
       title = colander.SchemaNode(
           colander.String(),
           title=u'Question',
           )
+
 
   class ChoiceSchema(colander.MappingSchema):
       title = colander.SchemaNode(
@@ -122,16 +124,20 @@ Let's move on to building the actual forms.  Add this to ``views.py``:
   from kotti_mysite.resources import Choice
   from kotti_mysite.resources import Poll
 
+
   class PollEditForm(EditFormView):
       schema_factory = PollSchema
+
 
   class PollAddForm(AddFormView):
       schema_factory = PollSchema
       add = Poll
       item_type = u"Poll"
 
+
   class ChoiceEditForm(EditFormView):
       schema_factory = ChoiceSchema
+
 
   class ChoiceAddForm(AddFormView):
       schema_factory = ChoiceSchema
@@ -310,6 +316,14 @@ Now all that remains is linking the two together. We do this in the
 With this, we are done with the second tutorial. Restart the server instance,
 take a look at the new ``Poll`` view and play around with the template until
 you are completely satisfied with how our data is presented.
+If you will work with templates for a while (or anytime you're developing
+basically) I'd recommend you use the pyramid *reload_templates* and
+*debug_templates* options as they save you a lot of time lost on server
+restarts.
+
+.. code-block:: ini
+  pyramid.reload_templates = true
+  pyramid.debug_templates = true
 
 In the next tutorial, we will learn how to enable our users to actually vote
 for one of the ``Poll`` options.
