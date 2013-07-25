@@ -249,7 +249,7 @@ Since there are plenty tutorials on how to write TAL templates, we will not
 write a complete one here, but just a basic one, to show off the general idea.
 
 First, we need to write a view that will send the needed data (in our case,
-the choices we added to our poll). Here is the code, added to ``view.py``.
+the choices we added to our poll). Here is the code, added to ``views.py``.
 
 .. code-block:: python
 
@@ -322,10 +322,11 @@ basically) I'd recommend you use the pyramid *reload_templates* and
 restarts.
 
 .. code-block:: ini
+
   pyramid.reload_templates = true
   pyramid.debug_templates = true
 
-In the next tutorial, we will learn how to enable our users to actually vote
+In the :ref:`next tutorial <tut-3>`, we will learn how to enable our users to actually vote
 for one of the ``Poll`` options.
 
 .. _SQLAlchemy: http://www.sqlalchemy.org/
