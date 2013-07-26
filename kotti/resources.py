@@ -301,7 +301,7 @@ class TypeInfo(object):
     addable_to = ()
     selectable_default_views = ()
     edit_links = ()
-    action_links = ()
+    action_links = ()  # BBB
 
     def __init__(self, **kwargs):
         """
