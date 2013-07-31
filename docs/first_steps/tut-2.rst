@@ -259,8 +259,7 @@ the choices we added to our poll). Here is the code, added to ``views.py``.
 
   def poll_view(context, request):
       kotti_mysite_group.need()
-      choices = DBSession().query(Choice).all()
-      choices = [choice for choice in choices if choice.parent.id == context.id]
+      choices = DBSession().query(Choice).filter(Choice.parent_id == context.id)
       return {
           'choices': choices
       }
@@ -268,12 +267,13 @@ the choices we added to our poll). Here is the code, added to ``views.py``.
 As you can see, we simply queried the database for all choices, then went
 through them and selected only the ones that were added to the poll we are
 currently viewing. We do this by comparing the *context.id* with the
-*choice.parent.id*. If they are the same, this particular choice was added
+*choice.parent_id*. If they are the same, this particular choice was added
 to the ``Poll`` we are currently viewing.
 Finally, we return a dictionary of all choices under the keyword *choices*.
 
 Next on, we need a template to actually show our data. It could look something
-like this. The file is ``poll.pt`` and goes under the ``templates`` folder.
+like this. Create a folder named ``templates`` and put the file ``poll.pt``
+into it.
 
 .. code-block:: html
 
