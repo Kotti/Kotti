@@ -54,8 +54,7 @@ current votes of a Choice.
 
   def poll_view(context, request):
       kotti_mysite_group.need()
-      choices = DBSession().query(Choice).all()
-      choices = [choice for choice in choices if choice.parent.id == context.id]
+      choices = DBSession().query(Choice).filter(Choice.parent_id == context.id)
       all_votes = sum(choice.votes for choice in choices)
       return {
           'choices': choices,
