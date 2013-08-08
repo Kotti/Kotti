@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Kotti 0.9a3dev\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
 "POT-Creation-Date: 2013-05-13 21:41+0200\n"
-"PO-Revision-Date: 2013-08-08 15:00+0100\n"
+"PO-Revision-Date: 2013-08-08 21:34+0100\n"
 "Last-Translator: Fabien Castarède <fabien.castarede@free.fr>\n"
 "Language-Team: French\n"
 "MIME-Version: 1.0\n"
@@ -289,7 +289,7 @@ msgstr ""
 #: kotti/templates/site-setup/users.pt:12
 msgid "Find and modify users (Blank search text finds all)."
 msgstr ""
-"Trouver et modifier des utilisateurs (Laissez le champ vide pour les "
+"Rechercher et modifier des utilisateurs (Laissez le champ vide pour les "
 "afficher tous)."
 
 #: kotti/resources.py:491
