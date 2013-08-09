@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Kotti 0.9a3dev\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
 "POT-Creation-Date: 2013-05-13 21:41+0200\n"
-"PO-Revision-Date: 2013-08-08 21:34+0100\n"
+"PO-Revision-Date: 2013-08-09 12:02+0100\n"
 "Last-Translator: Fabien Castarède <fabien.castarede@free.fr>\n"
 "Language-Team: French\n"
 "MIME-Version: 1.0\n"
@@ -101,7 +101,7 @@ msgstr "Ajouter un utilisateur"
 
 #: kotti/security.py:168
 msgid "Admin"
-msgstr "Administrer"
+msgstr "Administrateur"
 
 #: kotti/templates/edit/change-state.pt:14
 msgid "An item's workflow state determines who can see, edit and/or manage it."
@@ -294,7 +294,7 @@ msgstr ""
 
 #: kotti/resources.py:491
 msgid "Folder view"
-msgstr "Vue dossier"
+msgstr "Contenus"
 
 #: kotti/templates/forbidden.pt:10
 msgid "Forbidden"
@@ -584,11 +584,11 @@ msgstr "Soumettre"
 
 #: kotti/templates/view/tags.pt:6
 msgid "Tagged with:"
-msgstr "Etiqueté avec :"
+msgstr "Mots-clés associés :"
 
 #: kotti/views/edit/content.py:38
 msgid "Tags"
-msgstr "Etiquettes"
+msgstr "Mots-clés"
 
 #: kotti/views/login.py:179
 msgid "That username or email is not known by this system."
@@ -612,7 +612,7 @@ msgstr "Type"
 
 #: kotti/views/users.py:222
 msgid "Untick this to deactivate the account."
-msgstr "Décocher cela pour désactiver le compte."
+msgstr "Décocher cette option pour désactiver le compte."
 
 #: kotti/views/users.py:314 kotti/views/users.py:487 kotti/views/users.py:522
 msgid "User"
@@ -640,7 +640,7 @@ msgstr "Voir"
 
 #: kotti/security.py:165
 msgid "Viewer"
-msgstr "Visualisateur"
+msgstr "Lecteur"
 
 #: kotti/templates/edit/contents.pt:42
 msgid "Visibility"
