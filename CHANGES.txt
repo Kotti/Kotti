@@ -4,6 +4,8 @@ Change History
 0.9b2 - Unreleased
 ------------------
 
+- Fix #251: Broken comparison of NestedMutationDict and NestedMutationList.
+
 - Update kotti_tinymce to version 4.0.2.
 
 - Fix bug in `kotti.views.content.FileEditForm` to preserve file
