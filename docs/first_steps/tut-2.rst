@@ -264,11 +264,11 @@ the choices we added to our poll). Here is the code, added to ``views.py``.
           'choices': choices
       }
 
-As you can see, we simply queried the database for all choices, then went
-through them and selected only the ones that were added to the poll we are
-currently viewing. We do this by comparing the *context.id* with the
-*choice.parent_id*. If they are the same, this particular choice was added
-to the ``Poll`` we are currently viewing.
+To find out if a Choice was added to the ``Poll`` we are currently viewing, we
+compare it's *parent_id* attribute with the *id* of the Poll - if they are the
+same, the ``Choice`` is a child of the ``Poll``.
+To get all the appropriate choices, we do a simple database query, filtered as
+specified above.
 Finally, we return a dictionary of all choices under the keyword *choices*.
 
 Next on, we need a template to actually show our data. It could look something
