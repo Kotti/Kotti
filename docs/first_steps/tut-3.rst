@@ -28,11 +28,14 @@ Choice itself. We add 1 to the current votes of the Choice, then we do a
 redirect using *HTTPFound*. The location is the parent of our context - the
 Poll in which our Choice resides.
 
-The view needs to be wired to our site. Add this to the ``__init__.py`` file
+The view needs to be wired to our site. Add this to the ``__init__.py`` file,
+inside the existing ``inlcudeme`` function.
 
 .. code-block:: python
 
-  from kotti_mysite.views import vote_view
+
+  def includeme(config):
+      from kotti_mysite.views import vote_view
 
       config.add_view(
           vote_view,
