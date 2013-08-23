@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Kotti 0.9a3dev\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
 "POT-Creation-Date: 2013-05-13 21:41+0200\n"
-"PO-Revision-Date: 2013-08-09 12:02+0100\n"
+"PO-Revision-Date: 2013-08-21 21:46+0100\n"
 "Last-Translator: Fabien Castarède <fabien.castarede@free.fr>\n"
 "Language-Team: French\n"
 "MIME-Version: 1.0\n"
@@ -77,7 +77,7 @@ msgstr "Ajouter"
 
 #: kotti/views/form.py:195
 msgid "Add ${type} to <em>${title}</em>."
-msgstr "Ajouter ${type} à <em>${title}</em>."
+msgstr "Ajouter un(e) ${type} dans <em>${title}</em>."
 
 #: kotti/views/form.py:199
 msgid "Add ${type}."
@@ -128,7 +128,7 @@ msgstr "Etes-vous sûr de vouloir supprimer les éléments suivants ?"
 
 #: kotti/templates/edit/share.pt:12
 msgid "Assign local roles"
-msgstr "Assigner un rôle localement"
+msgstr "Assigner des rôles locaux"
 
 #: kotti/templates/site-setup/user.pt:8
 msgid "Back to User Management"
@@ -282,9 +282,9 @@ msgid ""
 "Fill out your username or email above and click ${reset_password} below to "
 "receive an email with a link to reset your password."
 msgstr ""
-"Indiquez votre nom d'utilisateur ou votre adresse e-mail ci-dessus et "
-"cliquez sur ${reset_password} ci-dessous afin de recevoir un mail contenant "
-"le lien de réinitialisation de votre mot de passe."
+"Indiquez votre identifiant ou votre adresse e-mail ci-dessus et cliquez sur "
+"${reset_password} ci-dessous afin de recevoir un mail contenant le lien de "
+"réinitialisation de votre mot de passe."
 
 #: kotti/templates/site-setup/users.pt:12
 msgid "Find and modify users (Blank search text finds all)."
@@ -559,11 +559,11 @@ msgstr "Définir la vue par défaut"
 
 #: kotti/resources.py:488
 msgid "Share"
-msgstr "Partager"
+msgstr "Permissions"
 
 #: kotti/templates/edit/share.pt:8
 msgid "Share ${title}"
-msgstr "Partager ${title}"
+msgstr "Permissions pour ${title}"
 
 #: kotti/views/edit/actions.py:455
 msgid "Show"
@@ -592,8 +592,7 @@ msgstr "Mots-clés"
 
 #: kotti/views/login.py:179
 msgid "That username or email is not known by this system."
-msgstr ""
-"Ce nom d'utilisateur ou cette adresse e-mail n'est pas connue du système"
+msgstr "Cet identifiant ou cette adresse e-mail n'est pas connue du système"
 
 #: kotti/views/login.py:91 kotti/views/login.py:258
 msgid "There was an error."
