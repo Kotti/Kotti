@@ -138,7 +138,7 @@ class NodeActions(object):
         :rtype: pyramid.httpexceptions.HTTPFound
         """
         ids, action = self.request.session['kotti.paste']
-        for count, id in enumerate(ids):
+        for id in ids:
             item = DBSession.query(Node).get(id)
             if item is not None:
                 if action == 'cut':
@@ -146,8 +146,7 @@ class NodeActions(object):
                         raise Forbidden()
                     item.__parent__.children.remove(item)
                     self.context.children.append(item)
-                    if count is len(ids) - 1:
-                        del self.request.session['kotti.paste']
+
                 elif action == 'copy':
                     copy = item.copy()
                     name = copy.name
@@ -161,6 +160,9 @@ class NodeActions(object):
             else:
                 self.flash(_(u'Could not paste node. It no longer exists.'),
                            'error')
+
+        if action == 'cut':
+            del self.request.session['kotti.paste']
         if not self.request.is_xhr:
             return self.back()
 
