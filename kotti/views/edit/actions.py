@@ -138,8 +138,8 @@ class NodeActions(object):
         :rtype: pyramid.httpexceptions.HTTPFound
         """
         ids, action = self.request.session['kotti.paste']
-        for id in ids:
-            item = DBSession.query(Node).get(id)
+        items = [DBSession.query(Node).get(id) for id in ids]
+        for item in items:
             if item is not None:
                 if action == 'cut':
                     if not has_permission('edit', item, self.request):
