@@ -172,25 +172,21 @@ class NodeActions(object):
                 if not flashone:
                     self.flash(_(u'${title} was pasted.',
                                  mapping=dict(title=item.title)), 'success')
-            else:
-                if not flashone:
-                    self.flash(_(u'Could not paste node. It no longer exists.'),
-                               'error')
 
         if flashone:
             self.flash(_(u"${number} items were pasted.",
                          mapping=dict(number=successfully_pasted)), 'success')
 
-            failed = len(ids) - successfully_pasted
-            if failed > 0:
-                if failed == 1:
-                    msg = (u"${number} item could not be pasted. It no longer "
-                           u"exists.")
-                if failed > 1:
-                    msg = (u"${number} items could not be pasted. They no "
-                           u"longer exist.")
-                self.flash(_(msg, mapping=dict(number=failed)),
-                           'error')
+        failed = len(ids) - successfully_pasted
+        if failed > 0:
+            if failed == 1:
+                msg = (u"${number} item could not be pasted. It no longer "
+                       u"exists.")
+            if failed > 1:
+                msg = (u"${number} items could not be pasted. They no "
+                       u"longer exist.")
+            self.flash(_(msg, mapping=dict(number=failed)),
+                       'error')
 
         if not self.request.is_xhr:
             return self.back()
