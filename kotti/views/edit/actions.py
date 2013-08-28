@@ -103,10 +103,15 @@ class NodeActions(object):
         """
         ids = self._selected_children()
         self.request.session['kotti.paste'] = (ids, 'copy')
+        flashone = len(ids) > 3
+        if flashone:
+            self.flash(_(u"${number} items were copied.",
+                         mapping=dict(number=len(ids))), 'success')
         for id in ids:
             item = DBSession.query(Node).get(id)
-            self.flash(_(u'${title} was copied.',
-                         mapping=dict(title=item.title)), 'success')
+            if not flashone:
+                self.flash(_(u'${title} was copied.',
+                             mapping=dict(title=item.title)), 'success')
         if not self.request.is_xhr:
             return self.back()
 
@@ -121,10 +126,16 @@ class NodeActions(object):
         """
         ids = self._selected_children()
         self.request.session['kotti.paste'] = (ids, 'cut')
+        flashone = len(ids) > 3
+        if flashone:
+            self.flash(_(u"${number} items were cut.",
+                         mapping=dict(number=len(ids))), 'success')
         for id in ids:
             item = DBSession.query(Node).get(id)
-            self.flash(_(u'${title} was cut.', mapping=dict(title=item.title)),
-                       'success')
+            if not flashone:
+                self.flash(_(u'${title} was cut.',
+                             mapping=dict(title=item.title)),
+                           'success')
         if not self.request.is_xhr:
             return self.back()
 
@@ -138,9 +149,13 @@ class NodeActions(object):
         :rtype: pyramid.httpexceptions.HTTPFound
         """
         ids, action = self.request.session['kotti.paste']
+        flashone = len(ids) > 3
+        successfully_pasted = 0
+
         for count, id in enumerate(ids):
             item = DBSession.query(Node).get(id)
             if item is not None:
+                successfully_pasted += 1
                 if action == 'cut':
                     if not has_permission('edit', item, self.request):
                         raise Forbidden()
@@ -156,11 +171,29 @@ class NodeActions(object):
                     name = title_to_name(name, blacklist=self.context.keys())
                     copy.name = name
                     self.context.children.append(copy)
-                self.flash(_(u'${title} was pasted.',
-                             mapping=dict(title=item.title)), 'success')
+                if not flashone:
+                    self.flash(_(u'${title} was pasted.',
+                                 mapping=dict(title=item.title)), 'success')
             else:
-                self.flash(_(u'Could not paste node. It no longer exists.'),
+                if not flashone:
+                    self.flash(_(u'Could not paste node. It no longer exists.'),
+                               'error')
+
+        if flashone:
+            self.flash(_(u"${number} items were pasted.",
+                         mapping=dict(number=successfully_pasted)), 'success')
+
+            failed = len(ids) - successfully_pasted
+            if failed > 0:
+                if failed == 1:
+                    msg = (u"${number} item could not be pasted. It no longer "
+                           u"exists.")
+                if failed > 1:
+                    msg = (u"${number} items could not be pasted. They no "
+                           u"longer exist.")
+                self.flash(_(msg, mapping=dict(number=failed)),
                            'error')
+
         if not self.request.is_xhr:
             return self.back()
 
@@ -289,10 +322,16 @@ class NodeActions(object):
             ids = self.request.POST.getall('children-to-delete')
             if not ids:
                 self.flash(_(u"Nothing was deleted."), 'info')
+
+            flashone = len(ids) > 3
+            if flashone:
+                self.flash(_(u"${number} items were deleted.",
+                             mapping=dict(number=len(ids))), 'success')
             for id in ids:
                 item = DBSession.query(Node).get(id)
-                self.flash(_(u'${title} was deleted.',
-                             mapping=dict(title=item.title)), 'success')
+                if not flashone:
+                    self.flash(_(u'${title} was deleted.',
+                                 mapping=dict(title=item.title)), 'success')
                 del self.context[item.name]
             return self.back('@@contents')
 
