@@ -2,11 +2,11 @@
 Action views
 """
 
+from pyramid.exceptions import Forbidden
 from pyramid.httpexceptions import HTTPFound
+from pyramid.security import has_permission
 from pyramid.url import resource_url
 from pyramid.view import view_config
-from pyramid.exceptions import Forbidden
-from pyramid.security import has_permission
 from pyramid.view import view_defaults
 from zope.deprecation import deprecated
 
@@ -14,11 +14,9 @@ from kotti import DBSession
 from kotti import get_settings
 from kotti.fanstatic import contents_view_js
 from kotti.interfaces import IContent
-from kotti.resources import get_root
 from kotti.resources import Node
 from kotti.util import _
 from kotti.util import ActionButton
-from kotti.util import ViewLink
 from kotti.util import title_to_name
 from kotti.views.edit import _state_info
 from kotti.views.edit import _states
