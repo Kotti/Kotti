@@ -160,6 +160,9 @@ class NestedMixin(object):
                 break
         return value
 
+    def __eq__(self, other):
+        return self._d == other
+
 
 class NestedMutationDict(NestedMixin, MutationDict):
     def setdefault(self, key, default):
