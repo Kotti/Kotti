@@ -4,6 +4,8 @@ Change History
 0.9 - Unreleased
 ----------------
 
+- Fix #252: Wrap templates where extract_messages failed with <tal:block>
+
 0.9b2 - 2013-08-20
 ------------------
 

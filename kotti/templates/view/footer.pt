@@ -1,4 +1,6 @@
+<tal:block>
 <hr />
 <footer>
   <p class="pull-right">&copy; Aliens 2013</p>
 </footer>
+</tal:block>
