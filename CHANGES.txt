@@ -6,6 +6,12 @@ Change History
 
 - Fix #252: Wrap templates where extract_messages failed with <tal:block>
 
+- Add a new setting ``kotti.allow_admin_set_passwords`` that allows
+  admin the possibilty to modify users password through user
+  management form. By default, this setting is ``False`` for security
+  reasons. You will need to add it into the configuration file to
+  enable this functionality by setting it to ``True``.
+
 0.9b2 - 2013-08-20
 ------------------
 
