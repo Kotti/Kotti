@@ -290,14 +290,12 @@ class TestUserManageForm:
         with patch('kotti.views.users.allow_admin_set_passwords',
                    return_value=True):
             form = UserManageFormView(root, request)()
-            assert ('input type="password" name="password" value=""'
-                    in form['form'])
+            assert ('input type="password"' in form['form'])
 
         with patch('kotti.views.users.allow_admin_set_passwords',
                    return_value=False):
             form = UserManageFormView(root, request)()
-            assert ('input type="password" name="password" value=""'
-                    not in form['form'])
+            assert ('input type="password"' not in form['form'])
 
     def test_hashed_password_save(self, root):
         from kotti.views.users import UserManageFormView
