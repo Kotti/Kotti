@@ -4,6 +4,12 @@ Change History
 0.9 - Unreleased
 ----------------
 
+- Fix #253: Many translations weren't included in the last release.
+
+  '--use-fuzzy' translations when running 'compile_catalog' adds back
+  translations that were recently marked as fuzzy.  (All translations
+  that were marked as fuzzy in German were still accurate.)
+
 - Fix #252: Wrap templates where extract_messages failed with <tal:block>
 
 0.9b2 - 2013-08-20
