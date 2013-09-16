@@ -4,6 +4,16 @@ Change History
 0.9 - Unreleased
 ----------------
 
+- Add multi file content upload.  You can now select several files from your
+  local storage that you want to upload and chose what content nodes shall be
+  created in your Kotti site.  Currently files with MIME types of ´´image/*´´
+  can be uploaded and be created as either ``Image`` or ``File`` nodes, all
+  other MIME types will be created as ``File``.  In future releases (or add-on
+  products) this can be extended with additional converters allowing for example
+  to upload HTML files and create ``Document`` nodes with the content of the
+  ``title`` tag becoming the node's title, the content of the ``body`` tag
+  becoming the node's body and so on.
+
 - Fix #253: Many translations weren't included in the last release.
 
   '--use-fuzzy' translations when running 'compile_catalog' adds back
