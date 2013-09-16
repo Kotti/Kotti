@@ -35,30 +35,41 @@ def test_upload_anonymous(root, dummy_request, browser):
 
 
 @user('admin')
-def test_upload_authenticated(root, dummy_request, browser):
-
-    link = browser.getLink
+def test_upload_authenticated_wo_mimetype(root, dummy_request, browser):
 
     # cannot call content_types without mimetype
     with raises(KeyError):
         browser.open('%s/content_types' % BASE_URL)
 
+
+@user('admin')
+def test_upload_authenticated_text(root, dummy_request, browser):
+
     # get possible content types for text/plain
     browser.open('%s/content_types?mimetype=text/plain' % BASE_URL)
     j = json.loads(browser.contents)
     assert 'content_types' in j
-    types = j['content_types']
+
     # only files are allowed
+    types = j['content_types']
     assert len(types) == 1
     assert types[0]['name'] == u'File'
+
+
+@user('admin')
+def test_upload_authenticated_image(root, dummy_request, browser):
+
+    link = browser.getLink
 
     # get possible content types for image/png
     browser.open('%s/content_types?mimetype=image/png' % BASE_URL)
     j = json.loads(browser.contents)
     assert 'content_types' in j
-    types = j['content_types']
+
     # images and files are allowed
+    types = j['content_types']
     assert len(types) == 2
+
     # images must be first
     assert types[0]['name'] == u'Image'
     assert types[1]['name'] == u'File'
