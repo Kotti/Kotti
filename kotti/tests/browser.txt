@@ -18,6 +18,7 @@ Get a handle for some useful objects:
    >>> mailer = testing.registerDummyMailer()
    >>> save_addable_document = Document.type_info.addable_to
    >>> save_addable_file = File.type_info.addable_to
+   >>> save_addable_image = Image.type_info.addable_to
 
 Open the frontpage:
 
@@ -172,6 +173,7 @@ There's no Add link if nothing can be added:
   ... finally:
   ...     Document.type_info.addable_to = save_addable_document
   ...     File.type_info.addable_to = save_addable_file
+  ...     Image.type_info.addable_to = save_addable_image
   Traceback (most recent call last):
   LinkNotFoundError
 
@@ -1013,5 +1015,8 @@ Now let's delete Bruce::
   >>> ctrl(name="search").click()
   >>> "No users or groups were found." in browser.contents
   True
+
+TearDown
+--------
 
   >>> testing.tearDown()

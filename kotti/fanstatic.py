@@ -5,10 +5,12 @@ from __future__ import absolute_import
 from fanstatic import Group
 from fanstatic import Library
 from fanstatic import Resource
+from js.angular import angular
 from js.bootstrap import bootstrap_js
 from js.bootstrap import bootstrap_responsive_css
 from js.deform_bootstrap import deform_bootstrap_js
 from js.html5shiv import html5shiv
+from js.fineuploader import fineuploader
 from js.jquery import jquery
 from js.jquery_form import jquery_form
 from js.jquery_tablednd import jquery_tablednd
@@ -46,6 +48,18 @@ view_css = Resource(lib_kotti,
     "view.css",
     depends=[base_css],
     minified="view.min.css")
+
+# Resources for content upload views
+upload_js = Resource(lib_kotti,
+    "upload.js",
+    depends=[angular, fineuploader],
+    minified="upload.min.js",
+    bottom=True)
+upload_css = Resource(lib_kotti,
+    "upload.css",
+    depends=[base_css],
+    minified="upload.min.css")
+upload = Group([upload_js, upload_css])
 
 
 class NeededGroup(object):

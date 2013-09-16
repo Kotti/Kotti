@@ -81,3 +81,8 @@ Search the documents
   False
   >>> u'<dd>And I am the second Document' in browser.contents
   True
+
+TearDown
+--------
+
+  >>> testing.tearDown()

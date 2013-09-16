@@ -10,6 +10,7 @@ Inheritance Diagram
 
 import os
 from UserDict import DictMixin
+from fnmatch import fnmatch
 
 from pyramid.threadlocal import get_current_registry
 from pyramid.traversal import resource_path
@@ -294,10 +295,12 @@ class TypeInfo(object):
             -   addable_to
             -   edit_links
             -   selectable_default_views
+            -   uploadable_mimetypes
     """
 
     addable_to = ()
     selectable_default_views = ()
+    uploadable_mimetypes = ()
     edit_links = ()
     action_links = ()
 
@@ -352,6 +355,27 @@ class TypeInfo(object):
         :type title: unicode or TranslationString
         """
         self.selectable_default_views.append((name, title))
+
+    def is_uploadable_mimetype(self, mimetype):
+        """ Check if uploads of the given MIME type are allowed.
+
+        :param mimetype: MIME type
+        :type mimetype: str
+
+        :result: Upload allowed (>0) or forbidden (0).  The greater the result,
+                 the better is the match.  E.g. ``image/*`` (6) is a better
+                 match for ``image/png`` than `*` (1).
+        :rtype: int
+        """
+
+        match_score = 0
+
+        for mt in self.uploadable_mimetypes:
+            if fnmatch(mimetype, mt):
+                if len(mt) > match_score:
+                    match_score = len(mt)
+
+        return match_score
 
 
 class Tag(Base):
@@ -599,6 +623,7 @@ class File(Content):
         add_view=u'add_file',
         addable_to=[u'Document'],
         selectable_default_views=[],
+        uploadable_mimetypes=['*', ],
         )
 
     def __init__(self, data=None, filename=None, mimetype=None, size=None,
@@ -610,6 +635,29 @@ class File(Content):
         self.filename = filename
         self.mimetype = mimetype
         self.size = size
+
+    @classmethod
+    def from_field_storage(cls, fs):
+        """ Create and return an instance of this class from a file upload
+            through a webbrowser.
+
+        :param fs: FieldStorage instance as found in a
+                   :class:`pyramid.request.Request`'s ``POST`` MultiDict.
+        :type fs: :class:`cgi.FieldStorage`
+
+        :result: The created instance.
+        :rtype: :class:`kotti.resources.File`
+        """
+
+        data = fs.file.read()
+        filename = fs.filename
+        mimetype = fs.type
+        size = len(data)
+
+        if not cls.type_info.is_uploadable_mimetype(mimetype):
+            raise ValueError("Unsupported MIME type: %s" % mimetype)
+
+        return cls(data=data, filename=filename, mimetype=mimetype, size=size)
 
 
 class Image(File):
@@ -627,6 +675,7 @@ class Image(File):
         add_view=u'add_image',
         addable_to=[u'Document'],
         selectable_default_views=[],
+        uploadable_mimetypes=['image/*', ],
         )
 
 
