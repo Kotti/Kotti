@@ -51,4 +51,7 @@ Make the front page public again:
   True
 
 
+TearDown
+--------
+
   >>> testing.tearDown()
