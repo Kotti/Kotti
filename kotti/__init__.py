@@ -119,6 +119,7 @@ conf_defaults = {
     'kotti.register': 'False',
     'kotti.register.group': '',
     'kotti.register.role': '',
+    'kotti.allow_admin_set_passwords': 'False',
     'pyramid_deform.template_search_path': 'kotti:templates/deform',
     }
 
