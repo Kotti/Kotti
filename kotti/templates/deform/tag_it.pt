@@ -1,3 +1,4 @@
+<tal:block>
 <input name="${field.name}" id="${field.oid}" type="text" tal:attributes="value ','.join(cstruct)" />
 <script type="text/javascript"
   >
@@ -11,3 +12,4 @@
     }
   )
 </script>
+</tal:block>

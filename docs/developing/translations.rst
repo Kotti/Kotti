@@ -14,7 +14,7 @@ In order to compile your .po files to .mo files, do:
 
 .. code-block:: bash
 
-  bin/python setup.py compile_catalog
+  bin/python setup.py compile_catalog --use-fuzzy
 
 To extract messages and update the existing .pot and .po files, do:
 

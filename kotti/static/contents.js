@@ -5,8 +5,8 @@
 $(function () {
 
     // toggle all checkbox
-    $('#toggle-all').change(function (e) {
-        $('input[type=checkbox]').attr('checked', $(this).is(':checked'));
+    $('#toggle-all').change(function () {
+        $('input[type=checkbox]').prop('checked', this.checked);
     });
 
     // image preview popovers in contents view

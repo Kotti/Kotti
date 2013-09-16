@@ -35,7 +35,7 @@ install_requires = [
     'js.jquery_timepicker_addon',
     'js.jqueryui>=1.8.24',
     'js.jqueryui_tagit',
-    'kotti_tinymce>=0.3.2',
+    'kotti_tinymce>=0.4',
     'lingua>=1.3',
     'plone.scale',  # needed for image resizing capabilities
     'py_bcrypt',
@@ -82,7 +82,7 @@ if sys.version_info[:3] < (2, 7, 0):
     install_requires.append('ordereddict')
 
 setup(name='Kotti',
-      version='0.9b2dev',
+      version='0.9b3dev',
       description="A user-friendly, light-weight and extensible web content management system. Based on Pyramid and SQLAlchemy.",
       long_description='\n\n'.join([README, AUTHORS, CHANGES]),
       classifiers=[
