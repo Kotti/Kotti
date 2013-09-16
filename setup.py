@@ -33,7 +33,7 @@ install_requires = [
     'js.jquery_timepicker_addon',
     'js.jqueryui>=1.8.24',
     'js.jqueryui_tagit',
-    'kotti_tinymce>=0.3.2',
+    'kotti_tinymce>=0.4',
     'lingua>=1.3',
     'plone.scale',  # needed for image resizing capabilities
     'py_bcrypt',
