@@ -17,10 +17,12 @@ deform-bootstrap==0.2.9
 docopt==0.6.1
 fanstatic==1.0a
 html2text==3.200.3
+js.angular==1.1.2
 js.bootstrap==2.3.1
 js.chosen==0.9.11
 js.deform==0.9.7
 js.deform-bootstrap==0.2.6
+js.fineuploader==3.3.0
 js.html5shiv==3.6.2-1
 js.jquery==1.9.1
 js.jquery-form==3.09

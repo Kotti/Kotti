@@ -79,6 +79,7 @@ conf_defaults = {
         'kotti.views.edit.actions',
         'kotti.views.edit.content',
         'kotti.views.edit.default_views',
+        'kotti.views.edit.upload',
         'kotti.views.file',
         'kotti.views.image',
         'kotti.views.login',
