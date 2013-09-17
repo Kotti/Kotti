@@ -352,7 +352,7 @@ msgstr "Ungültige Eingabe"
 
 #: kotti/views/form.py:170
 msgid "Item was added."
-msgstr "${title} hinzugefügt."
+msgstr "Dokument hinzugefügt."
 
 #: kotti/views/edit/actions.py:331
 msgid "Item was renamed."
