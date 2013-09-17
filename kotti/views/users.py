@@ -448,11 +448,11 @@ class UserManageFormView(UserEditFormView):
         form.appstruct = _massage_groups_out(context)
 
     def save_success(self, appstruct):
-        if appstruct['password']:
+        if appstruct.get('password'):
             hashed = get_principals().hash_password(appstruct['password'])
             appstruct['password'] = hashed
         else:
-            del appstruct['password']
+            appstruct.pop('password', None)
         _massage_groups_in(appstruct)
         return super(UserEditFormView, self).save_success(appstruct)
 

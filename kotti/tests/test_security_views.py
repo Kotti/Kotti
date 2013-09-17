@@ -299,6 +299,6 @@ class TestUserManageForm:
         user = Mock(password=u'before')
         request = DummyRequest()
         view = UserManageFormView(user, request)
-        appstruct = {'password': u' '}
+        appstruct = {'password': u''}
         view.save_success(appstruct)
         assert user.password == u"before"
