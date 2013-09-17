@@ -271,13 +271,13 @@ class TestUserManageForm:
         request = DummyRequest()
         view = UserManageFormView(root, request)
 
-        with patch('kotti.views.users.allow_admin_set_passwords',
+        with patch('kotti.views.users.allow_admin_set_passwd',
                    return_value=True):
             schema = view.schema_factory()
             assert 'name' not in schema
             assert 'password' in schema
 
-        with patch('kotti.views.users.allow_admin_set_passwords',
+        with patch('kotti.views.users.allow_admin_set_passwd',
                    return_value=False):
             schema = view.schema_factory()
             assert 'name' not in schema
@@ -287,12 +287,12 @@ class TestUserManageForm:
         from kotti.views.users import UserManageFormView
 
         request = DummyRequest()
-        with patch('kotti.views.users.allow_admin_set_passwords',
+        with patch('kotti.views.users.allow_admin_set_passwd',
                    return_value=True):
             form = UserManageFormView(root, request)()
             assert ('input type="password"' in form['form'])
 
-        with patch('kotti.views.users.allow_admin_set_passwords',
+        with patch('kotti.views.users.allow_admin_set_passwd',
                    return_value=False):
             form = UserManageFormView(root, request)()
             assert ('input type="password"' not in form['form'])
@@ -301,7 +301,7 @@ class TestUserManageForm:
         from kotti.views.users import UserManageFormView
 
         request = DummyRequest()
-        with patch('kotti.views.users.allow_admin_set_passwords',
+        with patch('kotti.views.users.allow_admin_set_passwd',
                    return_value=True):
             view = UserManageFormView(root, request)
             appstruct = {'password': u'foo'}
