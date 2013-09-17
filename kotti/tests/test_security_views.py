@@ -261,3 +261,49 @@ class TestSetPassword:
 
         assert res.status == '302 Found'
         assert res.location == 'http://example.com/here#there'
+
+
+class TestUserManageForm:
+
+    def test_schema_factory(self, root):
+        from kotti.views.users import UserManageFormView
+
+        request = DummyRequest()
+        view = UserManageFormView(root, request)
+
+        with patch('kotti.views.users.allow_admin_set_passwords',
+                   return_value=True):
+            schema = view.schema_factory()
+            assert 'name' not in schema
+            assert 'password' in schema
+
+        with patch('kotti.views.users.allow_admin_set_passwords',
+                   return_value=False):
+            schema = view.schema_factory()
+            assert 'name' not in schema
+            assert 'password' not in schema
+
+    def test_form(self, root):
+        from kotti.views.users import UserManageFormView
+
+        request = DummyRequest()
+        with patch('kotti.views.users.allow_admin_set_passwords',
+                   return_value=True):
+            form = UserManageFormView(root, request)()
+            assert ('input type="password"' in form['form'])
+
+        with patch('kotti.views.users.allow_admin_set_passwords',
+                   return_value=False):
+            form = UserManageFormView(root, request)()
+            assert ('input type="password"' not in form['form'])
+
+    def test_hashed_password_save(self, root):
+        from kotti.views.users import UserManageFormView
+
+        request = DummyRequest()
+        with patch('kotti.views.users.allow_admin_set_passwords',
+                   return_value=True):
+            view = UserManageFormView(root, request)
+            appstruct = {'password': u'foo'}
+            view.save_success(appstruct)
+            assert appstruct['password'].startswith('$2a$10$')
