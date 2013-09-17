@@ -4,11 +4,7 @@ Change History
 0.9.1 - Unreleased
 ------------------
 
-- Add a new setting ``kotti.allow_admin_set_passwd`` that allows admin
-  the possibilty to modify users password through user management
-  form. By default, this setting is ``False`` for security
-  reasons. You will need to add it into the configuration file to
-  enable this functionality by setting it to ``True``.
+- Allow user admins to modify user passwords.
 
 0.9 - 2013-09-17
 ----------------

@@ -313,10 +313,6 @@ def _massage_groups_out(appstruct):
     return d
 
 
-def allow_admin_set_passwd():
-    return asbool(get_settings()['kotti.allow_admin_set_passwd'])
-
-
 class UserAddFormView(AddFormView):
     item_type = _(u'User')
 
@@ -444,20 +440,19 @@ class UserManageFormView(UserEditFormView):
     def schema_factory(self):
         schema = user_schema()
         del schema['name']
-        if not allow_admin_set_passwd():
-            del schema['password']
         return schema
 
     def before(self, form):
         context = self.context.__dict__.copy()
-        if allow_admin_set_passwd():
-            context['password'] = u''
+        context['password'] = u''
         form.appstruct = _massage_groups_out(context)
 
     def save_success(self, appstruct):
-        if allow_admin_set_passwd():
+        if appstruct['password']:
             hashed = get_principals().hash_password(appstruct['password'])
             appstruct['password'] = hashed
+        else:
+            del appstruct['password']
         _massage_groups_in(appstruct)
         return super(UserEditFormView, self).save_success(appstruct)
 

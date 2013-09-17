@@ -1,6 +1,7 @@
 import colander
 import pytest
 from mock import patch
+from mock import Mock
 from pytest import raises
 
 from kotti.testing import DummyRequest
@@ -271,39 +272,33 @@ class TestUserManageForm:
         request = DummyRequest()
         view = UserManageFormView(root, request)
 
-        with patch('kotti.views.users.allow_admin_set_passwd',
-                   return_value=True):
-            schema = view.schema_factory()
-            assert 'name' not in schema
-            assert 'password' in schema
-
-        with patch('kotti.views.users.allow_admin_set_passwd',
-                   return_value=False):
-            schema = view.schema_factory()
-            assert 'name' not in schema
-            assert 'password' not in schema
+        schema = view.schema_factory()
+        assert 'name' not in schema
+        assert 'password' in schema
 
     def test_form(self, root):
         from kotti.views.users import UserManageFormView
 
         request = DummyRequest()
-        with patch('kotti.views.users.allow_admin_set_passwd',
-                   return_value=True):
-            form = UserManageFormView(root, request)()
-            assert ('input type="password"' in form['form'])
-
-        with patch('kotti.views.users.allow_admin_set_passwd',
-                   return_value=False):
-            form = UserManageFormView(root, request)()
-            assert ('input type="password"' not in form['form'])
+        form = UserManageFormView(root, request)()
+        assert ('input type="password"' in form['form'])
 
     def test_hashed_password_save(self, root):
         from kotti.views.users import UserManageFormView
 
+        user = Mock()
         request = DummyRequest()
-        with patch('kotti.views.users.allow_admin_set_passwd',
-                   return_value=True):
-            view = UserManageFormView(root, request)
-            appstruct = {'password': u'foo'}
-            view.save_success(appstruct)
-            assert appstruct['password'].startswith('$2a$10$')
+        view = UserManageFormView(user, request)
+        appstruct = {'password': u'foo'}
+        view.save_success(appstruct)
+        assert user.password.startswith(u'$2a$10$')
+
+    def test_hashed_password_empty(self, root):
+        from kotti.views.users import UserManageFormView
+
+        user = Mock(password=u'before')
+        request = DummyRequest()
+        view = UserManageFormView(user, request)
+        appstruct = {'password': u' '}
+        view.save_success(appstruct)
+        assert user.password == u"before"
