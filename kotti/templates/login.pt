@@ -37,12 +37,13 @@
           </li>
           <li class="divider" />
           <li>
-            <span tal:condition="register">
-              <span i18n:translate="">Not registered  yet?</span>
-              <a type="submit" class="btn btn-success" i18n:translate="" href='register'>
+            <span tal:condition="register" i18n:translate="">
+              Not registered  yet?
+              <a type="submit" class="btn btn-success" href='register'
+                 i18n:name="register" i18n:translate="">
                 Register
               </a>
-              <span i18n:translate="">for an account on this site.</span>
+              for an account on this site.
             </span>
           </li>
         </ul>
