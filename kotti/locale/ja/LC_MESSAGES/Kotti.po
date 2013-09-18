@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Kotti 0.7.0\n"
 "Report-Msgid-Bugs-To: kotti@googlegroups.com\n"
-"POT-Creation-Date: 2013-05-13 21:41+0200\n"
+"POT-Creation-Date: 2013-09-19 00:54+0900\n"
 "PO-Revision-Date: 2013-01-04 15:30+0900\n"
 "Last-Translator: OCHIAI, Gouji <gjo.ext@gmail.com>\n"
 "Language-Team: ja <kotti@googlegroups.com>\n"
@@ -18,7 +18,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 0.9.6\n"
 
-#: kotti/views/users.py:529
+#: kotti/views/users.py:538
 #, fuzzy
 msgid "${principal_type} ${title} was deleted."
 msgstr "${principal_type} ${title} を削除しました。"
@@ -31,7 +31,7 @@ msgstr "${title} がナビゲーションでは非表示になりました。"
 msgid "${title} is now visible in the navigation."
 msgstr "${title} がナビゲーションに表示されるようになりました。"
 
-#: kotti/views/users.py:340
+#: kotti/views/users.py:343
 #, fuzzy
 msgid "${title} was added."
 msgstr "${title} を追加しました。"
@@ -61,11 +61,11 @@ msgstr "${title} を移動しました。"
 msgid "${title} was pasted."
 msgstr "${title} を貼り付けました。"
 
-#: kotti/views/users.py:160
+#: kotti/views/users.py:162
 msgid "A user with that email already exists."
 msgstr "そのメールアドレスをもつユーザーがすでに存在します。"
 
-#: kotti/views/users.py:153
+#: kotti/views/users.py:155
 msgid "A user with that name already exists."
 msgstr "同じ名称のユーザーがすでに存在します。"
 
@@ -73,7 +73,7 @@ msgstr "同じ名称のユーザーがすでに存在します。"
 msgid "Actions"
 msgstr "アクション"
 
-#: kotti/views/users.py:221
+#: kotti/views/users.py:223
 msgid "Active"
 msgstr "有効"
 
@@ -91,11 +91,11 @@ msgstr "<em>${title}</em> に ${type} を追加"
 msgid "Add ${type}."
 msgstr "${type} を追加"
 
-#: kotti/views/users.py:348
+#: kotti/views/users.py:351
 msgid "Add Group"
 msgstr "グループ追加"
 
-#: kotti/views/users.py:316
+#: kotti/views/users.py:319
 msgid "Add User"
 msgstr "ユーザーを追加"
 
@@ -140,14 +140,14 @@ msgstr "ローカルロールに割り当て"
 msgid "Back to User Management"
 msgstr "ユーザー管理に戻る"
 
-#: kotti/views/edit/content.py:47
+#: kotti/views/edit/content.py:50
 msgid "Body"
 msgstr "本文"
 
 #: kotti/templates/edit/change-state.pt:63
 #: kotti/templates/edit/delete-nodes.pt:47
 #: kotti/templates/edit/rename-nodes.pt:31 kotti/views/form.py:74
-#: kotti/views/users.py:317 kotti/views/users.py:349 kotti/views/users.py:434
+#: kotti/views/users.py:320 kotti/views/users.py:352 kotti/views/users.py:437
 msgid "Cancel"
 msgstr "キャンセル"
 
@@ -179,11 +179,11 @@ msgid ""
 "account."
 msgstr "おめでとうございます! 登録が完了しました。Eメールのリンクから、すぐにパスワードを設定して下さい。"
 
-#: kotti/resources.py:486 kotti/templates/view/folder.pt:15
+#: kotti/resources.py:462 kotti/templates/view/folder.pt:15
 msgid "Contents"
 msgstr "コンテンツ"
 
-#: kotti/views/edit/actions.py:444 kotti/views/edit/actions.py:587
+#: kotti/resources.py:467 kotti/views/edit/actions.py:444
 msgid "Copy"
 msgstr "コピー"
 
@@ -197,7 +197,7 @@ msgstr "ノードを張り付けできません。何も存在していません
 msgid "Creation Date"
 msgstr "作成日"
 
-#: kotti/views/edit/actions.py:445 kotti/views/edit/actions.py:590
+#: kotti/resources.py:468 kotti/views/edit/actions.py:445
 msgid "Cut"
 msgstr "切り取り"
 
@@ -217,14 +217,14 @@ msgstr "デフォルト表示は既定値にリセットされました。"
 msgid "Default view has been set."
 msgstr "デフォルト表示が設定されました。"
 
-#: kotti/templates/edit/delete-nodes.pt:9
+#: kotti/resources.py:471 kotti/templates/edit/delete-nodes.pt:9
 #: kotti/templates/edit/delete-nodes.pt:45 kotti/templates/edit/delete.pt:22
-#: kotti/templates/site-setup/delete-user.pt:19 kotti/views/users.py:435
-#: kotti/views/edit/actions.py:448 kotti/views/edit/actions.py:595
+#: kotti/templates/site-setup/delete-user.pt:19 kotti/views/users.py:438
+#: kotti/views/edit/actions.py:448
 msgid "Delete"
 msgstr "削除"
 
-#: kotti/views/users.py:537
+#: kotti/views/users.py:546
 #, fuzzy
 msgid "Delete ${principal_type} ${title}"
 msgstr "${principal_type} を削除 - ${title}"
@@ -233,11 +233,11 @@ msgstr "${principal_type} を削除 - ${title}"
 msgid "Delete ${title}"
 msgstr "${title} を削除する"
 
-#: kotti/views/edit/content.py:32
+#: kotti/views/edit/content.py:35
 msgid "Description"
 msgstr "説明"
 
-#: kotti/resources.py:542 kotti/views/edit/content.py:76
+#: kotti/resources.py:583 kotti/views/edit/content.py:79
 msgid "Document"
 msgstr "ドキュメント"
 
@@ -249,11 +249,11 @@ msgid ""
 "needed. You can change both below."
 msgstr "それぞれのコンテンツには名称とタイトルがあり、名称は URL を生成するのに使用します。下のフォームでは、その両方を変更することができます。"
 
-#: kotti/resources.py:487 kotti/templates/edit/nav-tree.pt:8
+#: kotti/resources.py:463 kotti/templates/edit/nav-tree.pt:8
 msgid "Edit"
 msgstr "編集"
 
-#: kotti/views/users.py:491
+#: kotti/views/users.py:500
 #, fuzzy
 msgid "Edit ${principal_type} ${title}"
 msgstr "${principal_type} を編集 - ${title}"
@@ -270,16 +270,16 @@ msgstr "<em>${title}</em> を編集"
 msgid "Editor"
 msgstr "編集者"
 
-#: kotti/views/login.py:74 kotti/views/login.py:225 kotti/views/users.py:201
+#: kotti/views/login.py:74 kotti/views/login.py:225 kotti/views/users.py:203
 msgid "Email"
 msgstr "メールアドレス"
 
-#: kotti/resources.py:581 kotti/views/edit/content.py:57
-#: kotti/views/edit/content.py:98
+#: kotti/resources.py:622 kotti/views/edit/content.py:60
+#: kotti/views/edit/content.py:111
 msgid "File"
 msgstr "ファイル"
 
-#: kotti/templates/login.pt:54
+#: kotti/templates/login.pt:55
 msgid ""
 "Fill out your username or email above and click ${reset_password} below "
 "to receive an email with a link to reset your password."
@@ -291,7 +291,7 @@ msgstr ""
 msgid "Find and modify users (Blank search text finds all)."
 msgstr ""
 
-#: kotti/resources.py:491
+#: kotti/resources.py:474
 msgid "Folder view"
 msgstr "フォルダー表示"
 
@@ -299,16 +299,16 @@ msgstr "フォルダー表示"
 msgid "Forbidden"
 msgstr "表示権限がありません"
 
-#: kotti/templates/login.pt:52
+#: kotti/templates/login.pt:53
 msgid "Forgot your password?"
 msgstr "パスワードを忘れた?"
 
-#: kotti/views/login.py:66 kotti/views/users.py:272
+#: kotti/views/login.py:66 kotti/views/users.py:274
 #, fuzzy
 msgid "Full name"
 msgstr "フルネーム"
 
-#: kotti/views/users.py:228
+#: kotti/views/users.py:230
 msgid "Global roles"
 msgstr "グローバルロール"
 
@@ -316,11 +316,11 @@ msgstr "グローバルロール"
 msgid "Gravatar"
 msgstr "Gravatar"
 
-#: kotti/views/users.py:190 kotti/views/users.py:487 kotti/views/users.py:522
+#: kotti/views/users.py:192 kotti/views/users.py:496 kotti/views/users.py:531
 msgid "Group"
 msgstr "グループ"
 
-#: kotti/views/users.py:232
+#: kotti/views/users.py:234
 msgid "Groups"
 msgstr "グループ"
 
@@ -328,6 +328,12 @@ msgstr "グループ"
 #: kotti/templates/email-set-password.pt:4
 msgid "Hello, ${user_title}!"
 msgstr "こんにちは ${user_title}!"
+
+#: kotti/templates/edit/contents.pt:78
+#, fuzzy
+#| msgid "Forbidden"
+msgid "Hidden"
+msgstr "表示権限がありません"
 
 #: kotti/views/edit/actions.py:456
 msgid "Hide"
@@ -339,7 +345,7 @@ msgid ""
 " selected documents and their subdocuments."
 msgstr "チェックすると、状態の変更が選択したドキュメントや、その配下のドキュメントのすべての配下のアイテムに適用されます。"
 
-#: kotti/resources.py:609 kotti/views/edit/content.py:129
+#: kotti/resources.py:674 kotti/views/edit/content.py:142
 msgid "Image"
 msgstr "イメージ"
 
@@ -348,7 +354,7 @@ msgstr "イメージ"
 msgid "Include children"
 msgstr "配下のアイテムを含める"
 
-#: kotti/views/users.py:147
+#: kotti/views/users.py:149
 msgid "Invalid value"
 msgstr "無効な値"
 
@@ -362,7 +368,7 @@ msgstr "${title} を追加しました。"
 msgid "Item was renamed."
 msgstr "名称変更しました"
 
-#: kotti/views/users.py:269
+#: kotti/views/users.py:271
 msgid ""
 "Leave this empty and tick the 'Send password registration' box below to "
 "have the user set their own password."
@@ -384,7 +390,7 @@ msgstr "ログインに失敗しました。"
 msgid "Logout"
 msgstr "ログアウト"
 
-#: kotti/templates/workflow-dropdown.pt:11
+#: kotti/templates/workflow-dropdown.pt:12
 msgid "Make ${state}"
 msgstr "${state} を作る"
 
@@ -405,12 +411,12 @@ msgstr "下に移動する"
 msgid "Move up"
 msgstr "上に移動する"
 
-#: kotti/views/users.py:573
+#: kotti/views/users.py:582
 msgid "My preferences - ${title}"
 msgstr "個人設定 - ${title}"
 
 #: kotti/templates/edit/share.pt:31 kotti/templates/site-setup/users.pt:32
-#: kotti/views/users.py:209
+#: kotti/views/users.py:211
 msgid "Name"
 msgstr "名称"
 
@@ -439,7 +445,7 @@ msgstr "新しいタイトル"
 msgid "No change"
 msgstr "変更しない"
 
-#: kotti/views/users.py:73 kotti/views/users.py:451
+#: kotti/views/users.py:75 kotti/views/users.py:460
 #: kotti/views/edit/actions.py:300 kotti/views/edit/actions.py:366
 #: kotti/views/edit/actions.py:408 kotti/views/edit/actions.py:412
 #, fuzzy
@@ -450,23 +456,23 @@ msgstr "変更箇所がありません。"
 msgid "No content items are contained here."
 msgstr ""
 
-#: kotti/views/users.py:544
+#: kotti/views/users.py:553
 #, fuzzy
 msgid "No name was given."
 msgstr "名前がありません。"
 
-#: kotti/views/users.py:183
+#: kotti/views/users.py:185
 msgid "No such group: ${group}"
 msgstr "グループが見つかりません: ${group}"
 
-#: kotti/views/users.py:100
+#: kotti/views/users.py:102
 #, fuzzy
 msgid "No users or groups were found."
 msgstr "ユーザーもグループも見つかりませんでした。"
 
-#: kotti/templates/login.pt:41
-msgid "Not registered yet?"
-msgstr "まだ登録していませんか?"
+#: kotti/templates/login.pt:40
+msgid "Not registered yet? ${register} for an account on this site."
+msgstr ""
 
 #: kotti/views/edit/actions.py:291
 #, fuzzy
@@ -478,11 +484,11 @@ msgid "Owner"
 msgstr "所有者"
 
 #: kotti/templates/login.pt:22 kotti/views/login.py:213
-#: kotti/views/users.py:214
+#: kotti/views/users.py:216
 msgid "Password"
 msgstr "パスワード"
 
-#: kotti/views/edit/actions.py:441 kotti/views/edit/actions.py:592
+#: kotti/resources.py:469 kotti/views/edit/actions.py:441
 msgid "Paste"
 msgstr "貼り付け"
 
@@ -507,9 +513,9 @@ msgstr "登録"
 msgid "Register - ${title}"
 msgstr "${title} を削除する"
 
-#: kotti/templates/edit/rename-nodes.pt:8
+#: kotti/resources.py:470 kotti/templates/edit/rename-nodes.pt:8
 #: kotti/templates/edit/rename-nodes.pt:29 kotti/templates/edit/rename.pt:27
-#: kotti/views/edit/actions.py:446 kotti/views/edit/actions.py:594
+#: kotti/views/edit/actions.py:446
 msgid "Rename"
 msgstr "名称変更"
 
@@ -517,7 +523,7 @@ msgstr "名称変更"
 msgid "Rename ${title}"
 msgstr "${title} の名称変更"
 
-#: kotti/templates/login.pt:56 kotti/templates/login.pt:62
+#: kotti/templates/login.pt:57 kotti/templates/login.pt:63
 msgid "Reset password"
 msgstr "パスワードをリセット"
 
@@ -531,7 +537,7 @@ msgstr "パスワードのリセット - ${title}"
 msgid "Reset your password for ${site_title}."
 msgstr "${site_title} のパスワードをリセット"
 
-#: kotti/views/form.py:73 kotti/views/users.py:433
+#: kotti/views/form.py:73 kotti/views/users.py:436
 msgid "Save"
 msgstr "保存"
 
@@ -556,7 +562,7 @@ msgstr "検索..."
 msgid "Select the new state where all chosen items should be set."
 msgstr "新しく設定する状態を選択して下さい。"
 
-#: kotti/views/users.py:325
+#: kotti/views/users.py:328
 #, fuzzy
 msgid "Send password registration link."
 msgstr "パスワード登録を送信する"
@@ -565,7 +571,7 @@ msgstr "パスワード登録を送信する"
 msgid "Set default view"
 msgstr "表示方法の設定"
 
-#: kotti/resources.py:488
+#: kotti/resources.py:464
 msgid "Share"
 msgstr "共有"
 
@@ -594,7 +600,7 @@ msgstr "送信"
 msgid "Tagged with:"
 msgstr "付与されたタグ:"
 
-#: kotti/views/edit/content.py:38
+#: kotti/views/edit/content.py:41
 msgid "Tags"
 msgstr "タグ"
 
@@ -609,7 +615,7 @@ msgstr "エラーが発生しました。"
 
 #: kotti/templates/edit/change-state.pt:20 kotti/templates/edit/contents.pt:39
 #: kotti/templates/edit/delete-nodes.pt:21 kotti/templates/view/folder.pt:20
-#: kotti/views/users.py:198 kotti/views/edit/content.py:28
+#: kotti/views/users.py:200 kotti/views/edit/content.py:31
 msgid "Title"
 msgstr "タイトル"
 
@@ -618,19 +624,23 @@ msgstr "タイトル"
 msgid "Type"
 msgstr "種類"
 
-#: kotti/views/users.py:222
+#: kotti/views/users.py:224
 msgid "Untick this to deactivate the account."
 msgstr "チェックを外すと、このアカウントは無効になります。"
 
-#: kotti/views/users.py:314 kotti/views/users.py:487 kotti/views/users.py:522
+#: kotti/templates/add-dropdown.pt:13
+msgid "Upload Content"
+msgstr ""
+
+#: kotti/views/users.py:317 kotti/views/users.py:496 kotti/views/users.py:531
 msgid "User"
 msgstr "ユーザー"
 
-#: kotti/views/site_setup.py:6 kotti/views/users.py:377
+#: kotti/views/site_setup.py:6 kotti/views/users.py:380
 msgid "User Management"
 msgstr "ユーザー管理"
 
-#: kotti/views/users.py:519
+#: kotti/views/users.py:528
 #, fuzzy
 msgid "User was not found."
 msgstr "ユーザーは見つかりませんでした。"
@@ -655,6 +665,10 @@ msgstr "閲覧者"
 msgid "Visibility"
 msgstr "表示状態"
 
+#: kotti/templates/edit/contents.pt:74
+msgid "Visible"
+msgstr ""
+
 #: kotti/views/login.py:161
 msgid "Welcome, ${user}!"
 msgstr "ようこそ ${user}!"
@@ -667,7 +681,7 @@ msgstr "ようこそ ${user}! ログインしています。"
 msgid "Welcome, you are not logged in."
 msgstr "ようこそ。ログインしていません。"
 
-#: kotti/templates/edit/breadcrumbs.pt:6
+#: kotti/templates/edit/breadcrumbs.pt:7
 msgid "You are here:"
 msgstr "今の場所:"
 
@@ -697,7 +711,7 @@ msgid ""
 "Doing so will activate your account."
 msgstr "まもなくパスワードをリセットするためのリンクが記載されたメールが送信されます。"
 
-#: kotti/views/form.py:75 kotti/views/users.py:71
+#: kotti/views/form.py:75 kotti/views/users.py:73
 #: kotti/views/edit/actions.py:362 kotti/views/edit/actions.py:406
 msgid "Your changes have been saved."
 msgstr "変更内容を保存しました。"
@@ -710,7 +724,9 @@ msgstr "パスワードをリセットするためのトークンが期限切れ
 msgid "Your registration for ${site_title}"
 msgstr "${site_title} の登録"
 
-#: kotti/templates/login.pt:45
-msgid "for an account on this site."
-msgstr ""
+#~ msgid "Not registered yet?"
+#~ msgstr "まだ登録していませんか?"
+
+#~ msgid "for an account on this site."
+#~ msgstr ""
 
