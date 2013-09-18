@@ -74,7 +74,6 @@ msgstr "有効"
 msgid "Add"
 msgstr "追加"
 
-# This msgid will not extract to local string...
 #: kotti/views/form.py:195
 msgid "Add ${type} to <em>${title}</em>."
 msgstr "<em>${title}</em> に ${type} を追加する。"
@@ -689,3 +688,4 @@ msgstr "パスワードをリセットするためのトークンが期限切れ
 #: kotti/templates/email-set-password.pt:2
 msgid "Your registration for ${site_title}"
 msgstr "${site_title} へのアカウント登録"
+
