@@ -7,5 +7,13 @@
     <li tal:repeat="factory factories">
       <a href="${api.url(context, factory.type_info.add_view)}">${factory.type_info.title}</a>
     </li>
+    <tal:block tal:condition="factories">
+      <li class="divider"></li>
+      <li>
+        <a href="${api.url(context, 'upload')}" i18n:translate="">
+          Upload Content
+        </a>
+      </li>
+    </tal:block>
   </ul>
 </li>

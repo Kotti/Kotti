@@ -156,3 +156,7 @@ Invalid predefined scale (should return original size), attachment
   >>> browser.headers["content-disposition"].lower()
   'attachment;filename="sendeschluss.jpg"'
 
+TearDown
+--------
+
+  >>> testing.tearDown()

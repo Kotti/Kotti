@@ -67,6 +67,7 @@ kotti.fanstatic.edit_needed   List of static resources used for edit interface
 kotti.authn_policy_factory    Component used for authentication
 kotti.authz_policy_factory    Component used for authorization
 kotti.session_factory         Component used for sessions
+
 kotti.caching_policy_chooser  Component for choosing the cache header policy
 kotti.url_normalizer          Component used for url normalization
 

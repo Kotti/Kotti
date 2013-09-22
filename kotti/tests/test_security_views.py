@@ -1,6 +1,7 @@
 import colander
 import pytest
 from mock import patch
+from mock import Mock
 from pytest import raises
 
 from kotti.testing import DummyRequest
@@ -261,3 +262,43 @@ class TestSetPassword:
 
         assert res.status == '302 Found'
         assert res.location == 'http://example.com/here#there'
+
+
+class TestUserManageForm:
+
+    def test_schema_factory(self, root):
+        from kotti.views.users import UserManageFormView
+
+        request = DummyRequest()
+        view = UserManageFormView(root, request)
+
+        schema = view.schema_factory()
+        assert 'name' not in schema
+        assert 'password' in schema
+
+    def test_form(self, root):
+        from kotti.views.users import UserManageFormView
+
+        request = DummyRequest()
+        form = UserManageFormView(root, request)()
+        assert ('input type="password"' in form['form'])
+
+    def test_hashed_password_save(self, root):
+        from kotti.views.users import UserManageFormView
+
+        user = Mock()
+        request = DummyRequest()
+        view = UserManageFormView(user, request)
+        appstruct = {'password': u'foo'}
+        view.save_success(appstruct)
+        assert user.password.startswith(u'$2a$10$')
+
+    def test_hashed_password_empty(self, root):
+        from kotti.views.users import UserManageFormView
+
+        user = Mock(password=u'before')
+        request = DummyRequest()
+        view = UserManageFormView(user, request)
+        appstruct = {'password': u''}
+        view.save_success(appstruct)
+        assert user.password == u"before"
