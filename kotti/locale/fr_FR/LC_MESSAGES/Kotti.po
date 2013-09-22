@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Kotti 0.9a3dev\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
 "POT-Creation-Date: 2013-05-13 21:41+0200\n"
-"PO-Revision-Date: 2013-08-21 21:46+0100\n"
+"PO-Revision-Date: 2013-08-26 22:24+0100\n"
 "Last-Translator: Fabien Castarède <fabien.castarede@free.fr>\n"
 "Language-Team: French\n"
 "MIME-Version: 1.0\n"
@@ -232,7 +232,7 @@ msgstr "Supprimer ${title}"
 
 #: kotti/views/edit/content.py:32
 msgid "Description"
-msgstr "Résumé"
+msgstr "Description"
 
 #: kotti/resources.py:542 kotti/views/edit/content.py:76
 msgid "Document"
