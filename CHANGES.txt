@@ -6,6 +6,8 @@ Change History
 
 - Allow user admins to modify user passwords.
 
+- Require newer kotti_tinymce (source code editing was broken in 0.4).
+
 0.9 - 2013-09-17
 ----------------
 
