@@ -1,7 +1,7 @@
 Change History
 ==============
 
-0.9.1 - Unreleased
+0.9.1 - 2013-09-25
 ------------------
 
 - Allow user admins to modify user passwords.
