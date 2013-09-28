@@ -239,8 +239,8 @@ Lets go ahead and click on ``Poll``. For the question, let's write
 *What is your favourite color?*. Now let's add three choices,
 *Red*, *Green* and *Blue* in the same way we added the poll.
 
-If we now go to the poll we added, we can see the question, but not our choices,
-which is definitely not what we wanted. Let us fix this, shall we?
+If we now go to the poll we added, we can see the question, but not our
+choices, which is definitely not what we wanted. Let us fix this, shall we?
 
 Adding a custom View to the Poll
 --------------------------------
@@ -253,13 +253,12 @@ the choices we added to our poll). Here is the code, added to ``views.py``.
 
 .. code-block:: python
 
-  from kotti import DBSession
   from kotti_mysite.fanstatic import kotti_mysite_group
 
 
   def poll_view(context, request):
       kotti_mysite_group.need()
-      choices = DBSession().query(Choice).filter(Choice.parent_id == context.id)
+      choices = context.values()
       return {
           'choices': choices
       }
@@ -326,8 +325,8 @@ restarts.
   pyramid.reload_templates = true
   pyramid.debug_templates = true
 
-In the :ref:`next tutorial <tut-3>`, we will learn how to enable our users to actually vote
-for one of the ``Poll`` options.
+In the :ref:`next tutorial <tut-3>`, we will learn how to enable our users to
+actually vote for one of the ``Poll`` options.
 
 .. _SQLAlchemy: http://www.sqlalchemy.org/
 .. _Colander: http://colander.readthedocs.org/

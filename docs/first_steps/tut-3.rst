@@ -57,7 +57,7 @@ current votes of a Choice.
 
   def poll_view(context, request):
       kotti_mysite_group.need()
-      choices = DBSession().query(Choice).filter(Choice.parent_id == context.id)
+      choices = context.values()
       all_votes = sum(choice.votes for choice in choices)
       return {
           'choices': choices,
@@ -81,36 +81,27 @@ vote by clicking on the Choice. Fire up the server and go test it now.
 Adding an info block about voting on the view
 ---------------------------------------------
 
-As you can see, the voting now works, but it doesn't look particulary well.
-Let us at least add a nice information bubble when we vote alright? We will use
-the GET method to tell our view we just voted and on what we voted. Change the
-return in the *vote_view* function into
+As you can see, the voting now works, but it doesn't look particulary good.
+Let us at least add a nice information bubble when we vote alright? The easiest
+way to go about that is to use ``request.session.flash``, which allows us to
+flash different messages (success, error, info etc.). Change the ``vote_view``
+to include the the flash message before redirecting.
 
 .. code-block:: python
 
-  return HTTPFound(location=request.resource_url(context.parent) +
-                   "?voted=true&title=" +
-                   context.title
-                   )
+  def vote_view(context, request):
+    context.votes += 1
+    request.session.flash(u'You have just voted for the choice "{0}"'.format(
+        context.title), 'info')
+    return HTTPFound(location=request.resource_url(context.parent))
 
-By sending the voted=true and title=context.title with the GET method, our view
-should have enough information to produce a nice information bubble.
-First, we will add an extra variable into our *poll_view*. Add ```'has_get':
-'voted' in request.GET``` into the return of the function.
-Now we can produce the information bubble in the ``poll.pt``. Add the next
-snipped above the header tag.
-
-.. code-block:: html
-
-  <div class="alert alert-info" tal:condition="has_get">
-    You have just voted for the choice "${request.GET.title}"!
-  </div>
-
-As before, I encourage you to play around a bit more, as you learn the most by
+As before, I encourage you to play around a bit more, as you learn much by
 trying our new things. A few ideas on what you could work on are:
 
 - Change the Choice content type so it has an extra description field that is
-  not required (if you change database content, you will need to delete the database or do a migration). Then make a new Choice view that will list the extra information.
+  not required (if you change database content, you will need to delete the
+  database or do a migration). Then make a new Choice view that will list the
+  extra information.
 - Make sure only authenticated users can vote, anonymous users should see the
   results but when trying to vote, it should move them to the login page. Also
   make sure that each user can vote only once, and list all users who voted
