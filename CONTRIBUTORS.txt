@@ -97,3 +97,5 @@ Contributors
 - Christian Neumann, 2012/12/13
 - Gaston TJEBBES, 2012/12/17
 - Gouji Ochiai, 2013/01/04
+- Fabien Castarède, 2013/08/08
+- Natan Žabkar, 2013/08/28
