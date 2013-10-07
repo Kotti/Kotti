@@ -4,6 +4,9 @@ Change History
 0.9.2 - Unreleased
 ------------------
 
+- Fix #268: Convert None to colander.null in get_appstruct so that
+  serialization doesn't fail (needed due to recent changes in colander).
+
 0.9.1 - 2013-09-25
 ------------------
 
