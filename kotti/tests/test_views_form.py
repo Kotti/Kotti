@@ -1,3 +1,4 @@
+import colander
 from mock import patch
 from mock import MagicMock
 
@@ -52,6 +53,11 @@ class TestGetAppstruct:
         context = Dummy(first='firstvalue', second='secondvalue')
         schema = Dummy(children=[Dummy(name='first')])
         assert self.call(context, schema) == {'first': 'firstvalue'}
+
+    def test_none_converted_to_null(self):
+        context = Dummy(first=None)
+        schema = Dummy(children=[Dummy(name='first')])
+        assert self.call(context, schema) == {'first': colander.null}
 
 
 class TestEditFormView:
