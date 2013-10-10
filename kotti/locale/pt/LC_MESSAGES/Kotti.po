@@ -289,13 +289,14 @@ msgid ""
 "Fill out your username or email above and click ${reset_password} below "
 "to receive an email with a link to reset your password."
 msgstr ""
-"Preencha com o seu nome de utilizador com o seu e-mail e clique em "
+"Preencha o seu nome de utilizador com o seu e-mail e clique em "
 "${reset_password} para receber um e-mail com uma ligação para reiniciar a"
 " sua palavra passe."
 
 #: kotti/templates/site-setup/users.pt:12
 msgid "Find and modify users (Blank search text finds all)."
-msgstr ""
+msgstr "Encontre e modifique utilizadores (Uma pesquisa em branco retorna"
+" todos os utilizadores)"
 
 #: kotti/resources.py:474
 msgid "Folder view"
@@ -350,8 +351,8 @@ msgid ""
 "If checked, this will attempt to modify the status of all children in any"
 " selected documents and their subdocuments."
 msgstr ""
-"Se estiver selecionado irá tentar alterar o estado dos documentos \"\n"
-"\" selecionados e dos seus subdocumentos."
+"Se estiver selecionado irá tentar alterar o estado dos documentos"
+"selecionados e dos seus subdocumentos."
 
 #: kotti/resources.py:674 kotti/views/edit/content.py:142
 msgid "Image"
@@ -464,7 +465,7 @@ msgstr "Não foram efectuadas nenhumas alterações"
 
 #: kotti/templates/edit/contents.pt:30
 msgid "No content items are contained here."
-msgstr ""
+msgstr "Não existem items nesta pasta."
 
 #: kotti/views/users.py:553
 #, fuzzy
@@ -482,7 +483,7 @@ msgstr "Utilizadores e grupos não encontrados."
 
 #: kotti/templates/login.pt:40
 msgid "Not registered yet? ${register} for an account on this site."
-msgstr ""
+msgstr "Não se encontra registado? ${register} para criar uma conta."
 
 #: kotti/views/edit/actions.py:291
 #, fuzzy
@@ -516,12 +517,12 @@ msgstr "Público"
 
 #: kotti/templates/login.pt:42 kotti/views/login.py:84
 msgid "Register"
-msgstr ""
+msgstr "Registar-se"
 
 #: kotti/views/login.py:125
 #, fuzzy
 msgid "Register - ${title}"
-msgstr "Apagar ${title}"
+msgstr "Registar ${title}"
 
 #: kotti/resources.py:470 kotti/templates/edit/rename-nodes.pt:8
 #: kotti/templates/edit/rename-nodes.pt:29 kotti/templates/edit/rename.pt:27
@@ -608,7 +609,7 @@ msgstr "Enviar"
 
 #: kotti/templates/view/tags.pt:6
 msgid "Tagged with:"
-msgstr ""
+msgstr "Marcado como:"
 
 #: kotti/views/edit/content.py:41
 msgid "Tags"
@@ -640,7 +641,7 @@ msgstr "Retirar para desactivar a conta."
 
 #: kotti/templates/add-dropdown.pt:13
 msgid "Upload Content"
-msgstr ""
+msgstr "Colocar Conteúdo"
 
 #: kotti/views/users.py:317 kotti/views/users.py:496 kotti/views/users.py:531
 msgid "User"
@@ -677,7 +678,7 @@ msgstr "Visibilidade"
 
 #: kotti/templates/edit/contents.pt:74
 msgid "Visible"
-msgstr ""
+msgstr "Visível"
 
 #: kotti/views/login.py:161
 msgid "Welcome, ${user}!"
@@ -707,7 +708,7 @@ msgstr "Você desligou a sessão"
 #: kotti/views/login.py:238
 #, fuzzy
 msgid "You have reset your password."
-msgstr "Você reinicializour a palavra passe com sucesso"
+msgstr "Você reinicializou a palavra passe com sucesso"
 
 #: kotti/views/edit/actions.py:495
 #, fuzzy
