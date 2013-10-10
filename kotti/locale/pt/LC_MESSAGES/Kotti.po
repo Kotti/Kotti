@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Kotti 0.8\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2013-09-19 00:54+0900\n"
+"POT-Creation-Date: 2013-10-10 20:17+0100\n"
 "PO-Revision-Date: 2012-01-16 12:02+0000\n"
 "Last-Translator: Nuno Teixeira <teixas@gmail.com>\n"
 "Language-Team: pt <LL@li.org>\n"
@@ -80,12 +80,12 @@ msgstr "Activo"
 msgid "Add"
 msgstr "Adicionar"
 
-#: kotti/views/form.py:195
+#: kotti/views/form.py:198
 #, fuzzy
 msgid "Add ${type} to <em>${title}</em>."
 msgstr "Adicionar ${type} em <em>${title}</em>"
 
-#: kotti/views/form.py:199
+#: kotti/views/form.py:202
 #, fuzzy
 msgid "Add ${type}."
 msgstr "Adicionar ${type}"
@@ -147,7 +147,7 @@ msgstr "Corpo"
 
 #: kotti/templates/edit/change-state.pt:63
 #: kotti/templates/edit/delete-nodes.pt:47
-#: kotti/templates/edit/rename-nodes.pt:31 kotti/views/form.py:74
+#: kotti/templates/edit/rename-nodes.pt:31 kotti/views/form.py:77
 #: kotti/views/users.py:320 kotti/views/users.py:352 kotti/views/users.py:437
 msgid "Cancel"
 msgstr "Cancelar"
@@ -267,7 +267,7 @@ msgstr "Editar ${principal_type} - ${title}"
 msgid "Edit ${title}"
 msgstr "Editar ${title}"
 
-#: kotti/views/form.py:152
+#: kotti/views/form.py:155
 msgid "Edit <em>${title}</em>"
 msgstr "Editar <em>${title}</em>"
 
@@ -338,7 +338,6 @@ msgstr "Bem-vindo, ${user_title}!"
 
 #: kotti/templates/edit/contents.pt:78
 #, fuzzy
-#| msgid "Forbidden"
 msgid "Hidden"
 msgstr "Escondido"
 
@@ -367,7 +366,7 @@ msgstr "Incluir nós interiores"
 msgid "Invalid value"
 msgstr "Valor inválido"
 
-#: kotti/views/form.py:170
+#: kotti/views/form.py:173
 #, fuzzy
 msgid "Item was added."
 msgstr "${title} adicionado."
@@ -405,7 +404,7 @@ msgstr "Sair"
 msgid "Make ${state}"
 msgstr "Tornar ${state}"
 
-#: kotti/views/form.py:261
+#: kotti/views/form.py:264
 msgid "Maximum file size: ${size}MB"
 msgstr "Tamanho máximo do ficheiro: ${size}MB"
 
@@ -548,7 +547,7 @@ msgstr "Reiniciar a sua palavra passe - ${title}"
 msgid "Reset your password for ${site_title}."
 msgstr "Reiniciar a sua palavra passe em ${site_title}"
 
-#: kotti/views/form.py:73 kotti/views/users.py:436
+#: kotti/views/form.py:76 kotti/views/users.py:436
 msgid "Save"
 msgstr "Guardar"
 
@@ -724,7 +723,7 @@ msgstr ""
 "Você deverá receber um e-mail com uma ligação temporária para reiniciar a"
 " sua palavra passe."
 
-#: kotti/views/form.py:75 kotti/views/users.py:73
+#: kotti/views/form.py:78 kotti/views/users.py:73
 #: kotti/views/edit/actions.py:362 kotti/views/edit/actions.py:406
 msgid "Your changes have been saved."
 msgstr "As suas alterações foram guardadas."
@@ -736,10 +735,4 @@ msgstr "A seu pedido para alterar a palavra passe expirou."
 #: kotti/templates/email-set-password.pt:2
 msgid "Your registration for ${site_title}"
 msgstr "O seu registo em ${site_title}"
-
-#~ msgid "Not registered yet?"
-#~ msgstr "Ainda não se encontra registado?"
-
-#~ msgid "for an account on this site."
-#~ msgstr ""
 
