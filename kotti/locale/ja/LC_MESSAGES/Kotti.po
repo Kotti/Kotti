@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Kotti 0.7.0\n"
 "Report-Msgid-Bugs-To: kotti@googlegroups.com\n"
-"POT-Creation-Date: 2013-09-19 00:54+0900\n"
+"POT-Creation-Date: 2013-10-10 20:17+0100\n"
 "PO-Revision-Date: 2013-09-19 02:45+0900\n"
 "Last-Translator: OCHIAI, Gouji <gjo.ext@gmail.com>\n"
 "Language-Team: ja <kotti@googlegroups.com>\n"
@@ -74,11 +74,11 @@ msgstr "有効"
 msgid "Add"
 msgstr "追加"
 
-#: kotti/views/form.py:195
+#: kotti/views/form.py:198
 msgid "Add ${type} to <em>${title}</em>."
 msgstr "<em>${title}</em> に ${type} を追加する。"
 
-#: kotti/views/form.py:199
+#: kotti/views/form.py:202
 msgid "Add ${type}."
 msgstr "${type} を追加する。"
 
@@ -137,7 +137,7 @@ msgstr "本文"
 
 #: kotti/templates/edit/change-state.pt:63
 #: kotti/templates/edit/delete-nodes.pt:47
-#: kotti/templates/edit/rename-nodes.pt:31 kotti/views/form.py:74
+#: kotti/templates/edit/rename-nodes.pt:31 kotti/views/form.py:77
 #: kotti/views/users.py:320 kotti/views/users.py:352 kotti/views/users.py:437
 msgid "Cancel"
 msgstr "キャンセル"
@@ -248,7 +248,7 @@ msgstr "${principal_type} ${title} を編集"
 msgid "Edit ${title}"
 msgstr "${title} を編集"
 
-#: kotti/views/form.py:152
+#: kotti/views/form.py:155
 msgid "Edit <em>${title}</em>"
 msgstr "<em>${title}</em> を編集"
 
@@ -341,7 +341,7 @@ msgstr "配下のアイテムを含める"
 msgid "Invalid value"
 msgstr "無効な値"
 
-#: kotti/views/form.py:170
+#: kotti/views/form.py:173
 msgid "Item was added."
 msgstr "${title} を追加しました。"
 
@@ -375,7 +375,7 @@ msgstr "ログアウト"
 msgid "Make ${state}"
 msgstr "${state} にする"
 
-#: kotti/views/form.py:261
+#: kotti/views/form.py:264
 msgid "Maximum file size: ${size}MB"
 msgstr "最大ファイルサイズ: ${size}MB"
 
@@ -510,7 +510,7 @@ msgstr "パスワードのリセット - ${title}"
 msgid "Reset your password for ${site_title}."
 msgstr "${site_title} のパスワードをリセット"
 
-#: kotti/views/form.py:73 kotti/views/users.py:436
+#: kotti/views/form.py:76 kotti/views/users.py:436
 msgid "Save"
 msgstr "保存"
 
@@ -676,7 +676,7 @@ msgid ""
 "Doing so will activate your account."
 msgstr "まもなくパスワードをリセットするためのリンクが記載されたメールが送信されます。"
 
-#: kotti/views/form.py:75 kotti/views/users.py:73
+#: kotti/views/form.py:78 kotti/views/users.py:73
 #: kotti/views/edit/actions.py:362 kotti/views/edit/actions.py:406
 msgid "Your changes have been saved."
 msgstr "変更内容を保存しました。"

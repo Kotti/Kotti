@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Kotti 0.8\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2013-09-19 00:54+0900\n"
+"POT-Creation-Date: 2013-10-10 20:17+0100\n"
 "PO-Revision-Date: 2012-01-16 12:02+0000\n"
 "Last-Translator: Nuno Teixeira <teixas@gmail.com>\n"
 "Language-Team: pt <LL@li.org>\n"
@@ -80,12 +80,12 @@ msgstr "Activo"
 msgid "Add"
 msgstr "Adicionar"
 
-#: kotti/views/form.py:195
+#: kotti/views/form.py:198
 #, fuzzy
 msgid "Add ${type} to <em>${title}</em>."
 msgstr "Adicionar ${type} em <em>${title}</em>"
 
-#: kotti/views/form.py:199
+#: kotti/views/form.py:202
 #, fuzzy
 msgid "Add ${type}."
 msgstr "Adicionar ${type}"
@@ -147,7 +147,7 @@ msgstr "Corpo"
 
 #: kotti/templates/edit/change-state.pt:63
 #: kotti/templates/edit/delete-nodes.pt:47
-#: kotti/templates/edit/rename-nodes.pt:31 kotti/views/form.py:74
+#: kotti/templates/edit/rename-nodes.pt:31 kotti/views/form.py:77
 #: kotti/views/users.py:320 kotti/views/users.py:352 kotti/views/users.py:437
 msgid "Cancel"
 msgstr "Cancelar"
@@ -267,7 +267,7 @@ msgstr "Editar ${principal_type} - ${title}"
 msgid "Edit ${title}"
 msgstr "Editar ${title}"
 
-#: kotti/views/form.py:152
+#: kotti/views/form.py:155
 msgid "Edit <em>${title}</em>"
 msgstr "Editar <em>${title}</em>"
 
@@ -289,13 +289,14 @@ msgid ""
 "Fill out your username or email above and click ${reset_password} below "
 "to receive an email with a link to reset your password."
 msgstr ""
-"Preencha com o seu nome de utilizador com o seu e-mail e clique em "
+"Preencha o seu nome de utilizador com o seu e-mail e clique em "
 "${reset_password} para receber um e-mail com uma ligação para reiniciar a"
 " sua palavra passe."
 
 #: kotti/templates/site-setup/users.pt:12
 msgid "Find and modify users (Blank search text finds all)."
-msgstr ""
+msgstr "Encontre e modifique utilizadores (Uma pesquisa em branco retorna"
+" todos os utilizadores)"
 
 #: kotti/resources.py:474
 msgid "Folder view"
@@ -338,7 +339,6 @@ msgstr "Bem-vindo, ${user_title}!"
 
 #: kotti/templates/edit/contents.pt:78
 #, fuzzy
-#| msgid "Forbidden"
 msgid "Hidden"
 msgstr "Escondido"
 
@@ -351,8 +351,8 @@ msgid ""
 "If checked, this will attempt to modify the status of all children in any"
 " selected documents and their subdocuments."
 msgstr ""
-"Se estiver selecionado irá tentar alterar o estado dos documentos \"\n"
-"\" selecionados e dos seus subdocumentos."
+"Se estiver selecionado irá tentar alterar o estado dos documentos"
+"selecionados e dos seus subdocumentos."
 
 #: kotti/resources.py:674 kotti/views/edit/content.py:142
 msgid "Image"
@@ -367,7 +367,7 @@ msgstr "Incluir nós interiores"
 msgid "Invalid value"
 msgstr "Valor inválido"
 
-#: kotti/views/form.py:170
+#: kotti/views/form.py:173
 #, fuzzy
 msgid "Item was added."
 msgstr "${title} adicionado."
@@ -405,7 +405,7 @@ msgstr "Sair"
 msgid "Make ${state}"
 msgstr "Tornar ${state}"
 
-#: kotti/views/form.py:261
+#: kotti/views/form.py:264
 msgid "Maximum file size: ${size}MB"
 msgstr "Tamanho máximo do ficheiro: ${size}MB"
 
@@ -465,7 +465,7 @@ msgstr "Não foram efectuadas nenhumas alterações"
 
 #: kotti/templates/edit/contents.pt:30
 msgid "No content items are contained here."
-msgstr ""
+msgstr "Não existem items nesta pasta."
 
 #: kotti/views/users.py:553
 #, fuzzy
@@ -483,7 +483,7 @@ msgstr "Utilizadores e grupos não encontrados."
 
 #: kotti/templates/login.pt:40
 msgid "Not registered yet? ${register} for an account on this site."
-msgstr ""
+msgstr "Não se encontra registado? ${register} para criar uma conta."
 
 #: kotti/views/edit/actions.py:291
 #, fuzzy
@@ -517,12 +517,12 @@ msgstr "Público"
 
 #: kotti/templates/login.pt:42 kotti/views/login.py:84
 msgid "Register"
-msgstr ""
+msgstr "Registar-se"
 
 #: kotti/views/login.py:125
 #, fuzzy
 msgid "Register - ${title}"
-msgstr "Apagar ${title}"
+msgstr "Registar ${title}"
 
 #: kotti/resources.py:470 kotti/templates/edit/rename-nodes.pt:8
 #: kotti/templates/edit/rename-nodes.pt:29 kotti/templates/edit/rename.pt:27
@@ -548,7 +548,7 @@ msgstr "Reiniciar a sua palavra passe - ${title}"
 msgid "Reset your password for ${site_title}."
 msgstr "Reiniciar a sua palavra passe em ${site_title}"
 
-#: kotti/views/form.py:73 kotti/views/users.py:436
+#: kotti/views/form.py:76 kotti/views/users.py:436
 msgid "Save"
 msgstr "Guardar"
 
@@ -609,7 +609,7 @@ msgstr "Enviar"
 
 #: kotti/templates/view/tags.pt:6
 msgid "Tagged with:"
-msgstr ""
+msgstr "Marcado como:"
 
 #: kotti/views/edit/content.py:41
 msgid "Tags"
@@ -641,7 +641,7 @@ msgstr "Retirar para desactivar a conta."
 
 #: kotti/templates/add-dropdown.pt:13
 msgid "Upload Content"
-msgstr ""
+msgstr "Colocar Conteúdo"
 
 #: kotti/views/users.py:317 kotti/views/users.py:496 kotti/views/users.py:531
 msgid "User"
@@ -678,7 +678,7 @@ msgstr "Visibilidade"
 
 #: kotti/templates/edit/contents.pt:74
 msgid "Visible"
-msgstr ""
+msgstr "Visível"
 
 #: kotti/views/login.py:161
 msgid "Welcome, ${user}!"
@@ -708,7 +708,7 @@ msgstr "Você desligou a sessão"
 #: kotti/views/login.py:238
 #, fuzzy
 msgid "You have reset your password."
-msgstr "Você reinicializour a palavra passe com sucesso"
+msgstr "Você reinicializou a palavra passe com sucesso"
 
 #: kotti/views/edit/actions.py:495
 #, fuzzy
@@ -724,7 +724,7 @@ msgstr ""
 "Você deverá receber um e-mail com uma ligação temporária para reiniciar a"
 " sua palavra passe."
 
-#: kotti/views/form.py:75 kotti/views/users.py:73
+#: kotti/views/form.py:78 kotti/views/users.py:73
 #: kotti/views/edit/actions.py:362 kotti/views/edit/actions.py:406
 msgid "Your changes have been saved."
 msgstr "As suas alterações foram guardadas."
@@ -736,10 +736,4 @@ msgstr "A seu pedido para alterar a palavra passe expirou."
 #: kotti/templates/email-set-password.pt:2
 msgid "Your registration for ${site_title}"
 msgstr "O seu registo em ${site_title}"
-
-#~ msgid "Not registered yet?"
-#~ msgstr "Ainda não se encontra registado?"
-
-#~ msgid "for an account on this site."
-#~ msgstr ""
 
