@@ -16,3 +16,4 @@ before_script:
 script: py.test --tb=native --cov=kotti --cov-report=term-missing
 notifications:
   irc: "irc.freenode.org#kotti"
+  email: false
