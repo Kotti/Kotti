@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Kotti 0.7dev4\n"
 "Report-Msgid-Bugs-To: kotti@googlegroups.com\n"
-"POT-Creation-Date: 2013-09-19 00:54+0900\n"
+"POT-Creation-Date: 2013-10-10 20:17+0100\n"
 "PO-Revision-Date: 2012-08-23 17:56+0200\n"
 "Last-Translator: Marco Scheidhuber <j23d@jusid.de>\n"
 "Language-Team: de <kotti@googlegroups.com>\n"
@@ -73,11 +73,11 @@ msgstr "Aktiv"
 msgid "Add"
 msgstr "Hinzufügen"
 
-#: kotti/views/form.py:195
+#: kotti/views/form.py:198
 msgid "Add ${type} to <em>${title}</em>."
 msgstr "${type} in ${title} erstellen"
 
-#: kotti/views/form.py:199
+#: kotti/views/form.py:202
 msgid "Add ${type}."
 msgstr "${type} erstellen"
 
@@ -138,7 +138,7 @@ msgstr "Inhalt"
 
 #: kotti/templates/edit/change-state.pt:63
 #: kotti/templates/edit/delete-nodes.pt:47
-#: kotti/templates/edit/rename-nodes.pt:31 kotti/views/form.py:74
+#: kotti/templates/edit/rename-nodes.pt:31 kotti/views/form.py:77
 #: kotti/views/users.py:320 kotti/views/users.py:352 kotti/views/users.py:437
 msgid "Cancel"
 msgstr "Abbrechen"
@@ -258,7 +258,7 @@ msgstr "Bearbeite ${principal_type} ${title}"
 msgid "Edit ${title}"
 msgstr "Bearbeite ${title}"
 
-#: kotti/views/form.py:152
+#: kotti/views/form.py:155
 msgid "Edit <em>${title}</em>"
 msgstr "<em>${title}</em> bearbeiten"
 
@@ -327,7 +327,6 @@ msgstr "Hallo ${user_title}!"
 
 #: kotti/templates/edit/contents.pt:78
 #, fuzzy
-#| msgid "Forbidden"
 msgid "Hidden"
 msgstr "Zugriff verweigert"
 
@@ -356,7 +355,7 @@ msgstr "Unterordner einbeziehen"
 msgid "Invalid value"
 msgstr "Ungültige Eingabe"
 
-#: kotti/views/form.py:170
+#: kotti/views/form.py:173
 msgid "Item was added."
 msgstr "Dokument hinzugefügt."
 
@@ -393,7 +392,7 @@ msgstr "Abmelden"
 msgid "Make ${state}"
 msgstr "Setze ${state}"
 
-#: kotti/views/form.py:261
+#: kotti/views/form.py:264
 msgid "Maximum file size: ${size}MB"
 msgstr "Maximale Dateigröße: ${size}MB"
 
@@ -467,7 +466,6 @@ msgstr "Keine Benutzer oder Gruppen gefunden."
 
 #: kotti/templates/login.pt:40
 #, fuzzy
-#| msgid "for an account on this site."
 msgid "Not registered yet? ${register} for an account on this site."
 msgstr "für einen Zugang auf dieser Seite."
 
@@ -530,7 +528,7 @@ msgstr "Passwort zurücksetzen - ${title}"
 msgid "Reset your password for ${site_title}."
 msgstr "Passwort zurücksetzen bei ${site_title}"
 
-#: kotti/views/form.py:73 kotti/views/users.py:436
+#: kotti/views/form.py:76 kotti/views/users.py:436
 msgid "Save"
 msgstr "Übernehmen"
 
@@ -700,7 +698,7 @@ msgstr ""
 "Ihre Registrierung war erfolgreich. Sie sollten in Kürze eine E-Mail mit "
 "einem Link zur Aktivierung und zum Setzen Ihres Passwortes erhalten."
 
-#: kotti/views/form.py:75 kotti/views/users.py:73
+#: kotti/views/form.py:78 kotti/views/users.py:73
 #: kotti/views/edit/actions.py:362 kotti/views/edit/actions.py:406
 msgid "Your changes have been saved."
 msgstr "Ihre Änderungen wurden übernommen."
@@ -712,7 +710,4 @@ msgstr "Der Link zum Zurücksetzen Ihres Passwortes ist abgelaufen!"
 #: kotti/templates/email-set-password.pt:2
 msgid "Your registration for ${site_title}"
 msgstr "Ihre Anmeldung bei ${site_title}"
-
-#~ msgid "Not registered yet?"
-#~ msgstr "Noch nicht registriert?"
 

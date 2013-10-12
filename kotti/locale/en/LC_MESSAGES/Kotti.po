@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Kotti 0.4.4\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2013-09-19 00:54+0900\n"
+"POT-Creation-Date: 2013-10-10 20:17+0100\n"
 "PO-Revision-Date: 2012-01-16 12:02+0000\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: en <LL@li.org>\n"
@@ -73,11 +73,11 @@ msgstr ""
 msgid "Add"
 msgstr ""
 
-#: kotti/views/form.py:195
+#: kotti/views/form.py:198
 msgid "Add ${type} to <em>${title}</em>."
 msgstr ""
 
-#: kotti/views/form.py:199
+#: kotti/views/form.py:202
 msgid "Add ${type}."
 msgstr ""
 
@@ -136,7 +136,7 @@ msgstr ""
 
 #: kotti/templates/edit/change-state.pt:63
 #: kotti/templates/edit/delete-nodes.pt:47
-#: kotti/templates/edit/rename-nodes.pt:31 kotti/views/form.py:74
+#: kotti/templates/edit/rename-nodes.pt:31 kotti/views/form.py:77
 #: kotti/views/users.py:320 kotti/views/users.py:352 kotti/views/users.py:437
 msgid "Cancel"
 msgstr ""
@@ -247,7 +247,7 @@ msgstr ""
 msgid "Edit ${title}"
 msgstr ""
 
-#: kotti/views/form.py:152
+#: kotti/views/form.py:155
 msgid "Edit <em>${title}</em>"
 msgstr ""
 
@@ -338,7 +338,7 @@ msgstr ""
 msgid "Invalid value"
 msgstr ""
 
-#: kotti/views/form.py:170
+#: kotti/views/form.py:173
 msgid "Item was added."
 msgstr ""
 
@@ -372,7 +372,7 @@ msgstr ""
 msgid "Make ${state}"
 msgstr ""
 
-#: kotti/views/form.py:261
+#: kotti/views/form.py:264
 msgid "Maximum file size: ${size}MB"
 msgstr ""
 
@@ -507,7 +507,7 @@ msgstr ""
 msgid "Reset your password for ${site_title}."
 msgstr ""
 
-#: kotti/views/form.py:73 kotti/views/users.py:436
+#: kotti/views/form.py:76 kotti/views/users.py:436
 msgid "Save"
 msgstr ""
 
@@ -673,7 +673,7 @@ msgid ""
 "Doing so will activate your account."
 msgstr ""
 
-#: kotti/views/form.py:75 kotti/views/users.py:73
+#: kotti/views/form.py:78 kotti/views/users.py:73
 #: kotti/views/edit/actions.py:362 kotti/views/edit/actions.py:406
 msgid "Your changes have been saved."
 msgstr ""
@@ -685,10 +685,4 @@ msgstr ""
 #: kotti/templates/email-set-password.pt:2
 msgid "Your registration for ${site_title}"
 msgstr ""
-
-#~ msgid "Not registered yet?"
-#~ msgstr ""
-
-#~ msgid "for an account on this site."
-#~ msgstr ""
 
