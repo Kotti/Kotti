@@ -22,6 +22,7 @@ def config(request):
     from pyramid import testing
     from kotti import security
     config = testing.setUp(settings=settings())
+    config.include('pyramid_chameleon')
     config.add_default_renderers()
     request.addfinalizer(security.reset)
     request.addfinalizer(testing.tearDown)
