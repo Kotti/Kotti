@@ -19,12 +19,10 @@ def config(request):
     """ returns a Pyramid `Configurator` object initialized
         with Kotti's default (test) settings.
     """
-    from pyramid.config import DEFAULT_RENDERERS
     from pyramid import testing
     from kotti import security
     config = testing.setUp(settings=settings())
-    for name, renderer in DEFAULT_RENDERERS:
-        config.add_renderer(name, renderer)
+    config.add_default_renderers()
     request.addfinalizer(security.reset)
     request.addfinalizer(testing.tearDown)
     return config
