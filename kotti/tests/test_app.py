@@ -77,7 +77,7 @@ class TestApp:
         from kotti import main
 
         settings = self.required_settings()
-        settings['kotti.asset_overrides'] = 'pyramid:scaffold/ pyramid.fixers'
+        settings['kotti.asset_overrides'] = 'pyramid:scaffold/'
         with patch('kotti.resources.initialize_sql'):
             main({}, **settings)
 
