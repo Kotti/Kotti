@@ -229,6 +229,9 @@ def base_configure(global_config, **settings):
     config.hook_zca()
     config.include('pyramid_zcml')
 
+    # Chameleon bindings were removed from Pyramid core since pyramid>=1.5a2
+    config.include('pyramid_chameleon')
+
     config.registry.settings['pyramid.includes'] = pyramid_includes
 
     # Include modules listed in 'kotti.base_includes':
