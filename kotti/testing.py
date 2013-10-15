@@ -13,7 +13,6 @@ from unittest import TestCase
 from pytest import mark
 
 from pyramid import testing
-from pyramid.config import DEFAULT_RENDERERS
 from pyramid.events import NewResponse
 from pyramid.security import ALL_PERMISSIONS
 from zope.deprecation.deprecation import deprecate
@@ -130,8 +129,7 @@ def setUp(init_db=True, **kwargs):
     _resolve_dotted(settings)
     kwargs['settings'] = settings
     config = testing.setUp(**kwargs)
-    for name, renderer in DEFAULT_RENDERERS:
-        config.add_renderer(name, renderer)
+    config.add_default_renderers()
 
     if init_db:
         _initTestingDB()
