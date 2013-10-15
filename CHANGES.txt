@@ -1,7 +1,12 @@
 Change History
 ==============
 
-0.9.2 - Unreleased
+0.10 - Unreleased
+-----------------
+
+- Added compatiblity for and now require Pyramid>=1.5.  #273
+
+0.9.2 - 2013-10-15
 ------------------
 
 - Fix #268: Convert None to colander.null in get_appstruct so that
