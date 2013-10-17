@@ -42,7 +42,7 @@ py-bcrypt==0.3
 pyramid==1.5a2
 pyramid-beaker==0.7
 pyramid-chameleon==0.1
-pyramid-debugtoolbar==1.0.6
+pyramid-debugtoolbar==1.0.8
 pyramid-deform==0.2a5
 pyramid-mailer==0.11
 pyramid-tm==0.7
