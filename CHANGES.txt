@@ -7,6 +7,9 @@ Adding deform2-bootstrap3 support
 - Basic work done (it runs!)
 - Change RichTextWidget in Document so it's in line with latest tinymce
 - Pinned new versions of everything deform/bootstrap related
+- Fixed navbar (according to bootstrap guidelines it should have a
+  navbar-header, but if we include that it messes up with our search position
+  so we aren't using that - it seems to work just fine)
 
 
 0.10 - Unreleased
