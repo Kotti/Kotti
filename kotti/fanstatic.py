@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 
 from __future__ import absolute_import
 
@@ -7,7 +6,7 @@ from fanstatic import Library
 from fanstatic import Resource
 from js.angular import angular
 from js.bootstrap import bootstrap_js
-from js.bootstrap import bootstrap_responsive_css
+from js.bootstrap import bootstrap_css
 from js.deform_bootstrap import deform_bootstrap_js
 from js.html5shiv import html5shiv
 from js.fineuploader import fineuploader
@@ -37,7 +36,7 @@ contents_view_js = Resource(lib_kotti,
     bottom=True)
 base_css = Resource(lib_kotti,
     "base.css",
-    depends=[bootstrap_responsive_css],
+    depends=[bootstrap_css],
     minified="base.min.css",
     dont_bundle=True)
 edit_css = Resource(lib_kotti,

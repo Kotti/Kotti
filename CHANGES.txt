@@ -1,6 +1,14 @@
 Change History
 ==============
 
+Adding deform2-bootstrap3 support
+---------------------------------
+
+- Basic work done (it runs!)
+- Change RichTextWidget in Document so it's in line with latest tinymce
+- Pinned new versions of everything deform/bootstrap related
+
+
 0.10 - Unreleased
 -----------------
 
