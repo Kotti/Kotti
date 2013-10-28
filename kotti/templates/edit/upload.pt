@@ -79,7 +79,7 @@
           </a>
         </div>
 
-        <div class="alert alert-error alert-block" ng-repeat="f in errors">
+        <div class="alert alert-error" ng-repeat="f in errors">
           <button type="button" class="close" ng-click="dismissError(f)">&times;</button>
           <table class="table table condensed">
             <thead>
