@@ -11,7 +11,7 @@
       <fieldset>
         <legend i18n:translate="">Assign local roles</legend>
 
-        <div class="control-group">
+        <div class="form-group">
           <div>
             <input type="text" class="form-control" name="query" id="search-query"
                    value="${request.params.get('query')}"

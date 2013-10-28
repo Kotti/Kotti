@@ -10,7 +10,7 @@
     <h1 i18n:translate="">Login</h1>
 
     <form class="login" action="${url}" method="post">
-      <div class="control-group">
+      <div class="form-group">
         <label class="control-label" for="form-login"
                i18n:translate="">Username or email</label>
         <div>

@@ -9,14 +9,14 @@
 
     <div class="tab-pane" id="rename" tal:condition="context is not api.root">
       <form action="${request.url}" method="post" id="form-move-3">
-        <div class="control-group">
+        <div class="form-group">
           <label class="control-label desc" for="move-new-name" i18n:translate="">New name</label>
           <div>
             <input type="text" class="form-control" name="name" id="move-new-name"
                    value="${request.POST.get('name') or context.name}" />
           </div>
         </div>
-        <div class="control-group">
+        <div class="form-group">
           <label class="control-label desc" for="move-new-title" i18n:translate="">New title</label>
           <div>
             <input type="text" class="form-control" name="title" id="move-new-title"
