@@ -1,19 +1,19 @@
 <form xmlns:i18nxmlns="http://www.w3.org/1999/xhtml"
     xmlns:i18n="http://xml.zope.org/namespaces/i18n" i18n:domain="Kotti"
-    class="navbar-search pull-right"
+    class="navbar-form pull-right"
     action="${api.url(api.root)}@@search-results"
     method="post"
     id="form-search">
     <input
-        type="text"
+        type="search"
         name="search-term"
-        class="search-query"
+        class="form-control"
         placeholder="Search..."
         i18n:attributes="placeholder" />
     <button
         type="submit"
         name="search-submit"
         value="search"
-        class="btn"
+        class="btn btn-default"
 	style="display: none;">&#8594;</button>
 </form>
