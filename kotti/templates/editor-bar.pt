@@ -4,7 +4,7 @@
      tal:define="disable_context_links disable_context_links | False">
   <div class="navbar-inner">
     <div class="container">
-      <ul class="nav pull-left">
+      <ul class="nav pull-left navbar-nav">
         <tal:condition tal:condition="api.has_permission('edit')">
           <li tal:replace="api.render_view('workflow-dropdown')" />
         </tal:condition>
@@ -32,7 +32,7 @@
         </tal:condition>
       </ul>
 
-      <ul class="nav pull-right">
+      <ul class="nav pull-right navbar-nav">
         <li tal:define="url api.url(context, '@@navigate')"
             class="${url == request.url and 'active' or None} pull-right">
           <a href="${url}" i18n:translate="">Navigate</a>

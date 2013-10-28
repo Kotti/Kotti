@@ -1,6 +1,6 @@
 /** Put here CSS that should apply to both public and editor screens. **/
 
-span.brand a, span.brand a:hover {
+span.navbar-brand a, span.navbar-brand a:hover {
   /* The site title in the navbar (a.k.a. "home") */
   color: white;
   text-decoration: none;
