@@ -13,15 +13,15 @@
         <span class="help-block" i18n:translate="">Each content item has a name, which is used to create the url, and a title. Read the user manual about proper formatting of name and title if needed. You can change both below.</span>
 
         <tal:items tal:repeat="item items">
-          <input type="hidden" name="children-to-rename" value="${item.id}" />
+          <input type="hidden" class="form-control" name="children-to-rename" value="${item.id}" />
 
           <fieldset>
             <legend>${item.title}(${item.name})</legend>
             <label class="control-label desc" for="${item.id}-name" i18n:translate="">New name</label>
-            <input type="text" name="${item.id}-name" value="${request.POST.get(str(item.id) + '-name') or item.name}" />
-              
+            <input type="text" class="form-control" name="${item.id}-name" value="${request.POST.get(str(item.id) + '-name') or item.name}" />
+
             <label class="control-label desc" for="${item.id}-title" i18n:translate="">New title</label>
-            <input type="text" name="${item.id}-title" value="${request.POST.get(str(item.id) + '-title') or item.title}" />
+            <input type="text" class="form-control" name="${item.id}-title" value="${request.POST.get(str(item.id) + '-title') or item.title}" />
           </fieldset>
 
         </tal:items>
@@ -29,7 +29,7 @@
           <button type="submit" name="rename_nodes" value="rename_nodes"
                   class="btn btn-warning" i18n:translate="">Rename</button>
           <button type="submit" name="cancel" value="cancel"
-                  class="btn" i18n:translate="">Cancel</button>
+                  class="btn btn-default" i18n:translate="">Cancel</button>
         </div>
       </form>
     </div>

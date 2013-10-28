@@ -12,8 +12,8 @@
         <legend i18n:translate="">Assign local roles</legend>
 
         <div class="control-group">
-          <div class="controls">
-            <input type="text" name="query" id="search-query"
+          <div>
+            <input type="text" class="form-control" name="query" id="search-query"
                    value="${request.params.get('query')}"
                    placeholder="Search users and groups"
                    i18n:attributes="placeholder"
@@ -21,7 +21,7 @@
           </div>
         </div>
         <div class="form-actions">
-          <button type="submit" name="search" class="btn primary" i18n:translate="">
+          <button type="submit" name="search" class="btn btn-primary" i18n:translate="">
             Search
           </button>
         </div>

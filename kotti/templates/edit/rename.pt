@@ -11,23 +11,23 @@
       <form action="${request.url}" method="post" id="form-move-3">
         <div class="control-group">
           <label class="control-label desc" for="move-new-name" i18n:translate="">New name</label>
-          <div class="controls">
-            <input type="text" name="name" id="move-new-name"
+          <div>
+            <input type="text" class="form-control" name="name" id="move-new-name"
                    value="${request.POST.get('name') or context.name}" />
           </div>
         </div>
-        <div class="control-group">         
+        <div class="control-group">
           <label class="control-label desc" for="move-new-title" i18n:translate="">New title</label>
-          <div class="controls">
-            <input type="text" name="title" id="move-new-title"
+          <div>
+            <input type="text" class="form-control" name="title" id="move-new-title"
                    value="${request.POST.get('title') or context.title}" />
           </div>
         </div>
         <div class="form-actions">
-          <button type="submit" name="rename" value="rename" 
+          <button type="submit" name="rename" value="rename"
                   class="btn btn-warning" i18n:translate="">Rename</button>
         </div>
-      </form>    
+      </form>
     </div>
   </div>
 </html>
