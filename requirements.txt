@@ -31,7 +31,7 @@ js.jquery-timepicker-addon==1.3-1
 js.jqueryui==1.10.3
 js.jqueryui-tagit==2.0.24-2
 js.tinymce==4.0.2
--e git+https://github.com/nightmarebadger/kotti_tinymce.git@fix_tinymce_problems#egg=kotti_tinymce
+-e git+https://github.com/ferewuz/kotti_tinymce.git@master#egg=kotti_tinymce
 lingua==1.5
 peppercorn==0.4
 plone.scale==1.3.1
