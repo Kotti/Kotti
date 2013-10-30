@@ -19,7 +19,7 @@ html2text==3.200.3
 js.angular==1.1.2
 js.bootstrap==3.0.0.1
 js.chosen==0.9.11
--e git+https://github.com/dairiki/js.deform.git@deform2#egg=js.deform
+-e git+https://github.com/termitnjak/js.deform.git@deform2#egg=js.deform
 js.fineuploader==3.3.0
 js.html5shiv==3.6.2-1
 js.jquery==1.9.1
