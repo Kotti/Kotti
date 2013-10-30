@@ -1,6 +1,6 @@
 <div xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
      xmlns:tal="http://xml.zope.org/namespaces/tal"
-     class="navbar navbar-inverse navbar-static-top">
+     class="navbar-inverse navbar-static-top">
   <div class="container">
     <span class="navbar-brand">
       <a href="${request.application_url}/">${api.site_title}</a>

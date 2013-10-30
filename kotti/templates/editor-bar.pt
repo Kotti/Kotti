@@ -1,5 +1,5 @@
 <div id="editor-bar"
-     class="navbar navbar-static-top"
+     class="navbar navbar-default navbar-static-top"
      i18n:domain="Kotti"
      tal:define="disable_context_links disable_context_links | False">
   <div class="navbar-inner">
