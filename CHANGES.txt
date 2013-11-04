@@ -4,12 +4,15 @@ Change History
 Adding deform2-bootstrap3 support
 ---------------------------------
 
-- Basic work done (it runs!)
-- Change RichTextWidget in Document so it's in line with latest tinymce
-- Pinned new versions of everything deform/bootstrap related
-- Fixed navbar (according to bootstrap guidelines it should have a
-  navbar-header, but if we include that it messes up with our search position
-  so we aren't using that - it seems to work just fine)
+- New version of deform and js.deform pinned
+- Bootstrap 3 used instead of bootstrap 2
+- deform_bootstrap removed as deform 2 uses bootstrap already
+- Use Tinymce from js.deform instead of js.tinymce, so we get rid of additional
+  dependency
+- Modified all templates according to bootstrap2 -> bootstrap3 migration
+  guidelines
+- Fix tests, as deform2 password widget works a bit different (resets both
+  passwords on error)
 
 
 0.10 - Unreleased
