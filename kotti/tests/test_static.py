@@ -5,7 +5,7 @@ class TestStatic:
 
     def test_NeededGroup(self):
 
-        from js.deform_bootstrap import deform_bootstrap_js
+        #from js.deform_bootstrap import deform_bootstrap_js
         from js.deform import deform_js
         from kotti.fanstatic import kotti_js
         from kotti.fanstatic import NeededGroup
@@ -28,6 +28,6 @@ class TestStatic:
         with raises(ValueError):
             needed_group_adder(42)
 
-        needed.add(deform_bootstrap_js)
-
-        assert needed.resources == [deform_js, kotti_js, deform_bootstrap_js]
+        #needed.add(deform_bootstrap_js)
+        #assert needed.resources == [deform_js, kotti_js, deform_bootstrap_js]
+        assert needed.resources == [deform_js, kotti_js]

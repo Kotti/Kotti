@@ -50,10 +50,10 @@
           <legend i18n:translate="">Change state to</legend>
 	  <span class="help-block" i18n:translate="">Select the new state where all chosen items should be set.</span>
           <label class="radio">
-            <input type="radio" name="to-state" value="no-change" checked="checked" /> <span i18n:translate="">No change</span>
+            <input type="radio" class="form-control" name="to-state" value="no-change" checked="checked" /> <span i18n:translate="">No change</span>
           </label>
           <label class="radio" tal:repeat="transition transitions">
-            <input type="radio" name="to-state" value="${transition['to_state']}" /> ${states[transition['to_state']]['title']}
+            <input type="radio" class="form-control" name="to-state" value="${transition['to_state']}" /> ${states[transition['to_state']]['title']}
           </label>
         </fieldset>
 
@@ -61,7 +61,7 @@
           <button type="submit" name="change_state" value="change_state"
                   class="btn btn-primary" i18n:translate="">Apply changes</button>
 	  <button type="submit" name="cancel" value="cancel"
-                  class="btn" i18n:translate="">Cancel</button>
+                  class="btn btn-default" i18n:translate="">Cancel</button>
         </div>
       </form>
     </div>

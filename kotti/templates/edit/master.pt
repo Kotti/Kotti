@@ -1,52 +1,44 @@
-<html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:metal="http://xml.zope.org/namespaces/metal"
-      xmlns:tal="http://xml.zope.org/namespaces/tal"
-      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
-      tal:define="page_slots api.slots;
-                  dummy api.edit_needed"
-      metal:define-macro="main">
-  <head>
-    <meta charset="utf-8" />
-    <title metal:define-slot="page-title">${api.page_title | api.site_title}</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="${context.description | ''}" />
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:metal="http://xml.zope.org/namespaces/metal"
+xmlns:tal="http://xml.zope.org/namespaces/tal" xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+tal:define="page_slots api.slots;
 
-    <!-- Fav icons -->
-    <link rel="shortcut icon" href="${request.static_url('kotti:static/favicon.ico')}" />
+                  dummy api.edit_needed" metal:define-macro="main">
 
-    <more tal:omit-tag="" metal:define-slot="head-more"></more>
+    <head>
+        <meta charset="utf-8" />
+        <title metal:define-slot="page-title">${api.page_title | api.site_title}</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"
+        />
+        <meta name="description" content="${context.description | ''}" />
+        <!-- Fav icons -->
+        <link rel="shortcut icon" href="${request.static_url('kotti:static/favicon.ico')}"
+        />
+        <more tal:omit-tag="" metal:define-slot="head-more"></more>
+        <!-- 'edit_inhead' slots: support third party injection of things
+        that go into the head -->
+        <tal:slots tal:define="snippets page_slots.edit_inhead" tal:condition="snippets"
+        tal:repeat="snippet snippets" tal:replace="structure snippet"></tal:slots>
+    </head>
 
-    <!-- 'edit_inhead' slots: support third party injection of things that
-         go into the head -->
-    <tal:slots tal:define="snippets page_slots.edit_inhead"
-               tal:condition="snippets"
-               tal:repeat="snippet snippets"
-               tal:replace="structure snippet" />
-  </head>
-
-  <body class="view-${request.view_name or 'default'} ${api.body_css_class} logged-in">
-    <nav tal:replace="api.render_template('kotti:templates/view/nav.pt')" />
-    <div metal:define-slot="editor-bar"
-         tal:condition="request.user is not None"
-         tal:replace="api.render_template('kotti:templates/editor-bar.pt')" />
-
-    <div class="container">
-      <div class="row">
-        <div class="span12">
-          <div tal:replace="api.render_template('kotti:templates/edit/breadcrumbs.pt')" />
-          <div tal:replace="api.render_template('kotti:templates/messages.pt')" />
-          <div class="inner-content">
-            <div metal:define-slot="content">
-              <h1>${context.title}</h1>
+    <body class="view-${request.view_name or 'default'} ${api.body_css_class} logged-in">
+        <nav tal:replace="api.render_template('kotti:templates/view/nav.pt')"></nav>
+        <div metal:define-slot="editor-bar" tal:condition="request.user is not None"
+        tal:replace="api.render_template('kotti:templates/editor-bar.pt')"></div>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <div tal:replace="api.render_template('kotti:templates/edit/breadcrumbs.pt')"></div>
+                    <div tal:replace="api.render_template('kotti:templates/messages.pt')"></div>
+                    <div class="inner-content">
+                        <div metal:define-slot="content">
+                             <h1>${context.title}</h1>
+                        </div>
+                    </div>
+                </div>
             </div>
-          </div>
-          </div>
-      </div>
+            <footer tal:replace="api.render_template('kotti:templates/edit/footer.pt')"></footer>
+        </div>
+        <more tal:omit-tag="" metal:define-slot="js-more"></more>
+    </body>
 
-      <footer tal:replace="api.render_template('kotti:templates/edit/footer.pt')">
-      </footer>
-
-    </div>
-    <more tal:omit-tag="" metal:define-slot="js-more"></more>
-  </body>
 </html>

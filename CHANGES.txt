@@ -1,6 +1,20 @@
 Change History
 ==============
 
+Adding deform2-bootstrap3 support
+---------------------------------
+
+- New version of deform and js.deform pinned
+- Bootstrap 3 used instead of bootstrap 2
+- deform_bootstrap removed as deform 2 uses bootstrap already
+- Use Tinymce from js.deform instead of js.tinymce, so we get rid of additional
+  dependency
+- Modified all templates according to bootstrap2 -> bootstrap3 migration
+  guidelines
+- Fix tests, as deform2 password widget works a bit different (resets both
+  passwords on error)
+
+
 0.10 - Unreleased
 -----------------
 

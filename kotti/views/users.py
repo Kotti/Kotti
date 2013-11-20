@@ -5,8 +5,8 @@ import re
 from urllib import urlencode
 
 import colander
+from colander import Set
 from deform import Button
-from deform import Set
 from deform.widget import AutocompleteInputWidget
 from deform.widget import CheckboxChoiceWidget
 from deform.widget import CheckedPasswordWidget
@@ -224,7 +224,7 @@ class PrincipalFull(PrincipalBasic):
         description=_(u"Untick this to deactivate the account."),
         )
     roles = colander.SchemaNode(
-        Set(allow_empty=True),
+        Set(),
         validator=roleset_validator,
         missing=[],
         title=_(u"Global roles"),

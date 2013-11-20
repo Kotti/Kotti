@@ -777,6 +777,7 @@ We'll use that link to set our password:
   >>> ctrl(name="submit").click()
   >>> "There was an error" in browser.contents
   True
+  >>> ctrl("Password", index=0).value = "newpassword"
   >>> ctrl(name='password-confirm').value = "newpassword"
   >>> ctrl(name="submit").click()
   >>> "You have reset your password" in browser.contents
