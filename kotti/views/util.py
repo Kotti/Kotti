@@ -36,6 +36,8 @@ from kotti.security import has_permission
 from kotti.security import view_permitted
 from kotti.views.site_setup import CONTROL_PANEL_LINKS
 from kotti.views.slots import slot_events
+import inspect
+import warnings
 
 
 def template_api(context, request, **kwargs):
@@ -420,17 +422,21 @@ def nodes_tree(request, context=None, permission='view'):
     )
 
 
-def search_content(search_term, request=None, options={}):
-    return get_settings()['kotti.search_content'][0](search_term=search_term,
-                                                     request=request,
-                                                     options=options)
+def search_content(search_term, request=None, options=None):
+    search_function = get_settings()['kotti.search_content'][0]
+    if 'options' in search_function.func_code.co_varnames:
+        return search_function(search_term=search_term, request=request,
+                               options=options)
+    return search_function(search_term=search_term, request=request)
 
 
-def default_search_content(search_term, request=None, options={}):
+def default_search_content(search_term, request=None, options=None):
     '''
         Supported options:
             type: array of content types to search for
     '''
+    if options is None:
+        options = {}
 
     searchstring = u'%%%s%%' % search_term
 
