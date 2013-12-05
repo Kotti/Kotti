@@ -22,7 +22,8 @@ def create_contents_with_tags(root=None):
     dog = root['animals']['dog'] = Content(title=u'Dog')
     monkey = root['animals']['monkey'] = Content(title=u'Monkey')
     gorilla = root['animals']['gorilla'] = Content(title=u'Gorilla')
-    monkey_file = root['animals']['monkey_file'] = File(title=u'Monkey File',
+    monkey_file = root['animals']['monkey_file'] = File(
+        title=u'Monkey File',
         description=u'A Rhesus Macaque and a Green Monkey walk into a bar...')
 
     root[u'animals'][u'cat'].tags = [u'Animals', u'Cat']
@@ -110,3 +111,31 @@ class TestSearch:
         config.testing_securitypolicy(permissive=False)
         results = search_content(u'Document', request)
         assert len(results) == 0
+
+    def test_search_by_type(self, config, root):
+        from kotti.views.util import search_content
+        request = DummyRequest()
+        doc1, doc11, doc12, file1 = create_contents(root)
+        options = {'types': ['content']}
+        results = search_content(u'First ', request, options)
+        assert len(results) == 1
+        assert results[0]['name'] == doc1.name
+
+        options = {'types': ['file']}
+        results = search_content(u'First ', request, options)
+        assert len(results) == 1
+        assert results[0]['name'] == file1.name
+
+    def test_search_without_options(self, config, root):
+        from kotti import get_settings
+        from kotti.views.util import search_content, default_search_content
+        request = DummyRequest()
+
+        get_settings()['kotti.search_content'][0] = (
+            lambda search_term, request: default_search_content(
+                search_term, request))
+
+        doc1, doc11, doc12, file1 = create_contents(root)
+        options = {'types': ['content']}
+        results = search_content(u'First ', request, options)
+        assert len(results) == 2
