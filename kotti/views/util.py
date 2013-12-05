@@ -37,7 +37,6 @@ from kotti.security import view_permitted
 from kotti.views.site_setup import CONTROL_PANEL_LINKS
 from kotti.views.slots import slot_events
 import inspect
-import warnings
 
 
 def template_api(context, request, **kwargs):
