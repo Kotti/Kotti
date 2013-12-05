@@ -420,11 +420,17 @@ def nodes_tree(request, context=None, permission='view'):
     )
 
 
-def search_content(search_term, request=None):
-    return get_settings()['kotti.search_content'][0](search_term, request)
+def search_content(search_term, request=None, options={}):
+    return get_settings()['kotti.search_content'][0](search_term=search_term,
+                                                     request=request,
+                                                     options=options)
 
 
-def default_search_content(search_term, request=None):
+def default_search_content(search_term, request=None, options={}):
+    '''
+        Supported options:
+            type: array of content types to search for
+    '''
 
     searchstring = u'%%%s%%' % search_term
 
@@ -433,8 +439,11 @@ def default_search_content(search_term, request=None):
                          Content.title.like(searchstring),
                          Content.description.like(searchstring))
 
-    results = DBSession.query(Content).filter(generic_filter).\
-        order_by(Content.title.asc()).all()
+    query = DBSession.query(Content).filter(generic_filter)
+    if 'types' in options:
+        query = query.filter(Content.type.in_(options['types']))
+
+    results = query.order_by(Content.title.asc()).all()
 
     # specific result contain objects matching additional criteria
     # but must not match the generic criteria (because these objects
