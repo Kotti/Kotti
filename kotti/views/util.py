@@ -432,7 +432,7 @@ def search_content(search_term, request=None, options=None):
 def default_search_content(search_term, request=None, options=None):
     '''
         Supported options:
-            type: array of content types to search for
+            types: array of content types to search for
     '''
     if options is None:
         options = {}
