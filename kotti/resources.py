@@ -229,7 +229,8 @@ class Node(Base, ContainerMixin, PersistentACLMixin):
         cascade='all',
         )
 
-    def __init__(self, name=None, parent=None, title=u"", annotations=None):
+    def __init__(self, name=None, parent=None, title=u"", annotations=None,
+                 **kwargs):
         """Constructor"""
 
         if annotations is None:
@@ -238,6 +239,8 @@ class Node(Base, ContainerMixin, PersistentACLMixin):
         self.parent = parent
         self.title = title
         self.annotations = annotations
+
+        super(Node, self).__init__(**kwargs)
 
     @property
     def __name__(self):
@@ -536,9 +539,10 @@ class Content(Node):
     def __init__(self, name=None, parent=None, title=u"", annotations=None,
                  default_view=None, description=u"", language=None,
                  owner=None, creation_date=None, modification_date=None,
-                 in_navigation=True, tags=None):
+                 in_navigation=True, tags=None, **kwargs):
 
-        super(Content, self).__init__(name, parent, title, annotations)
+        super(Content, self).__init__(
+            name, parent, title, annotations, **kwargs)
 
         self.default_view = default_view
         self.description = description
