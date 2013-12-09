@@ -41,6 +41,7 @@ install_requires = [
     'py_bcrypt',
     'pyramid>=1.3',  # needed for kotti_tinymce
     'pyramid_beaker',
+    'pyramid_chameleon',
     'pyramid_debugtoolbar',
     'pyramid_deform>=0.2a3',  # language and template path config includeme
     'pyramid_mailer',
