@@ -561,11 +561,3 @@ class TestNodesTree:
 
         tree = nodes_tree(DummyRequest(), context=ac)
         assert [ch for ch in tree.tolist()] == [ac, aca, acb]
-
-
-class TestTemplateStructure:
-    def test_getattr(self):
-        from kotti.views.util import TemplateStructure
-
-        item = TemplateStructure(u'123')
-        assert item.split('2') == [u'1', u'3']

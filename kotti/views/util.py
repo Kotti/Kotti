@@ -16,6 +16,7 @@ from sqlalchemy import and_
 from sqlalchemy import not_
 from sqlalchemy import or_
 from zope.deprecation.deprecation import deprecate
+from zope.deprecation import deprecated
 
 from kotti import DBSession
 from kotti import get_settings
@@ -440,3 +441,17 @@ def search_content_for_tags(tags, request=None):
                 path=request.resource_path(result)))
 
     return result_dicts
+
+
+from kotti.util import (
+    get_localizer_for_locale_name,
+    translate,
+    )
+
+for obj in (render_view, get_localizer_for_locale_name, translate,
+            TemplateStructure):
+    name = obj.__name__
+    deprecated(
+        name,
+        "kotti.views.util.{0} has been moved to the kotti.util module "
+        "as of Kotti 0.10.  Use kotti.util.{0} instead".format(name))
