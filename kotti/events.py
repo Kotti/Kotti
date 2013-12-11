@@ -346,21 +346,10 @@ class subscribe(object):
         self.objtype = objtype
 
     def register(self, context, name, obj):
-        # XXX In this method, we're actually checking if the given
-        #     event handler is not already registered for the event
-        #     type. So we're careful not to add the same event handler
-        #     twice. This is necessary because events are currently
-        #     only added, but never cleaned up in `listeners` and
-        #     `objectevent_listeners`.
-
         if issubclass(self.evttype, ObjectEvent):
-            key = (self.evttype, self.objtype)
-            if key not in objectevent_listeners:
-                objectevent_listeners[key].append(obj)
+            objectevent_listeners[(self.evttype, self.objtype)].append(obj)
         else:
-            key = self.evttype
-            if obj not in listeners[key]:
-                listeners[key].append(obj)
+            listeners[self.evttype].append(obj)
 
     def __call__(self, wrapped):
 
