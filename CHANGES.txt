@@ -4,6 +4,14 @@ Change History
 0.10 - Unreleased
 -----------------
 
+- Rework implementation of 'kotti.util.Link' ('ViewLink') to be more
+  flexible.
+
+  There's now proper support for nesting 'edit_links', so that the
+  special 'action_links' list is no longer necessary.  Links now also
+  make better use of templates for rendering, and are probably easier
+  to customize overall.
+
 - Added compatiblity for and now require Pyramid>=1.5.  #273
 
 0.9.2 - 2013-10-15
