@@ -113,6 +113,15 @@ class LinkBase(object):
                 return True
         return False
 
+    @property
+    def path(self):  # BBB
+        return self.name
+    path = deprecated(
+        path,
+        "The 'path' attribute has been deprecated as of Kotti 0.10.  Please "
+        "use 'name' instead.",
+        )
+
 
 class LinkRenderer(LinkBase):
     """A menu link that renders a view to render the link.
