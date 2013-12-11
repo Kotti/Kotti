@@ -11,6 +11,7 @@ Inheritance Diagram
 import os
 from UserDict import DictMixin
 from fnmatch import fnmatch
+import warnings
 
 from pyramid.threadlocal import get_current_registry
 from pyramid.traversal import resource_path
@@ -310,9 +311,18 @@ class TypeInfo(object):
     action_links = ()  # BBB
 
     def __init__(self, **kwargs):
-        """
-        Constructor
-        """
+        if 'action_links' in kwargs:
+            msg = ("'action_links' is deprecated as of Kotti 0.10.  "
+                   "'edit_links' includes 'action_links' and should "
+                   "be used instead.")
+
+            edit_links = kwargs.get('edit_links')
+            last_link = edit_links[-1] if edit_links else None
+            if isinstance(last_link, LinkParent):
+                last_link.children.extend(kwargs['action_links'])
+                warnings.warn(msg, DeprecationWarning)
+            else:
+                raise ValueError(msg)
 
         self.__dict__.update(kwargs)
 
