@@ -33,8 +33,8 @@ source_suffix = '.rst'
 #source_encoding = 'utf-8-sig'
 master_doc = 'index'
 project = u'Kotti'
-copyright = u'2012, Kotti developers'
-version = '0.8'
+copyright = u'2012-2013, Kotti developers'
+version = '0.10'
 # The full version, including alpha/beta/rc tags.
 release = version
 #language = None

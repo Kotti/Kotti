@@ -94,11 +94,13 @@ Views (including forms) are typically put into a module called
 
   import colander
 
+
   class PollSchema(colander.MappingSchema):
       title = colander.SchemaNode(
           colander.String(),
           title=u'Question',
           )
+
 
   class ChoiceSchema(colander.MappingSchema):
       title = colander.SchemaNode(
@@ -122,16 +124,20 @@ Let's move on to building the actual forms.  Add this to ``views.py``:
   from kotti_mysite.resources import Choice
   from kotti_mysite.resources import Poll
 
+
   class PollEditForm(EditFormView):
       schema_factory = PollSchema
+
 
   class PollAddForm(AddFormView):
       schema_factory = PollSchema
       add = Poll
       item_type = u"Poll"
 
+
   class ChoiceEditForm(EditFormView):
       schema_factory = ChoiceSchema
+
 
   class ChoiceAddForm(AddFormView):
       schema_factory = ChoiceSchema
@@ -233,8 +239,8 @@ Lets go ahead and click on ``Poll``. For the question, let's write
 *What is your favourite color?*. Now let's add three choices,
 *Red*, *Green* and *Blue* in the same way we added the poll.
 
-If we now go to the poll we added, we can see the question, but not our choices,
-which is definitely not what we wanted. Let us fix this, shall we?
+If we now go to the poll we added, we can see the question, but not our
+choices, which is definitely not what we wanted. Let us fix this, shall we?
 
 Adding a custom View to the Poll
 --------------------------------
@@ -243,31 +249,30 @@ Since there are plenty tutorials on how to write TAL templates, we will not
 write a complete one here, but just a basic one, to show off the general idea.
 
 First, we need to write a view that will send the needed data (in our case,
-the choices we added to our poll). Here is the code, added to ``view.py``.
+the choices we added to our poll). Here is the code, added to ``views.py``.
 
 .. code-block:: python
 
-  from kotti import DBSession
   from kotti_mysite.fanstatic import kotti_mysite_group
 
 
   def poll_view(context, request):
       kotti_mysite_group.need()
-      choices = DBSession().query(Choice).all()
-      choices = [choice for choice in choices if choice.parent.id == context.id]
+      choices = context.values()
       return {
           'choices': choices
       }
 
-As you can see, we simply queried the database for all choices, then went
-through them and selected only the ones that were added to the poll we are
-currently viewing. We do this by comparing the *context.id* with the
-*choice.parent.id*. If they are the same, this particular choice was added
-to the ``Poll`` we are currently viewing.
+To find out if a Choice was added to the ``Poll`` we are currently viewing, we
+compare it's *parent_id* attribute with the *id* of the Poll - if they are the
+same, the ``Choice`` is a child of the ``Poll``.
+To get all the appropriate choices, we do a simple database query, filtered as
+specified above.
 Finally, we return a dictionary of all choices under the keyword *choices*.
 
 Next on, we need a template to actually show our data. It could look something
-like this. The file is ``poll.pt`` and goes under the ``templates`` folder.
+like this. Create a folder named ``templates`` and put the file ``poll.pt``
+into it.
 
 .. code-block:: html
 
@@ -310,9 +315,18 @@ Now all that remains is linking the two together. We do this in the
 With this, we are done with the second tutorial. Restart the server instance,
 take a look at the new ``Poll`` view and play around with the template until
 you are completely satisfied with how our data is presented.
+If you will work with templates for a while (or anytime you're developing
+basically) I'd recommend you use the pyramid *reload_templates* and
+*debug_templates* options as they save you a lot of time lost on server
+restarts.
 
-In the next tutorial, we will learn how to enable our users to actually vote
-for one of the ``Poll`` options.
+.. code-block:: ini
+
+  pyramid.reload_templates = true
+  pyramid.debug_templates = true
+
+In the :ref:`next tutorial <tut-3>`, we will learn how to enable our users to
+actually vote for one of the ``Poll`` options.
 
 .. _SQLAlchemy: http://www.sqlalchemy.org/
 .. _Colander: http://colander.readthedocs.org/

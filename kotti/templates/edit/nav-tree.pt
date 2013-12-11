@@ -8,6 +8,7 @@
     <a tal:condition="api.find_edit_view(child)"
        href="${api.url(child, '@@edit')}"
        title="Edit" i18n:attributes="title"><i class="icon-edit"></i></a>
+    <em>(${child.type_info.title})</em>
     <ul tal:replace="api.render_template(
                          'kotti:templates/edit/nav-tree.pt',
                          tree=child)" />

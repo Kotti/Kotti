@@ -23,9 +23,11 @@ install_requires = [
     'docopt',
     'formencode',
     'html2text',
+    'js.angular',
     'js.bootstrap>=2.1.5',
     'js.deform>=0.9.5-4',
     'js.deform_bootstrap>=0.2.4-1',
+    'js.fineuploader',
     'js.html5shiv',
     'js.jquery',
     'js.jquery_form',
@@ -33,12 +35,13 @@ install_requires = [
     'js.jquery_timepicker_addon',
     'js.jqueryui>=1.8.24',
     'js.jqueryui_tagit',
-    'kotti_tinymce>=0.3.2',
+    'kotti_tinymce>=0.4.1',
     'lingua>=1.3',
     'plone.scale',  # needed for image resizing capabilities
     'py_bcrypt',
     'pyramid>=1.3',  # needed for kotti_tinymce
     'pyramid_beaker',
+    'pyramid_chameleon',
     'pyramid_debugtoolbar',
     'pyramid_deform>=0.2a3',  # language and template path config includeme
     'pyramid_mailer',
@@ -58,11 +61,11 @@ tests_require = [
     'WebTest',
     'mock',
     'pyquery',
-    'pytest',
+    'pytest>=2.4.2',
     'pytest-cov',
     'pytest-pep8!=1.0.3',
     'pytest-xdist',
-    'wsgi_intercept',
+    'wsgi_intercept==0.5.1',
     'zope.testbrowser',
     ]
 
@@ -80,7 +83,7 @@ if sys.version_info[:3] < (2, 7, 0):
     install_requires.append('ordereddict')
 
 setup(name='Kotti',
-      version='0.9b2dev',
+      version='0.10dev',
       description="A user-friendly, light-weight and extensible web content management system. Based on Pyramid and SQLAlchemy.",
       long_description='\n\n'.join([README, AUTHORS, CHANGES]),
       classifiers=[

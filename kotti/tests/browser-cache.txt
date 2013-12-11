@@ -129,3 +129,8 @@ Cache Resource
   HTTPError: HTTP Error 404: Not Found
   >>> 'X-Caching-Policy' in browser.headers
   False
+
+TearDown
+--------
+
+  >>> testing.tearDown()

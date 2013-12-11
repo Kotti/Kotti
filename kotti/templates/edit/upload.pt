@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      i18n:domain="Kotti"
+      metal:use-macro="api.macro('kotti:templates/view/master.pt')">
+
+  <div metal:fill-slot="content">
+    <div ng-app="kotti">
+      <h1>Upload content from local file(s)</h1>
+      <form id="uploader" ng-controller="UploadController" style="padding-top: 60px"
+        ng-init="endpoints={
+          upload:'${request.resource_url(context, 'upload')}',
+          content_types:'${request.resource_url(context, 'content_types')}'}">
+        <table class="table table-condensed table-hover">
+          <thead ng-show="(files.length > 0)">
+            <tr>
+              <th>Filename</th>
+              <th>Type</th>
+              <th>Size</th>
+              <th>Status</th>
+              <th>Progress</th>
+            </tr>
+          </thead>
+          <tbody ng-show="(files.length > 0)">
+            <tr ng-repeat="f in files" ng-class="{'uploading': 'info', 'cancelled': 'warning', 'complete': 'success', 'failed': 'error'}[f.status]">
+              <td>
+                <a ng-href="{{f.url}}" ng-show="f.url">{{f.name}}</a>
+                <span ng-show="!f.url">{{f.name}}</span>
+                <div class="btn-group" ng-show="f.status=='ready for upload'">
+                  <a class="btn btn-mini dropdown-toggle"
+                     data-toggle="dropdown" href="#">
+                    Create as:
+                    {{f.desired_type.title}}
+                    <span class="caret" ng-show="f.allowed_types.length>1"></span>
+                  </a>
+                  <ul class="dropdown-menu" ng-show="f.allowed_types.length>1">
+                    <li ng-repeat="t in f.allowed_types">
+                      <a ng-click="f.desired_type=t">
+                        <i class="icon-ok pull-right"
+                           ng-show="t==f.desired_type"></i>
+                        {{t.title}}
+                      </a>
+                    </li>
+                  </ul>
+                </div>
+                <!-- {{f | json}} -->
+              </td>
+              <td>{{f.file.type}}</td>
+              <td class="span2">{{f.size | bytes}}</td>
+              <td class="span2">
+                <span class="label" ng-class="{'uploading': 'label-info', 'cancelled': 'label-warning', 'failed': 'label-important', 'complete': 'label-success'}[f.status]">{{f.status}}</span>
+              </td>
+              <td class="span4">
+                <div class="progress progress-striped">
+                  <span>{{f.transfered.bytes | bytes}} / {{f.size | bytes}}</span>
+                  <div class="bar" style="width: {{f.transfered.percent}}%;"></div>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="form-actions">
+          <div id="btn-select-files" class="btn btn-success">
+            <i class="icon-plus icon-white"></i>
+            Select file(s) to upload…
+          </div>
+          <a id="btn-upload-all" class="btn btn-primary"
+             ng-show="files.length > 0"
+             ng-class="{'disabled': num_files_waiting == 0}"
+             ng-click="uploadAll()">
+            <i class="icon-arrow-up icon-white"></i>
+            Upload {{num_files_waiting}} files.
+          </a>
+          <a class="btn btn-danger pull-right" ng-show="errors.length > 0"
+             ng-click="errors=[]">
+            Dismiss all errors
+          </a>
+        </div>
+
+        <div class="alert alert-error alert-block" ng-repeat="f in errors">
+          <button type="button" class="close" ng-click="dismissError(f)">&times;</button>
+          <table class="table table condensed">
+            <thead>
+              <tr>
+                <th>Filename</th>
+                <th>Type</th>
+                <th>Size</th>
+                <th>{{f.status}}</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>{{f.name}}</td>
+                <td>{{f.file.type}}</td>
+                <td>{{f.file.size | bytes}}</td>
+                <td>{{f.error}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- {{files | json}} -->
+      </form>
+    </div>
+
+  </div>
+</html>

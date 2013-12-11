@@ -1,8 +1,56 @@
 Change History
 ==============
 
-0.9b2 - Unreleased
+0.10 - Unreleased
+-----------------
+
+- Added compatiblity for and now require Pyramid>=1.5.  #273
+
+0.9.2 - 2013-10-15
 ------------------
+
+- Fix #268: Convert None to colander.null in get_appstruct so that
+  serialization doesn't fail (needed due to recent changes in colander).
+
+0.9.1 - 2013-09-25
+------------------
+
+- Allow user admins to modify user passwords.
+
+- Require newer kotti_tinymce (source code editing was broken in 0.4).
+
+0.9 - 2013-09-17
+----------------
+
+- Add multi file content upload.  You can now select several files from your
+  local storage that you want to upload and chose what content nodes shall be
+  created in your Kotti site.  Currently files with MIME types of ``image/*``
+  can be uploaded and be created as either ``Image`` or ``File`` nodes, all
+  other MIME types will be created as ``File``.  In future releases (or add-on
+  products) this can be extended with additional converters allowing for example
+  to upload HTML files and create ``Document`` nodes with the content of the
+  ``title`` tag becoming the node's title, the content of the ``body`` tag
+  becoming the node's body and so on.
+
+- Fix #253: Many translations weren't included in the last release.
+
+  '--use-fuzzy' translations when running 'compile_catalog' adds back
+  translations that were recently marked as fuzzy.  (All translations
+  that were marked as fuzzy in German were still accurate.)
+
+- Fix #252: Wrap templates where extract_messages failed with <tal:block>
+
+- Fix #249: TinyMCE translations work again.
+
+0.9b2 - 2013-08-20
+------------------
+
+- Fix #251: Broken comparison of NestedMutationDict and NestedMutationList.
+
+- Update kotti_tinymce to version 4.0.2.
+
+- Fix bug in `kotti.views.content.FileEditForm` to preserve file
+  content while editing it.
 
 0.9b1 - 2013-06-26
 ------------------

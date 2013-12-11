@@ -29,7 +29,10 @@ def get_appstruct(context, schema):
     appstruct = {}
     for field in schema.children:
         if hasattr(context, field.name):
-            appstruct[field.name] = getattr(context, field.name)
+            val = getattr(context, field.name)
+            if val is None:
+                val = colander.null
+            appstruct[field.name] = val
     return appstruct
 
 

@@ -118,7 +118,7 @@ def register(context, request):
             return HTTPFound(location=request.application_url)
 
     if rendered_form is None:
-        rendered_form = form.render(request.params.items())
+        rendered_form = form.render(request.params)
 
     api = template_api(
         context, request,
@@ -280,7 +280,7 @@ def set_password(context, request,
                     _(u"Your password reset token may have expired."), 'error')
 
     if rendered_form is None:
-        rendered_form = form.render(request.params.items())
+        rendered_form = form.render(request.params)
 
     api = template_api(
         context, request,

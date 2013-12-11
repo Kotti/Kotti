@@ -3,7 +3,21 @@ from pyramid.security import ALL_PERMISSIONS
 
 
 class TestNestedMutationDict:
-    def test_dictwrapper_basics(self):
+    def test_dictwrapper_comparison(self):
+        from kotti.sqla import NestedMutationDict
+
+        assert NestedMutationDict({}) == NestedMutationDict({})
+        assert (
+            NestedMutationDict({'a': 'ok'}) == NestedMutationDict({'a': 'ok'}))
+
+    def test_listwrapper_comparison(self):
+        from kotti.sqla import NestedMutationList
+
+        assert NestedMutationList({}) == NestedMutationList({})
+        assert (
+            NestedMutationList(['ok']) == NestedMutationList(['ok']))
+
+    def test_dictwrapper_changed(self):
         from kotti.sqla import NestedMutationDict
 
         data = {}
@@ -27,7 +41,7 @@ class TestNestedMutationDict:
         assert wrapper['age'] == 78
         assert changed.call_count == 3
 
-    def test_listwrapper_basics(self):
+    def test_listwrapper_changed(self):
         from kotti.sqla import NestedMutationList
 
         data = []
