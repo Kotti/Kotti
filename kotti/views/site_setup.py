@@ -1,7 +1,7 @@
 from kotti.util import _
-from kotti.util import ViewLink
+from kotti.util import Link
 
 
 CONTROL_PANEL_LINKS = [
-    ViewLink('setup-users', title=_(u'User Management')),
+    Link('setup-users', title=_(u'User Management')),
     ]

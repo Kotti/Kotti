@@ -1,0 +1,6 @@
+<li class="${link.selected(context, request) and 'active' or None}"
+    tal:condition="link.visible(context, request)">
+  <a href="${link.url(context, request)}">
+    ${link.title}
+  </a>
+</li>

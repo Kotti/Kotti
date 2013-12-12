@@ -346,7 +346,6 @@ class subscribe(object):
         self.objtype = objtype
 
     def register(self, context, name, obj):
-
         if issubclass(self.evttype, ObjectEvent):
             objectevent_listeners[(self.evttype, self.objtype)].append(obj)
         else:

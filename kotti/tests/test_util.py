@@ -92,3 +92,11 @@ class TestCommand:
                 docopt.assert_called_with('doc')
                 bootstrap.assert_called_with('uri')
                 assert closer.call_count == 1
+
+
+class TestTemplateStructure:
+    def test_getattr(self):
+        from kotti.util import TemplateStructure
+
+        item = TemplateStructure(u'123')
+        assert item.split('2') == [u'1', u'3']
