@@ -42,7 +42,7 @@ mySQL and PostgreSQL (in every possible combination of those) on every commit
 If you want your add-on packages' to be tested the same way with additional
 testing against multiple versions of Kotti (including the current master), you
 can add a ``.travis.yml`` file to your repo that looks similar to this:
-https://raw.github.com/disko/kotti_media/master/.travis.yml.
+https://raw.github.com/Kotti/kotti_media/master/.travis.yml.
 
 The packages under http://kottipackages.xo7.de/ include all Kotti versions
 released on `PyPI` (synced every night at 00:15 CET) and a package built from
