@@ -343,5 +343,5 @@ for cls in (JsonType, MutationDict, MutationList, NestedMixin,
 ViewLink = Link
 deprecated(
     'ViewLink',
-    "kotti.util.ViewLink has been renamed to Link as of Kotti 0.9."
+    "kotti.util.ViewLink has been renamed to Link as of Kotti 0.10."
     )
