@@ -393,6 +393,78 @@ On setup pages we can't use the actions:
   Traceback (most recent call last):
   LinkNotFoundError
 
+When we copy more then 3 items, we get a single message instead of separate
+ones. We need more children to test this:
+
+  >>> browser.open(testing.BASE_URL + '/')
+  >>> browser.getLink("Add").click()
+  >>> browser.getLink("Document").click()
+  >>> ctrl("Title").value = "Multiple copy 1"
+  >>> ctrl("save").click()
+  >>> "Item was added" in browser.contents
+  True
+  >>> browser.url == testing.BASE_URL + '/multiple-copy-1/'
+  True
+
+  >>> browser.open(testing.BASE_URL + '/')
+  >>> browser.getLink("Add").click()
+  >>> browser.getLink("Document").click()
+  >>> ctrl("Title").value = "Multiple copy 2"
+  >>> ctrl("save").click()
+  >>> "Item was added" in browser.contents
+  True
+  >>> browser.url == testing.BASE_URL + '/multiple-copy-2/'
+  True
+
+  >>> browser.open(testing.BASE_URL + '/')
+  >>> browser.getLink("Add").click()
+  >>> browser.getLink("Document").click()
+  >>> ctrl("Title").value = "Multiple copy 3"
+  >>> ctrl("save").click()
+  >>> "Item was added" in browser.contents
+  True
+  >>> browser.url == testing.BASE_URL + '/multiple-copy-3/'
+  True
+
+First we copy just three of them:
+
+  >>> browser.open(testing.BASE_URL + '/@@contents')
+  >>> # Select the checkboxes for the last 3 items added
+  >>> for cb in sorted(ctrl(name='children').controls,
+  ...                  key=lambda x: int(x.optionValue))[-3:]:
+  ...     cb.click()
+  >>> ctrl(name="copy").click()
+  >>> "Multiple copy 1 was copied" in browser.contents
+  True
+  >>> "Multiple copy 2 was copied" in browser.contents
+  True
+  >>> "Multiple copy 3 was copied" in browser.contents
+  True
+
+And paste them back:
+
+  >>> ctrl(name="paste").click()
+  >>> "Multiple copy 1 was pasted" in browser.contents
+  True
+  >>> "Multiple copy 2 was pasted" in browser.contents
+  True
+  >>> "Multiple copy 3 was pasted" in browser.contents
+  True
+
+When we copy and paste more then 3 items we should get a single message:
+
+  >>> browser.open(testing.BASE_URL + '/@@contents')
+  >>> # Select the checkboxes for the last 4 items added
+  >>> for cb in sorted(ctrl(name='children').controls,
+  ...                  key=lambda x: int(x.optionValue))[-4:]:
+  ...     cb.click()
+  >>> ctrl(name="copy").click()
+  >>> "4 items were copied" in browser.contents
+  True
+  >>> ctrl(name="paste").click()
+  >>> "4 items were pasted" in browser.contents
+  True
+
 
 Contents view actions
 ---------------------
