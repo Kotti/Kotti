@@ -13,9 +13,11 @@ from deform.widget import CheckedPasswordWidget
 from deform.widget import SequenceWidget
 from pyramid.exceptions import Forbidden
 from pyramid.httpexceptions import HTTPFound
+from pyramid.settings import asbool
 from pyramid.view import view_config
 from pyramid_deform import FormView
 
+from kotti import get_settings
 from kotti.events import UserDeleted
 from kotti.events import notify
 from kotti.message import email_set_password
@@ -303,9 +305,9 @@ def _massage_groups_out(appstruct):
     split 'groups' into 'roles' and 'groups'.
     """
     d = appstruct
-    groups = [g.split(u'group:')[1] for g in d['groups']
+    groups = [g.split(u'group:')[1] for g in d.get('groups', u'')
               if g and g.startswith(u'group:')]
-    roles = [r for r in d['groups'] if r and r.startswith(u'role:')]
+    roles = [r for r in d.get('groups', u'') if r and r.startswith(u'role:')]
     d['groups'] = groups
     d['roles'] = roles
     return d
@@ -438,13 +440,19 @@ class UserManageFormView(UserEditFormView):
     def schema_factory(self):
         schema = user_schema()
         del schema['name']
-        del schema['password']
         return schema
 
     def before(self, form):
-        form.appstruct = _massage_groups_out(self.context.__dict__.copy())
+        context = self.context.__dict__.copy()
+        context['password'] = u''
+        form.appstruct = _massage_groups_out(context)
 
     def save_success(self, appstruct):
+        if appstruct.get('password'):
+            hashed = get_principals().hash_password(appstruct['password'])
+            appstruct['password'] = hashed
+        else:
+            appstruct.pop('password', None)
         _massage_groups_in(appstruct)
         return super(UserEditFormView, self).save_success(appstruct)
 

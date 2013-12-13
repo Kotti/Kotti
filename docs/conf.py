@@ -34,7 +34,7 @@ source_suffix = '.rst'
 master_doc = 'index'
 project = u'Kotti'
 copyright = u'2012-2013, Kotti developers'
-version = '0.9'
+version = '0.10'
 # The full version, including alpha/beta/rc tags.
 release = version
 #language = None

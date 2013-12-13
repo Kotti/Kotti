@@ -10,6 +10,8 @@ Inheritance Diagram
 
 import os
 from UserDict import DictMixin
+from fnmatch import fnmatch
+import warnings
 
 from pyramid.threadlocal import get_current_registry
 from pyramid.traversal import resource_path
@@ -56,7 +58,9 @@ from kotti.sqla import ACLType
 from kotti.sqla import JsonType
 from kotti.sqla import MutationList
 from kotti.sqla import NestedMutationDict
-from kotti.util import ViewLink
+from kotti.util import Link
+from kotti.util import LinkParent
+from kotti.util import LinkRenderer
 from kotti.util import _
 from kotti.util import camel_case_to_name
 from kotti.util import get_paste_items
@@ -228,7 +232,8 @@ class Node(Base, ContainerMixin, PersistentACLMixin):
         cascade='all',
         )
 
-    def __init__(self, name=None, parent=None, title=u"", annotations=None):
+    def __init__(self, name=None, parent=None, title=u"", annotations=None,
+                 **kwargs):
         """Constructor"""
 
         if annotations is None:
@@ -237,6 +242,8 @@ class Node(Base, ContainerMixin, PersistentACLMixin):
         self.parent = parent
         self.title = title
         self.annotations = annotations
+
+        super(Node, self).__init__(**kwargs)
 
     @property
     def __name__(self):
@@ -294,17 +301,28 @@ class TypeInfo(object):
             -   addable_to
             -   edit_links
             -   selectable_default_views
+            -   uploadable_mimetypes
     """
 
     addable_to = ()
     selectable_default_views = ()
+    uploadable_mimetypes = ()
     edit_links = ()
-    action_links = ()
+    action_links = ()  # BBB
 
     def __init__(self, **kwargs):
-        """
-        Constructor
-        """
+        if 'action_links' in kwargs:
+            msg = ("'action_links' is deprecated as of Kotti 0.10.  "
+                   "'edit_links' includes 'action_links' and should "
+                   "be used instead.")
+
+            edit_links = kwargs.get('edit_links')
+            last_link = edit_links[-1] if edit_links else None
+            if isinstance(last_link, LinkParent):
+                last_link.children.extend(kwargs['action_links'])
+                warnings.warn(msg, DeprecationWarning)
+            else:
+                raise ValueError(msg)
 
         self.__dict__.update(kwargs)
 
@@ -352,6 +370,27 @@ class TypeInfo(object):
         :type title: unicode or TranslationString
         """
         self.selectable_default_views.append((name, title))
+
+    def is_uploadable_mimetype(self, mimetype):
+        """ Check if uploads of the given MIME type are allowed.
+
+        :param mimetype: MIME type
+        :type mimetype: str
+
+        :result: Upload allowed (>0) or forbidden (0).  The greater the result,
+                 the better is the match.  E.g. ``image/*`` (6) is a better
+                 match for ``image/png`` than `*` (1).
+        :rtype: int
+        """
+
+        match_score = 0
+
+        for mt in self.uploadable_mimetypes:
+            if fnmatch(mimetype, mt):
+                if len(mt) > match_score:
+                    match_score = len(mt)
+
+        return match_score
 
 
 class Tag(Base):
@@ -435,16 +474,17 @@ default_type_info = TypeInfo(
     add_view=None,
     addable_to=[],
     edit_links=[
-        ViewLink('contents', title=_(u'Contents')),
-        ViewLink('edit', title=_(u'Edit')),
-        ViewLink('share', title=_(u'Share')),
-        ],
-    action_links=[
-        ViewLink('copy', title=_(u'Copy')),
-        ViewLink('cut', title=_(u'Cut'), predicate=_not_root),
-        ViewLink('paste', title=_(u'Paste'), predicate=get_paste_items),
-        ViewLink('rename', title=_(u'Rename'), predicate=_not_root),
-        ViewLink('delete', title=_(u'Delete'), predicate=_not_root),
+        Link('contents', title=_(u'Contents')),
+        Link('edit', title=_(u'Edit')),
+        Link('share', title=_(u'Share')),
+        LinkParent(title=_(u'Actions'), children=[
+            Link('copy', title=_(u'Copy')),
+            Link('cut', title=_(u'Cut'), predicate=_not_root),
+            Link('paste', title=_(u'Paste'), predicate=get_paste_items),
+            Link('rename', title=_(u'Rename'), predicate=_not_root),
+            Link('delete', title=_(u'Delete'), predicate=_not_root),
+            LinkRenderer('default-view-selector'),
+            ]),
         ],
     selectable_default_views=[
         ("folder_view", _(u"Folder view")),
@@ -512,9 +552,10 @@ class Content(Node):
     def __init__(self, name=None, parent=None, title=u"", annotations=None,
                  default_view=None, description=u"", language=None,
                  owner=None, creation_date=None, modification_date=None,
-                 in_navigation=True, tags=None):
+                 in_navigation=True, tags=None, **kwargs):
 
-        super(Content, self).__init__(name, parent, title, annotations)
+        super(Content, self).__init__(
+            name, parent, title, annotations, **kwargs)
 
         self.default_view = default_view
         self.description = description
@@ -599,6 +640,7 @@ class File(Content):
         add_view=u'add_file',
         addable_to=[u'Document'],
         selectable_default_views=[],
+        uploadable_mimetypes=['*', ],
         )
 
     def __init__(self, data=None, filename=None, mimetype=None, size=None,
@@ -610,6 +652,29 @@ class File(Content):
         self.filename = filename
         self.mimetype = mimetype
         self.size = size
+
+    @classmethod
+    def from_field_storage(cls, fs):
+        """ Create and return an instance of this class from a file upload
+            through a webbrowser.
+
+        :param fs: FieldStorage instance as found in a
+                   :class:`pyramid.request.Request`'s ``POST`` MultiDict.
+        :type fs: :class:`cgi.FieldStorage`
+
+        :result: The created instance.
+        :rtype: :class:`kotti.resources.File`
+        """
+
+        data = fs.file.read()
+        filename = fs.filename
+        mimetype = fs.type
+        size = len(data)
+
+        if not cls.type_info.is_uploadable_mimetype(mimetype):
+            raise ValueError("Unsupported MIME type: %s" % mimetype)
+
+        return cls(data=data, filename=filename, mimetype=mimetype, size=size)
 
 
 class Image(File):
@@ -627,6 +692,7 @@ class Image(File):
         add_view=u'add_image',
         addable_to=[u'Document'],
         selectable_default_views=[],
+        uploadable_mimetypes=['image/*', ],
         )
 
 

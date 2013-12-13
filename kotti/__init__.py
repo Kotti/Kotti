@@ -79,6 +79,7 @@ conf_defaults = {
         'kotti.views.edit.actions',
         'kotti.views.edit.content',
         'kotti.views.edit.default_views',
+        'kotti.views.edit.upload',
         'kotti.views.file',
         'kotti.views.image',
         'kotti.views.login',
@@ -227,6 +228,9 @@ def base_configure(global_config, **settings):
 
     config.hook_zca()
     config.include('pyramid_zcml')
+
+    # Chameleon bindings were removed from Pyramid core since pyramid>=1.5a2
+    config.include('pyramid_chameleon')
 
     config.registry.settings['pyramid.includes'] = pyramid_includes
 

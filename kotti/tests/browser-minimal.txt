@@ -37,4 +37,7 @@ User management
   True
 
 
+TearDown
+--------
+
   >>> testing.tearDown()

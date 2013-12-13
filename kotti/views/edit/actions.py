@@ -521,9 +521,9 @@ def contents(context, request):
     contents_view_js.need()
     buttons = contents_buttons(context, request)
     for button in buttons:
-        if button.path in request.POST:
+        if button.name in request.POST:
             children = request.POST.getall('children')
-            if not children and button.path != u'paste':
+            if not children and button.name != u'paste':
                 request.session.flash(
                     _(u'You have to select items to perform an action.'),
                     'info')
