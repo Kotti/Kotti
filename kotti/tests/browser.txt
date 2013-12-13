@@ -430,8 +430,7 @@ First we copy just three of them:
 
   >>> browser.open(testing.BASE_URL + '/@@contents')
   >>> # Select the checkboxes for the last 3 items added
-  >>> for cb in sorted(ctrl(name='children').controls,
-  ...                  key=lambda x: int(x.optionValue))[-3:]:
+  >>> for cb in ctrl(name='children').controls[-3:]:
   ...     cb.click()
   >>> ctrl(name="copy").click()
   >>> "Multiple copy 1 was copied" in browser.contents
@@ -455,8 +454,7 @@ When we copy and paste more then 3 items we should get a single message:
 
   >>> browser.open(testing.BASE_URL + '/@@contents')
   >>> # Select the checkboxes for the last 4 items added
-  >>> for cb in sorted(ctrl(name='children').controls,
-  ...                  key=lambda x: int(x.optionValue))[-4:]:
+  >>> for cb in ctrl(name='children').controls[-4:]:
   ...     cb.click()
   >>> ctrl(name="copy").click()
   >>> "4 items were copied" in browser.contents
