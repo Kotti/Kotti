@@ -8,6 +8,7 @@ Inheritance Diagram
 .. inheritance-diagram:: kotti.resources
 """
 
+import copy
 import os
 from UserDict import DictMixin
 from fnmatch import fnmatch
@@ -332,10 +333,10 @@ class TypeInfo(object):
         :result: a copy of the current TypeInfo instance
         :rtype: :class:`~kotti.resources.TypeInfo`
         """
-
-        d = self.__dict__.copy()
+        d = dict()
+        for key, value in self.__dict__.items():
+            d[key] = copy.copy(value)
         d.update(kwargs)
-
         return TypeInfo(**d)
 
     def addable(self, context, request):
