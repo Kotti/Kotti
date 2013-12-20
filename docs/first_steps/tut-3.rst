@@ -1,4 +1,4 @@
-.. _tut-1:
+.. _tut-3:
 
 Tutorial Part 3: User interaction
 =================================
