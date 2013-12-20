@@ -24,6 +24,7 @@ First Steps
     first_steps/installation
     first_steps/tut-1
     first_steps/tut-2
+    first_steps/tut-3
 
 Topics
 ------
