@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Kotti 0.9.2dev\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
 "POT-Creation-Date: 2013-10-10 20:17+0100\n"
-"PO-Revision-Date: 2013-12-19 11:20+0100\n"
+"PO-Revision-Date: 2013-12-19 15:05+0100\n"
 "Last-Translator: Xavi Torné <xavitorne@gmail.com>\n"
 "Language-Team: it \n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
@@ -23,83 +23,83 @@ msgstr "${principal_type} ${title} è stato cancellato."
 
 #: kotti/views/edit/actions.py:228
 msgid "${title} is no longer visible in the navigation."
-msgstr ""
+msgstr "${title} non è più visibile nella navigazione."
 
 #: kotti/views/edit/actions.py:225
 msgid "${title} is now visible in the navigation."
-msgstr ""
+msgstr "${title} ora è visibile nella navigazione."
 
 #: kotti/views/users.py:343
 msgid "${title} was added."
-msgstr ""
+msgstr "${title} è stato aggiunto."
 
 #: kotti/views/edit/actions.py:108
 msgid "${title} was copied."
-msgstr ""
+msgstr "${title} è stato copiato."
 
 #: kotti/views/edit/actions.py:126
 msgid "${title} was cut."
-msgstr ""
+msgstr "${title} è stato tagliato."
 
 #: kotti/views/edit/actions.py:270 kotti/views/edit/actions.py:294
 msgid "${title} was deleted."
-msgstr ""
+msgstr "${title} è stato cancellato."
 
 #: kotti/views/edit/actions.py:183
 msgid "${title} was moved."
-msgstr ""
+msgstr "${title} è stato mosso."
 
 #: kotti/views/edit/actions.py:159
 msgid "${title} was pasted."
-msgstr ""
+msgstr "${title} è stato incollato."
 
 #: kotti/views/users.py:162
 msgid "A user with that email already exists."
-msgstr ""
+msgstr "Un utente con questo email già esiste."
 
 #: kotti/views/users.py:155
 msgid "A user with that name already exists."
-msgstr ""
+msgstr "Un utente con questa email già esiste."
 
 #: kotti/templates/actions-dropdown.pt:3
 msgid "Actions"
-msgstr ""
+msgstr "Azioni"
 
 #: kotti/views/users.py:223
 msgid "Active"
-msgstr ""
+msgstr "Attivo"
 
 #: kotti/templates/add-dropdown.pt:3
 msgid "Add"
-msgstr ""
+msgstr "Aggiungere"
 
 #: kotti/views/form.py:198
 msgid "Add ${type} to <em>${title}</em>."
-msgstr ""
+msgstr "Aggiungere ${type} a <em>${title}</em>."
 
 #: kotti/views/form.py:202
 msgid "Add ${type}."
-msgstr ""
+msgstr "Aggiungere ${type}."
 
 #: kotti/views/users.py:351
 msgid "Add Group"
-msgstr ""
+msgstr "Aggiungere gruppo"
 
 #: kotti/views/users.py:319
 msgid "Add User"
-msgstr ""
+msgstr "Aggiungere utente"
 
 #: kotti/templates/site-setup/users.pt:74
 msgid "Add group"
-msgstr ""
+msgstr "Aggiungere gruppo"
 
 #: kotti/templates/site-setup/users.pt:71
 msgid "Add user"
-msgstr ""
+msgstr "Aggiungere utente"
 
 #: kotti/security.py:168
 msgid "Admin"
-msgstr ""
+msgstr "Admin"
 
 #: kotti/templates/edit/change-state.pt:14
 msgid "An item's workflow state determines who can see, edit and/or manage it."
@@ -108,54 +108,54 @@ msgstr ""
 #: kotti/templates/edit/change-state.pt:61 kotti/templates/edit/share.pt:58
 #: kotti/templates/site-setup/users.pt:60
 msgid "Apply changes"
-msgstr ""
+msgstr "Applicare modifiche"
 
 #: kotti/templates/edit/delete.pt:18
 msgid "Are you sure you want to delete ${title}?"
-msgstr ""
+msgstr "Sei sicuro di volere cancellare ${title}?"
 
 #: kotti/templates/site-setup/delete-user.pt:14
 msgid "Are you sure you want to delete ${type} ${title}?"
-msgstr ""
+msgstr "Sei sicuro che vuoi cancellare ${type} ${title}?"
 
 #: kotti/templates/edit/delete-nodes.pt:14
 msgid "Are you sure you want to delete the following items?"
-msgstr ""
+msgstr "Sei sicuro che vuoi cancellare i seguenti elementi?"
 
 #: kotti/templates/edit/share.pt:12
 msgid "Assign local roles"
-msgstr ""
+msgstr "Assegna i ruoli locali"
 
 #: kotti/templates/site-setup/user.pt:8
 msgid "Back to User Management"
-msgstr ""
+msgstr "Torna alla gestione degli utenti"
 
 #: kotti/views/edit/content.py:50
 msgid "Body"
-msgstr ""
+msgstr "Contenuto"
 
 #: kotti/templates/edit/change-state.pt:63
 #: kotti/templates/edit/delete-nodes.pt:47
 #: kotti/templates/edit/rename-nodes.pt:31 kotti/views/form.py:77
 #: kotti/views/users.py:320 kotti/views/users.py:352 kotti/views/users.py:437
 msgid "Cancel"
-msgstr ""
+msgstr "Cancella"
 
 #: kotti/views/edit/actions.py:452
 msgid "Change State"
-msgstr ""
+msgstr "Cambia stato"
 
 #: kotti/templates/edit/change-state.pt:50
 msgid "Change state to"
-msgstr ""
+msgstr "Cambia stato a"
 
 #: kotti/templates/edit/change-state.pt:8
 msgid "Change workflow state"
-msgstr ""
+msgstr "Cambia lo stato del flusso di lavoro"
 
 #: kotti/templates/email-set-password.pt:6
 msgid "Click here to set your password and log in: ${url}"
-msgstr ""
+msgstr "Clicka qua per impostare la tua password e accedi: ${url}"
 
 #: kotti/templates/email-reset-password.pt:5
 msgid "Click this link to reset your password at ${site_title}: ${url}"
