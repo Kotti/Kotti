@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Kotti 0.9.2dev\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
 "POT-Creation-Date: 2013-10-10 20:17+0100\n"
-"PO-Revision-Date: 2014-01-18 12:48+0100\n"
+"PO-Revision-Date: 2014-01-18 18:30+0100\n"
 "Last-Translator: Xavi Torné <xavitorne@gmail.com>\n"
 "Language-Team: it \n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
@@ -426,7 +426,7 @@ msgstr "Senza modifiche"
 #: kotti/views/edit/actions.py:300 kotti/views/edit/actions.py:366
 #: kotti/views/edit/actions.py:408 kotti/views/edit/actions.py:412
 msgid "No changes were made."
-msgstr "Non si hanno fatto modifiche"
+msgstr "Non si hanno fatto modifiche."
 
 #: kotti/templates/edit/contents.pt:30
 msgid "No content items are contained here."
@@ -574,7 +574,7 @@ msgstr "Tags"
 
 #: kotti/views/login.py:179
 msgid "That username or email is not known by this system."
-msgstr "Quseto username o email non è nel sistema."
+msgstr "Questo username o email non è nel sistema."
 
 #: kotti/views/login.py:91 kotti/views/login.py:258
 msgid "There was an error."
