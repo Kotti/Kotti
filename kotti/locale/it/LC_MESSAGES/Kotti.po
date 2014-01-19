@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Kotti 0.9.2dev\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
 "POT-Creation-Date: 2013-10-10 20:17+0100\n"
-"PO-Revision-Date: 2014-01-18 19:09+0100\n"
+"PO-Revision-Date: 2014-01-19 11:14+0100\n"
 "Last-Translator: Xavi Torné <xavitorne@gmail.com>\n"
 "Language-Team: it \n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
@@ -370,7 +370,7 @@ msgstr "Esci"
 
 #: kotti/templates/workflow-dropdown.pt:12
 msgid "Make ${state}"
-msgstr "Fai ${state}"
+msgstr "Rendi ${state}"
 
 #: kotti/views/form.py:264
 msgid "Maximum file size: ${size}MB"
@@ -408,7 +408,7 @@ msgstr "Navigazione"
 
 #: kotti/templates/edit/nav-tree-view.pt:8
 msgid "Navigate Site"
-msgstr "Sito navigazione"
+msgstr "Navigazione del Sito"
 
 #: kotti/templates/edit/rename-nodes.pt:20 kotti/templates/edit/rename.pt:13
 msgid "New name"
