@@ -12,7 +12,9 @@ Change History
   make better use of templates for rendering, and are probably easier
   to customize overall.
 
-- Added compatiblity for and now require Pyramid>=1.5.  #273
+- Added compatibility for and now require Pyramid>=1.5.  #273
+
+- A single combined message when copying/cutting/pasting more then 3 items.
 
 - Add ``kotti_context_url`` JS global variable.  For more details on why this
   is needed see:
