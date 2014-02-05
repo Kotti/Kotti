@@ -33,7 +33,7 @@ js.jquery-timepicker-addon==1.3-1
 js.jqueryui==1.10.3
 js.jqueryui-tagit==2.0.24-2
 js.tinymce==4.0.2
-kotti-tinymce==0.4.1
+kotti-tinymce==0.4.2
 lingua==1.5
 peppercorn==0.4
 plone.scale==1.3.1
