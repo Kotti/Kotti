@@ -20,6 +20,9 @@
                tal:condition="snippets"
                tal:repeat="snippet snippets"
                tal:replace="structure snippet" />
+    <script>
+      kotti_context_url = '${request.resource_url(context)}';
+    </script>
   </head>
 
   <body class="${request.user is not None and 'logged-in'}

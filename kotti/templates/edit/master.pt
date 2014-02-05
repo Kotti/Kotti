@@ -22,6 +22,9 @@
                tal:condition="snippets"
                tal:repeat="snippet snippets"
                tal:replace="structure snippet" />
+    <script>
+      kotti_context_url = '${request.resource_url(context)}';
+    </script>
   </head>
 
   <body class="view-${request.view_name or 'default'} ${api.body_css_class} logged-in">

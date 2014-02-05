@@ -14,6 +14,14 @@ Change History
 
 - Added compatiblity for and now require Pyramid>=1.5.  #273
 
+- Add ``kotti_context_url`` JS global variable.  For more details on why this
+  is needed see:
+
+    - https://github.com/Kotti/kotti_tinymce/issues/19
+    - https://github.com/Kotti/Kotti/issues/219
+    - https://github.com/Kotti/kotti_newsitem/issues/2
+    - https://github.com/Kotti/kotti_calendar/issues/4
+
 0.9.2 - 2013-10-15
 ------------------
 
