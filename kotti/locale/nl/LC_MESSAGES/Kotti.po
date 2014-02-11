@@ -83,8 +83,8 @@ msgstr "Toevoegen"
 
 #: kotti/views/form.py:198
 #, fuzzy
-msgid "Add ${type} to <em>${title}</em>."
-msgstr "Voeg ${type} <em>${title}</em> toe"
+msgid "Add ${type} to ${title}."
+msgstr "Voeg ${type} ${title} toe"
 
 #: kotti/views/form.py:202
 #, fuzzy
@@ -265,8 +265,8 @@ msgid "Edit ${title}"
 msgstr "Bewerken ${title}"
 
 #: kotti/views/form.py:155
-msgid "Edit <em>${title}</em>"
-msgstr "Bewerken <em>${title}</em>"
+msgid "Edit ${title}"
+msgstr "Bewerken ${title}"
 
 #: kotti/security.py:166
 msgid "Editor"

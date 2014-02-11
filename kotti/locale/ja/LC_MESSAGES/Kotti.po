@@ -75,8 +75,8 @@ msgid "Add"
 msgstr "追加"
 
 #: kotti/views/form.py:198
-msgid "Add ${type} to <em>${title}</em>."
-msgstr "<em>${title}</em> に ${type} を追加する。"
+msgid "Add ${type} to ${title}."
+msgstr "${title} に ${type} を追加する。"
 
 #: kotti/views/form.py:202
 msgid "Add ${type}."
@@ -249,8 +249,8 @@ msgid "Edit ${title}"
 msgstr "${title} を編集"
 
 #: kotti/views/form.py:155
-msgid "Edit <em>${title}</em>"
-msgstr "<em>${title}</em> を編集"
+msgid "Edit ${title}"
+msgstr "${title} を編集"
 
 #: kotti/security.py:166
 msgid "Editor"
