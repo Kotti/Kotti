@@ -284,12 +284,3 @@ class TestTypeInfo:
                 edit_links=[],
                 action_links=[my_item],
                 )
-
-    def test_copy(self):
-        from kotti.resources import TypeInfo
-        obj = object()
-        ti = TypeInfo(name='dummy', edit_links=[obj])
-        ti_copy = ti.copy()
-        assert ti_copy.name == 'dummy'
-        assert ti_copy.edit_links[0] == obj
-        assert ti.edit_links is not ti_copy.edit_links
