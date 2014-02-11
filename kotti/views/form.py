@@ -153,7 +153,7 @@ class EditFormView(BaseFormView):
 
     @reify
     def first_heading(self):
-        return _(u'Edit <em>${title}</em>',
+        return _(u'Edit ${title}',
                  mapping=dict(title=self.context.title)
                  )
 
@@ -195,7 +195,7 @@ class AddFormView(BaseFormView):
         context_title = getattr(self.request.context, 'title', None)
         type_title = self.item_type or self.add.type_info.title
         if context_title:
-            return _(u'Add ${type} to <em>${title}</em>.',
+            return _(u'Add ${type} to ${title}.',
                      mapping=dict(type=translate(type_title),
                                   title=context_title))
         else:

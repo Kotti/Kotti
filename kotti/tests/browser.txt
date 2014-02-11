@@ -70,7 +70,7 @@ Add a document
 
   >>> browser.getLink("Add").click()
   >>> browser.getLink("Document").click()
-  >>> "Add Document to <em>Welcome to Kotti</em>" in browser.contents
+  >>> "Add Document to Welcome to Kotti" in browser.contents
   True
   >>> ctrl("Title").value = "Child One"
   >>> ctrl("save").click()
@@ -83,7 +83,7 @@ Edit the document
 -----------------
 
   >>> browser.getLink("Edit").click()
-  >>> "Edit <em>Child One</em>" in browser.contents
+  >>> "Edit Child One" in browser.contents
   True
   >>> ctrl("Title").value = "First Child"
   >>> ctrl("save").click()
