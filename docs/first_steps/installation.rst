@@ -20,10 +20,13 @@ It is recommended to install Kotti inside a virtualenv:
 
   virtualenv mysite
   cd mysite
-  bin/pip install -r https://raw.github.com/Kotti/Kotti/0.9.1/requirements.txt
+  bin/pip install --pre -r https://raw.github.com/Kotti/Kotti/0.9.2/requirements.txt
 
-This will install Kotti 0.9.1 and all its requirements into your
+This will install Kotti 0.9.2 and all its requirements into your
 virtualenv.
+
+.. note:: If you're using an older version of ``pip`` then drop the
+   ``-pre`` flag.
 
 Kotti uses `Paste Deploy`_ for configuration and deployment.  An
 example configuration file is included with Kotti's source
