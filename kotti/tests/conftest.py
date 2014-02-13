@@ -19,3 +19,16 @@ def extra_principals(db_session):
     P[u'group:bobsgroup'] = dict(name=u'group:bobsgroup', title=u"Bob's Group")
     P[u'group:franksgroup'] = dict(name=u'group:franksgroup',
         title=u"Frank's Group")
+
+
+def storage_settings_into_registry():
+    from pyramid.threadlocal import get_current_registry
+    registry = get_current_registry()
+    settings = dict()
+    settings['kotti.storage.providers'] = {'internal:': None}
+    settings['kotti.storage.default'] = 'internal:'
+    if registry.settings is None:
+        registry.settings = settings
+    else:
+        registry.settings.update(settings)
+    return registry.settings

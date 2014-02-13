@@ -97,6 +97,8 @@ conf_defaults = {
         'kotti.resources.File',
         'kotti.resources.Image',
         ]),
+    'kotti.storage.providers': {'internal:': None},
+    'kotti.storage.default': 'internal:',
     'kotti.search_content': 'kotti.views.util.default_search_content',
     'kotti.authn_policy_factory': 'kotti.authtkt_factory',
     'kotti.authz_policy_factory': 'kotti.acl_factory',

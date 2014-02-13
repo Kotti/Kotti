@@ -623,7 +623,7 @@ class File(Content):
     id = Column(Integer(), ForeignKey('contents.id'), primary_key=True)
     #: The binary data itself
     #: (:class:`sqlalchemy.types.LargeBinary`)
-    data = deferred(Column(LargeBinary()))
+    _data = deferred(Column(LargeBinary()))
     #: The filename is used in the attachment view to give downloads
     #: the original filename it had when it was uploaded.
     #: (:class:`sqlalchemy.types.Unicode`)
@@ -634,6 +634,9 @@ class File(Content):
     #: Size of the file in bytes
     #: (:class:`sqlalchemy.types.Integer`)
     size = Column(Integer())
+    #: URL employed to retrieve object from external storage
+    #: (:class:`sqlalchemy.types.String`)
+    storage = Column(String(100))
 
     type_info = Content.type_info.copy(
         name=u'File',
@@ -644,15 +647,68 @@ class File(Content):
         uploadable_mimetypes=['*', ],
         )
 
-    def __init__(self, data=None, filename=None, mimetype=None, size=None,
+    def __init__(self, data=None, filename=None, mimetype=None, size=None, storage=None,
                  **kwargs):
 
         super(File, self).__init__(**kwargs)
 
-        self.data = data
+        self.storage = storage if storage is not None else self.__get_default_storage()
         self.filename = filename
         self.mimetype = mimetype
         self.size = size
+        self.data = data
+
+    def __get_default_storage(self):
+        settings = get_current_registry().settings
+        return settings['kotti.storage.default'] if 'kotti.storage.default' in settings else 'internal:'
+
+    @property
+    def data(self):
+        if self.storage == "internal:":
+            return self._data
+        else:
+            from urlparse import urlparse
+            parts = urlparse(self.storage)
+            id = '{}://{}{}'.format(parts.scheme, parts.netloc, parts.path)
+            # obtain ``Storage`` responsible for retrieving the data
+            settings = get_current_registry().settings
+            o = settings['kotti.storage.providers'][id]
+            return o.retrieve(self.storage)
+
+    @data.setter
+    def data(self, value):
+        if self.storage == "internal:":
+            self._data = value
+        else:
+            self._data = None
+            from urlparse import urlparse
+            parts = urlparse(self.storage)
+            id = '{}://{}{}'.format(parts.scheme, parts.netloc, parts.path)
+            # obtain ``Storage`` responsible for storing the data
+            settings = get_current_registry().settings
+            o = settings['kotti.storage.providers'][id]
+            metadata = dict()
+            metadata[u'filename'] = self.filename
+            metadata[u'mimetype'] = self.mimetype
+            # store data and obtain possibly modified self.storage
+            self.storage = o.store(self.storage, value, metadata)
+            m = o.metadata(self.storage)
+            self.size = m[u'_content_length']
+            if self.mimetype is None:
+                self.mimetype = m[u'mimetype']
+
+    @data.deleter
+    def data(self):
+        if self.storage == "internal:":
+            del self._data
+        else:
+            from urlparse import urlparse
+            parts = urlparse(self.storage)
+            id = '{}://{}{}'.format(parts.scheme, parts.netloc, parts.path)
+            # obtain ``Storage`` responsible for storing the data
+            settings = get_current_registry().settings
+            o = settings['kotti.storage.providers'][id]
+            o.remove(self.storage)
 
     @classmethod
     def from_field_storage(cls, fs):
