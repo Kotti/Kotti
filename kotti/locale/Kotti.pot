@@ -240,10 +240,6 @@ msgstr ""
 msgid "Edit ${title}"
 msgstr ""
 
-#: kotti/views/form.py:155
-msgid "Edit ${title}"
-msgstr ""
-
 #: kotti/security.py:166
 msgid "Editor"
 msgstr ""
