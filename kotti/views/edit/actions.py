@@ -252,6 +252,7 @@ class NodeActions(object):
         return self.set_visibility(False)
 
     @view_config(name='delete',
+                 permission='delete',
                  renderer='kotti:templates/edit/delete.pt')
     def delete_node(self):
         """
@@ -273,6 +274,7 @@ class NodeActions(object):
         return {}
 
     @view_config(name='delete_nodes',
+                 permission='delete',
                  renderer='kotti:templates/edit/delete-nodes.pt')
     def delete_nodes(self):
         """
