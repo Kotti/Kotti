@@ -7,6 +7,10 @@ from kotti.testing import DummyRequest
 
 
 class TestFileViews:
+    def setup_class(cls):
+        from kotti.tests.conftest import storage_settings_into_registry
+        storage_settings_into_registry()
+
     def setup_method(self, method):
         from kotti.resources import File
         self.file = File("file contents", u"myf\xfcle.png", u"image/png")

@@ -19,6 +19,10 @@ class IDocument(IContent):
        (and subclasses thereof)"""
 
 
+class IStorage(Interface):
+    """Marker interface for all storage providers"""
+
+
 class IFile(IContent):
     """Marker interface for all nodes of type File
        (and subclasses thereof)"""
