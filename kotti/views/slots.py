@@ -8,12 +8,12 @@ in in the left column of every page::
   from kotti.views.slots import assign_slot
   assign_slot('hello_world', 'left')
 
-It is also possible to pass parameters to the view:
+It is also possible to pass parameters to the view::
 
   assign_slot('last_tweets', 'right', params=dict(user='foo'))
 
 In the view you can get the slot in that the view is rendered from
-the request:
+the request::
 
     @view_config(name='last_tweets')
     def view(request, context):
@@ -22,7 +22,7 @@ the request:
 
 If no view can be found for the given request and slot, the slot
 remains empty.  If you want to force your slot not to be rendered,
-raise :class:`pyramid.exceptions.PredicateMismatch` inside your view:
+raise :class:`pyramid.exceptions.PredicateMismatch` inside your view::
 
     from pyramid.exceptions import PredicateMismatch
 
@@ -35,7 +35,8 @@ raise :class:`pyramid.exceptions.PredicateMismatch` inside your view:
 Usually you'll want to call :func:`kotti.views.slots.assign_slot`
 inside an ``includeme`` function and not on a module level, to allow
 users of your package to include your slot assignments through the
-``pyramid.includes`` configuration setting.  """
+``pyramid.includes`` configuration setting.
+"""
 
 import urllib
 
