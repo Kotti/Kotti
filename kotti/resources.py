@@ -797,7 +797,7 @@ def initialize_sql(engine, drop_all=False):
 
     if engine.dialect.name == 'mysql':  # pragma: no cover
         from sqlalchemy.dialects.mysql.base import LONGBLOB
-        File.__table__.c.data.type = LONGBLOB()
+        File.__table__.c._data.type = LONGBLOB()
 
     # Allow migrations to set the 'head' stamp in case the database is
     # initialized freshly:
