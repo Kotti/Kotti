@@ -31,8 +31,8 @@ the 'kotti-reset-workflow' command to reset all your content's workflow.
       <key name="inherit" value="0" />
       <key name="system.Everyone" value="" />
       <key name="role:viewer" value="view" />
-      <key name="role:editor" value="view add edit state_change" />
-      <key name="role:owner" value="view add edit manage state_change" />
+      <key name="role:editor" value="view add edit delete state_change" />
+      <key name="role:owner" value="view add edit delete manage state_change" />
 
     </state>
 
@@ -44,8 +44,8 @@ the 'kotti-reset-workflow' command to reset all your content's workflow.
       <key name="inherit" value="0" />
       <key name="system.Everyone" value="view" />
       <key name="role:viewer" value="view" />
-      <key name="role:editor" value="view add edit state_change" />
-      <key name="role:owner" value="view add edit manage state_change" />
+      <key name="role:editor" value="view add edit delete state_change" />
+      <key name="role:owner" value="view add edit delete manage state_change" />
 
     </state>
 
