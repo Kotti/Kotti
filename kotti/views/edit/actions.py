@@ -474,7 +474,7 @@ def content_type_factories(context, request):
     return {'factories': factories}
 
 
-@view_config(context=IContent, name='contents', permission='view',
+@view_config(context=IContent, name='contents', permission='edit',
              renderer='kotti:templates/edit/contents.pt')
 def contents(context, request):
     """
@@ -549,7 +549,7 @@ def move_child_position(context, request):
     return {'result': result}
 
 
-@view_config(name='workflow-dropdown', permission='view',
+@view_config(name='workflow-dropdown', permission='state_change',
              renderer='kotti:templates/workflow-dropdown.pt')
 def workflow(context, request):
     """
