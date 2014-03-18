@@ -4,10 +4,9 @@ from pytest import fixture
 
 
 @fixture
-def app(db_session):
+def app(db_session, setup_app):
     from webtest import TestApp
-    from kotti.tests import setup_app
-    return TestApp(setup_app())
+    return TestApp(setup_app)
 
 
 @fixture
