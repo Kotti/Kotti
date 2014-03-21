@@ -474,7 +474,7 @@ def content_type_factories(context, request):
     return {'factories': factories}
 
 
-@view_config(context=IContent, name='contents', permission='edit',
+@view_config(context=IContent, name='contents', permission='view',
              renderer='kotti:templates/edit/contents.pt')
 def contents(context, request):
     """
