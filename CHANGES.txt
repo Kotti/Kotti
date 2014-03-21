@@ -14,6 +14,9 @@ Change History
 
 - Added compatiblity for and now require Pyramid>=1.5.  #273
 
+- In tests, turned `settings` and `setup_app` into fixtures to ease
+  overriding.
+
 - Add ``kotti_context_url`` JS global variable.  For more details on why this
   is needed see:
 

@@ -3,6 +3,7 @@
 from pytest import fixture
 
 
+@fixture(scope='session')
 def settings():
     from kotti import _resolve_dotted
     from kotti import conf_defaults
@@ -15,13 +16,13 @@ def settings():
 
 
 @fixture
-def config(request):
+def config(request, settings):
     """ returns a Pyramid `Configurator` object initialized
         with Kotti's default (test) settings.
     """
     from pyramid import testing
     from kotti import security
-    config = testing.setUp(settings=settings())
+    config = testing.setUp(settings=settings)
     config.include('pyramid_chameleon')
     config.add_default_renderers()
     request.addfinalizer(security.reset)
@@ -52,7 +53,7 @@ def connection():
 
 
 @fixture(scope='session')
-def content(connection):
+def content(connection, settings):
     """ sets up some default content using Kotti's testing populator.
     """
     from transaction import commit
@@ -65,7 +66,7 @@ def content(connection):
     from zope.configuration import xmlconfig
     import kotti
     xmlconfig.file('workflow.zcml', kotti, execute=True)
-    for populate in settings()['kotti.populators']:
+    for populate in settings['kotti.populators']:
         populate()
     commit()
 
@@ -75,6 +76,7 @@ def db_session(config, content, connection, request):
     """ returns a db session object and sets up a db transaction
         savepoint, which will be rolled back after the test.
     """
+
     from transaction import abort
     trans = connection.begin()          # begin a non-orm transaction
     request.addfinalizer(trans.rollback)
@@ -95,6 +97,15 @@ def dummy_request(config):
 
 
 @fixture
+def dummy_mailer(monkeypatch):
+    from pyramid_mailer.mailer import DummyMailer
+
+    mailer = DummyMailer()
+    monkeypatch.setattr('kotti.message.get_mailer', lambda: mailer)
+    return mailer
+
+
+@fixture
 def events(config, request):
     """ sets up Kotti's default event handlers.
     """
@@ -104,13 +115,14 @@ def events(config, request):
     return config
 
 
-def setup_app():
+@fixture
+def setup_app(settings):
     from kotti import base_configure
-    return base_configure({}, **settings()).make_wsgi_app()
+    return base_configure({}, **settings).make_wsgi_app()
 
 
 @fixture
-def browser(db_session, request):
+def browser(db_session, request, setup_app):
     """ returns an instance of `zope.testbrowser`.  The `kotti.testing.user`
         pytest marker (or `pytest.mark.user`) can be used to pre-authenticate
         the browser with the given login name: `@user('admin')`.
@@ -118,7 +130,7 @@ def browser(db_session, request):
     from wsgi_intercept import add_wsgi_intercept, zope_testbrowser
     from kotti.testing import BASE_URL
     host, port = BASE_URL.split(':')[-2:]
-    add_wsgi_intercept(host[2:], int(port), setup_app)
+    add_wsgi_intercept(host[2:], int(port), lambda: setup_app)
     browser = zope_testbrowser.WSGI_Browser(BASE_URL + '/')
     if 'user' in request.keywords:
         # set auth cookie directly on the browser instance...
