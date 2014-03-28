@@ -610,6 +610,30 @@ Contents view change state actions
   True
 
 
+Check permission of workflow dropdown
+-------------------------------------
+
+  >>> browser.open(testing.BASE_URL + '/@@workflow-dropdown')
+  >>> '<ul class="dropdown-menu">' in browser.contents
+  True
+
+Logout, and check that the view is not accessible:
+
+  >>> browser.open(testing.BASE_URL + '/@@logout')
+  >>> browser.open(testing.BASE_URL + '/@@workflow-dropdown')
+  >>> '<ul class="dropdown-menu">' in browser.contents
+  False
+  >>> '<div class="login-form">' in browser.contents
+  True
+
+Log in again:
+
+  >>> ctrl("Username or email").value = "admin"
+  >>> ctrl("Password").value = "secret"
+  >>> ctrl(name="submit").click()
+  >>> browser.open(testing.BASE_URL)
+
+
 Navigation
 ----------
 
