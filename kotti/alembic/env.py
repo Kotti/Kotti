@@ -31,7 +31,7 @@ def run_migrations_online():
     else:
         transaction.commit()
     finally:
-        #connection.close()
+        # connection.close()
         pass
 
 

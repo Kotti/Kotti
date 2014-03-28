@@ -49,7 +49,7 @@ class TestPackageEnvironment:
         called = []
 
         def func(rev, context):
-            #assert rev is None  # XXX
+            # assert rev is None  # XXX
             assert isinstance(context, MigrationContext)
             assert context.script == pkg_env.script_dir
             called.append((rev, context))
