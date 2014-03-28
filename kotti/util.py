@@ -219,10 +219,8 @@ def cache(compute_key, container_factory):
             key = '%s.%s:%s' % (func.__module__, func.__name__, key)
             cached_value = cache.get(key, marker)
             if cached_value is marker:
-                #print "\n*** MISS %r ***" % key
                 cached_value = cache[key] = func(*args, **kwargs)
             else:
-                #print "\n*** HIT %r ***" % key
                 pass
             return cached_value
         replacement.__doc__ = func.__doc__
