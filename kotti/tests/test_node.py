@@ -265,7 +265,7 @@ class TestTypeInfo:
             ('foo', u'Fannick'),
             ]
 
-    def test_action_links_deprecated(self):
+    def test_action_links_deprecated(self, allwarnings):
         from kotti.resources import TypeInfo
         from kotti.util import LinkParent
 

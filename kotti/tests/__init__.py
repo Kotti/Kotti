@@ -1,6 +1,19 @@
 # public pytest fixtures
 
+import warnings
+
 from pytest import fixture
+
+
+@fixture
+def allwarnings(request):
+    save_filters = warnings.filters[:]
+    warnings.filters[:] = []
+
+    def restore():
+        warnings.filters[:] = save_filters
+
+    request.addfinalizer(restore)
 
 
 @fixture(scope='session')

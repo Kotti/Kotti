@@ -81,7 +81,7 @@ class TestApp:
         with patch('kotti.resources.initialize_sql'):
             main({}, **settings)
 
-    def test_kotti_static_deprecated(self):
+    def test_kotti_static_deprecated(self, allwarnings):
         with warnings.catch_warnings(record=True) as w:
             from kotti.static import edit_needed
             edit_needed  # pyflakes

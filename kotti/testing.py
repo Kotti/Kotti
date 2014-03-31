@@ -22,11 +22,11 @@ import transaction
 # re-enable deprecation warnings during test runs
 # however, let the `ImportWarning` produced by Babel's
 # `localedata.py` vs `localedata/` show up once...
-from warnings import resetwarnings
-from babel import localedata
-import compiler
-localedata, compiler    # make pyflakes happy... :p
-resetwarnings()
+from warnings import catch_warnings
+with catch_warnings():
+    from babel import localedata
+    import compiler
+    localedata, compiler    # make pyflakes happy... :p
 
 
 # py.test markers (see http://pytest.org/latest/example/markers.html)

@@ -14,7 +14,7 @@ def assert_deprecations(w, *msgs):
 
 class TestDeprecated09:
 
-    def test_render_tree_navigation_moved(self):
+    def test_render_tree_navigation_moved(self, allwarnings):
         with warnings.catch_warnings(record=True) as w:
 
             from kotti.views.edit.actions import render_tree_navigation
@@ -23,7 +23,7 @@ class TestDeprecated09:
             assert_deprecations(
                 w, "has been moved to kotti.views.navigation as of Kotti 0.9")
 
-    def test_local_navigation_moved(self):
+    def test_local_navigation_moved(self, allwarnings):
         with warnings.catch_warnings(record=True) as w:
 
             from kotti.views.slots import includeme_local_navigation
