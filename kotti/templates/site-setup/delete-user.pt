@@ -6,20 +6,23 @@
 
   <div metal:fill-slot="content">
 
-    <h1 i18n:translate="">Delete <em i18n:name="title">${api.principal.title}</em></h1>
+    <h1 i18n:translate="">
+      Delete <em i18n:name="title">${api.principal.title}</em>
+    </h1>
 
-    <div class="tab-pane" id="delete">
+    <div id="delete">
       <form action="${request.url}" method="post" id="form-delete-user">
-        <fieldset>
-          <legend i18n:translate="">
-            Are you sure you want to delete <span i18n:name="type">${api.principal_type}</span> <em i18n:name="title">${api.principal.title}</em>?
-          </legend>
+        <p class="lead" i18n:translate="">
+          Are you sure you want to delete
+          <span i18n:name="type">${api.principal_type}</span>
+          <em i18n:name="title">${api.principal.title}</em>?
+        </p>
 
-          <div class="form-actions">
-            <button type="submit" name="delete" value="delete" 
-                    class="btn btn-danger" i18n:translate="">Delete</button>
-          </div>
-        </fieldset>
+        <button type="submit" name="delete" value="delete"
+                class="btn btn-danger">
+          <i class="glyphicon glyphicon-trash"></i>
+          <span i18n:translate="">Delete</span>
+        </button>
       </form>
     </div>
 

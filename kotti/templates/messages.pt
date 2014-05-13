@@ -1,9 +1,11 @@
 <div id="messages" class="${request.is_xhr and 'ajax-replace' or ''}">
   <div tal:repeat="queue ('info', 'success', 'error', '')" tal:omit-tag="">
-    <div class="alert alert-${queue}"
-         tal:define="messages request.session.pop_flash(queue)"
+    <div tal:define="messages request.session.pop_flash(queue)"
          tal:condition="messages"
-         tal:repeat="message messages">
+         tal:repeat="message messages"
+         tal:attributes="class string: alert-dismissable alert alert-${'danger' if queue == 'error' else queue}">
+      <button type="button" class="close" data-dismiss="alert"
+              aria-hidden="true">&times;</button>
       ${message}
     </div>
   </div>

@@ -11,7 +11,9 @@
     <div class="tab-pane" id="delete-nodes">
       <form action="${request.url}" method="post">
 
-        <legend i18n:translate="">Are you sure you want to delete the following items?</legend>
+        <p class="lead" i18n:translate="">
+          Are you sure you want to delete the following items?
+        </p>
 
         <fieldset>
           <table class="table table-condensed" tal:condition="items">
@@ -44,7 +46,7 @@
           <div class="form-actions">
             <button type="submit" name="delete_nodes" value="delete_nodes"
                     class="btn btn-danger" i18n:translate="">Delete</button>
-            <button type="submit" name="cancel" value="cancel" 
+            <button type="submit" name="cancel" value="cancel"
                     class="btn" i18n:translate="">Cancel</button>
           </div>
         </fieldset>

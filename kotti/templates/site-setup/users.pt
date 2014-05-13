@@ -7,82 +7,113 @@
   <div metal:fill-slot="content">
     <h1>${api.page_title}</h1>
 
-    <form action="${request.url}" method="post">
-      <fieldset>
-        <legend i18n:translate="">Find and modify users (Blank search text finds all).</legend>
-
-        <div class="control-group">
-          <div class="controls">
-            <input type="text" name="query" id="search-query"
-                   value="${request.params.get('query')}"
-                   placeholder="Search users and groups"
-                   i18n:attributes="placeholder" />
-          </div>
-        </div>
-
-        <div class="form-actions">
-          <button type="submit" name="search" class="btn btn-primary"
-                  i18n:translate="">
-            Search
-          </button>
-        </div>
-
-        <table tal:condition="entries" class="table table-bordered">
-          <tr>
-            <th i18n:translate="">Name</th>
-            <th tal:repeat="role available_roles">
-              ${role.title}
-            </th>
-          </tr>
-          <tr tal:repeat="entry entries"
-              class="entry ${repeat.entry.even and 'even' or 'odd'}">
-            <td class="hover-link-enable">
-              <img src="${api.avatar_url(entry[0])}" alt="Gravatar"
-                   i18n:attributes="alt"/>
-              <a href="./setup-user?name=${entry[0].name}">${entry[0].title}</a>
-              <span tal:condition="entry[0].email">&lt;${entry[0].email}&gt;</span>
-            </td>
-            <td tal:repeat="role available_roles">
-              <input type="checkbox"
-                     name="role::${entry[0].name}::${role.name}"
-                     checked="${role.name in entry[1][0] and 'checked' or None}"
-                     disabled="${role.name in entry[1][1] and 'disabled' or None}"
-                     />
-              <input type="hidden"
-                     name="orig-role::${entry[0].name}::${role.name}"
-                     value="${role.name in entry[1][0] and '1' or None}"
-                     />
-            </td>
-          </tr>
-        </table>
-
-        <div class="form-actions" tal:condition="entries">
-          <button type="submit" name="apply" class="btn btn-primary"
-                  i18n:translate="">
-            Apply changes
-          </button>
-        </div>
-
-      </fieldset>        
-    </form>
-
     <ul class="nav nav-tabs">
-      <li class="active">
-        <a href="#add-user-tab" data-toggle="tab" i18n:translate="">Add user</a>
+      <li class="${active_tab == 'search' and 'active'}">
+        <a href="#search-tab" data-toggle="tab" i18n:translate="">
+          Search user(s) / groups(s)
+        </a>
       </li>
-      <li>
-        <a href="#add-group-tab" data-toggle="tab" i18n:translate="">Add group</a>
+      <li class="${active_tab == 'add_user' and 'active'}">
+        <a href="#add-user-tab" data-toggle="tab" i18n:translate="">
+          Add user
+        </a>
+      </li>
+      <li class="${active_tab == 'add_group' and 'active'}">
+        <a href="#add-group-tab" data-toggle="tab" i18n:translate="">
+          Add group
+        </a>
       </li>
     </ul>
 
     <div class="tab-content">
-      <div class="tab-pane ${not request.params.get('add-group') and 'active'}"
+      <div class="tab-pane ${active_tab == 'search' and 'active'}"
+           id="search-tab">
+        <h2 i18n:translate="">
+          Find users or groups
+        </h2>
+        <form action="${request.url}" method="post" class="well">
+
+          <div class="control-group">
+            <label for="search-query" i18n:translate="">
+              User- / groupname
+            </label>
+            <input type="search"
+                   class="form-control"
+                   name="query"
+                   id="search-query"
+                   value="${request.params.get('query')}"
+                   placeholder="Search users and groups"
+                   i18n:attributes="placeholder" />
+            <span class="help-block" i18n:translate="">
+              Blank search text finds all.
+            </span>
+          </div>
+
+          <button type="submit" name="search" class="btn btn-primary">
+            <i class="glyphicon glyphicon-search"></i>
+            <span i18n:translate="">Search</span>
+          </button>
+        </form>
+
+        <form action="${request.url}" method="post" tal:condition="entries">
+
+          <h2 i18n:translate="">Assign global roles</h2>
+          <table class="table table-bordered table-hover">
+            <thead>
+              <tr>
+                <th i18n:translate="">Type</th>
+                <th i18n:translate="">Name</th>
+                <th tal:repeat="role available_roles">
+                  ${role.title}
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr tal:repeat="entry entries"
+                  class="entry ${repeat.entry.even and 'even' or 'odd'}">
+                <td tal:define="is_group entry[0].name.startswith('group:');
+                                is_user not is_group">
+                  <span tal:condition="is_user" i18n:translate="">User</span>
+                  <span tal:condition="is_group" i18n:translate="">Group</span>
+                </td>
+                <td>
+                  <img src="${api.avatar_url(entry[0])}" alt="Gravatar"
+                       i18n:attributes="alt"/>
+                  <a href="./setup-user?name=${entry[0].name}">${entry[0].title}</a>
+                  <span tal:condition="entry[0].email">&lt;${entry[0].email}&gt;</span>
+                </td>
+                <td tal:repeat="role available_roles">
+                  <input type="checkbox"
+                         name="role::${entry[0].name}::${role.name}"
+                         checked="${role.name in entry[1][0] and 'checked' or None}"
+                         disabled="${role.name in entry[1][1] and 'disabled' or None}"
+                         />
+                  <input type="hidden"
+                         name="orig-role::${entry[0].name}::${role.name}"
+                         value="${role.name in entry[1][0] and '1' or None}"
+                         />
+                </td>
+              </tr>
+            </tbody>
+          </table>
+
+          <button type="submit" name="apply" class="btn btn-primary"
+                  i18n:translate="">
+            Apply changes
+          </button>
+
+        </form>
+
+      </div>
+      <div class="tab-pane ${active_tab == 'add_user' and 'active'}"
            id="add-user-tab">
+        <h2 i18n:translate="">Add new user</h2>
         <form tal:replace="structure user_addform" />
       </div>
 
-      <div class="tab-pane ${request.params.get('add-group') and 'active'}" 
+      <div class="tab-pane ${active_tab == 'add_group' and 'active'}"
            id="add-group-tab">
+        <h2 i18n:translate="">Add new group</h2>
         <form tal:replace="structure group_addform" />
       </div>
     </div>

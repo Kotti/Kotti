@@ -64,7 +64,7 @@ _ROOT_ATTRS = dict(
     current page as it will appear to your visitors.
 </p>
 <div class="row">
-    <div class="span4">
+    <div class="col-md-4">
         <h2>Configure</h2>
         <p>
             Find out how to configure your Kotti's title and many other settings using a
@@ -77,7 +77,7 @@ _ROOT_ATTRS = dict(
             </a>
         </p>
     </div>
-    <div class="span4">
+    <div class="col-md-4">
         <h2>Add-ons</h2>
         <p>
             A number of add-ons allow you to extend the functionality of your Kotti site.
@@ -89,7 +89,7 @@ _ROOT_ATTRS = dict(
             </a>
         </p>
     </div>
-    <div class="span4">
+    <div class="col-md-4">
         <h2>Documentation</h2>
         <p>
             Wonder what more you can do with Kotti?  What license it has?  Read the

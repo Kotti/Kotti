@@ -27,14 +27,20 @@
               <td>
                 <a ng-href="{{f.url}}" ng-show="f.url">{{f.name}}</a>
                 <span ng-show="!f.url">{{f.name}}</span>
+              </td>
+              <td>
+                {{f.file.type}} <br>
                 <div class="btn-group" ng-show="f.status=='ready for upload'">
-                  <a class="btn btn-mini dropdown-toggle"
-                     data-toggle="dropdown" href="#">
+                  <button type="button"
+                    class="btn btn-default btn-xs dropdown-toggle"
+                    data-toggle="dropdown">
                     Create as:
                     {{f.desired_type.title}}
-                    <span class="caret" ng-show="f.allowed_types.length>1"></span>
-                  </a>
-                  <ul class="dropdown-menu" ng-show="f.allowed_types.length>1">
+                    <span class="caret" ng-show="f.allowed_types.length>1">
+                    </span>
+                  </button>
+                  <ul class="dropdown-menu" role="menu"
+                      ng-show="f.allowed_types.length>1">
                     <li ng-repeat="t in f.allowed_types">
                       <a ng-click="f.desired_type=t">
                         <i class="icon-ok pull-right"
@@ -44,17 +50,32 @@
                     </li>
                   </ul>
                 </div>
-                <!-- {{f | json}} -->
               </td>
-              <td>{{f.file.type}}</td>
-              <td class="span2">{{f.size | bytes}}</td>
-              <td class="span2">
-                <span class="label" ng-class="{'uploading': 'label-info', 'cancelled': 'label-warning', 'failed': 'label-important', 'complete': 'label-success'}[f.status]">{{f.status}}</span>
+              <td class="col-md-2">{{f.size | bytes}}</td>
+              <td class="col-md-2">
+                <span class="label label-default"
+                  ng-class="{
+                    'label-info': f.status == 'uploading',
+                    'label-warning': f.status == 'cancelled',
+                    'label-important': f.status == 'failed',
+                    'label-success': f.status == 'complete'}">{{f.status}}</span>
               </td>
-              <td class="span4">
-                <div class="progress progress-striped">
-                  <span>{{f.transfered.bytes | bytes}} / {{f.size | bytes}}</span>
-                  <div class="bar" style="width: {{f.transfered.percent}}%;"></div>
+              <td class="col-md-4">
+                <div class="progress"
+                     ng-class="{'progress-striped': f.status == 'uploading'}">
+                  <div class="progress-bar"
+                    role="progressbar"
+                    aria-valuenow="{{f.transfered.percent}}"
+                    aria-valuemin="0"
+                    aria-valuemax="100"
+                    style="width: {{f.transfered.percent}}%"
+                    ng-class="{
+                      'progress-bar-info': f.status == 'uploading',
+                      'progress-bar-danger': f.status == 'cancelled',
+                      'progress-bar-danger': f.status == 'failed',
+                      'progress-bar-success': f.status == 'complete'}">
+                    {{f.transfered.bytes | bytes}} / {{f.size | bytes}}
+                  </div>
                 </div>
               </td>
             </tr>

@@ -5,29 +5,31 @@
       metal:use-macro="api.macro('kotti:templates/edit/master.pt')">
 
   <div metal:fill-slot="content">
-    <h1 i18n:translate="">Rename <em i18n:name="title">${context.title}.</em></h1>
+    <h1 i18n:translate="">
+      Rename <em i18n:name="title">${context.title}.</em>
+    </h1>
+    <p class="lead" i18n:translate="">
+      Each content item has a name, which is used to create the url, and a title. Read the user manual about proper formatting of name and title if needed. You can change both below.
+    </p>
 
-    <div class="tab-pane" id="rename" tal:condition="context is not api.root">
+    <div id="rename" tal:condition="context is not api.root">
       <form action="${request.url}" method="post" id="form-move-3">
-        <div class="control-group">
-          <label class="control-label desc" for="move-new-name" i18n:translate="">New name</label>
-          <div class="controls">
-            <input type="text" name="name" id="move-new-name"
-                   value="${request.POST.get('name') or context.name}" />
-          </div>
+        <div class="form-group">
+          <label class="control-label desc" for="move-new-name"
+                 i18n:translate="">New name</label>
+          <input type="text" name="name" id="move-new-name" class="form-control"
+                 value="${request.POST.get('name') or context.name}" />
         </div>
-        <div class="control-group">         
-          <label class="control-label desc" for="move-new-title" i18n:translate="">New title</label>
-          <div class="controls">
-            <input type="text" name="title" id="move-new-title"
-                   value="${request.POST.get('title') or context.title}" />
-          </div>
+        <div class="form-group">
+          <label class="control-label desc" for="move-new-title"
+                 i18n:translate="">New title</label>
+          <input type="text" name="title" id="move-new-title"
+                 class="form-control"
+                 value="${request.POST.get('title') or context.title}" />
         </div>
-        <div class="form-actions">
-          <button type="submit" name="rename" value="rename" 
-                  class="btn btn-warning" i18n:translate="">Rename</button>
-        </div>
-      </form>    
+        <button type="submit" name="rename" value="rename"
+                class="btn btn-warning" i18n:translate="">Rename</button>
+      </form>
     </div>
   </div>
 </html>
