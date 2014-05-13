@@ -13,14 +13,13 @@ WebOb==1.2.3
 alembic==0.5.0
 colander==1.0b1
 deform==2.0a2
-# deform-bootstrap==0.2.9
 docopt==0.6.1
 fanstatic==1.0a5
 html2text==3.200.3
 js.angular==1.1.4
 js.bootstrap==3.1.1
 js.chosen==0.9.11
-js.deform==2.0a2
+js.deform==2.0a2-1
 js.fineuploader==3.3.0
 js.html5shiv==3.6.2-1
 js.jquery==1.9.1
