@@ -27,7 +27,6 @@ lib_kotti = Library("kotti", "static")
 kotti_js = Resource(
     lib_kotti,
     "kotti.js",
-    # depends=[deform_bootstrap_js],
     minified="kotti.min.js",
     bottom=True)
 contents_view_js = Resource(
@@ -58,7 +57,7 @@ upload_js = Resource(
     lib_kotti,
     "upload.js",
     depends=[angular, fineuploader],
-    minified="upload.min.js",
+    # minified="upload.min.js", needs special minifying
     bottom=True)
 upload_css = Resource(
     lib_kotti,

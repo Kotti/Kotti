@@ -35,23 +35,6 @@ var jq = jQuery;
         });
     };
 
-    // kotti.hover_link_enable = function (node) {
-    //     node.find2(".hover-link").removeClass("hover-link");
-
-    //     node.find2(".hover-link-enable").hover(
-    //         function () { $(this).addClass("hover-link"); },
-    //         function () { $(this).removeClass("hover-link"); }
-    //     ).click(function () {
-    //         var link = $("a", $(this)),
-    //             target = link.attr("target");
-    //         if (!target) {
-    //             target = "_self";
-    //         }
-    //         window.open(link.attr("href"), target);
-    //         return false;
-    //     });
-    // };
-
     kotti.dom_changed = function (node) {
         $.each(kotti.dom_changed_handlers, function (index, func) {
             func(node);
@@ -62,8 +45,6 @@ var jq = jQuery;
         var node = $('html');
         if (!handlers) {
             handlers = [
-                //kotti.dirty_forms,
-                // kotti.hover_link_enable
             ];
         }
         $.each(handlers, function (index, func) {

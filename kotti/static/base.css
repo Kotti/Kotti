@@ -13,35 +13,3 @@
 .state-private {
   color: #B94A48;
 }
-
-/* Responsive */
-
-@media (max-width: 980px) {
-  body, body.logged-in {
-    /* Remove any padding from the body */
-    /*padding-top: 0;*/
-  }
-  .navbar input.search-query {
-    /* you might need to adjust this on phones in portrait mode for site titles longer than "Kotti" ;-) */
-    /*width: 160px;*/
-  }
-}
-
-/* Top margin for first well styling of first slot */
-
-/*.left-column .well:first-of-type {
-  margin-top: 1em;
-}
-
-.right-column .well:first-of-type {
-  margin-top: 1em;
-}
-
-.above-content .well:first-of-type {
-  margin-top: 1em;
-}
-
-.below-content .well:first-of-type {
-  margin-top: 1em;
-}
-*/
