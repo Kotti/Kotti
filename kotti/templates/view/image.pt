@@ -4,7 +4,7 @@
 
   <article metal:fill-slot="content" class="document-view content">
     <h1>${context.title}</h1>
-    <p class="description">
+    <p class="lead">
       ${context.description}
     </p>
     <div tal:replace="api.render_template('kotti:templates/view/tags.pt')" />

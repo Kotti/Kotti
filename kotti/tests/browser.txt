@@ -33,7 +33,7 @@ Editing is locked down to authenticated users:
   >>> browser.open(testing.BASE_URL + '/edit')
   >>> "Log in" in browser.contents
   True
-  >>> ctrl("Username or email").value = "admin"
+  >>> ctrl("Username or email", index=0).value = "admin"
   >>> ctrl("Password").value = "secret"
   >>> ctrl(name="submit").click()
   >>> "Welcome, Administrator" in browser.contents
@@ -50,14 +50,14 @@ the login form:
 
 Log in again, this time force an error:
 
-  >>> ctrl("Username or email").value = "admin"
+  >>> ctrl("Username or email", index=0).value = "admin"
   >>> ctrl("Password").value = "funny"
   >>> ctrl(name="submit").click()
   >>> "Welcome, Adminstrator" in browser.contents
   False
   >>> "Login failed" in browser.contents
   True
-  >>> ctrl("Username or email").value = "admin"
+  >>> ctrl("Username or email", index=0).value = "admin"
   >>> ctrl("Password").value = "secret"
   >>> ctrl(name="submit").click()
   >>> "Welcome, Administrator" in browser.contents
@@ -525,11 +525,11 @@ Contents view actions
   >>> browser.open(testing.BASE_URL + '/forth-child/@@contents')
   >>> "Welcome to Kotti" in browser.contents
   True
-  >>> '<i class="icon-home"></i>' in browser.contents
+  >>> '<i class="glyphicon glyphicon-home"></i>' in browser.contents
   True
-  >>> '<i class="icon-folder-open"></i>' in browser.contents
+  >>> '<i class="glyphicon glyphicon-folder-open"></i>' in browser.contents
   True
-  >>> '<i class="icon-folder-close"></i>' in browser.contents
+  >>> '<i class="glyphicon glyphicon-folder-close"></i>' in browser.contents
   False
 
 
@@ -628,7 +628,7 @@ Logout, and check that the view is not accessible:
 
 Log in again:
 
-  >>> ctrl("Username or email").value = "admin"
+  >>> ctrl("Username or email", index=0).value = "admin"
   >>> ctrl("Password").value = "secret"
   >>> ctrl(name="submit").click()
   >>> browser.open(testing.BASE_URL)
@@ -801,6 +801,7 @@ We'll use that link to set our password:
   >>> ctrl(name="submit").click()
   >>> "There was an error" in browser.contents
   True
+  >>> ctrl("Password", index=0).value = "newpassword"
   >>> ctrl(name='password-confirm').value = "newpassword"
   >>> ctrl(name="submit").click()
   >>> "You have reset your password" in browser.contents
@@ -819,7 +820,7 @@ We cannot use that link again:
 Log in as Bob with the new password:
 
   >>> browser.open(testing.BASE_URL + '/@@edit')
-  >>> ctrl("Username or email").value = "bOB"
+  >>> ctrl("Username or email", index=0).value = "bOB"
   >>> ctrl("Password").value = "newpassword"
   >>> ctrl(name="submit").click()
   >>> "Welcome, Bob Dabolina" in browser.contents
@@ -830,12 +831,12 @@ Log in as Bob with the new password:
 The login form has a "Reset password" button.  Let's try it:
 
   >>> browser.open(testing.BASE_URL + '/@@edit')
-  >>> ctrl("Username or email").value = "bobby" # silly error
+  >>> ctrl("Username or email", index=1).value = "bobby" # silly error
   >>> ctrl("Password").value = ""
   >>> ctrl(name="reset-password").click()
   >>> "That username or email is not known by this system" in browser.contents
   True
-  >>> ctrl("Username or email").value = "bob"
+  >>> ctrl("Username or email", index=1).value = "bob"
   >>> ctrl(name="reset-password").click()
   >>> "You should be receiving an email" in browser.contents
   True
@@ -853,7 +854,7 @@ The "Preferences" link leads us to a form where the user can change
 their preferences so the user need to be authenticated:
 
   >>> browser.open(testing.BASE_URL + '/@@prefs')
-  >>> ctrl("Username or email").value = "admin"
+  >>> ctrl("Username or email", index=0).value = "admin"
   >>> ctrl("Password").value = "secret"
   >>> ctrl(name="submit").click()
   >>> "Welcome, Administrator" in browser.contents
@@ -998,7 +999,7 @@ Lets login as Bruce and add some content:
 
   >>> browser.getLink("Logout").click()
   >>> browser.open(testing.BASE_URL + '/login')
-  >>> ctrl("Username or email").value = "bruce"
+  >>> ctrl("Username or email", index=0).value = "bruce"
   >>> ctrl("Password").value = "secret"
   >>> ctrl(name="submit").click()
   >>> "Welcome, Bruce Pelayo!" in browser.contents
@@ -1016,7 +1017,7 @@ Now let's delete Bruce::
 
   >>> browser.getLink("Logout").click()
   >>> browser.open(testing.BASE_URL + '/login')
-  >>> ctrl("Username or email").value = "admin"
+  >>> ctrl("Username or email", index=0).value = "admin"
   >>> ctrl("Password").value = "secret"
   >>> ctrl(name="submit").click()
 

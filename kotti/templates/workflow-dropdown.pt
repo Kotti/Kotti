@@ -1,11 +1,13 @@
 <tal:block>
-<li class="dropdown" 
+<li class="dropdown"
     tal:condition="current_state and api.has_permission('state_change')"
     i18n:domain="Kotti">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown"
      tal:condition="transitions">
-    <span class="state-${current_state['name']}">${current_state['title']}</span>
-    <b class="caret"></b>
+    <span class="state-${current_state['name']}">
+      ${current_state['title']}
+      <b class="caret"></b>
+    </span>
   </a>
   <ul class="dropdown-menu">
     <li tal:repeat="trans transitions">

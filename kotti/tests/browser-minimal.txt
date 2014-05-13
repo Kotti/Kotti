@@ -17,7 +17,7 @@ Logging in
   True
 
   >>> browser.open(testing.BASE_URL + '/secured')
-  >>> ctrl("Username or email").value = "admin"
+  >>> ctrl("Username or email", index=0).value = "admin"
   >>> ctrl("Password").value = "secret"
   >>> ctrl(name="submit").click()
   >>> "You are logged in" in browser.contents

@@ -90,7 +90,7 @@ Logged in
   >>> browser.open(testing.BASE_URL + '/edit')
   >>> "Log in" in browser.contents
   True
-  >>> browser.getControl("Username or email").value = "admin"
+  >>> browser.getControl("Username or email", index=0).value = "admin"
   >>> browser.getControl("Password").value = "secret"
   >>> browser.getControl(name="submit").click()
   >>> "Welcome, Administrator" in browser.contents
