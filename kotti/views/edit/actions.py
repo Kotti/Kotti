@@ -143,6 +143,7 @@ class NodeActions(object):
                     if not has_permission('edit', item, self.request):
                         raise Forbidden()
                     item.__parent__.children.remove(item)
+                    item.name = title_to_name(item.name, blacklist=self.context.keys())
                     self.context.children.append(item)
                     if count is len(ids) - 1:
                         del self.request.session['kotti.paste']
