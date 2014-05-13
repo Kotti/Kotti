@@ -35,22 +35,22 @@ var jq = jQuery;
         });
     };
 
-    kotti.hover_link_enable = function (node) {
-        node.find2(".hover-link").removeClass("hover-link");
+    // kotti.hover_link_enable = function (node) {
+    //     node.find2(".hover-link").removeClass("hover-link");
 
-        node.find2(".hover-link-enable").hover(
-            function () { $(this).addClass("hover-link"); },
-            function () { $(this).removeClass("hover-link"); }
-        ).click(function () {
-            var link = $("a", $(this)),
-                target = link.attr("target");
-            if (!target) {
-                target = "_self";
-            }
-            window.open(link.attr("href"), target);
-            return false;
-        });
-    };
+    //     node.find2(".hover-link-enable").hover(
+    //         function () { $(this).addClass("hover-link"); },
+    //         function () { $(this).removeClass("hover-link"); }
+    //     ).click(function () {
+    //         var link = $("a", $(this)),
+    //             target = link.attr("target");
+    //         if (!target) {
+    //             target = "_self";
+    //         }
+    //         window.open(link.attr("href"), target);
+    //         return false;
+    //     });
+    // };
 
     kotti.dom_changed = function (node) {
         $.each(kotti.dom_changed_handlers, function (index, func) {
@@ -63,7 +63,7 @@ var jq = jQuery;
         if (!handlers) {
             handlers = [
                 //kotti.dirty_forms,
-                kotti.hover_link_enable
+                // kotti.hover_link_enable
             ];
         }
         $.each(handlers, function (index, func) {
@@ -72,7 +72,11 @@ var jq = jQuery;
         kotti.dom_changed(node);
     };
 
-    deform.load();
+    // deform might be undefined, e.g. in kotti_tinymce's kottibrowser
+    if (window.deform) {
+      deform.load();
+    }
+
     kotti.main();
 
 }(jQuery));

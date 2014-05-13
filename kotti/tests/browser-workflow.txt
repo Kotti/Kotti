@@ -19,7 +19,7 @@ An administrator (or any user with ``state_change`` permission) can
 make the front page private.  First log in:
 
   >>> browser.open(testing.BASE_URL + '/edit')
-  >>> ctrl("Username or email").value = "admin"
+  >>> ctrl("Username or email", index=0).value = "admin"
   >>> ctrl("Password").value = "secret"
   >>> ctrl(name="submit").click()
   >>> "Welcome, Administrator" in browser.contents

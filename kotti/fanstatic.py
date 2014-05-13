@@ -7,8 +7,7 @@ from fanstatic import Library
 from fanstatic import Resource
 from js.angular import angular
 from js.bootstrap import bootstrap_js
-from js.bootstrap import bootstrap_responsive_css
-from js.deform_bootstrap import deform_bootstrap_js
+from js.bootstrap import bootstrap_css
 from js.html5shiv import html5shiv
 from js.fineuploader import fineuploader
 from js.jquery import jquery
@@ -25,37 +24,44 @@ tagit = Group([ui_tagit, jqueryui_bootstrap_theme])
 
 # Kotti's resources
 lib_kotti = Library("kotti", "static")
-kotti_js = Resource(lib_kotti,
+kotti_js = Resource(
+    lib_kotti,
     "kotti.js",
-    depends=[deform_bootstrap_js],
+    # depends=[deform_bootstrap_js],
     minified="kotti.min.js",
     bottom=True)
-contents_view_js = Resource(lib_kotti,
+contents_view_js = Resource(
+    lib_kotti,
     "contents.js",
     depends=[kotti_js, jquery_tablednd, ],
     minified="contents.min.js",
     bottom=True)
-base_css = Resource(lib_kotti,
+base_css = Resource(
+    lib_kotti,
     "base.css",
-    depends=[bootstrap_responsive_css],
+    depends=[bootstrap_css],
     minified="base.min.css",
     dont_bundle=True)
-edit_css = Resource(lib_kotti,
+edit_css = Resource(
+    lib_kotti,
     "edit.css",
     depends=[base_css],
     minified="edit.min.css")
-view_css = Resource(lib_kotti,
+view_css = Resource(
+    lib_kotti,
     "view.css",
     depends=[base_css],
     minified="view.min.css")
 
 # Resources for content upload views
-upload_js = Resource(lib_kotti,
+upload_js = Resource(
+    lib_kotti,
     "upload.js",
     depends=[angular, fineuploader],
     minified="upload.min.js",
     bottom=True)
-upload_css = Resource(lib_kotti,
+upload_css = Resource(
+    lib_kotti,
     "upload.css",
     depends=[base_css],
     minified="upload.min.css")
@@ -69,7 +75,8 @@ class NeededGroup(object):
     def __init__(self, resources=[]):
 
         if not isinstance(resources, list):
-            raise ValueError("resources must be a list of fanstatic.Resource "
+            raise ValueError(
+                "resources must be a list of fanstatic.Resource "
                 "and/or fanstatic.Group objects")
 
         self.resources = []
@@ -88,7 +95,8 @@ class NeededGroup(object):
         elif isinstance(resource, (Resource, Group)):
             self.resources.append(resource)
         else:
-            raise ValueError("resource must be a NeededGroup,"
+            raise ValueError(
+                "resource must be a NeededGroup,"
                 "fanstatic.Resource or fanstatic.Group object")
 
     def need(self):  # pragma: no cover
@@ -119,7 +127,7 @@ edit_needed_js = NeededGroup([
     html5shiv,
     kotti_js,
     jquery_form,
-    deform_bootstrap_js,
+    # deform_bootstrap_js,
     ])
 edit_needed = NeededGroup([
     edit_needed_css,

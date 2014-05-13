@@ -6,18 +6,15 @@ from urllib import urlencode
 
 import colander
 from deform import Button
-from deform import Set
 from deform.widget import AutocompleteInputWidget
 from deform.widget import CheckboxChoiceWidget
 from deform.widget import CheckedPasswordWidget
 from deform.widget import SequenceWidget
 from pyramid.exceptions import Forbidden
 from pyramid.httpexceptions import HTTPFound
-from pyramid.settings import asbool
 from pyramid.view import view_config
 from pyramid_deform import FormView
 
-from kotti import get_settings
 from kotti.events import UserDeleted
 from kotti.events import notify
 from kotti.message import email_set_password
@@ -224,7 +221,7 @@ class PrincipalFull(PrincipalBasic):
         description=_(u"Untick this to deactivate the account."),
         )
     roles = colander.SchemaNode(
-        Set(allow_empty=True),
+        colander.Set(),
         validator=roleset_validator,
         missing=[],
         title=_(u"Global roles"),
@@ -315,7 +312,7 @@ def _massage_groups_out(appstruct):
 
 class UserAddFormView(AddFormView):
     item_type = _(u'User')
-
+    form_options = (('formid', 'deform_user_add'), )
     buttons = (Button('add_user', _(u'Add User')),
                Button('cancel', _(u'Cancel')))
 
@@ -348,6 +345,8 @@ class UserAddFormView(AddFormView):
 
 
 class GroupAddFormView(UserAddFormView):
+    item_type = _(u"Group")
+    form_options = (('formid', 'deform_group_add'), )
     buttons = (Button('add_group', _(u'Add Group')),
                Button('cancel', _(u'Cancel')))
 
@@ -413,13 +412,20 @@ class UsersManage(FormView):
         if self.request.is_response(group_addform):
             return group_addform
 
+        if self.request.params.get('add_user'):
+            active_tab = 'add_user'
+        elif self.request.params.get('add_group'):
+            active_tab = 'add_group'
+        else:
+            active_tab = 'search'
         return {
             'api': api,
             'entries': search_entries,
             'available_roles': available_roles,
             'user_addform': user_addform['form'],
             'group_addform': group_addform['form'],
-            }
+            'active_tab': active_tab,
+        }
 
 
 class UserEditFormView(EditFormView):

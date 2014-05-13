@@ -12,7 +12,7 @@ Setup and Login
   >>> browser.open(testing.BASE_URL + '/edit')
   >>> "Log in" in browser.contents
   True
-  >>> ctrl("Username or email").value = "admin"
+  >>> ctrl("Username or email", index=0).value = "admin"
   >>> ctrl("Password").value = "secret"
   >>> ctrl(name="submit").click()
   >>> "Welcome, Administrator" in browser.contents
@@ -52,34 +52,34 @@ Search the documents
   'http://localhost:6543/@@search-results'
 
 
-  >>> u'<dd>I am the first Document' in browser.contents
+  >>> u'<p>I am the first Document' in browser.contents
   True
-  >>> u'<dd>And I am the second Document' in browser.contents
+  >>> u'<p>And I am the second Document' in browser.contents
   False
 
   >>> browser.open(testing.BASE_URL)
   >>> ctrl(name='search-term').value = u'Document 2'
   >>> ctrl(name='search-submit').click()
-  >>> u'<dd>I am the first Document' in browser.contents
+  >>> u'<p>I am the first Document' in browser.contents
   False
-  >>> u'<dd>And I am the second Document' in browser.contents
+  >>> u'<p>And I am the second Document' in browser.contents
   True
 
 
   >>> browser.open(testing.BASE_URL)
   >>> ctrl(name='search-term').value = u'Document'
   >>> ctrl(name='search-submit').click()
-  >>> u'<dd>I am the first Document' in browser.contents
+  >>> u'<p>I am the first Document' in browser.contents
   True
-  >>> u'<dd>And I am the second Document' in browser.contents
+  >>> u'<p>And I am the second Document' in browser.contents
   True
 
   >>> browser.open(testing.BASE_URL)
   >>> ctrl(name='search-term').value = u'the second Document'
   >>> ctrl(name='search-submit').click()
-  >>> u'<dd>I am the first Document' in browser.contents
+  >>> u'<p>I am the first Document' in browser.contents
   False
-  >>> u'<dd>And I am the second Document' in browser.contents
+  >>> u'<p>And I am the second Document' in browser.contents
   True
 
 TearDown

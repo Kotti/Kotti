@@ -1,11 +1,11 @@
 /** Put here CSS that should apply to editor screens only. **/
 
-form {
+/*form {
     margin-top: 16px;
 }
-
+*/
 /* deform workarounds while we wait for deform_bootstrap to become perfect */
-form.deform ul {
+/*form.deform ul {
     list-style: none;
     margin-left: 0;
 }
@@ -26,3 +26,4 @@ textarea.tinymce {
 ul.form-tabs li.error a {
     color: #b94a48;
 }
+*/

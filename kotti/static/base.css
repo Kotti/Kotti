@@ -1,14 +1,8 @@
 /** Put here CSS that should apply to both public and editor screens. **/
 
-span.brand a, span.brand a:hover {
-  /* The site title in the navbar (a.k.a. "home") */
-  color: white;
-  text-decoration: none;
-}
-
-#user-dropdown .dropdown-submenu > .dropdown-menu {
-  /* make the "site settings" submenu open to the left */
-  left: -100%;
+#editor-bar {
+  /* We want the edit bar directly below the main navbar. */
+  margin-top: -20px;
 }
 
 /* workflow states */
@@ -25,17 +19,17 @@ span.brand a, span.brand a:hover {
 @media (max-width: 980px) {
   body, body.logged-in {
     /* Remove any padding from the body */
-    padding-top: 0;
+    /*padding-top: 0;*/
   }
   .navbar input.search-query {
     /* you might need to adjust this on phones in portrait mode for site titles longer than "Kotti" ;-) */
-    width: 160px;
+    /*width: 160px;*/
   }
 }
 
 /* Top margin for first well styling of first slot */
 
-.left-column .well:first-of-type {
+/*.left-column .well:first-of-type {
   margin-top: 1em;
 }
 
@@ -50,3 +44,4 @@ span.brand a, span.brand a:hover {
 .below-content .well:first-of-type {
   margin-top: 1em;
 }
+*/
