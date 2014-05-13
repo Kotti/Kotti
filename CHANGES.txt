@@ -4,6 +4,17 @@ Change History
 0.10 - Unreleased
 -----------------
 
+- Kotti is now based on Bootstrap 3 (and therefore Deform 2).
+
+  THIS IS A BACKWARD INCOMPATIBLE CHANGE W.R.T. MOST TEMPLATES!  IF YOUR
+  PROJECT EITHER HAS TEMPLATE CUSTOMIZATIONS OR DEPENDS ON ADD-ONS THINGS
+  WILL LOOK BROKEN!
+
+  If you **only** use Kotti's default UI, chances are good that your
+  application will continue to work well unchanged.
+
+  Kotti's API is mostly unchanged and fully backward compatible though.
+
 - Rework implementation of 'kotti.util.Link' ('ViewLink') to be more
   flexible.
 
