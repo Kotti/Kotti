@@ -4,6 +4,22 @@ Change History
 0.10 - unreleased
 -----------------
 
+- Add ``Node.path`` column.  This allows queries based on path, so
+  it's much easier just to find all children, grandchildren etc. of a
+  given node::
+
+    DBSession.query(Node).filter(Node.path.startswith(mynode.path))
+
+Migrations
+~~~~~~~~~~
+
+- Upgrading from 0.9.2 to 0.10 requires you to run a migration script
+  on your database.  To run the migration, call::
+
+    $ bin/kotti-migrate <myconfig.ini> upgrade
+
+  Make sure you **backup** your database before running the migration!
+
 0.10a1 - 2014-05-19
 -------------------
 
@@ -24,12 +40,6 @@ Change History
   special 'action_links' list is no longer necessary.  Links now also
   make better use of templates for rendering, and are probably easier
   to customize overall.
-
-- Add ``Node.path`` column.  This allows queries based on path, so
-  it's much easier just to find all children, grandchildren etc. of a
-  given node::
-
-    DBSession.query(Node).filter(Node.path.startswith(mynode.path))
 
 - Added compatiblity for and now require Pyramid>=1.5.  #273
 
