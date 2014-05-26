@@ -153,8 +153,9 @@ class TestNode:
 
         child44 = Node(name=u'child4')
         db_session.add(child44)
-        root[u'child4'] = child44
+
         with raises(SQLAlchemyError):
+            root[u'child4'] = child44
             db_session.flush()
 
     def test_node_copy_name(self, db_session, root):
@@ -240,6 +241,111 @@ class TestNode:
 
         with raises(ValueError):
             root.annotations = []
+
+
+class TestPath:
+    def test_attribute(self, db_session, root, events):
+        from kotti.resources import Node
+
+        assert root.path == "/"
+        child = root['child-1'] = Node()
+        assert child.path == u'/child-1'
+        subchild = root['child-1']['subchild'] = Node()
+        assert subchild.path == '/child-1/subchild'
+
+    def test_object_moved(self, db_session, root, events):
+        from kotti.resources import Node
+        child = root['child-1'] = Node()
+        subchild = child['subchild'] = Node()
+        subchild.parent = root
+        assert subchild.path == '/subchild'
+
+    def test_parent_moved(self, db_session, root, events):
+        from kotti.resources import Node
+        child1 = root['child-1'] = Node()
+        child2 = child1['child-2'] = Node()
+        subchild = child2['subchild'] = Node()
+
+        assert subchild.path == '/child-1/child-2/subchild'
+        child2.parent = root
+        assert subchild.path == '/child-2/subchild'
+
+    def test_object_renamed(self, db_session, root, events):
+        from kotti.resources import Node
+        child = root['child-1'] = Node()
+        subchild = child['subchild'] = Node()
+
+        subchild.name = u'renamed'
+        assert subchild.path == '/child-1/renamed'
+
+    def test_parent_renamed(self, db_session, root, events):
+        from kotti.resources import Node
+        child1 = root['child-1'] = Node()
+        child2 = child1['child-2'] = Node()
+        subchild = child2['subchild'] = Node()
+
+        child2.name = u'renamed'
+        assert subchild.path == '/child-1/renamed/subchild'
+
+        child1.name = u'renamed-1'
+        assert child1.path == '/renamed-1'
+        assert child2.path == '/renamed-1/renamed'
+        assert subchild.path == '/renamed-1/renamed/subchild'
+
+    def test_parent_copied(self, db_session, root, events):
+        from kotti.resources import Node
+        c1 = root['c1'] = Node()
+        c2 = c1['c2'] = Node()
+        c2['c3'] = Node()
+
+        c1copy = root['c1copy'] = c1.copy()
+        assert c1copy.path == '/c1copy'
+        assert c1copy['c2'].path == '/c1copy/c2'
+        assert c1copy['c2']['c3'].path == '/c1copy/c2/c3'
+
+        c2copy = c2['c2copy'] = c2.copy()
+        assert c2copy.path == '/c1/c2/c2copy'
+        assert c2copy['c3'].path == '/c1/c2/c2copy/c3'
+
+    def test_children_append(self, db_session, root, events):
+        from kotti.resources import Node
+
+        child = Node(u'child-1')
+        root.children.append(child)
+        assert child.path == '/child-1'
+
+        child2 = Node(u'child-2')
+        child.children.append(child2)
+        assert child2.path == '/child-1/child-2'
+
+    def test_replace_root(self, db_session, root, events):
+        from kotti.resources import Node
+        db_session.delete(root)
+        new_root = Node(u'')
+        db_session.add(new_root)
+        assert new_root.path == '/'
+
+    def test_query_api(self, db_session, root, events):
+        from kotti.resources import Node
+        child1 = root['child-1'] = Node()
+        child2 = child1['child-2'] = Node()
+        subchild = child2['subchild'] = Node()
+
+        assert db_session.query(Node).filter(
+            Node.path.startswith(u'/')).count() == 4
+
+        assert db_session.query(Node).filter(
+            Node.path.startswith(u'/child-1')).count() == 3
+
+        objs = db_session.query(Node).filter(
+            Node.path.startswith(u'/child-1/child-2')).all()
+
+        assert len(objs) == 2
+        assert subchild in objs
+        assert child2 in objs
+
+        db_session.query(Node).filter(
+            Node.path.startswith(u'/child-1/child-3')).count() == 0
 
 
 class TestLocalGroup:

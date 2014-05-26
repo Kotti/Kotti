@@ -217,6 +217,9 @@ class Node(Base, ContainerMixin, PersistentACLMixin):
     #: Annotations can be used to store arbitray data in a nested dictionary
     #: (:class:`kotti.sqla.NestedMustationDict`)
     annotations = Column(NestedMutationDict.as_mutable(JsonType))
+    #: The path can be used to efficiently filter for child objects
+    #: (:class:`sqlalchemy.types.Unicode`)
+    path = Column(Unicode(1000), index=True)
 
     _children = relation(
         'Node',
@@ -236,14 +239,14 @@ class Node(Base, ContainerMixin, PersistentACLMixin):
                  **kwargs):
         """Constructor"""
 
+        super(Node, self).__init__(**kwargs)
+
         if annotations is None:
             annotations = {}
-        self.name = name
         self.parent = parent
+        self.name = name
         self.title = title
         self.annotations = annotations
-
-        super(Node, self).__init__(**kwargs)
 
     @property
     def __name__(self):

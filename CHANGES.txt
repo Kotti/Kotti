@@ -25,6 +25,12 @@ Change History
   make better use of templates for rendering, and are probably easier
   to customize overall.
 
+- Add ``Node.path`` column.  This allows queries based on path, so
+  it's much easier just to find all children, grandchildren etc. of a
+  given node::
+
+    DBSession.query(Node).filter(Node.path.startswith(mynode.path))
+
 - Added compatiblity for and now require Pyramid>=1.5.  #273
 
 - In tests, turned `settings` and `setup_app` into fixtures to ease

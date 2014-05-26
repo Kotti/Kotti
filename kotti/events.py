@@ -22,6 +22,7 @@ except ImportError:  # pragma: no cover
 import sqlalchemy.event
 import venusian
 from sqlalchemy.orm import mapper
+from pyramid.location import lineage
 from pyramid.threadlocal import get_current_request
 from pyramid.security import authenticated_userid
 from zope.deprecation.deprecation import deprecated
@@ -300,6 +301,78 @@ def reset_content_owner(event):
         content.owner = None
 
 
+def _update_children_paths(old_parent_path, new_parent_path):
+    for child in DBSession.query(Node).filter(
+        Node.path.startswith(old_parent_path + '/')):
+        child.path = new_parent_path + child.path[len(old_parent_path):]
+
+
+def _set_path_for_new_name(target, value, oldvalue, initiator):
+    """Triggered whenever the Node's 'name' attribute is set.
+
+    Is called with all kind of weird edge cases, e.g. name is 'None',
+    parent is 'None' etc.
+    """
+    if getattr(target, '_kotti_set_path_for_new_name', False):
+        # we're being called recursively (see below)
+        return
+
+    if value is None:
+        # Our name is about to be set to 'None', so skip.
+        return
+
+    if target.__parent__ is None and value != '':
+        # Our parent hasn't been set yet.  Skip, unless we're the root
+        # object (which always has an empty string as name).
+        return
+
+    old_path = target.path
+    line = tuple(reversed(tuple(lineage(target))))
+    target_path = u'/'.join(node.__name__ for node in line[:-1])
+    target_path += u'/{}'.format(value)
+    target.path = target_path
+
+    # We need to set the name to value here so that the subsequent
+    # UPDATE in _update_children_paths will include the new 'name'
+    # already.  We have to make sure that we don't end up in an
+    # endless recursion, which is why we set this flag:
+
+    target._kotti_set_path_for_new_name = True
+    try:
+        target.name = value
+    finally:
+        del target._kotti_set_path_for_new_name
+
+    if old_path:
+        _update_children_paths(old_path, target_path)
+
+
+def _set_path_for_new_parent(target, value, oldvalue, initiator):
+    """Triggered whenever the Node's 'parent' attribute is set.
+    """
+    if value is None:
+        # The parent is about to be set to 'None', so skip.
+        return
+
+    if target.__name__ is None:
+        # The object's name is still 'None', so skip.
+        return
+
+    if value.parent is None and value.__name__ != u'':
+        # Our parent doesn't have a parent, and it's not root either.
+        return
+
+    old_path = target.path
+
+    line = tuple(reversed(tuple(lineage(value))))
+    target_path = u'/'.join(node.__name__ for node in line)
+    target_path += u'/{}'.format(target.__name__)
+    target.path = target_path
+
+    if old_path:
+        _update_children_paths(old_path, target_path)
+
+
 class subscribe(object):
     """Function decorator to attach the decorated function as a handler for a
     Kotti event.  Example::
@@ -372,6 +445,19 @@ def wire_sqlalchemy():  # pragma: no cover
         _WIRED_SQLALCHMEY = True
     sqlalchemy.event.listen(mapper, 'after_delete', _after_delete)
     sqlalchemy.event.listen(DBSession, 'before_flush', _before_flush)
+
+    # Update the 'path' attribute on changes to 'name' or 'parent'
+    def add_set_path_listeners():
+        sqlalchemy.event.listen(
+            Node.name, 'set', _set_path_for_new_name, propagate=True)
+        sqlalchemy.event.listen(
+            Node.parent, 'set', _set_path_for_new_parent, propagate=True)
+
+    if hasattr(Node, 'parent'):
+        add_set_path_listeners()
+    else:
+        sqlalchemy.event.listen(
+            mapper, 'after_configured', add_set_path_listeners)
 
 
 def includeme(config):
