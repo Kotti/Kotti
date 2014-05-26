@@ -742,8 +742,11 @@ def initialize_sql(engine, drop_all=False):
         tables = [metadata.tables[name] for name in tables.split()]
 
     if engine.dialect.name == 'mysql':  # pragma: no cover
+        # Use a different type for File.data
         from sqlalchemy.dialects.mysql.base import LONGBLOB
         File.__table__.c.data.type = LONGBLOB()
+        # Allow larger indexes than the default
+        engine.execute("SET GLOBAL SET GLOBAL innodb_large_prefix=ON;")
 
     # Allow migrations to set the 'head' stamp in case the database is
     # initialized freshly:
