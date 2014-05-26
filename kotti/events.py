@@ -329,7 +329,7 @@ def _set_path_for_new_name(target, value, oldvalue, initiator):
     old_path = target.path
     line = tuple(reversed(tuple(lineage(target))))
     target_path = u'/'.join(node.__name__ for node in line[:-1])
-    target_path += u'/{}'.format(value)
+    target_path += u'/{0}'.format(value)
     target.path = target_path
 
     # We need to set the name to value here so that the subsequent
@@ -366,7 +366,7 @@ def _set_path_for_new_parent(target, value, oldvalue, initiator):
 
     line = tuple(reversed(tuple(lineage(value))))
     target_path = u'/'.join(node.__name__ for node in line)
-    target_path += u'/{}'.format(target.__name__)
+    target_path += u'/{0}'.format(target.__name__)
     target.path = target_path
 
     if old_path:
