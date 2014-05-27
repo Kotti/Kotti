@@ -47,7 +47,7 @@ from pyramid.view import render_view
 from kotti.events import ObjectEvent
 from kotti.events import objectevent_listeners
 
-REQUEST_ATTRS_TO_COPY = ('context', 'registry', 'user', 'cookies')
+REQUEST_ATTRS_TO_COPY = ('context', 'registry', 'user', 'cookies', 'session')
 
 
 def _encode(params):
