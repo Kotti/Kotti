@@ -51,6 +51,9 @@ Change History
 
 - Fix #308: Unique name constraint issue during paste of a cut node.
 
+- Adds "session" attribute to the request attributes to copy to the slot view
+  request.
+
 0.9.2 - 2013-10-15
 ------------------
 
