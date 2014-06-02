@@ -1,19 +1,21 @@
 Change History
 ==============
 
-0.10 - Unreleased
+0.10 - unreleased
 -----------------
+
+0.10a1 - 2014-05-19
+-------------------
 
 - Kotti is now based on Bootstrap 3 (and therefore Deform 2).
 
-  THIS IS A BACKWARD INCOMPATIBLE CHANGE W.R.T. MOST TEMPLATES!  IF YOUR
-  PROJECT EITHER HAS TEMPLATE CUSTOMIZATIONS OR DEPENDS ON ADD-ONS THINGS
-  WILL LOOK BROKEN!
+  THIS IS A BACKWARD INCOMPATIBLE CHANGE W.R.T. MOST TEMPLATES,
+  INCLUDING FORM TEMPLATES!  IF YOUR PROJECT EITHER HAS TEMPLATE
+  CUSTOMIZATIONS OR DEPENDS ON ADD-ONS THINGS WILL LOOK BROKEN!
 
   If you **only** use Kotti's default UI, chances are good that your
-  application will continue to work well unchanged.
-
-  Kotti's API is mostly unchanged and fully backward compatible though.
+  application will continue to work well unchanged.  Kotti's API is
+  mostly unchanged and fully backward compatible though.
 
 - Rework implementation of 'kotti.util.Link' ('ViewLink') to be more
   flexible.
@@ -36,9 +38,18 @@ Change History
     - https://github.com/Kotti/kotti_newsitem/issues/2
     - https://github.com/Kotti/kotti_calendar/issues/4
 
-- Adds ``delete`` permission needed for 'delete' and 'delete_nodes' views. The default workflow was updated in consequence. It allows to elaborate more fine grained workflows : for instance, create a role which can edit a content but not delete it.
+- Adds ``delete`` permission needed for 'delete' and 'delete_nodes'
+  views. The default workflow was updated in consequence. It allows to
+  elaborate more fine grained workflows : for instance, create a role
+  which can edit a content but not delete it.
 
-To make existent Kotti's instances using default workflow compatibles and avoid users that have 'editor' role (and so far, whom have the possibility to edit and delete the content) to not be able to delete contents, it's needed to reset workflow with "kotti-reset-workflow <application ini file>" command.
+  To make existent Kotti's instances using default workflow
+  compatibles and avoid users that have 'editor' role (and so far,
+  whom have the possibility to edit and delete the content) to not be
+  able to delete contents, it's needed to reset workflow with
+  "kotti-reset-workflow <application ini file>" command.
+
+- Fix #308: Unique name constraint issue during paste of a cut node.
 
 0.9.2 - 2013-10-15
 ------------------
