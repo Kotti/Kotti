@@ -71,6 +71,7 @@ def content(connection, settings):
     """
     from transaction import commit
     from kotti import metadata
+    from kotti.resources import get_root
     metadata.drop_all(connection.engine)
     metadata.create_all(connection.engine)
     # to create the default content with the correct workflow state
@@ -81,6 +82,12 @@ def content(connection, settings):
     xmlconfig.file('workflow.zcml', kotti, execute=True)
     for populate in settings['kotti.populators']:
         populate()
+
+    # We set the path here since it's required for some integration
+    # tests, and because the 'content' fixture does not depend on
+    # 'event' and therefore the event handlers aren't fired for root
+    # otherwise:
+    get_root().path = u'/'
     commit()
 
 
