@@ -347,6 +347,27 @@ class TestPath:
         db_session.query(Node).filter(
             Node.path.startswith(u'/child-1/child-3')).count() == 0
 
+    def test_add_child_to_unnamed_parent(self, db_session, root, events):
+        from kotti.resources import Node
+        parent = Node()
+        child1 = parent['child-1'] = Node()
+        child2 = child1['child-2'] = Node()
+        assert child2.__parent__.__parent__ is parent
+        root['parent'] = parent
+        assert parent.path == u'/parent'
+        assert child1.path == u'/parent/child-1'
+        assert child2.path == u'/parent/child-1/child-2'
+
+    def test_add_child_to_unrooted_parent(self, db_session, root, events):
+        from kotti.resources import Node
+        parent = Node('parent')
+        child1 = parent['child-1'] = Node()
+        child2 = child1['child-2'] = Node()
+        root['parent'] = parent
+        assert parent.path == u'/parent'
+        assert child1.path == u'/parent/child-1'
+        assert child2.path == u'/parent/child-1/child-2'
+
 
 class TestLocalGroup:
     def test_copy(self, db_session, root):

@@ -347,6 +347,17 @@ def _set_path_for_new_name(target, value, oldvalue, initiator):
         _update_children_paths(old_path, target_path)
 
 
+def _all_children(item, _all=None):
+    if _all is None:
+        _all = []
+
+    for child in item.children:
+        _all.append(child)
+        _all_children(child, _all)
+
+    return _all
+
+
 def _set_path_for_new_parent(target, value, oldvalue, initiator):
     """Triggered whenever the Node's 'parent' attribute is set.
     """
@@ -358,19 +369,30 @@ def _set_path_for_new_parent(target, value, oldvalue, initiator):
         # The object's name is still 'None', so skip.
         return
 
-    if value.parent is None and value.__name__ != u'':
+    if value.__parent__ is None and value.__name__ != u'':
         # Our parent doesn't have a parent, and it's not root either.
         return
 
     old_path = target.path
 
     line = tuple(reversed(tuple(lineage(value))))
+    names = [node.__name__ for node in line]
+    if None in names:
+        # If any of our parents don't have a name yet, skip
+        return
+
     target_path = u'/'.join(node.__name__ for node in line)
     target_path += u'/{0}'.format(target.__name__)
     target.path = target_path
 
     if old_path:
         _update_children_paths(old_path, target_path)
+    else:
+        # We might not have had a path before, but we might still have
+        # children.  This is the case when we create an object with
+        # children before we assign the object itself to a parent.
+        for child in _all_children(target):
+            child.path = u'/'.join([child.__parent__.path, child.__name__])
 
 
 class subscribe(object):
