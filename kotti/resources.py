@@ -221,7 +221,7 @@ class Node(Base, ContainerMixin, PersistentACLMixin):
     #: (:class:`sqlalchemy.types.Unicode`).  Its set to a length of 767
     #: by default because MySQL doesn't allow indexes on columns that
     #: are larger than 767 bytes (by default).
-    path = Column(Unicode(767), index=True)
+    path = Column(Unicode(1000), index=True)
 
     _children = relation(
         'Node',
@@ -746,6 +746,12 @@ def initialize_sql(engine, drop_all=False):
     if engine.dialect.name == 'mysql':  # pragma: no cover
         from sqlalchemy.dialects.mysql.base import LONGBLOB
         File.__table__.c.data.type = LONGBLOB()
+        # We disable the Node.path index for Mysql; in some conditions
+        # the index can't be created for columns even with 767 bytes,
+        # the maximum default size for column indexes
+        Node.__table__.indexes = set(
+            index for index in Node.__table__.indexes
+            if index.name != u"ix_nodes_path")
 
     # Allow migrations to set the 'head' stamp in case the database is
     # initialized freshly:
