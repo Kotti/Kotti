@@ -453,6 +453,10 @@ def wire_sqlalchemy():  # pragma: no cover
         sqlalchemy.event.listen(
             Node.parent, 'set', _set_path_for_new_parent, propagate=True)
 
+    # Here's a workaround for the fact that the 'Node.parent'
+    # attribute may not be available yet.  For tests,
+    # 'after_configured' has already been called, while the production
+    # code doesn't have 'Node.parent' yet.
     if hasattr(Node, 'parent'):
         add_set_path_listeners()
     else:

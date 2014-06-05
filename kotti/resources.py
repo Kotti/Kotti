@@ -218,8 +218,10 @@ class Node(Base, ContainerMixin, PersistentACLMixin):
     #: (:class:`kotti.sqla.NestedMustationDict`)
     annotations = Column(NestedMutationDict.as_mutable(JsonType))
     #: The path can be used to efficiently filter for child objects
-    #: (:class:`sqlalchemy.types.Unicode`)
-    path = Column(Unicode(1000), index=True)
+    #: (:class:`sqlalchemy.types.Unicode`).  Its set to a length of 767
+    #: by default because MySQL doesn't allow indexes on columns that
+    #: are larger than 767 bytes (by default).
+    path = Column(Unicode(767), index=True)
 
     _children = relation(
         'Node',
