@@ -1,8 +1,8 @@
 Change History
 ==============
 
-0.10 - unreleased
------------------
+0.10a2 - 2014-06-05
+-------------------
 
 - Add ``Node.path`` column.  This allows queries based on path, so
   it's much easier just to find all children, grandchildren etc. of a
