@@ -368,6 +368,42 @@ class TestPath:
         assert child1.path == u'/parent/child-1'
         assert child2.path == u'/parent/child-1/child-2'
 
+    def test_node_lineage_not_loaded_new_name(
+        self, db_session, root, events):
+
+        from kotti.resources import Node
+        parent = root['parent'] = Node()
+        child1 = parent['child-1'] = Node()
+        child2 = child1['child-2'] = Node()
+
+        db_session.flush()
+        child2_id = child2.id
+        db_session.expunge_all()    # empty the identity map
+
+        child2 = db_session.query(Node).get(child2_id)
+        child3 = Node('child-3', parent=child2)
+        assert child3.path == u'/parent/child-1/child-2/child-3'
+
+    def test_node_lineage_not_loaded_new_parent(
+        self, db_session, root, events):
+
+        from kotti.resources import Node
+        parent = root['parent'] = Node()
+        child1 = parent['child-1'] = Node()
+
+        db_session.flush()
+        child1_id = child1.id
+        db_session.expunge_all()
+
+        child2 = Node(name=u'child-2')
+        child3 = Node(name=u'child-3')
+
+        child1 = db_session.query(Node).get(child1_id)
+        child3.parent = child2
+        child2.parent = child1
+
+        assert child3.path == u"/parent/child-1/child-2/child-3"
+
 
 class TestLocalGroup:
     def test_copy(self, db_session, root):

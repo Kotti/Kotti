@@ -4,6 +4,9 @@ Change History
 0.10 - Unreleased
 -----------------
 
+- Fix bug with Node.path where we attach a Node instance to a parent
+  that has been loaded from the database, but its parents have not
+  been loaded yet.
 
 0.10a2 - 2014-06-05
 -------------------

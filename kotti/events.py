@@ -327,7 +327,8 @@ def _set_path_for_new_name(target, value, oldvalue, initiator):
         return
 
     old_path = target.path
-    line = tuple(reversed(tuple(lineage(target))))
+    with DBSession.no_autoflush:
+        line = tuple(reversed(tuple(lineage(target))))
     target_path = u'/'.join(node.__name__ for node in line[:-1])
     target_path += u'/{0}'.format(value)
     target.path = target_path
