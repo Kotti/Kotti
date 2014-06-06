@@ -42,6 +42,8 @@ Change History
 
     DBSession.query(Node).filter(Node.path.startswith(mynode.path))
 
+- Adds ``session`` attribute to the request attributes to copy to the slot view request.
+
 Migrations
 ~~~~~~~~~~
 
