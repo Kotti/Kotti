@@ -20,6 +20,7 @@ except ImportError:  # pragma: no cover
     from ordereddict import OrderedDict
 
 import sqlalchemy.event
+from sqlalchemy.orm import load_only
 import venusian
 from sqlalchemy.orm import mapper
 from pyramid.location import lineage
@@ -38,6 +39,7 @@ from kotti.security import list_groups_raw
 from kotti.security import set_groups
 from kotti.security import Principal
 from kotti.security import get_principals
+from kotti.sqla import no_autoflush
 
 
 class ObjectEvent(object):
@@ -302,11 +304,13 @@ def reset_content_owner(event):
 
 
 def _update_children_paths(old_parent_path, new_parent_path):
-    for child in DBSession.query(Node).filter(
+    for child in DBSession.query(Node).options(
+        load_only('path', 'type')).filter(
         Node.path.startswith(old_parent_path + '/')):
         child.path = new_parent_path + child.path[len(old_parent_path):]
 
 
+@no_autoflush
 def _set_path_for_new_name(target, value, oldvalue, initiator):
     """Triggered whenever the Node's 'name' attribute is set.
 
@@ -327,8 +331,7 @@ def _set_path_for_new_name(target, value, oldvalue, initiator):
         return
 
     old_path = target.path
-    with DBSession.no_autoflush:
-        line = tuple(reversed(tuple(lineage(target))))
+    line = tuple(reversed(tuple(lineage(target))))
     target_path = u'/'.join(node.__name__ for node in line[:-1])
     target_path += u'/{0}'.format(value)
     target.path = target_path
@@ -344,8 +347,11 @@ def _set_path_for_new_name(target, value, oldvalue, initiator):
     finally:
         del target._kotti_set_path_for_new_name
 
-    if old_path:
+    if old_path and target.id is not None:
         _update_children_paths(old_path, target_path)
+    else:
+        for child in _all_children(target):
+            child.path = u'/'.join([child.__parent__.path, child.__name__])
 
 
 def _all_children(item, _all=None):
@@ -359,6 +365,7 @@ def _all_children(item, _all=None):
     return _all
 
 
+@no_autoflush
 def _set_path_for_new_parent(target, value, oldvalue, initiator):
     """Triggered whenever the Node's 'parent' attribute is set.
     """
@@ -375,7 +382,6 @@ def _set_path_for_new_parent(target, value, oldvalue, initiator):
         return
 
     old_path = target.path
-
     line = tuple(reversed(tuple(lineage(value))))
     names = [node.__name__ for node in line]
     if None in names:
@@ -386,7 +392,7 @@ def _set_path_for_new_parent(target, value, oldvalue, initiator):
     target_path += u'/{0}'.format(target.__name__)
     target.path = target_path
 
-    if old_path:
+    if old_path and target.id is not None:
         _update_children_paths(old_path, target_path)
     else:
         # We might not have had a path before, but we might still have

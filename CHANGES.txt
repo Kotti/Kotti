@@ -4,9 +4,15 @@ Change History
 0.10 - Unreleased
 -----------------
 
-- Fix bug with Node.path where we attach a Node instance to a parent
-  that has been loaded from the database, but its parents have not
-  been loaded yet.
+- Upgrade SQLAlchemy and alembic dependencies from 0.8.2 and 0.5.0 to
+  0.9.4 and 0.6.5 respectively.
+
+- Do not flush within ``Node.path`` event handlers.  We would
+  otherwise trigger object handlers with funny object states.
+
+- Fix bug with ``Node.path`` where we attach a Node instance to a
+  parent that has been loaded from the database, but its parents have
+  not been loaded yet.
 
 0.10a2 - 2014-06-05
 -------------------

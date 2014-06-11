@@ -22,6 +22,15 @@ def dump_default(obj):
         return obj._d
 
 
+def no_autoflush(func):
+    from kotti.resources import DBSession
+
+    def wrapper(*args, **kwargs):
+        with DBSession.no_autoflush:
+            return func(*args, **kwargs)
+    return wrapper
+
+
 class JsonType(TypeDecorator):
     """http://www.sqlalchemy.org/docs/core/types.html#marshal-json-strings
     """

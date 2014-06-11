@@ -1,5 +1,6 @@
 from warnings import catch_warnings
 
+from pytest import mark
 from pytest import raises
 from pyramid.security import ALL_PERMISSIONS
 from pyramid.security import Allow
@@ -260,11 +261,15 @@ class TestPath:
         subchild.parent = root
         assert subchild.path == '/subchild'
 
-    def test_parent_moved(self, db_session, root, events):
+    @mark.parametrize("flush", [True, False])
+    def test_parent_moved(self, db_session, root, events, flush):
         from kotti.resources import Node
         child1 = root['child-1'] = Node()
         child2 = child1['child-2'] = Node()
         subchild = child2['subchild'] = Node()
+
+        if flush:
+            db_session.flush()
 
         assert subchild.path == '/child-1/child-2/subchild'
         child2.parent = root
@@ -278,11 +283,15 @@ class TestPath:
         subchild.name = u'renamed'
         assert subchild.path == '/child-1/renamed'
 
-    def test_parent_renamed(self, db_session, root, events):
+    @mark.parametrize("flush", [True, False])
+    def test_parent_renamed(self, db_session, root, events, flush):
         from kotti.resources import Node
         child1 = root['child-1'] = Node()
         child2 = child1['child-2'] = Node()
         subchild = child2['subchild'] = Node()
+
+        if flush:
+            db_session.flush()
 
         child2.name = u'renamed'
         assert subchild.path == '/child-1/renamed/subchild'
@@ -292,18 +301,24 @@ class TestPath:
         assert child2.path == '/renamed-1/renamed'
         assert subchild.path == '/renamed-1/renamed/subchild'
 
-    def test_parent_copied(self, db_session, root, events):
+    @mark.parametrize("flush", [True, False])
+    def test_parent_copied(self, db_session, root, events, flush):
         from kotti.resources import Node
         c1 = root['c1'] = Node()
         c2 = c1['c2'] = Node()
         c2['c3'] = Node()
 
+        if flush:
+            db_session.flush()
+
         c1copy = root['c1copy'] = c1.copy()
+
         assert c1copy.path == '/c1copy'
         assert c1copy['c2'].path == '/c1copy/c2'
         assert c1copy['c2']['c3'].path == '/c1copy/c2/c3'
 
         c2copy = c2['c2copy'] = c2.copy()
+
         assert c2copy.path == '/c1/c2/c2copy'
         assert c2copy['c3'].path == '/c1/c2/c2copy/c3'
 
@@ -388,6 +403,16 @@ class TestPath:
         self, db_session, root, events):
 
         from kotti.resources import Node
+        from kotti.resources import get_root
+        from kotti.events import ObjectEvent
+        from kotti.events import objectevent_listeners
+
+        # We want to guarantee that an object event handler can call
+        # get_root(), which is only possible if our event handler
+        # avoids flushing:
+        objectevent_listeners[(ObjectEvent, Node)].append(
+            lambda event: get_root())
+
         parent = root['parent'] = Node()
         child1 = parent['child-1'] = Node()
 
