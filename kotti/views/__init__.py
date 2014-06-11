@@ -1,3 +1,7 @@
+from .util import RootOnlyPredicate
+from .util import SettingHasValuePredicate
+
+
 def includeme(config):
     config.add_static_view('static-kotti', 'kotti:static')
 
@@ -11,3 +15,8 @@ def includeme(config):
     # from js.deform import resource_mapping
     # from js.deform import deform_js
     # resource_mapping['deform'] = deform_js
+
+    config.add_view_predicate(
+        'root_only', RootOnlyPredicate)
+    config.add_view_predicate(
+        'if_setting_has_value', SettingHasValuePredicate)

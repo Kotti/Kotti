@@ -31,7 +31,6 @@ from kotti.util import _
 from kotti.views.form import AddFormView
 from kotti.views.form import EditFormView
 from kotti.views.site_setup import CONTROL_PANEL_LINKS
-from kotti.views.util import is_root
 from kotti.views.util import template_api
 
 
@@ -361,7 +360,7 @@ class GroupAddFormView(UserAddFormView):
 
 
 @view_config(name='setup-users', permission='admin',
-             custom_predicates=(is_root,),
+             root_only=True,
              renderer='kotti:templates/site-setup/users.pt')
 class UsersManage(FormView):
 
@@ -483,7 +482,7 @@ class GroupManageFormView(UserManageFormView):
 
 
 @view_config(name='setup-user', permission='admin',
-             custom_predicates=(is_root, ),
+             root_only=True,
              renderer='kotti:templates/site-setup/user.pt')
 class UserManage(FormView):
 
@@ -522,7 +521,7 @@ class UserManage(FormView):
 
 
 @view_config(name='delete-user', permission='admin',
-             custom_predicates=(is_root,),
+             root_only=True,
              renderer='kotti:templates/site-setup/delete-user.pt')
 def user_delete(context, request):
     principals = get_principals()
@@ -569,7 +568,7 @@ class PreferencesFormView(UserEditFormView):
     cancel_failure = cancel_success
 
 
-@view_config(name='prefs', custom_predicates=(is_root, ),
+@view_config(name='prefs', root_only=True,
              renderer='kotti:templates/edit/simpleform.pt')
 class Preferences(FormView):
 

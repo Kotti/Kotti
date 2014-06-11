@@ -254,7 +254,8 @@ def base_configure(global_config, **settings):
 
     # add the authenticated user to the request object
     from kotti.security import get_user
-    config.set_request_property(get_user, name="user", reify=True)
+    config.add_request_method(
+        get_user, name="user", reify=True, property=True)
 
     return config
 

@@ -12,6 +12,7 @@ from pyramid.location import inside
 from pyramid.location import lineage
 from pyramid.renderers import get_renderer
 from pyramid.renderers import render
+from pyramid.settings import asbool
 from sqlalchemy import and_
 from sqlalchemy import not_
 from sqlalchemy import or_
@@ -34,6 +35,34 @@ from kotti.views.site_setup import CONTROL_PANEL_LINKS
 from kotti.views.slots import slot_events
 
 
+class SettingHasValuePredicate(object):
+    def __init__(self, val, config):
+        self.name, self.value = val
+        if not isinstance(self.value, bool):
+            raise ValueError("Only boolean values supported")
+
+    def text(self):
+        return "if_setting_has_value = %s == %s" % (self.name, self.value)
+
+    phash = text
+
+    def __call__(self, context, request):
+        return asbool(request.registry.settings[self.name]) == self.value
+
+
+class RootOnlyPredicate(object):
+    def __init__(self, val, config):
+        self.val = val
+
+    def text(self):
+        return "root_only = %s" % self.val
+
+    phash = text
+
+    def __call__(self, context, request):
+        return (context is request.root) == self.val
+
+
 def template_api(context, request, **kwargs):
     return get_settings()['kotti.templates.api'][0](
         context, request, **kwargs)
@@ -48,6 +77,9 @@ def add_renderer_globals(event):
         event['api'] = api
 
 
+@deprecate("'is_root' is deprecated as of Kotti 0.10. "
+           "Use the 'root_only=True' if you were using this as a "
+           "'custom_predicates' predicate.")
 def is_root(context, request):
     return context is request.root
 

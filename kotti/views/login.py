@@ -77,8 +77,7 @@ class RegisterSchema(colander.Schema):
 
 
 @view_config(name='register', renderer='kotti:templates/edit/simpleform.pt',
-    custom_predicates=(lambda info, request:
-        asbool(request.registry.settings['kotti.register']),))
+             if_setting_has_value=('kotti.register', True))
 def register(context, request):
     schema = RegisterSchema().bind(request=request)
     form = Form(schema, buttons=(Button('register', _(u'Register')),))

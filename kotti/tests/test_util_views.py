@@ -1,6 +1,7 @@
 import time
 
 from mock import patch
+from mock import Mock
 from mock import MagicMock
 from pyramid.request import Response
 from pytest import raises
@@ -132,11 +133,13 @@ class TestTemplateAPI:
             has_permission.assert_called_with('drink', api.root, api.request)
 
     def test_edit_links(self, config, db_session):
+        from kotti import views
         from kotti.views.edit import actions, content, default_views
         from kotti.views import users
         from kotti.util import Link
 
         api = self.make()
+        config.include(views)
         config.include(actions)
         config.include(content)
         config.include(default_views)
@@ -561,3 +564,33 @@ class TestNodesTree:
 
         tree = nodes_tree(DummyRequest(), context=ac)
         assert [ch for ch in tree.tolist()] == [ac, aca, acb]
+
+
+class TestSettingHasValuePredicate:
+    def test_basic(self):
+        from kotti.views.util import SettingHasValuePredicate
+
+        predicate = SettingHasValuePredicate(('mysetting', True), None)
+        request = Mock()
+        request.registry.settings = {'mysetting': 'True'}
+        assert predicate(None, request) is True
+
+        request.registry.settings = {'mysetting': '0'}
+        assert predicate(None, request) is False
+
+    def test_bool_value_assertion(self):
+        from kotti.views.util import SettingHasValuePredicate
+
+        with raises(ValueError):
+            SettingHasValuePredicate(('mysetting', 'hello'), None)
+
+
+class TestRootOnlyPredicate:
+    def test_basic(self):
+        from kotti.views.util import RootOnlyPredicate
+
+        predicate = RootOnlyPredicate(True, None)
+        request = Mock()
+        root = request.root
+        assert predicate(root, request) is True
+        assert predicate(object(), request) is False

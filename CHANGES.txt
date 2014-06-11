@@ -14,6 +14,10 @@ Change History
   parent that has been loaded from the database, but its parents have
   not been loaded yet.
 
+- Fix deprecation warnings with regard to Pyramid's
+  ``custom_view_predicates`` and ``set_request_property``.  Also
+  deprecate ``kotti.views.util.is_root``.
+
 0.10a2 - 2014-06-05
 -------------------
 
