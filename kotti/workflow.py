@@ -52,9 +52,9 @@ def workflow_callback(context, info):
     acl = []
 
     # This could definitely be cached...
+    special_roles = ('system.Everyone', 'system.Authenticated')
     for key, value in state_data.items():
-        if (key.startswith('role:') or
-            key in ('system.Everyone', 'system.Authenticated')):
+        if key.startswith('role:') or key in special_roles:
             for perm in value.split():
                 acl.append(("Allow", key, perm))
 
