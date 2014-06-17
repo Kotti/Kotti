@@ -4,6 +4,8 @@ Change History
 0.10a - Unreleased
 ------------------
 
+- Upgrade Pyramid to version 1.5.1.
+
 0.10a3 - 2014-06-11
 -------------------
 
