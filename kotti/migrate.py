@@ -133,6 +133,11 @@ def stamp_heads():
 
 
 def upgrade(location=DEFAULT_LOCATION):
+    # We don't want to fire any kind of events during a migration,
+    # because "migrations are a low-level thing".
+    from kotti import events
+    events.clear()
+
     pkg_env = PackageEnvironment(location)
 
     revision = pkg_env.script_dir.get_current_head()
