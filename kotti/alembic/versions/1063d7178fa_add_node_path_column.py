@@ -13,6 +13,7 @@ down_revision = '57fecf5dbd62'
 from alembic import op
 import sqlalchemy as sa
 from pyramid.location import lineage
+from sqlalchemy.orm import load_only
 
 
 def upgrade():
@@ -22,7 +23,7 @@ def upgrade():
     from kotti import DBSession
     from kotti.resources import Node
 
-    for node in DBSession.query(Node):
+    for node in DBSession.query(Node).with_polymorphic([Node]):
         reversed_lineage = reversed(tuple(lineage(node)))
         node.path = u'/'.join(
             node.__name__ for node in reversed_lineage) or u'/'
