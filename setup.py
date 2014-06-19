@@ -83,7 +83,7 @@ if sys.version_info[:3] < (2, 7, 0):
     install_requires.append('ordereddict')
 
 setup(name='Kotti',
-      version='0.10a4',
+      version='0.10a5dev',
       description="A user-friendly, light-weight and extensible web content management system. Based on Pyramid and SQLAlchemy.",
       long_description='\n\n'.join([README, AUTHORS, CHANGES]),
       classifiers=[
