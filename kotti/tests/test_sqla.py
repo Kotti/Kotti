@@ -1,3 +1,5 @@
+import json
+
 from mock import MagicMock
 from pyramid.security import ALL_PERMISSIONS
 
@@ -109,6 +111,13 @@ class TestNestedMutationDict:
         mdict = NestedMutationDict({})
         assert mdict.setdefault('bar', []).__parent__ is mdict
 
+    def test_dunder_json(self):
+        from kotti.sqla import NestedMutationDict
+        data = {"some": ["other", {"stuff": 1}]}
+        mdict = NestedMutationDict(data)
+
+        assert json.loads(json.dumps(mdict.__json__(None))) == data
+
 
 class TestJsonType:
     def make(self):
@@ -190,3 +199,8 @@ class TestMutationList:
         from kotti.sqla import MutationList
         mlist = MutationList(['foo'])
         assert ['bar'] + mlist == ['bar', 'foo']
+
+    def test_dunder_json(self):
+        from kotti.sqla import MutationList
+        mlist = MutationList(['foo'])
+        json.loads(json.dumps(mlist.__json__(None))) == ['foo']
