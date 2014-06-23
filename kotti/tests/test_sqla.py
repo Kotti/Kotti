@@ -200,7 +200,33 @@ class TestMutationList:
         mlist = MutationList(['foo'])
         assert ['bar'] + mlist == ['bar', 'foo']
 
+
+class TestMutationDunderJson:
     def test_dunder_json(self):
         from kotti.sqla import MutationList
         mlist = MutationList(['foo'])
-        json.loads(json.dumps(mlist.__json__(None))) == ['foo']
+        json.loads(json.dumps(mlist.__json__())) == ['foo']
+
+    def test_dunder_json_recursive(self):
+        from kotti.sqla import MutationList
+        from kotti.sqla import MutationDict
+
+        mlist = MutationList([
+            MutationDict({'foo': MutationList([{'bar': 'baz'}])}),
+            {'foo': ['bar', 'baz']},
+            ])
+
+        json.loads(json.dumps(mlist.__json__())) == [
+            {'foo': [{'bar': 'baz'}]},
+            {'foo': ['bar', 'baz']},
+            ]
+
+        mdict = MutationDict({
+            'foo': MutationList([{'bar': 'baz'}]),
+            'bar': ['bar', 'baz'],
+            })
+
+        json.loads(json.dumps(mdict.__json__())) == {
+            'foo': [{'bar': 'baz'}],
+            'bar': ['bar', 'baz'],
+            }

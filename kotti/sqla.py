@@ -84,8 +84,10 @@ class MutationDict(Mutable):
         else:
             return value
 
-    def __json__(self, request):
-        return self._d
+    def __json__(self, request=None):
+        return dict([(key, value.__json__(request))
+                     if hasattr(value, '__json__') else (key, value)
+                     for key, value in self._d.items()])
 
 
 class MutationList(Mutable):
@@ -105,8 +107,9 @@ class MutationList(Mutable):
     def __radd__(self, other):
         return other + self._d
 
-    def __json__(self, request):
-        return self._d
+    def __json__(self, request=None):
+        return [item.__json__(request) if hasattr(item, '__json__') else item
+                for item in self._d]
 
 
 def _make_mutable_method_wrapper(wrapper_class, methodname, mutates):

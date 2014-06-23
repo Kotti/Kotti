@@ -4,8 +4,9 @@ Change History
 0.10 - Unreleased
 -----------------
 
-- Add a __json__ method to MutationList and MutationDict so that pyramid
-  json serializer can process them.
+- Add a ``__json__`` method to MutationList and MutationDict.
+
+  This is to allow Pyramid's serializer to just work.
 
 0.10a4 - 2014-06-19
 -------------------
