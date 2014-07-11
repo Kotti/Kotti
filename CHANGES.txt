@@ -1,8 +1,8 @@
 Change History
 ==============
 
-0.10 - Unreleased
------------------
+0.10b1 - 2014-07-11
+-------------------
 
 - Add a ``__json__`` method to MutationList and MutationDict.
 
