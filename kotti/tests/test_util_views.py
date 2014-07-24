@@ -1,5 +1,6 @@
+#coding:utf8
 import time
-
+import decimal
 from mock import patch
 from mock import Mock
 from mock import MagicMock
@@ -366,6 +367,15 @@ class TestTemplateAPI:
         assert len(called) == 1
         api.slots.abovecontent
         assert len(called) == 1
+
+    def test_format_currency(self, db_session):
+        api = self.make()
+        assert u'€13.99' == api.format_currency(13.99, 'EUR')
+        assert u'$15,499.12' == api.format_currency(15499.12, 'USD')
+        assert u'€1' == api.format_currency(1, format=u'€#,##0',
+                                               currency='EUR')
+        assert u'Fr.3.14' == api.format_currency(
+                                decimal.Decimal((0, (3, 1, 4), -2)), 'CHF')
 
     def test_format_datetime(self, db_session):
         import datetime
