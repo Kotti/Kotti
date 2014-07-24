@@ -223,13 +223,16 @@ class Node(Base, ContainerMixin, PersistentACLMixin):
     #: are larger than 767 bytes (by default).
     path = Column(Unicode(1000), index=True)
 
-    _children = relation(
+    parent = relation(
         'Node',
-        collection_class=ordering_list('position'),
-        order_by=[position],
-        backref=backref('parent', remote_side=[id]),
-        cascade='all',
+        remote_side=[id],
+        backref=backref(
+            '_children',
+            collection_class=ordering_list('position'),
+            order_by=[position],
+            cascade='all',
         )
+    )
 
     local_groups = relation(
         LocalGroup,
