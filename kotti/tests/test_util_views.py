@@ -1,4 +1,4 @@
-#coding:utf8
+# coding:utf8
 import time
 import decimal
 from mock import patch
@@ -373,9 +373,9 @@ class TestTemplateAPI:
         assert u'€13.99' == api.format_currency(13.99, 'EUR')
         assert u'$15,499.12' == api.format_currency(15499.12, 'USD')
         assert u'€1' == api.format_currency(1, format=u'€#,##0',
-                                               currency='EUR')
+                                            currency='EUR')
         assert u'Fr.3.14' == api.format_currency(
-                                decimal.Decimal((0, (3, 1, 4), -2)), 'CHF')
+            decimal.Decimal((0, (3, 1, 4), -2)), 'CHF')
 
     def test_format_datetime(self, db_session):
         import datetime
