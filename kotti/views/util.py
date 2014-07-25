@@ -6,6 +6,7 @@ from datetime import datetime
 from babel.dates import format_date
 from babel.dates import format_datetime
 from babel.dates import format_time
+from babel.numbers import format_currency
 from pyramid.decorator import reify
 from pyramid.i18n import get_locale_name
 from pyramid.location import inside
@@ -315,6 +316,10 @@ class TemplateAPI(object):
         if format is None:
             format = self.S['kotti.time_format']
         return format_time(t, format=format, locale=self.locale_name)
+
+    def format_currency(self, n, currency, format=None):
+        return format_currency(n, currency,
+                               format=format, locale=self.locale_name)
 
     def get_type(self, name):
         for class_ in get_settings()['kotti.available_types']:
