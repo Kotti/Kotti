@@ -236,8 +236,7 @@ class SetPasswordSchema(colander.MappingSchema):
 @view_config(name='set-password', renderer='kotti:templates/edit/simpleform.pt')
 def set_password(context, request,
                  success_msg=_(u"You have reset your password.")):
-    """
-    Set password view.  Displays the set password form and handles its form
+    """ Set password view.  Displays the set password form and handles its form
     submission.
 
     :param success_msg: Message to display on successful submission handling
