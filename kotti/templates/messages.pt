@@ -1,5 +1,5 @@
 <div id="messages" class="${request.is_xhr and 'ajax-replace' or ''}">
-  <div tal:repeat="queue ('info', 'success', 'error', '')" tal:omit-tag="">
+  <div tal:repeat="queue ('info', 'success', 'error', 'warning', '')" tal:omit-tag="">
     <div tal:define="messages request.session.pop_flash(queue)"
          tal:condition="messages"
          tal:repeat="message messages"

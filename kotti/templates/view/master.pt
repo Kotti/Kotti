@@ -61,7 +61,7 @@
           </div>
         </div>
 
-        <div class="col-md right-column"
+        <div class="col-md-3 right-column"
              tal:condition="page_slots.right"
              tal:content="api.render_template('kotti:templates/render_column_slot.pt', slot=page_slots.right)">
         </div>

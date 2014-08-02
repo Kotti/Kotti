@@ -196,7 +196,7 @@ def logout(context, request):
     """
 
     headers = forget(request)
-    request.session.flash(_(u"You have been logged out."))
+    request.session.flash(_(u"You have been logged out."), 'info')
     location = request.params.get('came_from', request.application_url)
     return HTTPFound(location=location, headers=headers)
 

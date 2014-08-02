@@ -10,7 +10,7 @@
     <ul class="nav nav-tabs">
       <li class="${active_tab == 'search' and 'active'}">
         <a href="#search-tab" data-toggle="tab" i18n:translate="">
-          Search user(s) / groups(s)
+          Search user(s) / group(s)
         </a>
       </li>
       <li class="${active_tab == 'add_user' and 'active'}">
@@ -35,7 +35,7 @@
 
           <div class="control-group">
             <label for="search-query" i18n:translate="">
-              User- / groupname
+              User/Group name
             </label>
             <input type="search"
                    class="form-control"
