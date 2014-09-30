@@ -96,16 +96,12 @@ msgid "Add group"
 msgstr "Neue Gruppe"
 
 #: kotti/templates/site-setup/users.pt:116
-#, fuzzy
-#| msgid "Add group"
 msgid "Add new group"
-msgstr "Neue Gruppe"
+msgstr "Neue Gruppe hinzufügen"
 
 #: kotti/templates/site-setup/users.pt:110
-#, fuzzy
-#| msgid "Add user"
 msgid "Add new user"
-msgstr "Neuer Benutzer"
+msgstr "Neuen Benutzer hinzufügen"
 
 #: kotti/templates/site-setup/users.pt:17
 msgid "Add user"
@@ -139,10 +135,8 @@ msgid "Are you sure you want to delete the following items?"
 msgstr "Sind Sie sicher, dass Sie die folgenden Dokumente löschen möchten?"
 
 #: kotti/templates/site-setup/users.pt:60
-#, fuzzy
-#| msgid "Assign local roles"
 msgid "Assign global roles"
-msgstr "Lokale Rollen zuweisen"
+msgstr "Globale Rollen zuweisen"
 
 #: kotti/templates/edit/share.pt:39
 msgid "Assign local roles"
@@ -153,10 +147,8 @@ msgid "Back to User Management"
 msgstr "Zurück zur Benutzerverwaltung"
 
 #: kotti/templates/site-setup/users.pt:47
-#, fuzzy
-#| msgid "Find and modify users (Blank search text finds all)."
 msgid "Blank search text finds all."
-msgstr "Benutzersuche (Suche mit leerem Eingabefeld liefert alle Benutzer)"
+msgstr "Suche mit leerem Eingabefeld liefert alle Benutzer."
 
 #: kotti/views/edit/content.py:50
 msgid "Body"
@@ -307,10 +299,8 @@ msgstr ""
 "einen Link zum zurücksetzen Ihres Passworts enthält."
 
 #: kotti/templates/site-setup/users.pt:31
-#, fuzzy
-#| msgid "Search users and groups"
 msgid "Find users or groups"
-msgstr "Suche Benutzer und Gruppen"
+msgstr "Suche Benutzer oder Gruppen"
 
 #: kotti/resources.py:498
 msgid "Folder view"
@@ -569,10 +559,8 @@ msgid "Search Results"
 msgstr "Suchergebnisse"
 
 #: kotti/templates/site-setup/users.pt:12
-#, fuzzy
-#| msgid "Search users and groups"
 msgid "Search user(s) / groups(s)"
-msgstr "Suche Benutzer und Gruppen"
+msgstr "Suche"
 
 #: kotti/templates/edit/share.pt:14 kotti/templates/edit/share.pt:17
 #: kotti/templates/edit/share.pt:20 kotti/templates/site-setup/users.pt:40
@@ -585,9 +573,7 @@ msgstr "Suche..."
 
 #: kotti/templates/edit/change-state.pt:51
 msgid "Select the new state where all chosen items should be set."
-msgstr ""
-"Wählen Sie den neuen Status, der für alle ausgwählten Dokumente gesetzt "
-"werden soll."
+msgstr "Wählen Sie den neuen Status, der für alle ausgwählten Dokumente gesetzt werden soll."
 
 #: kotti/views/users.py:324
 msgid "Send password registration link."
