@@ -97,9 +97,11 @@
             </tbody>
           </table>
 
-          <button type="submit" name="apply" class="btn btn-primary"
-                  i18n:translate="">
-            Apply changes
+	  <button type="submit" name="apply" class="btn btn-primary">
+	    <i class="glyphicon glyphicon-save"></i>
+	    <span i18n:translate="">
+	      Apply changes
+	    </span>
           </button>
 
         </form>
