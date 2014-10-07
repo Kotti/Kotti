@@ -63,10 +63,13 @@ class IBlobStorage(Interface):
 
 	For example::
 
-		kotti.filestorage = kotti_filestore.Filestore:///var/files
+		kotti.filestorage = kotti_filestore.filestore:///var/files
 
-	will cause ``kotti_filestore.Filestore`` to be instanciated with
+	will cause ``kotti_filestore.filestore`` to be instanciated with
 	``/var/files`` being passed as its ``config`` upon initialization.
+
+	Because this option is parsed as an URL, your class name must be all
+	lower case (scheme part of URLs is not case sensitive).
 
 	See the ``kotti_filestore`` package's documentation for an example. """
 
