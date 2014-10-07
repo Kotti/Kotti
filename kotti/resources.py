@@ -13,6 +13,7 @@ from UserDict import DictMixin
 from fnmatch import fnmatch
 import warnings
 
+from pyramid.decorator import reify
 from pyramid.threadlocal import get_current_registry
 from pyramid.traversal import resource_path
 from sqlalchemy import Boolean
@@ -630,7 +631,7 @@ class File(Content):
     id = Column(Integer(), ForeignKey('contents.id'), primary_key=True)
     #: The binary data itself
     #: (:class:`sqlalchemy.types.LargeBinary`)
-    data = deferred(Column(LargeBinary()))
+    _data = deferred(Column("data", LargeBinary()))
     #: The filename is used in the attachment view to give downloads
     #: the original filename it had when it was uploaded.
     #: (:class:`sqlalchemy.types.Unicode`)
@@ -660,6 +661,31 @@ class File(Content):
         self.filename = filename
         self.mimetype = mimetype
         self.size = size
+
+    @reify
+    def store(self):
+	return get_settings()['kotti.blobstore']
+
+    @hybrid_property
+    def data(self):
+	if self.store == 'db':
+	    return self._data
+	else:
+	    return self.store.read(self._data)
+
+    @data.setter
+    def data(self, value):
+	if self.store == 'db':
+	    self._data = value
+	else:
+	    if self._data is not None:
+		self.store.delete(self._data)
+	    self._data = self.store.write(value)
+
+    def _delete(self):
+	if self.store != 'db':
+	    if self._data is not None:
+		self.store.delete(self._data)
 
     @classmethod
     def from_field_storage(cls, fs):

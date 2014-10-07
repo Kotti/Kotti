@@ -29,16 +29,18 @@ from pyramid.security import authenticated_userid
 from zope.deprecation.deprecation import deprecated
 
 from kotti import DBSession
-from kotti.resources import Node
+from kotti import get_settings
 from kotti.resources import Content
+from kotti.resources import File
+from kotti.resources import LocalGroup
+from kotti.resources import Node
 from kotti.resources import Tag
 from kotti.resources import TagsToContents
-from kotti.resources import LocalGroup
+from kotti.security import get_principals
 from kotti.security import list_groups
 from kotti.security import list_groups_raw
-from kotti.security import set_groups
 from kotti.security import Principal
-from kotti.security import get_principals
+from kotti.security import set_groups
 from kotti.sqla import no_autoflush
 
 
@@ -402,6 +404,26 @@ def _set_path_for_new_parent(target, value, oldvalue, initiator):
             child.path = u'/'.join([child.__parent__.path, child.__name__])
 
 
+def delete_from_blobstore_providers(event):
+    """ This functions checks if a filestore provider is registered and calls
+    its delete method with the corresponding id.  This is needed to make sure,
+    that there are no orphans left on the provider's storage when the
+    corresponding :class:`kotti.resources.File`, :class:`kotti.resources.Image`,
+    or any descendants are deleted.
+
+    :param event: The event that triggered this handler
+    :type event: :class:`ObjectDelete`
+    """
+
+    store = get_settings()['kotti.blobstore']
+
+    if store == 'db':
+	# SQL BLOB storage.  Nothing to do.
+	return
+
+    store.delete(event.context._data)
+
+
 class subscribe(object):
     """Function decorator to attach the decorated function as a handler for a
     Kotti event.  Example::
@@ -521,3 +543,7 @@ def includeme(config):
     # Remove the owner from content when the corresponding user is deleted
     objectevent_listeners[
         (UserDeleted, Principal)].append(reset_content_owner)
+
+    # Delete from filestore providers on deletion of Files
+    objectevent_listeners[
+	(ObjectDelete, File)].append(delete_from_blobstore_providers)

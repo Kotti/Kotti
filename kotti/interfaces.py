@@ -51,3 +51,60 @@ class INavigationRoot(Interface):
         The root item for the navigation will be ``/a/b`` for everey context in
         or below ``/a/b`` and ``/a`` for every other item.
         """
+
+
+class IBlobStorage(Interface):
+    """ This is the minimal interface that needs to be implemented by file
+	storage providers.
+
+	The provider lookup is performed by a "dotted name lookup" from the
+	protocol part of the URL in the ``kotti.filestorage`` option.  The
+	provider's configuration is taken from the path segment of that URL.
+
+	For example::
+
+		kotti.filestorage = kotti_filestore.Filestore:///var/files
+
+	will cause ``kotti_filestore.Filestore`` to be instanciated with
+	``/var/files`` being passed as its ``config`` upon initialization.
+
+	See the ``kotti_filestore`` package's documentation for an example. """
+
+    def __init__(config):
+	""" The constructor is (optionally) passed a string containing the
+	desired configuration options (see above).
+
+	:param config: Configuration string
+	:type config: str
+	"""
+
+    def read(id):
+	""" Get the data for an object with the given ID.
+
+	:param id: ID of the file object
+	:type id: unicode
+
+	:result: Data / value of the file object
+	:rtype:
+	"""
+
+    def write(id, data):
+	""" Create or update an object with the given ``id`` and write ``data``
+	to its contents.
+
+	:param id: ID of the file object
+	:type id: unicode
+
+	:param data: success
+	:type data: bool
+	"""
+
+    def delete(id):
+	""" Delete the object with the given ID.
+
+	:param id: ID of the file object
+	:type id: unicode
+
+	:result: Success
+	:rtype: bool
+	"""

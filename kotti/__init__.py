@@ -120,6 +120,7 @@ conf_defaults = {
     'kotti.register.group': '',
     'kotti.register.role': '',
     'pyramid_deform.template_search_path': 'kotti:templates/deform',
+    'kotti.blobstore': 'db',
     }
 
 conf_dotted = set([
