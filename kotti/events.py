@@ -421,7 +421,7 @@ def delete_from_blobstore_providers(event):
         # SQL BLOB storage.  Nothing to do.
         return
 
-    store.delete(event.context._data)
+    store.delete(event.object._data)
 
 
 class subscribe(object):
