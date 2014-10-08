@@ -88,18 +88,18 @@ class IBlobStorage(Interface):
         :type id: unicode
 
         :result: Data / value of the file object
-        :rtype:
+        :rtype: bytes
         """
 
-    def write(id, data):
+    def write(data):
         """ Create or update an object with the given ``id`` and write ``data``
         to its contents.
 
-        :param id: ID of the file object
-        :type id: unicode
+        :param data: Data / value to store
+        :type data: unicode
 
-        :param data: success
-        :type data: bool
+        :result: ID of the data bucket that can be used for future calls to read
+        :rtype: bytes
         """
 
     def delete(id):
