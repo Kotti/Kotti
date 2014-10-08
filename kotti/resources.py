@@ -831,7 +831,7 @@ def migrate_blobs(from_db=False, to_db=False):
 	    f.store.delete(id)
 
 
-def migrate_blobs_command():
+def migrate_blobs_command():  # pragma: no cover
     __doc__ = """
 Migrate BLOBs between the blobstore configured in the config file and the DB.
 
