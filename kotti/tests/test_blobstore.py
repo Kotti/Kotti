@@ -125,7 +125,7 @@ def test_blobstore_events(dummy_blobstore, blobstore_settings,
             assert id in dummy_blobstore._data
 
             del root['f1']
-            db_session.flush
+            db_session.flush()
             assert File.query.count() == 0
 
             assert id not in dummy_blobstore._data
