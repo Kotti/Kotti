@@ -46,6 +46,14 @@ def blobstore_settings(dummy_blobstore):
             'kotti.blobstore': dummy_blobstore})
 
 
+@fixture
+def blobstore_settings_events(dummy_blobstore):
+    return patch(
+        'kotti.events.get_settings',
+        return_value={
+            'kotti.blobstore': dummy_blobstore})
+
+
 def test_file_data_property(dummy_blobstore, blobstore_settings):
     with blobstore_settings:
 
@@ -98,3 +106,26 @@ def test_blobstore_migration_to(dummy_blobstore, blobstore_settings,
         f1 = root['f1']
         assert f1._data == data
         assert id not in dummy_blobstore._data
+
+
+def test_blobstore_events(dummy_blobstore, blobstore_settings,
+                          blobstore_settings_events, db_session,
+                          content, root, events):
+
+    with blobstore_settings:
+        with blobstore_settings_events:
+            from kotti.resources import File
+            root['f1'] = f1 = File()
+            data = 'Some test data'
+            f1.data = data
+            id = f1._data
+            db_session.flush()
+
+            assert File.query.count() == 1
+            assert id in dummy_blobstore._data
+
+            del root['f1']
+            db_session.flush
+            assert File.query.count() == 0
+
+            assert id not in dummy_blobstore._data

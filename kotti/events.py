@@ -417,7 +417,7 @@ def delete_from_blobstore_providers(event):
 
     store = get_settings()['kotti.blobstore']
 
-    if store == 'db':
+    if store == 'db':  # pragma: no cover
         # SQL BLOB storage.  Nothing to do.
         return
 
