@@ -29,16 +29,18 @@ from pyramid.security import authenticated_userid
 from zope.deprecation.deprecation import deprecated
 
 from kotti import DBSession
-from kotti.resources import Node
+from kotti import get_settings
 from kotti.resources import Content
+from kotti.resources import File
+from kotti.resources import LocalGroup
+from kotti.resources import Node
 from kotti.resources import Tag
 from kotti.resources import TagsToContents
-from kotti.resources import LocalGroup
+from kotti.security import get_principals
 from kotti.security import list_groups
 from kotti.security import list_groups_raw
-from kotti.security import set_groups
 from kotti.security import Principal
-from kotti.security import get_principals
+from kotti.security import set_groups
 from kotti.sqla import no_autoflush
 
 
@@ -306,7 +308,7 @@ def reset_content_owner(event):
 def _update_children_paths(old_parent_path, new_parent_path):
     for child in DBSession.query(Node).options(
         load_only('path', 'type')).filter(
-        Node.path.startswith(old_parent_path + '/')):
+            Node.path.startswith(old_parent_path + '/')):
         child.path = new_parent_path + child.path[len(old_parent_path):]
 
 
@@ -400,6 +402,26 @@ def _set_path_for_new_parent(target, value, oldvalue, initiator):
         # children before we assign the object itself to a parent.
         for child in _all_children(target):
             child.path = u'/'.join([child.__parent__.path, child.__name__])
+
+
+def delete_from_blobstore_providers(event):
+    """ This functions checks if a filestore provider is registered and calls
+    its delete method with the corresponding id.  This is needed to make sure,
+    that there are no orphans left on the provider's storage when the
+    corresponding :class:`kotti.resources.File`, :class:`kotti.resources.Image`,
+    or any descendants are deleted.
+
+    :param event: The event that triggered this handler
+    :type event: :class:`ObjectDelete`
+    """
+
+    store = get_settings()['kotti.blobstore']
+
+    if store == 'db':  # pragma: no cover
+        # SQL BLOB storage.  Nothing to do.
+        return
+
+    store.delete(event.object._data)
 
 
 class subscribe(object):
@@ -521,3 +543,7 @@ def includeme(config):
     # Remove the owner from content when the corresponding user is deleted
     objectevent_listeners[
         (UserDeleted, Principal)].append(reset_content_owner)
+
+    # Delete from filestore providers on deletion of Files
+    objectevent_listeners[
+        (ObjectDelete, File)].append(delete_from_blobstore_providers)
