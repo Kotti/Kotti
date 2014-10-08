@@ -52,6 +52,7 @@ Topics
         developing/images
         developing/static-resource-management
         developing/understanding-kotti-startup
+	developing/blobstorage
 
 API
 ---
