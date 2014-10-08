@@ -9,9 +9,9 @@ Inheritance Diagram
 """
 
 import os
-from UserDict import DictMixin
-from fnmatch import fnmatch
 import warnings
+from fnmatch import fnmatch
+from UserDict import DictMixin
 
 from pyramid.decorator import reify
 from pyramid.threadlocal import get_current_registry
@@ -45,26 +45,27 @@ from kotti import Base
 from kotti import DBSession
 from kotti import get_settings
 from kotti import metadata
-from kotti.interfaces import INode
 from kotti.interfaces import IContent
+from kotti.interfaces import IDefaultWorkflow
 from kotti.interfaces import IDocument
 from kotti.interfaces import IFile
 from kotti.interfaces import IImage
-from kotti.interfaces import IDefaultWorkflow
+from kotti.interfaces import INode
 from kotti.migrate import stamp_heads
-from kotti.security import PersistentACLMixin
 from kotti.security import has_permission
+from kotti.security import PersistentACLMixin
 from kotti.security import view_permitted
 from kotti.sqla import ACLType
 from kotti.sqla import JsonType
 from kotti.sqla import MutationList
 from kotti.sqla import NestedMutationDict
+from kotti.util import _
+from kotti.util import camel_case_to_name
+from kotti.util import command
+from kotti.util import get_paste_items
 from kotti.util import Link
 from kotti.util import LinkParent
 from kotti.util import LinkRenderer
-from kotti.util import _
-from kotti.util import camel_case_to_name
-from kotti.util import get_paste_items
 
 
 class ContainerMixin(object, DictMixin):
@@ -794,6 +795,69 @@ def initialize_sql(engine, drop_all=False):
     commit()
 
     return DBSession
+
+
+def migrate_blobs(from_db=False, to_db=False):
+    """ Perform migration of BLOBs between different storage providers.
+
+    :param from_db: Perform a BLOB migration **from** the DB to another provider
+    :type from_db: bool
+
+    :param to_db: Perform a BLOB migration from another provider **to** the DB
+    :type to_db: bool
+    """
+
+    if (from_db and to_db) or not (from_db or to_db):
+        raise ValueError("Either from_db or to_db must be True (but not both).")
+
+    # Iterate over all File content
+    for f in File.query.all():
+        if from_db:
+            # get the BLOB directly from the DB column
+            data = f._data
+            # set the DB column's value to None to prevent triggering of the
+            # provider's delete method
+            f._data = None
+            # assign the BLOB through the attribute setter
+            f.data = data
+        if to_db:
+            # read the provider ID which ist currently the value of the
+            # DB column
+            id = f._data
+            # directly set the DB columns value to the BLOB from the
+            # property getter
+            f._data = f.data
+            # call the provider's delete method
+            f.store.delete(id)
+
+
+def migrate_blobs_command():
+    __doc__ = """
+Migrate BLOBs between the blobstore configured in the config file and the DB.
+
+Make sure you have a backup of your data and you know what you're doing.
+
+RUNNING THIS COMMAND WITH THE SAME OPTIONS TWICE IN A ROW WILL CAUSE PERMANENT
+LOSS OF DATA!
+
+    Usage:
+      kotti-migrate-blobs-to-db <config_uri> --from-db
+      kotti-migrate-blobs-to-db <config_uri> --to-db
+
+    Options:
+      --from-db   Migrate FROM the DB TO the provider configured in your config
+      --to-db     Migrate TO the DB FROM the provider configured in your config
+      -h --help   Show this screen.
+    """
+
+    def callback(arguments):
+        migrate_blobs(
+            from_db=arguments['--from-db'],
+            to_db=arguments['--to-db'])
+
+        commit()
+
+    return command(callback, __doc__)
 
 
 # BBB
