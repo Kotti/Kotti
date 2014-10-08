@@ -308,7 +308,7 @@ def reset_content_owner(event):
 def _update_children_paths(old_parent_path, new_parent_path):
     for child in DBSession.query(Node).options(
         load_only('path', 'type')).filter(
-        Node.path.startswith(old_parent_path + '/')):
+            Node.path.startswith(old_parent_path + '/')):
         child.path = new_parent_path + child.path[len(old_parent_path):]
 
 
