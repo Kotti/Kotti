@@ -841,8 +841,8 @@ RUNNING THIS COMMAND WITH THE SAME OPTIONS TWICE IN A ROW WILL CAUSE PERMANENT
 LOSS OF DATA!
 
     Usage:
-      kotti-migrate-blobs-to-db <config_uri> --from-db
-      kotti-migrate-blobs-to-db <config_uri> --to-db
+      kotti-migrate-blobs <config_uri> --from-db
+      kotti-migrate-blobs <config_uri> --to-db
 
     Options:
       --from-db   Migrate FROM the DB TO the provider configured in your config
