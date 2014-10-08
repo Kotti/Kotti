@@ -2,6 +2,7 @@ import uuid
 
 from mock import patch
 from pytest import fixture
+from pytest import raises
 from zope.interface import implements
 
 from kotti.interfaces import IBlobStorage
@@ -68,6 +69,17 @@ def test_file_data_property(dummy_blobstore, blobstore_settings):
 
 	f1._delete()
 	assert id not in dummy_blobstore._data
+
+
+def test_blobstore_migration_wrong_calls():
+
+    from kotti.resources import migrate_blobs
+
+    with raises(ValueError):
+	migrate_blobs(from_db=False, to_db=False)
+
+    with raises(ValueError):
+	migrate_blobs(from_db=True, to_db=True)
 
 
 def test_blobstore_migration_from(dummy_blobstore, blobstore_settings,
