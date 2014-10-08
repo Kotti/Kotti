@@ -21,3 +21,4 @@
 /lib/
 /local
 junit*.xml
+*.sublime-*
