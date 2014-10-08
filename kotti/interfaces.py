@@ -92,8 +92,8 @@ class IBlobStorage(Interface):
 	"""
 
     def write(data):
-	""" Create or update an object with the given ``id`` and write ``data``
-	to its contents.
+	""" Create an object with the given ``data`` as its contents.
+	Delete all previous contents that might already have existed.
 
 	:param data: Data / value to store
 	:type data: unicode
