@@ -59,26 +59,28 @@ class IBlobStorage(Interface):
 
         The provider lookup is performed by a "dotted name lookup" from the
         protocol part of the URL in the ``kotti.filestorage`` option.  The
-        provider's configuration is taken from the path segment of that URL.
+        provider will be passed the complete URL upon initialization.  This
+        can be used by implementations for their configuration
 
         For example::
 
                 kotti.filestorage = kotti_filestore.filestore:///var/files
 
         will cause ``kotti_filestore.filestore`` to be instanciated with
-        ``/var/files`` being passed as its ``config`` upon initialization.
+        ``kotti_filestore.filestore:///var/files`` being passed as the URL upon
+        initialization.
 
         Because this option is parsed as an URL, your class name must be all
         lower case (scheme part of URLs is not case sensitive).
 
         See the ``kotti_filestore`` package's documentation for an example. """
 
-    def __init__(config):
-        """ The constructor is (optionally) passed a string containing the
+    def __init__(url):
+        """ The constructor is passed an already parsed URL containing the
         desired configuration options (see above).
 
-        :param config: Configuration string
-        :type config: str
+        :param url: URL from the PasteDeploy config file
+        :type url: :class:`yurl.URL`
         """
 
     def read(id):
