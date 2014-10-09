@@ -14,8 +14,8 @@ class DummyBlobstore(object):
     implements(IBlobStorage)
     _data = {}
 
-    def __init__(self, config):
-	self.config = config
+    def __init__(self, url):
+	self.url = url
 
     def read(self, id):
 	return self._data[id]
@@ -141,3 +141,34 @@ def test_blobstore_events(dummy_blobstore, blobstore_settings,
 	    assert File.query.count() == 0
 
 	    assert id not in dummy_blobstore._data
+
+
+def test_configure_blobstore_db():
+
+    from kotti import configure_blobstore
+    settings = {'kotti.blobstore': 'db'}
+    configure_blobstore(settings)
+    assert settings['kotti.blobstore'] == 'db'
+
+
+# needed for the next test - scheme part of URLs is always case insensitive
+dummyblobstore = DummyBlobstore
+
+
+def test_configure_blobstore_dummy():
+
+    from kotti import configure_blobstore
+    url = 'kotti.tests.test_blobstore.dummyblobstore://' \
+	  'username:password@host:1234/path?foo=bar&baz=f%20oo#fragment'
+
+    settings = {'kotti.blobstore': url}
+    configure_blobstore(settings)
+    blobstore = settings['kotti.blobstore']
+    assert type(blobstore) == DummyBlobstore
+    assert blobstore.url.scheme == 'kotti.tests.test_blobstore.dummyblobstore'
+    assert blobstore.url.userinfo == u'username:password'
+    assert blobstore.url.host == u'host'
+    assert blobstore.url.port == '1234'
+    assert blobstore.url.path == u'/path'
+    assert blobstore.url.query == u'foo=bar&baz=f oo'
+    assert blobstore.url.fragment == u'fragment'

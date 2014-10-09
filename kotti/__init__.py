@@ -16,6 +16,7 @@ from pyramid.events import BeforeRender
 from pyramid.threadlocal import get_current_registry
 from pyramid.util import DottedNameResolver
 from pyramid_beaker import session_factory_from_settings
+from yurl import URL
 
 from kotti.sqla import Base as KottiBase
 
@@ -172,6 +173,24 @@ def main(global_config, **settings):
     return config.make_wsgi_app()
 
 
+def configure_blobstore(settings):
+
+    if settings['kotti.blobstore'] == 'db':
+	return
+
+    # Parse the ``kotti.blobstore`` option as an URL.
+    url = URL(settings['kotti.blobstore']).decode()
+
+    # The scheme / protocol part of the URL is the dotted class name of the
+    # BlobStorage provider.
+    factory = DottedNameResolver(None).resolve(url.scheme)
+
+    # Create an instance of the provider, passing it the path and query parts
+    # of the URL as its configuration and store the instance in the settings
+    # dict.
+    settings['kotti.blobstore'] = factory(url)
+
+
 def base_configure(global_config, **settings):
     # Resolve dotted names in settings, include plug-ins and create a
     # Configurator.
@@ -206,6 +225,9 @@ def base_configure(global_config, **settings):
                 settings.setdefault(new, '')
                 settings[new] += ' ' + settings[old]
             del settings[old]
+
+    # Configure the BLOB storage
+    configure_blobstore(settings)
 
     _resolve_dotted(settings)
     secret1 = settings['kotti.secret']

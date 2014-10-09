@@ -53,6 +53,7 @@ install_requires = [
     'transaction>=1.1.0',
     'unidecode',
     'waitress',
+    'YURL',
     'zope.deprecation',
     'zope.sqlalchemy',
     ]

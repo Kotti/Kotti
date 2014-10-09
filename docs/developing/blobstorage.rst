@@ -13,18 +13,16 @@ These issues can be solved by chosing a different storage provider (available as
 Using an existing storage provider
 ----------------------------------
 
-To use an *external* storage provider, you usually need to add the add-on's ``kotti_configure`` to the list of configurators and specify the provider to be used (optionally with configuration options for that provider) via the ``kotti.blobstore`` setting in your ``*.ini`` file(s)::
+To use an *external* storage provider, you only need to specify the provider to be used (optionally with configuration options for that provider) via the ``kotti.blobstore`` setting in your ``*.ini`` file(s)::
 
   [app:main]
   use = egg:kotti
-  kotti.configurators =
-      kotti_filestore.kotti_configure
   kotti.blobstore = kotti_filestore.filestore://%(here)s/filestore
   ...
 
 The value passed to the ``kotti.blobstore`` setting is an URL.
 The scheme part (everything before ``://``) is the dotted path of the class which implements the provider.
-The path is passed to the provider upon its initialization and is usually used to pass configuration options to the provider.
+A parsed URL object (see https://pypi.python.org/pypi/YURL) is passed to the provider upon its initialization and is usually used to supply configuration options to the provider.
 In the example above the path is the absolute path of the filesystem directory where ``kotti_blobstore`` should store the BLOBs.
 
 Implementing your own storage provider
