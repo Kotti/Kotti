@@ -121,15 +121,15 @@ msgstr "Applica le modifiche"
 
 #: kotti/templates/edit/delete.pt:17
 msgid "Are you sure you want to delete ${title}?"
-msgstr "Sei sicuro di voler cancellare ${title}?"
+msgstr "Sei sicuro di voler eliminare ${title}?"
 
 #: kotti/templates/site-setup/delete-user.pt:15
 msgid "Are you sure you want to delete ${type} ${title}?"
-msgstr "Sei sicuro di voler cancellare ${type} ${title}?"
+msgstr "Sei sicuro di voler eliminare ${type} ${title}?"
 
 #: kotti/templates/edit/delete-nodes.pt:14
 msgid "Are you sure you want to delete the following items?"
-msgstr "Sei sicuro di voler cancellare i seguenti elementi?"
+msgstr "Sei sicuro di voler eliminare i seguenti elementi?"
 
 #: kotti/templates/site-setup/users.pt:60
 msgid "Assign global roles"
@@ -229,15 +229,15 @@ msgstr "E' stata selezionata la vista predefinita."
 #: kotti/templates/site-setup/delete-user.pt:24 kotti/views/users.py:443
 #: kotti/views/edit/actions.py:449
 msgid "Delete"
-msgstr "Cancellare"
+msgstr "Elimina"
 
 #: kotti/views/users.py:551
 msgid "Delete ${principal_type} ${title}"
-msgstr "Cancellare ${principal_type} ${title}"
+msgstr "Elimina ${principal_type} ${title}"
 
 #: kotti/templates/edit/delete.pt:9 kotti/templates/site-setup/delete-user.pt:9
 msgid "Delete ${title}"
-msgstr "Cancellare ${title}"
+msgstr "Elimina ${title}"
 
 #: kotti/views/edit/content.py:35
 msgid "Description"
