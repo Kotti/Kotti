@@ -15,11 +15,11 @@
         <table class="table table-condensed table-hover">
           <thead ng-show="(files.length > 0)">
             <tr>
-              <th>Filename</th>
-              <th>Type</th>
-              <th>Size</th>
-              <th>Status</th>
-              <th>Progress</th>
+              <th i18n:translate="">Filename</th>
+              <th i18n:translate="">Type</th>
+              <th i18n:translate="">Size</th>
+              <th i18n:translate="">Status</th>
+              <th i18n:translate="">Progress</th>
             </tr>
           </thead>
           <tbody ng-show="(files.length > 0)">
@@ -85,18 +85,21 @@
         <div class="form-actions">
           <div id="btn-select-files" class="btn btn-success">
             <i class="icon-plus icon-white"></i>
-            Select file(s) to upload…
+            <span tal:omit-tag="" i18n:translate="">
+                Select file(s) to upload...</span>
           </div>
           <a id="btn-upload-all" class="btn btn-primary"
              ng-show="files.length > 0"
              ng-class="{'disabled': num_files_waiting == 0}"
              ng-click="uploadAll()">
             <i class="icon-arrow-up icon-white"></i>
-            Upload {{num_files_waiting}} files.
+            <span tal:omit-tag="" i18n:translate="">
+                Upload <span tal:omit-tag="" i18n:name="number">{{num_files_waiting}}</span> files.</span>
           </a>
           <a class="btn btn-danger pull-right" ng-show="errors.length > 0"
              ng-click="errors=[]">
-            Dismiss all errors
+            <span tal:omit-tag="" i18n:translate="">
+                Dismiss all errors</span>
           </a>
         </div>
 
@@ -105,9 +108,9 @@
           <table class="table table condensed">
             <thead>
               <tr>
-                <th>Filename</th>
-                <th>Type</th>
-                <th>Size</th>
+                <th i18n:translate="">Filename</th>
+                <th i18n:translate="">Type</th>
+                <th i18n:translate="">Size</th>
                 <th>{{f.status}}</th>
               </tr>
             </thead>
