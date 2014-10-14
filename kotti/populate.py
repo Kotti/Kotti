@@ -3,12 +3,16 @@ Populate contains two functions that are called on application startup
 (if you haven't modified kotti.populators).
 """
 
+from pyramid.threadlocal import get_current_registry
+from pyramid.i18n import LocalizerRequestMixin
+
 from kotti import get_settings
 from kotti.resources import DBSession
 from kotti.resources import Node
 from kotti.resources import Document
 from kotti.security import get_principals
 from kotti.security import SITE_ACL
+from kotti.util import _
 from kotti.workflow import get_workflow
 
 
@@ -33,12 +37,21 @@ def populate():
     Create the root node (:class:`~kotti.resources.Document`) and the 'about'
     subnode in the nodes tree if there are no nodes yet.
     """
+    lrm = LocalizerRequestMixin()
+    settings = get_settings()
+    lang = settings['pyramid.default_locale_name']
+    registry = get_current_registry()
+    lrm.registry = registry
+    lrm.locale_name = lang
+    localizer = lrm.localizer
 
     if DBSession.query(Node).count() == 0:
-        root = Document(**_ROOT_ATTRS)
+        localized_root_attrs = dict([(k, localizer.translate(v)) for k, v in _ROOT_ATTRS.iteritems()])
+        root = Document(**localized_root_attrs)
         root.__acl__ = SITE_ACL
         DBSession.add(root)
-        root['about'] = Document(**_ABOUT_ATTRS)
+        localized_about_attrs = dict([(k, localizer.translate(v)) for k, v in _ABOUT_ATTRS.iteritems()])
+        root['about'] = Document(**localized_about_attrs)
 
         wf = get_workflow(root)
         if wf is not None:
@@ -49,9 +62,9 @@ def populate():
 
 _ROOT_ATTRS = dict(
     name=u'',  # (at the time of writing) root must have empty name!
-    title=u'Welcome to Kotti',
-    description=u'Congratulations! You have successfully installed Kotti.',
-    body=u"""
+    title=_(u'Welcome to Kotti'),
+    description=_(u'Congratulations! You have successfully installed Kotti.'),
+    body=_(u"""
 <h2>Log in</h2>
 <p>
     You can <a class="btn btn-success" href="login">log in</a> to your site
@@ -103,12 +116,12 @@ _ROOT_ATTRS = dict(
         </p>
     </div>
 </div>
-""")
+"""))
 
 _ABOUT_ATTRS = dict(
-    title=u'About',
-    description=u'Our company is the leading manufacturer of foo widgets used in a wide variety of aviation and and industrial products.',
-    body=u"""
+    title=_(u'About'),
+    description=_(u'Our company is the leading manufacturer of foo widgets used in a wide variety of aviation and and industrial products.'),
+    body=_(u"""
 <p>
   <img alt="five colorful Extra EA300 airplanes flying in formation"
    src="http://upload.wikimedia.org/wikipedia/commons/thumb/5/5d/Northern_Lights_Formation.jpg/640px-Northern_Lights_Formation.jpg"
@@ -135,4 +148,4 @@ _ABOUT_ATTRS = dict(
   <a href="http://en.wikipedia.org/wiki/Extra_EA-300"> Extra EA-300</a>
   article.
 </small></p>
-""")
+"""))
