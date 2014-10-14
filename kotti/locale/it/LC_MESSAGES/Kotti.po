@@ -2,7 +2,6 @@
 # Copyright (C) 2013 ORGANIZATION
 # This file is distributed under the same license as the Kotti project.
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2013.
-# #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: Kotti 0.9.2dev\n"
@@ -83,31 +82,27 @@ msgstr "Aggiungere ${type}."
 
 #: kotti/views/users.py:349
 msgid "Add Group"
-msgstr "Aggiungere gruppo"
+msgstr "Aggiungi gruppo"
 
 #: kotti/views/users.py:315
 msgid "Add User"
-msgstr "Aggiungere utente"
+msgstr "Aggiungi utente"
 
 #: kotti/templates/site-setup/users.pt:22
 msgid "Add group"
-msgstr "Aggiungere gruppo"
+msgstr "Aggiungi un gruppo"
 
 #: kotti/templates/site-setup/users.pt:116
-#, fuzzy
-#| msgid "Add group"
 msgid "Add new group"
-msgstr "Aggiungere gruppo"
+msgstr "Aggiungi un nuovo gruppo"
 
 #: kotti/templates/site-setup/users.pt:110
-#, fuzzy
-#| msgid "Add user"
 msgid "Add new user"
-msgstr "Aggiungere utente"
+msgstr "Aggiungi un nuovo utente"
 
 #: kotti/templates/site-setup/users.pt:17
 msgid "Add user"
-msgstr "Aggiungere utente"
+msgstr "Aggiungi un utente"
 
 #: kotti/security.py:168
 msgid "Admin"
@@ -122,7 +117,7 @@ msgstr ""
 #: kotti/templates/edit/change-state.pt:63 kotti/templates/edit/share.pt:79
 #: kotti/templates/site-setup/users.pt:100
 msgid "Apply changes"
-msgstr "Applicare modifiche"
+msgstr "Applica le modifiche"
 
 #: kotti/templates/edit/delete.pt:17
 msgid "Are you sure you want to delete ${title}?"
@@ -137,10 +132,8 @@ msgid "Are you sure you want to delete the following items?"
 msgstr "Sei sicuro di voler cancellare i seguenti elementi?"
 
 #: kotti/templates/site-setup/users.pt:60
-#, fuzzy
-#| msgid "Assign local roles"
 msgid "Assign global roles"
-msgstr "Assegna ruoli locali"
+msgstr "Assegna ruoli globali"
 
 #: kotti/templates/edit/share.pt:39
 msgid "Assign local roles"
@@ -151,10 +144,8 @@ msgid "Back to User Management"
 msgstr "Torna alla gestione degli utenti"
 
 #: kotti/templates/site-setup/users.pt:47
-#, fuzzy
-#| msgid "Find and modify users (Blank search text finds all)."
 msgid "Blank search text finds all."
-msgstr "Cerca e modifica utenti (Ricerca vuota trova a tutti)."
+msgstr "Lascia il testo vuoto per trovare tutti gli utenti."
 
 #: kotti/views/edit/content.py:50
 msgid "Body"
@@ -292,21 +283,16 @@ msgid "File"
 msgstr "File"
 
 #: kotti/templates/login.pt:48
-#, fuzzy
-#| msgid "" "Fill out your username or email above and click ${reset_password}
-#| below " "to receive an email with a link to reset your password."
 msgid ""
 "Fill out your username or email and click ${reset_password} below to "
 "receive an email with a link to reset your password."
 msgstr ""
-"Inserisci il tuo username o email e premi qui ${reset_password} per "
+"Inserisci il tuo username o email e premi ${reset_password} per "
 "ricevere una email con il link per resettare la tua password."
 
 #: kotti/templates/site-setup/users.pt:31
-#, fuzzy
-#| msgid "Search users and groups"
 msgid "Find users or groups"
-msgstr "Cerca utenti e gruppi"
+msgstr "Cerca utenti o gruppi"
 
 #: kotti/resources.py:498
 msgid "Folder view"
@@ -526,10 +512,8 @@ msgid "Register - ${title}"
 msgstr "Registrazione - ${title}"
 
 #: kotti/templates/login.pt:81
-#, fuzzy
-#| msgid "Not registered yet? ${register} for an account on this site."
 msgid "Register for an account on this site."
-msgstr "Ancora non ti sei registrato? ${register} per un account su questo sito."
+msgstr "Registrati per avere un account su questo sito."
 
 #: kotti/resources.py:492 kotti/templates/edit/rename-nodes.pt:8
 #: kotti/templates/edit/rename-nodes.pt:39 kotti/templates/edit/rename.pt:30
@@ -566,10 +550,8 @@ msgid "Search Results"
 msgstr "Risultati di ricerca"
 
 #: kotti/templates/site-setup/users.pt:12
-#, fuzzy
-#| msgid "Search users and groups"
 msgid "Search user(s) / groups(s)"
-msgstr "Cerca utenti e gruppi"
+msgstr "Cerca utente(i) / gruppo(i)"
 
 #: kotti/templates/edit/share.pt:14 kotti/templates/edit/share.pt:17
 #: kotti/templates/edit/share.pt:20 kotti/templates/site-setup/users.pt:40
