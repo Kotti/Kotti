@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Kotti 0.7.0\n"
 "Report-Msgid-Bugs-To: kotti@googlegroups.com\n"
-"POT-Creation-Date: 2014-10-14 23:58+0200\n"
+"POT-Creation-Date: 2014-10-15 00:23+0200\n"
 "PO-Revision-Date: 2013-09-19 02:45+0900\n"
 "Last-Translator: OCHIAI, Gouji <gjo.ext@gmail.com>\n"
 "Language-Team: ja <kotti@googlegroups.com>\n"
@@ -281,6 +281,11 @@ msgstr "メールアドレス"
 msgid "File"
 msgstr "ファイル"
 
+#: kotti/templates/edit/upload.pt:18
+#, fuzzy
+msgid "Filename"
+msgstr "名称変更"
+
 #: kotti/templates/login.pt:48
 #, fuzzy
 msgid ""
@@ -496,6 +501,10 @@ msgstr "設定"
 msgid "Private"
 msgstr "プライベート"
 
+#: kotti/templates/edit/upload.pt:22
+msgid "Progress"
+msgstr ""
+
 #: kotti/workflow.zcml:41
 msgid "Public"
 msgstr "パブリック"
@@ -589,10 +598,18 @@ msgstr "表示中にする"
 msgid "Site Setup"
 msgstr "サイト設定"
 
+#: kotti/templates/edit/upload.pt:20
+msgid "Size"
+msgstr ""
+
 #: kotti/templates/edit/change-state.pt:20 kotti/templates/edit/contents.pt:41
 #: kotti/templates/edit/delete-nodes.pt:25
 msgid "State"
 msgstr "状態"
+
+#: kotti/templates/edit/upload.pt:21
+msgid "Status"
+msgstr ""
 
 #: kotti/views/login.py:250
 msgid "Submit"
@@ -622,7 +639,8 @@ msgstr "タイトル"
 
 #: kotti/templates/edit/change-state.pt:19 kotti/templates/edit/contents.pt:40
 #: kotti/templates/edit/delete-nodes.pt:24 kotti/templates/edit/share.pt:44
-#: kotti/templates/site-setup/users.pt:64 kotti/templates/view/folder.pt:21
+#: kotti/templates/edit/upload.pt:19 kotti/templates/site-setup/users.pt:64
+#: kotti/templates/view/folder.pt:21
 msgid "Type"
 msgstr "種類"
 

@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Kotti 0.9.2dev\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2014-10-14 23:58+0200\n"
+"POT-Creation-Date: 2014-10-15 00:23+0200\n"
 "PO-Revision-Date: 2014-01-19 11:14+0100\n"
 "Last-Translator: Xavi Torné <xavitorne@gmail.com>\n"
 "Language-Team: it \n"
@@ -282,6 +282,10 @@ msgstr "Email"
 msgid "File"
 msgstr "File"
 
+#: kotti/templates/edit/upload.pt:18
+msgid "Filename"
+msgstr "Nome del file"
+
 #: kotti/templates/login.pt:48
 msgid ""
 "Fill out your username or email and click ${reset_password} below to "
@@ -472,7 +476,7 @@ msgstr "Utenti o gruppo non trovati"
 
 #: kotti/templates/login.pt:76
 msgid "Not registered yet?"
-msgstr ""
+msgstr "Non sei ancora registrato?"
 
 #: kotti/views/edit/actions.py:292
 msgid "Nothing was deleted."
@@ -498,6 +502,10 @@ msgstr "Preferenze"
 #: kotti/workflow.zcml:28
 msgid "Private"
 msgstr "Privato"
+
+#: kotti/templates/edit/upload.pt:22
+msgid "Progress"
+msgstr "Avanzamento"
 
 #: kotti/workflow.zcml:41
 msgid "Public"
@@ -590,9 +598,17 @@ msgstr "Mostra"
 msgid "Site Setup"
 msgstr "Configurazione del sito"
 
+#: kotti/templates/edit/upload.pt:20
+msgid "Size"
+msgstr "Dimensione"
+
 #: kotti/templates/edit/change-state.pt:20 kotti/templates/edit/contents.pt:41
 #: kotti/templates/edit/delete-nodes.pt:25
 msgid "State"
+msgstr "Stato"
+
+#: kotti/templates/edit/upload.pt:21
+msgid "Status"
 msgstr "Stato"
 
 #: kotti/views/login.py:250
@@ -623,7 +639,8 @@ msgstr "Titolo"
 
 #: kotti/templates/edit/change-state.pt:19 kotti/templates/edit/contents.pt:40
 #: kotti/templates/edit/delete-nodes.pt:24 kotti/templates/edit/share.pt:44
-#: kotti/templates/site-setup/users.pt:64 kotti/templates/view/folder.pt:21
+#: kotti/templates/edit/upload.pt:19 kotti/templates/site-setup/users.pt:64
+#: kotti/templates/view/folder.pt:21
 msgid "Type"
 msgstr "Tipo"
 
@@ -637,7 +654,7 @@ msgstr "Carica contenuto"
 
 #: kotti/templates/edit/upload.pt:10
 msgid "Upload content from local file(s)"
-msgstr ""
+msgstr "Carica un contenuto da uno o più file locali"
 
 #: kotti/templates/edit/share.pt:56 kotti/templates/site-setup/users.pt:76
 #: kotti/views/users.py:313 kotti/views/users.py:501 kotti/views/users.py:536

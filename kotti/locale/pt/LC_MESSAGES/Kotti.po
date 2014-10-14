@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Kotti 0.8\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2014-10-14 23:58+0200\n"
+"POT-Creation-Date: 2014-10-15 00:23+0200\n"
 "PO-Revision-Date: 2012-01-16 12:02+0000\n"
 "Last-Translator: Nuno Teixeira <teixas@gmail.com>\n"
 "Language-Team: pt <LL@li.org>\n"
@@ -302,6 +302,11 @@ msgstr "E-mail"
 msgid "File"
 msgstr "Ficheiro"
 
+#: kotti/templates/edit/upload.pt:18
+#, fuzzy
+msgid "Filename"
+msgstr "Renomear"
+
 #: kotti/templates/login.pt:48
 #, fuzzy
 msgid ""
@@ -532,6 +537,10 @@ msgstr "Preferências"
 msgid "Private"
 msgstr "Privado"
 
+#: kotti/templates/edit/upload.pt:22
+msgid "Progress"
+msgstr ""
+
 #: kotti/workflow.zcml:41
 msgid "Public"
 msgstr "Público"
@@ -630,10 +639,18 @@ msgstr "Mostrar"
 msgid "Site Setup"
 msgstr "Configurar Sítio"
 
+#: kotti/templates/edit/upload.pt:20
+msgid "Size"
+msgstr ""
+
 #: kotti/templates/edit/change-state.pt:20 kotti/templates/edit/contents.pt:41
 #: kotti/templates/edit/delete-nodes.pt:25
 msgid "State"
 msgstr "Estado"
+
+#: kotti/templates/edit/upload.pt:21
+msgid "Status"
+msgstr ""
 
 #: kotti/views/login.py:250
 msgid "Submit"
@@ -664,7 +681,8 @@ msgstr "Título"
 
 #: kotti/templates/edit/change-state.pt:19 kotti/templates/edit/contents.pt:40
 #: kotti/templates/edit/delete-nodes.pt:24 kotti/templates/edit/share.pt:44
-#: kotti/templates/site-setup/users.pt:64 kotti/templates/view/folder.pt:21
+#: kotti/templates/edit/upload.pt:19 kotti/templates/site-setup/users.pt:64
+#: kotti/templates/view/folder.pt:21
 msgid "Type"
 msgstr "Tipo"
 

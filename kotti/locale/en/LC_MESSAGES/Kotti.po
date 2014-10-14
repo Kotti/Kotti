@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Kotti 0.4.4\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2014-10-14 23:58+0200\n"
+"POT-Creation-Date: 2014-10-15 00:23+0200\n"
 "PO-Revision-Date: 2012-01-16 12:02+0000\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: en <LL@li.org>\n"
@@ -276,6 +276,10 @@ msgstr ""
 msgid "File"
 msgstr ""
 
+#: kotti/templates/edit/upload.pt:18
+msgid "Filename"
+msgstr ""
+
 #: kotti/templates/login.pt:48
 msgid ""
 "Fill out your username or email and click ${reset_password} below to "
@@ -487,6 +491,10 @@ msgstr ""
 msgid "Private"
 msgstr ""
 
+#: kotti/templates/edit/upload.pt:22
+msgid "Progress"
+msgstr ""
+
 #: kotti/workflow.zcml:41
 msgid "Public"
 msgstr ""
@@ -578,9 +586,17 @@ msgstr ""
 msgid "Site Setup"
 msgstr ""
 
+#: kotti/templates/edit/upload.pt:20
+msgid "Size"
+msgstr ""
+
 #: kotti/templates/edit/change-state.pt:20 kotti/templates/edit/contents.pt:41
 #: kotti/templates/edit/delete-nodes.pt:25
 msgid "State"
+msgstr ""
+
+#: kotti/templates/edit/upload.pt:21
+msgid "Status"
 msgstr ""
 
 #: kotti/views/login.py:250
@@ -611,7 +627,8 @@ msgstr ""
 
 #: kotti/templates/edit/change-state.pt:19 kotti/templates/edit/contents.pt:40
 #: kotti/templates/edit/delete-nodes.pt:24 kotti/templates/edit/share.pt:44
-#: kotti/templates/site-setup/users.pt:64 kotti/templates/view/folder.pt:21
+#: kotti/templates/edit/upload.pt:19 kotti/templates/site-setup/users.pt:64
+#: kotti/templates/view/folder.pt:21
 msgid "Type"
 msgstr ""
 
