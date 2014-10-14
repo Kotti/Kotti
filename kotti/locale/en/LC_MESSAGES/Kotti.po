@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Kotti 0.4.4\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2014-09-23 10:30+0200\n"
+"POT-Creation-Date: 2014-10-14 23:58+0200\n"
 "PO-Revision-Date: 2012-01-16 12:02+0000\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: en <LL@li.org>\n"
@@ -61,7 +61,7 @@ msgstr ""
 msgid "A user with that name already exists."
 msgstr ""
 
-#: kotti/resources.py:488 kotti/templates/actions-dropdown.pt:3
+#: kotti/resources.py:490 kotti/templates/actions-dropdown.pt:3
 msgid "Actions"
 msgstr ""
 
@@ -93,11 +93,11 @@ msgstr ""
 msgid "Add group"
 msgstr ""
 
-#: kotti/templates/site-setup/users.pt:116
+#: kotti/templates/site-setup/users.pt:118
 msgid "Add new group"
 msgstr ""
 
-#: kotti/templates/site-setup/users.pt:110
+#: kotti/templates/site-setup/users.pt:112
 msgid "Add new user"
 msgstr ""
 
@@ -114,7 +114,7 @@ msgid "An item's workflow state determines who can see, edit and/or manage it."
 msgstr ""
 
 #: kotti/templates/edit/change-state.pt:63 kotti/templates/edit/share.pt:79
-#: kotti/templates/site-setup/users.pt:100
+#: kotti/templates/site-setup/users.pt:102
 msgid "Apply changes"
 msgstr ""
 
@@ -184,11 +184,11 @@ msgid ""
 "account."
 msgstr ""
 
-#: kotti/resources.py:485 kotti/templates/view/folder.pt:15
+#: kotti/resources.py:487 kotti/templates/view/folder.pt:15
 msgid "Contents"
 msgstr ""
 
-#: kotti/resources.py:489 kotti/views/edit/actions.py:445
+#: kotti/resources.py:491 kotti/views/edit/actions.py:445
 msgid "Copy"
 msgstr ""
 
@@ -201,7 +201,7 @@ msgstr ""
 msgid "Creation Date"
 msgstr ""
 
-#: kotti/resources.py:490 kotti/views/edit/actions.py:446
+#: kotti/resources.py:492 kotti/views/edit/actions.py:446
 msgid "Cut"
 msgstr ""
 
@@ -221,7 +221,7 @@ msgstr ""
 msgid "Default view has been set."
 msgstr ""
 
-#: kotti/resources.py:493 kotti/templates/edit/delete-nodes.pt:9
+#: kotti/resources.py:495 kotti/templates/edit/delete-nodes.pt:9
 #: kotti/templates/edit/delete-nodes.pt:47 kotti/templates/edit/delete.pt:21
 #: kotti/templates/site-setup/delete-user.pt:24 kotti/views/users.py:443
 #: kotti/views/edit/actions.py:449
@@ -240,7 +240,7 @@ msgstr ""
 msgid "Description"
 msgstr ""
 
-#: kotti/resources.py:608 kotti/views/edit/content.py:81
+#: kotti/resources.py:610 kotti/views/edit/content.py:81
 msgid "Document"
 msgstr ""
 
@@ -251,7 +251,7 @@ msgid ""
 "needed. You can change both below."
 msgstr ""
 
-#: kotti/resources.py:486 kotti/templates/edit/nav-tree.pt:8
+#: kotti/resources.py:488 kotti/templates/edit/nav-tree.pt:8
 msgid "Edit"
 msgstr ""
 
@@ -271,7 +271,7 @@ msgstr ""
 msgid "Email"
 msgstr ""
 
-#: kotti/resources.py:647 kotti/views/edit/content.py:62
+#: kotti/resources.py:649 kotti/views/edit/content.py:62
 #: kotti/views/edit/content.py:113
 msgid "File"
 msgstr ""
@@ -286,7 +286,7 @@ msgstr ""
 msgid "Find users or groups"
 msgstr ""
 
-#: kotti/resources.py:498
+#: kotti/resources.py:500
 msgid "Folder view"
 msgstr ""
 
@@ -339,7 +339,7 @@ msgid ""
 " selected documents and their subdocuments."
 msgstr ""
 
-#: kotti/resources.py:699 kotti/views/edit/content.py:144
+#: kotti/resources.py:726 kotti/views/edit/content.py:144
 msgid "Image"
 msgstr ""
 
@@ -475,7 +475,7 @@ msgstr ""
 msgid "Password"
 msgstr ""
 
-#: kotti/resources.py:491 kotti/views/edit/actions.py:442
+#: kotti/resources.py:493 kotti/views/edit/actions.py:442
 msgid "Paste"
 msgstr ""
 
@@ -503,7 +503,7 @@ msgstr ""
 msgid "Register for an account on this site."
 msgstr ""
 
-#: kotti/resources.py:492 kotti/templates/edit/rename-nodes.pt:8
+#: kotti/resources.py:494 kotti/templates/edit/rename-nodes.pt:8
 #: kotti/templates/edit/rename-nodes.pt:39 kotti/templates/edit/rename.pt:30
 #: kotti/views/edit/actions.py:447
 msgid "Rename"
@@ -562,7 +562,7 @@ msgstr ""
 msgid "Set default view"
 msgstr ""
 
-#: kotti/resources.py:487
+#: kotti/resources.py:489
 msgid "Share"
 msgstr ""
 
@@ -621,6 +621,10 @@ msgstr ""
 
 #: kotti/templates/add-dropdown.pt:13
 msgid "Upload Content"
+msgstr ""
+
+#: kotti/templates/edit/upload.pt:10
+msgid "Upload content from local file(s)"
 msgstr ""
 
 #: kotti/templates/edit/share.pt:56 kotti/templates/site-setup/users.pt:76
@@ -714,17 +718,4 @@ msgstr ""
 #: kotti/templates/email-set-password.pt:2
 msgid "Your registration for ${site_title}"
 msgstr ""
-
-#~ msgid ""
-#~ "Fill out your username or email "
-#~ "above and click ${reset_password} below "
-#~ "to receive an email with a link"
-#~ " to reset your password."
-#~ msgstr ""
-
-#~ msgid "Find and modify users (Blank search text finds all)."
-#~ msgstr ""
-
-#~ msgid "Not registered yet? ${register} for an account on this site."
-#~ msgstr ""
 

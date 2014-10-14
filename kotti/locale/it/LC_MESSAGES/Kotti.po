@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Kotti 0.9.2dev\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2014-09-23 10:30+0200\n"
+"POT-Creation-Date: 2014-10-14 23:58+0200\n"
 "PO-Revision-Date: 2014-01-19 11:14+0100\n"
 "Last-Translator: Xavi Torné <xavitorne@gmail.com>\n"
 "Language-Team: it \n"
@@ -60,7 +60,7 @@ msgstr "Un utente con questa email già esiste."
 msgid "A user with that name already exists."
 msgstr "Un utente con questo nome già esiste."
 
-#: kotti/resources.py:488 kotti/templates/actions-dropdown.pt:3
+#: kotti/resources.py:490 kotti/templates/actions-dropdown.pt:3
 msgid "Actions"
 msgstr "Azioni"
 
@@ -92,11 +92,11 @@ msgstr "Aggiungi utente"
 msgid "Add group"
 msgstr "Aggiungi un gruppo"
 
-#: kotti/templates/site-setup/users.pt:116
+#: kotti/templates/site-setup/users.pt:118
 msgid "Add new group"
 msgstr "Aggiungi un nuovo gruppo"
 
-#: kotti/templates/site-setup/users.pt:110
+#: kotti/templates/site-setup/users.pt:112
 msgid "Add new user"
 msgstr "Aggiungi un nuovo utente"
 
@@ -115,7 +115,7 @@ msgstr ""
 " modificare."
 
 #: kotti/templates/edit/change-state.pt:63 kotti/templates/edit/share.pt:79
-#: kotti/templates/site-setup/users.pt:100
+#: kotti/templates/site-setup/users.pt:102
 msgid "Apply changes"
 msgstr "Applica le modifiche"
 
@@ -187,11 +187,11 @@ msgstr ""
 "Complimenti! Sei registrato. Dovrebbe arrivarti una email con il link per"
 " settare la tua password e attivare il tuo account."
 
-#: kotti/resources.py:485 kotti/templates/view/folder.pt:15
+#: kotti/resources.py:487 kotti/templates/view/folder.pt:15
 msgid "Contents"
 msgstr "Contenuti"
 
-#: kotti/resources.py:489 kotti/views/edit/actions.py:445
+#: kotti/resources.py:491 kotti/views/edit/actions.py:445
 msgid "Copy"
 msgstr "Copia"
 
@@ -204,7 +204,7 @@ msgstr "Non si può incollare l'elemento. L'elemento non è più esistente."
 msgid "Creation Date"
 msgstr "Data di creazione"
 
-#: kotti/resources.py:490 kotti/views/edit/actions.py:446
+#: kotti/resources.py:492 kotti/views/edit/actions.py:446
 msgid "Cut"
 msgstr "Taglia"
 
@@ -224,7 +224,7 @@ msgstr "La vista predefinita è stata modificata a predefinita."
 msgid "Default view has been set."
 msgstr "E' stata selezionata la vista predefinita."
 
-#: kotti/resources.py:493 kotti/templates/edit/delete-nodes.pt:9
+#: kotti/resources.py:495 kotti/templates/edit/delete-nodes.pt:9
 #: kotti/templates/edit/delete-nodes.pt:47 kotti/templates/edit/delete.pt:21
 #: kotti/templates/site-setup/delete-user.pt:24 kotti/views/users.py:443
 #: kotti/views/edit/actions.py:449
@@ -243,7 +243,7 @@ msgstr "Cancellare ${title}"
 msgid "Description"
 msgstr "Descrizione"
 
-#: kotti/resources.py:608 kotti/views/edit/content.py:81
+#: kotti/resources.py:610 kotti/views/edit/content.py:81
 msgid "Document"
 msgstr "Documento"
 
@@ -257,7 +257,7 @@ msgstr ""
 "Leggi il manuale utente per saperne di più sul formato del nome e del "
 "titolo. Si possono cambiare entrambi qui sotto."
 
-#: kotti/resources.py:486 kotti/templates/edit/nav-tree.pt:8
+#: kotti/resources.py:488 kotti/templates/edit/nav-tree.pt:8
 msgid "Edit"
 msgstr "Modificare"
 
@@ -277,7 +277,7 @@ msgstr "Editor"
 msgid "Email"
 msgstr "Email"
 
-#: kotti/resources.py:647 kotti/views/edit/content.py:62
+#: kotti/resources.py:649 kotti/views/edit/content.py:62
 #: kotti/views/edit/content.py:113
 msgid "File"
 msgstr "File"
@@ -287,14 +287,14 @@ msgid ""
 "Fill out your username or email and click ${reset_password} below to "
 "receive an email with a link to reset your password."
 msgstr ""
-"Inserisci il tuo username o email e premi ${reset_password} per "
-"ricevere una email con il link per resettare la tua password."
+"Inserisci il tuo username o email e premi ${reset_password} per ricevere "
+"una email con il link per resettare la tua password."
 
 #: kotti/templates/site-setup/users.pt:31
 msgid "Find users or groups"
 msgstr "Cerca utenti o gruppi"
 
-#: kotti/resources.py:498
+#: kotti/resources.py:500
 msgid "Folder view"
 msgstr "Vista della cartella"
 
@@ -349,7 +349,7 @@ msgstr ""
 "Se selezionato, verrà modificato lo stato dei figli dei documenti "
 "selezionati e i suoi sottodocumenti."
 
-#: kotti/resources.py:699 kotti/views/edit/content.py:144
+#: kotti/resources.py:726 kotti/views/edit/content.py:144
 msgid "Image"
 msgstr "Immagine"
 
@@ -487,7 +487,7 @@ msgstr "Propietario"
 msgid "Password"
 msgstr "Password"
 
-#: kotti/resources.py:491 kotti/views/edit/actions.py:442
+#: kotti/resources.py:493 kotti/views/edit/actions.py:442
 msgid "Paste"
 msgstr "Incolla"
 
@@ -515,7 +515,7 @@ msgstr "Registrazione - ${title}"
 msgid "Register for an account on this site."
 msgstr "Registrati per avere un account su questo sito."
 
-#: kotti/resources.py:492 kotti/templates/edit/rename-nodes.pt:8
+#: kotti/resources.py:494 kotti/templates/edit/rename-nodes.pt:8
 #: kotti/templates/edit/rename-nodes.pt:39 kotti/templates/edit/rename.pt:30
 #: kotti/views/edit/actions.py:447
 msgid "Rename"
@@ -574,7 +574,7 @@ msgstr "Invia il link della password di registrazione."
 msgid "Set default view"
 msgstr "Seleziona la vista predefinita"
 
-#: kotti/resources.py:487
+#: kotti/resources.py:489
 msgid "Share"
 msgstr "Condividi"
 
@@ -634,6 +634,10 @@ msgstr "Deseleziona questo per disattivare l'account."
 #: kotti/templates/add-dropdown.pt:13
 msgid "Upload Content"
 msgstr "Carica contenuto"
+
+#: kotti/templates/edit/upload.pt:10
+msgid "Upload content from local file(s)"
+msgstr ""
 
 #: kotti/templates/edit/share.pt:56 kotti/templates/site-setup/users.pt:76
 #: kotti/views/users.py:313 kotti/views/users.py:501 kotti/views/users.py:536
