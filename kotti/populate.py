@@ -3,8 +3,8 @@ Populate contains two functions that are called on application startup
 (if you haven't modified kotti.populators).
 """
 
-from pyramid.threadlocal import get_current_registry
 from pyramid.i18n import LocalizerRequestMixin
+from pyramid.threadlocal import get_current_registry
 
 from kotti import get_settings
 from kotti.resources import DBSession
@@ -29,7 +29,7 @@ def populate_users():
             'password': get_settings()['kotti.secret'],
             'title': u"Administrator",
             'groups': [u'role:admin'],
-            }
+        }
 
 
 def populate():
@@ -38,19 +38,18 @@ def populate():
     subnode in the nodes tree if there are no nodes yet.
     """
     lrm = LocalizerRequestMixin()
-    settings = get_settings()
-    lang = settings['pyramid.default_locale_name']
-    registry = get_current_registry()
-    lrm.registry = registry
-    lrm.locale_name = lang
+    lrm.registry = get_current_registry()
+    lrm.locale_name = get_settings()['pyramid.default_locale_name']
     localizer = lrm.localizer
 
     if DBSession.query(Node).count() == 0:
-        localized_root_attrs = dict([(k, localizer.translate(v)) for k, v in _ROOT_ATTRS.iteritems()])
+        localized_root_attrs = dict(
+            [(k, localizer.translate(v)) for k, v in _ROOT_ATTRS.iteritems()])
         root = Document(**localized_root_attrs)
         root.__acl__ = SITE_ACL
         DBSession.add(root)
-        localized_about_attrs = dict([(k, localizer.translate(v)) for k, v in _ABOUT_ATTRS.iteritems()])
+        localized_about_attrs = dict(
+            [(k, localizer.translate(v)) for k, v in _ABOUT_ATTRS.iteritems()])
         root['about'] = Document(**localized_about_attrs)
 
         wf = get_workflow(root)
