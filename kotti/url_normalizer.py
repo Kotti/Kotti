@@ -1,6 +1,8 @@
 import re
 from unidecode import unidecode
 
+from pyramid.settings import asbool
+
 from kotti import get_settings
 
 
@@ -34,7 +36,7 @@ def crop_name(base, maxLength=MAX_LENGTH):
 def url_normalizer(text, locale=None, max_length=MAX_URL_LENGTH):
 
     key = 'kotti.url_normalizer.map_non_ascii_characters'
-    map_non_ascii = get_settings()[key]
+    map_non_ascii = asbool(get_settings()[key])
     if map_non_ascii:
         text = unidecode(text)
 
