@@ -122,7 +122,7 @@ def register(context, request):
     api = template_api(
         context, request,
         page_title=_(u"Register - ${title}",
-            mapping=dict(title=context.title)),
+                     mapping=dict(title=context.title)),
     )
 
     return {
@@ -175,7 +175,8 @@ def login(context, request):
                 u"password. Doing so will activate your account."), 'success')
         else:
             request.session.flash(
-                _(u"That username or email is not known by this system."), 'error')
+                _(u"That username or email is not known by this system."),
+                'error')
 
     return {
         'url': request.application_url + '/@@login',
@@ -295,9 +296,8 @@ def set_password(context, request,
 
 @view_config(context=HTTPForbidden, accept='text/html',)
 def forbidden_redirect(context, request):
-    """
-    Forbidden redirect view.  Redirects to the login form for anonymous users or
-    to the forbidden view for authenticated users.
+    """ Forbidden redirect view.  Redirects to the login form for anonymous
+    users or to the forbidden view for authenticated users.
 
     :result: Redirect to one of the above.
     :rtype: pyramid.httpexceptions.HTTPFound
