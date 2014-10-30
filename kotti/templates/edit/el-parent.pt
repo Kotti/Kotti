@@ -6,7 +6,7 @@
   </a>
 
   <ul class="dropdown-menu">
-    <li tal:repeat="link link.get_visible_children(context, request)">
+    <li tal:repeat="link link.get_visible_children(context, request)" tal:omit-tag="">
       ${link(context, request)}
     </li>
   </ul>
