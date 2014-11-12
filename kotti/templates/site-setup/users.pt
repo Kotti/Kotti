@@ -28,32 +28,35 @@
     <div class="tab-content">
       <div class="tab-pane ${active_tab == 'search' and 'active'}"
            id="search-tab">
-        <h2 i18n:translate="">
-          Find users or groups
-        </h2>
-        <form action="${request.url}" method="post" class="well">
 
-          <div class="control-group">
-            <label for="search-query" i18n:translate="">
-              User- / groupname
-            </label>
-            <input type="search"
-                   class="form-control"
-                   name="query"
-                   id="search-query"
-                   value="${request.params.get('query')}"
-                   placeholder="Search users and groups"
-                   i18n:attributes="placeholder" />
-            <span class="help-block" i18n:translate="">
-              Blank search text finds all.
-            </span>
+        <div class="panel panel-default" style="margin-top:2em;">
+          <div class="panel-heading">
+            <h3 class="panel-title" i18n:translate="">Find users or groups</h3>
           </div>
-
-          <button type="submit" name="search" class="btn btn-primary">
-            <i class="glyphicon glyphicon-search"></i>
-            <span i18n:translate="">Search</span>
-          </button>
-        </form>
+          <div class="panel-body">
+            <form action="${request.url}" method="post" class="form">
+              <div class="control-group">
+                <label for="search-query" i18n:translate="">
+                  User- / groupname
+                </label>
+                <input type="search"
+                       class="form-control"
+                       name="query"
+                       id="search-query"
+                       value="${request.params.get('query')}"
+                       placeholder="Search users and groups"
+                       i18n:attributes="placeholder" />
+                <span class="help-block" i18n:translate="">
+                  Blank search text finds all.
+                </span>
+              </div>
+              <button type="submit" name="search" class="btn btn-primary">
+                <i class="glyphicon glyphicon-search"></i>
+                <span i18n:translate="">Search</span>
+              </button>
+            </form>
+          </div>
+        </div>
 
         <form action="${request.url}" method="post" tal:condition="entries">
 
