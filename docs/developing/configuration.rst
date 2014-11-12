@@ -240,7 +240,7 @@ kotti.resources.Content. The default configuration here is:
 
 .. code-block:: ini
 
-  kotti.search_function = kotti.views.util.default_search_content
+  kotti.search_content = kotti.views.util.default_search_content
 
 You can provide an own search function in an add-on and register this
 in your INI file. The return value of the search function is a list of
