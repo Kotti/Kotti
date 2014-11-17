@@ -959,4 +959,3 @@ msgstr "암호 재설정 토큰이 만료된 것 같습니다."
 #: kotti/templates/email-set-password.pt:2
 msgid "Your registration for ${site_title}"
 msgstr "${site_title} 가입"
-

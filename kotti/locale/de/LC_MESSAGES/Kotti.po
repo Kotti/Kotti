@@ -878,4 +878,3 @@ msgstr "Der Link zum Zurücksetzen Ihres Passwortes ist abgelaufen!"
 #: kotti/templates/email-set-password.pt:2
 msgid "Your registration for ${site_title}"
 msgstr "Ihre Anmeldung bei ${site_title}"
-

@@ -55,9 +55,9 @@
                 </a>
                 <br tal:condition="child.type_info.name == 'Image'" />
                 <img src="${request.resource_url(child, 'image', 'span1')}"
-                  class="thumb" title="${child.title}"
-                  data-content="&lt;img src='${request.resource_url(child, 'image', 'span4')}' /&gt;"
-                  tal:condition="child.type_info.name == 'Image'" />
+                     class="thumb" title="${child.title}"
+                     data-content="&lt;img src='${request.resource_url(child, 'image', 'span4')}' /&gt;"
+                     tal:condition="child.type_info.name == 'Image'" />
               </td>
               <td>
                 ${child.type_info.title}
