@@ -57,6 +57,7 @@ repoze.zcml==0.4
 shutilwhich==1.0.1
 transaction==1.4.1
 translationstring==1.1
+usersettings==1.0.7
 venusian==1.0a8
 waitress==0.8.5
 wsgiref==0.1.2

@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xml:lang="en"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      metal:use-macro="api.macro('kotti:templates/view/master.pt')">
+
+  <article metal:fill-slot="content"
+           class="content custom-content-alternative-view"
+           i18n:domain="{{package}}">
+
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h3 class="panel-title">${context.title}</h3>
+      </div>
+      <div class="panel-body">
+        ${context.description}
+      </div>
+      <div class="panel-footer">
+        ${context.custom_attribute | ''}
+      </div>
+    </div>
+
+  </article>
+</html>

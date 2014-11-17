@@ -1,0 +1,43 @@
+[egg_info]
+tag_build = dev
+tag_svn_revision = true
+
+[aliases]
+dev = develop easy_install kotti[testing] kotti[development]
+docs = develop easy_install kotti[docs]
+
+[compile_catalog]
+domain = {{package}}
+directory = {{package}}/locale
+
+[extract_messages]
+output_file = {{package}}/locale/{{package}}.pot
+charset = UTF-8
+
+[init_catalog]
+domain = {{package}}
+input_file = {{package}}/locale/{{package}}.pot
+output_dir = {{package}}/locale
+
+[update_catalog]
+domain = {{package}}
+input_file = {{package}}/locale/{{package}}.pot
+output_dir = {{package}}/locale
+previous = true
+
+[pytest]
+addopts =
+    --doctest-modules
+    --doctest-glob='*.txt'
+    --capture=no
+    --cov={{package}}
+    --cov-report=term-missing
+    --cov-config .coveragerc
+    --ignore={{package}}/templates/
+    --strict
+    --pep8
+    {{package}}/tests
+python_files = test*py
+markers =
+    user: mark test to be run as the given user
+pep8ignore = E501 E122 E123 E125 E128 E711
