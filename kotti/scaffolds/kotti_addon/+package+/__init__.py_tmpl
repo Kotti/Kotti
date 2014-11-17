@@ -1,0 +1,42 @@
+# -*- coding: utf-8 -*-
+
+"""
+Created on {{date}}
+:author: {{author}} ({{email}})
+"""
+
+from kotti.resources import File
+from pyramid.i18n import TranslationStringFactory
+
+_ = TranslationStringFactory('{{package}}')
+
+
+def kotti_configure(settings):
+    """ Add a line like this to you .ini file::
+
+	    kotti.configurators =
+		{{package}}.kotti_configure
+
+	to enable the ``{{package}}`` add-on.
+
+    :param settings: Kotti configuration dictionary.
+    :type settings: dict
+    """
+
+    settings['pyramid.includes'] += ' {{package}}'
+    settings['kotti.available_types'] += ' {{package}}.resources.CustomContent'
+    File.type_info.addable_to.append('CustomContent')
+
+
+def includeme(config):
+    """ Don't add this to your ``pyramid_includes``, but add the
+    ``kotti_configure`` above to your ``kotti.configurators`` instead.
+
+    :param config: Pyramid configurator object.
+    :type config: :class:`pyramid.config.Configurator`
+    """
+
+    config.add_translation_dirs('{{package}}:locale')
+    config.add_static_view('static-{{package}}', '{{package}}:static')
+
+    config.scan(__name__)

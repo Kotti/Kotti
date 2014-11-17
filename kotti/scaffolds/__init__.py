@@ -1,0 +1,91 @@
+# -*- coding: utf-8 -*-
+
+"""
+Created on 2014-11-17
+:author: Andreas Kaiser (disko)
+"""
+
+import datetime
+import os
+
+from pyramid.decorator import reify
+from pyramid.scaffolds import PyramidTemplate
+from textwrap import dedent
+from usersettings import Settings
+
+
+class KottiTemplate(PyramidTemplate):
+    """ Base class for Kotti Templates """
+
+    @reify
+    def _settings(self):
+	s = Settings('org.pylonsproject.kotti.ScaffoldDefaults')
+	s.add_setting("author", unicode, default='')
+	s.add_setting("email", str, default='')
+	s.add_setting("gh_user", str, '')
+	s.load_settings()  # loads anything that might be saved
+
+	return s
+
+    def _get(self, key, caption):
+
+	env = os.environ.get(key)
+	if env is not None:
+	    return env
+
+	s = self._settings
+	s[key] = raw_input(u'{} [{}]: '.format(caption, s[key])) or s[key]
+
+	s.save_settings()
+
+	return s[key]
+
+    def pre(self, command, output_dir, vars):
+	""" Overrides :meth:`pyramid.scaffolds.PyramidTemplate.pre`, adding
+	several variables to the default variables list.
+
+	:param command: Command that invoked the template
+	:type command: :class:`pyramid.scripts.pcreate.PCreateCommand`
+
+	:param output_dir: Full filesystem path where the created package will
+			   be created
+	:type output_dir: str
+
+	:param vars: Dictionary of vars passed to the templates for rendering
+	:type vars: dict
+	"""
+
+	vars['project_line'] = '*' * len(vars['project'])
+	vars['date'] = datetime.date.today().strftime('%Y-%m-%d')
+
+	vars['author'] = self._get('author', 'Author name')
+	vars['email'] = self._get('email', 'Author email')
+	vars['gh_user'] = self._get('gh_user', 'Github username')
+
+	return PyramidTemplate.pre(self, command, output_dir, vars)
+
+    def post(self, command, output_dir, vars):  # pragma: no cover
+	""" Overrides :meth:`pyramid.scaffolds.PyramidTemplate.post`, to
+	print some info after a successful scaffolding rendering."""
+
+	separator = "=" * 79
+	msg = dedent(
+	    """
+	    %(separator)s
+	    Welcome to Kotti!
+
+	    Documentation: http://kotti.readthedocs.org/
+	    Development:   https://github.com/Kotti/Kotti/
+	    Issues:        https://github.com/Kotti/Kotti/issues?state=open
+	    IRC:           irc://irc.freenode.net/#kotti
+	    Mailing List:  https://groups.google.com/group/kotti
+	    %(separator)s
+	""" % {'separator': separator})
+
+	self.out(msg)
+
+
+class KottiAddonTemplate(KottiTemplate):
+
+    _template_dir = 'kotti_addon'
+    summary = 'Add on product for Kotti'
