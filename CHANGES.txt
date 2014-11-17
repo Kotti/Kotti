@@ -12,6 +12,8 @@ Change History
   A first implementation exists, that stores BLOBs in a filesystem hierarchy.
   See https://pypi.python.org/pypi/kotti_filestore for details.
 
+- Revise UI to make better use of Bootstrap 3.
+
 0.10b1 - 2014-07-11
 -------------------
 
