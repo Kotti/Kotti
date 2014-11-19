@@ -89,3 +89,9 @@ class KottiAddonTemplate(KottiTemplate):
 
     _template_dir = 'kotti_addon'
     summary = 'Add on product for Kotti'
+
+
+class KottiBuildoutTemplate(KottiTemplate):
+
+    _template_dir = 'kotti_buildout'
+    summary = 'Kotti project based on zc.buildout'

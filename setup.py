@@ -67,6 +67,7 @@ tests_require = [
     'pytest-cov',
     'pytest-pep8!=1.0.3',
     'pytest-xdist',
+    'virtualenv',  # needed for scaffolding tests
     'wsgi_intercept==0.5.1',
     'zope.testbrowser',
     ]
@@ -127,6 +128,7 @@ setup(name='Kotti',
 
       [pyramid.scaffold]
       kotti_addon=kotti.scaffolds:KottiAddonTemplate
+      kotti_buildout=kotti.scaffolds:KottiBuildoutTemplate
       """,
       extras_require={
           'testing': tests_require,
