@@ -3,7 +3,7 @@
 import os
 import shutil
 import subprocess
-from sys import stdout
+import sys
 from tempfile import mkdtemp
 
 from pytest import fixture
@@ -24,28 +24,38 @@ def virtualenv(request):
     # create a temp directory
     cwd = os.getcwd()
     virtualenv_directory = mkdtemp()
-    os.chdir(virtualenv_directory)
 
     # install a virtualenv
-    logger = Logger([(Logger.level_for_integer(2), stdout)])
+    logger = Logger([(Logger.level_for_integer(2), sys.stdout)])
     virtualenv.logger = logger
     virtualenv.create_environment(
 	virtualenv_directory,
-	site_packages=False,
+	site_packages=True,
 	clear=False,
 	unzip_setuptools=True)
 
+    # chdir into the virtualenv directory
+    os.chdir(virtualenv_directory)
+
     # install requirements.txt into the virtualenv
     subprocess.check_call([
-	os.path.join(virtualenv_directory, 'bin', 'pip'),
+	os.path.join('bin', 'pip'),
 	'install', '-r',
 	os.path.join(cwd, 'requirements.txt')])
 
-    # install Kotti into the virtualenv
+    # setuptools-git is required to be able to call setup.py install
+    # sucessfully.
     subprocess.check_call([
-	os.path.join(virtualenv_directory, 'bin', 'python'),
-	os.path.join(cwd, 'setup.py'),
-	'install'])
+	os.path.join('bin', 'pip'),
+	'install', 'setuptools-git'])
+
+    shutil.copytree(cwd, os.path.join(virtualenv_directory, 'kotti'))
+
+    # install Kotti into the virtualenv
+    os.chdir('kotti')
+    subprocess.check_call([
+	os.path.join('..', 'bin', 'python'), 'setup.py', 'develop'])
+    os.chdir('..')
 
     def delete_virtualenv():
 	shutil.rmtree(virtualenv_directory)
@@ -57,5 +67,30 @@ def virtualenv(request):
 @slow
 def test_scaffold_kotti_addon(virtualenv):
 
-    import pdb; pdb.set_trace()
+    # print available scaffolds
+    subprocess.check_call([os.path.join('bin', 'pcreate'), '-l'])
+
+    # set some environment variables to make pcreate non interactive
+    os.environ["author"] = "Kotti developers"
+    os.environ["email"] = "kotti@googlegroups.com"
+    os.environ["gh_user"] = "Kotti"
+
+    # create a project from the scaffold
+    subprocess.check_call([
+	os.path.join('bin', 'pcreate'),
+	'-s', 'kotti_addon', 'kotti_my_addon'])
+
+    # develop the package
+    os.chdir('kotti_my_addon')
+    subprocess.check_call([
+	os.path.join('..', 'bin', 'python'),
+	'setup.py', 'develop'])
+    subprocess.check_call([
+	os.path.join('..', 'bin', 'python'),
+	'setup.py', 'dev'])
+
+    # run the tests
+    subprocess.check_call([
+	os.path.join('..', 'bin', 'py.test')])
+
     pass
