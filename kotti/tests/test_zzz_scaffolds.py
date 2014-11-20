@@ -1,5 +1,16 @@
 # -*- coding: utf-8 -*-
 
+""" This module contains the tests for the scaffolds.  Each test tries to
+simulate actual usage of the scaffolds as much as possible.  A clean virtualenv
+is created, a package created from a scaffold and the tests of that package are
+run.  Because the is potentially really time consuming the scaffolding tests
+are marked with ``slow`` and are not run unless ``py.test`` is invoked with the
+``--runslow`` option.
+
+The module name starts with ``test_zzz`` to make the contained tests always the
+last in a complete test run.
+"""
+
 import os
 import shutil
 import subprocess
@@ -13,7 +24,7 @@ slow = mark.slow
 
 
 @fixture
-def virtualenv(request):
+def virtualenv(request, db_session):
     """ Create a virtualenv and ``chdir`` into it.  Remove it and ``chdir``
     into the previous working directory again when the test has been run.
     """
