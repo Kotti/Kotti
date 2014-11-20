@@ -1,6 +1,7 @@
 recursive-include kotti/alembic *
 recursive-include kotti/locale *
+recursive-include kotti/scaffolds *
 recursive-include kotti/static *
 recursive-include kotti/templates *
 recursive-include kotti/tests *
-recursive-include kotti *.zcml 
+recursive-include kotti *.zcml
