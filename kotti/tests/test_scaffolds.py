@@ -43,6 +43,11 @@ def virtualenv(request):
 	'install', '-r',
 	os.path.join(cwd, 'requirements.txt')])
 
+    # also install psycopg2 and oursql
+    subprocess.check_call([
+	os.path.join('bin', 'pip'),
+	'install', 'psycopg2', 'oursql'])
+
     # setuptools-git is required to be able to call setup.py install
     # sucessfully.
     subprocess.check_call([
