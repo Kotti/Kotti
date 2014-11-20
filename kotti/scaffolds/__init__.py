@@ -3,6 +3,12 @@
 """
 Created on 2014-11-17
 :author: Andreas Kaiser (disko)
+
+Scaffolds for Kotti.
+
+The methods of :class:`KottiTemplate` are marked with ``pragma: no cover``
+because they are not directly touched during testsuite runs, but only within
+subprocesses which seems to be not recorded by coverage.
 """
 
 import datetime
@@ -18,7 +24,7 @@ class KottiTemplate(PyramidTemplate):
     """ Base class for Kotti Templates """
 
     @reify
-    def _settings(self):
+    def _settings(self):  # pragma: no cover
 	s = Settings('org.pylonsproject.kotti.ScaffoldDefaults')
 	s.add_setting("author", unicode, default='')
 	s.add_setting("email", str, default='')
@@ -27,7 +33,7 @@ class KottiTemplate(PyramidTemplate):
 
 	return s
 
-    def _get(self, key, caption):
+    def _get(self, key, caption):  # pragma: no cover
 
 	env = os.environ.get(key)
 	if env is not None:
@@ -40,7 +46,7 @@ class KottiTemplate(PyramidTemplate):
 
 	return s[key]
 
-    def pre(self, command, output_dir, vars):
+    def pre(self, command, output_dir, vars):  # pragma: no cover
 	""" Overrides :meth:`pyramid.scaffolds.PyramidTemplate.pre`, adding
 	several variables to the default variables list.
 
