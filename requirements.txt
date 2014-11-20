@@ -1,3 +1,6 @@
+# When updating this file, please also update versions.cfg in the
+# kotti_buildout scaffold accordingly.
+
 Babel==0.9.6
 Beaker==1.6.4
 Chameleon==2.11
