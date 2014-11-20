@@ -1,0 +1,23 @@
+[buildout]
+extends = versions.cfg
+extensions = mr.developer
+parts = application
+auto-checkout = *
+show-picked-versions = true
+versions = versions
+
+
+[application]
+recipe = zc.recipe.egg
+eggs =
+    {{package}}
+    Kotti
+#  psycopg2
+#  oursql
+dependent-scripts = true
+interpreter = py
+
+
+[sources]
+{{package}} = fs {{package}}
+Kotti = git https://github.com/Kotti/Kotti.git
