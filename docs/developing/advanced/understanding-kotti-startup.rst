@@ -1,4 +1,4 @@
-.. understanding-kotti-startup:
+.. _understanding-kotti-startup:
 
 Understanding Kotti's startup phase
 ===================================

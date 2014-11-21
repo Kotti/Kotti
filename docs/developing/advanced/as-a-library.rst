@@ -1,3 +1,5 @@
+.. _as-a-library:
+
 Using Kotti as a library
 ========================
 

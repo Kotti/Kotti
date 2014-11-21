@@ -1,5 +1,7 @@
-:mod:`kotti.fanstatic`
-----------------------
+.. _api-kotti.fanstatic:
+
+kotti.fanstatic
+---------------
 
 .. automodule:: kotti.fanstatic
    :members:

@@ -1,5 +1,7 @@
-:mod:`kotti.views.edit.default_views`
--------------------------------------
+.. _api-kotti.views.edit.default_views:
+
+kotti.views.edit.default_views
+------------------------------
 
 .. automodule:: kotti.views.edit.default_views
    :members:

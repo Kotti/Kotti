@@ -1,5 +1,7 @@
-:mod:`kotti.interfaces`
------------------------
+.. _api-kotti.interfaces:
+
+kotti.interfaces
+----------------
 
 .. automodule:: kotti.interfaces
    :members:

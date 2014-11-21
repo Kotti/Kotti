@@ -1,5 +1,7 @@
-:mod:`kotti.events`
--------------------
+.. _api-kotti.events:
+
+kotti.events
+------------
 
 .. automodule:: kotti.events
    :members:

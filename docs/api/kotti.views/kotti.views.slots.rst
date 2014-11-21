@@ -1,5 +1,7 @@
-:mod:`kotti.views.slots`
-------------------------
+.. _api-kotti.views.slots:
+
+kotti.views.slots
+-----------------
 
 .. automodule:: kotti.views.slots
    :members:

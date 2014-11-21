@@ -1,5 +1,7 @@
-:mod:`kotti.views.util`
------------------------
+.. _api-kotti.views.util:
+
+kotti.views.util
+----------------
 
 .. automodule:: kotti.views.util
    :members:

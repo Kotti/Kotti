@@ -1,3 +1,5 @@
+.. _default-views:
+
 Default views in Kotti
 ======================
 

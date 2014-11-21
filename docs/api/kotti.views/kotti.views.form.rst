@@ -1,5 +1,7 @@
-:mod:`kotti.views.form`
------------------------
+.. _api-kotti.views.form:
+
+kotti.views.form
+----------------
 
 .. automodule:: kotti.views.form
    :members:

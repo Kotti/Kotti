@@ -1,5 +1,7 @@
-:mod:`kotti.views.site_setup`
------------------------------
+.. _api-kotti.views.site-setup:
+
+kotti.views.site_setup
+----------------------
 
 .. automodule:: kotti.views.site_setup
    :members:

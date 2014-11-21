@@ -1,3 +1,5 @@
+.. _frontpage-diferent-template:
+
 Use a different template for the front page (or any other page)
 ===============================================================
 

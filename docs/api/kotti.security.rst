@@ -1,5 +1,7 @@
-:mod:`kotti.security`
----------------------
+.. _api-kotti.security:
+
+kotti.security
+--------------
 
 .. automodule:: kotti.security
    :members:

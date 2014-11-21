@@ -78,6 +78,7 @@ docs_require = [
     'Sphinx',
     'docutils',
     'repoze.sphinx.autointerface',
+    'sphinx_rtd_theme',
     ]
 
 if sys.version_info[:3] < (2, 7, 0):

@@ -7,75 +7,63 @@ Kotti Documentation
 Kotti is a user-friendly, nimble and extensible web content management system,
 based on Pyramid and SQLAlchemy.
 
-If you are a user of a Kotti system, and either found this page through
-browsing or searching, or were referred here, you will want to go directly to
-the `Kotti User Manual`_ The documentation below, ``First Steps``, ``Topics``,
-and so on, are for developers of Kotti.
+If you are a user of a Kotti system, and either found this page through browsing or searching, or were referred here, you will likely want to go directly to the `Kotti User Manual`_.
 
-.. _Kotti User Manual: http://kotti-user-manual.readthedocs.org/
+The documentation below is for developers of Kotti.
 
 First Steps
 -----------
 
+Get an :ref:`overview <overview>` of what you can do with Kotti, how to :ref:`install <installation>` it and how to :ref:`create <tutorial>` your first Kotti project / add on.
+
 .. toctree::
-    :maxdepth: 1
+    :maxdepth: 2
+    :titlesonly:
 
     first_steps/overview
     first_steps/installation
-    first_steps/tut-1
-    first_steps/tut-2
-    first_steps/tut-3
+    first_steps/tutorial
 
-Topics
-------
+Narrative Documentation
+-----------------------
+
+The narrative documentation contains various topics that explain how to use Kotti.
 
 .. toctree::
-    :maxdepth: 1
+    :maxdepth: 2
+    :titlesonly:
 
-    developing/developer-manual
-    developing/security
-    developing/configuration
-    developing/testing
-    developing/translations
-    developing/deployment
-
--   Advanced topics
-
-    .. toctree::
-        :maxdepth: 1
-
-        developing/as-a-library
-        developing/close-for-anonymous
-        developing/default-views
-        developing/events
-        developing/frontpage-different-template
-        developing/images
-        developing/static-resource-management
-        developing/understanding-kotti-startup
-        developing/blobstorage
+    developing/basic/index
+    developing/advanced/index
 
 API
 ---
 
 .. toctree::
-    :maxdepth: 1
+    :maxdepth: 5
+    :titlesonly:
 
     API documentation <api/index>
 
-Kotti User Manual
------------------
-
-The `Kotti User Manual`_ is rendered and hosted on readthedocs.org.
-
-Developers, please see the :ref:`developer_manual` for instructions on
-contributing to the user manual.
-
-.. _Kotti User Manual: http://kotti-user-manual.readthedocs.org/
-
-Changes
--------
+Getting Help / Contributing
+---------------------------
 
 .. toctree::
     :maxdepth: 1
+    :titlesonly:
 
-    Complete list of changes since Kotti 0.2a1 <changes>
+    help
+    contributing
+
+Future and Past
+---------------
+
+.. toctree::
+    :maxdepth: 1
+    :titlesonly:
+
+    Roadmap <https://github.com/Kotti/Kotti/milestones>
+    Changelog <changes>
+
+.. _Kotti User Manual: http://kotti-user-manual.readthedocs.org/
+.. _Roadmap: https://github.com/Kotti/Kotti/milestones

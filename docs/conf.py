@@ -33,7 +33,7 @@ source_suffix = '.rst'
 #source_encoding = 'utf-8-sig'
 master_doc = 'index'
 project = u'Kotti'
-copyright = u'2012-2013, Kotti developers'
+copyright = u'2012-2014, Kotti developers'
 version = '0.10'
 # The full version, including alpha/beta/rc tags.
 release = version
@@ -50,18 +50,15 @@ pygments_style = 'sphinx'
 
 # -- Options for HTML output ---------------------------------------------------
 
-import kotti_docs_theme
+# on_rtd is whether we are on readthedocs.org
+import os
+on_rtd = os.environ.get('READTHEDOCS', None) == 'True'
 
-html_theme_path = [kotti_docs_theme.get_theme_dir()]
-html_theme = 'kotti_docs_theme'
-html_theme_options = {
-    'github_user': 'Kotti',
-    'github_repo': 'Kotti',
-    'twitter_username': 'KottiCMS',
-    'home_url': 'http://kotti.pylonsproject.org/',
-    'mailing_list_url': 'http://groups.google.com/group/kotti',
-    'irc_channel_url': 'irc://irc.freenode.net/#kotti',
-}
+if not on_rtd:  # only import and set the theme if we're building docs locally
+    import sphinx_rtd_theme
+    html_theme = 'sphinx_rtd_theme'
+    html_theme_path = [sphinx_rtd_theme.get_html_theme_path()]
+
 # The name for this set of Sphinx documents.  If None, it defaults to
 # "<project> v<release> documentation".
 #html_title = None
@@ -111,9 +108,18 @@ htmlhelp_basename = 'Kottidoc'
 #]
 
 # -- Options for inheritance diagrams ------------------------------------------
-inheritance_graph_attrs = dict(rankdir='TB', nodesep=0.1,
-                               ratio='auto', size=11.0)
-inheritance_node_attrs = dict(height=0.7, margin='0.06, 0.03')
+inheritance_graph_attrs = dict(
+    rankdir='TB',
+    nodesep=0.1,
+    ratio='auto',
+    size=11.0
+)
+inheritance_node_attrs = dict(
+    height=0.7,
+    margin='"0.06, 0.03"',
+    fontname='"Vera Sans, DejaVu Sans, Liberation Sans, Arial, Helvetica, sans"'
+)
+graphviz_output_format = 'svg'
 
 # -- Options for Intersphinx ---------------------------------------------------
 intersphinx_mapping = {
