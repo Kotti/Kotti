@@ -27,7 +27,7 @@ Get an :ref:`overview <overview>` of what you can do with Kotti, how to :ref:`in
 Narrative Documentation
 -----------------------
 
-The :ref:`narrative` contains various topics that explain how to use Kotti.
+The narrative documentation contains various topics that explain how to use Kotti.
 
 .. toctree::
     :maxdepth: 2

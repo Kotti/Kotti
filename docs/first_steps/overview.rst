@@ -34,7 +34,7 @@ by Plone_.  Its **main features** are:
   looks good both on desktop and mobile
 
 - **Templating**: easily extend the CMS with your own look & feel with
-  little programming required (see :ref:`static resources`)
+  little programming required (see :ref:`static-resource-management`)
 
 - **Add-ons**: install a variety of add-ons and customize them as well
   as many aspects of the built-in CMS by use of an INI configuration
@@ -62,7 +62,7 @@ Developers can add and modify through a well-defined API:
 - views,
 - templates and layout (both via Pyramid_),
 - :ref:`content-types`,
-- portlets (see :ref:`slots`),
+- portlets (see :mod:`kotti.views.slots`),
 - access control and the user database (see :ref:`develop-security`),
 - workflows (via `repoze.workflow`_),
 - and much more.

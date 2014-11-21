@@ -11,10 +11,7 @@ We'll create an add-on package that will:
 
 .. note::
 
-    If you have questions going through this tutorial, please post
-    a message to the `mailing list`_ or join the `#kotti`_ channel on
-    irc.freenode.net to chat with other Kotti users who might be
-    able to help.
+    If you have questions going through this tutorial, please post a message to the `mailing list`_ or join the `#kotti channel`_ on irc.freenode.net to chat with other Kotti users who might be able to help.
 
 The Tutorial is splitted into three parts:
 
@@ -24,3 +21,6 @@ The Tutorial is splitted into three parts:
     tut-1
     tut-2
     tut-3
+
+.. _mailing list: http://groups.google.com/group/kotti
+.. _#kotti channel: irc://irc.freenode.net/#kotti
