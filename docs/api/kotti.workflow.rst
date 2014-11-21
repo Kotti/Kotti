@@ -1,7 +1,7 @@
 .. _api-kotti.workflow:
 
-:mod:`kotti.workflow`
----------------------
+kotti.workflow
+--------------
 
 .. automodule:: kotti.workflow
    :members:

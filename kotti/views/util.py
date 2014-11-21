@@ -155,11 +155,10 @@ class TemplateAPI(object):
 
     @reify
     def site_title(self):
-        """
-        The site title.
+        """ The site title.
 
-        :result: Value of ``kotti.site_title`` (if specified) or the root
-        item's ``title`` attribute.
+        :result: Value of the ``kotti.site_title`` setting (if specified) or
+                 the root item's ``title`` attribute.
         :rtype: unicode
         """
         value = get_settings().get('kotti.site_title')

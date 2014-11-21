@@ -1,7 +1,7 @@
 .. _api-kotti.util:
 
-:mod:`kotti.util`
------------------
+kotti.util
+----------
 
 .. automodule:: kotti.util
    :members:

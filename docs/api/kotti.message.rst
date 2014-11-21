@@ -1,7 +1,7 @@
 .. _api-kotti.message:
 
-:mod:`kotti.message`
---------------------
+kotti.message
+-------------
 
 .. automodule:: kotti.message
    :members:

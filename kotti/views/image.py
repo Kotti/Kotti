@@ -43,24 +43,26 @@ class ImageView(object):
                  renderer='kotti:templates/view/image.pt')
     def view(self):
         """
-        :result: Empty dictionary to be handed to the image.pt template for rendering.
+        :result: Empty dictionary to be handed to the image.pt template for
+                 rendering.
         :rtype: dict
         """
 
         return {}
 
-    @view_config(name="image",)
+    @view_config(name="image")
     def image(self, subpath=None):
         """Return the image in a specific scale, either inline
         (default) or as attachment.
 
         :param subpath: [<image_scale>]/download] (optional).
                         When 'download' is the last element in subpath,
-                        the image is served with a 'Content-Disposition: attachment'
-                        header.  <image_scale> has to be one of the predefined
-                        image_scales - either from the defaults in this module
-                        or one set with a kotti.image_scales.<scale_name> in your
-                        app config ini file.
+                        the image is served with a 'Content-Disposition:
+                        attachment' header.  <image_scale> has to be one of the
+                        predefined image_scales - either from the defaults in
+                        this module or one set with a
+                        kotti.image_scales.<scale_name> in your app config ini
+                        file.
         :type subpath: str
 
         :result: complete response object

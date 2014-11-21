@@ -1,7 +1,7 @@
 .. _api-kotti.resources:
 
-:mod:`kotti.resources`
-----------------------
+kotti.resources
+---------------
 
 .. automodule:: kotti.resources
    :members:

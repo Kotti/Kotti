@@ -1,7 +1,7 @@
 .. _api-kotti.migrate:
 
-:mod:`kotti.migrate`
---------------------
+kotti.migrate
+-------------
 
 .. automodule:: kotti.migrate
    :members:

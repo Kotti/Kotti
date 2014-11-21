@@ -14,10 +14,11 @@ The documentation below is for developers of Kotti.
 First Steps
 -----------
 
-Get going with Kotti.
+Get an :ref:`overview <overview>` of what you can do with Kotti, how to :ref:`install <installation>` it and how to :ref:`create <tutorial>` your first Kotti project / add on.
 
 .. toctree::
-    :maxdepth: 1
+    :maxdepth: 2
+    :titlesonly:
 
     first_steps/overview
     first_steps/installation
@@ -30,32 +31,39 @@ The :ref:`narrative` contains various topics that explain how to use Kotti.
 
 .. toctree::
     :maxdepth: 2
+    :titlesonly:
 
-    developing/index
+    developing/basic/index
+    developing/advanced/index
 
 API
 ---
 
 .. toctree::
-    :maxdepth: 1
+    :maxdepth: 5
+    :titlesonly:
 
     API documentation <api/index>
 
-Kotti User Manual
------------------
-
-The `Kotti User Manual`_ is rendered and hosted on readthedocs.org.
-
-Developers, please see the :ref:`developer-manual` for instructions on contributing to the user manual.
-
-
-Changes
--------
+Getting Help / Contributing
+---------------------------
 
 .. toctree::
     :maxdepth: 1
+    :titlesonly:
 
-    Complete list of changes since Kotti 0.2a1 <changes>
+    help
+    contributing
 
+Future and Past
+---------------
+
+.. toctree::
+    :maxdepth: 1
+    :titlesonly:
+
+    Roadmap <https://github.com/Kotti/Kotti/milestones>
+    Changelog <changes>
 
 .. _Kotti User Manual: http://kotti-user-manual.readthedocs.org/
+.. _Roadmap: https://github.com/Kotti/Kotti/milestones

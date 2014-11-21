@@ -1,7 +1,7 @@
 .. _api-kotti.populate:
 
-:mod:`kotti.populate`
----------------------
+kotti.populate
+--------------
 
 .. automodule:: kotti.populate
    :members:

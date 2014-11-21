@@ -1,7 +1,7 @@
 .. _api-kotti.testing:
 
-:mod:`kotti.testing`
---------------------
+kotti.testing
+-------------
 
 .. automodule:: kotti.testing
    :members:

@@ -1,7 +1,7 @@
 .. _api-kotti.sqla:
 
-:mod:`kotti.sqla`
------------------
+kotti.sqla
+----------
 
 .. automodule:: kotti.sqla
    :members:
