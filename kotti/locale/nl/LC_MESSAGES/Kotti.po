@@ -7,31 +7,40 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Kotti 0.4.4\n"
 "Report-Msgid-Bugs-To: kotti@googlegroups.com\n"
-"POT-Creation-Date: 2014-10-15 01:49+0200\n"
+"POT-Creation-Date: 2014-11-21 21:56+0100\n"
 "PO-Revision-Date: 2014-02-13 21:51+0100\n"
 "Last-Translator: Wim Boucquaert <wim.boucquaert@gmail.com>\n"
 "Language-Team: nl <kotti@googlegroups.com>\n"
-"Plural-Forms: nplurals=2; plural=(n != 1)\n"
+"Language: \n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=utf-8\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1)\n"
 "Generated-By: Babel 0.9.6\n"
 
-#: kotti/populate.py:67
+#: kotti/populate.py:64
+msgid "Welcome to Kotti"
+msgstr ""
+
+#: kotti/populate.py:65
+msgid "Congratulations! You have successfully installed Kotti."
+msgstr ""
+
+#: kotti/populate.py:66
+#, c-format
 msgid ""
 "\n"
 "<h2>Log in</h2>\n"
 "<p>\n"
-"    You can <a class=\"btn btn-success\" href=\"login\">log in</a> to "
-"your site\n"
-"    and start changing its contents.  If you haven't chosen a password "
-"for\n"
+"    You can <a class=\"btn btn-success\" href=\"login\">log in</a> to your "
+"site\n"
+"    and start changing its contents.  If you haven't chosen a password for\n"
 "    your admin account yet, it'll likely be <em>qwerty</em>.\n"
 "</p>\n"
 "<p>\n"
 "    Once you're logged in, you'll see the grey editor bar below the top\n"
-"    navigation bar.  It will allow you to switch between editing and "
-"viewing the\n"
+"    navigation bar.  It will allow you to switch between editing and viewing "
+"the\n"
 "    current page as it will appear to your visitors.\n"
 "</p>\n"
 "<div class=\"row\">\n"
@@ -44,9 +53,8 @@ msgid ""
 "        </p>\n"
 "        <p>\n"
 "            <a class=\"btn btn-info\"\n"
-"               "
-"href=\"http://kotti.readthedocs.org/en/latest/developing/configuration.html\">"
-"\n"
+"               href=\"http://kotti.readthedocs.org/en/latest/developing/"
+"configuration.html\">\n"
 "               Configuration manual\n"
 "            </a>\n"
 "        </p>\n"
@@ -59,8 +67,8 @@ msgid ""
 "        </p>\n"
 "        <p>\n"
 "            <a class=\"btn btn-info\"\n"
-"               "
-"href=\"http://pypi.python.org/pypi?%3Aaction=search&amp;term=kotti\">\n"
+"               href=\"http://pypi.python.org/pypi?%3Aaction=search&amp;"
+"term=kotti\">\n"
 "                Kotti add-ons\n"
 "            </a>\n"
 "        </p>\n"
@@ -68,8 +76,8 @@ msgid ""
 "    <div class=\"col-md-4\">\n"
 "        <h2>Documentation</h2>\n"
 "        <p>\n"
-"            Wonder what more you can do with Kotti?  What license it has?"
-"  Read the\n"
+"            Wonder what more you can do with Kotti?  What license it has?  "
+"Read the\n"
 "            manual for more information.\n"
 "        </p>\n"
 "        <p>\n"
@@ -82,14 +90,23 @@ msgid ""
 "</div>\n"
 msgstr ""
 
-#: kotti/populate.py:124
+#: kotti/populate.py:121
+msgid "About"
+msgstr ""
+
+#: kotti/populate.py:122
+msgid ""
+"Our company is the leading manufacturer of foo widgets used in a wide "
+"variety of aviation and and industrial products."
+msgstr ""
+
+#: kotti/populate.py:123
 msgid ""
 "\n"
 "<p>\n"
 "  <img alt=\"five colorful Extra EA300 airplanes flying in formation\"\n"
-"   "
-"src=\"http://upload.wikimedia.org/wikipedia/commons/thumb/5/5d/Northern_Lights_Formation.jpg"
-"/640px-Northern_Lights_Formation.jpg\"\n"
+"   src=\"http://upload.wikimedia.org/wikipedia/commons/thumb/5/5d/"
+"Northern_Lights_Formation.jpg/640px-Northern_Lights_Formation.jpg\"\n"
 "   width=\"640\" height=\"376\" />\n"
 "</p>\n"
 "\n"
@@ -107,738 +124,481 @@ msgid ""
 "\n"
 "<p><small style=\"font-size: smaller\">\n"
 "  <em>Photo credit:</em> \"Northern Lights Formation\" by FlugKerl2.\n"
-"  <a "
-"href=\"http://commons.wikimedia.org/wiki/File:Northern_Lights_Formation.jpg\">"
-"\n"
+"  <a href=\"http://commons.wikimedia.org/wiki/File:Northern_Lights_Formation."
+"jpg\">\n"
 "  Copyright info</a>.\n"
 "  Originally published in the\n"
-"  <a href=\"http://en.wikipedia.org/wiki/Extra_EA-300\"> Extra EA-300</a>"
-"\n"
+"  <a href=\"http://en.wikipedia.org/wiki/Extra_EA-300\"> Extra EA-300</a>\n"
 "  article.\n"
 "</small></p>\n"
 msgstr ""
-
-#: kotti/views/users.py:543
-msgid "${principal_type} ${title} was deleted."
-msgstr "${principal_type} ${title} werd verwijderd."
-
-#: kotti/views/edit/actions.py:227
-msgid "${title} is no longer visible in the navigation."
-msgstr "${title} is niet langer zichtbaar in de navigatie."
-
-#: kotti/views/edit/actions.py:224
-msgid "${title} is now visible in the navigation."
-msgstr "${title} is nu zichtbaar in de navigatie."
-
-#: kotti/views/users.py:339
-msgid "${title} was added."
-msgstr "${title} werd toegevoegd."
-
-#: kotti/views/edit/actions.py:106
-msgid "${title} was copied."
-msgstr "${title} werd gekopieerd."
-
-#: kotti/views/edit/actions.py:124
-msgid "${title} was cut."
-msgstr "${title} werd geknipt."
-
-#: kotti/views/edit/actions.py:270 kotti/views/edit/actions.py:295
-msgid "${title} was deleted."
-msgstr "${title} werd verwijderd."
-
-#: kotti/views/edit/actions.py:182
-msgid "${title} was moved."
-msgstr "${title} werd verplaatst."
-
-#: kotti/views/edit/actions.py:158
-msgid "${title} was pasted."
-msgstr "${title} werd geplakt."
-
-#: kotti/views/users.py:158
-msgid "A user with that email already exists."
-msgstr "Een gebruiker met deze naam bestaat reeds."
-
-#: kotti/views/users.py:151
-msgid "A user with that name already exists."
-msgstr "Een gebruiker met deze naam bestaat reeds."
-
-#: kotti/populate.py:122
-msgid "About"
-msgstr ""
-
-#: kotti/resources.py:490 kotti/templates/actions-dropdown.pt:3
-msgid "Actions"
-msgstr "Acties"
-
-#: kotti/views/users.py:219
-msgid "Active"
-msgstr "Actief"
-
-#: kotti/templates/add-dropdown.pt:3
-msgid "Add"
-msgstr "Toevoegen"
-
-#: kotti/views/form.py:198
-msgid "Add ${type} to ${title}."
-msgstr "Voeg ${type} aan ${title} toe."
-
-#: kotti/views/form.py:202
-msgid "Add ${type}."
-msgstr "Voeg ${type} toe."
-
-#: kotti/views/users.py:349
-msgid "Add Group"
-msgstr "Groep toevoegen"
-
-#: kotti/views/users.py:315
-msgid "Add User"
-msgstr "Gebruiker toevoegen"
-
-#: kotti/templates/site-setup/users.pt:22
-msgid "Add group"
-msgstr "Groep toevoegen"
-
-#: kotti/templates/site-setup/users.pt:118
-#, fuzzy
-msgid "Add new group"
-msgstr "Groep toevoegen"
-
-#: kotti/templates/site-setup/users.pt:112
-#, fuzzy
-msgid "Add new user"
-msgstr "Gebruiker toevoegen"
-
-#: kotti/templates/site-setup/users.pt:17
-msgid "Add user"
-msgstr "Gebruiker toevoegen"
-
-#: kotti/security.py:168
-msgid "Admin"
-msgstr "Beheerder"
-
-#: kotti/templates/edit/change-state.pt:12
-msgid "An item's workflow state determines who can see, edit and/or manage it."
-msgstr ""
-"Een item zijn workflow status bepaalt wie het kan zien, bewerken en/of "
-"beheren."
-
-#: kotti/templates/edit/change-state.pt:63 kotti/templates/edit/share.pt:79
-#: kotti/templates/site-setup/users.pt:102
-msgid "Apply changes"
-msgstr "Wijzigingen toepassen"
-
-#: kotti/templates/edit/delete.pt:17
-msgid "Are you sure you want to delete ${title}?"
-msgstr "Ben je zeker dat je ${title} wil verwijderen?"
-
-#: kotti/templates/site-setup/delete-user.pt:15
-msgid "Are you sure you want to delete ${type} ${title}?"
-msgstr "Ben je zeker dat je ${type} ${title} wil verwijderen?"
-
-#: kotti/templates/edit/delete-nodes.pt:14
-msgid "Are you sure you want to delete the following items?"
-msgstr "Ben je zeker dat je de volgende items wil verwijderen?"
-
-#: kotti/templates/site-setup/users.pt:60
-#, fuzzy
-msgid "Assign global roles"
-msgstr "Locale rollen toewijzen"
-
-#: kotti/templates/edit/share.pt:39
-msgid "Assign local roles"
-msgstr "Locale rollen toewijzen"
-
-#: kotti/templates/site-setup/user.pt:12
-msgid "Back to User Management"
-msgstr "Terug naar gebruiksersbeheer"
-
-#: kotti/templates/site-setup/users.pt:47
-#, fuzzy
-msgid "Blank search text finds all."
-msgstr ""
-"Zoek en wijzig gebruikers (laat tekstveld leeg om alle gebruikers te "
-"vinden."
-
-#: kotti/views/edit/content.py:50
-msgid "Body"
-msgstr "Inhoud"
-
-#: kotti/templates/edit/change-state.pt:65
-#: kotti/templates/edit/delete-nodes.pt:49
-#: kotti/templates/edit/rename-nodes.pt:41 kotti/views/form.py:78
-#: kotti/views/users.py:316 kotti/views/users.py:350 kotti/views/users.py:442
-msgid "Cancel"
-msgstr "Annuleren"
-
-#: kotti/views/edit/actions.py:453
-msgid "Change State"
-msgstr "Wijzig Status."
-
-#: kotti/templates/edit/change-state.pt:50
-msgid "Change state to"
-msgstr "Wij status naar"
-
-#: kotti/templates/edit/change-state.pt:8
-msgid "Change workflow state"
-msgstr "Wijzig de workflow status"
-
-#: kotti/templates/email-set-password.pt:6
-msgid "Click here to set your password and log in: ${url}"
-msgstr "Klik hier om je wachtwoord opnieuw in te stellen en aan te melden: ${url}"
-
-#: kotti/templates/email-reset-password.pt:5
-msgid "Click this link to reset your password at ${site_title}: ${url}"
-msgstr ""
-"Klik deze link om je wachtwoord opnieuw in te stellen voor ${site_title}:"
-" ${url}"
-
-#: kotti/views/login.py:109
-msgid ""
-"Congratulations! You are successfully registered. You should be receiving"
-" an email with a link to set your password. Doing so will activate your "
-"account."
-msgstr ""
-"Proficiat! Je bent geregistreerd. Je zal een e-mail ontvangen met een "
-"link om je wachtwoord in te stellen. Deze handeling zal je account "
-"activeren."
-
-#: kotti/populate.py:66
-msgid "Congratulations! You have successfully installed Kotti."
-msgstr ""
-
-#: kotti/resources.py:487 kotti/templates/view/folder.pt:15
-msgid "Contents"
-msgstr "Inhoud"
-
-#: kotti/resources.py:491 kotti/views/edit/actions.py:445
-msgid "Copy"
-msgstr "Kopiëren"
-
-#: kotti/views/edit/actions.py:161
-msgid "Could not paste node. It no longer exists."
-msgstr "De node kon niet geplakt worden. Hij bestaat niet meer."
-
-#: kotti/templates/edit/change-state.pt:21 kotti/templates/edit/contents.pt:43
-#: kotti/templates/edit/delete-nodes.pt:26 kotti/templates/view/folder.pt:22
-msgid "Creation Date"
-msgstr "Aanmaak datum"
-
-#: kotti/resources.py:492 kotti/views/edit/actions.py:446
-msgid "Cut"
-msgstr "Knippen"
-
-#: kotti/views/edit/default_views.py:78
-msgid "Default view"
-msgstr "Standaard weergave"
-
-#: kotti/views/edit/default_views.py:111
-msgid "Default view could not be set."
-msgstr "Standaar weergave kon niet ingesteld worden."
-
-#: kotti/views/edit/default_views.py:99
-msgid "Default view has been reset to default."
-msgstr "Standaard weergave werd hersteld naar standaard."
-
-#: kotti/views/edit/default_views.py:106
-msgid "Default view has been set."
-msgstr "Standaard weergave is ingesteld."
-
-#: kotti/resources.py:495 kotti/templates/edit/delete-nodes.pt:9
-#: kotti/templates/edit/delete-nodes.pt:47 kotti/templates/edit/delete.pt:21
-#: kotti/templates/site-setup/delete-user.pt:24 kotti/views/users.py:443
-#: kotti/views/edit/actions.py:449
-msgid "Delete"
-msgstr "Verwijderen"
-
-#: kotti/views/users.py:551
-msgid "Delete ${principal_type} ${title}"
-msgstr "Verwijder ${principal_type} ${title}"
-
-#: kotti/templates/edit/delete.pt:9 kotti/templates/site-setup/delete-user.pt:9
-msgid "Delete ${title}"
-msgstr "Verwijder ${title}"
-
-#: kotti/views/edit/content.py:35
-msgid "Description"
-msgstr "Beschrijving"
 
 #: kotti/resources.py:610 kotti/views/edit/content.py:81
 msgid "Document"
 msgstr "Document"
 
-#: kotti/templates/edit/rename-nodes.pt:13 kotti/templates/edit/rename.pt:11
-msgid ""
-"Each content item has a name, which is used to create the url, and a "
-"title. Read the user manual about proper formatting of name and title if "
-"needed. You can change both below."
-msgstr ""
-"Elk inhoudsitem heeft een naam die gebruikt wordt om een url en titel aan"
-" te maken. Lees de gebruikershandleiding inzake correcte naamgeving voor "
-"titel en naam. Je kan beiden hieronder aanpassen."
-
-#: kotti/resources.py:488 kotti/templates/edit/nav-tree.pt:8
-msgid "Edit"
-msgstr "Bewerken"
-
-#: kotti/views/users.py:505
-msgid "Edit ${principal_type} ${title}"
-msgstr "Bewerk ${principal_type} ${title}"
-
-#: kotti/templates/site-setup/user.pt:21 kotti/views/form.py:156
-msgid "Edit ${title}"
-msgstr "Bewerken ${title}"
-
-#: kotti/security.py:166
-msgid "Editor"
-msgstr "Editor"
-
-#: kotti/views/login.py:74 kotti/views/login.py:224 kotti/views/users.py:199
-msgid "Email"
-msgstr "E-mailadres"
-
-#: kotti/resources.py:649 kotti/views/edit/content.py:62
-#: kotti/views/edit/content.py:113
+#: kotti/resources.py:649 kotti/views/edit/content.py:113
+#: kotti/views/edit/content.py:62
 msgid "File"
 msgstr "Bestand"
-
-#: kotti/templates/edit/upload.pt:18
-#, fuzzy
-msgid "Filename"
-msgstr "Hernoemen"
-
-#: kotti/templates/login.pt:48
-#, fuzzy
-msgid ""
-"Fill out your username or email and click ${reset_password} below to "
-"receive an email with a link to reset your password."
-msgstr ""
-"Vul je gebruikersnaam of e-mailadres in en klik op ${reset_password} "
-"hieronder om een e-mail te ontvangen om je wachtwoord te herstellen."
-
-#: kotti/templates/site-setup/users.pt:31
-#, fuzzy
-msgid "Find users or groups"
-msgstr "Zoeken naar gebruikers en groepen"
-
-#: kotti/resources.py:500
-msgid "Folder view"
-msgstr "Map weergave"
-
-#: kotti/templates/forbidden.pt:10
-msgid "Forbidden"
-msgstr "Verboden"
-
-#: kotti/templates/login.pt:43
-msgid "Forgot your password?"
-msgstr "Wachtwoord vergeten?"
-
-#: kotti/views/login.py:66 kotti/views/users.py:270
-msgid "Full name"
-msgstr "Volledige naam"
-
-#: kotti/views/users.py:226
-msgid "Global roles"
-msgstr "Globale rollen"
-
-#: kotti/templates/edit/share.pt:60 kotti/templates/site-setup/users.pt:80
-msgid "Gravatar"
-msgstr "Gravatar"
-
-#: kotti/templates/edit/share.pt:57 kotti/templates/site-setup/users.pt:77
-#: kotti/views/users.py:188 kotti/views/users.py:347 kotti/views/users.py:501
-#: kotti/views/users.py:536
-msgid "Group"
-msgstr "Groep"
-
-#: kotti/views/users.py:230
-msgid "Groups"
-msgstr "Groepen"
-
-#: kotti/templates/email-reset-password.pt:4
-#: kotti/templates/email-set-password.pt:4
-msgid "Hello, ${user_title}!"
-msgstr "Welkom, ${user}!"
-
-#: kotti/templates/edit/contents.pt:79
-msgid "Hidden"
-msgstr "Verborgen"
-
-#: kotti/views/edit/actions.py:457
-msgid "Hide"
-msgstr "Verbergen"
-
-#: kotti/templates/edit/change-state.pt:41
-msgid ""
-"If checked, this will attempt to modify the status of all children in any"
-" selected documents and their subdocuments."
-msgstr ""
-"Indien aangevinkt zal een poging ondernomen worden om de status van alle "
-"onderliggende items te wijzigen van de geselecteerd documenten en hun "
-"onderliggende documenten."
 
 #: kotti/resources.py:726 kotti/views/edit/content.py:144
 msgid "Image"
 msgstr "Afbeelding"
 
-#: kotti/templates/edit/change-state.pt:40
-#: kotti/templates/edit/change-state.pt:45
-msgid "Include children"
-msgstr "Inclusief onderliggende"
+#: kotti/resources.py:500
+msgid "Folder view"
+msgstr "Map weergave"
 
-#: kotti/views/users.py:145
-msgid "Invalid value"
-msgstr "Ongeldige waarde"
+#: kotti/resources.py:487 kotti/templates/view/folder.pt:17
+msgid "Contents"
+msgstr "Inhoud"
 
-#: kotti/views/form.py:174
-msgid "Item was added."
-msgstr "Item werd toegevoegd."
-
-#: kotti/views/edit/actions.py:332
-msgid "Item was renamed."
-msgstr "Item werd hernoemd."
-
-#: kotti/views/users.py:267
-msgid ""
-"Leave this empty and tick the 'Send password registration' box below to "
-"have the user set their own password."
-msgstr ""
-"Laat dit veld leeg en vink de optie 'Verstuur wachtwoord registratie' "
-"hieronder aan zodat de gebruiker zelf een wachtwoord kan instellen."
-
-#: kotti/templates/login.pt:32
-msgid "Log in"
-msgstr "Aanmelden"
-
-#: kotti/templates/login.pt:15
-msgid "Login"
-msgstr "Aanmelden"
-
-#: kotti/views/login.py:164
-msgid "Login failed."
-msgstr "Aanmelden mislukt."
-
-#: kotti/templates/editor-bar.pt:71
-msgid "Logout"
-msgstr "Afmelden"
-
-#: kotti/templates/workflow-dropdown.pt:14
-msgid "Make ${state}"
-msgstr "Maak ${state}"
-
-#: kotti/views/form.py:264
-msgid "Maximum file size: ${size}MB"
-msgstr "Maximale bestandsgrootte: ${size}MB"
-
-#: kotti/templates/edit/change-state.pt:22 kotti/templates/edit/contents.pt:44
-#: kotti/templates/edit/delete-nodes.pt:27 kotti/templates/view/folder.pt:23
-msgid "Modification Date"
-msgstr "Wijzigingsdatum"
-
-#: kotti/views/edit/actions.py:455
-msgid "Move down"
-msgstr "Naar beneden"
-
-#: kotti/views/edit/actions.py:454
-msgid "Move up"
-msgstr "Naar boven"
-
-#: kotti/views/users.py:587
-msgid "My preferences - ${title}"
-msgstr "Mijn instellingen - ${title}"
-
-#: kotti/templates/edit/share.pt:45 kotti/templates/site-setup/users.pt:65
-#: kotti/views/users.py:207
-msgid "Name"
-msgstr "Naam"
-
-#: kotti/views/edit/actions.py:328 kotti/views/edit/actions.py:355
-msgid "Name and title are required."
-msgstr "Naam en titel zijn vereist."
-
-#: kotti/templates/editor-bar.pt:44
-msgid "Navigate"
-msgstr "Navigeren"
-
-#: kotti/templates/edit/nav-tree-view.pt:8
-msgid "Navigate Site"
-msgstr "Site Navigeren"
-
-#: kotti/templates/edit/rename-nodes.pt:25 kotti/templates/edit/rename.pt:18
-msgid "New name"
-msgstr "Nieuwe naam"
-
-#: kotti/templates/edit/rename-nodes.pt:32 kotti/templates/edit/rename.pt:24
-msgid "New title"
-msgstr "Nieuwe titel"
-
-#: kotti/templates/edit/change-state.pt:55
-msgid "No change"
-msgstr "Geen wijzigingen"
-
-#: kotti/views/users.py:71 kotti/views/users.py:465
-#: kotti/views/edit/actions.py:301 kotti/views/edit/actions.py:367
-#: kotti/views/edit/actions.py:409 kotti/views/edit/actions.py:413
-msgid "No changes were made."
-msgstr "Geen wijzigingen aangebracht."
-
-#: kotti/templates/edit/contents.pt:30
-msgid "No content items are contained here."
-msgstr "Bevat geen content items."
-
-#: kotti/views/users.py:558
-msgid "No name was given."
-msgstr "Er werd geen naam ingevoerd."
-
-#: kotti/views/users.py:181
-msgid "No such group: ${group}"
-msgstr "Onbekende groep: ${group}"
-
-#: kotti/views/users.py:98
-msgid "No users or groups were found."
-msgstr "Geen gebruikers of groepen werden gevonden."
-
-#: kotti/templates/login.pt:76
-msgid "Not registered yet?"
-msgstr ""
-
-#: kotti/views/edit/actions.py:292
-msgid "Nothing was deleted."
-msgstr "Er werd niks verwijderd."
-
-#: kotti/populate.py:123
-msgid ""
-"Our company is the leading manufacturer of foo widgets used in a wide "
-"variety of aviation and and industrial products."
-msgstr ""
-
-#: kotti/security.py:167
-msgid "Owner"
-msgstr "Eigenaar"
-
-#: kotti/templates/login.pt:25 kotti/views/login.py:212
-#: kotti/views/users.py:212
-msgid "Password"
-msgstr "Wachtwoord"
-
-#: kotti/resources.py:493 kotti/views/edit/actions.py:442
-msgid "Paste"
-msgstr "Plakken"
-
-#: kotti/templates/editor-bar.pt:55
-msgid "Preferences"
-msgstr "Voorkeuren"
-
-#: kotti/workflow.zcml:28
-msgid "Private"
-msgstr "Privaat"
-
-#: kotti/templates/edit/upload.pt:22
-msgid "Progress"
-msgstr ""
-
-#: kotti/workflow.zcml:41
-msgid "Public"
-msgstr "Publiek"
-
-#: kotti/views/login.py:83
-msgid "Register"
-msgstr "Registreer"
-
-#: kotti/views/login.py:124
-msgid "Register - ${title}"
-msgstr "Refistreer - ${title}"
-
-#: kotti/templates/login.pt:81
-#, fuzzy
-msgid "Register for an account on this site."
-msgstr "Nog niet geregistreerd? ${register} voor een account op deze site."
-
-#: kotti/resources.py:494 kotti/templates/edit/rename-nodes.pt:8
-#: kotti/templates/edit/rename-nodes.pt:39 kotti/templates/edit/rename.pt:30
-#: kotti/views/edit/actions.py:447
-msgid "Rename"
-msgstr "Hernoemen"
-
-#: kotti/templates/edit/rename.pt:8
-msgid "Rename ${title}"
-msgstr "Hernoemen ${title}"
-
-#: kotti/templates/login.pt:50 kotti/templates/login.pt:64
-msgid "Reset password"
-msgstr "Wachtwoord herstellen"
-
-#: kotti/views/login.py:286
-msgid "Reset your password - ${title}."
-msgstr "Herstel je wachtwoord - ${title}."
-
-#: kotti/templates/email-reset-password.pt:2
-msgid "Reset your password for ${site_title}."
-msgstr "Herstel je wachtwoord voor ${site_title}."
-
-#: kotti/views/form.py:77 kotti/views/users.py:441
-msgid "Save"
-msgstr "Opslaan"
-
-#: kotti/templates/edit/share.pt:31 kotti/templates/site-setup/users.pt:54
-msgid "Search"
-msgstr "Zoeken"
-
-#: kotti/templates/view/search-results.pt:9
-msgid "Search Results"
-msgstr "Zoek Resultaten"
-
-#: kotti/templates/site-setup/users.pt:12
-#, fuzzy
-msgid "Search user(s) / groups(s)"
-msgstr "Zoeken naar gebruikers en groepen"
-
-#: kotti/templates/edit/share.pt:14 kotti/templates/edit/share.pt:17
-#: kotti/templates/edit/share.pt:20 kotti/templates/site-setup/users.pt:40
-msgid "Search users and groups"
-msgstr "Zoeken naar gebruikers en groepen"
-
-#: kotti/templates/view/search.pt:8
-msgid "Search..."
-msgstr "Zoeken..."
-
-#: kotti/templates/edit/change-state.pt:51
-msgid "Select the new state where all chosen items should be set."
-msgstr ""
-"Selecteer de nieuwe status waarin alle geselecteerde items dienen gezet "
-"te worden."
-
-#: kotti/views/users.py:324
-msgid "Send password registration link."
-msgstr "Verstuur wachtwoord registratie link."
-
-#: kotti/templates/default-view-selector.pt:3
-msgid "Set default view"
-msgstr "Zet standaard weergave"
+#: kotti/resources.py:488 kotti/templates/edit/nav-tree.pt:10
+msgid "Edit"
+msgstr "Bewerken"
 
 #: kotti/resources.py:489
 msgid "Share"
 msgstr "Delen"
 
-#: kotti/templates/edit/share.pt:8
-msgid "Share ${title}"
-msgstr "Delen ${title}"
+#: kotti/resources.py:490 kotti/templates/actions-dropdown.pt:5
+msgid "Actions"
+msgstr "Acties"
 
-#: kotti/views/edit/actions.py:456
-msgid "Show"
-msgstr "Weergeven"
+#: kotti/resources.py:491 kotti/views/edit/actions.py:445
+msgid "Copy"
+msgstr "Kopiëren"
 
-#: kotti/templates/editor-bar.pt:60
-msgid "Site Setup"
-msgstr "Site Instellingen"
+#: kotti/resources.py:492 kotti/views/edit/actions.py:446
+msgid "Cut"
+msgstr "Knippen"
 
-#: kotti/templates/edit/upload.pt:20
-msgid "Size"
-msgstr ""
+#: kotti/resources.py:493 kotti/views/edit/actions.py:442
+msgid "Paste"
+msgstr "Plakken"
 
-#: kotti/templates/edit/change-state.pt:20 kotti/templates/edit/contents.pt:41
-#: kotti/templates/edit/delete-nodes.pt:25
-msgid "State"
-msgstr "Status"
+#: kotti/resources.py:494 kotti/templates/edit/rename-nodes.pt:7
+#: kotti/templates/edit/rename-nodes.pt:55 kotti/templates/edit/rename.pt:42
+#: kotti/views/edit/actions.py:447
+msgid "Rename"
+msgstr "Hernoemen"
 
-#: kotti/templates/edit/upload.pt:21
-msgid "Status"
-msgstr ""
-
-#: kotti/views/login.py:250
-msgid "Submit"
-msgstr "Verzenden"
-
-#: kotti/templates/view/tags.pt:6
-msgid "Tagged with:"
-msgstr "Getagd met:"
-
-#: kotti/views/edit/content.py:41
-msgid "Tags"
-msgstr "Tags"
-
-#: kotti/views/login.py:178
-msgid "That username or email is not known by this system."
-msgstr "Deze gebruikersnaam of e-mailadres is ons onbekend."
-
-#: kotti/views/login.py:90 kotti/views/login.py:257
-msgid "There was an error."
-msgstr "Er trad een fout op."
-
-#: kotti/templates/edit/change-state.pt:18 kotti/templates/edit/contents.pt:39
-#: kotti/templates/edit/delete-nodes.pt:23 kotti/templates/view/folder.pt:20
-#: kotti/views/users.py:196 kotti/views/edit/content.py:31
-msgid "Title"
-msgstr "Titel"
-
-#: kotti/templates/edit/change-state.pt:19 kotti/templates/edit/contents.pt:40
-#: kotti/templates/edit/delete-nodes.pt:24 kotti/templates/edit/share.pt:44
-#: kotti/templates/edit/upload.pt:19 kotti/templates/site-setup/users.pt:64
-#: kotti/templates/view/folder.pt:21
-msgid "Type"
-msgstr "Type"
-
-#: kotti/views/users.py:220
-msgid "Untick this to deactivate the account."
-msgstr "Uitvinken om je account te de-activeren."
-
-#: kotti/templates/add-dropdown.pt:13
-msgid "Upload Content"
-msgstr "Inhoud Opladen"
-
-#: kotti/templates/edit/upload.pt:10
-msgid "Upload content from local file(s)"
-msgstr ""
-
-#: kotti/templates/edit/share.pt:56 kotti/templates/site-setup/users.pt:76
-#: kotti/views/users.py:313 kotti/views/users.py:501 kotti/views/users.py:536
-msgid "User"
-msgstr "gebruiker"
-
-#: kotti/views/site_setup.py:6 kotti/views/users.py:378
-msgid "User Management"
-msgstr "Gebruikersbeheer"
-
-#: kotti/views/users.py:533
-msgid "User was not found."
-msgstr "De gebruiker werd niet gevonden."
-
-#: kotti/templates/site-setup/users.pt:37
-msgid "User- / groupname"
-msgstr ""
-
-#: kotti/views/login.py:69
-msgid "Username"
-msgstr "Gebruikersnaam"
-
-#: kotti/templates/login.pt:19 kotti/templates/login.pt:56
-msgid "Username or email"
-msgstr "Gebuikersnaam of e-mail"
-
-#: kotti/templates/editor-bar.pt:21
-msgid "View"
-msgstr "Weergeven"
+#: kotti/resources.py:495 kotti/templates/edit/delete-nodes.pt:8
+#: kotti/templates/edit/delete-nodes.pt:90 kotti/templates/edit/delete.pt:28
+#: kotti/templates/site-setup/delete-user.pt:36 kotti/views/users.py:443
+#: kotti/views/edit/actions.py:449
+msgid "Delete"
+msgstr "Verwijderen"
 
 #: kotti/security.py:165
 msgid "Viewer"
 msgstr "Lezer"
 
-#: kotti/templates/edit/contents.pt:42
+#: kotti/security.py:166
+msgid "Editor"
+msgstr "Editor"
+
+#: kotti/security.py:167
+msgid "Owner"
+msgstr "Eigenaar"
+
+#: kotti/security.py:168
+msgid "Admin"
+msgstr "Beheerder"
+
+#: kotti/templates/add-dropdown.pt:5
+msgid "Add"
+msgstr "Toevoegen"
+
+#: kotti/templates/add-dropdown.pt:27
+msgid "Upload Content"
+msgstr "Inhoud Opladen"
+
+#: kotti/templates/default-view-selector.pt:5
+msgid "Set default view"
+msgstr "Zet standaard weergave"
+
+#: kotti/templates/editor-bar.pt:35
+msgid "View"
+msgstr "Weergeven"
+
+#: kotti/templates/editor-bar.pt:76
+msgid "Navigate"
+msgstr "Navigeren"
+
+#: kotti/templates/editor-bar.pt:98
+msgid "Preferences"
+msgstr "Voorkeuren"
+
+#: kotti/templates/editor-bar.pt:109
+msgid "Site Setup"
+msgstr "Site Instellingen"
+
+#: kotti/templates/editor-bar.pt:131
+msgid "Logout"
+msgstr "Afmelden"
+
+#: kotti/templates/email-reset-password.pt:3
+msgid "Reset your password for ${site_title}."
+msgstr "Herstel je wachtwoord voor ${site_title}."
+
+#: kotti/templates/email-reset-password.pt:7
+#: kotti/templates/email-set-password.pt:6
+msgid "Hello, ${user_title}!"
+msgstr "Welkom, ${user}!"
+
+#: kotti/templates/email-reset-password.pt:10
+msgid "Click this link to reset your password at ${site_title}: ${url}"
+msgstr ""
+"Klik deze link om je wachtwoord opnieuw in te stellen voor ${site_title}: "
+"${url}"
+
+#: kotti/templates/email-set-password.pt:3
+msgid "Your registration for ${site_title}"
+msgstr "Je registratie voor ${site_title}"
+
+#: kotti/templates/email-set-password.pt:9
+msgid "You are joining ${site_title}."
+msgstr "Je treedt toe tot ${site_title}."
+
+#: kotti/templates/email-set-password.pt:12
+msgid "Click here to set your password and log in: ${url}"
+msgstr ""
+"Klik hier om je wachtwoord opnieuw in te stellen en aan te melden: ${url}"
+
+#: kotti/templates/forbidden.pt:7
+msgid "Forbidden"
+msgstr "Verboden"
+
+#: kotti/templates/login.pt:16
+msgid "Login"
+msgstr "Aanmelden"
+
+#: kotti/templates/login.pt:25 kotti/templates/login.pt:87
+msgid "Username or email"
+msgstr "Gebuikersnaam of e-mail"
+
+#: kotti/templates/login.pt:34 kotti/views/login.py:213
+#: kotti/views/users.py:212
+msgid "Password"
+msgstr "Wachtwoord"
+
+#: kotti/templates/login.pt:47
+msgid "Log in"
+msgstr "Aanmelden"
+
+#: kotti/templates/login.pt:65
+msgid "Forgot your password?"
+msgstr "Wachtwoord vergeten?"
+
+#. Used in sentence: "Fill out your username or email and click
+#. ${reset_password} below to receive an email with a link to reset your
+#. password."
+#.
+#: kotti/templates/login.pt:77 kotti/templates/login.pt:100
+msgid "Reset password"
+msgstr "Wachtwoord herstellen"
+
+#. Canonical text for ${reset_password} is: "Reset password"
+#: kotti/templates/login.pt:74
+#, fuzzy
+msgid ""
+"Fill out your username or email and click ${reset_password} below to receive "
+"an email with a link to reset your password."
+msgstr ""
+"Vul je gebruikersnaam of e-mailadres in en klik op ${reset_password} "
+"hieronder om een e-mail te ontvangen om je wachtwoord te herstellen."
+
+#: kotti/templates/login.pt:118
+msgid "Not registered yet?"
+msgstr ""
+
+#: kotti/templates/login.pt:127
+#, fuzzy
+msgid "Register for an account on this site."
+msgstr "Nog niet geregistreerd? ${register} voor een account op deze site."
+
+#: kotti/templates/workflow-dropdown.pt:19
+msgid "Make ${state}"
+msgstr "Maak ${state}"
+
+#: kotti/templates/edit/breadcrumbs.pt:5
+msgid "You are here:"
+msgstr "U bent hier:"
+
+#: kotti/templates/edit/change-state.pt:7
+msgid "Change workflow state"
+msgstr "Wijzig de workflow status"
+
+#: kotti/templates/edit/change-state.pt:14
+msgid "An item's workflow state determines who can see, edit and/or manage it."
+msgstr ""
+"Een item zijn workflow status bepaalt wie het kan zien, bewerken en/of "
+"beheren."
+
+#: kotti/templates/edit/change-state.pt:26 kotti/templates/edit/contents.pt:57
+#: kotti/templates/edit/delete-nodes.pt:33 kotti/templates/view/folder.pt:28
+#: kotti/views/users.py:196 kotti/views/edit/content.py:31
+msgid "Title"
+msgstr "Titel"
+
+#: kotti/templates/edit/change-state.pt:29 kotti/templates/edit/contents.pt:60
+#: kotti/templates/edit/delete-nodes.pt:36 kotti/templates/edit/share.pt:70
+#: kotti/templates/edit/upload.pt:23 kotti/templates/edit/upload.pt:167
+#: kotti/templates/site-setup/users.pt:105 kotti/templates/view/folder.pt:31
+msgid "Type"
+msgstr "Type"
+
+#: kotti/templates/edit/change-state.pt:32 kotti/templates/edit/contents.pt:63
+#: kotti/templates/edit/delete-nodes.pt:39
+msgid "State"
+msgstr "Status"
+
+#: kotti/templates/edit/change-state.pt:35 kotti/templates/edit/contents.pt:69
+#: kotti/templates/edit/delete-nodes.pt:42 kotti/templates/view/folder.pt:34
+msgid "Creation Date"
+msgstr "Aanmaak datum"
+
+#: kotti/templates/edit/change-state.pt:38 kotti/templates/edit/contents.pt:72
+#: kotti/templates/edit/delete-nodes.pt:45 kotti/templates/view/folder.pt:37
+msgid "Modification Date"
+msgstr "Wijzigingsdatum"
+
+#: kotti/templates/edit/change-state.pt:79
+#: kotti/templates/edit/change-state.pt:90
+msgid "Include children"
+msgstr "Inclusief onderliggende"
+
+#: kotti/templates/edit/change-state.pt:82
+msgid ""
+"If checked, this will attempt to modify the status of all children in any "
+"selected documents and their subdocuments."
+msgstr ""
+"Indien aangevinkt zal een poging ondernomen worden om de status van alle "
+"onderliggende items te wijzigen van de geselecteerd documenten en hun "
+"onderliggende documenten."
+
+#: kotti/templates/edit/change-state.pt:100
+msgid "Change state to"
+msgstr "Wij status naar"
+
+#: kotti/templates/edit/change-state.pt:103
+msgid "Select the new state where all chosen items should be set."
+msgstr ""
+"Selecteer de nieuwe status waarin alle geselecteerde items dienen gezet te "
+"worden."
+
+#: kotti/templates/edit/change-state.pt:111
+msgid "No change"
+msgstr "Geen wijzigingen"
+
+#: kotti/templates/edit/change-state.pt:127 kotti/templates/edit/share.pt:121
+#: kotti/templates/site-setup/users.pt:165
+msgid "Apply changes"
+msgstr "Wijzigingen toepassen"
+
+#: kotti/templates/edit/change-state.pt:130
+#: kotti/templates/edit/delete-nodes.pt:93
+#: kotti/templates/edit/rename-nodes.pt:58 kotti/views/form.py:78
+#: kotti/views/users.py:316 kotti/views/users.py:350 kotti/views/users.py:442
+msgid "Cancel"
+msgstr "Annuleren"
+
+#: kotti/templates/edit/contents.pt:43
+msgid "No content items are contained here."
+msgstr "Bevat geen content items."
+
+#: kotti/templates/edit/contents.pt:66
 msgid "Visibility"
 msgstr "Zichtbaarheid"
 
-#: kotti/templates/edit/contents.pt:75
+#: kotti/templates/edit/contents.pt:125
 msgid "Visible"
 msgstr "Zichtbaar"
 
-#: kotti/populate.py:65
-msgid "Welcome to Kotti"
+#: kotti/templates/edit/contents.pt:134
+msgid "Hidden"
+msgstr "Verborgen"
+
+#: kotti/templates/edit/delete-nodes.pt:17
+msgid "Are you sure you want to delete the following items?"
+msgstr "Ben je zeker dat je de volgende items wil verwijderen?"
+
+#: kotti/templates/edit/delete.pt:8
+#: kotti/templates/site-setup/delete-user.pt:8
+msgid "Delete ${title}"
+msgstr "Verwijder ${title}"
+
+#: kotti/templates/edit/delete.pt:20
+msgid "Are you sure you want to delete ${title}?"
+msgstr "Ben je zeker dat je ${title} wil verwijderen?"
+
+#: kotti/templates/edit/nav-tree-view.pt:7
+msgid "Navigate Site"
+msgstr "Site Navigeren"
+
+#: kotti/templates/edit/rename-nodes.pt:16 kotti/templates/edit/rename.pt:14
+msgid ""
+"Each content item has a name, which is used to create the url, and a title. "
+"Read the user manual about proper formatting of name and title if needed. "
+"You can change both below."
+msgstr ""
+"Elk inhoudsitem heeft een naam die gebruikt wordt om een url en titel aan te "
+"maken. Lees de gebruikershandleiding inzake correcte naamgeving voor titel "
+"en naam. Je kan beiden hieronder aanpassen."
+
+#: kotti/templates/edit/rename-nodes.pt:35 kotti/templates/edit/rename.pt:26
+msgid "New name"
+msgstr "Nieuwe naam"
+
+#: kotti/templates/edit/rename-nodes.pt:45 kotti/templates/edit/rename.pt:35
+msgid "New title"
+msgstr "Nieuwe titel"
+
+#: kotti/templates/edit/rename.pt:7
+msgid "Rename ${title}"
+msgstr "Hernoemen ${title}"
+
+#: kotti/templates/edit/share.pt:7
+msgid "Share ${title}"
+msgstr "Delen ${title}"
+
+#: kotti/templates/edit/share.pt:19 kotti/templates/edit/share.pt:30
+#: kotti/templates/edit/share.pt:35 kotti/templates/site-setup/users.pt:68
+msgid "Search users and groups"
+msgstr "Zoeken naar gebruikers en groepen"
+
+#: kotti/templates/edit/share.pt:43 kotti/templates/site-setup/users.pt:81
+msgid "Search"
+msgstr "Zoeken"
+
+#: kotti/templates/edit/share.pt:60
+msgid "Assign local roles"
+msgstr "Locale rollen toewijzen"
+
+#: kotti/templates/edit/share.pt:73 kotti/templates/site-setup/users.pt:108
+#: kotti/views/users.py:207
+msgid "Name"
+msgstr "Naam"
+
+#: kotti/templates/edit/share.pt:91 kotti/templates/site-setup/users.pt:126
+#: kotti/views/users.py:313 kotti/views/users.py:501 kotti/views/users.py:536
+msgid "User"
+msgstr "gebruiker"
+
+#: kotti/templates/edit/share.pt:94 kotti/templates/site-setup/users.pt:129
+#: kotti/views/users.py:347 kotti/views/users.py:188 kotti/views/users.py:501
+#: kotti/views/users.py:536
+msgid "Group"
+msgstr "Groep"
+
+#: kotti/templates/edit/share.pt:101 kotti/templates/site-setup/users.pt:136
+msgid "Gravatar"
+msgstr "Gravatar"
+
+#: kotti/templates/edit/upload.pt:9
+msgid "Upload content from local file(s)"
 msgstr ""
 
-#: kotti/views/login.py:160
-msgid "Welcome, ${user}!"
-msgstr "Welkom, ${user}!"
+#: kotti/templates/edit/upload.pt:20 kotti/templates/edit/upload.pt:164
+#, fuzzy
+msgid "Filename"
+msgstr "Hernoemen"
 
-#: kotti/tests/testing_view.pt:10
+#: kotti/templates/edit/upload.pt:26 kotti/templates/edit/upload.pt:170
+msgid "Size"
+msgstr ""
+
+#: kotti/templates/edit/upload.pt:29
+msgid "Status"
+msgstr ""
+
+#: kotti/templates/edit/upload.pt:32
+msgid "Progress"
+msgstr ""
+
+#: kotti/templates/edit/upload.pt:124
+msgid "Select file(s) to upload..."
+msgstr ""
+
+#: kotti/templates/edit/upload.pt:134
+msgid "Upload ${number} files."
+msgstr ""
+
+#: kotti/templates/edit/upload.pt:144
+msgid "Dismiss all errors"
+msgstr ""
+
+#: kotti/templates/site-setup/delete-user.pt:20
+msgid "Are you sure you want to delete ${type} ${title}?"
+msgstr "Ben je zeker dat je ${type} ${title} wil verwijderen?"
+
+#: kotti/templates/site-setup/user.pt:13
+msgid "Back to User Management"
+msgstr "Terug naar gebruiksersbeheer"
+
+#: kotti/templates/site-setup/user.pt:25 kotti/views/form.py:156
+#, python-format
+msgid "Edit ${title}"
+msgstr "Bewerken ${title}"
+
+#: kotti/templates/site-setup/users.pt:15
+#, fuzzy
+msgid "Search user(s) / group(s)"
+msgstr "Zoeken naar gebruikers en groepen"
+
+#: kotti/templates/site-setup/users.pt:24
+msgid "Add user"
+msgstr "Gebruiker toevoegen"
+
+#: kotti/templates/site-setup/users.pt:33
+msgid "Add group"
+msgstr "Groep toevoegen"
+
+#: kotti/templates/site-setup/users.pt:52
+#, fuzzy
+msgid "Find users or groups"
+msgstr "Zoeken naar gebruikers en groepen"
+
+#: kotti/templates/site-setup/users.pt:63
+msgid "User- / groupname"
+msgstr ""
+
+#: kotti/templates/site-setup/users.pt:70
+#, fuzzy
+msgid "Blank search text finds all."
+msgstr ""
+"Zoek en wijzig gebruikers (laat tekstveld leeg om alle gebruikers te vinden."
+
+#: kotti/templates/site-setup/users.pt:96
+#, fuzzy
+msgid "Assign global roles"
+msgstr "Locale rollen toewijzen"
+
+#: kotti/templates/site-setup/users.pt:180
+#, fuzzy
+msgid "Add new user"
+msgstr "Gebruiker toevoegen"
+
+#: kotti/templates/site-setup/users.pt:190
+#, fuzzy
+msgid "Add new group"
+msgstr "Groep toevoegen"
+
+#: kotti/templates/view/search-results.pt:8
+msgid "Search Results"
+msgstr "Zoek Resultaten"
+
+#: kotti/templates/view/search.pt:5
+msgid "Search..."
+msgstr "Zoeken..."
+
+#: kotti/templates/view/tags.pt:5
+msgid "Tagged with:"
+msgstr "Getagd met:"
+
+#: kotti/tests/testing_view.pt:7
 msgid "Welcome, ${user}! You are logged in."
 msgstr "Welkom, ${user}! U bent nu aangemeld."
 
@@ -846,44 +606,314 @@ msgstr "Welkom, ${user}! U bent nu aangemeld."
 msgid "Welcome, you are not logged in."
 msgstr "Wilkom, je bent niet aangemeld."
 
-#: kotti/templates/edit/breadcrumbs.pt:7
-msgid "You are here:"
-msgstr "U bent hier:"
-
-#: kotti/templates/email-set-password.pt:5
-msgid "You are joining ${site_title}."
-msgstr "Je treedt toe tot ${site_title}."
-
-#: kotti/views/login.py:199
-msgid "You have been logged out."
-msgstr "Je bent afgemeld."
-
-#: kotti/views/login.py:237
-msgid "You have reset your password."
-msgstr "Je wachtwoord werd hersteld."
-
-#: kotti/views/edit/actions.py:496
-msgid "You have to select items to perform an action."
-msgstr "Je dient items te selecteren om acties uit te voeren."
-
-#: kotti/views/login.py:173
-msgid ""
-"You should be receiving an email with a link to reset your password. "
-"Doing so will activate your account."
-msgstr ""
-"Je zal een e-mail ontvangen met een link om je wachtwoord te herstellen. "
-"Via deze link activeer je je account."
-
 #: kotti/views/form.py:79 kotti/views/users.py:69
 #: kotti/views/edit/actions.py:363 kotti/views/edit/actions.py:407
 msgid "Your changes have been saved."
 msgstr "Je wijzigingen werden opgeslagen."
 
+#: kotti/views/form.py:174
+msgid "Item was added."
+msgstr "Item werd toegevoegd."
+
+#: kotti/views/form.py:264
+#, python-format
+msgid "Maximum file size: ${size}MB"
+msgstr "Maximale bestandsgrootte: ${size}MB"
+
+#: kotti/views/form.py:77 kotti/views/users.py:441
+msgid "Save"
+msgstr "Opslaan"
+
+#: kotti/views/form.py:198
+#, python-format
+msgid "Add ${type} to ${title}."
+msgstr "Voeg ${type} aan ${title} toe."
+
+#: kotti/views/form.py:202
+#, python-format
+msgid "Add ${type}."
+msgstr "Voeg ${type} toe."
+
+#: kotti/views/login.py:238
+msgid "You have reset your password."
+msgstr "Je wachtwoord werd hersteld."
+
+#: kotti/views/login.py:200
+msgid "You have been logged out."
+msgstr "Je bent afgemeld."
+
+#: kotti/views/login.py:66 kotti/views/users.py:270
+msgid "Full name"
+msgstr "Volledige naam"
+
+#: kotti/views/login.py:69
+msgid "Username"
+msgstr "Gebruikersnaam"
+
+#: kotti/views/login.py:74 kotti/views/login.py:225 kotti/views/users.py:199
+msgid "Email"
+msgstr "E-mailadres"
+
+#: kotti/views/login.py:109
+msgid ""
+"Congratulations! You are successfully registered. You should be receiving an "
+"email with a link to set your password. Doing so will activate your account."
+msgstr ""
+"Proficiat! Je bent geregistreerd. Je zal een e-mail ontvangen met een link "
+"om je wachtwoord in te stellen. Deze handeling zal je account activeren."
+
+#: kotti/views/login.py:124
+#, python-format
+msgid "Register - ${title}"
+msgstr "Refistreer - ${title}"
+
+#: kotti/views/login.py:164
+msgid "Login failed."
+msgstr "Aanmelden mislukt."
+
+#: kotti/views/login.py:286
+#, python-format
+msgid "Reset your password - ${title}."
+msgstr "Herstel je wachtwoord - ${title}."
+
+#: kotti/views/login.py:160
+#, python-format
+msgid "Welcome, ${user}!"
+msgstr "Welkom, ${user}!"
+
+#: kotti/views/login.py:173
+msgid ""
+"You should be receiving an email with a link to reset your password. Doing "
+"so will activate your account."
+msgstr ""
+"Je zal een e-mail ontvangen met een link om je wachtwoord te herstellen. Via "
+"deze link activeer je je account."
+
+#: kotti/views/login.py:178
+msgid "That username or email is not known by this system."
+msgstr "Deze gebruikersnaam of e-mailadres is ons onbekend."
+
+#: kotti/views/login.py:83
+msgid "Register"
+msgstr "Registreer"
+
+#: kotti/views/login.py:90 kotti/views/login.py:257
+msgid "There was an error."
+msgstr "Er trad een fout op."
+
+#: kotti/views/login.py:250
+msgid "Submit"
+msgstr "Verzenden"
+
 #: kotti/views/login.py:279
 msgid "Your password reset token may have expired."
 msgstr "Je wachtwoord herstellen link is mogelijks vervallen."
 
-#: kotti/templates/email-set-password.pt:2
-msgid "Your registration for ${site_title}"
-msgstr "Je registratie voor ${site_title}"
+#: kotti/views/site_setup.py:6 kotti/views/users.py:378
+msgid "User Management"
+msgstr "Gebruikersbeheer"
 
+#: kotti/views/users.py:267
+msgid ""
+"Leave this empty and tick the 'Send password registration' box below to have "
+"the user set their own password."
+msgstr ""
+"Laat dit veld leeg en vink de optie 'Verstuur wachtwoord registratie' "
+"hieronder aan zodat de gebruiker zelf een wachtwoord kan instellen."
+
+#: kotti/views/users.py:587
+#, python-format
+msgid "My preferences - ${title}"
+msgstr "Mijn instellingen - ${title}"
+
+#: kotti/views/users.py:145
+msgid "Invalid value"
+msgstr "Ongeldige waarde"
+
+#: kotti/views/users.py:151
+msgid "A user with that name already exists."
+msgstr "Een gebruiker met deze naam bestaat reeds."
+
+#: kotti/views/users.py:158
+msgid "A user with that email already exists."
+msgstr "Een gebruiker met deze naam bestaat reeds."
+
+#: kotti/views/users.py:181
+#, python-format
+msgid "No such group: ${group}"
+msgstr "Onbekende groep: ${group}"
+
+#: kotti/views/users.py:219
+msgid "Active"
+msgstr "Actief"
+
+#: kotti/views/users.py:220
+msgid "Untick this to deactivate the account."
+msgstr "Uitvinken om je account te de-activeren."
+
+#: kotti/views/users.py:226
+msgid "Global roles"
+msgstr "Globale rollen"
+
+#: kotti/views/users.py:230
+msgid "Groups"
+msgstr "Groepen"
+
+#: kotti/views/users.py:315
+msgid "Add User"
+msgstr "Gebruiker toevoegen"
+
+#: kotti/views/users.py:339
+#, python-format
+msgid "${title} was added."
+msgstr "${title} werd toegevoegd."
+
+#: kotti/views/users.py:349
+msgid "Add Group"
+msgstr "Groep toevoegen"
+
+#: kotti/views/users.py:465 kotti/views/users.py:71
+#: kotti/views/edit/actions.py:301 kotti/views/edit/actions.py:367
+#: kotti/views/edit/actions.py:413 kotti/views/edit/actions.py:409
+msgid "No changes were made."
+msgstr "Geen wijzigingen aangebracht."
+
+#: kotti/views/users.py:558
+msgid "No name was given."
+msgstr "Er werd geen naam ingevoerd."
+
+#: kotti/views/users.py:98
+msgid "No users or groups were found."
+msgstr "Geen gebruikers of groepen werden gevonden."
+
+#: kotti/views/users.py:505
+#, python-format
+msgid "Edit ${principal_type} ${title}"
+msgstr "Bewerk ${principal_type} ${title}"
+
+#: kotti/views/users.py:533
+msgid "User was not found."
+msgstr "De gebruiker werd niet gevonden."
+
+#: kotti/views/users.py:324
+msgid "Send password registration link."
+msgstr "Verstuur wachtwoord registratie link."
+
+#: kotti/views/users.py:543
+#, python-format
+msgid "${principal_type} ${title} was deleted."
+msgstr "${principal_type} ${title} werd verwijderd."
+
+#: kotti/views/users.py:551
+#, python-format
+msgid "Delete ${principal_type} ${title}"
+msgstr "Verwijder ${principal_type} ${title}"
+
+#: kotti/views/edit/actions.py:106
+#, python-format
+msgid "${title} was copied."
+msgstr "${title} werd gekopieerd."
+
+#: kotti/views/edit/actions.py:124
+#, python-format
+msgid "${title} was cut."
+msgstr "${title} werd geknipt."
+
+#: kotti/views/edit/actions.py:182
+#, python-format
+msgid "${title} was moved."
+msgstr "${title} werd verplaatst."
+
+#: kotti/views/edit/actions.py:270 kotti/views/edit/actions.py:295
+#, python-format
+msgid "${title} was deleted."
+msgstr "${title} werd verwijderd."
+
+#: kotti/views/edit/actions.py:158
+#, python-format
+msgid "${title} was pasted."
+msgstr "${title} werd geplakt."
+
+#: kotti/views/edit/actions.py:161
+msgid "Could not paste node. It no longer exists."
+msgstr "De node kon niet geplakt worden. Hij bestaat niet meer."
+
+#: kotti/views/edit/actions.py:224
+#, python-format
+msgid "${title} is now visible in the navigation."
+msgstr "${title} is nu zichtbaar in de navigatie."
+
+#: kotti/views/edit/actions.py:227
+#, python-format
+msgid "${title} is no longer visible in the navigation."
+msgstr "${title} is niet langer zichtbaar in de navigatie."
+
+#: kotti/views/edit/actions.py:292
+msgid "Nothing was deleted."
+msgstr "Er werd niks verwijderd."
+
+#: kotti/views/edit/actions.py:328 kotti/views/edit/actions.py:355
+msgid "Name and title are required."
+msgstr "Naam en titel zijn vereist."
+
+#: kotti/views/edit/actions.py:332
+msgid "Item was renamed."
+msgstr "Item werd hernoemd."
+
+#: kotti/views/edit/actions.py:454
+msgid "Move up"
+msgstr "Naar boven"
+
+#: kotti/views/edit/actions.py:455
+msgid "Move down"
+msgstr "Naar beneden"
+
+#: kotti/views/edit/actions.py:456
+msgid "Show"
+msgstr "Weergeven"
+
+#: kotti/views/edit/actions.py:457
+msgid "Hide"
+msgstr "Verbergen"
+
+#: kotti/views/edit/actions.py:496
+msgid "You have to select items to perform an action."
+msgstr "Je dient items te selecteren om acties uit te voeren."
+
+#: kotti/views/edit/actions.py:453
+msgid "Change State"
+msgstr "Wijzig Status."
+
+#: kotti/views/edit/content.py:35
+msgid "Description"
+msgstr "Beschrijving"
+
+#: kotti/views/edit/content.py:41
+msgid "Tags"
+msgstr "Tags"
+
+#: kotti/views/edit/content.py:50
+msgid "Body"
+msgstr "Inhoud"
+
+#: kotti/views/edit/default_views.py:99
+msgid "Default view has been reset to default."
+msgstr "Standaard weergave werd hersteld naar standaard."
+
+#: kotti/views/edit/default_views.py:78
+msgid "Default view"
+msgstr "Standaard weergave"
+
+#: kotti/views/edit/default_views.py:106
+msgid "Default view has been set."
+msgstr "Standaard weergave is ingesteld."
+
+#: kotti/views/edit/default_views.py:111
+msgid "Default view could not be set."
+msgstr "Standaar weergave kon niet ingesteld worden."
+
+#~ msgid "Private"
+#~ msgstr "Privaat"
+
+#~ msgid "Public"
+#~ msgstr "Publiek"
