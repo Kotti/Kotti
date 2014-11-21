@@ -108,9 +108,18 @@ htmlhelp_basename = 'Kottidoc'
 #]
 
 # -- Options for inheritance diagrams ------------------------------------------
-inheritance_graph_attrs = dict(rankdir='TB', nodesep=0.1,
-                               ratio='auto', size=11.0)
-inheritance_node_attrs = dict(height=0.7, margin='0.06, 0.03')
+inheritance_graph_attrs = dict(
+    rankdir='TB',
+    nodesep=0.1,
+    ratio='auto',
+    size=11.0
+)
+inheritance_node_attrs = dict(
+    height=0.7,
+    margin='"0.06, 0.03"',
+    fontname='"Vera Sans, DejaVu Sans, Liberation Sans, Arial, Helvetica, sans"'
+)
+graphviz_output_format = 'svg'
 
 # -- Options for Intersphinx ---------------------------------------------------
 intersphinx_mapping = {
