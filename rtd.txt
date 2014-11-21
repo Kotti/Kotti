@@ -1,4 +1,3 @@
-kotti_docs_theme
 repoze.sphinx.autointerface
 setuptools-git  # needed to make "python setup.py install" on rtd.
 pytest  # needed for kotti.testing apidocs
