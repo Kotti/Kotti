@@ -1,4 +1,4 @@
-.. blobstorage:
+.. _blobstorage:
 
 BLOB-Storage
 ============

@@ -1,3 +1,5 @@
+.. _api-kotti.views.slots:
+
 :mod:`kotti.views.slots`
 ------------------------
 

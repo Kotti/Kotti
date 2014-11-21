@@ -1,3 +1,5 @@
+.. _api-kotti.workflow:
+
 :mod:`kotti.workflow`
 ---------------------
 

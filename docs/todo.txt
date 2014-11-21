@@ -23,10 +23,6 @@ http://groups.google.com/group/kotti or #kotti on IRC.
 Smaller tasks
 =============
 
-- Add a subscribe decorator to kotti.events, so that you can decorate
-  your functions instead of having to manually append to
-  kotti.events.listeners[object]
-
 - Many of the templates used in 'kotti/views/edit.py' have some legacy
   cruft in them.  Clean up.
 

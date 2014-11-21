@@ -3,18 +3,6 @@
 Tutorial Part 1: Creating an add-on with a custom Look and Feel
 ===============================================================
 
-Let's learn by example.  We'll create an add-on package that will:
-
-- change the look and feel of Kotti by registering an additional CSS file
-- add content types and forms
-
-.. note::
-
-    If you have questions going through this tutorial, please post
-    a message to the `mailing list`_ or join the `#kotti`_ channel on
-    irc.freenode.net to chat with other Kotti users who might be
-    able to help.
-
 In this part of the tutorial, we'll concentrate on how to create the
 new add-on package, how to install and register it with our site, and how
 to manage static resources in Kotti.
@@ -24,7 +12,7 @@ PyPI_. They include `kotti_media`_, for adding a set of video and audio content
 types to a site, `kotti_gallery`_, for adding a photo album content type,
 `kotti_blog`_, for blog and blog entry content types, etc.
 
-The add-on we will make, kotti_mysite, will be just like those, in
+The add-on we will make, ``kotti_mysite``, will be just like those, in
 that it will be a proper Python package created with the same command
 line tools used to make `kotti_media`_, `kotti_blog`_, and the others.
 We will set up kotti_mysite for our Kotti site, in the same way that

@@ -1,3 +1,5 @@
+.. _api-kotti.testing:
+
 :mod:`kotti.testing`
 --------------------
 

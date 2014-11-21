@@ -1,3 +1,5 @@
+.. _api-kotti.populate:
+
 :mod:`kotti.populate`
 ---------------------
 

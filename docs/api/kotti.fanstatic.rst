@@ -1,3 +1,5 @@
+.. _api-kotti.fanstatic:
+
 :mod:`kotti.fanstatic`
 ----------------------
 

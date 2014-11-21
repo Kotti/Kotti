@@ -1,3 +1,5 @@
+.. _api-kotti.events:
+
 :mod:`kotti.events`
 -------------------
 

@@ -1,3 +1,5 @@
+.. _api-kotti.security:
+
 :mod:`kotti.security`
 ---------------------
 

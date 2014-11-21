@@ -1,4 +1,4 @@
-.. deployment:
+.. _deployment:
 
 Deployment
 ==========

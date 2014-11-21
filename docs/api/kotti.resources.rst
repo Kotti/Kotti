@@ -1,3 +1,5 @@
+.. _api-kotti.resources:
+
 :mod:`kotti.resources`
 ----------------------
 

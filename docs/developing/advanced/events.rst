@@ -3,10 +3,8 @@
 Events
 ======
 
-Kotti has a builtin event system that is based on the
-`Publish–subscribe pattern`_.  The basic concept is that whenever a specific
-event occurs, all handler functions that have subscribed to that event will be
-executed.
+Kotti has a builtin event system that is based on the `Publish–subscribe pattern`_.
+The basic concept is that whenever a specific event occurs, all handler functions that have subscribed to that event will be executed.
 
 There are two different types of events:
 

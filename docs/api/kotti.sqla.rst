@@ -1,3 +1,5 @@
+.. _api-kotti.sqla:
+
 :mod:`kotti.sqla`
 -----------------
 

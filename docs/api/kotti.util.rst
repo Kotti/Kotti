@@ -1,3 +1,5 @@
+.. _api-kotti.util:
+
 :mod:`kotti.util`
 -----------------
 

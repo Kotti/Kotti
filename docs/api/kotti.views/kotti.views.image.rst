@@ -1,3 +1,5 @@
+.. _api-kotti.views.image:
+
 :mod:`kotti.views.image`
 ------------------------
 

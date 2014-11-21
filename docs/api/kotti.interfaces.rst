@@ -1,3 +1,5 @@
+.. _api-kotti.interfaces:
+
 :mod:`kotti.interfaces`
 -----------------------
 

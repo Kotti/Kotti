@@ -1,3 +1,5 @@
+.. _close-for-anonymous:
+
 Close your site for anonymous users
 ===================================
 

@@ -1,3 +1,5 @@
+.. _api-kotti.views.edit.actions:
+
 :mod:`kotti.views.edit.actions`
 -------------------------------
 

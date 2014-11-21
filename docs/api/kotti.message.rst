@@ -1,3 +1,5 @@
+.. _api-kotti.message:
+
 :mod:`kotti.message`
 --------------------
 

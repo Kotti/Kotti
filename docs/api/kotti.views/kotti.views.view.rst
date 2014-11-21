@@ -1,3 +1,5 @@
+.. _api-kotti.views.view:
+
 :mod:`kotti.views.view`
 -----------------------
 

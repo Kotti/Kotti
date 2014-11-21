@@ -1,4 +1,4 @@
-.. _developer_manual:
+.. _developer-manual:
 
 Developer manual
 ================
