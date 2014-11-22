@@ -4,6 +4,9 @@ Change History
 0.10 - Unreleased
 -----------------
 
+- Remove code (incl. tests) that has been marked as deprecated since (at least)
+  Kotti 0.8.
+
 - Revise UI to make better use of Bootstrap 3.
 
 0.10b1 - 2014-07-11

@@ -30,14 +30,6 @@ TRUE_VALUES = ('1', 'y', 'yes', 't', 'true')
 FALSE_VALUES = ('0', 'n', 'no', 'f', 'false', 'none')
 
 
-# BBB module deprecation
-from kotti import fanstatic
-sys.modules['kotti.static'] = deprecation.deprecated(
-    fanstatic,
-    "The module kotti.static has been moved to kotti.fanstatic as of Kotti "
-    "0.8. Import from there instead.")
-
-
 def authtkt_factory(**settings):
     from kotti.security import list_groups_callback
     kwargs = dict(
@@ -190,35 +182,9 @@ def base_configure(global_config, **settings):
     for func in settings['kotti.configurators']:
         func(settings)
 
-    # BBB: Merge ``kotti.static.x`` into kotti.fanstatic.x
-    deprecated_fanstatic_settings = {
-        'kotti.static.view_needed': 'kotti.fanstatic.view_needed',
-        'kotti.static.edit_needed': 'kotti.fanstatic.edit_needed',
-    }
-    for old, new in deprecated_fanstatic_settings.items():
-        if old in settings:
-            if settings[old]:
-                warnings.warn(
-                    "The '%(old)s' setting has been deprecated as of "
-                    "Kotti 0.8 and will be removed in Kotti 1.0.  Use "
-                    "'%(new)s' instead." % {'old': old, 'new': new},
-                    DeprecationWarning)
-                settings.setdefault(new, '')
-                settings[new] += ' ' + settings[old]
-            del settings[old]
-
     _resolve_dotted(settings)
     secret1 = settings['kotti.secret']
     settings.setdefault('kotti.secret2', secret1)
-
-    # BBB: Merge ``kotti.includes`` into pyramid.includes.
-    if settings['kotti.includes']:
-        warnings.warn(
-            "The 'kotti.includes' setting has been deprecated as of "
-            "Kotti 0.6.1.  Use 'pyramid.includes' instead.",
-            DeprecationWarning)
-        settings.setdefault('pyramid.includes', '')
-        settings['pyramid.includes'] += ' ' + settings['kotti.includes']
 
     # We'll process ``pyramid_includes`` later by hand, to allow
     # overrides of configuration from ``kotti.base_includes``:

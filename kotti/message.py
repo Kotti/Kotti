@@ -25,19 +25,6 @@ RESET_PASSWORD_BODY = u"""Hello, %(user_title)s!
 Click this link to reset your password at %(site_title)s: %(url)s.
 """
 
-message_templates = {
-    'set-password': dict(
-        subject=SET_PASSWORD_SUBJECT, body=SET_PASSWORD_BODY),
-    'reset-password': dict(
-        subject=RESET_PASSWORD_SUBJECT, body=RESET_PASSWORD_BODY),
-    }
-deprecated(
-    'message_templates',
-    'message_templates is deprecated as of Kotti 0.6.4.  '
-    'Use the ``email-set-password.pt`` and ``email-reset-password.pt`` '
-    'templates instead.'
-    )
-
 _inject_mailer = []
 
 
@@ -88,36 +75,6 @@ def validate_token(user, token, valid_hrs=24):
         if time.time() - seconds < 60 * 60 * valid_hrs:
             return True
     return False
-
-
-@deprecate('send_set_password is deprecated as of Kotti 0.6.4.  '
-           'Use ``kotti.message.email_set_password`` instead.')
-def send_set_password(user, request, templates='set-password', add_query=None):
-    site_title = get_settings()['kotti.site_title']
-    token = make_token(user)
-    user.confirm_token = unicode(token)
-    set_password_query = {'token': token, 'email': user.email}
-    if add_query:
-        set_password_query.update(add_query)
-    url = '%s/@@set-password?%s' % (
-        request.application_url,
-        urllib.urlencode(set_password_query),
-        )
-    variables = dict(
-        user_title=user.title,
-        site_title=site_title,
-        url=url,
-        )
-
-    if isinstance(templates, str):
-        templates = message_templates[templates]
-    message = Message(
-        recipients=[u'"%s" <%s>' % (user.title, user.email)],  # XXX naive?
-        subject=templates['subject'] % variables,
-        body=templates['body'] % variables,
-        )
-    mailer = get_mailer()
-    mailer.send(message)
 
 
 def send_email(request, recipients, template_name, template_vars={}):
