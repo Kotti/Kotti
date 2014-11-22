@@ -52,11 +52,4 @@ setup(
         ],
     },
     extras_require={},
-    message_extractors={
-        '{{package}}': [
-            ('**.py', 'lingua_python', None),
-            ('**.zcml', 'lingua_xml', None),
-            ('**.pt', 'lingua_xml', None),
-        ]
-    },
 )
