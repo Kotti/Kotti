@@ -14,10 +14,10 @@ _ = TranslationStringFactory('{{package}}')
 def kotti_configure(settings):
     """ Add a line like this to you .ini file::
 
-	    kotti.configurators =
-		{{package}}.kotti_configure
+            kotti.configurators =
+                {{package}}.kotti_configure
 
-	to enable the ``{{package}}`` add-on.
+        to enable the ``{{package}}`` add-on.
 
     :param settings: Kotti configuration dictionary.
     :type settings: dict

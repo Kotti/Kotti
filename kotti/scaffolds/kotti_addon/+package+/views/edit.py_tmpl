@@ -19,12 +19,12 @@ class CustomContentSchema(ContentSchema):
     """ Schema for CustomContent. """
 
     custom_attribute = colander.SchemaNode(
-	colander.String(),
-	title=_(u"Custom attribute"))
+        colander.String(),
+        title=_(u"Custom attribute"))
 
 
 @view_config(name=CustomContent.type_info.add_view, permission='add',
-	     renderer='kotti:templates/edit/node.pt')
+             renderer='kotti:templates/edit/node.pt')
 class CustomContentAddForm(AddFormView):
     """ Form to add a new instance of CustomContent. """
 
@@ -34,7 +34,7 @@ class CustomContentAddForm(AddFormView):
 
 
 @view_config(name='edit', context=CustomContent, permission='edit',
-	     renderer='kotti:templates/edit/node.pt')
+             renderer='kotti:templates/edit/node.pt')
 class CustomContentEditForm(EditFormView):
     """ Form to edit existing calendars. """
 

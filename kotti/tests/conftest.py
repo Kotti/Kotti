@@ -15,7 +15,7 @@ def pytest_addoption(parser):
 
 def pytest_runtest_setup(item):
     if 'slow' in item.keywords and not item.config.getoption("--runslow"):
-	skip("need --runslow option to run")
+        skip("need --runslow option to run")
 
 
 # non-public test fixtures
@@ -35,4 +35,4 @@ def extra_principals(db_session):
     P[u'frank'] = dict(name=u'frank', title=u"Frank")
     P[u'group:bobsgroup'] = dict(name=u'group:bobsgroup', title=u"Bob's Group")
     P[u'group:franksgroup'] = dict(name=u'group:franksgroup',
-				   title=u"Frank's Group")
+                                   title=u"Frank's Group")

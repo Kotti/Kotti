@@ -7,8 +7,8 @@
       metal:use-macro="api.macro('kotti:templates/view/master.pt')">
 
   <article metal:fill-slot="content"
-	   class="content custom-content-default-view"
-	   i18n:domain="{{package}}">
+           class="content custom-content-default-view"
+           i18n:domain="{{package}}">
 
     <h1>${context.title}</h1>
     <p class="lead">

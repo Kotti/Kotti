@@ -26,14 +26,14 @@ setup(
     description="Add on for Kotti",
     long_description='\n\n'.join([README, CHANGES]),
     classifiers=[
-	"Programming Language :: Python",
-	"Programming Language :: Python :: 2.6",
-	"Programming Language :: Python :: 2.7",
-	"Framework :: Pylons",
-	"Topic :: Internet :: WWW/HTTP",
-	"Topic :: Internet :: WWW/HTTP :: Dynamic Content",
-	"Topic :: Internet :: WWW/HTTP :: WSGI :: Application",
-	"License :: Repoze Public License",
+        "Programming Language :: Python",
+        "Programming Language :: Python :: 2.6",
+        "Programming Language :: Python :: 2.7",
+        "Framework :: Pylons",
+        "Topic :: Internet :: WWW/HTTP",
+        "Topic :: Internet :: WWW/HTTP :: Dynamic Content",
+        "Topic :: Internet :: WWW/HTTP :: WSGI :: Application",
+        "License :: Repoze Public License",
     ],
     author='Kotti developers',
     author_email='kotti@googlegroups.com',
@@ -47,16 +47,16 @@ setup(
     tests_require=[],
     dependency_links=[],
     entry_points={
-	'fanstatic.libraries': [
-	    '{{package}} = {{package}}.fanstatic:library',
-	],
+        'fanstatic.libraries': [
+            '{{package}} = {{package}}.fanstatic:library',
+        ],
     },
     extras_require={},
     message_extractors={
-	'{{package}}': [
-	    ('**.py', 'lingua_python', None),
-	    ('**.zcml', 'lingua_xml', None),
-	    ('**.pt', 'lingua_xml', None),
-	]
+        '{{package}}': [
+            ('**.py', 'lingua_python', None),
+            ('**.zcml', 'lingua_xml', None),
+            ('**.pt', 'lingua_xml', None),
+        ]
     },
 )

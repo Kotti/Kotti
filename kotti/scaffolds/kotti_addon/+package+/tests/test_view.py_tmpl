@@ -14,9 +14,9 @@ def dummy_content(root):
     from {{package}}.resources import CustomContent
 
     root['cc'] = cc = CustomContent(
-	title=u'My content',
-	description=u'My very custom content is custom',
-	custom_attribute='Lorem ipsum'
+        title=u'My content',
+        description=u'My very custom content is custom',
+        custom_attribute='Lorem ipsum'
     )
 
     return cc

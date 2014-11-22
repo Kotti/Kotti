@@ -29,10 +29,10 @@ from optparse import OptionParser
 
 if sys.platform == 'win32':
     def quote(c):
-	if ' ' in c:
-	    return '"%s"' % c  # work around spawn lamosity on windows
-	else:
-	    return c
+        if ' ' in c:
+            return '"%s"' % c  # work around spawn lamosity on windows
+        else:
+            return c
 else:
     quote = str
 
@@ -67,11 +67,11 @@ import site  # imported because of its side effects
 sys.path[:] = clean_path
 for k, v in sys.modules.items():
     if k in ('setuptools', 'pkg_resources') or (
-	    hasattr(v, '__path__') and
-	    len(v.__path__) == 1 and
-	    not os.path.exists(os.path.join(v.__path__[0], '__init__.py'))):
-	# This is a namespace package.  Remove it.
-	sys.modules.pop(k)
+            hasattr(v, '__path__') and
+            len(v.__path__) == 1 and
+            not os.path.exists(os.path.join(v.__path__[0], '__init__.py'))):
+        # This is a namespace package.  Remove it.
+        sys.modules.pop(k)
 
 is_jython = sys.platform.startswith('java')
 
@@ -82,15 +82,15 @@ distribute_source = 'http://python-distribute.org/distribute_setup.py'
 # parsing arguments
 def normalize_to_url(option, opt_str, value, parser):
     if value:
-	if '://' not in value:  # It doesn't smell like a URL.
-	    value = 'file://%s' % (
-		urllib.pathname2url(
-		    os.path.abspath(os.path.expanduser(value))),)
-	if opt_str == '--download-base' and not value.endswith('/'):
-	    # Download base needs a trailing slash to make the world happy.
-	    value += '/'
+        if '://' not in value:  # It doesn't smell like a URL.
+            value = 'file://%s' % (
+                urllib.pathname2url(
+                    os.path.abspath(os.path.expanduser(value))),)
+        if opt_str == '--download-base' and not value.endswith('/'):
+            # Download base needs a trailing slash to make the world happy.
+            value += '/'
     else:
-	value = None
+        value = None
     name = opt_str[2:].replace('-', '_')
     setattr(parser.values, name, value)
 
@@ -108,37 +108,37 @@ local resources, you can keep this script from going over the network.
 
 parser = OptionParser(usage=usage)
 parser.add_option("-v", "--version", dest="version",
-		  help="use a specific zc.buildout version")
+                  help="use a specific zc.buildout version")
 parser.add_option("-d", "--distribute",
-		  action="store_true", dest="use_distribute", default=False,
-		  help="Use Distribute rather than Setuptools.")
+                  action="store_true", dest="use_distribute", default=False,
+                  help="Use Distribute rather than Setuptools.")
 parser.add_option("--setup-source", action="callback", dest="setup_source",
-		  callback=normalize_to_url, nargs=1, type="string",
-		  help=("Specify a URL or file location for the setup file. "
-			"If you use Setuptools, this will default to " +
-			setuptools_source + "; if you use Distribute, this "
-			"will default to " + distribute_source + "."))
+                  callback=normalize_to_url, nargs=1, type="string",
+                  help=("Specify a URL or file location for the setup file. "
+                        "If you use Setuptools, this will default to " +
+                        setuptools_source + "; if you use Distribute, this "
+                        "will default to " + distribute_source + "."))
 parser.add_option("--download-base", action="callback", dest="download_base",
-		  callback=normalize_to_url, nargs=1, type="string",
-		  help=("Specify a URL or directory for downloading "
-			"zc.buildout and either Setuptools or Distribute. "
-			"Defaults to PyPI."))
+                  callback=normalize_to_url, nargs=1, type="string",
+                  help=("Specify a URL or directory for downloading "
+                        "zc.buildout and either Setuptools or Distribute. "
+                        "Defaults to PyPI."))
 parser.add_option("--eggs",
-		  help=("Specify a directory for storing eggs.  Defaults to "
-			"a temporary directory that is deleted when the "
-			"bootstrap script completes."))
+                  help=("Specify a directory for storing eggs.  Defaults to "
+                        "a temporary directory that is deleted when the "
+                        "bootstrap script completes."))
 parser.add_option("-t", "--accept-buildout-test-releases",
-		  dest='accept_buildout_test_releases',
-		  action="store_true", default=False,
-		  help=("Normally, if you do not specify a --version, the "
-			"bootstrap script and buildout gets the newest "
-			"*final* versions of zc.buildout and its recipes and "
-			"extensions for you.  If you use this flag, "
-			"bootstrap and buildout will get the newest releases "
-			"even if they are alphas or betas."))
+                  dest='accept_buildout_test_releases',
+                  action="store_true", default=False,
+                  help=("Normally, if you do not specify a --version, the "
+                        "bootstrap script and buildout gets the newest "
+                        "*final* versions of zc.buildout and its recipes and "
+                        "extensions for you.  If you use this flag, "
+                        "bootstrap and buildout will get the newest releases "
+                        "even if they are alphas or betas."))
 parser.add_option("-c", None, action="store", dest="config_file",
-		  help=("Specify the path to the buildout configuration "
-			"file to be used."))
+                  help=("Specify the path to the buildout configuration "
+                        "file to be used."))
 
 options, orig_args = parser.parse_args()
 
@@ -155,9 +155,9 @@ else:
 
 if options.setup_source is None:
     if options.use_distribute:
-	options.setup_source = distribute_source
+        options.setup_source = distribute_source
     else:
-	options.setup_source = setuptools_source
+        options.setup_source = setuptools_source
 
 if options.accept_buildout_test_releases:
     args.append('buildout:accept-buildout-test-releases=true')
@@ -166,26 +166,26 @@ try:
     import pkg_resources
     import setuptools  # A flag.  Sometimes pkg_resources is installed alone.
     if not hasattr(pkg_resources, '_distribute'):
-	raise ImportError
+        raise ImportError
 except ImportError:
     ez_code = urllib2.urlopen(
-	options.setup_source).read().replace('\r\n', '\n')
+        options.setup_source).read().replace('\r\n', '\n')
     ez = {}
     exec ez_code in ez
     setup_args = dict(to_dir=eggs_dir, download_delay=0)
     if options.download_base:
-	setup_args['download_base'] = options.download_base
+        setup_args['download_base'] = options.download_base
     if options.use_distribute:
-	setup_args['no_fake'] = True
+        setup_args['no_fake'] = True
     ez['use_setuptools'](**setup_args)
     if 'pkg_resources' in sys.modules:
-	reload(sys.modules['pkg_resources'])
+        reload(sys.modules['pkg_resources'])
     import pkg_resources
     # This does not (always?) update the default working set.  We will
     # do it.
     for path in sys.path:
-	if path not in pkg_resources.working_set.entries:
-	    pkg_resources.working_set.add_entry(path)
+        if path not in pkg_resources.working_set.entries:
+            pkg_resources.working_set.add_entry(path)
 
 cmd = [quote(sys.executable),
        '-c',
@@ -221,29 +221,29 @@ if version is None and not options.accept_buildout_test_releases:
     _final_parts = '*final-', '*final'
 
     def _final_version(parsed_version):
-	for part in parsed_version:
-	    if (part[:1] == '*') and (part not in _final_parts):
-		return False
-	return True
+        for part in parsed_version:
+            if (part[:1] == '*') and (part not in _final_parts):
+                return False
+        return True
     index = setuptools.package_index.PackageIndex(
-	search_path=[setup_requirement_path])
+        search_path=[setup_requirement_path])
     if find_links:
-	index.add_find_links((find_links,))
+        index.add_find_links((find_links,))
     req = pkg_resources.Requirement.parse(requirement)
     if index.obtain(req) is not None:
-	best = []
-	bestv = None
-	for dist in index[req.project_name]:
-	    distv = dist.parsed_version
-	    if _final_version(distv):
-		if bestv is None or distv > bestv:
-		    best = [dist]
-		    bestv = distv
-		elif distv == bestv:
-		    best.append(dist)
-	if best:
-	    best.sort()
-	    version = best[-1].version
+        best = []
+        bestv = None
+        for dist in index[req.project_name]:
+            distv = dist.parsed_version
+            if _final_version(distv):
+                if bestv is None or distv > bestv:
+                    best = [dist]
+                    bestv = distv
+                elif distv == bestv:
+                    best.append(dist)
+        if best:
+            best.sort()
+            version = best[-1].version
 if version:
     requirement = '=='.join((requirement, version))
 cmd.append(requirement)
@@ -257,8 +257,8 @@ if exitcode != 0:
     sys.stdout.flush()
     sys.stderr.flush()
     print ("An error occurred when trying to install zc.buildout. "
-	   "Look above this message for any errors that "
-	   "were output by easy_install.")
+           "Look above this message for any errors that "
+           "were output by easy_install.")
     sys.exit(exitcode)
 
 ws.add_entry(eggs_dir)

@@ -21,9 +21,9 @@ def settings():
     settings = conf_defaults.copy()
     kotti_configure(settings)
     settings.update({
-	'kotti.secret': 'secret',
-	'kotti.secret2': 'secret',
-	})
+        'kotti.secret': 'secret',
+        'kotti.secret2': 'secret',
+        })
     _resolve_dotted(settings)
     return settings
 
@@ -47,9 +47,9 @@ def app(db_session, dummy_mailer, events, setup_app):
 def webtest(app, monkeypatch, request):
     from webtest import TestApp
     if 'user' in request.keywords:
-	login = request.keywords['user'].args[0]
-	monkeypatch.setattr(
-	    "pyramid.authentication."
-	    "AuthTktAuthenticationPolicy.unauthenticated_userid",
-	    lambda self, req: login)
+        login = request.keywords['user'].args[0]
+        monkeypatch.setattr(
+            "pyramid.authentication."
+            "AuthTktAuthenticationPolicy.unauthenticated_userid",
+            lambda self, req: login)
     return TestApp(app)

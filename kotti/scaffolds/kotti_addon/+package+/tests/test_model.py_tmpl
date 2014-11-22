@@ -21,4 +21,4 @@ def test_model(root, db_session):
     assert cc.name == 'cc'
 
     with raises(TypeError):
-	cc = CustomContent(doesnotexist=u'Foo')
+        cc = CustomContent(doesnotexist=u'Foo')

@@ -7,18 +7,18 @@
       metal:use-macro="api.macro('kotti:templates/view/master.pt')">
 
   <article metal:fill-slot="content"
-	   class="content custom-content-alternative-view"
-	   i18n:domain="{{package}}">
+           class="content custom-content-alternative-view"
+           i18n:domain="{{package}}">
 
     <div class="panel panel-default">
       <div class="panel-heading">
-	<h3 class="panel-title">${context.title}</h3>
+        <h3 class="panel-title">${context.title}</h3>
       </div>
       <div class="panel-body">
-	${context.description}
+        ${context.description}
       </div>
       <div class="panel-footer">
-	${context.custom_attribute | ''}
+        ${context.custom_attribute | ''}
       </div>
     </div>
 

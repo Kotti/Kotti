@@ -19,7 +19,7 @@ Setup
 To enable the extension in your Kotti site, activate the configurator:
 
     kotti.configurators =
-	{{package}}.kotti_configure
+        {{package}}.kotti_configure
 
 Database upgrade
 ================
