@@ -91,13 +91,7 @@ class KottiTemplate(PyramidTemplate):
         self.out(msg)
 
 
-class KottiAddonTemplate(KottiTemplate):
+class KottiPackageTemplate(KottiTemplate):
 
-    _template_dir = 'kotti_addon'
-    summary = 'Add on product for Kotti'
-
-
-class KottiBuildoutTemplate(KottiTemplate):
-
-    _template_dir = 'kotti_buildout'
-    summary = 'Kotti project based on zc.buildout'
+    _template_dir = 'package'
+    summary = 'A Kotti package that can be used for a project or an add on'

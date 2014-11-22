@@ -1,1 +1,0 @@
-../../../../../kotti_addon/+package+/alembic/script.py.mako

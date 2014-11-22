@@ -127,8 +127,7 @@ setup(name='Kotti',
       kotti = kotti.tests
 
       [pyramid.scaffold]
-      kotti_addon=kotti.scaffolds:KottiAddonTemplate
-      kotti_buildout=kotti.scaffolds:KottiBuildoutTemplate
+      kotti=kotti.scaffolds:KottiPackageTemplate
       """,
       extras_require={
           'testing': tests_require,

@@ -94,7 +94,7 @@ def test_scaffold_kotti_addon(virtualenv):
     # create a project from the scaffold
     subprocess.check_call([
         os.path.join('bin', 'pcreate'),
-        '-s', 'kotti_addon', 'kotti_my_addon'])
+        '-s', 'kotti', 'kotti_my_addon'])
 
     # develop the package
     os.chdir('kotti_my_addon')
