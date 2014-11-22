@@ -2,7 +2,6 @@ from kotti.resources import File
 
 from pyramid.response import Response
 from pyramid.view import view_config
-from zope.deprecation.deprecation import deprecated
 
 
 @view_config(name='view', context=File, permission='view',

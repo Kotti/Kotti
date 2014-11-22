@@ -2,14 +2,8 @@
 Edit views.
 """
 
-from zope.deprecation.deprecation import deprecate
-
-from kotti.util import _
-from kotti.util import get_paste_items  # BBB
 from kotti.views.edit.content import ContentSchema
 from kotti.views.edit.content import DocumentSchema
-from kotti.views.form import AddFormView
-from kotti.views.form import EditFormView
 from kotti.workflow import get_workflow
 
 

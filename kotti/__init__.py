@@ -1,6 +1,4 @@
 import pkg_resources
-import warnings
-import sys
 
 from sqlalchemy import engine_from_config
 from sqlalchemy import MetaData
@@ -8,7 +6,6 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import scoped_session
 from sqlalchemy.orm import sessionmaker
 from zope.sqlalchemy import ZopeTransactionExtension
-from zope.deprecation import deprecation
 from pyramid.authentication import AuthTktAuthenticationPolicy
 from pyramid.authorization import ACLAuthorizationPolicy
 from pyramid.config import Configurator
@@ -16,7 +13,6 @@ from pyramid.events import BeforeRender
 from pyramid.threadlocal import get_current_registry
 from pyramid.util import DottedNameResolver
 from pyramid_beaker import session_factory_from_settings
-from yurl import URL
 
 from kotti.sqla import Base as KottiBase
 

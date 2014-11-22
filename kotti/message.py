@@ -6,8 +6,6 @@ from html2text import HTML2Text
 from pyramid.renderers import render
 from pyramid_mailer.mailer import Mailer
 from pyramid_mailer.message import Message
-from zope.deprecation.deprecation import deprecate
-from zope.deprecation.deprecation import deprecated
 
 from kotti import get_settings
 

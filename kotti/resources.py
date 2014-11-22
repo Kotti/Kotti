@@ -37,7 +37,6 @@ from sqlalchemy.sql import and_
 from sqlalchemy.sql import select
 from sqlalchemy.util import classproperty
 from transaction import commit
-from zope.deprecation.deprecation import deprecated
 from zope.interface import implements
 
 from kotti import Base

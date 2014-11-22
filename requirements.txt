@@ -62,7 +62,6 @@ waitress==0.8.9
 wsgiref==0.1.2
 xlrd==0.9.3
 xlwt==0.7.5
-YURL==0.13
 zope.component==4.2.1
 zope.configuration==4.0.3
 zope.deprecation==4.1.1
