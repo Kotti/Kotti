@@ -4,14 +4,6 @@ Change History
 0.10 - Unreleased
 -----------------
 
-- Add a pluggable BLOB storage mechanism.  This allows implementation of
-  alternative storage providers for the data attribute of the ``File`` content
-  type.  For details see the corresponding section in the documentation and the
-  API documentation in ``kotti.interfaces.IBlobStorage``.
-
-  A first implementation exists, that stores BLOBs in a filesystem hierarchy.
-  See https://pypi.python.org/pypi/kotti_filestore for details.
-
 - Revise UI to make better use of Bootstrap 3.
 
 0.10b1 - 2014-07-11

@@ -14,4 +14,3 @@ Advanced Topics
     images
     static-resource-management
     understanding-kotti-startup
-    blobstorage
