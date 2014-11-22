@@ -108,8 +108,7 @@ setup(name='Kotti',
       zip_safe=False,
       install_requires=install_requires,
       tests_require=tests_require,
-      dependency_links=[
-      ],
+      dependency_links=[],
       entry_points="""\
       [paste.app_factory]
       main = kotti:main
@@ -130,9 +129,4 @@ setup(name='Kotti',
           'development': development_requires,
           'docs': docs_require,
           },
-      message_extractors={'kotti': [
-            ('**.py', 'lingua_python', None),
-            ('**.zcml', 'lingua_xml', None),
-            ('**.pt', 'lingua_xml', None),
-            ]},
       )
