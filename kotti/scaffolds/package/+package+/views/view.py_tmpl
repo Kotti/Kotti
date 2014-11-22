@@ -34,11 +34,15 @@ class CustomContentViews(BaseView):
     @view_config(name='alternative-view', permission='view',
                  renderer='{{package}}:templates/custom-content-alternative.pt')
     def alternative_view(self):
-        """ Alternative view for :class:`{{package}}.resources.CustomContent`
+        """ Alternative view for :class:`{{package}}.resources.CustomContent`.
+        This view requires the JS / CSS resources defined in
+        :mod:`{{package}}.fanstatic`.
 
         :result: Dictionary needed to render the template.
         :rtype: dict
         """
+
+        css_and_js.need()
 
         return {
             'foo': _(u'bar'),

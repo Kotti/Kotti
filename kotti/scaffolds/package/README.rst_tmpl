@@ -16,7 +16,7 @@ Development happens at https://github.com/{{gh_user}}/{{package}}
 Setup
 =====
 
-To enable the extension in your Kotti site, activate the configurator:
+To enable the extension in your Kotti site, activate the configurator::
 
     kotti.configurators =
         {{package}}.kotti_configure
