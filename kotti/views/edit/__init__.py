@@ -2,6 +2,7 @@
 Edit views.
 """
 
+from kotti.util import _  # why is this needed?  please explain!
 from kotti.views.edit.content import ContentSchema
 from kotti.views.edit.content import DocumentSchema
 from kotti.workflow import get_workflow
