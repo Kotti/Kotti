@@ -17,10 +17,10 @@ from kotti.interfaces import IContent
 from kotti.resources import Node
 from kotti.util import _
 from kotti.util import ActionButton
+from kotti.util import get_paste_items
 from kotti.util import title_to_name
 from kotti.views.edit import _state_info
 from kotti.views.edit import _states
-from kotti.views.edit import get_paste_items
 from kotti.views.form import EditFormView
 from kotti.views.navigation import render_tree_navigation
 from kotti.views.util import nodes_tree

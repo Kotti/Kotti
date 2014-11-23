@@ -29,9 +29,7 @@ from pyramid.security import authenticated_userid
 from zope.deprecation.deprecation import deprecated
 
 from kotti import DBSession
-from kotti import get_settings
 from kotti.resources import Content
-from kotti.resources import File
 from kotti.resources import LocalGroup
 from kotti.resources import Node
 from kotti.resources import Tag

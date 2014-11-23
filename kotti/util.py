@@ -321,24 +321,6 @@ def command(func, doc):
     return 0
 
 
-from kotti.sqla import JsonType
-from kotti.sqla import MutationDict
-from kotti.sqla import MutationList
-from kotti.sqla import NestedMixin
-from kotti.sqla import NestedMutationDict
-from kotti.sqla import NestedMutationList
-
-
-for cls in (JsonType, MutationDict, MutationList, NestedMixin,
-            NestedMutationDict, NestedMutationList):
-    name = cls.__name__
-    deprecated(
-        name,
-        "kotti.util.{0} has been moved to the kotti.sqla "
-        "module as of Kotti 0.6.0.  Use kotti.sqla.{0} instead".format(name)
-        )
-
-
 ViewLink = Link
 deprecated(
     'ViewLink',
