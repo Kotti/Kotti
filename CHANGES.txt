@@ -4,6 +4,13 @@ Change History
 0.10 - Unreleased
 -----------------
 
+- Use RTD theme for documentation.
+
+- Use latest versions of all requirements.  The only upgrade with notable
+  differences is ``lingua`` (from 1.4 to 3.6.1).  This completely changes
+  lingua's API.  See docs/developing/basic/translations.rst for details on
+  the greatly simplified new usage.
+
 - Remove code (incl. tests) that has been marked as deprecated since (at least)
   Kotti 0.8.
 
