@@ -20,6 +20,7 @@ from pyramid.security import view_execution_permitted
 from kotti import get_settings
 from kotti import DBSession
 from kotti import Base
+from kotti.sqla import MutationList
 from kotti.sqla import JsonType
 from kotti.util import _
 from kotti.util import request_cache
@@ -72,12 +73,12 @@ class Principal(Base):
     confirm_token = Column(Unicode(100))
     title = Column(Unicode(100), nullable=False)
     email = Column(Unicode(100), unique=True)
-    groups = Column(JsonType(), nullable=False)
+    groups = Column(MutationList.as_mutable(JsonType), nullable=False)
     creation_date = Column(DateTime(), nullable=False)
     last_login_date = Column(DateTime())
 
     def __init__(self, name, password=None, active=True, confirm_token=None,
-                 title=u"", email=None, groups=()):
+                 title=u"", email=None, groups=None):
         self.name = name
         if password is not None:
             password = get_principals().hash_password(password)
@@ -86,6 +87,8 @@ class Principal(Base):
         self.confirm_token = confirm_token
         self.title = title
         self.email = email
+        if groups is None:
+            groups = []
         self.groups = groups
         self.creation_date = datetime.now()
         self.last_login_date = None

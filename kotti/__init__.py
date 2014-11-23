@@ -1,6 +1,4 @@
 import pkg_resources
-import warnings
-import sys
 
 from sqlalchemy import engine_from_config
 from sqlalchemy import MetaData
@@ -8,7 +6,6 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import scoped_session
 from sqlalchemy.orm import sessionmaker
 from zope.sqlalchemy import ZopeTransactionExtension
-from zope.deprecation import deprecation
 from pyramid.authentication import AuthTktAuthenticationPolicy
 from pyramid.authorization import ACLAuthorizationPolicy
 from pyramid.config import Configurator
@@ -16,7 +13,6 @@ from pyramid.events import BeforeRender
 from pyramid.threadlocal import get_current_registry
 from pyramid.util import DottedNameResolver
 from pyramid_beaker import session_factory_from_settings
-from yurl import URL
 
 from kotti.sqla import Base as KottiBase
 
@@ -28,14 +24,6 @@ Base.metadata = metadata
 Base.query = DBSession.query_property()
 TRUE_VALUES = ('1', 'y', 'yes', 't', 'true')
 FALSE_VALUES = ('0', 'n', 'no', 'f', 'false', 'none')
-
-
-# BBB module deprecation
-from kotti import fanstatic
-sys.modules['kotti.static'] = deprecation.deprecated(
-    fanstatic,
-    "The module kotti.static has been moved to kotti.fanstatic as of Kotti "
-    "0.8. Import from there instead.")
 
 
 def authtkt_factory(**settings):
@@ -121,7 +109,6 @@ conf_defaults = {
     'kotti.register.group': '',
     'kotti.register.role': '',
     'pyramid_deform.template_search_path': 'kotti:templates/deform',
-    'kotti.blobstore': 'db',
     }
 
 conf_dotted = set([
@@ -173,24 +160,6 @@ def main(global_config, **settings):
     return config.make_wsgi_app()
 
 
-def configure_blobstore(settings):
-
-    if settings['kotti.blobstore'] == 'db':
-        return
-
-    # Parse the ``kotti.blobstore`` option as an URL.
-    url = URL(settings['kotti.blobstore']).decode()
-
-    # The scheme / protocol part of the URL is the dotted class name of the
-    # BlobStorage provider.
-    factory = DottedNameResolver(None).resolve(url.scheme)
-
-    # Create an instance of the provider, passing it the path and query parts
-    # of the URL as its configuration and store the instance in the settings
-    # dict.
-    settings['kotti.blobstore'] = factory(url)
-
-
 def base_configure(global_config, **settings):
     # Resolve dotted names in settings, include plug-ins and create a
     # Configurator.
@@ -209,38 +178,9 @@ def base_configure(global_config, **settings):
     for func in settings['kotti.configurators']:
         func(settings)
 
-    # BBB: Merge ``kotti.static.x`` into kotti.fanstatic.x
-    deprecated_fanstatic_settings = {
-        'kotti.static.view_needed': 'kotti.fanstatic.view_needed',
-        'kotti.static.edit_needed': 'kotti.fanstatic.edit_needed',
-    }
-    for old, new in deprecated_fanstatic_settings.items():
-        if old in settings:
-            if settings[old]:
-                warnings.warn(
-                    "The '%(old)s' setting has been deprecated as of "
-                    "Kotti 0.8 and will be removed in Kotti 1.0.  Use "
-                    "'%(new)s' instead." % {'old': old, 'new': new},
-                    DeprecationWarning)
-                settings.setdefault(new, '')
-                settings[new] += ' ' + settings[old]
-            del settings[old]
-
-    # Configure the BLOB storage
-    configure_blobstore(settings)
-
     _resolve_dotted(settings)
     secret1 = settings['kotti.secret']
     settings.setdefault('kotti.secret2', secret1)
-
-    # BBB: Merge ``kotti.includes`` into pyramid.includes.
-    if settings['kotti.includes']:
-        warnings.warn(
-            "The 'kotti.includes' setting has been deprecated as of "
-            "Kotti 0.6.1.  Use 'pyramid.includes' instead.",
-            DeprecationWarning)
-        settings.setdefault('pyramid.includes', '')
-        settings['pyramid.includes'] += ' ' + settings['kotti.includes']
 
     # We'll process ``pyramid_includes`` later by hand, to allow
     # overrides of configuration from ``kotti.base_includes``:

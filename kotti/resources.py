@@ -13,7 +13,6 @@ import warnings
 from fnmatch import fnmatch
 from UserDict import DictMixin
 
-from pyramid.decorator import reify
 from pyramid.threadlocal import get_current_registry
 from pyramid.traversal import resource_path
 from sqlalchemy import Boolean
@@ -38,7 +37,6 @@ from sqlalchemy.sql import and_
 from sqlalchemy.sql import select
 from sqlalchemy.util import classproperty
 from transaction import commit
-from zope.deprecation.deprecation import deprecated
 from zope.interface import implements
 
 from kotti import Base
@@ -61,7 +59,6 @@ from kotti.sqla import MutationList
 from kotti.sqla import NestedMutationDict
 from kotti.util import _
 from kotti.util import camel_case_to_name
-from kotti.util import command
 from kotti.util import get_paste_items
 from kotti.util import Link
 from kotti.util import LinkParent
@@ -632,7 +629,7 @@ class File(Content):
     id = Column(Integer(), ForeignKey('contents.id'), primary_key=True)
     #: The binary data itself
     #: (:class:`sqlalchemy.types.LargeBinary`)
-    _data = deferred(Column("data", LargeBinary()))
+    data = deferred(Column("data", LargeBinary()))
     #: The filename is used in the attachment view to give downloads
     #: the original filename it had when it was uploaded.
     #: (:class:`sqlalchemy.types.Unicode`)
@@ -662,31 +659,6 @@ class File(Content):
         self.filename = filename
         self.mimetype = mimetype
         self.size = size
-
-    @reify
-    def store(self):
-        return get_settings()['kotti.blobstore']
-
-    @hybrid_property
-    def data(self):
-        if self.store == 'db':
-            return self._data
-        else:
-            return self.store.read(self._data)
-
-    @data.setter
-    def data(self, value):
-        if self.store == 'db':
-            self._data = value
-        else:
-            if self._data is not None:
-                self.store.delete(self._data)
-            self._data = self.store.write(value)
-
-    def _delete(self):
-        if self.store != 'db':
-            if self._data is not None:
-                self.store.delete(self._data)
 
     @classmethod
     def from_field_storage(cls, fs):
@@ -795,74 +767,3 @@ def initialize_sql(engine, drop_all=False):
     commit()
 
     return DBSession
-
-
-def migrate_blobs(from_db=False, to_db=False):
-    """ Perform migration of BLOBs between different storage providers.
-
-    :param from_db: Perform a BLOB migration **from** the DB to another provider
-    :type from_db: bool
-
-    :param to_db: Perform a BLOB migration from another provider **to** the DB
-    :type to_db: bool
-    """
-
-    if (from_db and to_db) or not (from_db or to_db):
-        raise ValueError("Either from_db or to_db must be True (but not both).")
-
-    # Iterate over all File content
-    for f in File.query.all():
-        if from_db:
-            # get the BLOB directly from the DB column
-            data = f._data
-            # set the DB column's value to None to prevent triggering of the
-            # provider's delete method
-            f._data = None
-            # assign the BLOB through the attribute setter
-            f.data = data
-        if to_db:
-            # read the provider ID which ist currently the value of the
-            # DB column
-            id = f._data
-            # directly set the DB columns value to the BLOB from the
-            # property getter
-            f._data = f.data
-            # call the provider's delete method
-            f.store.delete(id)
-
-
-def migrate_blobs_command():  # pragma: no cover
-    __doc__ = """
-Migrate BLOBs between the blobstore configured in the config file and the DB.
-
-Make sure you have a backup of your data and you know what you're doing.
-
-RUNNING THIS COMMAND WITH THE SAME OPTIONS TWICE IN A ROW WILL CAUSE PERMANENT
-LOSS OF DATA!
-
-    Usage:
-      kotti-migrate-blobs <config_uri> --from-db
-      kotti-migrate-blobs <config_uri> --to-db
-
-    Options:
-      --from-db   Migrate FROM the DB TO the provider configured in your config
-      --to-db     Migrate TO the DB FROM the provider configured in your config
-      -h --help   Show this screen.
-    """
-
-    def callback(arguments):
-        migrate_blobs(
-            from_db=arguments['--from-db'],
-            to_db=arguments['--to-db'])
-
-        commit()
-
-    return command(callback, __doc__)
-
-
-# BBB
-for iface in ("INode", "IContent", "IDocument", "IFile", "IImage",
-              "IDefaultWorkflow"):
-    deprecated(iface,
-               "%s has been moved to kotti.interfaces as of Kotti 0.8. "
-               "Import from there instead." % iface)

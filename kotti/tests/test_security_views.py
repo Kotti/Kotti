@@ -111,7 +111,7 @@ class TestUserDelete:
         with pytest.raises(KeyError):
             get_principals()[u'bob']
 
-    def test_deleted_group_removed_in_usergroups(self, events, extra_principals, root):
+    def test_deleted_group_removed_in_usergroups(self, events, extra_principals, root, db_session):
         from kotti.security import get_principals
         from kotti.views.users import user_delete
 
@@ -123,6 +123,7 @@ class TestUserDelete:
         request.params['name'] = u'group:bobsgroup'
         request.params['delete'] = u'delete'
         user_delete(root, request)
+        db_session.expire(bob)
         with pytest.raises(KeyError):
             get_principals()[u'group:bobsgroup']
         assert bob.groups == []

@@ -70,46 +70,12 @@ class TestSendSetPassword:
         assert 'Joe' in message.body
         assert 'Awesome site' in message.body
 
-    def test_send_set_password_other_template(self):
-        from kotti.message import send_set_password
-
-        user = Dummy(name=u'joe', email='joe@bar.com', title=u'Joe')
-        send_set_password(user, DummyRequest(), templates='reset-password')
-
-        assert self.mailer.send.called
-        message = self.mailer.send.call_args[0][0]
-        assert 'Reset your password' in message.subject
-
-    def test_send_set_password_other_template_entirely(self):
-        from kotti.message import send_set_password
-
-        user = Dummy(name=u'joe', email='joe@bar.com', title=u'Joe')
-        send_set_password(user, DummyRequest(), templates=dict(
-            subject=u"Hey there %(user_title)s",
-            body=u"This is %(site_title)s speaking",
-            ))
-
-        assert self.mailer.send.called
-        message = self.mailer.send.call_args[0][0]
-        assert message.subject == 'Hey there Joe'
-        assert message.body == 'This is Awesome site speaking'
-
     def test_email_set_password_add_query(self, db_session):
         from kotti.message import email_set_password
 
         user = Dummy(name=u'joe', email='joe@bar.com', title=u'Joe')
         email_set_password(
             user, DummyRequest(), add_query={'another': 'param'})
-
-        assert self.mailer.send.called
-        message = self.mailer.send.call_args[0][0]
-        assert 'another=param' in message.body
-
-    def test_send_set_password_add_query(self):
-        from kotti.message import send_set_password
-
-        user = Dummy(name=u'joe', email='joe@bar.com', title=u'Joe')
-        send_set_password(user, DummyRequest(), add_query={'another': 'param'})
 
         assert self.mailer.send.called
         message = self.mailer.send.call_args[0][0]

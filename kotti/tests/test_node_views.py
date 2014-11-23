@@ -25,7 +25,7 @@ class TestAddableTypes:
 
 class TestNodePaste:
     def test_get_non_existing_paste_item(self, root):
-        from kotti.views.edit import get_paste_items
+        from kotti.util import get_paste_items
 
         request = DummyRequest()
         request.session['kotti.paste'] = ([1701], 'copy')

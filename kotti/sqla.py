@@ -146,6 +146,7 @@ for wrapper_class in (MutationDict, MutationList):
             ('pop', True),
             ('setdefault', True),
             ('update', True),
+            ('remove', True),
             ):
         setattr(
             wrapper_class, methodname,

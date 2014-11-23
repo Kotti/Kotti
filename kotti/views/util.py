@@ -346,12 +346,6 @@ class TemplateAPI(object):
                 if l.visible(self.root, self.request)]
 
 
-@deprecate("'ensure_view_selector' is deprecated as of Kotti 0.8. "
-           "There is no replacement.")
-def ensure_view_selector(func):  # pragma: no cover
-    return func
-
-
 class NodesTree(object):
     def __init__(self, node, request, item_mapping, item_to_children,
                  permission):

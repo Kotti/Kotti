@@ -4,13 +4,15 @@ Change History
 0.10 - Unreleased
 -----------------
 
-- Add a pluggable BLOB storage mechanism.  This allows implementation of
-  alternative storage providers for the data attribute of the ``File`` content
-  type.  For details see the corresponding section in the documentation and the
-  API documentation in ``kotti.interfaces.IBlobStorage``.
+- Use RTD theme for documentation.
 
-  A first implementation exists, that stores BLOBs in a filesystem hierarchy.
-  See https://pypi.python.org/pypi/kotti_filestore for details.
+- Use latest versions of all requirements.  The only upgrade with notable
+  differences is ``lingua`` (from 1.4 to 3.6.1).  This completely changes
+  lingua's API.  See docs/developing/basic/translations.rst for details on
+  the greatly simplified new usage.
+
+- Remove code (incl. tests) that has been marked as deprecated since (at least)
+  Kotti 0.8.
 
 - Revise UI to make better use of Bootstrap 3.
 
