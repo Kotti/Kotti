@@ -4,6 +4,8 @@ Change History
 0.10 - Unreleased
 -----------------
 
+- Add a new scaffold based on Pyramid's ``pcreate``.
+
 - Use RTD theme for documentation.
 
 - Use latest versions of all requirements.  The only upgrade with notable
