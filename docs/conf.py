@@ -11,10 +11,7 @@
 # All configuration values have a default; values that are commented out
 # serve to show the default.
 
-#import os
-#import sys
-
-#sys.path.insert(0, os.path.abspath('.'))
+import pkg_resources
 
 # -- General configuration -----------------------------------------------------
 
@@ -34,7 +31,7 @@ source_suffix = '.rst'
 master_doc = 'index'
 project = u'Kotti'
 copyright = u'2012-2014, Kotti developers'
-version = '0.10'
+version = pkg_resources.get_distribution("Kotti").version
 # The full version, including alpha/beta/rc tags.
 release = version
 #language = None

@@ -16,22 +16,23 @@ Installation using ``virtualenv``
 
 It is recommended to install Kotti inside a virtualenv:
 
-.. code-block:: bash
+.. parsed-literal::
 
   virtualenv mysite
   cd mysite
-  bin/pip install -r https://raw.github.com/Kotti/Kotti/0.9.1/requirements.txt
+  bin/pip install -r https://raw.github.com/Kotti/Kotti/|version|/requirements.txt
+  bin/pip install Kotti==|version|
 
-This will install Kotti 0.9.1 and all its requirements into your
+This will install Kotti |version| and all its requirements into your
 virtualenv.
 
 Kotti uses `Paste Deploy`_ for configuration and deployment.  An
 example configuration file is included with Kotti's source
 distribution.  Download it to your virtualenv directory (mysite):
 
-.. code-block:: bash
+.. parsed-literal::
 
-  wget https://github.com/Kotti/Kotti/raw/0.9.1/app.ini
+  wget https://github.com/Kotti/Kotti/raw/|version|/app.ini
 
 See the list of `Kotti tags`_, perhaps to find the latest released
 version. You can search the `Kotti listing on PyPI`_ also, for the
