@@ -139,14 +139,19 @@ def get_settings():
 
 
 def _resolve_dotted(d, keys=conf_dotted):
+
+    resolved = d.copy()
+
     for key in keys:
-        value = d[key]
+        value = resolved[key]
         if not isinstance(value, basestring):
             continue
         new_value = []
         for dottedname in value.split():
             new_value.append(DottedNameResolver(None).resolve(dottedname))
-        d[key] = new_value
+        resolved[key] = new_value
+
+    return resolved
 
 
 def main(global_config, **settings):
@@ -174,11 +179,11 @@ def base_configure(global_config, **settings):
             settings[key] = unicode(value, 'utf8')
 
     # Allow extending packages to change 'settings' w/ Python:
-    _resolve_dotted(settings, keys=('kotti.configurators',))
-    for func in settings['kotti.configurators']:
+    k = 'kotti.configurators'
+    for func in _resolve_dotted(settings, keys=(k,))[k]:
         func(settings)
 
-    _resolve_dotted(settings)
+    settings = _resolve_dotted(settings)
     secret1 = settings['kotti.secret']
     settings.setdefault('kotti.secret2', secret1)
 

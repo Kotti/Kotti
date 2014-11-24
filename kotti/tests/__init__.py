@@ -17,15 +17,40 @@ def allwarnings(request):
 
 
 @fixture(scope='session')
-def settings():
-    from kotti import _resolve_dotted
+def custom_settings():
+    """ This is a dummy fixture meant to be overriden in add on package's
+    ``conftest.py``.  It can be used to inject arbitrary settings for third
+    party test suites.  The defefault settings dictionary will be updated
+    with the dictionary returned by this fixture.
+
+    This is also a good place to import your add on's ``resources`` module to
+    have the corresponding tables created during ``create_all()`` in
+    :func:`kotti.tests.content`.
+
+    :result: settings
+    :rtype: dict
+    """
+
+    return {}
+
+
+@fixture(scope='session')
+def unresolved_settings(custom_settings):
     from kotti import conf_defaults
+    from kotti.testing import testing_db_url
     settings = conf_defaults.copy()
     settings['kotti.secret'] = 'secret'
     settings['kotti.secret2'] = 'secret2'
     settings['kotti.populators'] = 'kotti.testing._populator'
-    _resolve_dotted(settings)
+    settings['sqlalchemy.url'] = testing_db_url()
+    settings.update(custom_settings)
     return settings
+
+
+@fixture(scope='session')
+def settings(unresolved_settings):
+    from kotti import _resolve_dotted
+    return _resolve_dotted(unresolved_settings)
 
 
 @fixture
@@ -44,20 +69,24 @@ def config(request, settings):
 
 
 @fixture(scope='session')
-def connection():
-    """ sets up a SQLAlchemy engine and returns a connection
-        to the database.  The connection string used for testing
-        can be specified via the `KOTTI_TEST_DB_STRING` environment
-        variable.
+def connection(custom_settings):
+    """ sets up a SQLAlchemy engine and returns a connection to the database.
+    The connection string used for testing can be specified via the
+    ``KOTTI_TEST_DB_STRING`` environment variable.  The ``custom_settings``
+    fixture is needed to allow users to import their models easily instead of
+    having to override the ``connection``.
     """
     # the following setup is based on `kotti.resources.initialize_sql`,
     # except that it explicitly binds the session to a specific connection
     # enabling us to use savepoints independent from the orm, thus allowing
     # to `rollback` after using `transaction.commit`...
     from sqlalchemy import create_engine
+    from kotti import DBSession
+    from kotti import metadata
+    from kotti.resources import _adjust_for_engine
     from kotti.testing import testing_db_url
-    from kotti import metadata, DBSession
     engine = create_engine(testing_db_url())
+    _adjust_for_engine(engine)
     connection = engine.connect()
     DBSession.registry.clear()
     DBSession.configure(bind=connection)
@@ -136,9 +165,15 @@ def events(config, request):
 
 
 @fixture
-def setup_app(settings):
+def setup_app(unresolved_settings):
     from kotti import base_configure
-    return base_configure({}, **settings).make_wsgi_app()
+    config = base_configure({}, **unresolved_settings)
+    return config.make_wsgi_app()
+
+
+@fixture
+def app(workflow, db_session, dummy_mailer, events, setup_app):
+    return setup_app
 
 
 @fixture
@@ -173,6 +208,18 @@ def root(db_session):
     """
     from kotti.resources import get_root
     return get_root()
+
+
+@fixture
+def webtest(app, monkeypatch, request):
+    from webtest import TestApp
+    if 'user' in request.keywords:
+        login = request.keywords['user'].args[0]
+        monkeypatch.setattr(
+            "pyramid.authentication."
+            "AuthTktAuthenticationPolicy.unauthenticated_userid",
+            lambda self, req: login)
+    return TestApp(app)
 
 
 @fixture

@@ -126,7 +126,7 @@ def setUp(init_db=True, **kwargs):
     settings['kotti.secret2'] = 'secret2'
     settings['kotti.populators'] = 'kotti.testing._populator'
     settings.update(kwargs.get('settings', {}))
-    _resolve_dotted(settings)
+    settings = _resolve_dotted(settings)
     kwargs['settings'] = settings
     config = testing.setUp(**kwargs)
     config.add_default_renderers()
