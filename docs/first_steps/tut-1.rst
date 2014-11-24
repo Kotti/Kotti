@@ -26,18 +26,12 @@ kotti_mysite will be a proper Python package, installable into our virtualenv.
 Creating the Add-On Package
 ---------------------------
 
-To create our add-on, we'll use a starter template from ``kotti_paster``.
-For this, we'll need to first install the ``kotti_paster`` package into our virtualenv (the one that was created during the :ref:`installation`).
+To create our add-on, we'll use the standard Pyramid tool ``pcreate``.
+The scaffold ``kotti_addon`` was installed as part of Kotti.
 
 .. code-block:: bash
 
-  bin/pip install kotti_paster
-
-With ``kotti_paster`` installed, we can now create the skeleton for the add-on package:
-
-.. code-block:: bash
-
-  bin/paster create -t kotti_addon kotti_mysite
+  bin/pcreate -s kotti_addon kotti_mysite
 
 Running this command, it will ask us a number of questions.
 Hit enter for every question to accept the defaults.
