@@ -24,7 +24,7 @@ slow = mark.slow
 
 
 @fixture
-def virtualenv(request, db_session):
+def virtualenv(request):
     """ Create a virtualenv and ``chdir`` into it.  Remove it and ``chdir``
     into the previous working directory again when the test has been run.
     """
