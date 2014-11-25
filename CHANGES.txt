@@ -4,6 +4,30 @@ Change History
 0.10 - Unreleased
 -----------------
 
+- Add a new scaffold based on Pyramid's ``pcreate``.  To run the tests for the
+  scaffold, you must invoke ``py.test`` with the ``--runslow`` option.  This
+  is enabled by default on Travis.
+
+- ``kotti._resolve_dotted`` now return a resolved copy of the settings
+  (instead of in place resolving as before).
+
+- Factor out DBMS specific patches and make them available to the test fixtures.
+
+- Add new fixtures that can also be used in add on tests:
+
+  - ``custom_settings`` does nothing and is meant to be overridden in add on
+    test suites.  It allows injection of arbitrary key / values into the
+    settings dict used in tests.
+
+  - ``unresolved_settings`` is guaranteed to only contain unresolved string
+    values (or lists therof).
+
+  - ``settings`` is now guaranteed to be fully resolved.
+
+  - ``webtest`` returns a ``webtest.TestApp`` instance with support for the
+    ``@user`` marker.  This should be used instead of browser doctests for
+    functional tests.
+
 - Use RTD theme for documentation.
 
 - Use latest versions of all requirements.  The only upgrade with notable

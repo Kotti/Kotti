@@ -52,6 +52,7 @@ install_requires = [
     'sqlalchemy>=0.7.6',
     'transaction>=1.1.0',
     'unidecode',
+    'usersettings',
     'waitress',
     'zope.deprecation',
     'zope.sqlalchemy',
@@ -65,6 +66,7 @@ tests_require = [
     'pytest-cov',
     'pytest-pep8!=1.0.3',
     'pytest-xdist',
+    'virtualenv',  # needed for scaffolding tests
     'wsgi_intercept==0.5.1',
     'zope.testbrowser',
     ]
@@ -96,7 +98,7 @@ setup(name='Kotti',
         "Topic :: Internet :: WWW/HTTP :: Dynamic Content",
         "Topic :: Internet :: WWW/HTTP :: WSGI :: Application",
         "License :: Repoze Public License",
-        ],
+      ],
       author='Kotti developers',
       author_email='kotti@googlegroups.com',
       url='http://kotti.pylonsproject.org',
@@ -121,6 +123,9 @@ setup(name='Kotti',
 
       [pytest11]
       kotti = kotti.tests
+
+      [pyramid.scaffold]
+      kotti=kotti.scaffolds:KottiPackageTemplate
       """,
       extras_require={
           'testing': tests_require,

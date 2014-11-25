@@ -1,0 +1,76 @@
+[app:kotti]
+use = egg:kotti
+
+pyramid.reload_templates = true
+pyramid.debug_templates = true
+pyramid.debug_authorization = false
+pyramid.debug_notfound = true
+pyramid.debug_routematch = false
+pyramid.includes =
+    pyramid_debugtoolbar
+    pyramid_tm
+pyramid.default_locale_name = en
+
+sqlalchemy.url = sqlite:///%(here)s/{{package}}.db
+#mail.default_sender = yourname@yourhost
+
+kotti.configurators =
+    kotti_tinymce.kotti_configure
+    {{package}}.kotti_configure
+kotti.site_title = {{project}} site
+kotti.secret = qwerty
+
+[filter:fanstatic]
+use = egg:fanstatic#fanstatic
+
+[pipeline:main]
+pipeline =
+    fanstatic
+    kotti
+
+[server:main]
+use = egg:waitress#main
+host = 127.0.0.1
+port = 5000
+
+[alembic]
+script_location = {{package}}:alembic
+
+# Begin logging configuration
+
+[loggers]
+keys = root, {{package}}, sqlalchemy
+
+[handlers]
+keys = console
+
+[formatters]
+keys = generic
+
+[logger_root]
+level = INFO
+handlers = console
+
+[logger_{{package}}]
+level = DEBUG
+handlers =
+qualname = {{package}}
+
+[logger_sqlalchemy]
+level = INFO
+handlers =
+qualname = sqlalchemy.engine
+# "level = INFO" logs SQL queries.
+# "level = DEBUG" logs SQL queries and results.
+# "level = WARN" logs neither.  (Recommended for production systems.)
+
+[handler_console]
+class = StreamHandler
+args = (sys.stderr,)
+level = NOTSET
+formatter = generic
+
+[formatter_generic]
+format = %(asctime)s %(levelname)-5.5s [%(name)s][%(threadName)s] %(message)s
+
+# End logging configuration

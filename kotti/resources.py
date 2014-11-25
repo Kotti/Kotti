@@ -39,10 +39,12 @@ from sqlalchemy.util import classproperty
 from transaction import commit
 from zope.interface import implements
 
+from kotti import _resolve_dotted
 from kotti import Base
 from kotti import DBSession
 from kotti import get_settings
 from kotti import metadata
+from kotti import TRUE_VALUES
 from kotti.interfaces import IContent
 from kotti.interfaces import IDefaultWorkflow
 from kotti.interfaces import IDocument
@@ -217,9 +219,7 @@ class Node(Base, ContainerMixin, PersistentACLMixin):
     #: (:class:`kotti.sqla.NestedMustationDict`)
     annotations = Column(NestedMutationDict.as_mutable(JsonType))
     #: The path can be used to efficiently filter for child objects
-    #: (:class:`sqlalchemy.types.Unicode`).  Its set to a length of 767
-    #: by default because MySQL doesn't allow indexes on columns that
-    #: are larger than 767 bytes (by default).
+    #: (:class:`sqlalchemy.types.Unicode`).
     path = Column(Unicode(1000), index=True)
 
     parent = relation(
@@ -730,21 +730,7 @@ def default_get_root(request=None):
     return DBSession.query(Node).filter(Node.parent_id == None).one()
 
 
-def initialize_sql(engine, drop_all=False):
-    DBSession.registry.clear()
-    DBSession.configure(bind=engine)
-    metadata.bind = engine
-
-    if drop_all or os.environ.get('KOTTI_TEST_DB_STRING'):
-        metadata.reflect()
-        metadata.drop_all(engine)
-
-    # Allow users of Kotti to cherry pick the tables that they want to use:
-    settings = get_current_registry().settings
-    tables = settings['kotti.use_tables'].strip() or None
-    if tables:
-        tables = [metadata.tables[name] for name in tables.split()]
-
+def _adjust_for_engine(engine):
     if engine.dialect.name == 'mysql':  # pragma: no cover
         from sqlalchemy.dialects.mysql.base import LONGBLOB
         File.__table__.c.data.type = LONGBLOB()
@@ -755,14 +741,32 @@ def initialize_sql(engine, drop_all=False):
             index for index in Node.__table__.indexes
             if index.name != u"ix_nodes_path")
 
+
+def initialize_sql(engine, drop_all=False):
+    DBSession.registry.clear()
+    DBSession.configure(bind=engine)
+    metadata.bind = engine
+
+    if drop_all or os.environ.get('KOTTI_TEST_DB_STRING'):
+        metadata.reflect()
+        metadata.drop_all(engine)
+
+    # Allow users of Kotti to cherry pick the tables that they want to use:
+    settings = _resolve_dotted(get_settings())
+    tables = settings['kotti.use_tables'].strip() or None
+    if tables:
+        tables = [metadata.tables[name] for name in tables.split()]
+
+    _adjust_for_engine(engine)
+
     # Allow migrations to set the 'head' stamp in case the database is
     # initialized freshly:
     if not engine.table_names():
         stamp_heads()
 
     metadata.create_all(engine, tables=tables)
-    if os.environ.get('KOTTI_DISABLE_POPULATORS', '0') not in ('1', 'y'):
-        for populate in get_settings()['kotti.populators']:
+    if os.environ.get('KOTTI_DISABLE_POPULATORS', '0') not in TRUE_VALUES:
+        for populate in settings['kotti.populators']:
             populate()
     commit()
 
