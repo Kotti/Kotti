@@ -16,7 +16,6 @@ from formencode.validators import Email
 from pyramid.encode import urlencode
 from pyramid.httpexceptions import HTTPForbidden
 from pyramid.httpexceptions import HTTPFound
-from pyramid.security import authenticated_userid
 from pyramid.security import forget
 from pyramid.security import remember
 from pyramid.url import resource_url
@@ -301,8 +300,7 @@ def forbidden_redirect(context, request):
     :result: Redirect to one of the above.
     :rtype: pyramid.httpexceptions.HTTPFound
     """
-
-    if authenticated_userid(request):
+    if request.authenticated_userid:
         location = request.application_url + '/@@forbidden'
     else:
         location = request.application_url + '/@@login?' + urlencode(
