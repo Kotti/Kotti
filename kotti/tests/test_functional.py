@@ -7,8 +7,8 @@ from kotti.testing import user
 
 class TestLogin:
     def test_it(self, app):
-        res = app.post('/@@login', dict(login='admin',
-                password='secret', submit='submit'))
+        res = app.post(
+            '/@@login', dict(login='admin', password='secret', submit='submit'))
         assert res.status == '302 Found'
         res = res.follow()
         assert res.status == '200 OK'
@@ -23,7 +23,7 @@ class TestForbidden:
         assert res.location.startswith('http://localhost/@@login?came_from=')
 
     def test_forbidden_redirect_when_authenticated(self, app):
-        with patch('kotti.views.login.authenticated_userid', return_value='foo'):
+        with patch('pyramid.request.Request.authenticated_userid', 'foo'):
             res = app.get('/@@edit', status=302)
         assert res.location == 'http://localhost/@@forbidden'
 

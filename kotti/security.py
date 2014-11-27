@@ -13,7 +13,6 @@ from sqlalchemy import func
 from sqlalchemy.sql.expression import or_
 from sqlalchemy.orm.exc import NoResultFound
 from pyramid.location import lineage
-from pyramid.security import authenticated_userid
 from pyramid.security import has_permission as base_has_permission
 from pyramid.security import view_execution_permitted
 
@@ -33,7 +32,7 @@ def get_principals():
 
 @request_cache(lambda request: None)
 def get_user(request):
-    userid = authenticated_userid(request)
+    userid = request.authenticated_userid
     return get_principals().get(userid)
 
 
@@ -254,9 +253,8 @@ def list_groups_raw(name, context):
     if isinstance(context, Node):
         return set(
             r[0] for r in DBSession.query(LocalGroup.group_name).filter(
-            LocalGroup.node_id == context.id).filter(
-            LocalGroup.principal_name == name).all()
-            )
+                LocalGroup.node_id == context.id).filter(
+                LocalGroup.principal_name == name).all())
     return set()
 
 
