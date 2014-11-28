@@ -13,8 +13,8 @@ from sqlalchemy import func
 from sqlalchemy.sql.expression import or_
 from sqlalchemy.orm.exc import NoResultFound
 from pyramid.location import lineage
-from pyramid.security import has_permission as base_has_permission
 from pyramid.security import view_execution_permitted
+from zope.deprecation.deprecation import deprecated
 
 from kotti import get_settings
 from kotti import DBSession
@@ -37,8 +37,30 @@ def get_user(request):
 
 
 def has_permission(permission, context, request):
-    with authz_context(context, request):
-        return base_has_permission(permission, context, request)
+    """ Check if the current request has a permission on the given context.
+
+    .. deprecated:: 0.9
+
+    :param permission: permission to check for
+    :type permission: str
+
+    :param context: context that should be checked for the given permission
+    :type context: :class:``kotti.resources.Node``
+
+    :param request: current request
+    :type request: :class:`pyramid.request.Request`
+
+    :result: ``True`` if request has the permission, ``False`` else
+    :rtype: bool
+    """
+
+    return request.has_permission(permission, context)
+
+
+deprecated(u'has_permission',
+           u"kotti.security.has_permission is deprecated as of Kotti 1.0 and "
+           u"will be no longer available starting with Kotti 2.0.  "
+           u"Please use the has_permission method of request instead.")
 
 
 class Principal(Base):
