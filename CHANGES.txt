@@ -40,6 +40,11 @@ Change History
 
 - Revise UI to make better use of Bootstrap 3.
 
+- Don't use Pyramid code that is marked as deprecated:
+
+  - replace ``pyramid.security.authenticated_userid`` with
+    ``request.authenticated_userid``.
+
 0.10b1 - 2014-07-11
 -------------------
 
