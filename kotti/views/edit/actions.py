@@ -514,22 +514,21 @@ def move_child_position(context, request):
     :param context: "Container" node in which the child changes its position.
     :type context: :class:kotti.resources.Node or descendant
 
-    :param request: Current request (of method POST).  Must contain "from" and
-                    "to" params that contain the 0-based old (i.e. the current
-                    index of the child to be moved) and new position (its new
-                    index) values.
+    :param request: Current request (of method POST).  Must contain either
+                    "from" and "to" params or a json_body that contain(s) the
+                    0-based old (i.e. the current index of the child to be
+                    moved) and new position (its new index) values.
     :type request:
     :result: JSON serializable bject with a single attribute ("result") that is
              either "success" or "error".
     :rtype: dict
     """
 
-    data = request.POST
+    data = request.POST or request.json_body
 
     if ('from' in data) and ('to' in data):
 
         max_pos = len(context.children) - 1
-
         try:
             oldPosition = int(data['from'])
             newPosition = int(data['to'])

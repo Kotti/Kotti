@@ -40,6 +40,9 @@ Change History
 
 - Revise UI to make better use of Bootstrap 3.
 
+- Allow parameters for move-child-position views to either be in
+  ``request.POST`` or ``request.json_body``.
+
 0.10b1 - 2014-07-11
 -------------------
 
