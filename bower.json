@@ -13,7 +13,7 @@
     "test",
     "tests",
     "kotti/*.py",
-    "kotti/*.zcml"
+    "kotti/*.zcml",
     "kotti/alembic",
     "kotti/locale",
     "kotti/scaffolds",
