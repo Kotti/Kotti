@@ -1,0 +1,24 @@
+{
+  "name": "Kotti",
+  "version": "0.9.9",
+  "homepage": "http://kotti.pylonsproject.org/",
+  "authors": [
+    "Kotti Developers <kotti@googlegroups.com>"
+  ],
+  "description": "Kotti Framework",
+  "license": "RPL",
+  "ignore": [
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests",
+    "kotti/*.py",
+    "kotti/*.zcml"
+    "kotti/alembic",
+    "kotti/locale",
+    "kotti/scaffolds",
+    "kotti/templates",
+    "kotti/tests",
+    "kotti/views",
+  ]
+}

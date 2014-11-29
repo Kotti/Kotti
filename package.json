@@ -1,0 +1,15 @@
+{
+  "name": "Kotti",
+  "version": "0.9.9",
+  "description": "Kotti Framework",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/disko/Kotti"
+  },
+  "author": "Kotti Developers <kotti@googlegroups.com>",
+  "license": "RPL",
+  "bugs": {
+    "url": "https://github.com/disko/Kotti/issues"
+  },
+  "homepage": "http://kotti.pylonsproject.org/"
+}
