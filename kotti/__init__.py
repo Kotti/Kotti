@@ -14,7 +14,6 @@ from pyramid.threadlocal import get_current_registry
 from pyramid.util import DottedNameResolver
 from pyramid_beaker import session_factory_from_settings
 
-from kotti.request import Request
 from kotti.sqla import Base as KottiBase
 
 
