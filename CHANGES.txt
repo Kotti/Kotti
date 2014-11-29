@@ -48,6 +48,10 @@ Change History
   - replace ``pyramid.security.authenticated_userid`` with
     ``request.authenticated_userid``.
 
+- Deprecate ``kotti.security.has_permission`` to be consistent with the
+  corresponding deprecation in Pyramid 1.5.  You should now use
+  ``request.has_permission`` instead.
+
 0.10b1 - 2014-07-11
 -------------------
 
