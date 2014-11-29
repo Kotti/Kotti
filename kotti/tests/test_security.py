@@ -603,21 +603,24 @@ class TestViewPermitted:
 
 
 class TestHasPermission:
-    def test_basic(self):
-        from kotti.security import has_permission
 
-        permission, context, request = object(), object(), DummyRequest()
+    def test_request_has_permission(self):
+
+        from kotti.request import Request
+
+        permission, context = object(), object()
         args = []
 
-        def has_permission_fake(permission, context, request):
-            args.append((permission, context, request))
-            assert request.environ['authz_context'] == context
+        def has_permission_fake(self, permission, context=None):
+            args.append((permission, context))
+            assert self.environ['authz_context'] == context
 
-        with patch('kotti.security.base_has_permission',
+        with patch('kotti.request.BaseRequest.has_permission',
                    new=has_permission_fake):
-            has_permission(permission, context, request)
+            request = Request.blank('/')
+            request.has_permission(permission, context)
 
-        assert args == [(permission, context, request)]
+        assert args == [(permission, context)]
 
 
 class TestRolesSetters:
