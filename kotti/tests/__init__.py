@@ -1,3 +1,37 @@
+# -*- coding: utf-8 -*-
+
+"""
+.. graphviz::
+
+   digraph kotti_fixtures {
+      "allwarnings";
+      "app" -> "webtest";
+      "config" -> "db_session";
+      "config" -> "dummy_request";
+      "config" -> "events";
+      "config" -> "workflow";
+      "connection" -> "content";
+      "connection" -> "db_session";
+      "content" -> "db_session";
+      "custom_settings" -> "connection";
+      "custom_settings" -> "unresolved_settings";
+      "db_session" -> "app";
+      "db_session" -> "browser";
+      "db_session" -> "root";
+      "dummy_mailer" -> "app";
+      "dummy_mailer";
+      "events" -> "app";
+      "settings" -> "config";
+      "settings" -> "content";
+      "setup_app" -> "app";
+      "setup_app" -> "browser";
+      "unresolved_settings" -> "settings";
+      "unresolved_settings" -> "setup_app";
+      "workflow" -> "app";
+   }
+
+"""
+
 # public pytest fixtures
 
 import warnings

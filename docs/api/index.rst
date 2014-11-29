@@ -19,6 +19,7 @@ API Documentation
    kotti.security
    kotti.sqla
    kotti.testing
+   kotti.tests
    kotti.util
    kotti.views/index
    kotti.workflow

@@ -32,6 +32,12 @@ tests, you only need to "include" them with a line like this in your
 
   pytest_plugins = "kotti"
 
+Available fixtures
+``````````````````
+
+.. automodule:: kotti.tests
+   :members:
+
 Continuous Integration
 ----------------------
 
