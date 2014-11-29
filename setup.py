@@ -39,7 +39,7 @@ install_requires = [
     'lingua>=1.3',
     'plone.scale',  # needed for image resizing capabilities
     'py_bcrypt',
-    'pyramid>=1.3',  # needed for kotti_tinymce
+    'pyramid>=1.5',  # needed for ``request.has_permission``
     'pyramid_beaker',
     'pyramid_chameleon',
     'pyramid_debugtoolbar',
