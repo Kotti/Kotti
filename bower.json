@@ -19,6 +19,6 @@
     "kotti/scaffolds",
     "kotti/templates",
     "kotti/tests",
-    "kotti/views",
+    "kotti/views"
   ]
 }
