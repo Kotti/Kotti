@@ -9,12 +9,13 @@ dest = './kotti/static';
 
 gulp.task('copy-vendor', function () {
   // copy some bower components
-  gulp.src(['./bower_components/bootstrap/**/*.*'],
-           {base: './bower_components/bootstrap/'})
+  gulp.src(['./bower_components/bootstrap/dist/**/*.*',
+            '!**/npm.js'],
+           {base: './bower_components/bootstrap/dist/'})
     .pipe(gulp.dest(dest));
 });
 
-gulp.task('uglify', function() {
+gulp.task('minify-js', function() {
   gulp.src([dest + '/*.js',
             '!' + dest + '/*.min.js'],
            {base: dest})
@@ -37,7 +38,7 @@ gulp.task('minify-css', function() {
 gulp.task(
   'default', [
     'copy-vendor',
-    'uglify',
-    'copy-plugins'
+    'minify-js',
+    'minify-css'
   ]
 );
