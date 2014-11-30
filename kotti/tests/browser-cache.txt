@@ -65,7 +65,7 @@ Cache Media Content
 Cache Resource
 --------------
 
-  >>> browser.open(testing.BASE_URL + '/static-kotti/base.css')
+  >>> browser.open(testing.BASE_URL + '/static-kotti/css/base.css')
   >>> browser.headers['X-Caching-Policy']
   'Cache Resource'
   >>> browser.headers['Cache-Control']
@@ -116,7 +116,7 @@ Cache Media Content
 Cache Resource
 --------------
 
-  >>> browser.open(testing.BASE_URL + '/static-kotti/base.css')
+  >>> browser.open(testing.BASE_URL + '/static-kotti/css/base.css')
   >>> browser.headers['X-Caching-Policy']
   'Cache Resource'
 
