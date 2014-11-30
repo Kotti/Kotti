@@ -88,12 +88,12 @@ class ImageView(object):
                 width, height = image_scales[scale]
 
         if width and height:
-            image, format, size = scaleImage(self.context.data,
+            image, format, size = scaleImage(self.context.data.file.read(),
                                              width=width,
                                              height=height,
                                              direction="thumb")
         else:
-            image = self.context.data
+            image = self.context.data.file.read()
 
         res = Response(
             headerlist=[('Content-Disposition', '%s;filename="%s"' % (
