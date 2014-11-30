@@ -15,6 +15,7 @@ from js.jquery_form import jquery_form
 from js.jquery_tablednd import jquery_tablednd
 from js.jqueryui import bootstrap as jqueryui_bootstrap_theme
 from js.jqueryui_tagit import tagit as ui_tagit
+from zope.deprecation.deprecation import deprecated
 
 
 # This is needed until ``kotti.views.form.deferred_tag_it_widget`` is converted
@@ -24,7 +25,7 @@ tagit = Group([ui_tagit, jqueryui_bootstrap_theme])
 
 # Kotti's resources
 lib_kotti = Library("kotti", "static")
-kotti_js = Resource(
+kotti_js = Resource(  # BBB
     lib_kotti,
     "kotti.js",
     minified="kotti.min.js",
@@ -41,12 +42,12 @@ base_css = Resource(
     depends=[bootstrap_css],
     minified="base.min.css",
     dont_bundle=True)
-edit_css = Resource(
+edit_css = Resource(  # BBB
     lib_kotti,
     "edit.css",
     depends=[base_css],
     minified="edit.min.css")
-view_css = Resource(
+view_css = Resource(  # BBB
     lib_kotti,
     "view.css",
     depends=[base_css],
@@ -104,7 +105,7 @@ class NeededGroup(object):
         Group(self.resources).need()
 
 view_needed_css = NeededGroup([
-    view_css,
+    base_css,
     ])
 view_needed_js = NeededGroup([
     jquery,
@@ -117,14 +118,14 @@ view_needed = NeededGroup([
     ])
 
 edit_needed_css = NeededGroup([
-    edit_css,
+    base_css,
     jqueryui_bootstrap_theme,
     ])
 edit_needed_js = NeededGroup([
     jquery,
     bootstrap_js,
     html5shiv,
-    kotti_js,
+    # kotti_js,
     jquery_form,
     # deform_bootstrap_js,
     ])
@@ -132,3 +133,9 @@ edit_needed = NeededGroup([
     edit_needed_css,
     edit_needed_js,
     ])
+
+
+for name in ('kotti_js', 'view_css', 'edit_css'):
+    deprecated(name,
+               "{} is deprecated as of Kotti 1.0.0 and will be no longer "
+               "available starting with Kotti 2.0.0.".format(name))

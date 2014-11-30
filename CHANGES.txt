@@ -43,6 +43,8 @@ Change History
 - Allow parameters for move-child-position views to either be in
   ``request.POST`` or ``request.json_body``.
 
+- Deprecate ``kotti_js``, ``view_css`` and ``edit_css`` from ``kotti.fanstatic``.
+
 0.10b1 - 2014-07-11
 -------------------
 

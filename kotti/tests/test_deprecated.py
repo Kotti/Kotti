@@ -33,3 +33,21 @@ class TestDeprecated09:
 
             assert_deprecations(
                 w, "deprecated as of Kotti 0.9", "deprecated as of Kotti 0.9")
+
+
+class TestDeprecated10:
+
+    def test_fanstatic_resources(self, allwarnings):
+
+        with warnings.catch_warnings(record=True) as w:
+
+            from kotti.fanstatic import kotti_js
+            from kotti.fanstatic import view_css
+            from kotti.fanstatic import edit_css
+
+            kotti_js, view_css, edit_css  # pyflakes
+            assert_deprecations(
+                w,
+                'is deprecated as of Kotti 1.0.0',
+                'is deprecated as of Kotti 1.0.0',
+                'is deprecated as of Kotti 1.0.0')
