@@ -6,8 +6,6 @@ from fanstatic import Group
 from fanstatic import Library
 from fanstatic import Resource
 from js.angular import angular
-from js.bootstrap import bootstrap_js
-from js.bootstrap import bootstrap_css
 from js.html5shiv import html5shiv
 from js.fineuploader import fineuploader
 from js.jquery import jquery
@@ -25,46 +23,58 @@ tagit = Group([ui_tagit, jqueryui_bootstrap_theme])
 
 # Kotti's resources
 lib_kotti = Library("kotti", "static")
+
+# ``js.bootstrap`` is only upgraded irregularly, so we bundle it on our own.
+bootstrap_css = Resource(
+    lib_kotti,
+    'css/bootstrap.css',
+    minified='css/bootstrap.min.css')
+bootstrap_js = Resource(
+    lib_kotti,
+    'js/bootstrap.js',
+    minified='js/bootstrap.min.js',
+    depends=[jquery, ])
+
 kotti_js = Resource(  # BBB
     lib_kotti,
-    "kotti.js",
-    minified="kotti.min.js",
+    "js/kotti.js",
+    minified="js/kotti.min.js",
     bottom=True)
 contents_view_js = Resource(
     lib_kotti,
-    "contents.js",
+    "js/contents.js",
     depends=[kotti_js, jquery_tablednd, ],
-    minified="contents.min.js",
+    minified="js/contents.min.js",
     bottom=True)
 base_css = Resource(
     lib_kotti,
-    "base.css",
+    "css/base.css",
     depends=[bootstrap_css],
-    minified="base.min.css",
+    minified="css/base.min.css",
     dont_bundle=True)
 edit_css = Resource(  # BBB
     lib_kotti,
-    "edit.css",
+    "css/edit.css",
     depends=[base_css],
-    minified="edit.min.css")
+    minified="css/edit.min.css")
 view_css = Resource(  # BBB
     lib_kotti,
-    "view.css",
+    "css/view.css",
     depends=[base_css],
-    minified="view.min.css")
+    minified="css/view.min.css")
 
 # Resources for content upload views
 upload_js = Resource(
     lib_kotti,
-    "upload.js",
+    "js/upload.js",
     depends=[angular, fineuploader],
-    # minified="upload.min.js", needs special minifying
+    minified="js/upload.min.js",
     bottom=True)
 upload_css = Resource(
     lib_kotti,
-    "upload.css",
+    "css/upload.css",
     depends=[base_css],
-    minified="upload.min.css")
+    minified="css/upload.min.css")
 upload = Group([upload_js, upload_css])
 
 

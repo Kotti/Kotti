@@ -16,8 +16,8 @@ gulp.task('copy-vendor', function () {
 });
 
 gulp.task('minify-js', function() {
-  gulp.src([dest + '/*.js',
-            '!' + dest + '/*.min.js'],
+  gulp.src([dest + '/**/*.js',
+            '!' + dest + '/**/*.min.js'],
            {base: dest})
     .pipe(ngAnnotate())
     .pipe(uglify())
@@ -26,8 +26,8 @@ gulp.task('minify-js', function() {
 });
 
 gulp.task('minify-css', function() {
-  gulp.src([dest + '/*.css',
-            '!' + dest + '/*.min.css'],
+  gulp.src([dest + '/**/*.css',
+            '!' + dest + '/**/*.min.css'],
            {base: dest})
     .pipe(minifyCss())
     .pipe(rename({suffix: '.min'}))
