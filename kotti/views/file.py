@@ -22,7 +22,7 @@ def inline_view(context, request, disposition='inline'):
             ('Content-Type', str(context.mimetype)),
             ]
         )
-    res.body = context.data
+    res.body = context.data.file.read()
     return res
 
 

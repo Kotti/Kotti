@@ -13,7 +13,12 @@ import warnings
 from fnmatch import fnmatch
 from UserDict import DictMixin
 
+from depot.fields.sqlalchemy import UploadedFileField
+from depot.fields.sqlalchemy import _SQLAMutationTracker
+
+from pyramid.threadlocal import get_current_registry
 from pyramid.traversal import resource_path
+from sqlalchemy import event
 from sqlalchemy import Boolean
 from sqlalchemy import Column
 from sqlalchemy import DateTime
@@ -644,7 +649,8 @@ class File(Content):
     id = Column(Integer(), ForeignKey('contents.id'), primary_key=True)
     #: The binary data itself
     #: (:class:`sqlalchemy.types.LargeBinary`)
-    data = deferred(Column("data", LargeBinary()))
+    #data = deferred(Column("data", LargeBinary()))
+    data = Column(UploadedFileField)
     #: The filename is used in the attachment view to give downloads
     #: the original filename it had when it was uploaded.
     #: (:class:`sqlalchemy.types.Unicode`)
@@ -697,6 +703,14 @@ class File(Content):
             raise ValueError("Unsupported MIME type: %s" % mimetype)
 
         return cls(data=data, filename=filename, mimetype=mimetype, size=size)
+
+    @classmethod
+    def __declare_last__(cls):
+        # For the ``data`` column, use the field value setter from filedepot.
+        # filedepot already registers this event listener, but it does so in a
+        # way that won't work properly for subclasses of File
+        event.listen(cls.data, 'set',
+                     _SQLAMutationTracker._field_set, retval=True)
 
 
 class Image(File):

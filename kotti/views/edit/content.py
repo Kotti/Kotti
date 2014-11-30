@@ -86,7 +86,7 @@ class FileEditForm(EditFormView):
         form.appstruct = get_appstruct(self.context, self.schema)
         if self.context.data is not None:
             form.appstruct.update({'file': {
-                'fp': StringIO(self.context.data),
+                'fp': StringIO(self.context.data.file.read()),
                 'filename': self.context.name,
                 'mimetype': self.context.mimetype,
                 'uid': str(random.randint(1000000000, 9999999999)),
@@ -102,11 +102,18 @@ class FileEditForm(EditFormView):
         self.context.description = appstruct['description']
         self.context.tags = appstruct['tags']
         if appstruct['file']:
-            buf = appstruct['file']['fp'].read()
+            buf = appstruct['file']['fp']
+            size = 0
+            while True:
+                chunk = buf.read(1024)
+                if not chunk:
+                    break
+                size += len(chunk)
+            buf.seek(0)
             self.context.data = buf
             self.context.filename = appstruct['file']['filename']
             self.context.mimetype = appstruct['file']['mimetype']
-            self.context.size = len(buf)
+            self.context.size = size
 
 
 class FileAddForm(AddFormView):
@@ -123,17 +130,26 @@ class FileAddForm(AddFormView):
         return super(FileAddForm, self).save_success(appstruct)
 
     def add(self, **appstruct):
-        buf = appstruct['file']['fp'].read()
+        buf = appstruct['file']['fp']   #.read()
+        size = 0
+        while True:
+            chunk = buf.read(1024)
+            if not chunk:
+                break
+            size += len(chunk)
+        buf.seek(0)
         filename = appstruct['file']['filename']
-        return self.item_class(
+        item = self.item_class(
             title=appstruct['title'] or filename,
             description=appstruct['description'],
             tags=appstruct['tags'],
             data=buf,
             filename=filename,
             mimetype=appstruct['file']['mimetype'],
-            size=len(buf),
+            size=size,
             )
+        import pdb; pdb.set_trace()
+        return item
 
 
 class ImageEditForm(FileEditForm):
