@@ -30,7 +30,9 @@
     "kotti/scaffolds",
     "kotti/templates",
     "kotti/tests",
-    "kotti/views"
+    "kotti/views",
+    "kotti/static/fonts",
+    "kotti/static/**/bootstrap*.*"
   ],
   "dependencies": {
     "angular": "~1.3.4",

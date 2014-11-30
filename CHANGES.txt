@@ -45,6 +45,9 @@ Change History
 
 - Deprecate ``kotti_js``, ``view_css`` and ``edit_css`` from ``kotti.fanstatic``.
 
+- Bundle Bootstrap on our own.  ``js.bootstrap`` is incomplete, has a bug and
+  is updated only irregularly.
+
 0.10b1 - 2014-07-11
 -------------------
 
