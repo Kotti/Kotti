@@ -22,3 +22,5 @@
 /local
 junit*.xml
 *.sublime-*
+bower_components
+node_modules

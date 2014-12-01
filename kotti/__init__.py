@@ -79,6 +79,7 @@ conf_defaults = {
         ]),
     'kotti.asset_overrides': '',
     'kotti.use_tables': '',
+    'kotti.request_factory': 'kotti.request.Request',
     'kotti.root_factory': 'kotti.resources.default_get_root',
     'kotti.populators': 'kotti.populate.populate',
     'kotti.available_types': ' '.join([
@@ -115,6 +116,7 @@ conf_dotted = set([
     'kotti.templates.api',
     'kotti.configurators',
     'kotti.base_includes',
+    'kotti.request_factory',
     'kotti.root_factory',
     'kotti.populators',
     'kotti.available_types',
@@ -191,7 +193,9 @@ def base_configure(global_config, **settings):
     # overrides of configuration from ``kotti.base_includes``:
     pyramid_includes = settings.pop('pyramid.includes', '')
 
-    config = Configurator(settings=settings)
+    config = Configurator(
+        request_factory=settings['kotti.request_factory'][0],
+        settings=settings)
     config.begin()
 
     config.hook_zca()
@@ -219,11 +223,6 @@ def base_configure(global_config, **settings):
     config.commit()
 
     config._set_root_factory(get_root)
-
-    # add the authenticated user to the request object
-    from kotti.security import get_user
-    config.add_request_method(
-        get_user, name="user", reify=True, property=True)
 
     return config
 

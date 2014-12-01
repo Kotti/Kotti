@@ -25,7 +25,6 @@ import venusian
 from sqlalchemy.orm import mapper
 from pyramid.location import lineage
 from pyramid.threadlocal import get_current_request
-from pyramid.security import authenticated_userid
 from zope.deprecation.deprecation import deprecated
 
 from kotti import DBSession
@@ -226,7 +225,7 @@ def set_owner(event):
 
     obj, request = event.object, event.request
     if request is not None and isinstance(obj, Node) and obj.owner is None:
-        userid = authenticated_userid(request)
+        userid = request.authenticated_userid
         if userid is not None:
             userid = unicode(userid)
             # Set owner metadata:

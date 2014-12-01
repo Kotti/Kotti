@@ -43,6 +43,15 @@ Change History
 - Allow parameters for move-child-position views to either be in
   ``request.POST`` or ``request.json_body``.
 
+- Don't use Pyramid code that is marked as deprecated:
+
+  - replace ``pyramid.security.authenticated_userid`` with
+    ``request.authenticated_userid``.
+
+- Deprecate ``kotti.security.has_permission`` to be consistent with the
+  corresponding deprecation in Pyramid 1.5.  You should now use
+  ``request.has_permission`` instead.
+
 0.10b1 - 2014-07-11
 -------------------
 
