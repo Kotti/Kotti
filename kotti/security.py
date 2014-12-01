@@ -350,6 +350,8 @@ def set_groups(name, context, groups_to_set=()):
 
 
 def list_groups_callback(name, request):
+    """ List the groups for the principal identified by ``name``.  Consider
+    ``authz_context`` to support assigment of local roles to groups. """
     if not is_user(name):
         return None  # Disallow logging in with groups
     if name in get_principals():

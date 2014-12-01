@@ -5,7 +5,12 @@ from pyramid.request import Request as BaseRequest
 
 
 class Request(BaseRequest):
-    """docstring for Request"""
+    """ Kotti subclasses :class:`pyramid.request.Request` to make additional
+    attributes / methods available on request objects and override Pyramid's
+    :meth:`pyramid.request.Request.has_permission`.  The latter is needed to
+    support Kotti's concept of local roles not just users but also for groups
+    (:func:`kotti.security.list_groups_callback`).
+    """
 
     @reify
     def user(self):

@@ -37,6 +37,7 @@ Available fixtures
 
 .. automodule:: kotti.tests
    :members:
+   :noindex:
 
 Continuous Integration
 ----------------------

@@ -15,6 +15,7 @@ API Documentation
    kotti.message
    kotti.migrate
    kotti.populate
+   kotti.request
    kotti.resources
    kotti.security
    kotti.sqla
