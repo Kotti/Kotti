@@ -3,22 +3,20 @@
 Tutorial Part 1: Creating an add-on and managing static resources
 =================================================================
 
-In the first part of the tutorial, we'll create an add-on package,
-install and register the package with our site,
-and use a simple CSS example to learn how Kotti manages static resources.
+In the first part of the tutorial, we'll create an add-on package, install and register the package with our site, and use a simple CSS example to learn how Kotti manages static resources.
 
 Kotti add-ons are proper Python packages.
 A number of them are available on PyPI_.
 They include `kotti_media`_, for adding a set of video and audio content types to a site, `kotti_gallery`_, for adding a photo album content type, `kotti_blog`_, for blog and blog entry content types, etc.
 
 The add-on we will make, ``kotti_mysite``, will be just like those, in that it will be a proper Python package created with the same command line tools used to make `kotti_media`_, `kotti_blog`_, and the others.
-We will set up kotti_mysite for our Kotti site, in the same way that we might wish later to install, for example, `kotti_media`_.
+We will set up ``kotti_mysite`` for our Kotti site, in the same way that we might wish later to install, for example, `kotti_media`_.
 
 So, we are working in the ``mysite`` directory, a virtualenv, as described in :ref:`installation`.
 You should be able to start Kotti, and load the front page.
 
 We will create the add-on as ``mysite/kotti_mysite``.
-kotti_mysite will be a proper Python package, installable into our virtualenv.
+``kotti_mysite`` will be a proper Python package, installable into our virtualenv.
 
 .. _mailing list: http://groups.google.com/group/kotti
 .. _#kotti: //irc.freenode.net/#kotti
@@ -37,8 +35,9 @@ To create our add-on, we use the standard Pyramid tool ``pcreate``, with
 
   bin/pcreate -s kotti_addon kotti_mysite
 
-The script will ask a number of questions. It is safe to accept the defaults.
-When finished, observe that a new directory called ``kotti_mysite`` was added to the current working directory, as mysite/kotti_mysite.
+The script will ask a number of questions.
+It is safe to accept the defaults.
+When finished, observe that a new directory called ``kotti_mysite`` was added to the current working directory, as ``mysite/kotti_mysite``.
 
 Installing Our New Add-On
 -------------------------
@@ -64,7 +63,7 @@ This will install the package in *development mode*:
 
 .. note::
 
-  ``python setup.py install`` is for normal installation of a finished package, but here, for kotti_mysite, we will be developing it for some time, so we use ``python setup.py develop``.
+  ``python setup.py install`` is for normal installation of a finished package, but here, for ``kotti_mysite``, we will be developing it for some time, so we use ``python setup.py develop``.
   Using this mode, a special link file is created in the site-packages directory of your virtualenv.
   This link points to the add-on directory, so that any changes you make to the software will be reflected immediately without having to do an install again.
 
@@ -117,7 +116,8 @@ Take a look at ``kotti_mysite/kotti_mysite/fanstatic.py`` to see how this is don
   css_and_js = Group([css, js])
 
 The ``css`` and ``js`` resources each define files we can use for our css and js code.
-We will use ``style.css`` in our example. Also note the ``css_and_js`` group.
+We will use ``style.css`` in our example.
+Also note the ``css_and_js`` group.
 It shows up in the configuration code discussed below.
 
 fanstatic_ has a number of cool features -- you may want to check out their homepage to find out more.
