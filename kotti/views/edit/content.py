@@ -130,7 +130,7 @@ class FileAddForm(AddFormView):
         return super(FileAddForm, self).save_success(appstruct)
 
     def add(self, **appstruct):
-        buf = appstruct['file']['fp']   #.read()
+        buf = appstruct['file']['fp']
         size = 0
         while True:
             chunk = buf.read(1024)
@@ -148,7 +148,6 @@ class FileAddForm(AddFormView):
             mimetype=appstruct['file']['mimetype'],
             size=size,
             )
-        import pdb; pdb.set_trace()
         return item
 
 

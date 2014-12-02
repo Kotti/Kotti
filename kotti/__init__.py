@@ -25,14 +25,13 @@ Base.query = DBSession.query_property()
 TRUE_VALUES = ('1', 'y', 'yes', 't', 'true')
 FALSE_VALUES = ('0', 'n', 'no', 'f', 'false', 'none')
 
-#tibi temp
+# tibi temp
 from depot.manager import DepotManager
-# Configure a *default* depot to store files on MongoDB GridFS
 DepotManager.configure('default', {
     'depot.backend': 'depot.io.local.LocalFileStorage',
     'depot.storage_path': 'var/files'
 })
-#end tibi temp
+# end tibi temp
 
 
 def authtkt_factory(**settings):

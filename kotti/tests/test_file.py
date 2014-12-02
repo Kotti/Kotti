@@ -42,7 +42,23 @@ class TestFileViews:
 class TestFileEditForm:
     def make_one(self):
         from kotti.views.edit.content import FileEditForm
-        return FileEditForm(MagicMock(), DummyRequest())
+
+        class MockFileColumn(object):
+            def __init__(self):
+                self.file = MagicMock()
+
+            def __set__(self, instance, value):
+                if isinstance(value, StringIO):
+                    value.seek(0)
+                    rv = value.read()
+                else:
+                    rv = value
+                self.file.read.return_value = rv
+
+        class MockDepotFile(object):
+            data = MockFileColumn()
+
+        return FileEditForm(MockDepotFile(), DummyRequest())
 
     def test_edit_with_file(self):
         view = self.make_one()
@@ -57,7 +73,7 @@ class TestFileEditForm:
             )
         assert view.context.title == u'A title'
         assert view.context.description == u'A description'
-        assert view.context.data == 'filecontents'
+        assert view.context.data.file.read() == 'filecontents'
         assert view.context.filename == u'myfile.png'
         assert view.context.mimetype == u'image/png'
         assert view.context.size == len('filecontents')
@@ -75,7 +91,7 @@ class TestFileEditForm:
                   file=null)
         assert view.context.title == u'A title'
         assert view.context.description == u'A description'
-        assert view.context.data == 'filecontents'
+        assert view.context.data.file.read() == 'filecontents'
         assert view.context.filename == u'myfile.png'
         assert view.context.mimetype == u'image/png'
         assert view.context.size == 777
@@ -102,7 +118,7 @@ class TestFileAddForm:
         assert file.title == u'A title'
         assert file.description == u'A description'
         assert file.tags == []
-        assert file.data == 'filecontents'
+        assert file.data.file.read() == 'filecontents'
         assert file.filename == u'myfile.png'
         assert file.mimetype == u'image/png'
         assert file.size == len('filecontents')
