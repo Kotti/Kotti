@@ -1,7 +1,8 @@
 from StringIO import StringIO
-
 from colander import null
+
 from mock import MagicMock
+import pytest
 
 from kotti.testing import DummyRequest
 
@@ -142,12 +143,12 @@ class TestFileUploadTempStore:
         assert 'important' not in tmpstore.session
 
 
-class TestFileUsesDepotStorage:
+class TestDepotStore:
 
     @classmethod
     def setup_class(cls):
         from depot.manager import DepotManager
-        from mock import Mock
+        from datetime import datetime
 
         class TestStorage:
             def __init__(self):
@@ -155,8 +156,12 @@ class TestFileUsesDepotStorage:
                 self._storage.setdefault(0)
 
             def get(self, id):
-                f = Mock()
+                f = MagicMock()
                 f.read.return_value = self._storage[id]
+                f.last_modified = datetime.now()
+                f.filename = str(id)
+                f.public_url = ''
+                f.content_type = 'image/png'
                 return f
 
             def create(self, content, filename=None, content_type=None):
@@ -164,8 +169,11 @@ class TestFileUsesDepotStorage:
                 self._storage[id] = content
                 return id
 
+            def delete(self, id):
+                del self._storage[int(id)]
+
         DepotManager._depots = {
-            'default': TestStorage()
+            'default': MagicMock(wraps=TestStorage())
         }
 
     @classmethod
@@ -173,29 +181,33 @@ class TestFileUsesDepotStorage:
         from depot.manager import DepotManager
         DepotManager._depots = {}
 
-    def test_create_file(self):
-        from kotti.resources import File
-        f = File('file content')
+    from kotti.resources import File, Image
+
+    @pytest.mark.parametrize("factory", [File, Image])
+    def test_create(self, factory):
+        f = factory('file content')
         assert len(f.data['files']) == 1
         assert f.data.file.read() == 'file content'
 
-    def test_edit_file_content(self):
-        from kotti.resources import File
-        f = File('file content')
+    @pytest.mark.parametrize("factory", [File, Image])
+    def test_edit_content(self, factory):
+        f = factory('file content')
         assert f.data.file.read() == 'file content'
         f.data = 'edited'
         assert f.data.file.read() == 'edited'
 
-    def test_create_image(self):
-        from kotti.resources import Image
-        f = Image('file content')
-        assert len(f.data['files']) == 1
-        assert f.data.file.read() == 'file content'
+    @pytest.mark.parametrize("factory", [File, Image])
+    def test_session_rollback(self, factory, db_session):
+        from depot.manager import DepotManager
 
-    def test_edit_image_content(self):
-        from kotti.resources import Image
-        f = Image('file content')
-        assert f.data.file.read() == 'file content'
-        f.data = 'edited'
-        assert f.data.file.read() == 'edited'
+        f = factory(data='file content', name=u'content', title=u'content')
+        id = f.data['file_id']
 
+        assert id in DepotManager.get()._storage.keys()
+
+        db_session.add(f)
+        db_session.flush()
+        db_session.rollback()
+
+        assert DepotManager.get().delete.called
+        assert id not in DepotManager.get()._storage.keys()
