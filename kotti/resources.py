@@ -633,7 +633,6 @@ class File(Content):
     id = Column(Integer(), ForeignKey('contents.id'), primary_key=True)
     #: The binary data itself
     #: (:class:`sqlalchemy.types.LargeBinary`)
-    #data = deferred(Column("data", LargeBinary()))
     data = Column(UploadedFileField)
     #: The filename is used in the attachment view to give downloads
     #: the original filename it had when it was uploaded.
