@@ -158,10 +158,13 @@ class TestDepotStore:
             def get(self, id):
                 f = MagicMock()
                 f.read.return_value = self._storage[id]
+
+                # needed to make JSON serializable, Mock objects are not
                 f.last_modified = datetime.now()
                 f.filename = str(id)
                 f.public_url = ''
                 f.content_type = 'image/png'
+
                 return f
 
             def create(self, content, filename=None, content_type=None):
@@ -211,3 +214,20 @@ class TestDepotStore:
         db_session.rollback()
         assert id not in DepotManager.get()._storage.keys()
         assert DepotManager.get().delete.called
+
+    @pytest.mark.parametrize("factory", [File, Image])
+    def test_delete(self, factory, db_session, root):
+        from depot.manager import DepotManager
+
+        f = factory(data='file content', name=u'content', title=u'content')
+        id = f.data['file_id']
+        root[str(id)] = f
+        db_session.flush()
+
+        assert id in DepotManager.get()._storage.keys()
+
+        del root[str(id)]
+        import transaction; transaction.commit()
+
+        assert DepotManager.get().delete.called
+        assert id not in DepotManager.get()._storage.keys()
