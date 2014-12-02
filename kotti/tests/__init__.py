@@ -1,3 +1,37 @@
+# -*- coding: utf-8 -*-
+
+"""
+.. graphviz::
+
+   digraph kotti_fixtures {
+      "allwarnings";
+      "app" -> "webtest";
+      "config" -> "db_session";
+      "config" -> "dummy_request";
+      "config" -> "events";
+      "config" -> "workflow";
+      "connection" -> "content";
+      "connection" -> "db_session";
+      "content" -> "db_session";
+      "custom_settings" -> "connection";
+      "custom_settings" -> "unresolved_settings";
+      "db_session" -> "app";
+      "db_session" -> "browser";
+      "db_session" -> "root";
+      "dummy_mailer" -> "app";
+      "dummy_mailer";
+      "events" -> "app";
+      "settings" -> "config";
+      "settings" -> "content";
+      "setup_app" -> "app";
+      "setup_app" -> "browser";
+      "unresolved_settings" -> "settings";
+      "unresolved_settings" -> "setup_app";
+      "workflow" -> "app";
+   }
+
+"""
+
 # public pytest fixtures
 
 import warnings
@@ -135,14 +169,23 @@ def db_session(config, content, connection, request):
 
 
 @fixture
-def dummy_request(config):
+def dummy_request(config, request, monkeypatch):
     """ returns a dummy request object after registering it as
         the currently active request.  This is needed when
         `pyramid.threadlocal.get_current_request` is used.
     """
+
     from kotti.testing import DummyRequest
-    config.manager.get()['request'] = request = DummyRequest()
-    return request
+
+    if 'user' in request.keywords:
+        monkeypatch.setattr(
+            DummyRequest,
+            "authenticated_userid",
+            request.keywords['user'].args[0])
+
+    config.manager.get()['request'] = dummy_request = DummyRequest()
+
+    return dummy_request
 
 
 @fixture

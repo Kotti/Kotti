@@ -33,3 +33,15 @@ class TestDeprecated09:
 
             assert_deprecations(
                 w, "deprecated as of Kotti 0.9", "deprecated as of Kotti 0.9")
+
+
+class TestDeprecated10:
+
+    def test_security_has_permission(self, allwarnings):
+
+        with warnings.catch_warnings(record=True) as w:
+            from kotti.security import has_permission
+            has_permission  # pyflakes
+
+            assert_deprecations(
+                w, "deprecated as of Kotti 1.0")

@@ -1,6 +1,7 @@
 import warnings
 
 from mock import patch
+from pytest import mark
 
 
 class DummyVenusian(object):
@@ -12,23 +13,23 @@ class DummyVenusian(object):
 
 
 class TestEvents:
+    @mark.user('bob')
     def test_owner(self, root, db_session, events, dummy_request):
         from kotti.resources import Content
         from kotti.security import list_groups
         from kotti.security import list_groups_raw
         from kotti.util import clear_cache
 
-        with patch('kotti.events.authenticated_userid', return_value='bob'):
-            child = root[u'child'] = Content()
-            db_session.flush()
+        child = root[u'child'] = Content()
+        db_session.flush()
         assert child.owner == u'bob'
         assert list_groups(u'bob', child) == [u'role:owner']
 
         clear_cache()
+
         # The event listener does not set the role again for subitems:
-        with patch('kotti.events.authenticated_userid', return_value='bob'):
-            grandchild = child[u'grandchild'] = Content()
-            db_session.flush()
+        grandchild = child[u'grandchild'] = Content()
+        db_session.flush()
         assert grandchild.owner == u'bob'
         assert list_groups(u'bob', grandchild) == [u'role:owner']
         assert len(list_groups_raw(u'bob', grandchild)) == 0

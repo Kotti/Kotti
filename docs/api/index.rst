@@ -15,10 +15,12 @@ API Documentation
    kotti.message
    kotti.migrate
    kotti.populate
+   kotti.request
    kotti.resources
    kotti.security
    kotti.sqla
    kotti.testing
+   kotti.tests
    kotti.util
    kotti.views/index
    kotti.workflow

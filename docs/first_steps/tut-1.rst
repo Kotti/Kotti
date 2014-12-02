@@ -1,20 +1,22 @@
 .. _tut-1:
 
-Tutorial Part 1: Creating an add-on with a custom Look and Feel
-===============================================================
+Tutorial Part 1: Creating an add-on and managing static resources
+=================================================================
 
-In this part of the tutorial, we'll concentrate on how to create the new add-on package, how to install and register it with our site, and how to manage static resources in Kotti.
+In the first part of the tutorial, we'll create an add-on package, install and register the package with our site, and use a simple CSS example to learn how Kotti manages static resources.
 
 Kotti add-ons are proper Python packages.
 A number of them are available on PyPI_.
 They include `kotti_media`_, for adding a set of video and audio content types to a site, `kotti_gallery`_, for adding a photo album content type, `kotti_blog`_, for blog and blog entry content types, etc.
 
 The add-on we will make, ``kotti_mysite``, will be just like those, in that it will be a proper Python package created with the same command line tools used to make `kotti_media`_, `kotti_blog`_, and the others.
-We will set up kotti_mysite for our Kotti site, in the same way that we might wish later to install, for example, `kotti_media`_.
+We will set up ``kotti_mysite`` for our Kotti site, in the same way that we might wish later to install, for example, `kotti_media`_.
 
-So, we are working in the ``mysite`` directory, a virtualenv.
+So, we are working in the ``mysite`` directory, a virtualenv, as described in :ref:`installation`.
+You should be able to start Kotti, and load the front page.
+
 We will create the add-on as ``mysite/kotti_mysite``.
-kotti_mysite will be a proper Python package, installable into our virtualenv.
+``kotti_mysite`` will be a proper Python package, installable into our virtualenv.
 
 .. _mailing list: http://groups.google.com/group/kotti
 .. _#kotti: //irc.freenode.net/#kotti
@@ -26,22 +28,16 @@ kotti_mysite will be a proper Python package, installable into our virtualenv.
 Creating the Add-On Package
 ---------------------------
 
-To create our add-on, we'll use a starter template from ``kotti_paster``.
-For this, we'll need to first install the ``kotti_paster`` package into our virtualenv (the one that was created during the :ref:`installation`).
+To create our add-on, we use the standard Pyramid tool ``pcreate``, with
+``kotti_addon``, a scaffold that was installed as part of Kotti.
 
 .. code-block:: bash
 
-  bin/pip install kotti_paster
+  bin/pcreate -s kotti_addon kotti_mysite
 
-With ``kotti_paster`` installed, we can now create the skeleton for the add-on package:
-
-.. code-block:: bash
-
-  bin/paster create -t kotti_addon kotti_mysite
-
-Running this command, it will ask us a number of questions.
-Hit enter for every question to accept the defaults.
-When finished, observe that a new directory called ``kotti_mysite`` was added to the current working directory, as mysite/kotti_mysite.
+The script will ask a number of questions.
+It is safe to accept the defaults.
+When finished, observe that a new directory called ``kotti_mysite`` was added to the current working directory, as ``mysite/kotti_mysite``.
 
 Installing Our New Add-On
 -------------------------
@@ -67,7 +63,7 @@ This will install the package in *development mode*:
 
 .. note::
 
-  ``python setup.py install`` is for normal installation of a finished package, but here, for kotti_mysite, we will be developing it for some time, so we use ``python setup.py develop``.
+  ``python setup.py install`` is for normal installation of a finished package, but here, for ``kotti_mysite``, we will be developing it for some time, so we use ``python setup.py develop``.
   Using this mode, a special link file is created in the site-packages directory of your virtualenv.
   This link points to the add-on directory, so that any changes you make to the software will be reflected immediately without having to do an install again.
 
@@ -87,52 +83,65 @@ And add ``kotti_mysite.kotti_configure`` to it:
       kotti_tinymce.kotti_configure
       kotti_mysite.kotti_configure
 
-Now you're ready to fire up the Kotti site again:
+
+At this point, you should be able to restart the application, but you won't notice anything different.
+Let's make a simple CSS change and use it to see how Kotti manages static resources.
+
+
+Static Resources
+----------------
+
+Kotti uses fanstatic_ for managing its static resources.
+
+Take a look at ``kotti_mysite/kotti_mysite/fanstatic.py`` to see how this is done:
+
+.. code-block:: python
+
+  from fanstatic import Group
+  from fanstatic import Library
+  from fanstatic import Resource
+
+
+  library = Library("kotti_mysite", "static")
+
+  css = Resource(
+      library,
+      "styles.css",
+      minified="styles.min.css")
+  js = Resource(
+      library,
+      "scripts.js",
+      minified="scripts.min.js")
+
+  css_and_js = Group([css, js])
+
+The ``css`` and ``js`` resources each define files we can use for our css and js code.
+We will use ``style.css`` in our example.
+Also note the ``css_and_js`` group.
+It shows up in the configuration code discussed below.
+
+fanstatic_ has a number of cool features -- you may want to check out their homepage to find out more.
+
+A Simple Example
+----------------
+
+Let's make a simple CSS change to see how this all works.
+Open ``kotti_mysite/kotti_mysite/static/style.css`` and add the following code.
+
+.. code-block:: css
+
+  h1, h2, h3 {
+    text-shadow: 4px 4px 2px #ccc;
+  }
+
+Now, restart the application and reload the front page.
 
 .. code-block:: bash
 
   cd ..
   bin/pserve app.ini
 
-Visit the site in your browser and notice how the the title now has a shadow.
-
-Adding CSS Files
-----------------
-
-How was the color for the shadow changed?
-Take a look into the directory ``kotti_mysite/kotti_mysite/static/``.
-This is where the CSS file lives.
-
-How is it hooked up with Kotti?
-Kotti uses fanstatic_ for managing its static resources.
-fanstatic_ has a number of cool features -- you may want to check out their homepage to find out more.
-
-Take a look at ``kotti_mysite/kotti_mysite/fanstatic.py`` to see how the creation of the necessary fanstatic components is done:
-
-.. code-block:: python
-
-  from __future__ import absolute_import
-
-  from fanstatic import Group
-  from fanstatic import Library
-  from fanstatic import Resource
-
-  library = Library("kotti_mysite", "static")
-  kotti_mysite_css = Resource(library, "style.css")
-  kotti_mysite_group = Group([kotti_mysite_css])
-
-If you wanted to add a JavaScript file, you would do this very similarly.
-To add a JavaScript file called script.js, you would add a fanstatic_ resource for it in ``kotti_mysite/kotti_mysite/fanstatic.py`` like so:
-
-.. code-block:: python
-
-  kotti_mysite_js = Resource(library, "script.js")
-
-And change the last line to:
-
-.. code-block:: python
-
-  kotti_mysite_group = Group([kotti_mysite_css, kotti_mysite_js])
+Notice how the title has a shadow now?
 
 .. _fanstatic: http://www.fanstatic.org/
 
@@ -147,26 +156,32 @@ Let's take a look:
 .. code-block:: python
 
   def kotti_configure(settings):
-     settings['kotti.fanstatic.view_needed'] += ' kotti_mysite.fanstatic.kotti_mysite_group'
+      ...
+      settings['kotti.fanstatic.view_needed'] += ' kotti_mysite.fanstatic.css_and_js'
+      ...
 
-Here, ``settings`` is a Python dictionary with all configuration variables in the ``[app:kotti]`` section of our ``app.ini``, plus the defaults.
+Here, ``settings`` is a Python dictionary with all configuration variables in the
+``[app:kotti]`` section of our ``app.ini``, plus the defaults.
 The values of this dictionary are merely strings.
 Notice how we add to the string ``kotti.fanstatic.view_needed``.
 
 .. note::
 
-   Note the initial space in ' kotti_mysite.static.kotti_mysite_group'.
+   Note the initial space in ' kotti_mysite.static.css_and_js'.
    This allows a handy use of += on different lines.
    After concatenation of the string parts, blanks will delimit them.
 
-This ``kotti.fanstatic.view_needed`` setting, in turn, controls which resources are loaded in the public interface (as compared to the edit interface).
+This ``kotti.fanstatic.view_needed`` setting, in turn, controls which resources
+are loaded in the public interface (as compared to the edit interface).
 
 As you might have guessed, we could have also completely replaced Kotti's resources for the public interface by overriding the ``kotti.fanstatic.view_needed`` setting instead of adding to it, like this:
 
 .. code-block:: python
 
   def kotti_configure(settings):
-      settings['kotti.fanstatic.view_needed'] = ' kotti_mysite.fanstatic.kotti_mysite_group'
+      ...
+      settings['kotti.fanstatic.view_needed'] = ' kotti_mysite.fanstatic.css_and_js'
+      ...
 
 This is useful if you've built your own custom theme.
 Alternatively, you can completely :ref:`override the master template <asset_overrides>` for even more control (e.g. if you don't want to use Bootstrap).
