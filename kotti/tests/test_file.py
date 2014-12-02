@@ -207,7 +207,7 @@ class TestDepotStore:
 
         db_session.add(f)
         db_session.flush()
+        assert id in DepotManager.get()._storage.keys()
         db_session.rollback()
-
-        assert DepotManager.get().delete.called
         assert id not in DepotManager.get()._storage.keys()
+        assert DepotManager.get().delete.called
