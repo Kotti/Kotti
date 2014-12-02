@@ -140,3 +140,62 @@ class TestFileUploadTempStore:
         tmpstore.session['important'] = 3
         del tmpstore['important']
         assert 'important' not in tmpstore.session
+
+
+class TestFileUsesDepotStorage:
+
+    @classmethod
+    def setup_class(cls):
+        from depot.manager import DepotManager
+        from mock import Mock
+
+        class TestStorage:
+            def __init__(self):
+                self._storage = {}
+                self._storage.setdefault(0)
+
+            def get(self, id):
+                f = Mock()
+                f.read.return_value = self._storage[id]
+                return f
+
+            def create(self, content, filename=None, content_type=None):
+                id = max(self._storage) + 1
+                self._storage[id] = content
+                return id
+
+        DepotManager._depots = {
+            'default': TestStorage()
+        }
+
+    @classmethod
+    def teardown_class(cls):
+        from depot.manager import DepotManager
+        DepotManager._depots = {}
+
+    def test_create_file(self):
+        from kotti.resources import File
+        f = File('file content')
+        assert len(f.data['files']) == 1
+        assert f.data.file.read() == 'file content'
+
+    def test_edit_file_content(self):
+        from kotti.resources import File
+        f = File('file content')
+        assert f.data.file.read() == 'file content'
+        f.data = 'edited'
+        assert f.data.file.read() == 'edited'
+
+    def test_create_image(self):
+        from kotti.resources import Image
+        f = Image('file content')
+        assert len(f.data['files']) == 1
+        assert f.data.file.read() == 'file content'
+
+    def test_edit_image_content(self):
+        from kotti.resources import Image
+        f = Image('file content')
+        assert f.data.file.read() == 'file content'
+        f.data = 'edited'
+        assert f.data.file.read() == 'edited'
+
