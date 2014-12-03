@@ -206,11 +206,10 @@ class TestDepotStore:
         f = factory(data='file content', name=u'content', title=u'content')
         id = f.data['file_id']
 
-        assert id in DepotManager.get()._storage.keys()
-
         db_session.add(f)
         db_session.flush()
         assert id in DepotManager.get()._storage.keys()
+
         db_session.rollback()
         assert id not in DepotManager.get()._storage.keys()
         assert DepotManager.get().delete.called
