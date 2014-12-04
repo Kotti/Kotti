@@ -64,7 +64,7 @@ class TestUploadFile:
         assert browser.contents == 'DEF'
 
     @user('admin')
-    def test_edit_uploaded_file(self, browser):
+    def test_edit_uploaded_file(self, browser, filedepot):
         browser.open(BASE_URL + '/@@add_file')
         self.add_file(browser, contents='GHI')
         browser.getLink("Edit").click()
