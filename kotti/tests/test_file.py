@@ -145,62 +145,23 @@ class TestFileUploadTempStore:
 
 class TestDepotStore:
 
-    @classmethod
-    def setup_class(cls):
-        from depot.manager import DepotManager
-        from datetime import datetime
-
-        class TestStorage:
-            def __init__(self):
-                self._storage = {}
-                self._storage.setdefault(0)
-
-            def get(self, id):
-                f = MagicMock()
-                f.read.return_value = self._storage[id]
-
-                # needed to make JSON serializable, Mock objects are not
-                f.last_modified = datetime.now()
-                f.filename = str(id)
-                f.public_url = ''
-                f.content_type = 'image/png'
-
-                return f
-
-            def create(self, content, filename=None, content_type=None):
-                id = max(self._storage) + 1
-                self._storage[id] = content
-                return id
-
-            def delete(self, id):
-                del self._storage[int(id)]
-
-        DepotManager._depots = {
-            'default': MagicMock(wraps=TestStorage())
-        }
-
-    @classmethod
-    def teardown_class(cls):
-        from depot.manager import DepotManager
-        DepotManager._depots = {}
-
     from kotti.resources import File, Image
 
     @pytest.mark.parametrize("factory", [File, Image])
-    def test_create(self, factory):
+    def test_create(self, factory, filedepot):
         f = factory('file content')
         assert len(f.data['files']) == 1
         assert f.data.file.read() == 'file content'
 
     @pytest.mark.parametrize("factory", [File, Image])
-    def test_edit_content(self, factory):
+    def test_edit_content(self, factory, filedepot):
         f = factory('file content')
         assert f.data.file.read() == 'file content'
         f.data = 'edited'
         assert f.data.file.read() == 'edited'
 
     @pytest.mark.parametrize("factory", [File, Image])
-    def test_session_rollback(self, factory, db_session):
+    def test_session_rollback(self, factory, db_session, filedepot):
         from depot.manager import DepotManager
 
         f = factory(data='file content', name=u'content', title=u'content')
@@ -215,7 +176,7 @@ class TestDepotStore:
         assert DepotManager.get().delete.called
 
     @pytest.mark.parametrize("factory", [File, Image])
-    def test_delete(self, factory, db_session, root):
+    def test_delete(self, factory, db_session, root, filedepot):
         from depot.manager import DepotManager
 
         f = factory(data='file content', name=u'content', title=u'content')
@@ -226,7 +187,8 @@ class TestDepotStore:
         assert id in DepotManager.get()._storage.keys()
 
         del root[str(id)]
-        import transaction; transaction.commit()
+        import transaction
+        transaction.commit()
 
         assert DepotManager.get().delete.called
         assert id not in DepotManager.get()._storage.keys()

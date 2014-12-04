@@ -147,7 +147,7 @@ class FileAddForm(AddFormView):
             filename=filename,
             mimetype=appstruct['file']['mimetype'],
             size=size,
-            )
+        )
         return item
 
 

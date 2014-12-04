@@ -9,6 +9,7 @@ Fixture dependencies
 
    digraph kotti_fixtures {
       "allwarnings";
+      "filedepot";
       "app" -> "webtest";
       "config" -> "db_session";
       "config" -> "dummy_request";
@@ -41,6 +42,7 @@ Fixture dependencies
 import warnings
 
 from pytest import fixture
+from mock import MagicMock
 
 
 @fixture
@@ -276,3 +278,44 @@ def workflow(config):
     from zope.configuration import xmlconfig
     import kotti
     xmlconfig.file('workflow.zcml', kotti, execute=True)
+
+
+@fixture
+def filedepot(request):
+    from depot.manager import DepotManager
+    from datetime import datetime
+
+    class TestStorage:
+        def __init__(self):
+            self._storage = {}
+            self._storage.setdefault(0)
+
+        def get(self, id):
+            f = MagicMock()
+            f.read.return_value = self._storage[id]
+
+            # needed to make JSON serializable, Mock objects are not
+            f.last_modified = datetime.now()
+            f.filename = str(id)
+            f.public_url = ''
+            f.content_type = 'image/png'
+
+            return f
+
+        def create(self, content, filename=None, content_type=None):
+            id = max(self._storage) + 1
+            if hasattr(content, 'read'):
+                content = content.read()
+            self._storage[id] = content
+            return id
+
+        def delete(self, id):
+            del self._storage[int(id)]
+
+    DepotManager._depots = {
+        'default': MagicMock(wraps=TestStorage())
+    }
+
+    def restore():
+        DepotManager._depots = {}
+    request.addfinalizer(restore)
