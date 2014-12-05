@@ -14,6 +14,7 @@ from kotti import DBSession
 
 import uuid
 
+
 class CooperativeMeta(type):
     def __new__(cls, name, bases, members):
         # collect up the metaclasses
@@ -176,3 +177,17 @@ class DBFileStorage(FileStorage):
             file_id = file_or_id
         return bool(
             DBSession.query(StoredFile).filter_by(file_id=file_id).count())
+
+
+def configure_filedepot(settings):
+    from kotti.util import flatdotted_to_dict
+    from depot.manager import DepotManager
+
+    config = flatdotted_to_dict('kotti.depot.', settings)
+    for name, conf in config.items():
+        if DepotManager.get(name) is None:
+            DepotManager.configure(name, conf, prefix='')
+
+
+def includeme(config):
+    configure_filedepot(config.get_settings())
