@@ -276,6 +276,32 @@ def extract_from_settings(prefix, settings=None):
     return extracted
 
 
+def flatdotted_to_dict(prefix, settings=None):
+    """
+      >>> settings = {
+      ...     'kotti.depot.default.backend': 'local',
+      ...     'kotti.depot.default.file_storage': 'var/files',
+      ...     'kotti.depot.mongo.backend': 'mongodb',
+      ...     'kotti.depot.mongo.uri': 'localhost://',
+      ... }
+      >>> res = flatdotted_to_dict('kotti.depot.', settings)
+      >>> print sorted(res.keys())
+      ['default', 'mongo']
+      >>> print res['default']
+      {'file_storage': 'var/files', 'backend': 'local'}
+      >>> print res['mongo']
+      {'uri': 'localhost://', 'backend': 'mongodb'}
+    """
+
+    extracted = {}
+    for k, v in extract_from_settings(prefix, settings).items():
+        name, conf = k.split('.', 1)
+        extracted.setdefault(name, {})
+        extracted[name][conf] = v
+
+    return extracted
+
+
 def disambiguate_name(name):
     parts = name.split(u'-')
     if len(parts) > 1:

@@ -25,14 +25,6 @@ Base.query = DBSession.query_property()
 TRUE_VALUES = ('1', 'y', 'yes', 't', 'true')
 FALSE_VALUES = ('0', 'n', 'no', 'f', 'false', 'none')
 
-# tibi temp
-from depot.manager import DepotManager
-DepotManager.configure('default', {
-    'depot.backend': 'depot.io.local.LocalFileStorage',
-    'depot.storage_path': 'var/files'
-})
-# end tibi temp
-
 
 def authtkt_factory(**settings):
     from kotti.security import list_groups_callback
@@ -67,6 +59,7 @@ conf_defaults = {
     'pyramid.includes': '',
     'kotti.base_includes': ' '.join([
         'kotti',
+        'kotti.filedepot',
         'kotti.events',
         'kotti.views',
         'kotti.views.cache',
@@ -108,6 +101,8 @@ conf_defaults = {
     'kotti.datetime_format': 'medium',
     'kotti.time_format': 'medium',
     'kotti.max_file_size': '10',
+    'kotti.depot.default.backend': 'depot.io.local.LocalFileStorage',
+    'kotti.depot.default.storage_path': 'var/files',
     'kotti.fanstatic.edit_needed': 'kotti.fanstatic.edit_needed',
     'kotti.fanstatic.view_needed': 'kotti.fanstatic.view_needed',
     'kotti.static.edit_needed': '',  # BBB

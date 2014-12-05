@@ -148,6 +148,45 @@ class TestApp:
         assert get_settings()['kotti_foo.site_title'] == u'K\xf6tti'
         assert get_settings()['foo.site_title'] == 'K\xc3\xb6tti'
 
+    def test_default_filedepot(self, db_session):
+        from kotti import main
+        from depot.manager import DepotManager
+
+        settings = self.required_settings()
+
+        with patch('kotti.resources.initialize_sql'):
+            main({}, **settings)
+        assert DepotManager.get().__class__.__name__ == 'LocalFileStorage'
+
+    def test_configure_filedepot(self):
+        from depot.manager import DepotManager
+        from kotti.filedepot import configure_filedepot
+        from kotti import tests
+
+        tests.TFS1 = Mock(return_value=Mock(marker="TFS1"))
+        tests.TFS2 = Mock(return_value=Mock(marker="TFS2"))
+
+        settings = {
+            'kotti.depot.default.backend': 'kotti.tests.TFS1',
+            'kotti.depot.default.location': '/tmp',
+            'kotti.depot.mongo.backend': 'kotti.tests.TFS2',
+            'kotti.depot.mongo.uri': 'mongo://',
+        }
+        depots = DepotManager._depots
+        DepotManager._depots = {}
+        configure_filedepot(settings)
+
+        assert DepotManager.get().marker == 'TFS1'
+        assert DepotManager.get('default').marker == 'TFS1'
+        assert DepotManager.get('mongo').marker == 'TFS2'
+
+        tests.TFS1.assert_called_with(location='/tmp')
+        tests.TFS2.assert_called_with(uri='mongo://')
+
+        DepotManager._depots = depots
+        del tests.TFS1
+        del tests.TFS2
+
     def test_search_content(self, db_session):
         from kotti import main
         from kotti.views.util import search_content
