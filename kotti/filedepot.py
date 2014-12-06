@@ -1,5 +1,5 @@
+import uuid
 from datetime import datetime
-from depot.io.interfaces import StoredFile, FileStorage
 
 from sqlalchemy import Column
 from sqlalchemy import DateTime
@@ -9,10 +9,10 @@ from sqlalchemy import String
 from sqlalchemy import Unicode
 from sqlalchemy.orm import deferred
 
+from depot.io.interfaces import FileStorage
+
 from kotti import Base
 from kotti import DBSession
-
-import uuid
 
 
 class DBStoredFile(Base):   #, StoredFile):
@@ -109,14 +109,20 @@ class DBStoredFile(Base):   #, StoredFile):
 
 
 def set_metadata(event):
+    """Set DBStoredFile metadata based on data
+
+    :param event: event that trigerred this handler.
+    :type event: :class:`ObjectInsert` and :class:`ObjectUpdate`
+    """
     obj = event.object
-    obj.content_length = len(obj.data)
+    obj.content_length = obj.data and len(obj.data) or 0
     obj.last_modified = datetime.now()
 
 
 class DBFileStorage(FileStorage):
-    """ Implementation of :class:`depot.io.interfaces.FileStorage`, uses
-    `kotti.filedepot.DBStoredFile` to store blob data in an SQL database.
+    """Implementation of :class:`depot.io.interfaces.FileStorage`,
+
+    Uses `kotti.filedepot.DBStoredFile` to store blob data in an SQL database.
     """
 
     def get(self, file_id):
@@ -145,24 +151,22 @@ class DBFileStorage(FileStorage):
                               file_id=new_file_id,
                               filename=filename,
                               content_type=content_type,
-                              content_length=len(content),
-                              last_modified=datetime.now())
+                              )
         DBSession.add(fstore)
         return new_file_id
 
-    def replace(self, file_or_id, content, filename=None, content_type=None):  # pragma: no cover
-        """Replaces an existing file, an ``IOError`` is raised if the file didn't already exist.
+    def replace(self, file_or_id, content, filename=None, content_type=None):
+        """Replaces an existing file, an ``IOError`` is raised if the file
+        didn't already exist.
 
-        Given a :class:`StoredFile` or its ID it will replace the current content
-        with the provided ``content`` value. If ``filename`` and ``content_type`` are
-        provided or can be deducted by the ``content`` itself they will also replace
-        the previous values, otherwise the current values are kept.
+        Given a :class:`StoredFile` or its ID it will replace the current
+        content with the provided ``content`` value. If ``filename`` and
+        ``content_type`` are provided or can be deducted by the ``content``
+        itself they will also replace the previous values, otherwise the current
+        values are kept.
         """
 
-        if isinstance(file_or_id, StoredFile):
-            file_id = file_or_id.file_id
-        else:
-            file_id = file_or_id
+        file_id = self._get_file_id(file_or_id)
 
         content, filename, content_type = self.fileinfo(
             content, filename, content_type)
@@ -179,24 +183,25 @@ class DBFileStorage(FileStorage):
 
         fstore.data = content
 
-    def delete(self, file_or_id):  # pragma: no cover
+    def delete(self, file_or_id):
         """Deletes a file. If the file didn't exist it will just do nothing."""
 
-        if isinstance(file_or_id, StoredFile):
-            file_id = file_or_id.file_id
-        else:
-            file_id = file_or_id
-        fstore = self.get(file_id)
-        DBSession.delete(fstore)
+        file_id = self._get_file_id(file_or_id)
 
-    def exists(self, file_or_id):  # pragma: no cover
+        DBSession.query(DBStoredFile).filter_by(file_id=file_id).delete()
+
+    def exists(self, file_or_id):
         """Returns if a file or its ID still exist."""
-        if isinstance(file_or_id, StoredFile):
-            file_id = file_or_id.file_id
-        else:
-            file_id = file_or_id
+
+        file_id = self._get_file_id(file_or_id)
+
         return bool(
-            DBSession.query(StoredFile).filter_by(file_id=file_id).count())
+            DBSession.query(DBStoredFile).filter_by(file_id=file_id).count())
+
+    def _get_file_id(self, file_or_id):
+        if hasattr(file_or_id, 'file_id'):
+            return file_or_id.file_id
+        return file_or_id
 
 
 def configure_filedepot(settings):
