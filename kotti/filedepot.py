@@ -15,28 +15,7 @@ from kotti import DBSession
 import uuid
 
 
-class CooperativeMeta(type):
-    def __new__(cls, name, bases, members):
-        # collect up the metaclasses
-        metas = [type(base) for base in bases]
-
-        # prune repeated or conflicting entries
-        metas = [meta for index, meta in enumerate(metas)
-            if not [later for later in metas[index + 1:]
-                if issubclass(later, meta)]]
-
-        # whip up the actual combined meta class derive off all of these
-        meta = type(name, tuple(metas), dict(combined_metas=metas))
-
-        # make the actual object
-        return meta(name, bases, members)
-
-    def __init__(self, name, bases, members):
-        for meta in self.combined_metas:
-            meta.__init__(self, name, bases, members)
-
-
-class DBStoredFile(Base, StoredFile):
+class DBStoredFile(Base):   #, StoredFile):
     """depotfile StoredFile implementation that stores data in the db.
 
     Can be used together with DBFileStorage to implement blobs (large files)
@@ -44,7 +23,6 @@ class DBStoredFile(Base, StoredFile):
     """
 
     __tablename__ = "blobs"
-    __metaclass__ = CooperativeMeta
 
     #: Primary key column in the DB
     #: (:class:`sqlalchemy.types.Integer`)
@@ -68,35 +46,77 @@ class DBStoredFile(Base, StoredFile):
     #: (:class:`sqlalchemy.types.LargeBinary`)
     data = deferred(Column('data', LargeBinary()))
 
-    def read(self, n=-1):  # pragma: no cover
+    def __init__(self, file_id, filename=None, content_type=None, last_modified=None,
+                 content_length=None, **kwds):
+        self.file_id = file_id
+        self.filename = filename
+        self.content_type = content_type
+        self.last_modified = last_modified
+        self.content_length = content_length
+
+        for k, v in kwds.items():
+            setattr(self, k, v)
+
+    def read(self, n=-1):
         """Reads ``n`` bytes from the file.
 
         If ``n`` is not specified or is ``-1`` the whole
         file content is read in memory and returned
         """
-        return
+        if n == -1:
+            return self.data
+        return self.data[:n]
 
-    def close(self, *args, **kwargs):  # pragma: no cover
-        """Closes the file.
-
-        After closing the file it won't be possible to read
-        from it anymore. Some implementation might not do anything
-        when closing the file, but they still are required to prevent
-        further reads from a closed file.
+    def close(self, *args, **kwargs):
+        """Implement :meth:`StoredFile.close`.
+        :class:`DBStoredFile` never closes.
         """
         return
 
-    def closed(self):  # pragma: no cover
-        """Returns if the file has been closed.
-
-        When ``closed`` return ``True`` it won't be possible
-        to read anoymore from this file.
+    def closed(self):
+        """Implement :meth:`StoredFile.closed`.
         """
-        return
+        return False
+
+    def writable(self):
+        """Implement :meth:`StoredFile.writable`.
+        """
+        return False
+
+    def seekable(self):
+        """Implement :meth:`StoredFile.seekable`.
+        """
+        return False
+
+    @property
+    def name(self):
+        """Implement :meth:`StoredFile.name`.
+
+        This is the filename of the saved file
+        """
+        return self.filename
+
+    @property
+    def public_url(self):
+        """The public HTTP url from which file can be accessed.
+
+        When supported by the storage this will provide the
+        public url to which the file content can be accessed.
+        In case this returns ``None`` it means that the file can
+        only be served by the :class:`DepotMiddleware` itself.
+        """
+        return None
+
+
+def set_metadata(event):
+    obj = event.object
+    obj.content_length = len(obj.data)
+    obj.last_modified = datetime.now()
 
 
 class DBFileStorage(FileStorage):
-    """ depotfile FileStorage implementation, uses DBStoredFile to store data
+    """ Implementation of :class:`depot.io.interfaces.FileStorage`, uses
+    `kotti.filedepot.DBStoredFile` to store blob data in an SQL database.
     """
 
     def get(self, file_id):
@@ -190,4 +210,19 @@ def configure_filedepot(settings):
 
 
 def includeme(config):
+    """ Pyramid includeme hook.
+
+    :param config: app config
+    :type config: :class:`pyramid.config.Configurator`
+    """
+    from kotti.events import objectevent_listeners
+    from kotti.events import ObjectInsert
+    from kotti.events import ObjectUpdate
+
     configure_filedepot(config.get_settings())
+
+    # Update file metadata on change of blob data
+    objectevent_listeners[
+        (ObjectInsert, DBStoredFile)].append(set_metadata)
+    objectevent_listeners[
+        (ObjectUpdate, DBStoredFile)].append(set_metadata)
