@@ -35,7 +35,7 @@ class DBStoredFile(Base):   #, StoredFile):
     filename = Column(Unicode(100))
     #: MIME type of the blob
     #: (:class:`sqlalchemy.types.String`)
-    content_type = Column(String(30))
+    content_type = Column(String(100))
     #: Size of the blob in bytes
     #: (:class:`sqlalchemy.types.Integer`)
     content_length = Column(Integer())
