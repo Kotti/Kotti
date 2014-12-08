@@ -12,6 +12,7 @@ down_revision = '1063d7178fa'
 
 import logging
 import sqlalchemy as sa
+from alembic import op
 
 log = logging.getLogger('kotti')
 
@@ -21,6 +22,7 @@ def upgrade():
 
     from depot.manager import DepotManager
     from depot.fields.upload import UploadedFile
+    from depot.fields.sqlalchemy import UploadedFileField
 
     from kotti import DBSession, metadata
     from kotti.resources import File
@@ -40,6 +42,11 @@ def upgrade():
 
         log.info("Migrated {} bytes for File with pk {} to {}/{}".
                     format(len(obj.data), obj.id, dn, uploaded_file['file_id']))
+
+    DBSession.flush()
+    if DBSession.get_bind().name != 'sqlite':   # not supported by sqlite
+        op.alter_column('files', 'data', type_=UploadedFileField())
+
 
 def downgrade():
     pass
