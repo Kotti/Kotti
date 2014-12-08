@@ -40,8 +40,8 @@ def upgrade():
         stored_file.last_modified = obj.modification_date
         obj.data = uploaded_file.encode()
 
-        log.info("Migrated {} bytes for File with pk {} to {}/{}".
-                    format(len(obj.data), obj.id, dn, uploaded_file['file_id']))
+        log.info("Migrated {} bytes for File with pk {} to {}/{}".format(
+            len(obj.data), obj.id, dn, uploaded_file['file_id']))
 
     DBSession.flush()
     if DBSession.get_bind().name != 'sqlite':   # not supported by sqlite
