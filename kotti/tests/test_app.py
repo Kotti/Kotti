@@ -169,8 +169,8 @@ class TestApp:
         tests.TFS2 = Mock(return_value=Mock(marker="TFS2"))
 
         settings = {
-            'kotti.depot.default.backend': 'kotti.tests.TFS1',
-            'kotti.depot.default.location': '/tmp',
+            'kotti.depot.localfs.backend': 'kotti.tests.TFS1',
+            'kotti.depot.localfs.location': '/tmp',
             'kotti.depot.mongo.backend': 'kotti.tests.TFS2',
             'kotti.depot.mongo.uri': 'mongo://',
         }
@@ -180,7 +180,7 @@ class TestApp:
         configure_filedepot(settings)
 
         assert DepotManager.get().marker == 'TFS1'
-        assert DepotManager.get('default').marker == 'TFS1'
+        assert DepotManager.get('localfs').marker == 'TFS1'
         assert DepotManager.get('mongo').marker == 'TFS2'
 
         tests.TFS1.assert_called_with(location='/tmp')
