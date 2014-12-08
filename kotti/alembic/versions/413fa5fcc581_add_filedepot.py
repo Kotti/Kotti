@@ -10,12 +10,14 @@ Create Date: 2014-12-07 05:10:04.294222
 revision = '413fa5fcc581'
 down_revision = '1063d7178fa'
 
-#from alembic import op
+import logging
 import sqlalchemy as sa
+
+log = logging.getLogger('kotti')
 
 
 def upgrade():
-    sa.orm.events.MapperEvents._clear() # avoids filedepot magic
+    sa.orm.events.MapperEvents._clear()     # avoids filedepot magic
 
     from depot.manager import DepotManager
     from depot.fields.upload import UploadedFile
@@ -25,26 +27,19 @@ def upgrade():
 
     t = sa.Table('files', metadata)
     t.c.data.type = sa.LargeBinary()
+    dn = DepotManager.get_default()
 
-    class UF(UploadedFile):
-        _frozen = False
+    for obj in DBSession.query(File):
+        uploaded_file = UploadedFile({'depot_name': dn, 'files': []})
+        uploaded_file._thaw()
+        uploaded_file.process_content(
+            obj.data, filename=obj.filename, content_type=obj.mimetype)
+        stored_file = DepotManager.get().get(uploaded_file['file_id'])
+        stored_file.last_modified = obj.modification_date
+        obj.data = uploaded_file.encode()
 
-        def __init__(self):
-            self.depot_name = DepotManager.get_default()
-            self.files = []
-
-    for o in DBSession.query(File):
-        print o.id, len(o.data), o.filename, o.mimetype, o.modification_date
-
-        s = UF()
-        s.process_content(o.data, filename=o.filename, content_type=o.mimetype)
-        f = DepotManager.get().get(s['file_id'])
-        f.last_modified = o.modification_date   # not ok for LocalStore
-        o.data = s.encode()
-
-    DBSession.flush()
-    raise ValueError
-
+        log.info("Migrated {} bytes for File with pk {} to {}/{}".
+                    format(len(obj.data), obj.id, dn, uploaded_file['file_id']))
 
 def downgrade():
     pass
