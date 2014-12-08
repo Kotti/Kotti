@@ -313,9 +313,11 @@ def filedepot(request):
             del self._storage[int(id)]
 
     DepotManager._depots = {
-        'default': MagicMock(wraps=TestStorage())
+        'mockdepot': MagicMock(wraps=TestStorage())
     }
+    DepotManager._default_depot = 'mockdepot'
 
     def restore():
         DepotManager._depots = {}
+        DepotManager._default_depot = None
     request.addfinalizer(restore)
