@@ -176,6 +176,7 @@ class TestApp:
         }
         depots = DepotManager._depots
         DepotManager._depots = {}
+        DepotManager._default_depot = None
         configure_filedepot(settings)
 
         assert DepotManager.get().marker == 'TFS1'

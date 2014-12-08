@@ -18,7 +18,7 @@ class TestFileViews:
         assert headers["Content-Length"] == "13"
         assert headers["Content-Type"] == "image/png"
 
-    def test_inline_view(self, config):
+    def test_inline_view(self, config, filedepot):
         self._create_file(config)
         from kotti.views.file import inline_view
         res = inline_view(self.file, None)
@@ -28,7 +28,7 @@ class TestFileViews:
         assert headers["Content-Disposition"] == 'inline;filename="myfle.png"'
         assert res.body == 'file contents'
 
-    def test_attachment_view(self, config):
+    def test_attachment_view(self, config, filedepot):
         self._create_file(config)
         from kotti.views.file import attachment_view
         res = attachment_view(self.file, None)
@@ -103,7 +103,7 @@ class TestFileAddForm:
         from kotti.views.edit.content import FileAddForm
         return FileAddForm(MagicMock(), DummyRequest())
 
-    def test_add(self, config):
+    def test_add(self, config, filedepot):
         view = self.make_one()
         file = view.add(
             title=u'A title',

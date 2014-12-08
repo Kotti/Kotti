@@ -15,7 +15,7 @@ from kotti import Base
 from kotti import DBSession
 
 
-class DBStoredFile(Base):   #, StoredFile):
+class DBStoredFile(Base):
     """depotfile StoredFile implementation that stores data in the db.
 
     Can be used together with DBFileStorage to implement blobs (large files)
