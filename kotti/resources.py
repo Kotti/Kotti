@@ -35,6 +35,7 @@ from sqlalchemy.orm import backref
 from sqlalchemy.orm import object_mapper
 from sqlalchemy.orm import relation
 from sqlalchemy.orm.exc import NoResultFound
+from sqlalchemy.orm import ColumnProperty
 from sqlalchemy.sql import and_
 from sqlalchemy.sql import select
 from sqlalchemy.util import classproperty
@@ -690,8 +691,31 @@ class File(Content):
         # For the ``data`` column, use the field value setter from filedepot.
         # filedepot already registers this event listener, but it does so in a
         # way that won't work properly for subclasses of File
-        event.listen(cls.data, 'set',
-                     _SQLAMutationTracker._field_set, retval=True)
+
+        # mapper = cls._sa_class_manager.mapper
+        # for mapper_property in mapper.iterate_properties:
+        #     if isinstance(mapper_property, ColumnProperty):
+        #         for idx, col in enumerate(mapper_property.columns):
+        #             if isinstance(col.type, UploadedFileField):
+        #                 event.listen(
+        #                     getattr(cls, col.name),
+        #                     'set',
+        #                     _SQLAMutationTracker._field_set,
+        #                     retval=True
+        #                 )
+        event.listen(cls.data, 'set', cls.set_metadata, retval=True)
+
+    @classmethod
+    def set_metadata(cls, target, value, oldvalue, initiator):
+        newvalue = _SQLAMutationTracker._field_set(
+            target, value, oldvalue, initiator)
+
+        if newvalue is None:
+            return
+
+        target.mimetype = newvalue.file.content_type
+        target.size = newvalue.file.content_length
+        return newvalue
 
 
 class Image(File):
