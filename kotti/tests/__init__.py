@@ -277,7 +277,7 @@ def workflow(config):
 
 
 @fixture
-def filedepot(request):
+def filedepot(request, db_session):
     from depot.manager import DepotManager
     from datetime import datetime
 
@@ -316,6 +316,7 @@ def filedepot(request):
     DepotManager._default_depot = 'mockdepot'
 
     def restore():
+        db_session.rollback()
         DepotManager._depots = _old_depots
         DepotManager._default_depot = _old_default_depot
 
