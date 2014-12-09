@@ -112,7 +112,7 @@ def set_metadata(event):
     """Set DBStoredFile metadata based on data
 
     :param event: event that trigerred this handler.
-    :type event: :class:`ObjectInsert` and :class:`ObjectUpdate`
+    :type event: :class:`ObjectInsert` or :class:`ObjectUpdate`
     """
     obj = event.object
     obj.content_length = obj.data and len(obj.data) or 0
