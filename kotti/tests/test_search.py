@@ -22,7 +22,8 @@ def create_contents_with_tags(root=None):
     dog = root['animals']['dog'] = Content(title=u'Dog')
     monkey = root['animals']['monkey'] = Content(title=u'Monkey')
     gorilla = root['animals']['gorilla'] = Content(title=u'Gorilla')
-    monkey_file = root['animals']['monkey_file'] = File(title=u'Monkey File',
+    monkey_file = root['animals']['monkey_file'] = File(
+        title=u'Monkey File',
         description=u'A Rhesus Macaque and a Green Monkey walk into a bar...')
 
     root[u'animals'][u'cat'].tags = [u'Animals', u'Cat']

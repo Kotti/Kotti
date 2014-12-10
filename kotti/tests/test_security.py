@@ -119,19 +119,19 @@ class TestGroups:
         # Check bob's groups on every level:
         assert list_groups('bob', root) == ['group:bobsgroup']
         assert (set(list_groups('bob', child)) ==
-            set(['group:bobsgroup', 'group:franksgroup', 'role:editor']))
+                set(['group:bobsgroup', 'group:franksgroup', 'role:editor']))
         assert (set(list_groups('bob', grandchild)) ==
-            set(['group:bobsgroup', 'group:franksgroup', 'role:editor',
-                 'role:owner']))
+                set(['group:bobsgroup', 'group:franksgroup', 'role:editor',
+                     'role:owner']))
 
         # Check group:franksgroup groups on every level:
         assert (set(list_groups('frank', root)) ==
-            set(['group:franksgroup', 'role:editor']))
+                set(['group:franksgroup', 'role:editor']))
         assert (set(list_groups('frank', child)) ==
-            set(['group:franksgroup', 'role:editor']))
+                set(['group:franksgroup', 'role:editor']))
         assert (set(list_groups('frank', grandchild)) ==
-            set(['group:franksgroup', 'role:editor', 'role:owner',
-                 'group:bobsgroup']))
+                set(['group:franksgroup', 'role:editor', 'role:owner',
+                     'group:bobsgroup']))
 
         # Sometimes it's useful to know which of the groups were
         # inherited, that's what 'list_groups_ext' is for:
@@ -141,9 +141,9 @@ class TestGroups:
 
         groups, inherited = list_groups_ext('bob', child)
         assert (set(groups) ==
-            set(['group:bobsgroup', 'group:franksgroup', 'role:editor']))
+                set(['group:bobsgroup', 'group:franksgroup', 'role:editor']))
         assert (set(inherited) ==
-            set(['group:bobsgroup', 'group:franksgroup', 'role:editor']))
+                set(['group:bobsgroup', 'group:franksgroup', 'role:editor']))
 
         groups, inherited = list_groups_ext('group:bobsgroup', child)
         assert set(groups) == set(['group:franksgroup', 'role:editor'])
@@ -151,7 +151,7 @@ class TestGroups:
 
         groups, inherited = list_groups_ext('group:franksgroup', grandchild)
         assert (set(groups) ==
-            set(['group:bobsgroup', 'role:owner', 'role:editor']))
+                set(['group:bobsgroup', 'role:owner', 'role:editor']))
         assert inherited == ['role:editor']
 
     def test_works_with_auth(self, db_session, root):
@@ -413,9 +413,9 @@ class TestPrincipals:
         set_groups('role:editor', child, ['group:foogroup'])
 
         assert (set(list_groups('bob', root)) ==
-            set(['group:bobsgroup', 'role:editor']))
+                set(['group:bobsgroup', 'role:editor']))
         assert (set(list_groups('bob', child)) ==
-            set(['group:bobsgroup', 'role:editor', 'group:foogroup']))
+                set(['group:bobsgroup', 'role:editor', 'group:foogroup']))
 
     def test_is_user(self, db_session):
         from kotti.security import is_user
@@ -462,7 +462,7 @@ class TestPrincipals:
         request.params['login'] = u'bob'
         request.params['password'] = u'secret'
         with patch(
-            'kotti.views.login.email_set_password') as email_set_password:
+                'kotti.views.login.email_set_password') as email_set_password:
             login(None, request)
         assert (request.session.pop_flash('success') == [
             u"You should be receiving an email with a link to reset your "
@@ -478,10 +478,10 @@ class TestPrincipals:
         request.params['login'] = u'bob'
         request.params['password'] = u'secret'
         with patch(
-            'kotti.views.login.email_set_password') as email_set_password:
+                'kotti.views.login.email_set_password') as email_set_password:
             login(None, request)
         assert (request.session.pop_flash('error') ==
-            [u"That username or email is not known by this system."])
+                [u"That username or email is not known by this system."])
         assert email_set_password.call_count == 0
 
     def test_login(self, db_session):

@@ -129,8 +129,8 @@ class UploadView(object):
 
     @view_config(request_method="POST", xhr=True, accept="application/json")
     def process_upload(self):
-        """ Process a single upload.
-            Also see: https://github.com/valums/file-uploader/blob/master/server/readme.md
+        """ Process a single upload.  Also see:
+            https://github.com/valums/file-uploader/blob/master/server/readme.md
 
         :result: Status object with URL of the created item (on success) or
                  error message on failure.

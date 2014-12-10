@@ -383,8 +383,7 @@ class TestPath:
         assert child1.path == u'/parent/child-1'
         assert child2.path == u'/parent/child-1/child-2'
 
-    def test_node_lineage_not_loaded_new_name(
-        self, db_session, root, events):
+    def test_node_lineage_not_loaded_new_name(self, db_session, root, events):
 
         from kotti.resources import Node
         parent = root['parent'] = Node()
@@ -399,8 +398,7 @@ class TestPath:
         child3 = Node('child-3', parent=child2)
         assert child3.path == u'/parent/child-1/child-2/child-3'
 
-    def test_node_lineage_not_loaded_new_parent(
-        self, db_session, root, events):
+    def test_node_lineage_not_loaded_new_parent(self, db_session, root, events):
 
         from kotti.resources import Node
         from kotti.resources import get_root

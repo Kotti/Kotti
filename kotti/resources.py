@@ -13,7 +13,6 @@ import warnings
 from fnmatch import fnmatch
 from UserDict import DictMixin
 
-from pyramid.threadlocal import get_current_registry
 from pyramid.traversal import resource_path
 from sqlalchemy import Boolean
 from sqlalchemy import Column

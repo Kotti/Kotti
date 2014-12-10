@@ -69,7 +69,7 @@ class DefaultViewSelection(object):
                 })
             else:
                 warnings.warn("No view called %r is registered for %r." %
-                    (name, self.context))
+                              (name, self.context))
 
         return {
             "selectable_default_views": [
