@@ -18,7 +18,8 @@ def upgrade():
 
     for node in DBSession.query(Node).with_polymorphic([Node]):
         # append '/' to all nodes but root
-        node.path != u'/' and node.path += u'/'
+        if node.path != u'/':
+            node.path += u'/'
 
 
 def downgrade():
@@ -27,4 +28,5 @@ def downgrade():
 
     for node in DBSession.query(Node).with_polymorphic([Node]):
         # remove trailing '/' from all nodes but root
-        node.path == u'/' or node.path[:-1]
+        if node.path != u'/':
+            node.path = node.path[:-1]
