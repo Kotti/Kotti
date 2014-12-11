@@ -35,7 +35,7 @@ class TestPackageEnvironment:
         from kotti.migrate import DEFAULT_LOCATION
 
         with patch('kotti.migrate.get_settings',
-            return_value={'sqlalchemy.url': u'database_url'}):
+                   return_value={'sqlalchemy.url': u'database_url'}):
             return PackageEnvironment(DEFAULT_LOCATION)
 
     def test_pkg_name(self, db_session, events):

@@ -29,7 +29,7 @@ class TestUserManagement:
         entries = UsersManage(root, request)()['entries']
         assert len(entries) == 0
         assert (request.session.pop_flash('info') ==
-            [u'No users or groups were found.'])
+                [u'No users or groups were found.'])
         request.params['query'] = u'Bob'
         entries = UsersManage(root, request)()['entries']
         assert entries[0][0] == P['bob']
@@ -41,7 +41,7 @@ class TestUserManagement:
         P[u'group:bobsgroup'].groups = [u'role:admin']
         entries = UsersManage(root, request)()['entries']
         assert (entries[0][1] ==
-            (['group:bobsgroup', 'role:admin'], ['role:admin']))
+                (['group:bobsgroup', 'role:admin'], ['role:admin']))
         assert entries[1][1] == (['role:admin'], [])
 
     def test_apply(self, extra_principals, root):
@@ -66,7 +66,7 @@ class TestUserManagement:
 
         UsersManage(root, request)()
         assert (request.session.pop_flash('success') ==
-            [u'Your changes have been saved.'])
+                [u'Your changes have been saved.'])
         assert (
             set(list_groups('bob')) ==
             set(['role:owner', 'role:editor', 'role:special'])
@@ -111,7 +111,8 @@ class TestUserDelete:
         with pytest.raises(KeyError):
             get_principals()[u'bob']
 
-    def test_deleted_group_removed_in_usergroups(self, events, extra_principals, root, db_session):
+    def test_deleted_group_removed_in_usergroups(self, events, extra_principals,
+                                                 root, db_session):
         from kotti.security import get_principals
         from kotti.views.users import user_delete
 
@@ -128,7 +129,8 @@ class TestUserDelete:
             get_principals()[u'group:bobsgroup']
         assert bob.groups == []
 
-    def test_deleted_group_removed_from_localgroups(self, events, extra_principals, root):
+    def test_deleted_group_removed_from_localgroups(self, events,
+                                                    extra_principals, root):
         from kotti.security import set_groups
         from kotti.resources import LocalGroup
         from kotti.views.users import user_delete
@@ -142,7 +144,7 @@ class TestUserDelete:
         request.params['name'] = u'group:bobsgroup'
         request.params['delete'] = u'delete'
         user_delete(root, request)
-        assert LocalGroup.query.first() == None
+        assert LocalGroup.query.first() is None
 
     def test_reset_owner_to_none(self, events, extra_principals, root):
         from kotti.resources import Content
@@ -157,7 +159,7 @@ class TestUserDelete:
         request.params['name'] = u'bob'
         request.params['delete'] = u'delete'
         user_delete(root, request)
-        assert root[u'content_1'].owner == None
+        assert root[u'content_1'].owner is None
 
 
 class TestSetPassword:

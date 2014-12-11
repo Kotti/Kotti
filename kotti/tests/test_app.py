@@ -1,9 +1,6 @@
 # -*- coding: utf-8 -*-
 
-import warnings
-
 from mock import patch, Mock
-from pytest import raises
 
 from pyramid.interfaces import IAuthenticationPolicy
 from pyramid.interfaces import IAuthorizationPolicy
@@ -108,7 +105,8 @@ class TestApp:
 
     def test_root_factory(self, db_session):
         from kotti import main
-        from kotti.resources import get_root    # the `root` fixture doesn't work here
+        # the `root` fixture doesn't work here
+        from kotti.resources import get_root
 
         settings = self.required_settings()
         settings['kotti.root_factory'] = (TestingRootFactory,)

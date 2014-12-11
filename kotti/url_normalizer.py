@@ -9,7 +9,8 @@ from kotti import get_settings
 # Define and compile static regexes
 FILENAME_REGEX = re.compile(r"^(.+)\.(\w{,4})$", re.U)
 IGNORE_REGEX = re.compile(r"['\"]", re.U)
-URL_DANGEROUS_CHARS_REGEX = re.compile(r"[!#$%&()*+,/:;<=>?@\\^{|}\[\]~`]+", re.U)
+URL_DANGEROUS_CHARS_REGEX = re.compile(r"[!#$%&()*+,/:;<=>?@\\^{|}\[\]~`]+",
+                                       re.U)
 MULTIPLE_DASHES_REGEX = re.compile(r"\-+", re.U)
 EXTRA_DASHES_REGEX = re.compile(r"(^\-+)|(\-+$)", re.U)
 # Define static constraints
