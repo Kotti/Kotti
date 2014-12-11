@@ -14,12 +14,9 @@ import warnings
 from fnmatch import fnmatch
 from UserDict import DictMixin
 
-<<<<<<< HEAD
 from depot.fields.sqlalchemy import UploadedFileField
 from depot.fields.sqlalchemy import _SQLAMutationTracker
 
-=======
->>>>>>> c291f19e2260c0a6907c304d614ada69935b3922
 from pyramid.traversal import resource_path
 from sqlalchemy import event
 from sqlalchemy import Boolean
@@ -38,7 +35,6 @@ from sqlalchemy.orm import backref
 from sqlalchemy.orm import object_mapper
 from sqlalchemy.orm import relation
 from sqlalchemy.orm.exc import NoResultFound
-from sqlalchemy.orm import ColumnProperty
 from sqlalchemy.sql import and_
 from sqlalchemy.sql import select
 from sqlalchemy.util import classproperty

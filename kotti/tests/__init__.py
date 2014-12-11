@@ -5,7 +5,6 @@
 
    digraph kotti_fixtures {
       "allwarnings";
-      "filedepot";
       "app" -> "webtest";
       "config" -> "db_session";
       "config" -> "dummy_request";
@@ -19,6 +18,7 @@
       "db_session" -> "app";
       "db_session" -> "browser";
       "db_session" -> "root";
+      "db_session" -> "filedepot";
       "dummy_mailer" -> "app";
       "dummy_mailer";
       "events" -> "app";
@@ -277,7 +277,7 @@ def workflow(config):
 
 
 @fixture
-def filedepot(request, db_session):
+def filedepot(db_session, request):
     from depot.manager import DepotManager
     from datetime import datetime
 
