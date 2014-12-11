@@ -35,7 +35,6 @@ from sqlalchemy.orm import backref
 from sqlalchemy.orm import object_mapper
 from sqlalchemy.orm import relation
 from sqlalchemy.orm.exc import NoResultFound
-from sqlalchemy.orm import ColumnProperty
 from sqlalchemy.sql import and_
 from sqlalchemy.sql import select
 from sqlalchemy.util import classproperty
