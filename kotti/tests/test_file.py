@@ -20,42 +20,30 @@ class TestFileViews:
 
     def test_inline_view(self, config, filedepot):
         from kotti.views.file import inline_view
-        from kotti.views.file import as_inline
-        from pyramid.response import IResponse
 
         config.include('kotti.views.file')
 
         self._create_file(config)
 
         res = inline_view(self.file, None)
-        assert isinstance(res, as_inline)
-
-        response = IResponse(res)
-        headers = response.headers
+        headers = res.headers
 
         self._test_common_headers(headers)
 
         assert headers["Content-Disposition"] == 'inline;filename="myfle.png"'
-        assert response.app_iter.file.read() == 'file contents'
+        assert res.app_iter.file.read() == 'file contents'
 
     def test_attachment_view(self, config, filedepot):
         from kotti.views.file import attachment_view
-        from kotti.views.file import as_download
-        from pyramid.response import IResponse
-
-        config.include('kotti.views.file')
 
         self._create_file(config)
         res = attachment_view(self.file, None)
-        assert isinstance(res, as_download)
-
-        response = IResponse(res)
-        headers = response.headers
+        headers = res.headers
 
         self._test_common_headers(headers)
         assert headers["Content-Disposition"] == (
             'attachment;filename="myfle.png"')
-        assert response.app_iter.file.read() == 'file contents'
+        assert res.app_iter.file.read() == 'file contents'
 
 
 class TestFileEditForm:
