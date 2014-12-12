@@ -46,8 +46,8 @@ class DBStoredFile(Base):
     #: (:class:`sqlalchemy.types.LargeBinary`)
     data = deferred(Column('data', LargeBinary()))
 
-    def __init__(self, file_id, filename=None, content_type=None, last_modified=None,
-                 content_length=None, **kwds):
+    def __init__(self, file_id, filename=None, content_type=None,
+                 last_modified=None, content_length=None, **kwds):
         self.file_id = file_id
         self.filename = filename
         self.content_type = content_type

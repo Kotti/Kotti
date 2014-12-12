@@ -16,6 +16,7 @@ from kotti.resources import Document
 from kotti.resources import File
 from kotti.resources import Image
 from kotti.util import _
+from kotti.util import _to_fieldstorage
 from kotti.views.form import get_appstruct
 from kotti.views.form import AddFormView
 from kotti.views.form import EditFormView
@@ -102,18 +103,7 @@ class FileEditForm(EditFormView):
         self.context.description = appstruct['description']
         self.context.tags = appstruct['tags']
         if appstruct['file']:
-            buf = appstruct['file']['fp']
-            size = 0
-            while True:
-                chunk = buf.read(1024)
-                if not chunk:
-                    break
-                size += len(chunk)
-            buf.seek(0)
-            self.context.data = buf
-            self.context.filename = appstruct['file']['filename']
-            self.context.mimetype = appstruct['file']['mimetype']
-            self.context.size = size
+            self.context.data = _to_fieldstorage(**appstruct['file'])
 
 
 class FileAddForm(AddFormView):
@@ -130,23 +120,12 @@ class FileAddForm(AddFormView):
         return super(FileAddForm, self).save_success(appstruct)
 
     def add(self, **appstruct):
-        buf = appstruct['file']['fp']
-        size = 0
-        while True:
-            chunk = buf.read(1024)
-            if not chunk:
-                break
-            size += len(chunk)
-        buf.seek(0)
         filename = appstruct['file']['filename']
         item = self.item_class(
             title=appstruct['title'] or filename,
             description=appstruct['description'],
             tags=appstruct['tags'],
-            data=buf,
-            filename=filename,
-            mimetype=appstruct['file']['mimetype'],
-            size=size,
+            data=_to_fieldstorage(**appstruct['file']),
         )
         return item
 

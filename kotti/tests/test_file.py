@@ -43,25 +43,11 @@ class TestFileViews:
 class TestFileEditForm:
     def make_one(self):
         from kotti.views.edit.content import FileEditForm
+        from kotti.resources import File
 
-        class MockFileColumn(object):
-            def __init__(self):
-                self.file = MagicMock()
+        return FileEditForm(File(), DummyRequest())
 
-            def __set__(self, instance, value):
-                if isinstance(value, StringIO):
-                    value.seek(0)
-                    rv = value.read()
-                else:
-                    rv = value
-                self.file.read.return_value = rv
-
-        class MockDepotFile(object):
-            data = MockFileColumn()
-
-        return FileEditForm(MockDepotFile(), DummyRequest())
-
-    def test_edit_with_file(self):
+    def test_edit_with_file(self, db_session, filedepot):
         view = self.make_one()
         view.edit(
             title=u'A title', description=u'A description',
@@ -70,6 +56,8 @@ class TestFileEditForm:
                 fp=StringIO('filecontents'),
                 filename=u'myfile.png',
                 mimetype=u'image/png',
+                size=10,
+                uid="randomabc",
                 ),
             )
         assert view.context.title == u'A title'
@@ -80,7 +68,7 @@ class TestFileEditForm:
         assert view.context.size == len('filecontents')
         assert view.context.tags == [u"A tag"]
 
-    def test_edit_without_file(self):
+    def test_edit_without_file(self, filedepot):
         view = self.make_one()
         view.context.data = 'filecontents'
         view.context.filename = u'myfile.png'
@@ -113,6 +101,8 @@ class TestFileAddForm:
                 fp=StringIO('filecontents'),
                 filename=u'myfile.png',
                 mimetype=u'image/png',
+                size=None,
+                uid="randomabc",
                 ),
             )
 
@@ -192,3 +182,11 @@ class TestDepotStore:
 
         assert DepotManager.get().delete.called
         assert id not in DepotManager.get()._storage.keys()
+
+
+class TestFileSetMetadata:
+
+    def test_it(self, db_session, filedepot):
+        from kotti.resources import File
+        f = File("file contents", u"myfile.png", u"image/png")
+        assert f.filename == u"myfile.png"

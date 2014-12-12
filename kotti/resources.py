@@ -12,6 +12,7 @@ import os
 import warnings
 
 from fnmatch import fnmatch
+from cStringIO import StringIO
 from UserDict import DictMixin
 
 from depot.fields.sqlalchemy import UploadedFileField
@@ -62,6 +63,7 @@ from kotti.sqla import JsonType
 from kotti.sqla import MutationList
 from kotti.sqla import NestedMutationDict
 from kotti.util import _
+from kotti.util import _to_fieldstorage
 from kotti.util import camel_case_to_name
 from kotti.util import get_paste_items
 from kotti.util import Link
@@ -657,10 +659,13 @@ class File(Content):
 
         super(File, self).__init__(**kwargs)
 
-        self.data = data
         self.filename = filename
         self.mimetype = mimetype
         self.size = size
+        if isinstance(data, basestring):
+            data = _to_fieldstorage(fp=StringIO(data), filename=filename,
+                                    mimetype=mimetype, size=size)
+        self.data = data
 
     @classmethod
     def from_field_storage(cls, fs):
@@ -712,8 +717,9 @@ class File(Content):
         if newvalue is None:
             return
 
-        target.mimetype = newvalue.file.content_type
+        target.filename = newvalue.filename
         target.size = newvalue.file.content_length
+        target.mimetype = newvalue.content_type
         return newvalue
 
 
