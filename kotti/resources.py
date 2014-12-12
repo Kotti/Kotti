@@ -696,17 +696,6 @@ class File(Content):
         # filedepot already registers this event listener, but it does so in a
         # way that won't work properly for subclasses of File
 
-        # mapper = cls._sa_class_manager.mapper
-        # for mapper_property in mapper.iterate_properties:
-        #     if isinstance(mapper_property, ColumnProperty):
-        #         for idx, col in enumerate(mapper_property.columns):
-        #             if isinstance(col.type, UploadedFileField):
-        #                 event.listen(
-        #                     getattr(cls, col.name),
-        #                     'set',
-        #                     _SQLAMutationTracker._field_set,
-        #                     retval=True
-        #                 )
         event.listen(cls.data, 'set', cls.set_metadata, retval=True)
 
     @classmethod
