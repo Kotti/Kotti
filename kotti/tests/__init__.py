@@ -291,15 +291,14 @@ def filedepot(db_session, request):
             self._storage.setdefault(0)
 
         def get(self, id):
-            content = self._storage[id]['content']
+            info = self._storage[id]
+
             f = MagicMock()
-            f.read.return_value = content
-
-            f.filename = self._storage[id]['filename']
             f.public_url = ''
-            f.content_type = 'image/png'
-            f.content_length = len(content)
-
+            f.read.return_value = info['content']
+            f.filename = info['filename']
+            f.content_type = info['content_type']
+            f.content_length = len(info['content'])
             # needed to make JSON serializable, Mock objects are not
             f.last_modified = datetime.now()
 
@@ -307,15 +306,13 @@ def filedepot(db_session, request):
 
         def create(self, content, filename=None, content_type=None):
             id = max(self._storage) + 1
-            if hasattr(content, 'filename'):
-                filename = filename or content.filename
-            if hasattr(content, 'type'):
-                content_type = content_type or content.type
-            if hasattr(content, 'read'):
-                content = content.read()
-            elif hasattr(content, 'file'):
+            filename = filename or getattr(content, 'filename', None)
+            content_type = content_type or getattr(content, 'type', None)
+            if not isinstance(content, str):
                 content = content.file.read()
-            self._storage[id] = {'content': content, 'filename': filename}
+            self._storage[id] = {'content': content,
+                                 'filename': filename,
+                                 'content_type': content_type}
             return id
 
         def delete(self, id):
