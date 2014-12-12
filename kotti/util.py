@@ -7,6 +7,7 @@ Inheritance Diagram
 .. inheritance-diagram:: kotti.util
 """
 
+import cgi
 import re
 import urllib
 from urlparse import urlparse, urlunparse
@@ -365,3 +366,17 @@ deprecated(
     'ViewLink',
     "kotti.util.ViewLink has been renamed to Link as of Kotti 1.0.0."
     )
+
+
+def _to_fieldstorage(fp, filename, mimetype, size, **_kwds):
+    """ Build a cgi.FieldStorage instance.
+
+    Deform's FileUploadWidget returns a dict, but filedepot's
+    UploadedFieldFile likes cgi.FieldStorage objects
+    """
+    f = cgi.FieldStorage()
+    f.file = fp
+    f.filename = filename
+    f.type = mimetype
+    f.length = size
+    return f
