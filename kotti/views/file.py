@@ -2,7 +2,6 @@
 
 from pyramid.response import _BLOCK_SIZE
 from pyramid.response import FileIter
-from pyramid.response import response_adapter
 from pyramid.response import Response
 from pyramid.view import view_config
 
@@ -133,7 +132,6 @@ def field_to_inline_response(adapter):
     return UploadedFileResponse(adapter.data,
                                 request=adapter.request,
                                 disposition='inline')
->>>>>>> Use a file iterator for file downloading
 
 
 @view_config(name='view', context=File, permission='view',
@@ -143,13 +141,13 @@ def view(context, request):
 
 
 @view_config(name='inline-view', context=File, permission='view')
-def inline_view(context, request, disposition='inline'):
-    return as_inline(context.data, request)
+def inline_view(context, request):
+    return UploadedFileResponse(context.data, request, disposition='inline')
 
 
 @view_config(name='attachment-view', context=File, permission='view')
 def attachment_view(context, request):
-    return as_download(context.data, request)
+    return UploadedFileResponse(context.data, request, disposition='attachment')
 
 
 def includeme(config):
