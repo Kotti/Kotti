@@ -300,7 +300,7 @@ def filedepot(db_session, request):
             f.content_type = info['content_type']
             f.content_length = len(info['content'])
             # needed to make JSON serializable, Mock objects are not
-            f.last_modified = datetime.now()
+            f.last_modified = datetime(2012, 12, 30)
 
             return f
 
