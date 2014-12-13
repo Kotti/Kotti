@@ -37,7 +37,7 @@ With ``kotti_paster`` installed, we can now create the skeleton for the add-on p
 
 .. code-block:: bash
 
-  bin/paster create -t kotti_addon kotti_mysite
+  bin/paster create -t kotti kotti_mysite
 
 Running this command, it will ask us a number of questions.
 Hit enter for every question to accept the defaults.
