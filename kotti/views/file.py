@@ -38,8 +38,8 @@ class UploadedFileResponse(Response):
                  content_encoding=None):
 
         filename = data.filename
-        content_type = content_type or getattr(data, 'content_type', None)
 
+        content_type = content_type or getattr(data, 'content_type', None)
         if content_type is None:
             content_type, content_encoding = mimetypes.guess_type(
                 filename,
@@ -47,10 +47,10 @@ class UploadedFileResponse(Response):
                 )
             if content_type is None:
                 content_type = 'application/octet-stream'
-            # str-ifying content_type is a workaround for a bug in Python 2.7.7
-            # on Windows where mimetypes.guess_type returns unicode for the
-            # content_type.
-            content_type = str(content_type)
+        # str-ifying content_type is a workaround for a bug in Python 2.7.7
+        # on Windows where mimetypes.guess_type returns unicode for the
+        # content_type.
+        content_type = str(content_type)
 
         super(UploadedFileResponse, self).__init__(
             conditional_response=True,
