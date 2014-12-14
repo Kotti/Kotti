@@ -290,6 +290,7 @@ def filedepot(db_session, request):
             info = self._storage[id]
 
             finished = []
+
             def read(block_size=-1):
                 if not finished:
                     finished.append(True)
