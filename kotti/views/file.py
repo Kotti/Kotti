@@ -36,6 +36,7 @@ class UploadedFileResponse(Response):
                  content_encoding=None):
 
         filename = data.filename
+        content_type = content_type or getattr(data, 'content_type', None)
 
         if content_type is None:
             content_type, content_encoding = mimetypes.guess_type(
