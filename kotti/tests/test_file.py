@@ -207,6 +207,12 @@ class TestUploadedFileResponse:
         resp = UploadedFileResponse(f.data, DummyRequest())
         assert resp.headers['Content-Type'] == 'application/octet-stream'
 
+    def test_guess_content_type(self, filedepot):
+        from kotti.resources import File
+        f = File("file contents", u"file.jpg", None)
+        resp = UploadedFileResponse(f.data, DummyRequest())
+        assert resp.headers['Content-Type'] == 'image/jpeg'
+
     def test_caching(self, filedepot, monkeypatch):
         import datetime
         import webob.response
