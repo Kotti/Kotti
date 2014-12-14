@@ -188,4 +188,3 @@ class TestDepotStore:
 
         assert DepotManager.get().delete.called
         assert id not in DepotManager.get()._storage.keys()
-

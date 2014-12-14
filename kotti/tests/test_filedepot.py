@@ -12,14 +12,19 @@ class TestDBStoredFile:
 
         assert f.close() is None
         assert f.closed() is False
-        assert f.seekable() is False
+        assert f.seekable() is True
         assert f.writable() is False
 
         assert f.read() == 'content'
+        assert f.read() == ''
+        f.seek(0)
+        assert f.read() == 'content'
+        f.seek(0)
         assert f.read(-1) == 'content'
-        assert f.read(0) == ''
+        f.seek(0)
         assert f.read(2) == 'co'
-        assert f.read(4) == 'cont'
+        assert f.read(4) == 'nten'
+        assert f.tell() == 6
 
         assert f.content_length == 1000
         assert f.content_type == 'image/jpeg'

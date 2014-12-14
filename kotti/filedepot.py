@@ -7,6 +7,7 @@ from sqlalchemy import Integer
 from sqlalchemy import LargeBinary
 from sqlalchemy import String
 from sqlalchemy import Unicode
+from sqlalchemy import event
 from sqlalchemy.orm import deferred
 
 from depot.io.interfaces import FileStorage
@@ -14,6 +15,7 @@ from depot.io.interfaces import FileStorage
 from kotti import Base
 from kotti import DBSession
 
+_marker = object()
 
 class DBStoredFile(Base):
     """depotfile StoredFile implementation that stores data in the db.
@@ -46,6 +48,9 @@ class DBStoredFile(Base):
     #: (:class:`sqlalchemy.types.LargeBinary`)
     data = deferred(Column('data', LargeBinary()))
 
+    _cursor = 0
+    _data = _marker
+
     def __init__(self, file_id, filename=None, content_type=None,
                  last_modified=None, content_length=None, **kwds):
         self.file_id = file_id
@@ -63,9 +68,19 @@ class DBStoredFile(Base):
         If ``n`` is not specified or is ``-1`` the whole
         file content is read in memory and returned
         """
+        if self._data is _marker:
+            file_id = DBSession.merge(self).file_id
+            self._data = DBSession.query(DBStoredFile.data).\
+                filter_by(file_id=file_id).scalar()
+
         if n == -1:
-            return self.data
-        return self.data[:n]
+            result = self._data[self._cursor:]
+        else:
+            result = self._data[self._cursor:self._cursor + n]
+
+        self._cursor += len(result)
+
+        return result
 
     def close(self, *args, **kwargs):
         """Implement :meth:`StoredFile.close`.
@@ -86,7 +101,13 @@ class DBStoredFile(Base):
     def seekable(self):
         """Implement :meth:`StoredFile.seekable`.
         """
-        return False
+        return True
+
+    def seek(self, n):
+        self._cursor = n
+
+    def tell(self):
+        return self._cursor
 
     @property
     def name(self):
@@ -106,6 +127,19 @@ class DBStoredFile(Base):
         only be served by the :class:`DepotMiddleware` itself.
         """
         return None
+
+    @classmethod
+    def refresh_data(cls, target, value, oldvalue, initiator):
+        target._cursor = 0
+        target._data = _marker
+
+    @classmethod
+    def __declare_last__(cls):
+        # For the ``data`` column, use the field value setter from filedepot.
+        # filedepot already registers this event listener, but it does so in a
+        # way that won't work properly for subclasses of File
+
+        event.listen(DBStoredFile.data, 'set', DBStoredFile.refresh_data)
 
 
 def set_metadata(event):
@@ -223,6 +257,7 @@ def includeme(config):
     from kotti.events import objectevent_listeners
     from kotti.events import ObjectInsert
     from kotti.events import ObjectUpdate
+    #from sqlalchemy import event
 
     configure_filedepot(config.get_settings())
 
@@ -231,3 +266,5 @@ def includeme(config):
         (ObjectInsert, DBStoredFile)].append(set_metadata)
     objectevent_listeners[
         (ObjectUpdate, DBStoredFile)].append(set_metadata)
+
+    #event.listen(DBStoredFile, 'load', DBStoredFile.set_cursor)
