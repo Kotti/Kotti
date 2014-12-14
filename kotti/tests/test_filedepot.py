@@ -25,6 +25,10 @@ class TestDBStoredFile:
         assert f.read(2) == 'co'
         assert f.read(4) == 'nten'
         assert f.tell() == 6
+        f.seek(0)
+        f.seek(100)
+        assert f.tell() == 100
+        assert f.read() == ''
 
         assert f.content_length == 1000
         assert f.content_type == 'image/jpeg'
