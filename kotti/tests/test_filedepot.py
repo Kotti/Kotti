@@ -99,7 +99,7 @@ class TestDBFileStorage:
 
     def test_get(self, db_session):
         with pytest.raises(IOError):
-            DBFileStorage().get(1)
+            DBFileStorage().get("1")
 
         file_id = self.make_one()
         assert DBFileStorage().get(file_id).data == "content here"

@@ -17,6 +17,7 @@ from kotti import DBSession
 
 _marker = object()
 
+
 class DBStoredFile(Base):
     """depotfile StoredFile implementation that stores data in the db.
 
