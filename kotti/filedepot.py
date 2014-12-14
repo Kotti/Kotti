@@ -257,7 +257,7 @@ def includeme(config):
     from kotti.events import objectevent_listeners
     from kotti.events import ObjectInsert
     from kotti.events import ObjectUpdate
-    #from sqlalchemy import event
+    from depot.fields.sqlalchemy import _SQLAMutationTracker
 
     configure_filedepot(config.get_settings())
 
@@ -267,4 +267,9 @@ def includeme(config):
     objectevent_listeners[
         (ObjectUpdate, DBStoredFile)].append(set_metadata)
 
-    #event.listen(DBStoredFile, 'load', DBStoredFile.set_cursor)
+    # depot's _SQLAMutationTracker._session_committed is executed on
+    # after_commit, that's too late for DBFileStorage to interact with the
+    # session
+    event.listen(DBSession,
+                 'before_commit',
+                 _SQLAMutationTracker._session_committed)
