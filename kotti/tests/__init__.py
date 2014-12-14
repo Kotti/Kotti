@@ -301,9 +301,14 @@ def filedepot(db_session, request):
                     return info['content']
                 return None
 
-            f = MagicMock()
+            def seek(n=0):
+                finished[:]
+
+            from StringIO import StringIO
+
+            f = MagicMock(wraps=StringIO(info['content']))
+            f.seek(0)
             f.public_url = ''
-            f.read = read
             f.filename = info['filename']
             f.content_type = info['content_type']
             f.content_length = len(info['content'])
