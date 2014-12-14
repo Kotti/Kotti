@@ -156,7 +156,7 @@ class TestApp:
 
         with patch('kotti.resources.initialize_sql'):
             main({}, **settings)
-        assert DepotManager.get().__class__.__name__ == 'LocalFileStorage'
+        assert DepotManager.get().__class__.__name__ == 'DBFileStorage'
 
     def test_configure_filedepot(self):
         from depot.manager import DepotManager
