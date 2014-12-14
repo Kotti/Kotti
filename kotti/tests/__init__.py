@@ -289,9 +289,16 @@ def filedepot(db_session, request):
         def get(self, id):
             info = self._storage[id]
 
+            finished = []
+            def read(block_size=-1):
+                if not finished:
+                    finished.append(True)
+                    return info['content']
+                return None
+
             f = MagicMock()
             f.public_url = ''
-            f.read.return_value = info['content']
+            f.read = read
             f.filename = info['filename']
             f.content_type = info['content_type']
             f.content_length = len(info['content'])
