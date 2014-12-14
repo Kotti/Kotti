@@ -129,3 +129,23 @@ class TestDBFileStorage:
         assert fs.filename == u'f3.jpg'
         assert fs.content_type == 'xls'
         assert fs.read() == 'third content'
+
+    def test_session_integration(self, db_session):
+        from depot.manager import DepotManager
+
+        DepotManager._default_depot = 'default'
+        DepotManager._depots = {'default': DBFileStorage()}
+
+        file_id = DepotManager.get().create('content here', u'f.jpg', 'image/jpg')
+        fs = DepotManager.get().get(file_id)
+
+        db_session.add(fs)
+        import transaction
+        transaction.commit()
+
+        transaction.begin()
+        db_session.delete(fs)
+        transaction.commit()
+
+        with pytest.raises(IOError):
+            DepotManager.get().get(file_id)
