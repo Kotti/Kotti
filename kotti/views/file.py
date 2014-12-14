@@ -32,9 +32,11 @@ class UploadedFileResponse(Response):
     Code adapted from pyramid.response.FileResponse
     """
     def __init__(self, data, request=None, disposition='attachment',
-                 cache_max_age=None, content_type=None, content_encoding=None):
+                 cache_max_age=None, content_type=None,
+                 content_encoding=None):
 
         filename = data.filename
+
         if content_type is None:
             content_type, content_encoding = mimetypes.guess_type(
                 filename,
@@ -46,24 +48,17 @@ class UploadedFileResponse(Response):
             # on Windows where mimetypes.guess_type returns unicode for the
             # content_type.
             content_type = str(content_type)
+
         super(UploadedFileResponse, self).__init__(
             conditional_response=True,
             content_type=content_type,
             content_encoding=content_encoding
         )
-        self.last_modified = data.file.last_modified
-        content_length = data.file.content_length
-        f = data.file
-        app_iter = None
-        if request is not None:
-            environ = request.environ
-            if 'wsgi.file_wrapper' in environ:
-                app_iter = environ['wsgi.file_wrapper'](f, _BLOCK_SIZE)
-        if app_iter is None:
-            app_iter = FileIter(f, _BLOCK_SIZE)
-        self.app_iter = app_iter
+
+        self.app_iter = FileIter(data.file, _BLOCK_SIZE)
         # assignment of content_length must come after assignment of app_iter
-        self.content_length = content_length
+        self.content_length = data.file.content_length
+        self.last_modified = data.file.last_modified
         if cache_max_age is not None:
             self.cache_expires = cache_max_age
 
