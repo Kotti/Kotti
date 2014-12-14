@@ -93,9 +93,9 @@ class ImageView(object):
                 self.context.data, self.request, disposition)
 
         image, format, size = scaleImage(self.context.data.file.read(),
-                                            width=width,
-                                            height=height,
-                                            direction="thumb")
+                                         width=width,
+                                         height=height,
+                                         direction="thumb")
         res = Response(
             headerlist=[('Content-Disposition', '%s;filename="%s"' % (
                 disposition,

@@ -189,10 +189,3 @@ class TestDepotStore:
         assert DepotManager.get().delete.called
         assert id not in DepotManager.get()._storage.keys()
 
-
-class TestFileSetMetadata:
-
-    def test_it(self, db_session, filedepot):
-        from kotti.resources import File
-        f = File("file contents", u"myfile.png", u"image/png")
-        assert f.filename == u"myfile.png"
