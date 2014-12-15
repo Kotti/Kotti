@@ -1,5 +1,6 @@
 from StringIO import StringIO
 from colander import null
+from pyramid.httpexceptions import HTTPMovedPermanently
 
 from mock import MagicMock
 import pytest
@@ -184,9 +185,12 @@ class TestDepotStore:
 
 
 class TestUploadedFileResponse:
-    def _create_file(self):
+    def _create_file(self,
+                     data="file contents",
+                     filename=u"myf\xfcle.png",
+                     mimetype=u"image/png"):
         from kotti.resources import File
-        return File("file contents", u"myf\xfcle.png", u"image/png")
+        return File(data, filename, mimetype)
 
     def test_as_body(self, filedepot):
         f = self._create_file()
@@ -202,14 +206,12 @@ class TestUploadedFileResponse:
         assert ''.join(resp.app_iter) == 'file contents'
 
     def test_unknown_filename(self, filedepot):
-        from kotti.resources import File
-        f = File("file contents", u"file", None)
+        f = self._create_file("file contents", u"file", None)
         resp = UploadedFileResponse(f.data, DummyRequest())
         assert resp.headers['Content-Type'] == 'application/octet-stream'
 
     def test_guess_content_type(self, filedepot):
-        from kotti.resources import File
-        f = File("file contents", u"file.jpg", None)
+        f = self._create_file("file contents", u"file.jpg", None)
         resp = UploadedFileResponse(f.data, DummyRequest())
         assert resp.headers['Content-Type'] == 'image/jpeg'
 
@@ -232,3 +234,15 @@ class TestUploadedFileResponse:
         # this is set by filedepot fixture
         assert resp.headers['Last-Modified'] == 'Sun, 30 Dec 2012 00:00:00 GMT'
         assert resp.headers['Expires'] == 'Mon, 31 Dec 2012 13:00:10 GMT'
+
+    def test_redirect(self, filedepot):
+        f = self._create_file()
+        f.data._thaw()
+        f.data['_public_url'] = 'http://example.com'
+        f.data._freeze()
+
+        with pytest.raises(HTTPMovedPermanently) as e:
+            UploadedFileResponse(f.data, DummyRequest())
+
+        response = e.value
+        assert response.headers['Location'] == 'http://example.com'

@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+from pyramid.httpexceptions import HTTPMovedPermanently
 from pyramid.response import _BLOCK_SIZE
 from pyramid.response import FileIter
 from pyramid.response import Response
@@ -12,7 +13,7 @@ import mimetypes
 
 class UploadedFileResponse(Response):
     """
-    A Response object that can be used to serve a uploaded files.
+    A Response object that can be used to serve an UploadedFile instance.
 
     ``data`` is the ``UploadedFile`` file field value.
 
@@ -37,16 +38,18 @@ class UploadedFileResponse(Response):
                  cache_max_age=None, content_type=None,
                  content_encoding=None):
 
+        if data._public_url:
+            raise HTTPMovedPermanently(data._public_url)
+
         filename = data.filename
 
         content_type = content_type or getattr(data, 'content_type', None)
         if content_type is None:
-            content_type, content_encoding = mimetypes.guess_type(
-                filename,
-                strict=False
-                )
-            if content_type is None:
-                content_type = 'application/octet-stream'
+            content_type, content_encoding = \
+                mimetypes.guess_type(filename, strict=False)
+
+        if content_type is None:
+            content_type = 'application/octet-stream'
         # str-ifying content_type is a workaround for a bug in Python 2.7.7
         # on Windows where mimetypes.guess_type returns unicode for the
         # content_type.
