@@ -136,10 +136,6 @@ class DBStoredFile(Base):
 
     @classmethod
     def __declare_last__(cls):
-        # For the ``data`` column, use the field value setter from filedepot.
-        # filedepot already registers this event listener, but it does so in a
-        # way that won't work properly for subclasses of File
-
         event.listen(DBStoredFile.data, 'set', DBStoredFile.refresh_data)
 
 
