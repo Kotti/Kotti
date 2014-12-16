@@ -278,6 +278,8 @@ def workflow(config):
 
 @fixture
 def filedepot(db_session, request):
+    """ Configures a mock depot store for :class:`depot.manager.DepotManager`
+    """
     from depot.manager import DepotManager
     from datetime import datetime
 
