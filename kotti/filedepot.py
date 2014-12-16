@@ -19,10 +19,11 @@ _marker = object()
 
 
 class DBStoredFile(Base):
-    """depotfile StoredFile implementation that stores data in the db.
+    """ :class:`depot.io.interfaces.StoredFile` implementation that stores
+    file data in SQL database.
 
-    Can be used together with DBFileStorage to implement blobs (large files)
-    storage in the database.
+    Can be used together with :class:`kotti.filedepot.DBFileStorage` to
+    implement blobs storage in the database.
     """
 
     __tablename__ = "blobs"
@@ -30,7 +31,7 @@ class DBStoredFile(Base):
     #: Primary key column in the DB
     #: (:class:`sqlalchemy.types.Integer`)
     id = Column(Integer(), primary_key=True)
-    #: Unique id given to this blob
+    #: Unique file id given to this blob
     #: (:class:`sqlalchemy.types.String`)
     file_id = Column(String(36), index=True)
     #: The original filename it had when it was uploaded.
@@ -42,7 +43,7 @@ class DBStoredFile(Base):
     #: Size of the blob in bytes
     #: (:class:`sqlalchemy.types.Integer`)
     content_length = Column(Integer())
-    #: Date / time the blob was created
+    #: Date / time the blob was created or last modified
     #: (:class:`sqlalchemy.types.DateTime`)
     last_modified = Column(DateTime())
     #: The binary data itself
@@ -105,38 +106,54 @@ class DBStoredFile(Base):
         return True
 
     def seek(self, n):
+        """ Move the file cursor to position `n`
+
+        :param n: Position for the cursor
+        :type n: int
+        """
         self._cursor = n
 
     def tell(self):
+        """ Returns current position of file cursor
+
+        :result: Current file cursor position.
+        :rtype: int
+        """
         return self._cursor
 
     @property
     def name(self):
         """Implement :meth:`StoredFile.name`.
 
-        This is the filename of the saved file
+        :result: the filename of the saved file
+        :rtype: string
         """
         return self.filename
 
     @property
     def public_url(self):
-        """The public HTTP url from which file can be accessed.
+        """ Integration with :class:`depot.middleware.DepotMiddleware`
 
         When supported by the storage this will provide the
         public url to which the file content can be accessed.
         In case this returns ``None`` it means that the file can
-        only be served by the :class:`DepotMiddleware` itself.
+        only be served by the :class:`depot.middleware.DepotMiddleware` itself.
         """
         return None
 
     @classmethod
-    def refresh_data(cls, target, value, oldvalue, initiator):
-        target._cursor = 0
-        target._data = _marker
-
-    @classmethod
     def __declare_last__(cls):
-        event.listen(DBStoredFile.data, 'set', DBStoredFile.refresh_data)
+        """ Executed by SQLAlchemy as part of mapper configuration
+
+        When the data changes, we want to reset the cursor position of target
+        instance, to allow proper streaming of data.
+        """
+        event.listen(DBStoredFile.data, 'set', handle_change_data)
+
+
+def handle_change_data(target, value, oldvalue, initiator):
+    target._cursor = 0
+    target._data = _marker
 
 
 def set_metadata(event):
@@ -158,6 +175,11 @@ class DBFileStorage(FileStorage):
 
     def get(self, file_id):
         """Returns the file given by the file_id
+
+        :param file_id: the unique id associated to the file
+        :type file_id: string
+        :result: a :class:`kotti.filedepot.DBStoredFile` instance
+        :rtype: :class:`kotti.filedepot.DBStoredFile`
         """
 
         f = DBSession.query(DBStoredFile).filter_by(file_id=file_id).first()
@@ -168,9 +190,18 @@ class DBFileStorage(FileStorage):
     def create(self, content, filename=None, content_type=None):
         """Saves a new file and returns the file id
 
-        ``content`` parameter can either be ``bytes``, another ``file object``
+        :param content: can either be ``bytes``, another ``file object``
         or a :class:`cgi.FieldStorage`. When ``filename`` and ``content_type``
         parameters are not provided they are deducted from the content itself.
+
+        :param filename: filename for this file
+        :type filename: string
+
+        :param content_type: Mimetype of this file
+        :type content_type: string
+
+        :return: the unique ``file_id`` associated to this file
+        :rtype: string
         """
         new_file_id = str(uuid.uuid1())
         content, filename, content_type = self.fileinfo(
@@ -195,6 +226,18 @@ class DBFileStorage(FileStorage):
         ``content_type`` are provided or can be deducted by the ``content``
         itself they will also replace the previous values, otherwise the current
         values are kept.
+
+        :param file_or_id: can be either ``DBStoredFile`` or a ``file_id``
+
+        :param content: can either be ``bytes``, another ``file object``
+        or a :class:`cgi.FieldStorage`. When ``filename`` and ``content_type``
+        parameters are not provided they are deducted from the content itself.
+
+        :param filename: filename for this file
+        :type filename: string
+
+        :param content_type: Mimetype of this file
+        :type content_type: string
         """
 
         file_id = self._get_file_id(file_or_id)
@@ -215,14 +258,21 @@ class DBFileStorage(FileStorage):
         fstore.data = content
 
     def delete(self, file_or_id):
-        """Deletes a file. If the file didn't exist it will just do nothing."""
+        """Deletes a file. If the file didn't exist it will just do nothing.
+
+        :param file_or_id: can be either ``DBStoredFile`` or a ``file_id``
+        """
 
         file_id = self._get_file_id(file_or_id)
 
         DBSession.query(DBStoredFile).filter_by(file_id=file_id).delete()
 
     def exists(self, file_or_id):
-        """Returns if a file or its ID still exist."""
+        """Returns if a file or its ID still exist.
+
+        :return: Returns if a file or its ID still exist.
+        :rtype: bool
+        """
 
         file_id = self._get_file_id(file_or_id)
 
@@ -251,6 +301,7 @@ def includeme(config):
     :param config: app config
     :type config: :class:`pyramid.config.Configurator`
     """
+
     from kotti.events import objectevent_listeners
     from kotti.events import ObjectInsert
     from kotti.events import ObjectUpdate
