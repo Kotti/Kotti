@@ -37,8 +37,8 @@ def upgrade():
         uploaded_file.process_content(
             obj.data, filename=obj.filename, content_type=obj.mimetype)
         stored_file = DepotManager.get().get(uploaded_file['file_id'])
-        stored_file.last_modified = obj.modification_date
         obj.data = uploaded_file.encode()
+        stored_file.last_modified = obj.modification_date
 
         log.info("Migrated {} bytes for File with pk {} to {}/{}".format(
             len(obj.data), obj.id, dn, uploaded_file['file_id']))
