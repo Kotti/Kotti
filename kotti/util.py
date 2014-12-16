@@ -278,7 +278,14 @@ def extract_from_settings(prefix, settings=None):
 
 
 def flatdotted_to_dict(prefix, settings=None):
-    """
+    """ Merges items from a dictionary that have keys that start with `prefix`
+    to a new dictionary result.
+
+    :param prefix: A dotted string representing the prefix for the common values
+    :type prefix: string
+    :value settings: A dictionary with settings. Result is extracted from this
+    :type settings: dict
+
       >>> settings = {
       ...     'kotti.depot.default.backend': 'local',
       ...     'kotti.depot.default.file_storage': 'var/files',
@@ -369,10 +376,11 @@ deprecated(
 
 
 def _to_fieldstorage(fp, filename, mimetype, size, **_kwds):
-    """ Build a cgi.FieldStorage instance.
+    """ Build a :class:`cgi.FieldStorage` instance.
 
-    Deform's FileUploadWidget returns a dict, but filedepot's
-    UploadedFieldFile likes cgi.FieldStorage objects
+    Deform's :class:`FileUploadWidget` returns a dict, but
+    :class:`depot.fields.sqlalchemy.UploadedFileField` likes
+    :class:`cgi.FieldStorage` objects
     """
     f = cgi.FieldStorage()
     f.file = fp

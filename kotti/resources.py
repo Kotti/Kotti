@@ -716,6 +716,13 @@ class File(Content):
 
     @classmethod
     def set_metadata(cls, target, value, oldvalue, initiator):
+        """ Refresh metadata and save the binary data to the data field.
+
+        :param target: The File instance
+        :type target: :class:`kotti.resources.File` or subclass
+        :param value: The container for binary data
+        :type value: A :class:`cgi.FieldStorage` instance
+        """
         newvalue = _SQLAMutationTracker._field_set(
             target, value, oldvalue, initiator)
 
