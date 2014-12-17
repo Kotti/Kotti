@@ -100,3 +100,49 @@ class TestTemplateStructure:
 
         item = TemplateStructure(u'123')
         assert item.split('2') == [u'1', u'3']
+
+
+class TestLink:
+
+    def test_link_selected(self):
+        from kotti.util import Link
+        from kotti.testing import DummyRequest
+
+        req = DummyRequest()
+        req.url = "http://example.com/@@manage"
+
+        assert Link('manage').selected(Mock(__name__=None), req)
+
+        req.url = "http://example.com/@@manage_cats"
+        assert not Link('manage').selected(Mock(__name__=None), req)
+
+    def test_link_selected_no_view_markers(self):
+        from kotti.util import Link
+        from kotti.testing import DummyRequest
+        from mock import Mock
+
+        req = DummyRequest()
+
+        req.url = "http://example.com/manage"
+        assert Link('manage').selected(Mock(__name__=None), req)
+
+        req.url = "http://example.com/manage/"
+        assert not Link('manage').selected(Mock(__name__=None), req)
+
+        req.url = "http://example.com/"
+        assert Link('').selected(Mock(__name__=None), req)
+
+        req.url = "http://example.com/manage/"
+        link = Link('')
+        context = Mock(__name__='manage',
+                       __parent__=Mock(__name__=None))
+        assert link.selected(context, req)
+
+        req.url = "http://example.com/manage"
+        assert not link.selected(context, req)
+
+        req.url = "http://example.com/"
+        assert link.selected(Mock(__name__=None), req)
+
+        req.url = "http://example.com"
+        assert link.selected(Mock(__name__=None), req)
