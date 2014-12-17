@@ -122,27 +122,28 @@ class TestLink:
         from mock import Mock
 
         req = DummyRequest()
+        root = Mock(__name__=None)
+        manage = Mock(__name__='manage',
+                       __parent__=Mock(__name__=None))
 
         req.url = "http://example.com/manage"
-        assert Link('manage').selected(Mock(__name__=None), req)
+        assert Link('manage').selected(root, req)
 
         req.url = "http://example.com/manage/"
-        assert not Link('manage').selected(Mock(__name__=None), req)
+        assert not Link('manage').selected(root, req)
 
         req.url = "http://example.com/"
-        assert Link('').selected(Mock(__name__=None), req)
+        assert Link('').selected(root, req)
 
         req.url = "http://example.com/manage/"
         link = Link('')
-        context = Mock(__name__='manage',
-                       __parent__=Mock(__name__=None))
-        assert link.selected(context, req)
+        assert link.selected(manage, req)
 
         req.url = "http://example.com/manage"
-        assert not link.selected(context, req)
+        assert not link.selected(manage, req)
 
         req.url = "http://example.com/"
-        assert link.selected(Mock(__name__=None), req)
+        assert link.selected(root, req)
 
         req.url = "http://example.com"
-        assert link.selected(Mock(__name__=None), req)
+        assert link.selected(root, req)
