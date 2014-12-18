@@ -7,6 +7,7 @@ Inheritance Diagram
 .. inheritance-diagram:: kotti.util
 """
 
+import cgi
 import re
 import urllib
 from urlparse import urlparse, urlunparse
@@ -288,6 +289,39 @@ def extract_from_settings(prefix, settings=None):
     return extracted
 
 
+def flatdotted_to_dict(prefix, settings=None):
+    """ Merges items from a dictionary that have keys that start with `prefix`
+    to a new dictionary result.
+
+    :param prefix: A dotted string representing the prefix for the common values
+    :type prefix: string
+    :value settings: A dictionary with settings. Result is extracted from this
+    :type settings: dict
+
+      >>> settings = {
+      ...     'kotti.depot.default.backend': 'local',
+      ...     'kotti.depot.default.file_storage': 'var/files',
+      ...     'kotti.depot.mongo.backend': 'mongodb',
+      ...     'kotti.depot.mongo.uri': 'localhost://',
+      ... }
+      >>> res = flatdotted_to_dict('kotti.depot.', settings)
+      >>> print sorted(res.keys())
+      ['default', 'mongo']
+      >>> print res['default']
+      {'file_storage': 'var/files', 'backend': 'local'}
+      >>> print res['mongo']
+      {'uri': 'localhost://', 'backend': 'mongodb'}
+    """
+
+    extracted = {}
+    for k, v in extract_from_settings(prefix, settings).items():
+        name, conf = k.split('.', 1)
+        extracted.setdefault(name, {})
+        extracted[name][conf] = v
+
+    return extracted
+
+
 def disambiguate_name(name):
     parts = name.split(u'-')
     if len(parts) > 1:
@@ -348,3 +382,18 @@ deprecated(
     'ViewLink',
     "kotti.util.ViewLink has been renamed to Link as of Kotti 0.10."
     )
+
+
+def _to_fieldstorage(fp, filename, mimetype, size, **_kwds):
+    """ Build a :class:`cgi.FieldStorage` instance.
+
+    Deform's :class:`FileUploadWidget` returns a dict, but
+    :class:`depot.fields.sqlalchemy.UploadedFileField` likes
+    :class:`cgi.FieldStorage` objects
+    """
+    f = cgi.FieldStorage()
+    f.file = fp
+    f.filename = filename
+    f.type = mimetype
+    f.length = size
+    return f

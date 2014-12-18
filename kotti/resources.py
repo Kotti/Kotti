@@ -10,16 +10,21 @@ Inheritance Diagram
 
 import os
 import warnings
+
 from fnmatch import fnmatch
+from cStringIO import StringIO
 from UserDict import DictMixin
 
+from depot.fields.sqlalchemy import UploadedFileField
+from depot.fields.sqlalchemy import _SQLAMutationTracker
+
 from pyramid.traversal import resource_path
+from sqlalchemy import event
 from sqlalchemy import Boolean
 from sqlalchemy import Column
 from sqlalchemy import DateTime
 from sqlalchemy import ForeignKey
 from sqlalchemy import Integer
-from sqlalchemy import LargeBinary
 from sqlalchemy import String
 from sqlalchemy import Unicode
 from sqlalchemy import UnicodeText
@@ -28,7 +33,6 @@ from sqlalchemy.ext.associationproxy import association_proxy
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.ext.orderinglist import ordering_list
 from sqlalchemy.orm import backref
-from sqlalchemy.orm import deferred
 from sqlalchemy.orm import object_mapper
 from sqlalchemy.orm import relation
 from sqlalchemy.orm.exc import NoResultFound
@@ -59,6 +63,7 @@ from kotti.sqla import JsonType
 from kotti.sqla import MutationList
 from kotti.sqla import NestedMutationDict
 from kotti.util import _
+from kotti.util import _to_fieldstorage
 from kotti.util import camel_case_to_name
 from kotti.util import get_paste_items
 from kotti.util import Link
@@ -626,9 +631,9 @@ class File(Content):
     #: Primary key column in the DB
     #: (:class:`sqlalchemy.types.Integer`)
     id = Column(Integer(), ForeignKey('contents.id'), primary_key=True)
-    #: The binary data itself
-    #: (:class:`sqlalchemy.types.LargeBinary`)
-    data = deferred(Column("data", LargeBinary()))
+    #: Filedepot mapped blob
+    #: (:class:`depot.fileds.sqlalchemy.UploadedFileField`)
+    data = Column(UploadedFileField)
     #: The filename is used in the attachment view to give downloads
     #: the original filename it had when it was uploaded.
     #: (:class:`sqlalchemy.types.Unicode`)
@@ -654,10 +659,13 @@ class File(Content):
 
         super(File, self).__init__(**kwargs)
 
-        self.data = data
         self.filename = filename
         self.mimetype = mimetype
         self.size = size
+        if isinstance(data, basestring):
+            data = _to_fieldstorage(fp=StringIO(data), filename=filename,
+                                    mimetype=mimetype, size=size)
+        self.data = data
 
     @classmethod
     def from_field_storage(cls, fs):
@@ -681,6 +689,34 @@ class File(Content):
             raise ValueError("Unsupported MIME type: %s" % mimetype)
 
         return cls(data=data, filename=filename, mimetype=mimetype, size=size)
+
+    @classmethod
+    def __declare_last__(cls):
+        # For the ``data`` column, use the field value setter from filedepot.
+        # filedepot already registers this event listener, but it does so in a
+        # way that won't work properly for subclasses of File
+
+        event.listen(cls.data, 'set', cls.set_metadata, retval=True)
+
+    @classmethod
+    def set_metadata(cls, target, value, oldvalue, initiator):
+        """ Refresh metadata and save the binary data to the data field.
+
+        :param target: The File instance
+        :type target: :class:`kotti.resources.File` or subclass
+        :param value: The container for binary data
+        :type value: A :class:`cgi.FieldStorage` instance
+        """
+        newvalue = _SQLAMutationTracker._field_set(
+            target, value, oldvalue, initiator)
+
+        if newvalue is None:
+            return
+
+        target.filename = newvalue.filename
+        target.size = newvalue.file.content_length
+        target.mimetype = newvalue.content_type
+        return newvalue
 
 
 class Image(File):

@@ -16,6 +16,7 @@ from kotti.resources import Document
 from kotti.resources import File
 from kotti.resources import Image
 from kotti.util import _
+from kotti.util import _to_fieldstorage
 from kotti.views.form import get_appstruct
 from kotti.views.form import AddFormView
 from kotti.views.form import EditFormView
@@ -86,7 +87,7 @@ class FileEditForm(EditFormView):
         form.appstruct = get_appstruct(self.context, self.schema)
         if self.context.data is not None:
             form.appstruct.update({'file': {
-                'fp': StringIO(self.context.data),
+                'fp': StringIO(self.context.data.file.read()),
                 'filename': self.context.name,
                 'mimetype': self.context.mimetype,
                 'uid': str(random.randint(1000000000, 9999999999)),
@@ -102,11 +103,7 @@ class FileEditForm(EditFormView):
         self.context.description = appstruct['description']
         self.context.tags = appstruct['tags']
         if appstruct['file']:
-            buf = appstruct['file']['fp'].read()
-            self.context.data = buf
-            self.context.filename = appstruct['file']['filename']
-            self.context.mimetype = appstruct['file']['mimetype']
-            self.context.size = len(buf)
+            self.context.data = _to_fieldstorage(**appstruct['file'])
 
 
 class FileAddForm(AddFormView):
@@ -123,17 +120,14 @@ class FileAddForm(AddFormView):
         return super(FileAddForm, self).save_success(appstruct)
 
     def add(self, **appstruct):
-        buf = appstruct['file']['fp'].read()
         filename = appstruct['file']['filename']
-        return self.item_class(
+        item = self.item_class(
             title=appstruct['title'] or filename,
             description=appstruct['description'],
             tags=appstruct['tags'],
-            data=buf,
-            filename=filename,
-            mimetype=appstruct['file']['mimetype'],
-            size=len(buf),
-            )
+            data=_to_fieldstorage(**appstruct['file']),
+        )
+        return item
 
 
 class ImageEditForm(FileEditForm):
