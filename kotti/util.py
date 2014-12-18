@@ -277,9 +277,9 @@ def extract_from_settings(prefix, settings=None):
     return extracted
 
 
-def flatdotted_to_dict(prefix, settings=None):
+def extract_depot_settings(prefix="kotti.depot.", settings=None):
     """ Merges items from a dictionary that have keys that start with `prefix`
-    to a new dictionary result.
+    to a list of dictionaries.
 
     :param prefix: A dotted string representing the prefix for the common values
     :type prefix: string
@@ -287,27 +287,32 @@ def flatdotted_to_dict(prefix, settings=None):
     :type settings: dict
 
       >>> settings = {
-      ...     'kotti.depot.default.backend': 'local',
-      ...     'kotti.depot.default.file_storage': 'var/files',
-      ...     'kotti.depot.mongo.backend': 'mongodb',
-      ...     'kotti.depot.mongo.uri': 'localhost://',
+      ...     'kotti.depot.0.backend': 'kotti.filedepot.DBFileStorage',
+      ...     'kotti.depot.0.file_storage': 'var/files',
+      ...     'kotti.depot.0.name': 'local',
+      ...     'kotti.depot.1.backend': 'depot.io.gridfs.GridStorage',
+      ...     'kotti.depot.1.name': 'mongodb',
+      ...     'kotti.depot.1.uri': 'localhost://',
       ... }
-      >>> res = flatdotted_to_dict('kotti.depot.', settings)
-      >>> print sorted(res.keys())
-      ['default', 'mongo']
-      >>> print res['default']
-      {'file_storage': 'var/files', 'backend': 'local'}
-      >>> print res['mongo']
-      {'uri': 'localhost://', 'backend': 'mongodb'}
+      >>> res = extract_depot_settings('kotti.depot.', settings)
+      >>> print sorted(res[0].items())
+      [('backend', 'kotti.filedepot.DBFileStorage'), ('file_storage', 'var/files'), ('name', 'local')]
+      >>> print sorted(res[1].items())
+      [('backend', 'depot.io.gridfs.GridStorage'), ('name', 'mongodb'), ('uri', 'localhost://')]
     """
 
     extracted = {}
     for k, v in extract_from_settings(prefix, settings).items():
-        name, conf = k.split('.', 1)
-        extracted.setdefault(name, {})
-        extracted[name][conf] = v
+        index, conf = k.split('.', 1)
+        index = int(index)
+        extracted.setdefault(index, {})
+        extracted[index][conf] = v
 
-    return extracted
+    result = []
+    for k in sorted(extracted.keys()):
+        result.append(extracted[k])
+
+    return result
 
 
 def disambiguate_name(name):

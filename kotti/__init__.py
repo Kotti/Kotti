@@ -101,7 +101,8 @@ conf_defaults = {
     'kotti.datetime_format': 'medium',
     'kotti.time_format': 'medium',
     'kotti.max_file_size': '10',
-    'kotti.depot.fs0.backend': 'kotti.filedepot.DBFileStorage',
+    'kotti.depot.0.name': 'dbfiles',
+    'kotti.depot.0.backend': 'kotti.filedepot.DBFileStorage',
     'kotti.fanstatic.edit_needed': 'kotti.fanstatic.edit_needed',
     'kotti.fanstatic.view_needed': 'kotti.fanstatic.view_needed',
     'kotti.static.edit_needed': '',  # BBB

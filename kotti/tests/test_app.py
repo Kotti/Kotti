@@ -167,10 +167,12 @@ class TestApp:
         tests.TFS2 = Mock(return_value=Mock(marker="TFS2"))
 
         settings = {
-            'kotti.depot.localfs.backend': 'kotti.tests.TFS1',
-            'kotti.depot.localfs.location': '/tmp',
-            'kotti.depot.mongo.backend': 'kotti.tests.TFS2',
-            'kotti.depot.mongo.uri': 'mongo://',
+            'kotti.depot.0.backend': 'kotti.tests.TFS1',
+            'kotti.depot.0.name': 'localfs',
+            'kotti.depot.0.location': '/tmp',
+            'kotti.depot.1.backend': 'kotti.tests.TFS2',
+            'kotti.depot.1.uri': 'mongo://',
+            'kotti.depot.1.name': 'mongo',
         }
 
         # depot.manager.DepotManager acts as singleton, save its settings

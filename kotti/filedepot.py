@@ -286,12 +286,13 @@ class DBFileStorage(FileStorage):
 
 
 def configure_filedepot(settings):
-    from kotti.util import flatdotted_to_dict
+    from kotti.util import extract_depot_settings
     from depot.manager import DepotManager
 
-    config = flatdotted_to_dict('kotti.depot.', settings)
-    for name, conf in config.items():
-        if DepotManager.get(name) is None:
+    config = extract_depot_settings('kotti.depot.', settings)
+    for conf in config:
+        name = conf.pop('name')
+        if name not in DepotManager._depots:
             DepotManager.configure(name, conf, prefix='')
 
 
