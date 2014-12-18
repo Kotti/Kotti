@@ -124,7 +124,7 @@ class TestLink:
         req = DummyRequest()
         root = Mock(__name__=None)
         manage = Mock(__name__='manage',
-                       __parent__=Mock(__name__=None))
+                      __parent__=Mock(__name__=None))
 
         req.url = "http://example.com/manage"
         assert Link('manage').selected(root, req)

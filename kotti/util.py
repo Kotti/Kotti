@@ -184,18 +184,6 @@ class Link(LinkBase):
     def url(self, context, request):
         return resource_url(context, request) + '@@' + self.name
 
-    def selected(self, context, request):
-        parsed = urlparse(urllib.unquote(request.url))
-
-        # insert view markers @@ in last component of the path
-        path = parsed.path.split('/')
-        if not '@@' in path[-1]:
-            path[-1] = '@@' + path[-1]
-        path = '/'.join(path)
-        url = urlunparse((parsed[0], parsed[1], path, '', '', ''))
-
-        return url == self.url(context, request)
-
     def __eq__(self, other):
         return isinstance(other, Link) and repr(self) == repr(other)
 
