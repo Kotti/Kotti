@@ -60,6 +60,7 @@ conf_defaults = {
     'kotti.includes': '',  # BBB
     'kotti.base_includes': ' '.join([
         'kotti',
+        'kotti.filedepot',
         'kotti.events',
         'kotti.views',
         'kotti.views.cache',
@@ -101,6 +102,7 @@ conf_defaults = {
     'kotti.datetime_format': 'medium',
     'kotti.time_format': 'medium',
     'kotti.max_file_size': '10',
+    'kotti.depot.fs0.backend': 'kotti.filedepot.DBFileStorage',
     'kotti.fanstatic.edit_needed': 'kotti.fanstatic.edit_needed',
     'kotti.fanstatic.view_needed': 'kotti.fanstatic.view_needed',
     'kotti.static.edit_needed': '',  # BBB

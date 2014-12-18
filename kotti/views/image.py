@@ -10,6 +10,7 @@ from pyramid.view import view_defaults
 
 from kotti.interfaces import IImage
 from kotti.util import extract_from_settings
+from kotti.views.file import UploadedFileResponse
 
 PIL.ImageFile.MAXBLOCK = 33554432
 
@@ -87,14 +88,14 @@ class ImageView(object):
                 # /path/to/image/scale/thumb
                 width, height = image_scales[scale]
 
-        if width and height:
-            image, format, size = scaleImage(self.context.data,
-                                             width=width,
-                                             height=height,
-                                             direction="thumb")
-        else:
-            image = self.context.data
+        if not (width and height):
+            return UploadedFileResponse(
+                self.context.data, self.request, disposition)
 
+        image, format, size = scaleImage(self.context.data.file.read(),
+                                         width=width,
+                                         height=height,
+                                         direction="thumb")
         res = Response(
             headerlist=[('Content-Disposition', '%s;filename="%s"' % (
                 disposition,
@@ -103,7 +104,7 @@ class ImageView(object):
                 ('Content-Type', str(self.context.mimetype)),
             ],
             body=image,
-            )
+        )
 
         return res
 

@@ -7,8 +7,10 @@ Inheritance Diagram
 .. inheritance-diagram:: kotti.util
 """
 
+import cgi
 import re
 import urllib
+from urlparse import urlparse, urlunparse
 
 from docopt import docopt
 from pyramid.i18n import get_localizer
@@ -97,8 +99,21 @@ class LinkBase(object):
             )
 
     def selected(self, context, request):
-        return urllib.unquote(request.url).startswith(
-            self.url(context, request))
+        """ Returns True if the Link's url, based on its name,
+        matches the request url
+
+        If the link name is '', it will be selected for all urls ending in '/'
+        """
+        parsed = urlparse(urllib.unquote(request.url))
+
+        # insert view markers @@ in last component of the path
+        path = parsed.path.split('/')
+        if not '@@' in path[-1]:
+            path[-1] = '@@' + path[-1]
+        path = '/'.join(path)
+        url = urlunparse((parsed[0], parsed[1], path, '', '', ''))
+
+        return url == self.url(context, request)
 
     def permitted(self, context, request):
         from kotti.security import view_permitted
@@ -168,10 +183,6 @@ class Link(LinkBase):
 
     def url(self, context, request):
         return resource_url(context, request) + '@@' + self.name
-
-    def selected(self, context, request):
-        return urllib.unquote(request.url).startswith(
-            self.url(context, request))
 
     def __eq__(self, other):
         return isinstance(other, Link) and repr(self) == repr(other)
@@ -266,6 +277,39 @@ def extract_from_settings(prefix, settings=None):
     return extracted
 
 
+def flatdotted_to_dict(prefix, settings=None):
+    """ Merges items from a dictionary that have keys that start with `prefix`
+    to a new dictionary result.
+
+    :param prefix: A dotted string representing the prefix for the common values
+    :type prefix: string
+    :value settings: A dictionary with settings. Result is extracted from this
+    :type settings: dict
+
+      >>> settings = {
+      ...     'kotti.depot.default.backend': 'local',
+      ...     'kotti.depot.default.file_storage': 'var/files',
+      ...     'kotti.depot.mongo.backend': 'mongodb',
+      ...     'kotti.depot.mongo.uri': 'localhost://',
+      ... }
+      >>> res = flatdotted_to_dict('kotti.depot.', settings)
+      >>> print sorted(res.keys())
+      ['default', 'mongo']
+      >>> print res['default']
+      {'file_storage': 'var/files', 'backend': 'local'}
+      >>> print res['mongo']
+      {'uri': 'localhost://', 'backend': 'mongodb'}
+    """
+
+    extracted = {}
+    for k, v in extract_from_settings(prefix, settings).items():
+        name, conf = k.split('.', 1)
+        extracted.setdefault(name, {})
+        extracted[name][conf] = v
+
+    return extracted
+
+
 def disambiguate_name(name):
     parts = name.split(u'-')
     if len(parts) > 1:
@@ -326,3 +370,18 @@ deprecated(
     'ViewLink',
     "kotti.util.ViewLink has been renamed to Link as of Kotti 0.10."
     )
+
+
+def _to_fieldstorage(fp, filename, mimetype, size, **_kwds):
+    """ Build a :class:`cgi.FieldStorage` instance.
+
+    Deform's :class:`FileUploadWidget` returns a dict, but
+    :class:`depot.fields.sqlalchemy.UploadedFileField` likes
+    :class:`cgi.FieldStorage` objects
+    """
+    f = cgi.FieldStorage()
+    f.file = fp
+    f.filename = filename
+    f.type = mimetype
+    f.length = size
+    return f
