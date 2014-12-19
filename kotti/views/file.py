@@ -1,7 +1,9 @@
-from kotti.resources import File
+# -*- coding: utf-8 -*-
 
 from pyramid.response import Response
 from pyramid.view import view_config
+
+from kotti.resources import File
 
 
 @view_config(name='view', context=File, permission='view',
