@@ -694,15 +694,10 @@ class File(Content):
         :rtype: :class:`kotti.resources.File`
         """
 
-        data = fs.file.read()
-        filename = fs.filename
-        mimetype = fs.type
-        size = len(data)
+        if not cls.type_info.is_uploadable_mimetype(fs.type):
+            raise ValueError("Unsupported MIME type: %s" % fs.type)
 
-        if not cls.type_info.is_uploadable_mimetype(mimetype):
-            raise ValueError("Unsupported MIME type: %s" % mimetype)
-
-        return cls(data=data, filename=filename, mimetype=mimetype, size=size)
+        return cls(data=fs)
 
     @classmethod
     def __declare_last__(cls):
@@ -750,8 +745,8 @@ class File(Content):
             target.filename = newvalue.filename
         if newvalue.content_type:
             target.mimetype = newvalue.content_type
-
         target.size = newvalue.file.content_length
+
         return newvalue
 
 
