@@ -19,7 +19,6 @@ from depot.fields.sqlalchemy import UploadedFileField
 from depot.fields.sqlalchemy import _SQLAMutationTracker
 
 from pyramid.traversal import resource_path
-from sqlalchemy import event
 from sqlalchemy import Boolean
 from sqlalchemy import Column
 from sqlalchemy import DateTime
@@ -29,9 +28,11 @@ from sqlalchemy import String
 from sqlalchemy import Unicode
 from sqlalchemy import UnicodeText
 from sqlalchemy import UniqueConstraint
+from sqlalchemy import event
 from sqlalchemy.ext.associationproxy import association_proxy
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.ext.orderinglist import ordering_list
+from sqlalchemy.orm import ColumnProperty
 from sqlalchemy.orm import backref
 from sqlalchemy.orm import object_mapper
 from sqlalchemy.orm import relation
@@ -678,9 +679,6 @@ class File(Content):
         self.filename = filename
         self.mimetype = mimetype
         self.size = size
-        if isinstance(data, basestring):
-            data = _to_fieldstorage(fp=StringIO(data), filename=filename,
-                                    mimetype=mimetype, size=size)
         self.data = data
 
     @classmethod
@@ -712,10 +710,22 @@ class File(Content):
         # filedepot already registers this event listener, but it does so in a
         # way that won't work properly for subclasses of File
 
-        event.listen(cls.data, 'set', cls.set_metadata, retval=True)
+        mapper = cls._sa_class_manager.mapper
+
+        for mapper_property in mapper.iterate_properties:
+            if isinstance(mapper_property, ColumnProperty):
+                for idx, col in enumerate(mapper_property.columns):
+                    if isinstance(col.type, UploadedFileField):
+                        args = (mapper_property,
+                                'set',
+                                _SQLAMutationTracker._field_set)
+                        if event.contains(*args):
+                            event.remove(*args)
+
+        event.listen(cls.data, 'set', cls._save_data, retval=True)
 
     @classmethod
-    def set_metadata(cls, target, value, oldvalue, initiator):
+    def _save_data(cls, target, value, oldvalue, initiator):
         """ Refresh metadata and save the binary data to the data field.
 
         :param target: The File instance
@@ -723,15 +733,25 @@ class File(Content):
         :param value: The container for binary data
         :type value: A :class:`cgi.FieldStorage` instance
         """
+
+        if isinstance(value, bytes):
+            value = _to_fieldstorage(fp=StringIO(value),
+                                    filename=target.filename,
+                                    mimetype=target.mimetype,
+                                    size=len(value))
+
         newvalue = _SQLAMutationTracker._field_set(
             target, value, oldvalue, initiator)
 
         if newvalue is None:
             return
 
-        target.filename = newvalue.filename
+        if newvalue.filename:
+            target.filename = newvalue.filename
+        if newvalue.content_type:
+            target.mimetype = newvalue.content_type
+
         target.size = newvalue.file.content_length
-        target.mimetype = newvalue.content_type
         return newvalue
 
 
