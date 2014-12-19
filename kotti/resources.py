@@ -32,7 +32,6 @@ from sqlalchemy import event
 from sqlalchemy.ext.associationproxy import association_proxy
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.ext.orderinglist import ordering_list
-from sqlalchemy.orm import ColumnProperty
 from sqlalchemy.orm import backref
 from sqlalchemy.orm import object_mapper
 from sqlalchemy.orm import relation
@@ -701,22 +700,15 @@ class File(Content):
 
     @classmethod
     def __declare_last__(cls):
-        # For the ``data`` column, use the field value setter from filedepot.
-        # filedepot already registers this event listener, but it does so in a
-        # way that won't work properly for subclasses of File
-
+        # Unconfigure the event set in _SQLAMutationTracker, we have _save_data
         mapper = cls._sa_class_manager.mapper
+        prop = mapper.attrs['data']
+        args = (prop, 'set', _SQLAMutationTracker._field_set)
+        if event.contains(*args):
+            event.remove(*args)
 
-        for mapper_property in mapper.iterate_properties:
-            if isinstance(mapper_property, ColumnProperty):
-                for idx, col in enumerate(mapper_property.columns):
-                    if isinstance(col.type, UploadedFileField):
-                        args = (mapper_property,
-                                'set',
-                                _SQLAMutationTracker._field_set)
-                        if event.contains(*args):
-                            event.remove(*args)
-
+        # Declaring the event on the class attribute instead of mapper property
+        # enables its registration on subclasses
         event.listen(cls.data, 'set', cls._save_data, retval=True)
 
     @classmethod
@@ -741,10 +733,8 @@ class File(Content):
         if newvalue is None:
             return
 
-        if newvalue.filename:
-            target.filename = newvalue.filename
-        if newvalue.content_type:
-            target.mimetype = newvalue.content_type
+        target.filename = newvalue.filename
+        target.mimetype = newvalue.content_type
         target.size = newvalue.file.content_length
 
         return newvalue
