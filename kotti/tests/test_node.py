@@ -298,7 +298,6 @@ class TestPath:
         child1.name = u'renamed-1'
         assert child2.path == '/renamed-1/renamed/'
         assert subchild.path == '/renamed-1/renamed/subchild/'
-        # THIS FAILS, child1.path being '/renamed-1/1/' and I have no clue why
         assert child1.path == '/renamed-1/'
 
     @mark.parametrize("flush", [True, False])

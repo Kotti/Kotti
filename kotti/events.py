@@ -306,6 +306,10 @@ def _update_children_paths(old_parent_path, new_parent_path):
     for child in DBSession.query(Node).options(
         load_only('path', 'type')).filter(
             Node.path.startswith(old_parent_path)):
+        if child.path == new_parent_path:
+            # The child is the node itself and has already be renamed.
+            # Nothing to do!
+            continue
         child.path = new_parent_path + child.path[len(old_parent_path):]
 
 
