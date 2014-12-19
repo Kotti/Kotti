@@ -250,16 +250,16 @@ class TestPath:
 
         assert root.path == "/"
         child = root['child-1'] = Node()
-        assert child.path == u'/child-1'
+        assert child.path == u'/child-1/'
         subchild = root['child-1']['subchild'] = Node()
-        assert subchild.path == '/child-1/subchild'
+        assert subchild.path == '/child-1/subchild/'
 
     def test_object_moved(self, db_session, root, events):
         from kotti.resources import Node
         child = root['child-1'] = Node()
         subchild = child['subchild'] = Node()
         subchild.parent = root
-        assert subchild.path == '/subchild'
+        assert subchild.path == '/subchild/'
 
     @mark.parametrize("flush", [True, False])
     def test_parent_moved(self, db_session, root, events, flush):
@@ -271,9 +271,9 @@ class TestPath:
         if flush:
             db_session.flush()
 
-        assert subchild.path == '/child-1/child-2/subchild'
+        assert subchild.path == '/child-1/child-2/subchild/'
         child2.parent = root
-        assert subchild.path == '/child-2/subchild'
+        assert subchild.path == '/child-2/subchild/'
 
     def test_object_renamed(self, db_session, root, events):
         from kotti.resources import Node
@@ -281,7 +281,7 @@ class TestPath:
         subchild = child['subchild'] = Node()
 
         subchild.name = u'renamed'
-        assert subchild.path == '/child-1/renamed'
+        assert subchild.path == '/child-1/renamed/'
 
     @mark.parametrize("flush", [True, False])
     def test_parent_renamed(self, db_session, root, events, flush):
@@ -294,12 +294,11 @@ class TestPath:
             db_session.flush()
 
         child2.name = u'renamed'
-        assert subchild.path == '/child-1/renamed/subchild'
-
+        assert subchild.path == '/child-1/renamed/subchild/'
         child1.name = u'renamed-1'
-        assert child1.path == '/renamed-1'
-        assert child2.path == '/renamed-1/renamed'
-        assert subchild.path == '/renamed-1/renamed/subchild'
+        assert child2.path == '/renamed-1/renamed/'
+        assert subchild.path == '/renamed-1/renamed/subchild/'
+        assert child1.path == '/renamed-1/'
 
     @mark.parametrize("flush", [True, False])
     def test_parent_copied(self, db_session, root, events, flush):
@@ -313,25 +312,25 @@ class TestPath:
 
         c1copy = root['c1copy'] = c1.copy()
 
-        assert c1copy.path == '/c1copy'
-        assert c1copy['c2'].path == '/c1copy/c2'
-        assert c1copy['c2']['c3'].path == '/c1copy/c2/c3'
+        assert c1copy.path == '/c1copy/'
+        assert c1copy['c2'].path == '/c1copy/c2/'
+        assert c1copy['c2']['c3'].path == '/c1copy/c2/c3/'
 
         c2copy = c2['c2copy'] = c2.copy()
 
-        assert c2copy.path == '/c1/c2/c2copy'
-        assert c2copy['c3'].path == '/c1/c2/c2copy/c3'
+        assert c2copy.path == '/c1/c2/c2copy/'
+        assert c2copy['c3'].path == '/c1/c2/c2copy/c3/'
 
     def test_children_append(self, db_session, root, events):
         from kotti.resources import Node
 
         child = Node(u'child-1')
         root.children.append(child)
-        assert child.path == '/child-1'
+        assert child.path == '/child-1/'
 
         child2 = Node(u'child-2')
         child.children.append(child2)
-        assert child2.path == '/child-1/child-2'
+        assert child2.path == '/child-1/child-2/'
 
     def test_replace_root(self, db_session, root, events):
         from kotti.resources import Node
@@ -350,17 +349,17 @@ class TestPath:
             Node.path.startswith(u'/')).count() == 4
 
         assert db_session.query(Node).filter(
-            Node.path.startswith(u'/child-1')).count() == 3
+            Node.path.startswith(u'/child-1/')).count() == 3
 
         objs = db_session.query(Node).filter(
-            Node.path.startswith(u'/child-1/child-2')).all()
+            Node.path.startswith(u'/child-1/child-2/')).all()
 
         assert len(objs) == 2
         assert subchild in objs
         assert child2 in objs
 
         db_session.query(Node).filter(
-            Node.path.startswith(u'/child-1/child-3')).count() == 0
+            Node.path.startswith(u'/child-1/child-3/')).count() == 0
 
     def test_add_child_to_unnamed_parent(self, db_session, root, events):
         from kotti.resources import Node
@@ -369,9 +368,9 @@ class TestPath:
         child2 = child1['child-2'] = Node()
         assert child2.__parent__.__parent__ is parent
         root['parent'] = parent
-        assert parent.path == u'/parent'
-        assert child1.path == u'/parent/child-1'
-        assert child2.path == u'/parent/child-1/child-2'
+        assert parent.path == u'/parent/'
+        assert child1.path == u'/parent/child-1/'
+        assert child2.path == u'/parent/child-1/child-2/'
 
     def test_add_child_to_unrooted_parent(self, db_session, root, events):
         from kotti.resources import Node
@@ -379,9 +378,9 @@ class TestPath:
         child1 = parent['child-1'] = Node()
         child2 = child1['child-2'] = Node()
         root['parent'] = parent
-        assert parent.path == u'/parent'
-        assert child1.path == u'/parent/child-1'
-        assert child2.path == u'/parent/child-1/child-2'
+        assert parent.path == u'/parent/'
+        assert child1.path == u'/parent/child-1/'
+        assert child2.path == u'/parent/child-1/child-2/'
 
     def test_node_lineage_not_loaded_new_name(self, db_session, root, events):
 
@@ -396,7 +395,7 @@ class TestPath:
 
         child2 = db_session.query(Node).get(child2_id)
         child3 = Node('child-3', parent=child2)
-        assert child3.path == u'/parent/child-1/child-2/child-3'
+        assert child3.path == u'/parent/child-1/child-2/child-3/'
 
     def test_node_lineage_not_loaded_new_parent(self, db_session, root, events):
 
@@ -425,7 +424,7 @@ class TestPath:
         child3.parent = child2
         child2.parent = child1
 
-        assert child3.path == u"/parent/child-1/child-2/child-3"
+        assert child3.path == u"/parent/child-1/child-2/child-3/"
 
 
 class TestLocalGroup:
