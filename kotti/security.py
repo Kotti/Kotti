@@ -48,7 +48,7 @@ def has_permission(permission, context, request):
     :type context: :class:``kotti.resources.Node``
 
     :param request: current request
-    :type request: :class:`pyramid.request.Request`
+    :type request: :class:`kotti.request.Request`
 
     :result: ``True`` if request has the permission, ``False`` else
     :rtype: bool

@@ -141,7 +141,7 @@ class ContainerMixin(object, DictMixin):
         the request has the asked permission.
 
         :param request: current request
-        :type request: :class:`pyramid.request.Request`
+        :type request: :class:`kotti.request.Request`
         :param permission: The permission for which you want the allowed
                            children
         :type permission: str
@@ -353,7 +353,7 @@ class TypeInfo(object):
                        :class:`~kotti.resources.TypeInfo`)
 
         :param request: current request
-        :type request: :class:`pyramid.request.Request`
+        :type request: :class:`kotti.request.Request`
 
         :result: True if the type described in 'self' may be added to 'context',
                  False otherwise.
@@ -665,7 +665,7 @@ class File(Content):
             through a webbrowser.
 
         :param fs: FieldStorage instance as found in a
-                   :class:`pyramid.request.Request`'s ``POST`` MultiDict.
+                   :class:`kotti.request.Request`'s ``POST`` MultiDict.
         :type fs: :class:`cgi.FieldStorage`
 
         :result: The created instance.
@@ -707,7 +707,7 @@ def get_root(request=None):
        return its result.
 
     :param request: current request (optional)
-    :type request: :class:`pyramid.request.Request`
+    :type request: :class:`kotti.request.Request`
 
     :result: a node in the node tree
     :rtype: :class:`~kotti.resources.Node` or descendant;
@@ -719,7 +719,7 @@ def default_get_root(request=None):
     """Default implementation for :func:`~kotti.resources.get_root`.
 
     :param request: Current request (optional)
-    :type request: :class:`pyramid.request.Request`
+    :type request: :class:`kotti.request.Request`
 
     :result: Node in the object tree that has no parent.
     :rtype: :class:`~kotti.resources.Node` or descendant; in a fresh Kotti site

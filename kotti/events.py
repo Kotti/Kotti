@@ -54,7 +54,7 @@ class ObjectEvent(object):
         :type object: arbitrary
 
         :param request: current request
-        :type request: :class:`pyramid.request.Request`
+        :type request: :class:`kotti.request.Request`
         """
 
         self.object = object

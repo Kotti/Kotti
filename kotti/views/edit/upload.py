@@ -32,7 +32,7 @@ class UploadView(object):
         :type context: :class:`kotti.resources.Content` or descendants.
 
         :param request: Current request.
-        :type request: :class:`pyramid.request.Request`
+        :type request: :class:`kotti.request.Request`
         """
 
         self.context = context

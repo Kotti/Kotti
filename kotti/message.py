@@ -79,7 +79,7 @@ def send_email(request, recipients, template_name, template_vars={}):
     """ General email sender.
 
     :param request: current request.
-    :type request: :class:`pyramid.request.Request`
+    :type request: :class:`kotti.request.Request`
 
     :param recipients: list of email addresses. Each email should be a
                        string like: u'"John Doe" <joedoe@foo.com>'.
