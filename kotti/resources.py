@@ -702,13 +702,12 @@ class File(Content):
     def __declare_last__(cls):
         # Unconfigure the event set in _SQLAMutationTracker, we have _save_data
         mapper = cls._sa_class_manager.mapper
-        prop = mapper.attrs['data']
-        args = (prop, 'set', _SQLAMutationTracker._field_set)
+        args = (mapper.attrs['data'], 'set', _SQLAMutationTracker._field_set)
         if event.contains(*args):
             event.remove(*args)
 
         # Declaring the event on the class attribute instead of mapper property
-        # enables its registration on subclasses
+        # enables proper registration on its subclasses
         event.listen(cls.data, 'set', cls._save_data, retval=True)
 
     @classmethod
@@ -788,8 +787,6 @@ def default_get_root(request=None):
 
 def _adjust_for_engine(engine):
     if engine.dialect.name == 'mysql':  # pragma: no cover
-        from sqlalchemy.dialects.mysql.base import LONGBLOB
-        File.__table__.c.data.type = LONGBLOB()
         # We disable the Node.path index for Mysql; in some conditions
         # the index can't be created for columns even with 767 bytes,
         # the maximum default size for column indexes

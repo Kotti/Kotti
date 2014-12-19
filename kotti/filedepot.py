@@ -322,3 +322,9 @@ def includeme(config):
     event.listen(DBSession,
                  'before_commit',
                  _SQLAMutationTracker._session_committed)
+
+    # adjust for engine type
+    engine = DBSession.connection().engine
+    if engine.dialect.name == 'mysql':  # pragma: no cover
+        from sqlalchemy.dialects.mysql.base import LONGBLOB
+        DBStoredFile.__table__.c.data.type = LONGBLOB()
