@@ -132,7 +132,7 @@ class LinkBase(object):
         return self.name
     path = deprecated(
         path,
-        "The 'path' attribute has been deprecated as of Kotti 0.10.  Please "
+        "The 'path' attribute has been deprecated as of Kotti 1.0.0.  Please "
         "use 'name' instead.",
         )
 
@@ -334,5 +334,5 @@ def command(func, doc):
 ViewLink = Link
 deprecated(
     'ViewLink',
-    "kotti.util.ViewLink has been renamed to Link as of Kotti 0.10."
+    "kotti.util.ViewLink has been renamed to Link as of Kotti 1.0.0."
     )
