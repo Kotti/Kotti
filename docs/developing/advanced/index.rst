@@ -12,5 +12,6 @@ Advanced Topics
     events
     frontpage-different-template
     images
+    blobs
     static-resource-management
     understanding-kotti-startup
