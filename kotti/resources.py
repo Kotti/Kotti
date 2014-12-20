@@ -318,7 +318,7 @@ class TypeInfo(object):
 
     def __init__(self, **kwargs):
         if 'action_links' in kwargs:
-            msg = ("'action_links' is deprecated as of Kotti 0.10.  "
+            msg = ("'action_links' is deprecated as of Kotti 1.0.0.  "
                    "'edit_links' includes 'action_links' and should "
                    "be used instead.")
 

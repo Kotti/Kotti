@@ -86,8 +86,8 @@ if sys.version_info[:3] < (2, 7, 0):
     install_requires.append('ordereddict')
 
 setup(name='Kotti',
-      version='0.10b2dev',
-      description="A user-friendly, light-weight and extensible web content management system. Based on Pyramid and SQLAlchemy.",
+      version='1.0.0-alpha',
+      description="A high-level, Pythonic web application framework based on Pyramid and SQLAlchemy.  It includes an extensible Content Management System called the Kotti CMS.",  # noqa
       long_description='\n\n'.join([README, AUTHORS, CHANGES]),
       classifiers=[
         "Programming Language :: Python",
@@ -101,7 +101,7 @@ setup(name='Kotti',
       ],
       author='Kotti developers',
       author_email='kotti@googlegroups.com',
-      url='http://kotti.pylonsproject.org',
+      url='http://kotti.pylonsproject.org/',
       keywords='kotti web cms wcms pylons pyramid sqlalchemy bootstrap',
       license="BSD-derived (http://www.repoze.org/LICENSE.txt)",
       packages=find_packages(),
