@@ -5,4 +5,4 @@ kotti.events
 
 .. automodule:: kotti.events
    :members:
-
+   :member-order: bysource

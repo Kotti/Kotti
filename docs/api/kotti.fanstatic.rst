@@ -5,4 +5,4 @@ kotti.fanstatic
 
 .. automodule:: kotti.fanstatic
    :members:
-
+   :member-order: bysource

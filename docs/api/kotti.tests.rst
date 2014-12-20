@@ -5,3 +5,4 @@ kotti.tests
 
 .. automodule:: kotti.tests
    :members:
+   :member-order: bysource

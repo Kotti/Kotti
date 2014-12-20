@@ -5,3 +5,4 @@ kotti.workflow
 
 .. automodule:: kotti.workflow
    :members:
+   :member-order: bysource

@@ -5,3 +5,4 @@ kotti.views.edit.default_views
 
 .. automodule:: kotti.views.edit.default_views
    :members:
+   :member-order: bysource

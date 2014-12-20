@@ -5,7 +5,7 @@ kotti.views.edit
 
 .. automodule:: kotti.views.edit
    :members:
-
+   :member-order: bysource
 
 .. toctree::
    :maxdepth: 3

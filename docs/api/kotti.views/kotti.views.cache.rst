@@ -5,3 +5,4 @@ kotti.views.cache
 
 .. automodule:: kotti.views.cache
    :members:
+   :member-order: bysource
