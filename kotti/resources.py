@@ -67,7 +67,7 @@ from kotti.util import LinkRenderer
 
 
 class ContainerMixin(object, DictMixin):
-    """Containers form the API of a Node that's used for subitem
+    """ Containers form the API of a Node that's used for subitem
     access and in traversal.
     """
 
@@ -82,7 +82,7 @@ class ContainerMixin(object, DictMixin):
 
     def keys(self):
         """
-        :result: A list of children names.
+        :result: children names
         :rtype: list
         """
 
@@ -131,20 +131,24 @@ class ContainerMixin(object, DictMixin):
 
     @hybrid_property
     def children(self):
-        """Return *all* child nodes without considering permissions."""
+        """
+        :result: *all* child nodes without considering permissions.
+        :rtype: list
+        """
 
         return self._children
 
     def children_with_permission(self, request, permission='view'):
-        """
-        Return only those children for which the user initiating
-        the request has the asked permission.
+        """ Return only those children for which the user initiating the
+        request has the asked permission.
 
         :param request: current request
         :type request: :class:`kotti.request.Request`
+
         :param permission: The permission for which you want the allowed
                            children
         :type permission: str
+
         :result: List of child nodes
         :rtype: list
         """
