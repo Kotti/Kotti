@@ -160,15 +160,27 @@ class ContainerMixin(object, DictMixin):
 
 
 class LocalGroup(Base):
+    """ Local groups allow the assignment of groups or roles to pricipals
+    (users or groups) **for a certain context** (i.e. a :class:`Node` in the
+    content tree).
+    """
 
     __tablename__ = 'local_groups'
     __table_args__ = (
         UniqueConstraint('node_id', 'principal_name', 'group_name'),
         )
 
+    #: Primary key for the node in the DB
+    #: (:class:`sqlalchemy.types.Integer`)
     id = Column(Integer(), primary_key=True)
+    #: ID of the node for this assignment
+    #: (:class:`sqlalchemy.types.Integer`)
     node_id = Column(ForeignKey('nodes.id'))
+    #: Name of the principal (user or group)
+    #: (:class:`sqlalchemy.types.Unicode`)
     principal_name = Column(Unicode(100))
+    #: Name of the assigned group or role
+    #: (:class:`sqlalchemy.types.Unicode`)
     group_name = Column(Unicode(100))
 
     def __init__(self, node, principal_name, group_name):
