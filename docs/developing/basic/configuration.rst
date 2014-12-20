@@ -8,10 +8,9 @@ Configuration
 INI File
 --------
 
-Kotti is configured using an INI configuration file.  The
-:ref:`installation` section explains how to get hold of a sample
-configuration file.  The ``[app:kotti]`` section in it might look like
-this:
+Kotti is configured using an INI configuration file.
+The :ref:`installation` section explains how to get hold of a sample configuration file.
+The ``[app:kotti]`` section in it might look like this:
 
 .. code-block:: ini
 
@@ -35,9 +34,8 @@ Various aspects of your site can be changed right here.
 Overview of settings
 --------------------
 
-This table provides an overview of available settings.  All these
-settings must go into the ``[app:kotti]`` section of your Paste Deploy
-configuration file.
+This table provides an overview of available settings.
+All these settings must go into the ``[app:kotti]`` section of your Paste Deploy configuration file.
 
 ============================  ==================================================
 Setting                       Description
@@ -80,23 +78,21 @@ kotti.max_file_size           Max size for file uploads, default: ```10`` (MB)
 pyramid.default_locale_name   Set the user interface language, default ``en``
 ============================  ==================================================
 
-Only the settings in bold letters required.  The rest has defaults.
+Only the settings in bold letters required.
+The rest has defaults.
 
-Do take a look at the required settings (in bold) and adjust them in
-your site's configuration.  A few of the settings are less important,
-and sometimes only used by developers, not integrators.
+Do take a look at the required settings (in bold) and adjust them in your site's configuration.
+A few of the settings are less important, and sometimes only used by developers, not integrators.
 
 kotti.secret and kotti.secret2
 ------------------------------
 
-The value of ``kotti.secret`` will define the initial password of the
-``admin`` user.  Thus, if you define ``kotti.secret = mysecret``, the
-admin password will be ``mysecret``.  Log in and change the password
-at any time through the web interface.
+The value of ``kotti.secret`` will define the initial password of the ``admin`` user.
+Thus, if you define ``kotti.secret = mysecret``, the admin password will be ``mysecret``.
+Log in and change the password at any time through the web interface.
 
-The ``kotti.secret`` token is also used for signing browser session
-cookies.  The ``kotti.secret2`` token is used for signing the password
-reset token.
+The ``kotti.secret`` token is also used for signing browser session cookies.
+The ``kotti.secret2`` token is used for signing the password reset token.
 
 Here's an example:
 
@@ -112,21 +108,14 @@ Here's an example:
 Override templates (``kotti.asset_overrides``)
 ----------------------------------------------
 
-In your settings file, set ``kotti.asset_overrides`` to a list of
-*asset specifications*.  This allows you to set up a directory in your
-package that will mirror Kotti's own and that allows you to override
-Kotti's templates on a case by case basis.
+In your settings file, set ``kotti.asset_overrides`` to a list of *asset specifications*.
+This allows you to set up a directory in your package that will mirror Kotti's own and that allows you to override Kotti's templates on a case by case basis.
 
-As an example, image that we wanted to override Kotti's master layout
-template.  Inside the Kotti source, the layout template is located at
-``kotti/templates/view/master.pt``.  To override this, we would add a
-directory to our own package called ``kotti-overrides`` and therein
-put our own version of the template so that the full path to our own
-custom template is
-``mypackage/kotti-overrides/templates/view/master.pt``.
+As an example, image that we wanted to override Kotti's master layout template.
+Inside the Kotti source, the layout template is located at ``kotti/templates/view/master.pt``.
+To override this, we would add a directory to our own package called ``kotti-overrides`` and therein put our own version of the template so that the full path to our own custom template is ``mypackage/kotti-overrides/templates/view/master.pt``.
 
-We can then register our ``kotti-overrides`` directory by use of the
-``kotti.asset_overrides`` setting, like so:
+We can then register our ``kotti-overrides`` directory by use of the ``kotti.asset_overrides`` setting, like so:
 
 .. code-block:: ini
 
@@ -135,9 +124,8 @@ We can then register our ``kotti-overrides`` directory by use of the
 Use add-ons
 -----------
 
-Add-ons will usually include in their installation instructions which
-settings one should modify to activate them.  Configuration settings
-that are used to activate add-ons are:
+Add-ons will usually include in their installation instructions which settings one should modify to activate them.
+Configuration settings that are used to activate add-ons are:
 
 - ``pyramid.includes``
 - ``kotti.available_types``
@@ -149,40 +137,33 @@ that are used to activate add-ons are:
 pyramid.includes
 ````````````````
 
-``pyramid.includes`` defines a list of hooks that will be called when
-your Kotti app starts up.  This gives the opportunity to third party
-packages to add registrations to the *Pyramid Configurator API* in
-order to configure views and more.
+``pyramid.includes`` defines a list of hooks that will be called when your Kotti app starts up.
+This gives the opportunity to third party packages to add registrations to the *Pyramid Configurator API* in order to configure views and more.
 
-Here's an example.  Let's install the `kotti_twitter`_ extension and
-add a Twitter profile widget to the right column of all pages.  First
-we install the package from PyPI:
+Here's an example.
+Let's install the `kotti_twitter`_ extension and add a Twitter profile widget to the right column of all pages.
+First we install the package from PyPI:
 
 .. code-block:: bash
 
   bin/pip install kotti_twitter
 
-Then we activate the add-on in our site by editing the
-``pyramid.includes`` setting in the ``[app:kotti]`` section of our INI
-file.  (If a line with ``pyramid.includes`` does not exist, add it.)
+Then we activate the add-on in our site by editing the ``pyramid.includes`` setting in the ``[app:kotti]`` section of our INI file (if a line with ``pyramid.includes`` does not exist, add it).
 
 .. code-block:: ini
 
   pyramid.includes = kotti_twitter.include_profile_widget
 
-kotti_twitter also asks us to configure the Twitter widget itself, so
-we add some more lines right where we were:
+kotti_twitter also asks us to configure the Twitter widget itself, so we add some more lines right where we were:
 
 .. code-block:: ini
 
   kotti_twitter.profile_widget.user = dnouri
   kotti_twitter.profile_widget.loop = true
 
-The order in which the includes are listed matters.  For example, when
-you add two slots on the right hand side, the order in which you list
-them in ``pyramid.includes`` will control the order in which they will
-appear.  As an example, here's a configuration with which the search
-widget will be displayed above the profile widget:
+The order in which the includes are listed matters.
+For example, when you add two slots on the right hand side, the order in which you list them in ``pyramid.includes`` will control the order in which they will appear.
+As an example, here's a configuration with which the search widget will be displayed above the profile widget:
 
 .. code-block:: ini
 
@@ -190,8 +171,7 @@ widget will be displayed above the profile widget:
       kotti_twitter.include_search_widget
       kotti_twitter.include_profile_widget
 
-Read more about `including packages using 'pyramid.includes'`_ in
-the Pyramid documentation.
+Read more about `including packages using 'pyramid.includes'`_ in the Pyramid documentation.
 
 .. _including packages using 'pyramid.includes': http://readthedocs.org/docs/pyramid/en/1.3-branch/narr/environment.html#including-packages
 
@@ -200,8 +180,8 @@ the Pyramid documentation.
 kotti.available_types
 `````````````````````
 
-The ``kotti.available_types`` setting defines the list of content
-types available.  The default configuration here is:
+The ``kotti.available_types`` setting defines the list of content types available.
+The default configuration here is:
 
 .. code-block:: ini
 
@@ -227,25 +207,23 @@ The default configuration here is:
 
   kotti.populators = kotti.populate.populate
 
-Populators are functions with no arguments that get called on system
-startup.  They may then make automatic changes to the database (before
-calling ``transaction.commit()``).
+Populators are functions with no arguments that get called on system startup.
+They may then make automatic changes to the database (before calling ``transaction.commit()``).
 
 .. _kotti.search_content:
 
 kotti.search_content
 ````````````````````
 
-Kotti provides a simple search over the content types based on
-kotti.resources.Content. The default configuration here is:
+Kotti provides a simple search over the content types based on kotti.resources.Content.
+The default configuration here is:
 
 .. code-block:: ini
 
   kotti.search_content = kotti.views.util.default_search_content
 
-You can provide an own search function in an add-on and register this
-in your INI file. The return value of the search function is a list of
-dictionaries, each representing a search result:
+You can provide an own search function in an add-on and register this in your INI file.
+The return value of the search function is a list of dictionaries, each representing a search result:
 
 .. code-block:: python
 
@@ -258,17 +236,15 @@ dictionaries, each representing a search result:
    ...
    ]
 
-An add-on that defines an alternative search function is
-`kotti_solr`_, which provides an integration with the `Solr`_ search
-engine.
+An add-on that defines an alternative search function is `kotti_solr`_, which provides an integration with the `Solr`_ search engine.
 
 .. _user interface language:
 
 Configure the user interface language
 -------------------------------------
 
-By default, Kotti will display its user interface in English.  The
-default configuration is:
+By default, Kotti will display its user interface in English.
+The default configuration is:
 
 .. code-block:: ini
 
@@ -286,51 +262,42 @@ The list of available languages is `here
 Configure authentication and authorization
 ------------------------------------------
 
-You can override the authentication and authorization policy that
-Kotti uses.  By default, Kotti uses these factories:
+You can override the authentication and authorization policy that Kotti uses.
+By default, Kotti uses these factories:
 
 .. code-block:: ini
 
   kotti.authn_policy_factory = kotti.authtkt_factory
   kotti.authz_policy_factory = kotti.acl_factory
 
-These settings correspond to
-`pyramid.authentication.AuthTktAuthenticationPolicy`_ and
-`pyramid.authorization.ACLAuthorizationPolicy`_ being used.
+These settings correspond to `pyramid.authentication.AuthTktAuthenticationPolicy`_ and `pyramid.authorization.ACLAuthorizationPolicy`_ being used.
 
 Sessions
 --------
 
-The ``kotti.session_factory`` configuration variable allows the
-overriding of the default session factory.  By default, Kotti uses
-``pyramid_beaker`` for sessions.
+The ``kotti.session_factory`` configuration variable allows the overriding of the default session factory.
+By default, Kotti uses ``pyramid_beaker`` for sessions.
 
 Caching
 -------
 
-You can override Kotti's default set of cache headers by changing the
-``kotti.views.cache.caching_policies`` dictionary, which maps policies
-to headers.  E.g. the ``Cache Resource`` entry there caches all static
-resources for 32 days.  You can also choose which responses match to
-which caching policy by overriding Kotti's default cache policy
-chooser through the use of the ``kotti.caching_policy_chooser``
-configuration variable.  The default is:
+You can override Kotti's default set of cache headers by changing the ``kotti.views.cache.caching_policies`` dictionary, which maps policies to headers.
+E.g. the ``Cache Resource`` entry there caches all static resources for 32 days.
+You can also choose which responses match to which caching policy by overriding Kotti's default cache policy chooser through the use of the ``kotti.caching_policy_chooser`` configuration variable.
+The default is:
 
 .. code-block:: ini
 
   kotti.caching_policy_chooser = kotti.views.cache.default_caching_policy_chooser
 
-Url normalization
+URL normalization
 -----------------
 
-Kotti normalizes document titles to URLs by replacing language specific
-characters like umlauts or accented characters with its ascii equivalents.
-You can change this default behavour by setting
-``kotti.url_normalizer.map_non_ascii_characters`` configuration variable
-to ``False``. If you do, Kotti will leave national characters in URLs.
+Kotti normalizes document titles to URLs by replacing language specific characters like umlauts or accented characters with its ascii equivalents.
+You can change this default behavour by setting ``kotti.url_normalizer.map_non_ascii_characters`` configuration variable to ``False``.
+If you do, Kotti will leave national characters in URLs.
 
-You may also replace default component used for url normalization by setting
-``kotti.url_normalizer`` configuation variable.
+You may also replace default component used for url normalization by setting ``kotti.url_normalizer`` configuation variable.
 
 The default configuration here is:
 
@@ -345,8 +312,7 @@ Local navigation
 ----------------
 
 Kotti provides a build in navigation widget, which is disabled by default.
-To enable the navigation widget add the following to the ``pyramid.includes``
-setting:
+To enable the navigation widget add the following to the ``pyramid.includes`` setting:
 
 .. code-block:: ini
 

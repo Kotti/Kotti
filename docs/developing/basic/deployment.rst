@@ -3,8 +3,8 @@
 Deployment
 ==========
 
-Kotti deployment is not different from deploying any other WSGI app.  You have
-a bunch of options on multiple layers: OS, RDBMS, Webserver, etc.
+Kotti deployment is not different from deploying any other WSGI app.
+You have a bunch of options on multiple layers: OS, RDBMS, Webserver, etc.
 
 This document assumes the following Stack:
 
@@ -113,20 +113,19 @@ Reload the supervisor config::
 
     supervisorctl reload
 
-That's all.  Your Kotti deployment should now happily serve pages.
+That's all.
+Your Kotti deployment should now happily serve pages.
 
 Fabfile
 -------
 
-**WARNING: this is only an example.  Do not run this unmodified against a host
-that is intended to do anything else or things WILL break!**
+**WARNING: this is only an example.
+Do not run this unmodified against a host that is intended to do anything else or things WILL break!**
 
 For your convenience there is a `fabric`_ file that automates all of the above.
-If you don't know what fabric is and how it works read their documentation
-first.
+If you don't know what fabric is and how it works read their documentation first.
 
-On your local machine make a separate virtualenv first and install the
-``fabric`` and ``fabtools`` packages into that virtualenv::
+On your local machine make a separate virtualenv first and install the ``fabric`` and ``fabtools`` packages into that virtualenv::
 
     mkvirtualenv kotti_deployment && cdvirtualenv
     pip install fabric fabtools
@@ -135,11 +134,12 @@ Get the fabfile::
 
     wget https://gist.github.com/gists/4079191/download
 
-Read and modify the file to fit your needs.  Then run it against your server::
+Read and modify the file to fit your needs.
+Then run it against your server::
 
     fab install_all
 
-You're done.  Everything is installed and configured to serve Kotti under
-http://kotti.yourdomain.com/
+You're done.
+Everything is installed and configured to serve Kotti under http://kotti.yourdomain.com/
 
 .. _fabric: http://docs.fabfile.org/

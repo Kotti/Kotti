@@ -4,12 +4,12 @@
 Kotti Documentation
 ===================
 
-Kotti is a user-friendly, nimble and extensible web content management system,
-based on Pyramid and SQLAlchemy.
+Kotti is a high-level, Pythonic web application framework based on Pyramid and SQLAlchemy.
+It includes an extensible Content Management System called the Kotti CMS.
 
 If you are a user of a Kotti system, and either found this page through browsing or searching, or were referred here, you will likely want to go directly to the `Kotti User Manual`_.
 
-The documentation below is for developers of Kotti.
+The documentation below is for developers of Kotti or applications built on top of it.
 
 First Steps
 -----------
