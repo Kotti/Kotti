@@ -1,8 +1,8 @@
 Change History
 ==============
 
-0.10 - Unreleased
------------------
+1.0.0-alpha - 2014-12-20
+------------------------
 
 - Add a new scaffold based on Pyramid's ``pcreate``.  To run the tests for the
   scaffold, you must invoke ``py.test`` with the ``--runslow`` option.  This
