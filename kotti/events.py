@@ -54,7 +54,7 @@ class ObjectEvent(object):
         :type object: arbitrary
 
         :param request: current request
-        :type request: :class:`pyramid.request.Request`
+        :type request: :class:`kotti.request.Request`
         """
 
         self.object = object
@@ -305,7 +305,11 @@ def reset_content_owner(event):
 def _update_children_paths(old_parent_path, new_parent_path):
     for child in DBSession.query(Node).options(
         load_only('path', 'type')).filter(
-            Node.path.startswith(old_parent_path + '/')):
+            Node.path.startswith(old_parent_path)):
+        if child.path == new_parent_path:
+            # The child is the node itself and has already be renamed.
+            # Nothing to do!
+            continue
         child.path = new_parent_path + child.path[len(old_parent_path):]
 
 
@@ -324,7 +328,7 @@ def _set_path_for_new_name(target, value, oldvalue, initiator):
         # Our name is about to be set to 'None', so skip.
         return
 
-    if target.__parent__ is None and value != '':
+    if target.__parent__ is None and value != u'':
         # Our parent hasn't been set yet.  Skip, unless we're the root
         # object (which always has an empty string as name).
         return
@@ -332,9 +336,12 @@ def _set_path_for_new_name(target, value, oldvalue, initiator):
     old_path = target.path
     line = tuple(reversed(tuple(lineage(target))))
     target_path = u'/'.join(node.__name__ for node in line[:-1])
-    target_path += u'/{0}'.format(value)
+    if target.__parent__ is None and value == u'':
+        # We're a new root object
+        target_path = u'/'
+    else:
+        target_path += u'/{0}/'.format(value)
     target.path = target_path
-
     # We need to set the name to value here so that the subsequent
     # UPDATE in _update_children_paths will include the new 'name'
     # already.  We have to make sure that we don't end up in an
@@ -350,7 +357,8 @@ def _set_path_for_new_name(target, value, oldvalue, initiator):
         _update_children_paths(old_path, target_path)
     else:
         for child in _all_children(target):
-            child.path = u'/'.join([child.__parent__.path, child.__name__])
+            child.path = u'{0}{1}/'.format(child.__parent__.path,
+                                           child.__name__)
 
 
 def _all_children(item, _all=None):
@@ -388,7 +396,7 @@ def _set_path_for_new_parent(target, value, oldvalue, initiator):
         return
 
     target_path = u'/'.join(node.__name__ for node in line)
-    target_path += u'/{0}'.format(target.__name__)
+    target_path += u'/{0}/'.format(target.__name__)
     target.path = target_path
 
     if old_path and target.id is not None:
@@ -398,7 +406,8 @@ def _set_path_for_new_parent(target, value, oldvalue, initiator):
         # children.  This is the case when we create an object with
         # children before we assign the object itself to a parent.
         for child in _all_children(target):
-            child.path = u'/'.join([child.__parent__.path, child.__name__])
+            child.path = u'{0}{1}/'.format(child.__parent__.path,
+                                           child.__name__)
 
 
 class subscribe(object):

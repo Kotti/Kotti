@@ -1,6 +1,5 @@
 import warnings
 
-from mock import patch
 from pytest import mark
 
 

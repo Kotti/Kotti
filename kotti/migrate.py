@@ -87,13 +87,8 @@ class PackageEnvironment(object):
         return '{0}_alembic_version'.format(self.pkg_name)
 
     def run_env(self, fn, **kw):
-        with EnvironmentContext(
-            self.config,
-            self.script_dir,
-            fn=fn,
-            version_table=self.version_table,
-            **kw
-            ):
+        with EnvironmentContext(self.config, self.script_dir, fn=fn,
+                                version_table=self.version_table, **kw):
             self.script_dir.run_env()
 
     def _make_config(self, location):

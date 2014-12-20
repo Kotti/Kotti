@@ -2,8 +2,9 @@
 Kotti
 =====
 
-A user-friendly, light-weight and extensible web content management
-system, based on Pyramid and SQLAlchemy.  |build status|_
+Kotti is a high-level, Pythonic web application framework based on Pyramid and SQLAlchemy.
+It includes an extensible Content Management System called the Kotti CMS (see below).
+|build status|_
 
 Kotti is most useful when you are developing applications that
 
@@ -11,12 +12,9 @@ Kotti is most useful when you are developing applications that
 - use workflows, and/or
 - work with hierarchical data.
 
-Built on top of a number of *best-of-breed* software components, most
-notably Pyramid_ and SQLAlchemy_, Kotti introduces only a few concepts
-of its own, thus hopefully keeping the learning curve flat for the
-developer.
+Built on top of a number of *best-of-breed* software components, most notably Pyramid_ and SQLAlchemy_, Kotti introduces only a few concepts of its own, thus hopefully keeping the learning curve flat for the developer.
 
-.. |build status| image:: https://secure.travis-ci.org/Kotti/Kotti.png?branch=master
+.. |build status| image:: https://secure.travis-ci.org/Kotti/Kotti.png?branch=stable
 .. _build status: http://travis-ci.org/Kotti/Kotti
 .. _Pyramid: http://docs.pylonsproject.org/projects/pyramid/dev/
 .. _SQLAlchemy: http://www.sqlalchemy.org/
@@ -24,10 +22,10 @@ developer.
 Kotti CMS
 =========
 
-You can **try out Kotti** on `Kotti's demo page`_.
+You can **try out the Kotti CMS** on `Kotti's demo page`_.
 
-Kotti CMS is a content management system that's heavily inspired by
-Plone_.  Its **main features** are:
+Kotti CMS is a content management system that's heavily inspired by Plone_.
+Its **main features** are:
 
 - **User-friendliness**: editors can edit content where it appears;
   thus the edit interface is contextual and intuitive
@@ -57,11 +55,9 @@ Plone_.  Its **main features** are:
 Support and Documentation
 =========================
 
-`Click here to access Kotti's full documentation
-<http://kotti.readthedocs.org/>`_
+`Click here to access Kotti's full documentation <http://kotti.readthedocs.org/>`_
 
 License
 =======
 
-Kotti is offered under the BSD-derived `Repoze Public License
-<http://repoze.org/license.html>`_.
+Kotti is offered under the BSD-derived `Repoze Public License <http://repoze.org/license.html>`_.

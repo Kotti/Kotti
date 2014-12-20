@@ -42,7 +42,10 @@ class KottiTemplate(PyramidTemplate):
         s = self._settings
         s[key] = raw_input(u'{} [{}]: '.format(caption, s[key])) or s[key]
 
-        s.save_settings()
+        try:
+            s.save_settings()
+        except OSError:
+            self.out("Your answers were not saved for later use.")
 
         return s[key]
 

@@ -7,6 +7,7 @@ from kotti.views.edit.content import ContentSchema
 from kotti.views.edit.content import DocumentSchema
 from kotti.workflow import get_workflow
 
+_  # make pyflakes happy
 
 # API
 ContentSchema = ContentSchema

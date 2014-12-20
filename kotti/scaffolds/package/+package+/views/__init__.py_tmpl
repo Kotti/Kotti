@@ -16,7 +16,7 @@ class BaseView(object):
         :type context: :class:`kotti.resources.Content`
 
         :param request: Current request
-        :type request: :class:`pyramid.request.Request`
+        :type request: :class:`kotti.request.Request`
         """
 
         super(BaseView, self).__init__()

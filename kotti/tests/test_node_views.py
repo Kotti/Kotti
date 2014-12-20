@@ -83,7 +83,7 @@ class TestNodeRename:
         request.params['title'] = u'foo'
         NodeActions(child, request).rename_node()
         assert (request.session.pop_flash('error') ==
-            [u'Name and title are required.'])
+                [u'Name and title are required.'])
 
     def test_multi_rename(self, root):
         from kotti.resources import Document
@@ -141,8 +141,10 @@ class TestNodeDelete:
         request.POST.add('children-to-delete', id2)
         request.POST.add('children-to-delete', id3)
         NodeActions(root, request).delete_nodes()
-        assert request.session.pop_flash('success') ==\
-            [u'${title} was deleted.', u'${title} was deleted.', u'${title} was deleted.']
+        assert request.session.pop_flash('success') == \
+            [u'${title} was deleted.',
+             u'${title} was deleted.',
+             u'${title} was deleted.']
 
 
 class TestNodeMove:
@@ -387,7 +389,7 @@ class TestNodeShare:
         assert entries[0][0] == P[u'bob']
         assert entries[0][1] == ([u'role:editor'], [])
         assert (request.session.pop_flash('info') ==
-            [u'No users or groups were found.'])
+                [u'No users or groups were found.'])
 
         # It does not, however, include entries that have local group
         # assignments only:
@@ -417,7 +419,7 @@ class TestNodeShare:
 
         share_node(root, request)
         assert (request.session.pop_flash('success') ==
-            [u'Your changes have been saved.'])
+                [u'Your changes have been saved.'])
         assert (
             set(list_groups('bob', root)) ==
             set(['role:owner', 'role:editor', 'role:special'])

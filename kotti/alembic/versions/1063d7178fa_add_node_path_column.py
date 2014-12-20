@@ -13,7 +13,6 @@ down_revision = '57fecf5dbd62'
 from alembic import op
 import sqlalchemy as sa
 from pyramid.location import lineage
-from sqlalchemy.orm import load_only
 
 
 def upgrade():

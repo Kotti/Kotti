@@ -232,7 +232,8 @@ class FunctionalTestBase(TestCase):
             )
 
     @deprecate('login_testbrowser is deprecated as of Kotti 0.7.  Please use '
-            'the `browser` funcarg in conjunction with the `@user` decorator.')
+               'the `browser` funcarg in conjunction with the `@user` '
+               'decorator.')
     def login_testbrowser(self, login=u'admin', password=u'secret'):
         browser = self.Browser()
         browser.open(BASE_URL + '/edit')
@@ -301,4 +302,4 @@ from zope.deprecation.deprecation import deprecated
 for item in UnitTestBase, EventTestBase, FunctionalTestBase, _initTestingDB:
     name = getattr(item, '__name__', item)
     deprecated(name, 'Unittest-style tests are deprecated as of Kotti 0.7. '
-        'Please use pytest function arguments instead.')
+               'Please use pytest function arguments instead.')

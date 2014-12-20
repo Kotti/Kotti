@@ -78,7 +78,7 @@ def add_renderer_globals(event):
         event['api'] = api
 
 
-@deprecate("'is_root' is deprecated as of Kotti 0.10. "
+@deprecate("'is_root' is deprecated as of Kotti 1.0.0. "
            "Use the 'root_only=True' if you were using this as a "
            "'custom_predicates' predicate.")
 def is_root(context, request):
@@ -484,4 +484,4 @@ for obj in (render_view, get_localizer_for_locale_name, translate,
     deprecated(
         name,
         "kotti.views.util.{0} has been moved to the kotti.util module "
-        "as of Kotti 0.10.  Use kotti.util.{0} instead".format(name))
+        "as of Kotti 1.0.0.  Use kotti.util.{0} instead".format(name))

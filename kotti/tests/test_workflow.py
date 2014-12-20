@@ -190,8 +190,8 @@ class TestContentExtensibleWithWorkflow:
         from kotti.interfaces import IDefaultWorkflow
 
         content = Content()
-        assert get_workflow(content) == None
-        assert content.state == None
+        assert get_workflow(content) is None
+        assert content.state is None
 
         interface.directlyProvides(content, IDefaultWorkflow)
         wf = get_workflow(content)

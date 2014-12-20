@@ -1,8 +1,8 @@
 Change History
 ==============
 
-0.10 - Unreleased
------------------
+1.0.0-alpha - 2014-12-20
+------------------------
 
 - Add a new scaffold based on Pyramid's ``pcreate``.  To run the tests for the
   scaffold, you must invoke ``py.test`` with the ``--runslow`` option.  This
@@ -51,6 +51,12 @@ Change History
 - Deprecate ``kotti.security.has_permission`` to be consistent with the
   corresponding deprecation in Pyramid 1.5.  You should now use
   ``request.has_permission`` instead.
+
+- Make all values in ``Node.path`` end in ``/``.  This makes it consistent over
+  all nodes (*including* root) and correspond to the values of
+  ``request.resource_url``.  As a side effect querying becomes easier.
+  However, this might need adjustments in your code if you were expecting the
+  old path values before.  A migration step for DB upgrades is included.
 
 0.10b1 - 2014-07-11
 -------------------

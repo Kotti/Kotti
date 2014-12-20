@@ -9,6 +9,7 @@ Inheritance Diagram
 
 import re
 import urllib
+from urlparse import urlparse, urlunparse
 
 from docopt import docopt
 from pyramid.i18n import get_localizer
@@ -97,8 +98,21 @@ class LinkBase(object):
             )
 
     def selected(self, context, request):
-        return urllib.unquote(request.url).startswith(
-            self.url(context, request))
+        """ Returns True if the Link's url, based on its name,
+        matches the request url
+
+        If the link name is '', it will be selected for all urls ending in '/'
+        """
+        parsed = urlparse(urllib.unquote(request.url))
+
+        # insert view markers @@ in last component of the path
+        path = parsed.path.split('/')
+        if not '@@' in path[-1]:
+            path[-1] = '@@' + path[-1]
+        path = '/'.join(path)
+        url = urlunparse((parsed[0], parsed[1], path, '', '', ''))
+
+        return url == self.url(context, request)
 
     def permitted(self, context, request):
         from kotti.security import view_permitted
@@ -118,7 +132,7 @@ class LinkBase(object):
         return self.name
     path = deprecated(
         path,
-        "The 'path' attribute has been deprecated as of Kotti 0.10.  Please "
+        "The 'path' attribute has been deprecated as of Kotti 1.0.0.  Please "
         "use 'name' instead.",
         )
 
@@ -168,10 +182,6 @@ class Link(LinkBase):
 
     def url(self, context, request):
         return resource_url(context, request) + '@@' + self.name
-
-    def selected(self, context, request):
-        return urllib.unquote(request.url).startswith(
-            self.url(context, request))
 
     def __eq__(self, other):
         return isinstance(other, Link) and repr(self) == repr(other)
@@ -324,5 +334,5 @@ def command(func, doc):
 ViewLink = Link
 deprecated(
     'ViewLink',
-    "kotti.util.ViewLink has been renamed to Link as of Kotti 0.10."
+    "kotti.util.ViewLink has been renamed to Link as of Kotti 1.0.0."
     )
