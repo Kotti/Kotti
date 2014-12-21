@@ -156,8 +156,8 @@ class TestMigrateBetweenStorage:
 
     def _create_content(self, db_session, root):
         data = [
-            ('f1', u'file1.jpg', 'image/jpeg'),
-            ('f2', u'file2.png', 'image/png'),
+            ('f1...', u'file1.jpg', 'image/jpeg'),
+            ('f2...', u'file2.png', 'image/png'),
         ]
         for row in data:
             f = File(data=row[0], filename=row[1], mimetype=row[2])
@@ -168,6 +168,7 @@ class TestMigrateBetweenStorage:
     def test_migrate_between_storages(self, db_session, root, no_filedepots):
         from kotti.filedepot import configure_filedepot
         from kotti.filedepot import migrate_storage
+        from kotti.resources import Node
         from depot.fields.sqlalchemy import _SQLAMutationTracker
         from sqlalchemy import event
         import os
@@ -177,9 +178,6 @@ class TestMigrateBetweenStorage:
         event.listen(db_session,
                     'before_commit',
                     _SQLAMutationTracker._session_committed)
-
-        # save depot configuration: use a fixture "save_depot_config"
-        # configure two depots:
 
         tmp_location = tempfile.mkdtemp()
 
@@ -204,11 +202,19 @@ class TestMigrateBetweenStorage:
 
         db_session.flush()
 
+        # here we need a transaction.commit(), but that would mess with the
+        # rest of the tests; we'll just trigger the event handler manually
+        _SQLAMutationTracker._session_committed(db_session)
 
-        for f in db_session.query(File):
-            uf = f.data
-            assert uf.file_id and uf.file_id in folders
+        root = db_session.query(Node).filter_by(parent=None).one()
+        f1 = root['file1.jpg']
+        assert f1.data.file_id in folders
+        assert f1.data.file.read() == 'f1...'
 
-        # assert db_session.query(DBStoredFile).count() == 0
+        f2 = root['file2.png']
+        assert f2.data.file_id in folders
+        assert f2.data.file.read() == 'f2...'
+
+        assert db_session.query(DBStoredFile).count() == 0
 
         shutil.rmtree(tmp_location)
