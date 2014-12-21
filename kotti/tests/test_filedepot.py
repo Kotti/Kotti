@@ -2,6 +2,7 @@ import datetime
 import pytest
 
 from kotti.filedepot import DBFileStorage, DBStoredFile
+from kotti.resources import File
 
 
 class TestDBStoredFile:
@@ -149,3 +150,65 @@ class TestDBFileStorage:
 
         with pytest.raises(IOError):
             DepotManager.get().get(file_id)
+
+
+class TestMigrateBetweenStorage:
+
+    def _create_content(self, db_session, root):
+        data = [
+            ('f1', u'file1.jpg', 'image/jpeg'),
+            ('f2', u'file2.png', 'image/png'),
+        ]
+        for row in data:
+            f = File(data=row[0], filename=row[1], mimetype=row[2])
+            root[row[1]] = f
+
+        db_session.flush()
+
+    def test_migrate_between_storages(self, db_session, root, no_filedepots):
+        from kotti.filedepot import configure_filedepot
+        from kotti.filedepot import migrate_storage
+        from depot.fields.sqlalchemy import _SQLAMutationTracker
+        from sqlalchemy import event
+        import os
+        import tempfile
+        import shutil
+
+        event.listen(db_session,
+                    'before_commit',
+                    _SQLAMutationTracker._session_committed)
+
+        # save depot configuration: use a fixture "save_depot_config"
+        # configure two depots:
+
+        tmp_location = tempfile.mkdtemp()
+
+        settings = {
+            'kotti.depot.0.backend': 'kotti.filedepot.DBFileStorage',
+            'kotti.depot.0.name': 'dbfiles',
+
+            'kotti.depot.1.backend': 'depot.io.local.LocalFileStorage',
+            'kotti.depot.1.name': 'localfs',
+            'kotti.depot.1.storage_path': tmp_location,
+        }
+
+        configure_filedepot(settings)
+        self._create_content(db_session, root)
+
+        assert db_session.query(DBStoredFile).count() == 2
+
+        migrate_storage('dbfiles', 'localfs')
+
+        folders = os.listdir(tmp_location)
+        assert len(folders) == 2
+
+        db_session.flush()
+
+
+        for f in db_session.query(File):
+            uf = f.data
+            assert uf.file_id and uf.file_id in folders
+
+        # assert db_session.query(DBStoredFile).count() == 0
+
+        shutil.rmtree(tmp_location)

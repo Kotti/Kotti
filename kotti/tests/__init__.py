@@ -335,3 +335,24 @@ def filedepot(db_session, request):
         DepotManager._default_depot = _old_default_depot
 
     request.addfinalizer(restore)
+
+
+@fixture
+def no_filedepots(db_session, request):
+    """ A filedepot fixture to empty and then restore DepotManager configuration
+    """
+    from depot.manager import DepotManager
+
+    _old_depots = DepotManager._depots
+    _old_default_depot = DepotManager._default_depot
+
+    DepotManager._depots = {}
+    DepotManager._default_depot = None
+
+
+    def restore():
+        db_session.rollback()
+        DepotManager._depots = _old_depots
+        DepotManager._default_depot = _old_default_depot
+
+    request.addfinalizer(restore)

@@ -120,6 +120,7 @@ setup(name='Kotti',
       [console_scripts]
       kotti-migrate = kotti.migrate:kotti_migrate_command
       kotti-reset-workflow = kotti.workflow:reset_workflow_command
+      kotti-migrate-storage = kotti.filedepot:migrate_storages_command
 
       [pytest11]
       kotti = kotti.tests

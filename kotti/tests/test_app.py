@@ -158,7 +158,7 @@ class TestApp:
             main({}, **settings)
         assert DepotManager.get().__class__.__name__ == 'DBFileStorage'
 
-    def test_configure_filedepot(self):
+    def test_configure_filedepot(self, no_filedepots):
         from depot.manager import DepotManager
         from kotti.filedepot import configure_filedepot
         from kotti import tests
@@ -175,12 +175,6 @@ class TestApp:
             'kotti.depot.1.name': 'mongo',
         }
 
-        # depot.manager.DepotManager acts as singleton, save its settings
-        _depots = DepotManager._depots
-        _default_depot = DepotManager._default_depot
-        DepotManager._depots = {}
-        DepotManager._default_depot = None
-
         configure_filedepot(settings)
 
         assert DepotManager.get().marker == 'TFS1'
@@ -189,9 +183,6 @@ class TestApp:
 
         tests.TFS1.assert_called_with(location='/tmp')
         tests.TFS2.assert_called_with(uri='mongo://')
-
-        DepotManager._depots = _depots
-        DepotManager._default_depot = _default_depot
 
         del tests.TFS1
         del tests.TFS2

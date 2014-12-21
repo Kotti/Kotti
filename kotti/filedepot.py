@@ -14,6 +14,7 @@ from depot.io.interfaces import FileStorage
 
 from kotti import Base
 from kotti import DBSession
+from kotti.util import command
 
 _marker = object()
 
@@ -58,7 +59,7 @@ class DBStoredFile(Base):
         self.file_id = file_id
         self.filename = filename
         self.content_type = content_type
-        self.last_modified = last_modified
+        self.last_modified = last_modified or datetime.now()
         self.content_length = content_length
 
         for k, v in kwds.items():
@@ -296,6 +297,67 @@ def configure_filedepot(settings):
             DepotManager.configure(name, conf, prefix='')
 
 
+def migrate_storage(from_storage, to_storage):
+    from depot.fields.sqlalchemy import _SQLAMutationTracker
+    from depot.manager import DepotManager
+    from kotti.util import _to_fieldstorage
+    import logging
+
+    log = logging.getLogger(__name__)
+
+    old_default = DepotManager._default_depot
+    DepotManager._default_depot = to_storage
+
+    for klass, props in _SQLAMutationTracker.mapped_entities.items():
+        log.info("Migrating %r", klass)
+        mapper = klass._sa_class_manager.mapper
+        for instance in DBSession.query(klass):
+            for prop in props:
+                uf = getattr(instance, prop)
+                if not uf:
+                    continue
+                pk = mapper.primary_key_from_instance(instance)
+                log.info("Migrating %s for %r with pk %r", prop, klass, pk)
+
+                filename = uf['filename']
+                content_type = uf['content_type']
+                data = _to_fieldstorage(fp=uf.file,
+                                        filename=filename,
+                                        mimetype=content_type,
+                                        size=uf.file.content_length)
+                setattr(instance, prop, data)
+
+    DepotManager._default_depot = old_default
+
+
+def migrate_storages_command():  # pragma: no cover
+    __doc__ = """ Migrate blobs between two configured filedepot storages
+
+    Usage:
+      kotti-migrate-storage <config_uri> --from-storage <name> --to-storage <name>
+
+    Options:
+      -h --help                 Show this screen.
+      --from-storage <number>   The storage name that has blob data to migrate
+      --to-storage <number>     The storage name where we want to put the blobs
+    """
+    return command(
+        lambda args: migrate_storage(
+            from_storage=args['--from-storage'],
+            to_storage=args['--to-storage'],
+        ),
+        __doc__,
+    )
+
+
+def adjust_for_engine(conn, branch):
+    # adjust for engine type
+
+    if conn.engine.dialect.name == 'mysql':  # pragma: no cover
+        from sqlalchemy.dialects.mysql.base import LONGBLOB
+        DBStoredFile.__table__.c.data.type = LONGBLOB()
+
+
 def includeme(config):
     """ Pyramid includeme hook.
 
@@ -307,6 +369,11 @@ def includeme(config):
     from kotti.events import ObjectInsert
     from kotti.events import ObjectUpdate
     from depot.fields.sqlalchemy import _SQLAMutationTracker
+
+    from sqlalchemy.event import listen
+    from sqlalchemy.engine import Engine
+
+    listen(Engine, 'engine_connect', adjust_for_engine)
 
     configure_filedepot(config.get_settings())
 
@@ -322,9 +389,3 @@ def includeme(config):
     event.listen(DBSession,
                  'before_commit',
                  _SQLAMutationTracker._session_committed)
-
-    # adjust for engine type
-    engine = DBSession.connection().engine
-    if engine.dialect.name == 'mysql':  # pragma: no cover
-        from sqlalchemy.dialects.mysql.base import LONGBLOB
-        DBStoredFile.__table__.c.data.type = LONGBLOB()
