@@ -120,9 +120,19 @@ Inheritance issues with UploadedFileField columns
 -------------------------------------------------
 
 You should be aware that, presently, subclassing a model with an
-``UploadedFileField`` column doesn't work properly.  As a workaround, look how
-we solve the problem using a ``__declare_last__`` classmethod in
-:meth:`~kotti.resources.File.__declare_last__`, which will solve the problem
-for the :class:`kotti.resources.Image` subclass.
+``UploadedFileField`` column doesn't work properly.  As a workaround, add a 
+``__declare_last__`` classmethod in your superclass model, similar to the one
+below, where we're fixing the ``data`` column of the ``File`` class. ::
+
+    from depot.fields.sqlalchemy import _SQLAMutationTracker
+
+    class File(Content):
+
+        data = UploadedFileField()
+
+        @classmethod
+        def __declare_last__(cls):
+            event.listen(cls.data, 'set', _SQLAMutationTracker._field_set, retval=True)
+
 
 .. _filedepot: https://pypi.python.org/pypi/filedepot/
