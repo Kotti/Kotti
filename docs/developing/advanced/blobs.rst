@@ -10,7 +10,7 @@ blob data to the configured depot storage. Working together with
 :app:`filedepot` configured storages means it is possible to store blob data in
 a variety of ways: filesystem, GridFS, Amazon storage, etc. By default
 :app:`Kotti` will store its blob data in the configured SQL database, using
-``~kotti.filedepot.DBFileStorage`` storage, but you can configure your own
+:class:``~kotti.filedepot.DBFileStorage`` storage, but you can configure your own
 preferred way of storing your blob data.
 
 Configuring a depot store
@@ -29,14 +29,14 @@ By default, `Kotti` comes configured with a db-based filestorage.::
     kotti.depot.0.backend = kotti.filedepot.DBFileStorage
 
 The depot configured at position 0 is the default file depot. The minimum
-information required to configure a depot are the `name` and `backend`. The
-`name` can be any string and it is used by :app:`filedepot` to identify the
-depot store for a particular saved file. The `name` should never be changed, as
-it will make the saved files unaccessible. 
+information required to configure a depot are the ``name`` and ``backend``. The
+``name`` can be any string and it is used by :app:`filedepot` to identify the
+depot store for a particular saved file. The ``name`` should never be changed, as
+it will make the saved files unaccessible.
 
 Any further parameters for a particular backend will be passed as keyword
 arguments to the backend class. See this example, in which we store, by
-default, files in `/var/local/files/` using the
+default, files in ``/var/local/files/`` using the
 :class:`depot.io.local.LocalFileStorage`::
 
     kotti.depot.0.name = localfs
@@ -45,13 +45,13 @@ default, files in `/var/local/files/` using the
     kotti.depot.1.name = dbfiles
     kotti.depot.1.backend = kotti.filedepot.DBFileStorage
 
-Notice that we kept the `dbfiles` storage, but we moved it to position 1. No
-blob data will be saved anymore, but existing files in that storage will
-continue to be served from there.
+Notice that we kept the ``dbfiles`` storage, but we moved it to position 1. No
+blob data will be saved there anymore, but existing files in that storage will
+continue to be available from there.
 
 Add a blob field to your model
 ------------------------------
-Adding a blob data attribute to your can be as simple as::
+Adding a blob data attribute to your models can be as simple as::
 
     from depot.fields.sqlalchemy import UploadedFileField
     from kotti.resources import Content
@@ -59,7 +59,7 @@ Adding a blob data attribute to your can be as simple as::
     class Person(Content):
         avatar = UploadedFileField()
 
-While you can directly assign a `bytes` value to the `avatar` column, the
+While you can directly assign a ``bytes`` value to the ``avatar`` column, the
 ``UploadedFileField`` column type works best when you assign a
 :class:``cgi.FieldStorage`` instance as value.::
 
@@ -85,7 +85,7 @@ of how to add or edit a model with a blob field.
 Reading blob data
 -----------------
 
-If you try directly to read data from an `UploadedFileField` you'll get a
+If you try directly to read data from an ``UploadedFileField`` you'll get a
 :class:`depot.fields.upload.UploadedFile` instance, which offers a
 dictionary-like interface to the stored file metadata and direct access to a
 stream with the stored file through the ``file`` attribute::
@@ -113,12 +113,16 @@ download in the browser). This, for example is the ``inline-view`` view for a
         return UploadedFileResponse(context.data, request, disposition='inline')
 
 If the used depot storage offers a ``public_url`` value for the blob, then
-``UploadedFileResponse``, instead of streaming the data, will redirect instead
-to that location.
+``UploadedFileResponse``, instead of streaming the data, will redirect to that
+location.
 
 Inheritance issues with UploadedFileField columns
 -------------------------------------------------
 
-You should be aware that, presently, inheriting the ``UploadedFileField`` column doesn't work properly. For a solution to this problem, look how we solve the problem using :meth:`~kotti.resources.File.__declare_last__`, which will solve the problem for the :class:`kotti.resources.Image` subclass.
+You should be aware that, presently, subclassing a model with an
+``UploadedFileField`` column doesn't work properly.  As a workaround, look how
+we solve the problem using a ``__declare_last__`` classmethod in
+:meth:`~kotti.resources.File.__declare_last__`, which will solve the problem
+for the :class:`kotti.resources.Image` subclass.
 
 .. _filedepot: https://pypi.python.org/pypi/filedepot/
