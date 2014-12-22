@@ -14,6 +14,7 @@ from depot.io.interfaces import FileStorage
 
 from kotti import Base
 from kotti import DBSession
+from kotti.util import camel_case_to_name
 from kotti.util import command
 
 _marker = object()
@@ -310,8 +311,13 @@ def migrate_storage(from_storage, to_storage):
 
     for klass, props in _SQLAMutationTracker.mapped_entities.items():
         log.info("Migrating %r", klass)
+
         mapper = klass._sa_class_manager.mapper
-        for instance in DBSession.query(klass):
+
+        # use type column to avoid polymorphism issues, getting the same
+        # Node item multiple times.
+        type_ = camel_case_to_name(klass.__name__)
+        for instance in DBSession.query(klass).filter_by(type=type_):
             for prop in props:
                 uf = getattr(instance, prop)
                 if not uf:
