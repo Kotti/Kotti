@@ -3,6 +3,7 @@ import pytest
 
 from kotti.filedepot import DBFileStorage, DBStoredFile
 from kotti.resources import File
+from kotti.resources import Image
 
 
 class TestDBStoredFile:
@@ -163,6 +164,14 @@ class TestMigrateBetweenStorage:
             f = File(data=row[0], filename=row[1], mimetype=row[2])
             root[row[1]] = f
 
+        data = [
+            ('i1...', u'image1.jpg', 'image/jpeg'),
+            ('i2...', u'image2.png', 'image/png'),
+        ]
+        for row in data:
+            f = Image(data=row[0], filename=row[1], mimetype=row[2])
+            root[row[1]] = f
+
         db_session.flush()
 
     def test_migrate_between_storages(self, db_session, root, no_filedepots):
@@ -193,12 +202,12 @@ class TestMigrateBetweenStorage:
         configure_filedepot(settings)
         self._create_content(db_session, root)
 
-        assert db_session.query(DBStoredFile).count() == 2
+        assert db_session.query(DBStoredFile).count() == 4
 
         migrate_storage('dbfiles', 'localfs')
 
         folders = os.listdir(tmp_location)
-        assert len(folders) == 2
+        assert len(folders) == 4
 
         db_session.flush()
 
@@ -214,6 +223,14 @@ class TestMigrateBetweenStorage:
         f2 = root['file2.png']
         assert f2.data.file_id in folders
         assert f2.data.file.read() == 'f2...'
+
+        i1 = root['image1.jpg']
+        assert i1.data.file_id in folders
+        assert i1.data.file.read() == 'i1...'
+
+        i2 = root['image2.png']
+        assert i2.data.file_id in folders
+        assert i2.data.file.read() == 'i2...'
 
         assert db_session.query(DBStoredFile).count() == 0
 
