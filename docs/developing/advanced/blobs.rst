@@ -74,7 +74,7 @@ While you can directly assign a ``bytes`` value to the ``avatar`` column, the
             'size': len(content),
             }
     person = Person()
-    person.avatar = _to_fielstorage(**data)
+    person.avatar = _to_fieldstorage(**data)
 
 Note that the ``data`` dictionary described here has the same format as the
 deserialized value of a ``deform.widget.FileUploadWidget``. See the
@@ -123,11 +123,11 @@ Because :class:``depot.manager.DepotManager`` acts as a singleton, special care
 needs to be taken when testing features that involve saving data into
 ``UploadedFileField`` columns.
 
-``UploadedFileField`` columns always require having at least one depot file
-storage configured. You can use a fixture called ``filedepot`` to have a mock
-file storage available for your tests.
+``UploadedFileField`` columns require having at least one depot file storage
+configured. You can use a fixture called ``filedepot`` to have a mock file
+storage available for your tests.
 
-If you're developing new file depot storages you should use the
+If you're developing new depot file storages you should use the
 ``no_filedepots`` fixture, which resets the configured depots for the test run
 and restores the default depots back, as a teardown.
 
