@@ -33,7 +33,7 @@ To create our add-on, we use the standard Pyramid tool ``pcreate``, with
 
 .. code-block:: bash
 
-  bin/pcreate -s kotti_addon kotti_mysite
+  bin/pcreate -s kotti kotti_mysite
 
 The script will ask a number of questions.
 It is safe to accept the defaults.
