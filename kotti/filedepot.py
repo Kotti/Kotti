@@ -344,8 +344,8 @@ def migrate_storages_command():  # pragma: no cover
 
     Options:
       -h --help                 Show this screen.
-      --from-storage <number>   The storage name that has blob data to migrate
-      --to-storage <number>     The storage name where we want to put the blobs
+      --from-storage <name>   The storage name that has blob data to migrate
+      --to-storage <name>     The storage name where we want to put the blobs
     """
     return command(
         lambda args: migrate_storage(
