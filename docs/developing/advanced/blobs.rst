@@ -8,10 +8,17 @@ Kotti provides a flexible mechanism of storing blob data by with the help of
 :class:`depot.fields.sqlalchemy.UploadedFileField` and they will offload their
 blob data to the configured depot storage. Working together with
 :app:`filedepot` configured storages means it is possible to store blob data in
-a variety of ways: filesystem, GridFS, Amazon storage, etc. By default
-:app:`Kotti` will store its blob data in the configured SQL database, using
-:class:``~kotti.filedepot.DBFileStorage`` storage, but you can configure your own
-preferred way of storing your blob data.
+a variety of ways: filesystem, GridFS, Amazon storage, etc. 
+
+By default :app:`Kotti` will store its blob data in the configured SQL
+database, using :class:``~kotti.filedepot.DBFileStorage`` storage, but you can
+configure your own preferred way of storing your blob data. The benefit of
+storing files in ``DBFileStorage`` is having *all* content in a single place
+(the DB) which makes backups, exporting and importing of your site's data easy,
+as long as you don't have too many or too large files. The downsides of this
+approach appear when your database server resides on a different host (network
+performance becomes a greater issue) or your DB dumps become too large to be
+handled efficiently.
 
 Configuring a depot store
 -------------------------
@@ -149,5 +156,35 @@ below, where we're fixing the ``data`` column of the ``File`` class. ::
         def __declare_last__(cls):
             event.listen(cls.data, 'set', _SQLAMutationTracker._field_set, retval=True)
 
+
+Migrating data between two different storages
+---------------------------------------------
+
+Kotti provides a script that can migrate blob data from one configured stored
+to another and update the saved fields with the new locations. It is not needed
+to do this if you just want to add a new torage, or replace the default one,
+but you can use it if you'd like to consolidate the blob data in one place
+only. You can invoke the script with::
+
+    kotti-migrate-storage <config_uri> --from-storage <name> --to-storage <name>
+
+The storage names are those assigned in the configuration file designated in
+``<config_uri>``. For example, let's assume you've started a website that has
+the default blob storage, the ``DBFileStorage`` named *dbfiles*. You'd like to
+move all the existing blob data to a :class:``depot.io.local.LocalFileStorage``
+storage and make that the default. First, add the ``LocalFileStorage`` depot, 
+make it the default and place the old ``DBFileStorage`` in position *1*:::
+
+    kotti.depot.0.backend = depot.io.local.LocalFileStorage
+    kotti.depot.0.name = localfs
+    kotti.depot.0.storage_path = /var/local/files
+    kotti.depot.1.backend = kotti.filedepot.DBFileStorage
+    kotti.depot.1.name = dbfiles
+
+Now you can invoke the migration with:::
+
+    kotti-migrate-storage <config_uri> --from-storage dbfiles --to-storage localfs
+
+As always when dealing with migrations, make sure you backup your data first!
 
 .. _filedepot: https://pypi.python.org/pypi/filedepot/
