@@ -349,7 +349,6 @@ def no_filedepots(db_session, request):
     DepotManager._depots = {}
     DepotManager._default_depot = None
 
-
     def restore():
         db_session.rollback()
         DepotManager._depots = _old_depots
