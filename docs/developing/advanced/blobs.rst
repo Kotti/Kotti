@@ -1,4 +1,4 @@
-.. _blobs
+.. _blobs:
 
 Working with blob data in Kotti
 ===============================
