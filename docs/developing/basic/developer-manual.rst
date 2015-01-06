@@ -187,7 +187,7 @@ These views are :class:`kotti.views.users.UsersManage`,
 :class:`kotti.views.users.UserManage` and
 :class:`kotti.views.users.Preferences`. Notice that you should
 override them using the standard way, that is, by overriding
-``setup_users``, ``setup_user`` or ``prefs`` views. Then you can
+``setup-users``, ``setup-user`` or ``prefs`` views. Then you can
 override any sub-view used inside them as well as include any logic
 for your usecase when it is called, if needed.
 
