@@ -47,3 +47,11 @@ class Request(BaseRequest):
 
         with authz_context(context, self):
             return BaseRequest.has_permission(self, permission, context)
+
+
+# workaround for https://github.com/Pylons/pyramid/issues/1529
+# this allows addon packages to call config.add_request_method and not lose
+# the interfaces provided by the request (for example to call a subview,
+# like kotti.view.view_content_default)
+from zope.interface import providedBy
+providedBy(Request({}))
