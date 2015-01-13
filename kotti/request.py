@@ -1,9 +1,13 @@
 # -*- coding: utf-8 -*-
 
+from zope.interface import implementer
+
 from pyramid.decorator import reify
+from pyramid.interfaces import IRequest
 from pyramid.request import Request as BaseRequest
 
 
+@implementer(IRequest)
 class Request(BaseRequest):
     """ Kotti subclasses :class:`pyramid.request.Request` to make additional
     attributes / methods available on request objects and override Pyramid's
@@ -47,11 +51,3 @@ class Request(BaseRequest):
 
         with authz_context(context, self):
             return BaseRequest.has_permission(self, permission, context)
-
-
-# workaround for https://github.com/Pylons/pyramid/issues/1529
-# this allows addon packages to call config.add_request_method and not lose
-# the interfaces provided by the request (for example to call a subview,
-# like kotti.view.view_content_default)
-from zope.interface import providedBy
-providedBy(Request({}))
