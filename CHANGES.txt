@@ -6,6 +6,15 @@ Change History
 
 - No changes yet.
 
+1.0.0-alpha.3 - 2015-01-13
+--------------------------
+
+- Explicitly implement ``pyramid.interfaces.IRequest`` for
+  ``kotti.request.Request``.  This allows add-on packages to use
+  ``config.add_request_method`` (with reify) and
+  ``config.add_request_property`` without breaking the interfaces provided by
+  the request. Fixes #369
+
 1.0.0-alpha.2 - 2015-01-01
 --------------------------
 

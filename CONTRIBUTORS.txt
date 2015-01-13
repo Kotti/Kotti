@@ -100,3 +100,4 @@ Contributors
 - Fabien Castarède, 2013/08/08
 - Natan Žabkar, 2013/08/28
 - Ionică Bizău, 2014/04/09
+- Ichim Tiberiu, 2015/01/13

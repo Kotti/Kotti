@@ -1,9 +1,13 @@
 # -*- coding: utf-8 -*-
 
+from zope.interface import implementer
+
 from pyramid.decorator import reify
+from pyramid.interfaces import IRequest
 from pyramid.request import Request as BaseRequest
 
 
+@implementer(IRequest)
 class Request(BaseRequest):
     """ Kotti subclasses :class:`pyramid.request.Request` to make additional
     attributes / methods available on request objects and override Pyramid's
