@@ -5,3 +5,4 @@ kotti.security
 
 .. automodule:: kotti.security
    :members:
+   :member-order: bysource

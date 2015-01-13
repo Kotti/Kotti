@@ -1,6 +1,10 @@
 # -*- coding: utf-8 -*-
 
 """
+
+Fixture dependencies
+--------------------
+
 .. graphviz::
 
    digraph kotti_fixtures {

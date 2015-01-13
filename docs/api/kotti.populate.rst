@@ -5,3 +5,4 @@ kotti.populate
 
 .. automodule:: kotti.populate
    :members:
+   :member-order: bysource

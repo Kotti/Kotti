@@ -5,3 +5,4 @@ kotti.migrate
 
 .. automodule:: kotti.migrate
    :members:
+   :member-order: bysource

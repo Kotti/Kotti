@@ -57,7 +57,6 @@ conf_defaults = {
     'kotti.templates.api': 'kotti.views.util.TemplateAPI',
     'kotti.configurators': '',
     'pyramid.includes': '',
-    'kotti.includes': '',  # BBB
     'kotti.base_includes': ' '.join([
         'kotti',
         'kotti.events',

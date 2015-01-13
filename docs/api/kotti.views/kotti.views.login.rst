@@ -5,3 +5,4 @@ kotti.views.login
 
 .. automodule:: kotti.views.login
    :members:
+   :member-order: bysource
