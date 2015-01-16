@@ -6,6 +6,15 @@ Change History
 
 - No changes yet.
 
+1.0.0-alpha.4 - unreleased
+--------------------------
+
+- Allow restricting *add views* to specific contexts. This allows third party
+  developers to register new content types that are addable in specific 
+  type of contexts, by specifying ``context=SomeContentType`` in their
+  *add view* registration and having ``type_info.addable=['SomeContentType']``
+  in the type info.
+
 1.0.0-alpha.3 - 2015-01-13
 --------------------------
 
