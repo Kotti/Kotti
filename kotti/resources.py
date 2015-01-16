@@ -376,8 +376,8 @@ class TypeInfo(object):
         :rtype: Boolean
         """
 
-        if view_permitted(context, request, self.add_view):
-            return context.type_info.name in self.addable_to
+        if context.type_info.name in self.addable_to:
+            return view_permitted(context, request, self.add_view)
         else:
             return False
 
