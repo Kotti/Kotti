@@ -416,7 +416,7 @@ class subscribe(object):
 
         from kotti.events import ObjectInsert
         from kotti.events import subscribe
-        from kotti.resurces import Document
+        from kotti.resources import Document
 
         @subscribe()
         def on_all_events(event):
