@@ -10,6 +10,15 @@
     <div tal:replace="api.render_template('kotti:templates/view/tags.pt')" />
     <div class="body" tal:content="structure context.body | None">
     </div>
+    <table id="view-table" class="table table-condensed table-striped" tal:condition="context.type_info.default_view_columns">
+        <tbody>
+            <tr tal:repeat="column_tuple context.type_info.default_view_columns">
+                <td>${column_tuple[0]}</td>
+                <td>${getattr(context, column_tuple[1])}</td>
+            </tr>
+        </tbody>
+    </table>
+
   </article>
 
 </html>

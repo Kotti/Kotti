@@ -511,6 +511,8 @@ default_type_info = TypeInfo(
     selectable_default_views=[
         ("folder_view", _(u"Folder view")),
         ],
+    default_view_columns=[],
+    default_view_show_children=False,
     )
 
 
