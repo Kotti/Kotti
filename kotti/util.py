@@ -150,6 +150,12 @@ class LinkRenderer(LinkBase):
     def selected(self, context, request):
         return False
 
+    def __json__(self, request):
+        return {
+            'name': self.name,
+            'predicate': self.predicate,
+        }
+
 
 class LinkParent(LinkBase):
     """A menu link that renders sublinks in a dropdown.
@@ -168,6 +174,12 @@ class LinkParent(LinkBase):
 
     def get_visible_children(self, context, request):
         return [ch for ch in self.children if ch.visible(context, request)]
+
+    def __json__(self, request):
+        return {
+            'title': self.title,
+            'children': self.children,
+        }
 
 
 class Link(LinkBase):
@@ -188,6 +200,12 @@ class Link(LinkBase):
 
     def __repr__(self):
         return "Link(%r, %r)" % (self.name, self.title)
+
+    def __json__(self, request):
+        return {
+            'name': self.name,
+            'title': self.title,
+        }
 
 
 class ActionButton(Link):
