@@ -520,7 +520,7 @@ def move_child_position(context, request):
                     0-based old (i.e. the current index of the child to be
                     moved) and new position (its new index) values.
     :type request:
-    :result: JSON serializable bject with a single attribute ("result") that is
+    :result: JSON serializable object with a single attribute ("result") that is
              either "success" or "error".
     :rtype: dict
     """
