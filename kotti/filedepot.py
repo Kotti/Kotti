@@ -193,8 +193,9 @@ class DBFileStorage(FileStorage):
         """Saves a new file and returns the file id
 
         :param content: can either be ``bytes``, another ``file object``
-        or a :class:`cgi.FieldStorage`. When ``filename`` and ``content_type``
-        parameters are not provided they are deducted from the content itself.
+                        or a :class:`cgi.FieldStorage`. When ``filename`` and
+                        ``content_type``  parameters are not provided they are
+                        deducted from the content itself.
 
         :param filename: filename for this file
         :type filename: string
@@ -232,8 +233,9 @@ class DBFileStorage(FileStorage):
         :param file_or_id: can be either ``DBStoredFile`` or a ``file_id``
 
         :param content: can either be ``bytes``, another ``file object``
-        or a :class:`cgi.FieldStorage`. When ``filename`` and ``content_type``
-        parameters are not provided they are deducted from the content itself.
+                        or a :class:`cgi.FieldStorage`. When ``filename`` and
+                        ``content_type`` parameters are not provided they are
+                        deducted from the content itself.
 
         :param filename: filename for this file
         :type filename: string
