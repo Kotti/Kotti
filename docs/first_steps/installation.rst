@@ -12,18 +12,6 @@ Requirements
 - ``Xcode`` (on OS X) or
 - equivalent build toolchain for your OS.
 
-Installation using Docker (experimental)
-----------------------------------------
-
-This assumes that you already have Docker_ installed:
-
-.. parsed-literal::
-
-  docker pull kotti/kotti
-  docker run -i -t -p 5000:5000 kotti/kotti
-
-This should get you a running Kotti instance on port 5000.
-
 Installation using ``virtualenv``
 ---------------------------------
 
@@ -70,6 +58,18 @@ Kotti includes support for PostgreSQL, MySQL and SQLite (tested regularly), and
 `other SQL databases`_.
 The default use of SQLite makes initial development easy.
 Although SQLite may prove to be adequate for some deployments, Kotti is flexible for installation of your choice of database during development or at deployment.
+
+Installation using Docker (experimental)
+----------------------------------------
+
+This assumes that you already have Docker_ installed:
+
+.. parsed-literal::
+
+  docker pull kotti/kotti
+  docker run -i -t -p 5000:5000 kotti/kotti
+
+This should get you a running Kotti instance on port 5000.
 
 .. _other SQL databases: http://www.sqlalchemy.org/docs/core/engines.html#supported-databases
 .. _virtualenv: http://pypi.python.org/pypi/virtualenv
