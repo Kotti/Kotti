@@ -12,7 +12,10 @@ Kotti is most useful when you are developing applications that
 - use workflows, and/or
 - work with hierarchical data.
 
-Built on top of a number of *best-of-breed* software components, most notably Pyramid_ and SQLAlchemy_, Kotti introduces only a few concepts of its own, thus hopefully keeping the learning curve flat for the developer.
+Built on top of a number of *best-of-breed* software components,
+most notably Pyramid_ and SQLAlchemy_,
+Kotti introduces only a few concepts of its own,
+thus hopefully keeping the learning curve flat for the developer.
 
 .. |build status| image:: https://secure.travis-ci.org/Kotti/Kotti.png?branch=stable
 .. _build status: http://travis-ci.org/Kotti/Kotti
