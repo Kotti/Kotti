@@ -22,7 +22,6 @@ It is recommended to install Kotti inside a virtualenv:
   virtualenv mysite
   cd mysite
   bin/pip install -r https://raw.github.com/Kotti/Kotti/stable/requirements.txt
-  bin/pip install [--pre] Kotti
 
 This will install the latest released version of Kotti and all its requirements into your virtualenv.
 
