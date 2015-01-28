@@ -52,6 +52,13 @@ Its **main features** are:
 .. _Plone: http://plone.org/
 .. _Twitter Bootstrap: http://twitter.github.com/bootstrap/
 
+Install
+=======
+
+See `installation instructions`_.
+
+.. _installation instructions: http://kotti.readthedocs.org/en/latest/first_steps/installation.html
+
 Support and Documentation
 =========================
 
