@@ -5,7 +5,7 @@ Kotti
 |pypi|_
 |build status|_
 
-Kotti is a high-level, Pythonic web application framework based on Pyramid and SQLAlchemy.
+Kotti is a high-level, Pythonic web application framework based on Pyramid_ and SQLAlchemy_.
 It includes an extensible Content Management System called the Kotti CMS (see below).
 
 Kotti is most useful when you are developing applications that
