@@ -36,6 +36,6 @@ class CustomContentAddForm(AddFormView):
 @view_config(name='edit', context=CustomContent, permission='edit',
              renderer='kotti:templates/edit/node.pt')
 class CustomContentEditForm(EditFormView):
-    """ Form to edit existing calendars. """
+    """ Form to edit existing CustomContent objects. """
 
     schema_factory = CustomContentSchema

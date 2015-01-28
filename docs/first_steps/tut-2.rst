@@ -40,14 +40,15 @@ Things to note here:
 
 - ``Poll`` derives from :class:`kotti.resources.Content`, which is the common base class for all content types.
 
-- ``Poll`` declares a sqla.Column ``id``, which is required to hook it up with SQLAlchemy's inheritance.
+- ``Poll`` declares a :class:`sqlalchemy.Column <sqlalchemy.schema>` ``id``, which is required to hook it up with SQLAlchemy's inheritance.
 
-- The type_info class attribute does essential configuration.
+- The ``type_info`` class attribute does essential configuration.
   We refer to name and title, two properties already defined as part of
   ``Content``, our base class.
-  The ``add_view`` defines the name of the add view, which we'll come to in a second.  Finally, ``addable_to`` defines which content types we can add ``Poll`` items to.
+  The ``add_view`` defines the name of the add view, which we'll come to in a second.
+  Finally, ``addable_to`` defines which content types we can add ``Poll`` items to.
 
-- We do not need to define any additional sqlaColumn() properties, as the title
+- We do not need to define any additional :class:`sqlalchemy.Column <sqlalchemy.schema>` properties, as the ``title``
   is the only property we need for this content type.
 
 We'll add another content class to hold the choices for the poll.
@@ -86,7 +87,7 @@ Views (including forms) are typically put into a module called ``views``.
 The Kotti scaffolding further separates this into ``view`` and ``edit`` files inside a ``views`` directory.
 
 Open the file at ``kotti_mysite/kotti_mysite/views/edit.py``.
-It already contains code for the `CustomContent` sample content type.
+It already contains code for the ``CustomContent`` sample content type.
 We will take advantage of the imports already there.
 
 .. code-block:: python
@@ -169,11 +170,11 @@ Add this to ``views/edit.py``:
 
 
 Using the ``AddFormView`` and ``EditFormView`` base classes from Kotti, these forms are simple to define.
-We associate the schemas defined above, setting them as the schema_factory for each form, and we specify the content types to be added by each.
+We associate the schemas defined above, setting them as the ``schema_factory`` for each form, and we specify the content types to be added by each.
 
 We use ``@view_config`` to add our views to the application.
 This takes advantage of a ``config.scan()`` call in ``__init__.py`` discussed below.
-Notice that we can declare `permission`, `context`, and a `template` for each form, along with its `name`.
+Notice that we can declare ``permission``, ``context``, and a ``template`` for each form, along with its ``name``.
 
 Wiring up the Content Types and Forms
 -------------------------------------
@@ -197,9 +198,9 @@ Open ``__init__.py`` and modify the ``kotti_configure`` method so that the
         ...
 
 
-Here, we've added our two content types to the site's available_types, a global
+Here, we've added our two content types to the site's ``available_types``, a global
 registry.
-We also removed the CustomContent content type included with the scaffolding.
+We also removed the ``CustomContent`` content type included with the scaffolding.
 
 Notice the ``includeme`` method at the bottom of ``__init__.py``.
 It includes the call to ``config.scan()`` that we mentioned above while discussing the ``@view_config`` statements in our views.
