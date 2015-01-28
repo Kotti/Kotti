@@ -32,7 +32,7 @@ Its **main features** are:
 
 - **WYSIWYG editor**: includes a rich text editor
 
-- **Responsive design**: Kotti builds on `Twitter Bootstrap`_, which
+- **Responsive design**: Kotti builds on `Bootstrap`_, which
   looks good both on desktop and mobile
 
 - **Templating**: you can extend the CMS with your own look & feel
@@ -50,7 +50,7 @@ Its **main features** are:
 
 .. _Kotti's demo page: http://kottidemo.danielnouri.org/
 .. _Plone: http://plone.org/
-.. _Twitter Bootstrap: http://twitter.github.com/bootstrap/
+.. _Bootstrap: http://getbootstrap.com/
 
 Support and Documentation
 =========================
