@@ -2,9 +2,11 @@
 Kotti
 =====
 
+|pypi|_
+|build status|_
+
 Kotti is a high-level, Pythonic web application framework based on Pyramid and SQLAlchemy.
 It includes an extensible Content Management System called the Kotti CMS (see below).
-|build status|_
 
 Kotti is most useful when you are developing applications that
 
@@ -19,6 +21,8 @@ thus hopefully keeping the learning curve flat for the developer.
 
 .. |build status| image:: https://secure.travis-ci.org/Kotti/Kotti.png?branch=stable
 .. _build status: http://travis-ci.org/Kotti/Kotti
+.. |pypi| image:: https://pypip.in/version/Kotti/badge.svg?style=flat
+.. _pypi: https://pypi.python.org/pypi/Kotti/
 .. _Pyramid: http://docs.pylonsproject.org/projects/pyramid/dev/
 .. _SQLAlchemy: http://www.sqlalchemy.org/
 
