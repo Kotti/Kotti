@@ -1,7 +1,7 @@
 Change History
 ==============
 
-1.0.0-alpha.4 - unreleased
+1.0.0-alpha.4 - 2015-01-29
 --------------------------
 
 - Added experimental Docker support. See #374.
