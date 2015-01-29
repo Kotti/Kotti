@@ -22,6 +22,28 @@ class TestAddableTypes:
         request = DummyRequest()
         assert Document.type_info.addable(root, request) is False
 
+    def test_addable_views_registered_to_some_context(self, config, root):
+
+        from kotti.resources import Document, File
+
+        _saved = Document.type_info.addable_to
+        Document.type_info.addable_to = ['File']
+
+        config.testing_securitypolicy(permissive=True)
+        config.add_view(
+            lambda context, request: {},
+            name=Document.type_info.add_view,
+            permission='add',
+            renderer='kotti:templates/edit/node.pt',
+            context=File,
+        )
+        request = DummyRequest()
+
+        assert Document.type_info.addable(Document(), request) is False
+        assert Document.type_info.addable(File(), request) is True
+
+        Document.type_info.addable_to = _saved
+
 
 class TestNodePaste:
     def test_get_non_existing_paste_item(self, root):

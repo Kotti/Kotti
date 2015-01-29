@@ -47,6 +47,12 @@ Document content type serves as an example here:
           self.body = body
           self.mime_type = mime_type
 
+The ``add_view`` parameter of the ``type_info`` attribute is the name of a view
+that can be used to construct a ``Document`` instance. This view has to be
+available for all content types specified in ``addable_to`` parameter. See the
+section below and the :ref:`adding-forms-and-a-view` section in the tutorial on
+how to define a view restricted to a specific context.
+
 You can configure the list of active content types in Kotti by
 modifying the :ref:`kotti.available_types` setting.
 
