@@ -59,6 +59,13 @@ Its **main features** are:
 .. _Plone: http://plone.org/
 .. _Bootstrap: http://getbootstrap.com/
 
+Install
+=======
+
+See `installation instructions`_.
+
+.. _installation instructions: http://kotti.readthedocs.org/en/latest/first_steps/installation.html
+
 Support and Documentation
 =========================
 
