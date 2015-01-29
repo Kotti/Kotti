@@ -73,66 +73,6 @@ class UploadedFileResponse(Response):
         self.headerlist.append(('Content-Disposition', disp))
 
 
-class as_inline(object):
-    """ ``UploadedFile`` adapter for an inline content-disposition Response
-
-    Writing a view to inline view a file (such as an image) can be as easy as::
-
-        @view_config(name='image', context=Image, permission='View')
-        def view_image(context, request):
-            return as_inline(context.imagefield)
-    """
-
-    def __init__(self, data, request):
-        """
-        :param data: :A file field obtained by reading an
-                        :class:`~depot.fields.sqlalchemy.UploadedFileField`
-        :type data: :class:`depot.fields.upload.UploadedField`,
-
-        :param request: current request
-        :type request: :class:`pyramid.request.Request`
-        """
-        self.data = data
-        self.request = request
-
-
-class as_download(object):
-    """ ``UploadedFile`` adapter for an attachment content-disposition Response
-
-    Writing a view to download a file can be as easy as::
-
-        @view_config(name='image', context=Image, permission='View')
-        def download(context, request):
-            return as_download(context.filefield)
-    """
-
-    def __init__(self, data, request):
-        """
-        :param data: :A file field obtained by reading an
-                        :class:`~depot.fields.sqlalchemy.UploadedFileField`
-        :type data: :class:`depot.fields.upload.UploadedField`,
-
-        :param request: current request
-        :type request: :class:`pyramid.request.Request`
-        """
-        self.data = data
-        self.request = request
-
-
-@response_adapter(as_download)
-def field_to_download_response(adapter):
-    return UploadedFileResponse(adapter.data,
-                                request=adapter.request,
-                                disposition='attachment')
-
-
-@response_adapter(as_inline)
-def field_to_inline_response(adapter):
-    return UploadedFileResponse(adapter.data,
-                                request=adapter.request,
-                                disposition='inline')
-
-
 @view_config(name='view', context=File, permission='view',
              renderer='kotti:templates/view/file.pt')
 def view(context, request):
