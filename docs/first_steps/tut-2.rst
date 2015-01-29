@@ -79,6 +79,8 @@ Notable differences are:
 
 - The ``type_info`` defines the title, the ``add_view`` view, and that choices may only be added *into* ``Poll`` items, with the line ``addable_to=[u'Poll']``.
 
+.. _adding-forms-and-a-view:
+
 Adding Forms and a View
 -----------------------
 

@@ -71,6 +71,19 @@ class TestTitleToName:
         from kotti.util import title_to_name
         assert title_to_name(u'Foo Bar') == u'foo-bar'
 
+    def test_numbering(self):
+        self.setUp()
+        from kotti.util import title_to_name
+        assert title_to_name(u'Report Part 1',
+                             blacklist=[]) == u'report-part-1'
+        assert title_to_name(u'Report Part 1',
+                             blacklist=['report-part-1']) == u'report-part-1-1'
+        assert title_to_name(u'Report Part 3',
+                             blacklist=['report-part-3']) == u'report-part-3-1'
+        assert title_to_name(
+            u'Report Part 3', blacklist=['report-part-3', 'report-part-3-1']
+        ) == u'report-part-3-2'
+
     def test_disambiguate_name(self):
         from kotti.util import disambiguate_name
         assert disambiguate_name(u'foo') == u'foo-1'
