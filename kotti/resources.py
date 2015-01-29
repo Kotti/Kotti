@@ -160,7 +160,7 @@ class ContainerMixin(object, DictMixin):
 
 
 class LocalGroup(Base):
-    """ Local groups allow the assignment of groups or roles to pricipals
+    """ Local groups allow the assignment of groups or roles to principals
     (users or groups) **for a certain context** (i.e. a :class:`Node` in the
     content tree).
     """
@@ -227,10 +227,10 @@ class Node(Base, ContainerMixin, PersistentACLMixin):
     #: Name of the node as used in the URL
     #: (:class:`sqlalchemy.types.Unicode`)
     name = Column(Unicode(50), nullable=False)
-    #: Title of the node, e.g. as shown in serach results
+    #: Title of the node, e.g. as shown in search results
     #: (:class:`sqlalchemy.types.Unicode`)
     title = Column(Unicode(100))
-    #: Annotations can be used to store arbitray data in a nested dictionary
+    #: Annotations can be used to store arbitrary data in a nested dictionary
     #: (:class:`kotti.sqla.NestedMustationDict`)
     annotations = Column(NestedMutationDict.as_mutable(JsonType))
     #: The path can be used to efficiently filter for child objects

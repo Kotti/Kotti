@@ -22,7 +22,6 @@ It is recommended to install Kotti inside a virtualenv:
   virtualenv mysite
   cd mysite
   bin/pip install -r https://raw.github.com/Kotti/Kotti/stable/requirements.txt
-  bin/pip install [--pre] Kotti
 
 This will install the latest released version of Kotti and all its requirements into your virtualenv.
 
@@ -60,6 +59,19 @@ Kotti includes support for PostgreSQL, MySQL and SQLite (tested regularly), and
 The default use of SQLite makes initial development easy.
 Although SQLite may prove to be adequate for some deployments, Kotti is flexible for installation of your choice of database during development or at deployment.
 
+Installation using Docker (experimental)
+----------------------------------------
+
+This assumes that you already have Docker_ installed:
+
+.. parsed-literal::
+
+  docker pull kotti/kotti
+  docker run -i -t -p 5000:5000 kotti/kotti
+
+This should get you a running Kotti instance on port 5000.
+
 .. _other SQL databases: http://www.sqlalchemy.org/docs/core/engines.html#supported-databases
 .. _virtualenv: http://pypi.python.org/pypi/virtualenv
 .. _Paste Deploy: http://pythonpaste.org/deploy/#the-config-file
+.. _Docker: http://docker.io/

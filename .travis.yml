@@ -1,4 +1,5 @@
 language: python
+sudo: false
 python:
   - "2.6"
   - "2.7"
@@ -7,14 +8,17 @@ env:
   - KOTTI_TEST_DB_STRING=mysql+oursql://root@localhost:3306/kotti_testing
   - KOTTI_TEST_DB_STRING=sqlite://
 install:
-  - pip install "pip==1.3.1"  # fix issue with fanstatic==1.0a
-  - pip install -e . -r requirements.txt
+  - travis_retry pip install "pip==1.3.1"  # fix issue with fanstatic==1.0a
+  - travis_retry pip install -e . -r requirements.txt --use-mirrors
   - python setup.py dev
-  - pip install psycopg2 oursql
+  - travis_retry pip install psycopg2 oursql python-coveralls
 before_script:
   - psql -c 'create database kotti_testing;' -U postgres
   - mysql -e 'create database kotti_testing;'
-script: py.test --runslow --tb=native --cov=kotti --cov-report=term-missing
+script:
+  - py.test --runslow --tb=native --cov=kotti --cov-report=term-missing
+after_success:
+  - coveralls
 notifications:
   irc: "irc.freenode.org#kotti"
   email: false
