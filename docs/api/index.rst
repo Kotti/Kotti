@@ -17,6 +17,7 @@ API Documentation
    kotti.populate
    kotti.request
    kotti.resources
+   kotti.filedepot
    kotti.security
    kotti.sqla
    kotti.testing

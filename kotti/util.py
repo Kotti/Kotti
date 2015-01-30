@@ -7,6 +7,7 @@ Inheritance Diagram
 .. inheritance-diagram:: kotti.util
 """
 
+import cgi
 import re
 import urllib
 from urlparse import urlparse, urlunparse
@@ -276,6 +277,44 @@ def extract_from_settings(prefix, settings=None):
     return extracted
 
 
+def extract_depot_settings(prefix="kotti.depot.", settings=None):
+    """ Merges items from a dictionary that have keys that start with `prefix`
+    to a list of dictionaries.
+
+    :param prefix: A dotted string representing the prefix for the common values
+    :type prefix: string
+    :value settings: A dictionary with settings. Result is extracted from this
+    :type settings: dict
+
+      >>> settings = {
+      ...     'kotti.depot.0.backend': 'kotti.filedepot.DBFileStorage',
+      ...     'kotti.depot.0.file_storage': 'var/files',
+      ...     'kotti.depot.0.name': 'local',
+      ...     'kotti.depot.1.backend': 'depot.io.gridfs.GridStorage',
+      ...     'kotti.depot.1.name': 'mongodb',
+      ...     'kotti.depot.1.uri': 'localhost://',
+      ... }
+      >>> res = extract_depot_settings('kotti.depot.', settings)
+      >>> print sorted(res[0].items())
+      [('backend', 'kotti.filedepot.DBFileStorage'), ('file_storage', 'var/files'), ('name', 'local')]
+      >>> print sorted(res[1].items())
+      [('backend', 'depot.io.gridfs.GridStorage'), ('name', 'mongodb'), ('uri', 'localhost://')]
+    """
+
+    extracted = {}
+    for k, v in extract_from_settings(prefix, settings).items():
+        index, conf = k.split('.', 1)
+        index = int(index)
+        extracted.setdefault(index, {})
+        extracted[index][conf] = v
+
+    result = []
+    for k in sorted(extracted.keys()):
+        result.append(extracted[k])
+
+    return result
+
+
 def disambiguate_name(name):
     parts = name.split(u'-')
     if len(parts) > 1:
@@ -339,3 +378,18 @@ deprecated(
     'ViewLink',
     "kotti.util.ViewLink has been renamed to Link as of Kotti 1.0.0."
     )
+
+
+def _to_fieldstorage(fp, filename, mimetype, size, **_kwds):
+    """ Build a :class:`cgi.FieldStorage` instance.
+
+    Deform's :class:`FileUploadWidget` returns a dict, but
+    :class:`depot.fields.sqlalchemy.UploadedFileField` likes
+    :class:`cgi.FieldStorage` objects
+    """
+    f = cgi.FieldStorage()
+    f.file = fp
+    f.filename = filename
+    f.type = mimetype
+    f.length = size
+    return f

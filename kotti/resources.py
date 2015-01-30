@@ -10,8 +10,13 @@ Inheritance Diagram
 
 import os
 import warnings
+
 from fnmatch import fnmatch
+from cStringIO import StringIO
 from UserDict import DictMixin
+
+from depot.fields.sqlalchemy import UploadedFileField
+from depot.fields.sqlalchemy import _SQLAMutationTracker
 
 from pyramid.traversal import resource_path
 from sqlalchemy import Boolean
@@ -19,16 +24,15 @@ from sqlalchemy import Column
 from sqlalchemy import DateTime
 from sqlalchemy import ForeignKey
 from sqlalchemy import Integer
-from sqlalchemy import LargeBinary
 from sqlalchemy import String
 from sqlalchemy import Unicode
 from sqlalchemy import UnicodeText
 from sqlalchemy import UniqueConstraint
+from sqlalchemy import event
 from sqlalchemy.ext.associationproxy import association_proxy
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.ext.orderinglist import ordering_list
 from sqlalchemy.orm import backref
-from sqlalchemy.orm import deferred
 from sqlalchemy.orm import object_mapper
 from sqlalchemy.orm import relation
 from sqlalchemy.orm.exc import NoResultFound
@@ -59,6 +63,7 @@ from kotti.sqla import JsonType
 from kotti.sqla import MutationList
 from kotti.sqla import NestedMutationDict
 from kotti.util import _
+from kotti.util import _to_fieldstorage
 from kotti.util import camel_case_to_name
 from kotti.util import get_paste_items
 from kotti.util import Link
@@ -642,9 +647,9 @@ class File(Content):
     #: Primary key column in the DB
     #: (:class:`sqlalchemy.types.Integer`)
     id = Column(Integer(), ForeignKey('contents.id'), primary_key=True)
-    #: The binary data itself
-    #: (:class:`sqlalchemy.types.LargeBinary`)
-    data = deferred(Column("data", LargeBinary()))
+    #: Filedepot mapped blob
+    #: (:class:`depot.fileds.sqlalchemy.UploadedFileField`)
+    data = Column(UploadedFileField)
     #: The filename is used in the attachment view to give downloads
     #: the original filename it had when it was uploaded.
     #: (:class:`sqlalchemy.types.Unicode`)
@@ -670,10 +675,10 @@ class File(Content):
 
         super(File, self).__init__(**kwargs)
 
-        self.data = data
         self.filename = filename
         self.mimetype = mimetype
         self.size = size
+        self.data = data
 
     @classmethod
     def from_field_storage(cls, fs):
@@ -688,15 +693,50 @@ class File(Content):
         :rtype: :class:`kotti.resources.File`
         """
 
-        data = fs.file.read()
-        filename = fs.filename
-        mimetype = fs.type
-        size = len(data)
+        if not cls.type_info.is_uploadable_mimetype(fs.type):
+            raise ValueError("Unsupported MIME type: %s" % fs.type)
 
-        if not cls.type_info.is_uploadable_mimetype(mimetype):
-            raise ValueError("Unsupported MIME type: %s" % mimetype)
+        return cls(data=fs)
 
-        return cls(data=data, filename=filename, mimetype=mimetype, size=size)
+    @classmethod
+    def __declare_last__(cls):
+        # Unconfigure the event set in _SQLAMutationTracker, we have _save_data
+        mapper = cls._sa_class_manager.mapper
+        args = (mapper.attrs['data'], 'set', _SQLAMutationTracker._field_set)
+        if event.contains(*args):
+            event.remove(*args)
+
+        # Declaring the event on the class attribute instead of mapper property
+        # enables proper registration on its subclasses
+        event.listen(cls.data, 'set', cls._save_data, retval=True)
+
+    @classmethod
+    def _save_data(cls, target, value, oldvalue, initiator):
+        """ Refresh metadata and save the binary data to the data field.
+
+        :param target: The File instance
+        :type target: :class:`kotti.resources.File` or subclass
+        :param value: The container for binary data
+        :type value: A :class:`cgi.FieldStorage` instance
+        """
+
+        if isinstance(value, bytes):
+            value = _to_fieldstorage(fp=StringIO(value),
+                                    filename=target.filename,
+                                    mimetype=target.mimetype,
+                                    size=len(value))
+
+        newvalue = _SQLAMutationTracker._field_set(
+            target, value, oldvalue, initiator)
+
+        if newvalue is None:
+            return
+
+        target.filename = newvalue.filename
+        target.mimetype = newvalue.content_type
+        target.size = newvalue.file.content_length
+
+        return newvalue
 
 
 class Image(File):
@@ -747,8 +787,6 @@ def default_get_root(request=None):
 
 def _adjust_for_engine(engine):
     if engine.dialect.name == 'mysql':  # pragma: no cover
-        from sqlalchemy.dialects.mysql.base import LONGBLOB
-        File.__table__.c.data.type = LONGBLOB()
         # We disable the Node.path index for Mysql; in some conditions
         # the index can't be created for columns even with 767 bytes,
         # the maximum default size for column indexes

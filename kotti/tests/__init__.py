@@ -22,6 +22,7 @@ Fixture dependencies
       "db_session" -> "app";
       "db_session" -> "browser";
       "db_session" -> "root";
+      "db_session" -> "filedepot";
       "dummy_mailer" -> "app";
       "dummy_mailer";
       "events" -> "app";
@@ -41,6 +42,7 @@ Fixture dependencies
 import warnings
 
 from pytest import fixture
+from mock import MagicMock
 
 
 @fixture
@@ -276,3 +278,80 @@ def workflow(config):
     from zope.configuration import xmlconfig
     import kotti
     xmlconfig.file('workflow.zcml', kotti, execute=True)
+
+
+@fixture
+def filedepot(db_session, request):
+    """ Configures a mock depot store for :class:`depot.manager.DepotManager`
+    """
+    from depot.manager import DepotManager
+    from datetime import datetime
+
+    class TestStorage:
+        def __init__(self):
+            self._storage = {}
+            self._storage.setdefault(0)
+
+        def get(self, id):
+            info = self._storage[id]
+
+            from StringIO import StringIO
+
+            f = MagicMock(wraps=StringIO(info['content']))
+            f.seek(0)
+            f.public_url = ''
+            f.filename = info['filename']
+            f.content_type = info['content_type']
+            f.content_length = len(info['content'])
+            # needed to make JSON serializable, Mock objects are not
+            f.last_modified = datetime(2012, 12, 30)
+
+            return f
+
+        def create(self, content, filename=None, content_type=None):
+            id = max(self._storage) + 1
+            filename = filename or getattr(content, 'filename', None)
+            content_type = content_type or getattr(content, 'type', None)
+            if not isinstance(content, str):
+                content = content.file.read()
+            self._storage[id] = {'content': content,
+                                 'filename': filename,
+                                 'content_type': content_type}
+            return id
+
+        def delete(self, id):
+            del self._storage[int(id)]
+
+    _old_depots = DepotManager._depots
+    _old_default_depot = DepotManager._default_depot
+    DepotManager._depots = {
+        'mockdepot': MagicMock(wraps=TestStorage())
+    }
+    DepotManager._default_depot = 'mockdepot'
+
+    def restore():
+        db_session.rollback()
+        DepotManager._depots = _old_depots
+        DepotManager._default_depot = _old_default_depot
+
+    request.addfinalizer(restore)
+
+
+@fixture
+def no_filedepots(db_session, request):
+    """ A filedepot fixture to empty and then restore DepotManager configuration
+    """
+    from depot.manager import DepotManager
+
+    _old_depots = DepotManager._depots
+    _old_default_depot = DepotManager._default_depot
+
+    DepotManager._depots = {}
+    DepotManager._default_depot = None
+
+    def restore():
+        db_session.rollback()
+        DepotManager._depots = _old_depots
+        DepotManager._default_depot = _old_default_depot
+
+    request.addfinalizer(restore)
