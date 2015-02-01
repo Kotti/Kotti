@@ -365,6 +365,20 @@ def adjust_for_engine(conn, branch):
         from sqlalchemy.dialects.mysql.base import LONGBLOB
         DBStoredFile.__table__.c.data.type = LONGBLOB()
 
+    # sqlite's Unicode columns return a buffer which can't be encoded by
+    # a json encoder. We have to convert to a unicode string so that the value
+    # can be saved corectly by
+    # :class:`depot.fields.sqlalchemy.upload.UploadedFile`
+
+    def patched_processed_result_value(self, value, dialect):
+        if not value:
+            return None
+        return self._upload_type.decode(unicode(value))
+
+    if conn.engine.dialect.name == 'sqlite':  # pragma: no cover
+        from depot.fields.sqlalchemy import UploadedFileField
+        UploadedFileField.process_result_value = patched_processed_result_value
+
 
 def includeme(config):
     """ Pyramid includeme hook.
