@@ -1,4 +1,4 @@
-Kotti==1.1-dev
+Kotti==1.0.0-alpha.4
 filedepot==0.0.2
 Babel==1.3
 Beaker==1.6.4
