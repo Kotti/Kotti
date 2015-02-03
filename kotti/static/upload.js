@@ -31,7 +31,7 @@ function UploadController($scope, $http, $log) {
 
     $scope.files = [];
     $scope.errors = [];
-    $scope.num_files_waiting = 0;
+    $scope.numFilesWaiting = 0;
 
     $scope.uploadAll = function () {
         $scope.uploader.uploadStoredFiles();
@@ -69,10 +69,10 @@ function UploadController($scope, $http, $log) {
                 $scope.apply(function () {
                     var file = $scope.uploader.getFile(id);
                     $http.get(
-                        $scope.endpoints.content_types,
+                        $scope.endpoints.contentTypes,
                         {params: {mimetype: file.type}}
                     ).success(function (data, status, headers, config) {
-                        var content_types = data.content_types,
+                        var contentTypes = data.contentTypes,
                             file = {
                                 id: id,
                                 name: name,
@@ -80,7 +80,7 @@ function UploadController($scope, $http, $log) {
                                 file: $scope.uploader.getFile(id)
                             };
 
-                        if (content_types.length === 0) {
+                        if (contentTypes.length === 0) {
                             // todo: display meaningful error message
                             file.status = 'Error';
                             file.error = 'There is no content type in this context that knows create items from that file type.';
@@ -90,11 +90,11 @@ function UploadController($scope, $http, $log) {
 
                         file.status = 'ready for upload';
                         file.transfered = {bytes: 0, percent: 0};
-                        file.allowed_types = content_types;
-                        file.desired_type = content_types[0];
+                        file.allowedTypes = contentTypes;
+                        file.desiredType = contentTypes[0];
 
                         $scope.files.splice(id, 0, file);
-                        $scope.num_files_waiting += 1;
+                        $scope.numFilesWaiting += 1;
                     });
                 });
             },
@@ -103,9 +103,9 @@ function UploadController($scope, $http, $log) {
                 $scope.apply(function () {
                     $scope.files[id].status = 'uploading';
                     $scope.uploader.setParams({
-                        content_type: $scope.files[id].desired_type.name
+                        contentType: $scope.files[id].desiredType.name
                     }, id);
-                    $scope.num_files_waiting -= 1;
+                    $scope.numFilesWaiting -= 1;
                 });
             },
             onProgress: function (id, name, uploadedBytes, totalBytes) {
