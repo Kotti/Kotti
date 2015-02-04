@@ -18,8 +18,6 @@ log = logging.getLogger('kotti')
 
 
 def upgrade():
-    sa.orm.events.MapperEvents._clear()     # avoids filedepot magic
-
     from depot.manager import DepotManager
     from depot.fields.upload import UploadedFile
     from depot.fields.sqlalchemy import UploadedFileField
@@ -31,13 +29,19 @@ def upgrade():
     t.c.data.type = sa.LargeBinary()
     dn = DepotManager.get_default()
 
+    update = t.update()
+    conn = DBSession.connection()
+
     for obj in DBSession.query(File):
         uploaded_file = UploadedFile({'depot_name': dn, 'files': []})
         uploaded_file._thaw()
         uploaded_file.process_content(
             obj.data, filename=obj.filename, content_type=obj.mimetype)
         stored_file = DepotManager.get().get(uploaded_file['file_id'])
-        obj.data = uploaded_file.encode()
+        stmt = update.where(
+            t.c.id == obj.id).values(data=uploaded_file.encode())
+        res = conn.execute(stmt)
+        assert res.rowcount == 1
         stored_file.last_modified = obj.modification_date
 
         log.info("Migrated {} bytes for File with pk {} to {}/{}".format(
