@@ -67,7 +67,7 @@ tests_require = [
     'pytest-pep8!=1.0.3',
     'pytest-xdist',
     'virtualenv',  # needed for scaffolding tests
-    'wsgi_intercept==0.5.1',
+    'wsgi-intercept==0.9.1',
     'zope.testbrowser',
     ]
 
