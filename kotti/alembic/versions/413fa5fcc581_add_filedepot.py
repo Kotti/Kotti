@@ -12,44 +12,63 @@ down_revision = '559ce6eb0949'
 
 import logging
 import sqlalchemy as sa
-from alembic import op
+import sys
 
 log = logging.getLogger('kotti')
+log.addHandler(logging.StreamHandler(sys.stdout))
+log.setLevel(logging.INFO)
 
 
 def upgrade():
     from depot.manager import DepotManager
     from depot.fields.upload import UploadedFile
-    from depot.fields.sqlalchemy import UploadedFileField
+    from sqlalchemy import bindparam
 
     from kotti import DBSession, metadata
-    from kotti.resources import File
 
-    t = sa.Table('files', metadata)
-    t.c.data.type = sa.LargeBinary()
+    files = sa.Table('files', metadata)
+    files.c.data.type = sa.LargeBinary()
     dn = DepotManager.get_default()
 
-    update = t.update()
-    conn = DBSession.connection()
+    _saved = []
 
-    for obj in DBSession.query(File):
+    def process(thing):
+        id, data, filename, mimetype = thing
         uploaded_file = UploadedFile({'depot_name': dn, 'files': []})
         uploaded_file._thaw()
         uploaded_file.process_content(
-            obj.data, filename=obj.filename, content_type=obj.mimetype)
-        stored_file = DepotManager.get().get(uploaded_file['file_id'])
-        stmt = update.where(
-            t.c.id == obj.id).values(data=uploaded_file.encode())
-        res = conn.execute(stmt)
-        assert res.rowcount == 1
-        stored_file.last_modified = obj.modification_date
+            data, filename=filename, content_type=mimetype)
+        _saved.append({'nodeid': id, 'data': uploaded_file.encode()})
+        log.info("Saved data for node id {}".format(id))
 
-        log.info("Migrated {} bytes for File with pk {} to {}/{}".format(
-            len(obj.data), obj.id, dn, uploaded_file['file_id']))
+    query =  DBSession.query(
+        files.c.id, files.c.data, files.c.filename, files.c.mimetype
+    ).order_by(files.c.id).yield_per(10)
 
-    DBSession.flush()
-    if DBSession.get_bind().name != 'sqlite':   # not supported by sqlite
-        op.alter_column('files', 'data', type_=UploadedFileField())
+    window_size = 10  # or whatever limit you like
+    window_idx = 0
+
+    log.info("Starting migration of blob data")
+
+    while True:
+        start, stop = window_size * window_idx, window_size * (window_idx + 1)
+        things = query.slice(start, stop).all()
+        if things is None:
+            break
+        for thing in things:
+            process(thing)
+        if len(things) < window_size:
+            break
+        window_idx += 1
+
+    log.info("Files written on disk, saving information to DB")
+
+    update = files.update().where(files.c.id == bindparam('nodeid')).\
+        values({files.c.data: bindparam('data')})
+
+    DBSession.execute(update, _saved)
+
+    log.info("Blob migration completed")
 
 
 def downgrade():
