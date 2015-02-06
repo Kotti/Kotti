@@ -13,21 +13,10 @@ down_revision = '1063d7178fa'
 
 def upgrade():
 
-    from kotti.resources import metadata, DBSession
-    from sqlalchemy import Table, select, bindparam
-    from sqlalchemy.sql.expression import not_
-
-    nodes = Table('nodes', metadata)
-
-    to_change = [dict(nodepath=r[0], nodeid=r[1]) for r in
-                 select([nodes.c.path + '/', nodes.c.id]).
-                 where(not_(nodes.c.path == u'/')).execute()]
-
-    updater = nodes.update().\
-        where(nodes.c.id == bindparam('nodeid')).\
-        values({nodes.c.path:bindparam('nodepath')})
-
-    DBSession.execute(updater, to_change)
+    from kotti.resources import DBSession
+    DBSession.execute(
+        "update nodes set path = path || '/' where path not like '/'"
+    )
 
 
 def downgrade():
