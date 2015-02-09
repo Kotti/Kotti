@@ -24,7 +24,7 @@ log.setLevel(logging.INFO)
 def upgrade():
     from depot.manager import DepotManager
     from depot.fields.upload import UploadedFile
-    from sqlalchemy import bindparam, Unicode
+    from sqlalchemy import bindparam, Unicode, Column
 
     from kotti import DBSession, metadata
 
@@ -66,6 +66,9 @@ def upgrade():
 
     log.info("Files written on disk, saving information to DB")
 
+    op.drop_column('files', 'data')
+    op.add_column('files', Column('data', Unicode(4096)))
+
     update = files.update().where(files.c.id == bindparam('nodeid')).\
         values({files.c.data: bindparam('data')})
 
@@ -78,8 +81,6 @@ def upgrade():
 
     log.info("Blob migration completed in {} seconds".format(
         int(time.time() - now)))
-
-    op.alter_column('files', 'data', Unicode())
 
 
 def downgrade():
