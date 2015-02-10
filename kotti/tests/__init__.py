@@ -9,6 +9,7 @@ Fixture dependencies
 
    digraph kotti_fixtures {
       "allwarnings";
+      "mock_filedepot";
       "app" -> "webtest";
       "config" -> "db_session";
       "config" -> "dummy_request";
@@ -45,6 +46,7 @@ from pytest import fixture
 from mock import MagicMock
 
 from datetime import datetime
+
 
 @fixture
 def allwarnings(request):
@@ -309,8 +311,8 @@ class TestStorage:
         if not isinstance(content, str):
             content = content.file.read()
         self._storage[id] = {'content': content,
-                                'filename': filename,
-                                'content_type': content_type}
+                             'filename': filename,
+                             'content_type': content_type}
         return id
 
     def delete(self, id):

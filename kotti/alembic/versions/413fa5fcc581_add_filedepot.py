@@ -43,7 +43,7 @@ def upgrade():
         _saved.append({'nodeid': id, 'data': uploaded_file.encode()})
         log.info("Saved data for node id {}".format(id))
 
-    query =  DBSession.query(
+    query = DBSession.query(
         files.c.id, files.c.data, files.c.filename, files.c.mimetype
     ).order_by(files.c.id).yield_per(10)
 
@@ -74,7 +74,7 @@ def upgrade():
 
     def chunks(l, n):
         for i in xrange(0, len(l), n):
-            yield l[i:i+n]
+            yield l[i:i + n]
 
     for cdata in chunks(_saved, 10):
         DBSession.execute(update, cdata)
