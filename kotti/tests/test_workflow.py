@@ -60,9 +60,7 @@ class TestWorkflow:
 
         events = []
 
-        def my_listener(event):
-            events.append(event)
-        listeners[WorkflowTransition].append(my_listener)
+        listeners[WorkflowTransition].append(lambda event: events.append(event))
 
         context = Dummy()
         info = Dummy()
