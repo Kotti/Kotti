@@ -15,7 +15,7 @@ def upgrade():
 
     from kotti.resources import DBSession
     DBSession.execute(
-        "update nodes set path = path || '/' where path not like '/'"
+        "update nodes set path = path || '/' where path not like '%/'"
     )
 
 
