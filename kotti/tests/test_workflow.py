@@ -59,6 +59,7 @@ class TestWorkflow:
         from kotti.workflow import WorkflowTransition
 
         events = []
+
         listeners[WorkflowTransition].append(lambda event: events.append(event))
 
         context = Dummy()
