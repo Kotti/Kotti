@@ -10,7 +10,7 @@ Adding Models
 -------------
 
 When creating our add-on, the scaffolding added the file ``kotti_mysite/kotti_mysite/resources.py``.
-If you open `resources.py` you'll see that it already contains code for a sample content type ``CustomContent`` along with the following imports that we will use.
+If you open ``resources.py`` you'll see that it already contains code for a sample content type ``CustomContent`` along with the following imports that we will use.
 
 .. code-block:: python
 
@@ -19,8 +19,7 @@ If you open `resources.py` you'll see that it already contains code for a sample
   from sqlalchemy import ForeignKey
   from sqlalchemy import Integer
 
-
-Add the following definition for the ``Poll`` content type to `resources.py`.
+Add the following definition for the ``Poll`` content type to ``resources.py``.
 
 .. code-block:: python
 
@@ -43,8 +42,7 @@ Things to note here:
 - ``Poll`` declares a :class:`sqlalchemy.Column <sqlalchemy.schema>` ``id``, which is required to hook it up with SQLAlchemy's inheritance.
 
 - The ``type_info`` class attribute does essential configuration.
-  We refer to name and title, two properties already defined as part of
-  ``Content``, our base class.
+  We refer to name and title, two properties already defined as part of ``Content``, our base class.
   The ``add_view`` defines the name of the add view, which we'll come to in a second.
   Finally, ``addable_to`` defines which content types we can add ``Poll`` items to.
 
@@ -106,7 +104,9 @@ Some things to note:
 
 - Colander_ is the library that we use to define our schemas.
   Colander allows us to validate schemas against form data.
+
 - Our class inherits from :class:`kotti.views.edit.ContentSchema` which itself inherits from :class:`colander.MappingSchema`.
+
 - ``_`` is how we hook into i18n for translations.
 
 Add the following code to ``views/edit.py``:
@@ -170,7 +170,6 @@ Add this to ``views/edit.py``:
       add = Choice
       item_type = u"Choice"
 
-
 Using the ``AddFormView`` and ``EditFormView`` base classes from Kotti, these forms are simple to define.
 We associate the schemas defined above, setting them as the ``schema_factory`` for each form, and we specify the content types to be added by each.
 
@@ -199,7 +198,6 @@ Open ``__init__.py`` and modify the ``kotti_configure`` method so that the
             ' kotti_mysite.fanstatic.css_and_js')
         ...
 
-
 Here, we've added our two content types to the site's ``available_types``, a global
 registry.
 We also removed the ``CustomContent`` content type included with the scaffolding.
@@ -215,7 +213,6 @@ It includes the call to ``config.scan()`` that we mentioned above while discussi
 
 You can see the Pyramid documentation for scan_ for more information.
 
-
 Adding a Poll and Choices to the site
 -------------------------------------
 
@@ -230,8 +227,8 @@ Login with the username *admin* and password *qwerty* and click on the Add menu 
 You should see a few choices, namely the base Kotti classes ``Document``, ``File`` and ``Image`` and the Content Type we added, ``Poll``.
 
 Lets go ahead and click on ``Poll``.
-For the question, let's write *What is your favourite color?*.
-Now let's add three choices, *Red*, *Green* and *Blue* in the same way we added the poll.
+For the question, let's write *"What is your favourite color?"*.
+Now let's add three choices, *"Red"*, *"Green"* and *"Blue"* in the same way we added the poll.
 Remember that you must be in the context of the poll to add each choice.
 
 If we now go to the poll we added, we can see the question, but not our choices, which is definitely not what we wanted.
@@ -246,6 +243,7 @@ Here is the code, added to ``view.py``.
 .. code-block:: python
 
   from kotti_mysite.fanstatic import css_and_js
+  from kotti_mysite.resources import Poll
 
 
   @view_defaults(context=Poll)
@@ -256,14 +254,14 @@ Here is the code, added to ``view.py``.
                    renderer='kotti_mysite:templates/poll.pt')
       def poll_view(self):
           css_and_js.need()
-          choices = self.context.values()
+          choices = self.context.children
           return {
               'choices': choices,
           }
 
-To find out if a Choice was added to the ``Poll`` we are currently viewing, we compare it's *parent_id* attribute with the *id* of the Poll - if they are the same, the ``Choice`` is a child of the ``Poll``.
-To get all the appropriate choices, we do a simple database query, filtered as specified above.
-Finally, we return a dictionary of all choices under the keyword *choices*.
+Since we want to show all ``Choices`` added to a ``Poll`` we can simply use the ``children`` attribute. This will return a list of all the 'children' of a ``Poll`` which are exactly the ``Choices`` added to that particular ``Poll``.
+The view returns a dictionary of all choices under the keyword *'choices'*.
+The keywords a view returns are automatically available in it's template.
 
 Next on, we need a template to actually show our data.
 It could look something like this.
@@ -279,27 +277,37 @@ Create a folder named ``templates`` and put the file ``poll.pt`` into it.
     <article metal:fill-slot="content" class="poll-view content">
       <h1>${context.title}</h1>
       <ul>
-          <li tal:repeat="choice choices">
-            <a href="${request.resource_url(choice)}/vote">
-              ${choice.title}
-            </a> (${choice.votes}/${all_votes})
-          </li>
+          <li tal:repeat="choice choices">${choice.title}</li>
       </ul>
     </article>
 
   </html>
 
 The first 6 lines are needed so our template plays nicely with the master template (so we keep the add/edit bar, base site structure etc.).
-The next line prints out the context.title (our question) inside the <h1> tag and then prints all choices (with links to the choice) as an unordered list.
+The next line prints out the context.title (our question) inside the ``<h1>`` tag and then prints all choices (with links to the choice) as an unordered list.
+
+.. note::
+
+  We are using two 'magically available' attributes in the template - ``context`` and ``choices``.
+
+  - ``context`` is automatically available in all templates and as the name implies it is the context of the view (in this case the ``Poll`` we are currently viewing).
+
+  - ``choices`` is available because we sent it to the template in the Python part of the view.
+    You can of course send multiple variables to the template, you just need to return them in your Python code.
 
 With this, we are done with the second tutorial.
-Restart the server instance, take a look at the new ``Poll`` view and play around with the template until you are completely satisfied with how our data is presented.
-If you will work with templates for a while (or anytime you're developing basically) I'd recommend you use the pyramid *reload_templates* and *debug_templates* options as they save you a lot of time lost on server restarts.
+Restart the application, take a look at the new ``Poll`` view and play around with the template until you are completely satisfied with how our data is presented.
 
-.. code-block:: ini
+.. note::
 
-  pyramid.reload_templates = true
-  pyramid.debug_templates = true
+  If you will work with templates for a while (or any time you're developing basically) using the pyramid *'reload_templates'* and *'debug_templates'* options is recommended, as they allow you to see changes to the template without having to restart the application.
+  These options need to be put in your configuration INI under the *'[app:kotti]'* section.
+
+  .. code-block:: ini
+
+    [app:kotti]
+    pyramid.reload_templates = true
+    pyramid.debug_templates = true
 
 In the :ref:`next tutorial <tut-3>`, we will learn how to enable our users to actually vote for one of the ``Poll`` options.
 
