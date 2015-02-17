@@ -68,6 +68,7 @@ def upgrade():
 
     op.drop_column('files', 'data')
     op.add_column('files', Column('data', Unicode(4096)))
+    files.c.data.type = Unicode(4096)
 
     update = files.update().where(files.c.id == bindparam('nodeid')).\
         values({files.c.data: bindparam('data')})
