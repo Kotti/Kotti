@@ -13,13 +13,10 @@ down_revision = '1063d7178fa'
 
 def upgrade():
 
-    from kotti import DBSession
-    from kotti.resources import Node
-
-    for node in DBSession.query(Node).with_polymorphic([Node]):
-        # append '/' to all nodes but root
-        if node.path != u'/':
-            node.path += u'/'
+    from kotti.resources import DBSession
+    DBSession.execute(
+        "update nodes set path = path || '/' where path not like '%/'"
+    )
 
 
 def downgrade():

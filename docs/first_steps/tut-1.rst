@@ -83,10 +83,8 @@ And add ``kotti_mysite.kotti_configure`` to it:
       kotti_tinymce.kotti_configure
       kotti_mysite.kotti_configure
 
-
 At this point, you should be able to restart the application, but you won't notice anything different.
 Let's make a simple CSS change and use it to see how Kotti manages static resources.
-
 
 Static Resources
 ----------------
@@ -171,8 +169,7 @@ Notice how we add to the string ``kotti.fanstatic.view_needed``.
    This allows a handy use of += on different lines.
    After concatenation of the string parts, blanks will delimit them.
 
-This ``kotti.fanstatic.view_needed`` setting, in turn, controls which resources
-are loaded in the public interface (as compared to the edit interface).
+This ``kotti.fanstatic.view_needed`` setting, in turn, controls which resources are loaded in the public interface (as compared to the edit interface).
 
 As you might have guessed, we could have also completely replaced Kotti's resources for the public interface by overriding the ``kotti.fanstatic.view_needed`` setting instead of adding to it, like this:
 
