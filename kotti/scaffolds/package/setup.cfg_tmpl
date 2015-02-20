@@ -21,4 +21,4 @@ addopts =
 python_files = test*py
 markers =
     user: mark test to be run as the given user
-pep8ignore = E501 E122 E123 E125 E128 E711
+pep8ignore = E501 E122 E123 E125 E128 E711 E402

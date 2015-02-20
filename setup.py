@@ -19,14 +19,12 @@ install_requires = [
     'alembic',
     'colander>=0.9.3',
     'deform>=2.0a1',  # >=2.0a1 to support Bootstrap 2
-    # 'deform_bootstrap>=0.1',  # checked_input widget
     'docopt',
     'formencode',
     'html2text',
     'js.angular',
     'js.bootstrap>=2.1.5',
     'js.deform>=2.0a2-2',
-    # 'js.deform_bootstrap>=0.2.4-1',
     'js.fineuploader',
     'js.html5shiv',
     'js.jquery',
@@ -86,7 +84,7 @@ if sys.version_info[:3] < (2, 7, 0):
     install_requires.append('ordereddict')
 
 setup(name='Kotti',
-      version='1.0.0-alpha.4',
+      version='1.0.0',
       description="A high-level, Pythonic web application framework based on Pyramid and SQLAlchemy.  It includes an extensible Content Management System called the Kotti CMS.",  # noqa
       long_description='\n\n'.join([README, AUTHORS, CHANGES]),
       classifiers=[
