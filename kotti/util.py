@@ -20,6 +20,7 @@ from pyramid.i18n import TranslationStringFactory
 from pyramid.interfaces import ITranslationDirectories
 from pyramid.location import inside
 from pyramid.paster import bootstrap
+from pyramid.paster import setup_logging
 from pyramid.renderers import render
 from pyramid.threadlocal import get_current_registry
 from pyramid.threadlocal import get_current_request
@@ -365,7 +366,11 @@ def camel_case_to_name(text):
 
 def command(func, doc):
     args = docopt(doc)
-    pyramid_env = bootstrap(args['<config_uri>'])
+    # establish config file uri
+    config_uri = args['<config_uri>']
+    pyramid_env = bootstrap(config_uri)
+    # Setup logging to allow log output from command methods
+    setup_logging(config_uri)
     try:
         func(args)
     finally:
