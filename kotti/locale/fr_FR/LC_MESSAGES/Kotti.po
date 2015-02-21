@@ -20,11 +20,11 @@ msgstr ""
 
 #: kotti/populate.py:64
 msgid "Welcome to Kotti"
-msgstr ""
+msgstr "Bienvenue dans Kotti"
 
 #: kotti/populate.py:65
 msgid "Congratulations! You have successfully installed Kotti."
-msgstr ""
+msgstr "Félicitations! Vous avez installé Kotti avec succès."
 
 #: kotti/populate.py:66
 #, c-format
@@ -89,16 +89,79 @@ msgid ""
 "    </div>\n"
 "</div>\n"
 msgstr ""
+"\n"
+"<h2>Identifiez vous</h2>\n"
+"<p>\n"
+"    Vous pouvez vous <a class=\"btn btn-success\" href=\"login\">identifier</"
+"a> sur votre site internet\n"
+"    et commencer à créer du contenu. Si vous n'avez pas choisi un mot de "
+"passe pour\n"
+"    votre compte administrateur, celui-ci devrait être <em>qwerty</em>.\n"
+"</p>\n"
+"<p>\n"
+"    Lorsque que vous serez identifié, vous verrez la barre grise d'édition "
+"en dessous de la\n"
+"    barre de navigation. Celle-ci vous permettra de basculer entre l'édition "
+"et la visualisation, telle qu'\n"
+"    elle apparaitra aux visiteurs.\n"
+"</p>\n"
+"<div class=\"row\">\n"
+"    <div class=\"col-md-4\">\n"
+"        <h2>Configuration</h2>\n"
+"        <p>\n"
+"            Trouvez comment configurer le titre de votre site ainsi que "
+"d'autres paramètres en utilisant\n"
+"            un éditeur de texte.\n"
+"        </p>\n"
+"        <p>\n"
+"            <a class=\"btn btn-info\"\n"
+"               href=\"http://kotti.readthedocs.org/en/latest/developing/"
+"basic/configuration.html\">\n"
+"               Configuration manuelle\n"
+"            </a>\n"
+"        </p>\n"
+"    </div>\n"
+"    <div class=\"col-md-4\">\n"
+"        <h2>Extensions</h2>\n"
+"        <p>\n"
+"            Des extensions vous permettent d'étendre les fonctionnalités de "
+"votre site internet Kotti.\n"
+"        </p>\n"
+"        <p>\n"
+"            <a class=\"btn btn-info\"\n"
+"               href=\"http://pypi.python.org/pypi?%3Aaction=search&amp;"
+"term=kotti\">\n"
+"                Extensions de Kotti\n"
+"            </a>\n"
+"        </p>\n"
+"    </div>\n"
+"    <div class=\"col-md-4\">\n"
+"        <h2>Documentation</h2>\n"
+"        <p>\n"
+"            Découvrez tout ce que vous pouvez faire avec Kotti? La License "
+"de Kotti?Parcourez le\n"
+"            manuel pour plus d'informations.\n"
+"        </p>\n"
+"        <p>\n"
+"            <a class=\"btn btn-info\"\n"
+"               href=\"http://kotti.readthedocs.org/en/latest/\">\n"
+"               Documentation\n"
+"            </a>\n"
+"        </p>\n"
+"    </div>\n"
+"</div>\n"
 
 #: kotti/populate.py:121
 msgid "About"
-msgstr ""
+msgstr "A propos"
 
 #: kotti/populate.py:122
 msgid ""
 "Our company is the leading manufacturer of foo widgets used in a wide "
 "variety of aviation and and industrial products."
 msgstr ""
+"Notre société est spécialisée dans la conception de pièces foo utilisées "
+"dans une grande variétée de produits."
 
 #: kotti/populate.py:123
 msgid ""
@@ -132,6 +195,35 @@ msgid ""
 "  article.\n"
 "</small></p>\n"
 msgstr ""
+"\n"
+"<p>\n"
+"  <img alt=\"Cinq avions EA300 volants en formation\"\n"
+"   src=\"http://upload.wikimedia.org/wikipedia/commons/thumb/5/5d/"
+"Northern_Lights_Formation.jpg/640px-Northern_Lights_Formation.jpg\"\n"
+"   width=\"640\" height=\"376\" />\n"
+"</p>\n"
+"\n"
+"<p>\n"
+"   Nos bureaux:\n"
+"</p>\n"
+"\n"
+"<address>\n"
+"  Foo World<br />\n"
+"  123 Rue inconnue, Boite 777<br />\n"
+"  Omak, WA   98841   USA<br />\n"
+"  +1-509-555-0100<br />\n"
+"  widgets@foowrld.example.com\n"
+"</address>\n"
+"\n"
+"<p><small style=\"font-size: smaller\">\n"
+"  <em>Crédit de la photot:</em> \"Northern Lights Formation\" by FlugKerl2.\n"
+"  <a href=\"http://commons.wikimedia.org/wiki/File:Northern_Lights_Formation."
+"jpg\">\n"
+"  Copyright info</a>.\n"
+"  Originalement publié sur\n"
+"  <a href=\"http://en.wikipedia.org/wiki/Extra_EA-300\"> Extra EA-300</a>\n"
+"  article.\n"
+"</small></p>\n"
 
 #: kotti/resources.py:606 kotti/views/edit/content.py:81
 msgid "Document"
@@ -497,7 +589,7 @@ msgstr "Gravatar"
 
 #: kotti/templates/edit/upload.pt:9
 msgid "Upload content from local file(s)"
-msgstr ""
+msgstr "Téléverser des contenus à partir de fichiers locaux"
 
 #: kotti/templates/edit/upload.pt:20 kotti/templates/edit/upload.pt:164
 #, fuzzy
@@ -506,27 +598,27 @@ msgstr "Renommer"
 
 #: kotti/templates/edit/upload.pt:26 kotti/templates/edit/upload.pt:170
 msgid "Size"
-msgstr ""
+msgstr "Poids"
 
 #: kotti/templates/edit/upload.pt:29
 msgid "Status"
-msgstr ""
+msgstr "Statut"
 
 #: kotti/templates/edit/upload.pt:32
 msgid "Progress"
-msgstr ""
+msgstr "Progression"
 
 #: kotti/templates/edit/upload.pt:124
 msgid "Select file(s) to upload..."
-msgstr ""
+msgstr "Selectionner des fichiers à téléverser..."
 
 #: kotti/templates/edit/upload.pt:134
 msgid "Upload ${number} files."
-msgstr ""
+msgstr "Téléverser ${number} fichiers."
 
 #: kotti/templates/edit/upload.pt:144
 msgid "Dismiss all errors"
-msgstr ""
+msgstr "Ignorer toutes les erreurs"
 
 #: kotti/templates/site-setup/delete-user.pt:20
 msgid "Are you sure you want to delete ${type} ${title}?"
@@ -561,7 +653,7 @@ msgstr "Rechercher des utilisateurs ou des groupes"
 
 #: kotti/templates/site-setup/users.pt:63
 msgid "User- / groupname"
-msgstr ""
+msgstr "Utilisateur / groupe"
 
 #: kotti/templates/site-setup/users.pt:70
 #, fuzzy
