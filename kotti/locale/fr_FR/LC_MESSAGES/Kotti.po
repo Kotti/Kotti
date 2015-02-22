@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Kotti 0.9a3dev\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2015-02-22 11:33+0100\n"
+"POT-Creation-Date: 2015-02-22 11:34+0100\n"
 "PO-Revision-Date: 2013-09-22 20:21+0100\n"
 "Last-Translator: Fabien Castarède <fabien.castarede@free.fr>\n"
 "Language-Team: French\n"
@@ -394,12 +394,11 @@ msgstr "Réinitialiser le mot de passe"
 
 #. Canonical text for ${reset_password} is: "Reset password"
 #: kotti/templates/login.pt:74
-#, fuzzy
 msgid ""
 "Fill out your username or email and click ${reset_password} below to receive "
 "an email with a link to reset your password."
 msgstr ""
-"Indiquez votre identifiant ou votre adresse e-mail ci-dessus et cliquez sur "
+"Indiquez votre identifiant ou votre adresse e-mail ci-dessous et cliquez sur "
 "${reset_password} ci-dessous afin de recevoir un mail contenant le lien de "
 "réinitialisation de votre mot de passe."
 
@@ -408,9 +407,8 @@ msgid "Not registered yet?"
 msgstr ""
 
 #: kotti/templates/login.pt:127
-#, fuzzy
 msgid "Register for an account on this site."
-msgstr "Pas encore inscrit ? ${register} sur ce site."
+msgstr "Enregistrez-vous sur ce site."
 
 #: kotti/templates/workflow-dropdown.pt:19
 msgid "Make ${state}"
@@ -592,9 +590,8 @@ msgid "Upload content from local file(s)"
 msgstr "Téléverser des contenus à partir de fichiers locaux"
 
 #: kotti/templates/edit/upload.pt:20 kotti/templates/edit/upload.pt:164
-#, fuzzy
 msgid "Filename"
-msgstr "Renommer"
+msgstr "Nom du fichier"
 
 #: kotti/templates/edit/upload.pt:26 kotti/templates/edit/upload.pt:170
 msgid "Size"
@@ -634,7 +631,6 @@ msgid "Edit ${title}"
 msgstr "Modifier ${title}"
 
 #: kotti/templates/site-setup/users.pt:15
-#, fuzzy
 msgid "Search user(s) / group(s)"
 msgstr "Rechercher des utilisateurs ou des groupes"
 
@@ -647,7 +643,6 @@ msgid "Add group"
 msgstr "Ajouter un groupe"
 
 #: kotti/templates/site-setup/users.pt:52
-#, fuzzy
 msgid "Find users or groups"
 msgstr "Rechercher des utilisateurs ou des groupes"
 
@@ -656,24 +651,20 @@ msgid "User- / groupname"
 msgstr "Utilisateur / groupe"
 
 #: kotti/templates/site-setup/users.pt:70
-#, fuzzy
 msgid "Blank search text finds all."
 msgstr ""
 "Rechercher et modifier des utilisateurs (Laissez le champ vide pour les "
 "afficher tous)."
 
 #: kotti/templates/site-setup/users.pt:96
-#, fuzzy
 msgid "Assign global roles"
 msgstr "Assigner des rôles locaux"
 
 #: kotti/templates/site-setup/users.pt:180
-#, fuzzy
 msgid "Add new user"
 msgstr "Ajouter un utilisateur"
 
 #: kotti/templates/site-setup/users.pt:190
-#, fuzzy
 msgid "Add new group"
 msgstr "Ajouter un groupe"
 
@@ -761,7 +752,7 @@ msgstr "S'inscrire - ${title}"
 
 #: kotti/views/login.py:163
 msgid "Login failed."
-msgstr "Connexion échouée."
+msgstr "La connexion à échouée."
 
 #: kotti/views/login.py:285
 #, python-format
