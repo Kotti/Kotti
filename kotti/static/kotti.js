@@ -4,7 +4,7 @@
 
 "use strict";
 var kotti = {
-    dom_changed_handlers: []
+    domChangedHandlers: []
 };
 var jq = jQuery;
 
@@ -15,7 +15,7 @@ var jq = jQuery;
         return this.filter(selector).add(this.find(selector));
     };
 
-    kotti.dirty_forms = function (node) {
+    kotti.dirtyForms = function (node) {
         var forms = $("form").not("[class~=dirty-ignore]"),
             initial = forms.serialize();
 
@@ -35,8 +35,8 @@ var jq = jQuery;
         });
     };
 
-    kotti.dom_changed = function (node) {
-        $.each(kotti.dom_changed_handlers, function (index, func) {
+    kotti.domChanged = function (node) {
+        $.each(kotti.domChangedHandlers, function (index, func) {
             func(node);
         });
     };
@@ -48,14 +48,14 @@ var jq = jQuery;
             ];
         }
         $.each(handlers, function (index, func) {
-            kotti.dom_changed_handlers.push(func);
+            kotti.domChangedHandlers.push(func);
         });
-        kotti.dom_changed(node);
+        kotti.domChanged(node);
     };
 
     // deform might be undefined, e.g. in kotti_tinymce's kottibrowser
     if (window.deform) {
-      deform.load();
+        deform.load();
     }
 
     kotti.main();
