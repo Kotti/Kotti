@@ -19,14 +19,12 @@ install_requires = [
     'alembic',
     'colander>=0.9.3',
     'deform>=2.0a1',  # >=2.0a1 to support Bootstrap 2
-    # 'deform_bootstrap>=0.1',  # checked_input widget
     'docopt',
     'formencode',
     'html2text',
     'js.angular',
     'js.bootstrap>=2.1.5',
     'js.deform>=2.0a2-2',
-    # 'js.deform_bootstrap>=0.2.4-1',
     'js.fineuploader',
     'js.html5shiv',
     'js.jquery',
