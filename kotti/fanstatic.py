@@ -24,15 +24,10 @@ tagit = Group([ui_tagit, jqueryui_bootstrap_theme])
 
 # Kotti's resources
 lib_kotti = Library("kotti", "static")
-kotti_js = Resource(
-    lib_kotti,
-    "kotti.js",
-    minified="kotti.min.js",
-    bottom=True)
 contents_view_js = Resource(
     lib_kotti,
     "contents.js",
-    depends=[kotti_js, jquery_tablednd, ],
+    depends=[jquery_tablednd, ],
     minified="contents.min.js",
     bottom=True)
 base_css = Resource(
@@ -124,9 +119,7 @@ edit_needed_js = NeededGroup([
     jquery,
     bootstrap_js,
     html5shiv,
-    kotti_js,
     jquery_form,
-    # deform_bootstrap_js,
     ])
 edit_needed = NeededGroup([
     edit_needed_css,
