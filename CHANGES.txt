@@ -4,7 +4,9 @@ Change History
 1.1-dev - unreleased
 --------------------
 
-- No changes yet.
+- Initialize pyramid.paster.logging for custom commands defined via
+  ``kotti.util.command``, to allow log message output for kotti sessions 
+  started via custom commands.
 
 1.0.0-alpha.4 - 2015-01-29
 --------------------------
