@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Kotti 0.9a3dev\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2014-12-19 14:27+0100\n"
+"POT-Creation-Date: 2015-02-22 11:34+0100\n"
 "PO-Revision-Date: 2013-09-22 20:21+0100\n"
 "Last-Translator: Fabien Castarède <fabien.castarede@free.fr>\n"
 "Language-Team: French\n"
@@ -20,11 +20,11 @@ msgstr ""
 
 #: kotti/populate.py:64
 msgid "Welcome to Kotti"
-msgstr ""
+msgstr "Bienvenue dans Kotti"
 
 #: kotti/populate.py:65
 msgid "Congratulations! You have successfully installed Kotti."
-msgstr ""
+msgstr "Félicitations! Vous avez installé Kotti avec succès."
 
 #: kotti/populate.py:66
 #, c-format
@@ -89,16 +89,79 @@ msgid ""
 "    </div>\n"
 "</div>\n"
 msgstr ""
+"\n"
+"<h2>Identifiez vous</h2>\n"
+"<p>\n"
+"    Vous pouvez vous <a class=\"btn btn-success\" href=\"login\">identifier</"
+"a> sur votre site internet\n"
+"    et commencer à créer du contenu. Si vous n'avez pas choisi un mot de "
+"passe pour\n"
+"    votre compte administrateur, celui-ci devrait être <em>qwerty</em>.\n"
+"</p>\n"
+"<p>\n"
+"    Lorsque que vous serez identifié, vous verrez la barre grise d'édition "
+"en dessous de la\n"
+"    barre de navigation. Celle-ci vous permettra de basculer entre l'édition "
+"et la visualisation, telle qu'\n"
+"    elle apparaitra aux visiteurs.\n"
+"</p>\n"
+"<div class=\"row\">\n"
+"    <div class=\"col-md-4\">\n"
+"        <h2>Configuration</h2>\n"
+"        <p>\n"
+"            Trouvez comment configurer le titre de votre site ainsi que "
+"d'autres paramètres en utilisant\n"
+"            un éditeur de texte.\n"
+"        </p>\n"
+"        <p>\n"
+"            <a class=\"btn btn-info\"\n"
+"               href=\"http://kotti.readthedocs.org/en/latest/developing/"
+"basic/configuration.html\">\n"
+"               Configuration manuelle\n"
+"            </a>\n"
+"        </p>\n"
+"    </div>\n"
+"    <div class=\"col-md-4\">\n"
+"        <h2>Extensions</h2>\n"
+"        <p>\n"
+"            Des extensions vous permettent d'étendre les fonctionnalités de "
+"votre site internet Kotti.\n"
+"        </p>\n"
+"        <p>\n"
+"            <a class=\"btn btn-info\"\n"
+"               href=\"http://pypi.python.org/pypi?%3Aaction=search&amp;"
+"term=kotti\">\n"
+"                Extensions de Kotti\n"
+"            </a>\n"
+"        </p>\n"
+"    </div>\n"
+"    <div class=\"col-md-4\">\n"
+"        <h2>Documentation</h2>\n"
+"        <p>\n"
+"            Découvrez tout ce que vous pouvez faire avec Kotti? La License "
+"de Kotti?Parcourez le\n"
+"            manuel pour plus d'informations.\n"
+"        </p>\n"
+"        <p>\n"
+"            <a class=\"btn btn-info\"\n"
+"               href=\"http://kotti.readthedocs.org/en/latest/\">\n"
+"               Documentation\n"
+"            </a>\n"
+"        </p>\n"
+"    </div>\n"
+"</div>\n"
 
 #: kotti/populate.py:121
 msgid "About"
-msgstr ""
+msgstr "A propos"
 
 #: kotti/populate.py:122
 msgid ""
 "Our company is the leading manufacturer of foo widgets used in a wide "
 "variety of aviation and and industrial products."
 msgstr ""
+"Notre société est spécialisée dans la conception de pièces foo utilisées "
+"dans une grande variétée de produits."
 
 #: kotti/populate.py:123
 msgid ""
@@ -132,59 +195,88 @@ msgid ""
 "  article.\n"
 "</small></p>\n"
 msgstr ""
+"\n"
+"<p>\n"
+"  <img alt=\"Cinq avions EA300 volants en formation\"\n"
+"   src=\"http://upload.wikimedia.org/wikipedia/commons/thumb/5/5d/"
+"Northern_Lights_Formation.jpg/640px-Northern_Lights_Formation.jpg\"\n"
+"   width=\"640\" height=\"376\" />\n"
+"</p>\n"
+"\n"
+"<p>\n"
+"   Nos bureaux:\n"
+"</p>\n"
+"\n"
+"<address>\n"
+"  Foo World<br />\n"
+"  123 Rue inconnue, Boite 777<br />\n"
+"  Omak, WA   98841   USA<br />\n"
+"  +1-509-555-0100<br />\n"
+"  widgets@foowrld.example.com\n"
+"</address>\n"
+"\n"
+"<p><small style=\"font-size: smaller\">\n"
+"  <em>Crédit de la photot:</em> \"Northern Lights Formation\" by FlugKerl2.\n"
+"  <a href=\"http://commons.wikimedia.org/wiki/File:Northern_Lights_Formation."
+"jpg\">\n"
+"  Copyright info</a>.\n"
+"  Originalement publié sur\n"
+"  <a href=\"http://en.wikipedia.org/wiki/Extra_EA-300\"> Extra EA-300</a>\n"
+"  article.\n"
+"</small></p>\n"
 
-#: kotti/resources.py:606 kotti/views/edit/content.py:81
+#: kotti/resources.py:627 kotti/views/edit/content.py:82
 msgid "Document"
 msgstr "Document"
 
-#: kotti/resources.py:645 kotti/views/edit/content.py:113
-#: kotti/views/edit/content.py:62
+#: kotti/resources.py:666 kotti/views/edit/content.py:110
+#: kotti/views/edit/content.py:63
 msgid "File"
 msgstr "Fichier"
 
-#: kotti/resources.py:697 kotti/views/edit/content.py:144
+#: kotti/resources.py:753 kotti/views/edit/content.py:138
 msgid "Image"
 msgstr "Image"
 
-#: kotti/resources.py:496
+#: kotti/resources.py:517
 msgid "Folder view"
 msgstr "Contenus"
 
-#: kotti/resources.py:483 kotti/templates/view/folder.pt:17
+#: kotti/resources.py:504 kotti/templates/view/folder.pt:17
 msgid "Contents"
 msgstr "Contenus"
 
-#: kotti/resources.py:484 kotti/templates/edit/nav-tree.pt:10
+#: kotti/resources.py:505 kotti/templates/edit/nav-tree.pt:10
 msgid "Edit"
 msgstr "Modifier"
 
-#: kotti/resources.py:485
+#: kotti/resources.py:506
 msgid "Share"
 msgstr "Permissions"
 
-#: kotti/resources.py:486 kotti/templates/actions-dropdown.pt:5
+#: kotti/resources.py:507 kotti/templates/actions-dropdown.pt:5
 msgid "Actions"
 msgstr "Actions"
 
-#: kotti/resources.py:487 kotti/views/edit/actions.py:446
+#: kotti/resources.py:508 kotti/views/edit/actions.py:446
 msgid "Copy"
 msgstr "Copier"
 
-#: kotti/resources.py:488 kotti/views/edit/actions.py:447
+#: kotti/resources.py:509 kotti/views/edit/actions.py:447
 msgid "Cut"
 msgstr "Couper"
 
-#: kotti/resources.py:489 kotti/views/edit/actions.py:443
+#: kotti/resources.py:510 kotti/views/edit/actions.py:443
 msgid "Paste"
 msgstr "Coller"
 
-#: kotti/resources.py:490 kotti/templates/edit/rename-nodes.pt:7
+#: kotti/resources.py:511 kotti/templates/edit/rename-nodes.pt:7
 #: kotti/templates/edit/rename-nodes.pt:55 kotti/templates/edit/rename.pt:42
 #: kotti/views/edit/actions.py:448
 msgid "Rename"
 msgstr "Renommer"
 
-#: kotti/resources.py:491 kotti/templates/edit/delete-nodes.pt:8
+#: kotti/resources.py:512 kotti/templates/edit/delete-nodes.pt:8
 #: kotti/templates/edit/delete-nodes.pt:90 kotti/templates/edit/delete.pt:28
 #: kotti/templates/site-setup/delete-user.pt:36 kotti/views/users.py:443
 #: kotti/views/edit/actions.py:450
@@ -302,12 +394,11 @@ msgstr "Réinitialiser le mot de passe"
 
 #. Canonical text for ${reset_password} is: "Reset password"
 #: kotti/templates/login.pt:74
-#, fuzzy
 msgid ""
 "Fill out your username or email and click ${reset_password} below to receive "
 "an email with a link to reset your password."
 msgstr ""
-"Indiquez votre identifiant ou votre adresse e-mail ci-dessus et cliquez sur "
+"Indiquez votre identifiant ou votre adresse e-mail ci-dessous et cliquez sur "
 "${reset_password} ci-dessous afin de recevoir un mail contenant le lien de "
 "réinitialisation de votre mot de passe."
 
@@ -316,9 +407,8 @@ msgid "Not registered yet?"
 msgstr ""
 
 #: kotti/templates/login.pt:127
-#, fuzzy
 msgid "Register for an account on this site."
-msgstr "Pas encore inscrit ? ${register} sur ce site."
+msgstr "Enregistrez-vous sur ce site."
 
 #: kotti/templates/workflow-dropdown.pt:19
 msgid "Make ${state}"
@@ -340,7 +430,7 @@ msgstr ""
 
 #: kotti/templates/edit/change-state.pt:26 kotti/templates/edit/contents.pt:57
 #: kotti/templates/edit/delete-nodes.pt:33 kotti/templates/view/folder.pt:28
-#: kotti/views/users.py:196 kotti/views/edit/content.py:31
+#: kotti/views/users.py:196 kotti/views/edit/content.py:32
 msgid "Title"
 msgstr "Titre"
 
@@ -497,36 +587,35 @@ msgstr "Gravatar"
 
 #: kotti/templates/edit/upload.pt:9
 msgid "Upload content from local file(s)"
-msgstr ""
+msgstr "Téléverser des contenus à partir de fichiers locaux"
 
 #: kotti/templates/edit/upload.pt:20 kotti/templates/edit/upload.pt:164
-#, fuzzy
 msgid "Filename"
-msgstr "Renommer"
+msgstr "Nom du fichier"
 
 #: kotti/templates/edit/upload.pt:26 kotti/templates/edit/upload.pt:170
 msgid "Size"
-msgstr ""
+msgstr "Poids"
 
 #: kotti/templates/edit/upload.pt:29
 msgid "Status"
-msgstr ""
+msgstr "Statut"
 
 #: kotti/templates/edit/upload.pt:32
 msgid "Progress"
-msgstr ""
+msgstr "Progression"
 
 #: kotti/templates/edit/upload.pt:124
 msgid "Select file(s) to upload..."
-msgstr ""
+msgstr "Selectionner des fichiers à téléverser..."
 
 #: kotti/templates/edit/upload.pt:134
 msgid "Upload ${number} files."
-msgstr ""
+msgstr "Téléverser ${number} fichiers."
 
 #: kotti/templates/edit/upload.pt:144
 msgid "Dismiss all errors"
-msgstr ""
+msgstr "Ignorer toutes les erreurs"
 
 #: kotti/templates/site-setup/delete-user.pt:20
 msgid "Are you sure you want to delete ${type} ${title}?"
@@ -542,7 +631,6 @@ msgid "Edit ${title}"
 msgstr "Modifier ${title}"
 
 #: kotti/templates/site-setup/users.pt:15
-#, fuzzy
 msgid "Search user(s) / group(s)"
 msgstr "Rechercher des utilisateurs ou des groupes"
 
@@ -555,33 +643,28 @@ msgid "Add group"
 msgstr "Ajouter un groupe"
 
 #: kotti/templates/site-setup/users.pt:52
-#, fuzzy
 msgid "Find users or groups"
 msgstr "Rechercher des utilisateurs ou des groupes"
 
 #: kotti/templates/site-setup/users.pt:63
 msgid "User- / groupname"
-msgstr ""
+msgstr "Utilisateur / groupe"
 
 #: kotti/templates/site-setup/users.pt:70
-#, fuzzy
 msgid "Blank search text finds all."
 msgstr ""
 "Rechercher et modifier des utilisateurs (Laissez le champ vide pour les "
 "afficher tous)."
 
 #: kotti/templates/site-setup/users.pt:96
-#, fuzzy
 msgid "Assign global roles"
 msgstr "Assigner des rôles locaux"
 
 #: kotti/templates/site-setup/users.pt:180
-#, fuzzy
 msgid "Add new user"
 msgstr "Ajouter un utilisateur"
 
 #: kotti/templates/site-setup/users.pt:190
-#, fuzzy
 msgid "Add new group"
 msgstr "Ajouter un groupe"
 
@@ -669,7 +752,7 @@ msgstr "S'inscrire - ${title}"
 
 #: kotti/views/login.py:163
 msgid "Login failed."
-msgstr "Connexion échouée."
+msgstr "La connexion à échouée."
 
 #: kotti/views/login.py:285
 #, python-format
@@ -884,15 +967,15 @@ msgstr "Vous avez sélectionné des éléments afin de les traiter."
 msgid "Change State"
 msgstr "Modifier le statut"
 
-#: kotti/views/edit/content.py:35
+#: kotti/views/edit/content.py:36
 msgid "Description"
 msgstr "Description"
 
-#: kotti/views/edit/content.py:41
+#: kotti/views/edit/content.py:42
 msgid "Tags"
 msgstr "Mots-clés"
 
-#: kotti/views/edit/content.py:50
+#: kotti/views/edit/content.py:51
 msgid "Body"
 msgstr "Contenu"
 

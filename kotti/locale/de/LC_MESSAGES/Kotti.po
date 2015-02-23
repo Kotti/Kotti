@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Kotti 0.7dev4\n"
 "Report-Msgid-Bugs-To: kotti@googlegroups.com\n"
-"POT-Creation-Date: 2014-12-19 14:27+0100\n"
+"POT-Creation-Date: 2015-02-22 11:33+0100\n"
 "PO-Revision-Date: 2014-11-21 22:44+0100\n"
 "Last-Translator: Andreas Kaiser <kaiser@xo7.de>\n"
 "Language-Team: de <kotti@googlegroups.com>\n"
@@ -224,58 +224,58 @@ msgstr ""
 "  article.\n"
 "</small></p>\n"
 
-#: kotti/resources.py:606 kotti/views/edit/content.py:81
+#: kotti/resources.py:627 kotti/views/edit/content.py:82
 msgid "Document"
 msgstr "Dokument"
 
-#: kotti/resources.py:645 kotti/views/edit/content.py:113
-#: kotti/views/edit/content.py:62
+#: kotti/resources.py:666 kotti/views/edit/content.py:110
+#: kotti/views/edit/content.py:63
 msgid "File"
 msgstr "Datei"
 
-#: kotti/resources.py:697 kotti/views/edit/content.py:144
+#: kotti/resources.py:753 kotti/views/edit/content.py:138
 msgid "Image"
 msgstr "Bild"
 
-#: kotti/resources.py:496
+#: kotti/resources.py:517
 msgid "Folder view"
 msgstr "Ordneransicht"
 
-#: kotti/resources.py:483 kotti/templates/view/folder.pt:17
+#: kotti/resources.py:504 kotti/templates/view/folder.pt:17
 msgid "Contents"
 msgstr "Inhalt"
 
-#: kotti/resources.py:484 kotti/templates/edit/nav-tree.pt:10
+#: kotti/resources.py:505 kotti/templates/edit/nav-tree.pt:10
 msgid "Edit"
 msgstr "Bearbeiten"
 
-#: kotti/resources.py:485
+#: kotti/resources.py:506
 msgid "Share"
 msgstr "Teilen"
 
-#: kotti/resources.py:486 kotti/templates/actions-dropdown.pt:5
+#: kotti/resources.py:507 kotti/templates/actions-dropdown.pt:5
 msgid "Actions"
 msgstr "Aktionen"
 
-#: kotti/resources.py:487 kotti/views/edit/actions.py:446
+#: kotti/resources.py:508 kotti/views/edit/actions.py:446
 msgid "Copy"
 msgstr "Kopieren"
 
-#: kotti/resources.py:488 kotti/views/edit/actions.py:447
+#: kotti/resources.py:509 kotti/views/edit/actions.py:447
 msgid "Cut"
 msgstr "Ausschneiden"
 
-#: kotti/resources.py:489 kotti/views/edit/actions.py:443
+#: kotti/resources.py:510 kotti/views/edit/actions.py:443
 msgid "Paste"
 msgstr "Einfügen"
 
-#: kotti/resources.py:490 kotti/templates/edit/rename-nodes.pt:7
+#: kotti/resources.py:511 kotti/templates/edit/rename-nodes.pt:7
 #: kotti/templates/edit/rename-nodes.pt:55 kotti/templates/edit/rename.pt:42
 #: kotti/views/edit/actions.py:448
 msgid "Rename"
 msgstr "Umbenennen"
 
-#: kotti/resources.py:491 kotti/templates/edit/delete-nodes.pt:8
+#: kotti/resources.py:512 kotti/templates/edit/delete-nodes.pt:8
 #: kotti/templates/edit/delete-nodes.pt:90 kotti/templates/edit/delete.pt:28
 #: kotti/templates/site-setup/delete-user.pt:36 kotti/views/users.py:443
 #: kotti/views/edit/actions.py:450
@@ -430,7 +430,7 @@ msgstr ""
 
 #: kotti/templates/edit/change-state.pt:26 kotti/templates/edit/contents.pt:57
 #: kotti/templates/edit/delete-nodes.pt:33 kotti/templates/view/folder.pt:28
-#: kotti/views/users.py:196 kotti/views/edit/content.py:31
+#: kotti/views/users.py:196 kotti/views/edit/content.py:32
 msgid "Title"
 msgstr "Titel"
 
@@ -967,15 +967,15 @@ msgstr "Sie müssen Dokumente auswählen, um eine Aktion auszuführen."
 msgid "Change State"
 msgstr "Status ändern"
 
-#: kotti/views/edit/content.py:35
+#: kotti/views/edit/content.py:36
 msgid "Description"
 msgstr "Beschreibung"
 
-#: kotti/views/edit/content.py:41
+#: kotti/views/edit/content.py:42
 msgid "Tags"
 msgstr "Schlagworte:"
 
-#: kotti/views/edit/content.py:50
+#: kotti/views/edit/content.py:51
 msgid "Body"
 msgstr "Inhalt"
 
