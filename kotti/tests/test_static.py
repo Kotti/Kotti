@@ -6,7 +6,7 @@ class TestStatic:
     def test_NeededGroup(self):
 
         from js.deform import deform_js
-        from kotti.fanstatic import kotti_js
+        from kotti.fanstatic import contents_view_js
         from kotti.fanstatic import NeededGroup
 
         def NeededGroupFactory(resources):
@@ -21,9 +21,9 @@ class TestStatic:
 
         assert needed.resources == [deform_js, ]
 
-        needed.add(kotti_js)
+        needed.add(contents_view_js)
 
-        assert needed.resources == [deform_js, kotti_js]
+        assert needed.resources == [deform_js, contents_view_js]
 
         def needed_group_adder(resource):
             needed.add(resource)

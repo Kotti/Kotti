@@ -8,6 +8,8 @@ Change History
   ``kotti.util.command``, to allow log message output for kotti sessions
   started via custom commands.
 
+- Remove unused ``kotti.js``.
+
 1.0.0 - 2015-01-20
 ------------------
 
