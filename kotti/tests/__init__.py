@@ -352,9 +352,9 @@ def filedepot(db_session, request):
     _old_depots = DepotManager._depots
     _old_default_depot = DepotManager._default_depot
     DepotManager._depots = {
-        'mockdepot': MagicMock(wraps=TestStorage())
+        'filedepot': MagicMock(wraps=TestStorage())
     }
-    DepotManager._default_depot = 'mockdepot'
+    DepotManager._default_depot = 'filedepot'
 
     def restore():
         db_session.rollback()
