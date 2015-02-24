@@ -4,6 +4,41 @@ Change History
 1.1-dev - unreleased
 --------------------
 
+- Allow moving ``File`` and ``Image`` blob data from the database to
+  configurable storages. To achieve this we use `filedepot`_, a third-party
+  library with several plugin storages already built in. See
+  docs/developing/advanced/blobs.rst for details on what this brings. Upgrading
+  from any version older then 1.1.0 requires you to run a migration script on
+  your database.  To run the migration, call::
+
+    $ bin/kotti-migrate <myconfig.ini> upgrade
+
+  Please note that, before running the migration, you should take the time to
+  read the documentation and configure your desired storage scheme.
+
+.. _filedepot: https://pypi.python.org/pypi/filedepot/
+
+- Allow storing blob data in the database using ``DBStoredFile`` and
+  ``DBFileStorage``, a database centered storage plugin for ``filedepot``. This
+  storage is the default storage for blob data, unless configured otherwise.
+
+- Added a script to migrate between blob data between depot storages. See
+  docs/developing/advanced/blobs.rst for details on how to use it.
+
+- Simplify serving blob data by using the
+  :class:`kotti.views.file.UploadedFileResponse`, which also streams data.
+  Please note that the default ``DBStoredFile`` still needs to load its entire
+  data in memory, to benefit from this feature you should configure another
+  default depot storage.
+
+- Added three new test fixtures: ``mock_filedepot``, to be used in simple unit
+  tests with no dependency on a database session, ``filedepot``, which
+  integrates with the ``dbsession`` fixture and ``no_filedepot``, a fixture
+  that can be used in developing tests for new file depot plugins - by
+  preserving the depot configuration before and after running the test. NOTE:
+  in order to test edit views with uploaded data in the request, you need to
+  mixin the ``filedepot`` fixture.
+
 - Initialize pyramid.paster.logging for custom commands defined via
   ``kotti.util.command``, to allow log message output for kotti sessions
   started via custom commands.
