@@ -22,7 +22,7 @@ Change History
   ``DBFileStorage``, a database centered storage plugin for ``filedepot``. This
   storage is the default storage for blob data, unless configured otherwise.
 
-- Added a script to migrate between blob data between depot storages. See
+- Added a script to migrate blob data between depot storages. See
   docs/developing/advanced/blobs.rst for details on how to use it.
 
 - Simplify serving blob data by using the
