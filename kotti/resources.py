@@ -495,6 +495,16 @@ def _not_root(context, request):
     return not context is get_root()
 
 
+default_actions = LinkParent(title=_(u'Actions'), children=[
+    Link('copy', title=_(u'Copy')),
+    Link('cut', title=_(u'Cut'), predicate=_not_root),
+    Link('paste', title=_(u'Paste'), predicate=get_paste_items),
+    Link('rename', title=_(u'Rename'), predicate=_not_root),
+    Link('delete', title=_(u'Delete'), predicate=_not_root),
+    LinkRenderer('default-view-selector'),
+])
+
+
 default_type_info = TypeInfo(
     name=u'Content',
     title=u'type_info title missing',   # BBB
@@ -504,14 +514,7 @@ default_type_info = TypeInfo(
         Link('contents', title=_(u'Contents')),
         Link('edit', title=_(u'Edit')),
         Link('share', title=_(u'Share')),
-        LinkParent(title=_(u'Actions'), children=[
-            Link('copy', title=_(u'Copy')),
-            Link('cut', title=_(u'Cut'), predicate=_not_root),
-            Link('paste', title=_(u'Paste'), predicate=get_paste_items),
-            Link('rename', title=_(u'Rename'), predicate=_not_root),
-            Link('delete', title=_(u'Delete'), predicate=_not_root),
-            LinkRenderer('default-view-selector'),
-            ]),
+        default_actions,
         ],
     selectable_default_views=[
         ("folder_view", _(u"Folder view")),
