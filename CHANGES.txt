@@ -1,8 +1,8 @@
 Change History
 ==============
 
-1.1-dev - unreleased
---------------------
+1.1.0-alpha.1 - 2015-03-19
+--------------------------
 
 - Allow moving ``File`` and ``Image`` blob data from the database to
   configurable storages. To achieve this we use `filedepot`_, a third-party
@@ -25,11 +25,10 @@ Change History
 - Added a script to migrate blob data between depot storages. See
   docs/developing/advanced/blobs.rst for details on how to use it.
 
-- Simplify serving blob data by using the
-  :class:`kotti.views.file.UploadedFileResponse`, which also streams data.
-  Please note that the default ``DBStoredFile`` still needs to load its entire
-  data in memory, to benefit from this feature you should configure another
-  default depot storage.
+- Simplify serving blob data by using ``kotti.views.file.UploadedFileResponse``,
+  which also streams data.  Please note that the default ``DBStoredFile`` still
+  needs to load its entire data in memory, to benefit from this feature you
+  should configure another default depot storage.
 
 - Added three new test fixtures: ``mock_filedepot``, to be used in simple unit
   tests with no dependency on a database session, ``filedepot``, which
@@ -44,6 +43,13 @@ Change History
   started via custom commands.
 
 - Remove unused ``kotti.js``.
+
+- Remove deprecated ``kotti.views.slots.local_navigation`` and
+  ``kotti.views.slots.includeme_local_navigation``.  Use
+  ``kotti.views.navigation.local_navigation`` and
+  ``kotti.views.navigation.includeme_local_navigation`` instead.
+
+- Upgrade ``plone.scale`` and ``SQLAlchemy`` to their latest stable versions.
 
 1.0.0 - 2015-01-20
 ------------------
