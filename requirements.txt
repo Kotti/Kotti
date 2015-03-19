@@ -1,4 +1,4 @@
-Kotti==1.0.0
+Kotti==1.1.0-alpha.1
 filedepot==0.0.3
 Babel==1.3
 Beaker==1.6.5.post1
@@ -9,7 +9,7 @@ MarkupSafe==0.23
 PasteDeploy==1.5.2
 Pillow==2.7.0
 Pygments==2.0.2
-SQLAlchemy==0.9.8
+SQLAlchemy==0.9.9
 Unidecode==0.04.17
 WebOb==1.4
 alembic==0.6.7
@@ -38,7 +38,7 @@ js.modernizr==2.5.3.1
 kotti_tinymce==0.5.1
 lingua==3.9
 peppercorn==0.5
-plone.scale==1.3.4
+plone.scale==1.3.5
 polib==1.0.6
 py-bcrypt==0.4
 pyramid==1.5.4
