@@ -135,28 +135,3 @@ class RenderEditInHead(ObjectEvent):
 slot_events = [
     RenderLeftSlot, RenderRightSlot, RenderAboveContent, RenderBelowContent,
     RenderInHead, RenderBeforeBodyEnd, RenderEditInHead, ]
-
-
-# BBB starts here --- --- --- --- --- ---
-
-from zope.deprecation import deprecated
-
-# The remainder of this file will be removed in Kotti 0.11 or 1.1, whichever
-# will be the version number we chose.
-
-from kotti.views.navigation import local_navigation
-from kotti.views.navigation import includeme_local_navigation
-
-local_navigation = local_navigation
-includeme_local_navigation = includeme_local_navigation
-
-deprecated(
-    'local_navigation',
-    'deprecated as of Kotti 0.9.  Use '
-    'kotti.views.navigation.local_navigation instead.'
-)
-deprecated(
-    'includeme_local_navigation',
-    'deprecated as of Kotti 0.9.  Use '
-    'kotti.views.navigation.includeme_local_navigation instead.'
-)
