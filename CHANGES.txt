@@ -1,8 +1,8 @@
 Change History
 ==============
 
-1.1-dev - unreleased
---------------------
+1.1.0-alpha.1 - 2015-03-19
+--------------------------
 
 - Allow moving ``File`` and ``Image`` blob data from the database to
   configurable storages. To achieve this we use `filedepot`_, a third-party
