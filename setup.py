@@ -20,6 +20,7 @@ install_requires = [
     'colander>=0.9.3',
     'deform>=2.0a1',  # >=2.0a1 to support Bootstrap 2
     'docopt',
+    'filedepot',
     'formencode',
     'html2text',
     'js.angular',
