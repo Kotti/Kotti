@@ -51,6 +51,7 @@ class DocumentSchema(ContentSchema):
         title=_(u'Body'),
         widget=RichTextWidget(
             # theme='advanced', width=790, height=500
+            height=500,
         ),
         missing=u"",
         )
