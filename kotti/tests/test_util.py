@@ -160,3 +160,8 @@ class TestLink:
 
         req.url = "http://example.com"
         assert link.selected(root, req)
+
+    def test_link_target(self):
+        from kotti.util import Link
+        assert Link('').target is None
+        assert Link('', target='_blank').target == '_blank'
