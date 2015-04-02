@@ -54,6 +54,8 @@ Change History
 - Change ``height`` property on ``body``'s widget (``RichTextField``) for
   improved usability. See #403.
 
+- Add ``target`` option to ``kotti.util.Link``. See #405.
+
 1.0.0 - 2015-01-20
 ------------------
 
