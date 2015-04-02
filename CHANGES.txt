@@ -51,6 +51,9 @@ Change History
 
 - Upgrade ``plone.scale`` and ``SQLAlchemy`` to their latest stable versions.
 
+- Change ``height`` property on ``body``'s widget (``RichTextField``) for
+  improved usability. See #403.
+
 1.0.0 - 2015-01-20
 ------------------
 
