@@ -1,6 +1,12 @@
 Change History
 ==============
 
+1.1.0-alpha.2 - unreleased
+--------------------------
+
+- Add sanitizers.  See :ref:`sanitizers` and :mod:`kotti.sanitizers` for
+  details.
+
 1.1.0-alpha.1 - 2015-03-19
 --------------------------
 
