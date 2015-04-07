@@ -61,6 +61,7 @@ conf_defaults = {
         'kotti',
         'kotti.filedepot',
         'kotti.events',
+        'kotti.sanitizers',
         'kotti.views',
         'kotti.views.cache',
         'kotti.views.view',
@@ -112,6 +113,16 @@ conf_defaults = {
     'kotti.register.group': '',
     'kotti.register.role': '',
     'pyramid_deform.template_search_path': 'kotti:templates/deform',
+    'kotti.sanitizers': ' '.join([
+        'xss_protection:kotti.sanitizers.xss_protection',
+        'minimal_html:kotti.sanitizers.minimal_html',
+        'no_html:kotti.sanitizers.no_html',
+        ]),
+    'kotti.sanitize_on_write': ' '.join([
+        'kotti.resources.Document.body:xss_protection',
+        'kotti.resources.Content.title:no_html',
+        'kotti.resources.Content.description:no_html',
+        ]),
     }
 
 conf_dotted = set([
