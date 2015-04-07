@@ -1,6 +1,14 @@
 Change History
 ==============
 
+1.1.0-alpha.2 - unreleased
+--------------------------
+
+- Add ``target`` option to ``kotti.util.Link``. See #405.
+
+- Add sanitizers.  See :ref:`sanitizers` and :mod:`kotti.sanitizers` for
+  details.  This fixes #296.
+
 1.1.0-alpha.1 - 2015-03-19
 --------------------------
 
@@ -53,8 +61,6 @@ Change History
 
 - Change ``height`` property on ``body``'s widget (``RichTextField``) for
   improved usability. See #403.
-
-- Add ``target`` option to ``kotti.util.Link``. See #405.
 
 1.0.0 - 2015-01-20
 ------------------
