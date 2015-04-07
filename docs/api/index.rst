@@ -18,6 +18,7 @@ API Documentation
    kotti.request
    kotti.resources
    kotti.filedepot
+   kotti.sanitizers
    kotti.security
    kotti.sqla
    kotti.testing
