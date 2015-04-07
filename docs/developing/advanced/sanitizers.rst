@@ -13,9 +13,9 @@ This setting takes a list of strings, with each specifying a ``name:callable`` p
 The default configuration is::
 
   kotti.sanitizers =
-      xss_protection: kotti.sanitizers.xss_protection
-      minimal_html: kotti.sanitizers.minimal_html
-      no_html: kotti.sanitizers.no_html
+      xss_protection:kotti.sanitizers.xss_protection
+      minimal_html:kotti.sanitizers.minimal_html
+      no_html:kotti.sanitizers.no_html
 
 For thorough explaination of the included sanitizers see :mod:`kotti.sanitizers`.
 
@@ -50,13 +50,13 @@ This means that *any* write access to configured attributes through your applica
 The default configuration is::
 
   kotti.sanitize_on_write =
-      kotti.resources.Document.body: xss_protection
-      kotti.resources.Content.title: no_html
+      kotti.resources.Document.body:xss_protection
+      kotti.resources.Content.title:no_html
 
 You can also use multiple sanitizers::
 
   kotti.sanitize_on_write =
-      kotti.resources.Document.body: xss_protection, some_other_sanitizer
+      kotti.resources.Document.body:xss_protection,some_other_sanitizer
 
 Implementing a custom sanitizer
 -------------------------------
