@@ -17,6 +17,8 @@ install_requires = [
     'Chameleon>=2.7.4',  # Fixes error when raising HTTPFound
     'Pillow',  # dependency of plone.scale
     'alembic',
+    'bleach',
+    'bleach-whitelist',
     'colander>=0.9.3',
     'deform>=2.0a1',  # >=2.0a1 to support Bootstrap 2
     'docopt',
