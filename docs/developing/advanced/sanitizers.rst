@@ -37,7 +37,7 @@ Sanitize on write (implicit sanitization)
 -----------------------------------------
 
 The second setting related to sanitization is ``kotti.sanitize_on_write``.
-It defines *what* is filtered *how* when values are assigned to object attributes.
+It defines, for the specified resource classes, the attributes that are sanitized and the sanitizers that will be used when the attributes are mutated and flushed.
 
 This setting takes a list of ``dotted_path:sanitizer_name(s)`` pairs.
 ``dotted_path`` is a dotted path to a resource class attribute that will be sanitized implicitly with the respective sanitizer(s) upon write access.
