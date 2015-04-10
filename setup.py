@@ -17,9 +17,12 @@ install_requires = [
     'Chameleon>=2.7.4',  # Fixes error when raising HTTPFound
     'Pillow',  # dependency of plone.scale
     'alembic',
+    'bleach',
+    'bleach-whitelist',
     'colander>=0.9.3',
     'deform>=2.0a1',  # >=2.0a1 to support Bootstrap 2
     'docopt',
+    'filedepot',
     'formencode',
     'html2text',
     'js.angular',
@@ -84,7 +87,7 @@ if sys.version_info[:3] < (2, 7, 0):
     install_requires.append('ordereddict')
 
 setup(name='Kotti',
-      version='1.1-dev',
+      version='1.1.0-alpha.2.dev',
       description="A high-level, Pythonic web application framework based on Pyramid and SQLAlchemy.  It includes an extensible Content Management System called the Kotti CMS.",  # noqa
       long_description='\n\n'.join([README, AUTHORS, CHANGES]),
       classifiers=[

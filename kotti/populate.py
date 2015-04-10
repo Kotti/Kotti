@@ -42,7 +42,7 @@ def populate():
     lrm.locale_name = get_settings()['pyramid.default_locale_name']
     localizer = lrm.localizer
 
-    if DBSession.query(Node).count() == 0:
+    if DBSession.query(Node.id).count() == 0:
         localized_root_attrs = dict(
             [(k, localizer.translate(v)) for k, v in _ROOT_ATTRS.iteritems()])
         root = Document(**localized_root_attrs)

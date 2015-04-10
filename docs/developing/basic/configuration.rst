@@ -77,6 +77,10 @@ kotti.max_file_size           Max size for file uploads, default: ```10`` (MB)
 
 kotti.depot.*.*               Configure the blob storage. More details below
 
+kotti.sanitizers              Configure available :ref:`sanitizers`.
+kotti.sanitize_on_write       Configure :ref:`sanitizers` to be used on write
+                              access to resource objects.
+
 pyramid.default_locale_name   Set the user interface language, default ``en``
 ============================  ==================================================
 
@@ -312,42 +316,29 @@ The default configuration here is:
 Blob storage configuration
 --------------------------
 
-By default, Kotti will store blob data (files uploaded in File and Image
-instances) in the database. Internally, Kotti integrates with :app:`filedepot`,
-so it is possible to use any :app:``filedepot`` compatible storage, including those
-provided by :app:``filedepot`` itself:
+By default, Kotti will store blob data (files uploaded in File and Image instances) in the database.
+Internally, Kotti integrates with :app:`filedepot`, so it is possible to use any :app:`filedepot` compatible storage, including those provided by :app:`filedepot` itself:
 
-- :class:``depot.io.local.LocalFileStorage``
-- :class:``depot.io.awss3.S3Storage``
-- :class:``depot.io.gridfs.GridFSStorage``
+- :class:`depot.io.local.LocalFileStorage`
+- :class:`depot.io.awss3.S3Storage`
+- :class:`depot.io.gridfs.GridFSStorage`
 
-The default storage for :app:``Kotti`` is
-:class:``~kotti.filedepot.DBFileStorage``. The benefit of storing files in
-``DBFileStorage`` is having *all* content in a single place (the DB) which
-makes backups, exporting and importing of your site's data easy, as long as you
-don't have too many or too large files. The downsides of this approach appear
-when your database server resides on a different host (network performance
-becomes a greater issue) or your DB dumps become too large to be handled
-efficiently.
+The default storage for :app:`Kotti` is :class:`~kotti.filedepot.DBFileStorage`.
+The benefit of storing files in ``DBFileStorage`` is having *all* content in a single place (the DB) which makes backups, exporting and importing of your site's data easy, as long as you don't have too many or too large files.
+The downsides of this approach appear when your database server resides on a different host (network performance becomes a greater issue) or your DB dumps become too large to be handled efficiently.
 
-To configure a depot, several ``kotti.depot.*.*`` lines need to be added. The
-number in the first position is used to group backend configuration and to
-order the file storages in the configuration of :app:``filedepot``.  The depot
-configured with number 0 will be the default depot, where all new blob data
-will be saved.  There are 2 options that are required for every storage
-configuration: ``name`` and ``backend``. The ``name`` is a unique string that
-will be used to identify the path of saved files (it is recorded with each blob
-info), so once configured for a particular storage, it should never change. The
-``backend`` should point to a dotted path for the storage class. Then, any
-number of keyword arguments can be added, and they will be passed to the
-backend class on initialization.
+To configure a depot, several ``kotti.depot.*.*`` lines need to be added.
+The number in the first position is used to group backend configuration and to order the file storages in the configuration of :app:`filedepot`.
+The depot configured with number 0 will be the default depot, where all new blob data will be saved.
+There are 2 options that are required for every storage configuration: ``name`` and ``backend``.
+The ``name`` is a unique string that will be used to identify the path of saved files (it is recorded with each blob info), so once configured for a particular storage, it should never change.
+The ``backend`` should point to a dotted path for the storage class.
+Then, any number of keyword arguments can be added, and they will be passed to the backend class on initialization.
 
 Example of a possible configurationi that stores blob data on the disk, in
-``/var/local/files`` using the :app:``filedepot``
-:class:``depot.io.local.LocalFileStorage`` provided backend. Kotti's default
-backend, ``DBFileStorage`` has been moved to position **1** and all data stored
-there will continue to be available. See :ref:`blobs` to see how to migrate
-blob data between storages.
+``/var/local/files`` using the :app:`filedepot` :class:`depot.io.local.LocalFileStorage` provided backend.
+Kotti's default backend, ``DBFileStorage`` has been moved to position **1** and all data stored there will continue to be available.
+See :ref:`blobs` to see how to migrate blob data between storages.
 
 .. code-block:: ini
 

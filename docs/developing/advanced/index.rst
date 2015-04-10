@@ -7,7 +7,7 @@ Advanced Topics
     :maxdepth: 1
 
     as-a-library
-    close-for-anonymous
+    close-to-anonymous
     default-views
     events
     frontpage-different-template
@@ -15,3 +15,4 @@ Advanced Topics
     blobs
     static-resource-management
     understanding-kotti-startup
+    sanitizers

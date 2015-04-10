@@ -28,6 +28,7 @@ from kotti.resources import Content
 from kotti.resources import Document
 from kotti.resources import Tag
 from kotti.resources import TagsToContents
+from kotti.sanitizers import sanitize
 from kotti.security import has_permission
 from kotti.security import view_permitted
 from kotti.util import render_view
@@ -109,14 +110,13 @@ class Slots(object):
 
 
 class TemplateAPI(object):
-    """This implements the 'api' object that's passed to all
-    templates.
+    """This implements the ``api`` object that's passed to all templates.
 
-    Use dict-access as a shortcut to retrieve template macros from
-    templates.
+    Use dict-access as a shortcut to retrieve template macros from templates.
     """
+
     # Instead of overriding these, consider using the
-    # 'kotti.overrides' variable.
+    # ``kotti.overrides`` variable.
     BARE_MASTER = 'kotti:templates/master-bare.pt'
     VIEW_MASTER = 'kotti:templates/view/master.pt'
     EDIT_MASTER = 'kotti:templates/edit/master.pt'
@@ -344,6 +344,21 @@ class TemplateAPI(object):
     def site_setup_links(self):
         return [l for l in CONTROL_PANEL_LINKS
                 if l.visible(self.root, self.request)]
+
+    def sanitize(self, html, sanitizer='default'):
+        """ Convenience wrapper for :func:`kotti.sanitizers.sanitize`.
+
+        :param html: HTML to be sanitized
+        :type html: unicode
+
+        :param sanitizer: name of the sanitizer to use.
+        :type sanitizer: str
+
+        :result: sanitized HTML
+        :rtype: unicode
+        """
+
+        return sanitize(html, sanitizer)
 
 
 class NodesTree(object):

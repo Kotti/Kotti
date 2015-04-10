@@ -175,12 +175,13 @@ class LinkParent(LinkBase):
 class Link(LinkBase):
     template = 'kotti:templates/edit/el-link.pt'
 
-    def __init__(self, name, title=None, predicate=None):
+    def __init__(self, name, title=None, predicate=None, target=None):
         self.name = name
         if title is None:
             title = name.replace('-', ' ').replace('_', ' ').title()
         self.title = title
         self.predicate = predicate
+        self.target = target
 
     def url(self, context, request):
         return resource_url(context, request) + '@@' + self.name
