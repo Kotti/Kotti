@@ -175,7 +175,7 @@ class TestTemplateAPI:
         from kotti.resources import default_actions, Document
         from kotti.util import Link
 
-        default_actions.children.append(Link('test', u'Test'))
+        default_actions.append(Link('test', u'Test'))
         assert Document().type_info.edit_links[-1].children[-1].name == 'test'
 
     def test_find_edit_view_not_permitted(self, db_session):
