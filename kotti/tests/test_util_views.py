@@ -171,6 +171,13 @@ class TestTemplateAPI:
         api = self.make()
         assert api.edit_links == [open_link]
 
+    def test_default_actions(self):
+        from kotti.resources import default_actions, Document
+        from kotti.util import Link
+
+        default_actions.children.append(Link('test', u'Test'))
+        assert Document().type_info.edit_links[-1].children[-1].name == 'test'
+
     def test_find_edit_view_not_permitted(self, db_session):
         with patch('kotti.views.util.view_permitted', return_value=False):
             api = self.make()
