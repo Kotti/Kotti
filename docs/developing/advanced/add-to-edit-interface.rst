@@ -22,7 +22,7 @@ There's also:
 Adding a new option to the Administration menu
 ----------------------------------------------
 
-Adding a new link as an option in the *Administration* menu, in the **Site Setup** section is easy. In your ``kotti_configure`` function, add:
+Adding a new link as an option in the **Administration** menu, in the *Site Setup* section is easy. In your ``kotti_configure`` function, add:
 
 .. code-block:: python
 
@@ -35,7 +35,7 @@ Adding a new link as an option in the *Administration* menu, in the **Site Setup
 
 Make a new section in the actions menu
 --------------------------------------
-The **Set default view** section looks really nice. To add your own separated section in the *Action* menu and make that available to all content types:
+The *Set default view* section looks really nice. To add your own separated section in the **Action** menu and make that available to all content types:
 
 .. code-block:: python
 
