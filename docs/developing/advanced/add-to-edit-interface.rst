@@ -43,7 +43,7 @@ The **Set default view** section looks really nice. To add your own separated se
     from kotti.resources import default_actions
 
     def kotti_configure(settings):
-        default_actions.children.append(LinkRenderer("my-custom-submenu"))
+        default_actions.append(LinkRenderer("my-custom-submenu"))
 
 So far we've added a ``LinkRenderer`` to the ``default_actions`` which are used by all content inheriting ``Content``. This LinkRenderer will render a view and insert its result in the menu.
 
