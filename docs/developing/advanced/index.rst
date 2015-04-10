@@ -9,6 +9,7 @@ Advanced Topics
     as-a-library
     close-to-anonymous
     default-views
+    add-to-edit-interface
     events
     frontpage-different-template
     images
