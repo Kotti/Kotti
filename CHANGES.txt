@@ -1,6 +1,30 @@
 Change History
 ==============
 
+1.1.0 2015-04-16
+----------------
+
+- Separate the default actions to a ``kotti.resources.default_actions``
+  variable, to allows easier customization of default actions of all
+  content types. This is a ``LinkParent``, you can append new
+  ``kotti.util.Link`` objects to its ``children``.
+
+- Add ``target`` option to ``kotti.util.Link``. See #405.
+
+- Add sanitizers.  See :ref:`sanitizers` and :mod:`kotti.sanitizers` for
+  details.  This fixes #296.
+
+- Added new document on how to customize the edit interface.
+  See :ref:`add-to-edit-interface`.
+
+- Make it easier to customize default actions by separating them to a new
+  ``kotti.resources.default_actions`` variable. Before, to customize them, you'd
+  have to change ``Content.type_info.edit_links[3].children``, now you can mutate
+  ``default_actions`` directly. See :ref:`add-to-edit-interface` for details.
+
+- Upgrade ``WebOb``, ``html2text``, ``pyramid`` and ``xlwt`` to their latest
+  stable versions.
+
 1.1.0-alpha.1 - 2015-03-19
 --------------------------
 
@@ -50,6 +74,9 @@ Change History
   ``kotti.views.navigation.includeme_local_navigation`` instead.
 
 - Upgrade ``plone.scale`` and ``SQLAlchemy`` to their latest stable versions.
+
+- Change ``height`` property on ``body``'s widget (``RichTextField``) for
+  improved usability. See #403.
 
 1.0.0 - 2015-01-20
 ------------------

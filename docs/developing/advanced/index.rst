@@ -7,11 +7,13 @@ Advanced Topics
     :maxdepth: 1
 
     as-a-library
-    close-for-anonymous
+    close-to-anonymous
     default-views
+    add-to-edit-interface
     events
     frontpage-different-template
     images
     blobs
     static-resource-management
     understanding-kotti-startup
+    sanitizers

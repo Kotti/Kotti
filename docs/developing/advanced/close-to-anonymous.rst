@@ -1,6 +1,6 @@
-.. _close-for-anonymous:
+.. _close-to-anonymous:
 
-Close your site for anonymous users
+Close your site to anonymous users
 ===================================
 
 This recipe describes how to configure Kotti to require users to log
