@@ -298,7 +298,7 @@ def registerDummyMailer():
 
 
 # set up deprecation warnings
-from zope.deprecation.deprecation import deprecated
+from zope.deprecation.deprecation import deprecated  # noqa
 for item in UnitTestBase, EventTestBase, FunctionalTestBase, _initTestingDB:
     name = getattr(item, '__name__', item)
     deprecated(name, 'Unittest-style tests are deprecated as of Kotti 0.7. '

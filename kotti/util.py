@@ -109,7 +109,7 @@ class LinkBase(object):
 
         # insert view markers @@ in last component of the path
         path = parsed.path.split('/')
-        if not '@@' in path[-1]:
+        if '@@' not in path[-1]:
             path[-1] = '@@' + path[-1]
         path = '/'.join(path)
         url = urlunparse((parsed[0], parsed[1], path, '', '', ''))
