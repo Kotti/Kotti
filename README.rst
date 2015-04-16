@@ -97,6 +97,7 @@ Development
 |build status master|_
 |coveralls|_
 |codacy|_
+|codeclimate|_
 
 .. requirements need to be upgraded before we shoff off
    |requires.io|_
@@ -129,6 +130,9 @@ Contributions are always welcome, read our `contribution guidelines`_ and visit 
 .. |codacy| image:: https://img.shields.io/codacy/ad44331fcd904d338c074f2ca3e6a810.svg?style=flat-square
 .. _codacy: https://www.codacy.com/public/disko/Kotti
 .. _high quality coding standards: https://www.codacy.com/public/disko/Kotti
+
+.. |codeclimate| image:: https://img.shields.io/codeclimate/github/Kotti/Kotti.svg?style=flat-square
+.. _codeclimate: https://codeclimate.com/github/Kotti/Kotti
 
 .. _contribution guidelines: http://kotti.readthedocs.org/en/latest/contributing.html
 .. _Github repository: https://github.com/Kotti/Kotti
