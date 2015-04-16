@@ -13,15 +13,17 @@ Change History
 
 - Add sanitizers.  See :ref:`sanitizers` and :mod:`kotti.sanitizers` for
   details.  This fixes #296.
-  
-- Added new document on how to customize the edit interface. 
+
+- Added new document on how to customize the edit interface.
   See :ref:`add-to-edit-interface`.
-  
-- Make it easier to customize default actions by separating them to a new 
+
+- Make it easier to customize default actions by separating them to a new
   ``kotti.resources.default_actions`` variable. Before, to customize them, you'd
   have to change ``Content.type_info.edit_links[3].children``, now you can mutate
   ``default_actions`` directly. See :ref:`add-to-edit-interface` for details.
-  
+
+- Upgrade ``WebOb``, ``html2text``, ``pyramid`` and ``xlwt`` to their latest
+  stable versions.
 
 1.1.0-alpha.1 - 2015-03-19
 --------------------------
