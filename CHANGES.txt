@@ -16,16 +16,17 @@ Change History
 
 - Add ``target`` option to ``kotti.util.Link``. See #405.
 
-- Add sanitizers.  See :ref:`sanitizers` and :mod:`kotti.sanitizers` for
-  details.  This fixes #296.
+- Add sanitizers.  See ``docs/development/advanced/sanitizers`` and
+  ``kotti.sanitizers`` for details.  This fixes #296.
 
 - Added new document on how to customize the edit interface.
-  See :ref:`add-to-edit-interface`.
+  See ``docs/development/advanced/add-to-edit-interface``.
 
 - Make it easier to customize default actions by separating them to a new
-  ``kotti.resources.default_actions`` variable. Before, to customize them, you'd
-  have to change ``Content.type_info.edit_links[3].children``, now you can mutate
-  ``default_actions`` directly. See :ref:`add-to-edit-interface` for details.
+  ``kotti.resources.default_actions`` variable. Before, to customize them,
+  you'd have to change ``Content.type_info.edit_links[3].children``, now you
+  can mutate ``default_actions`` directly. See
+  ``docs/development/advanced/add-to-edit-interface`` for details.
 
 - Upgrade ``WebOb``, ``html2text``, ``pyramid`` and ``xlwt`` to their latest
   stable versions.
