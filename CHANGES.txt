@@ -4,6 +4,11 @@ Change History
 1.1.0-alpha.2 - unreleased
 --------------------------
 
+- Separate the default actions to a ``kotti.resources.default_actions``
+  variable, to allows easier customization of default actions of all
+  content types. This is a ``LinkParent``, you can append new
+  ``kotti.util.Link`` objects to its ``children``.
+
 - Add ``target`` option to ``kotti.util.Link``. See #405.
 
 - Add sanitizers.  See :ref:`sanitizers` and :mod:`kotti.sanitizers` for
