@@ -755,8 +755,6 @@ class Image(File):
         name=u'Image',
         title=_(u'Image'),
         add_view=u'add_image',
-        addable_to=[u'Document'],
-        selectable_default_views=[],
         uploadable_mimetypes=['image/*', ],
         )
 
