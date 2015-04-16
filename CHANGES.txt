@@ -1,8 +1,8 @@
 Change History
 ==============
 
-1.1.0-alpha.2 - unreleased
---------------------------
+1.1.0 2015-04-16
+----------------
 
 - Separate the default actions to a ``kotti.resources.default_actions``
   variable, to allows easier customization of default actions of all
