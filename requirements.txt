@@ -22,7 +22,7 @@ docopt==0.6.2
 fanstatic==1.0a5
 html2text==2015.4.14
 js.angular==1.1.4
-js.bootstrap==3.3.1
+js.bootstrap==3.3.2
 js.chosen==0.9.14
 js.deform==2.0a2-3
 js.fineuploader==3.3.0
