@@ -26,7 +26,7 @@ install_requires = [
     'formencode',
     'html2text',
     'js.angular',
-    'js.bootstrap>=2.1.5',
+    'js.bootstrap>=3.0.0',
     'js.deform>=2.0a2-2',
     'js.fineuploader',
     'js.html5shiv',
