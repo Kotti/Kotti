@@ -18,6 +18,8 @@
         </dd>
       </tal:repeat>
     </dl>
+    
+    <p tal:condition="not:results">No results were found.</p>
 
   </div>
 </html>
