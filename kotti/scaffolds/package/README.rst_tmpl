@@ -27,7 +27,7 @@ Database upgrade
 If you are upgrading from a previous version you might have to migrate your
 database.  The migration is performed with `alembic`_ and Kotti's console script
 ``kotti-migrate``. To migrate, run
-``kotti-migrate upgrade_all --scripts={{package}}:alembic``.
+``kotti-migrate upgrade --scripts={{package}}:alembic``.
 
 For integration of alembic in your environment please refer to the
 `alembic documentation`_. If you have problems with the upgrade,

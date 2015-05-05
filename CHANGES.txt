@@ -4,7 +4,7 @@ Change History
 1.1.1-dev - unreleased
 ----------------------
 
-- No changes yet.
+- Update scaffold's README file. See #417.
 
 1.1.0 2015-04-16
 ----------------
