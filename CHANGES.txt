@@ -1,10 +1,11 @@
 Change History
 ==============
 
-1.1.1-dev - unreleased
-----------------------
+1.1.1 2015-05-11
+----------------
 
 - Update scaffold's README file. See #417.
+- Fix broken multifile upload.  See #425.
 
 1.1.0 2015-04-16
 ----------------
