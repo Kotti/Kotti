@@ -69,10 +69,10 @@ function UploadController($scope, $http, $log) {
                 $scope.apply(function () {
                     var file = $scope.uploader.getFile(id);
                     $http.get(
-                        $scope.endpoints.contentTypes,
+                        $scope.endpoints.content_types,
                         {params: {mimetype: file.type}}
                     ).success(function (data, status, headers, config) {
-                        var contentTypes = data.contentTypes,
+                        var contentTypes = data.content_types,
                             file = {
                                 id: id,
                                 name: name,
@@ -103,7 +103,7 @@ function UploadController($scope, $http, $log) {
                 $scope.apply(function () {
                     $scope.files[id].status = 'uploading';
                     $scope.uploader.setParams({
-                        contentType: $scope.files[id].desiredType.name
+                        content_type: $scope.files[id].desiredType.name
                     }, id);
                     $scope.numFilesWaiting -= 1;
                 });
