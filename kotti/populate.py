@@ -79,8 +79,8 @@ _ROOT_ATTRS = dict(
     <div class="col-md-4">
         <h2>Configure</h2>
         <p>
-            Find out how to configure your Kotti's title and many other settings using a
-            simple text file in your file system.
+            Find out how to configure your Kotti's title and many other
+            settings using a simple text file in your file system.
         </p>
         <p>
             <a class="btn btn-info"
@@ -92,7 +92,8 @@ _ROOT_ATTRS = dict(
     <div class="col-md-4">
         <h2>Add-ons</h2>
         <p>
-            A number of add-ons allow you to extend the functionality of your Kotti site.
+            A number of add-ons allow you to extend the functionality of your
+            Kotti site.
         </p>
         <p>
             <a class="btn btn-info"
@@ -104,8 +105,9 @@ _ROOT_ATTRS = dict(
     <div class="col-md-4">
         <h2>Documentation</h2>
         <p>
-            Wonder what more you can do with Kotti?  What license it has?  Read the
-            manual for more information.
+            Wonder what more you can do with Kotti?
+            What license it has?
+            Read the manual for more information.
         </p>
         <p>
             <a class="btn btn-info"
@@ -119,7 +121,7 @@ _ROOT_ATTRS = dict(
 
 _ABOUT_ATTRS = dict(
     title=_(u'About'),
-    description=_(u'Our company is the leading manufacturer of foo widgets used in a wide variety of aviation and and industrial products.'),
+    description=_(u'Our company is the leading manufacturer of foo widgets used in a wide variety of aviation and and industrial products.'),  # noqa
     body=_(u"""
 <p>
   <img alt="five colorful Extra EA300 airplanes flying in formation"
@@ -140,11 +142,11 @@ _ABOUT_ATTRS = dict(
 </address>
 
 <p><small style="font-size: smaller">
-  <em>Photo credit:</em> "Northern Lights Formation" by FlugKerl2.
-  <a href="http://commons.wikimedia.org/wiki/File:Northern_Lights_Formation.jpg">
-  Copyright info</a>.
-  Originally published in the
-  <a href="http://en.wikipedia.org/wiki/Extra_EA-300"> Extra EA-300</a>
-  article.
+<em>Photo credit:</em> "Northern Lights Formation" by FlugKerl2.
+<a href="http://commons.wikimedia.org/wiki/File:Northern_Lights_Formation.jpg">
+Copyright info</a>.
+Originally published in the
+<a href="http://en.wikipedia.org/wiki/Extra_EA-300"> Extra EA-300</a>
+article.
 </small></p>
 """))

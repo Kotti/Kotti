@@ -26,7 +26,7 @@ install_requires = [
     'formencode',
     'html2text',
     'js.angular',
-    'js.bootstrap>=2.1.5',
+    'js.bootstrap>=3.0.0',
     'js.deform>=2.0a2-2',
     'js.fineuploader',
     'js.html5shiv',
@@ -87,7 +87,7 @@ if sys.version_info[:3] < (2, 7, 0):
     install_requires.append('ordereddict')
 
 setup(name='Kotti',
-      version='1.1.0',
+      version='1.1.1',
       description="A high-level, Pythonic web application framework based on Pyramid and SQLAlchemy.  It includes an extensible Content Management System called the Kotti CMS.",  # noqa
       long_description='\n\n'.join([README, AUTHORS, CHANGES]),
       classifiers=[

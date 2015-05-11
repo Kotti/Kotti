@@ -452,7 +452,7 @@ def default_search_content(search_term, request=None):
 
     for results_set in [content_with_tags([searchstring]),
                         document_results.all()]:
-        [results.append(c) for c in results_set if not c in results]
+        [results.append(c) for c in results_set if c not in results]
 
     result_dicts = []
 
@@ -488,10 +488,8 @@ def search_content_for_tags(tags, request=None):
     return result_dicts
 
 
-from kotti.util import (
-    get_localizer_for_locale_name,
-    translate,
-    )
+from kotti.util import get_localizer_for_locale_name  # noqa
+from kotti.util import translate  # noqa
 
 for obj in (render_view, get_localizer_for_locale_name, translate,
             TemplateStructure):
