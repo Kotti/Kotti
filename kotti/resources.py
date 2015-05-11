@@ -102,7 +102,7 @@ class ContainerMixin(object, DictMixin):
 
         # Optimization: don't query children if self._children already there:
         if '_children' in self.__dict__:
-            first, rest = path[0], path[1:]
+            rest = path[1:]
             try:
                 [child] = filter(lambda ch: ch.name == path[0], self._children)
             except ValueError:
@@ -492,7 +492,7 @@ class TagsToContents(Base):
 
 
 def _not_root(context, request):
-    return not context is get_root()
+    return context is not get_root()
 
 
 default_actions = [
@@ -725,9 +725,9 @@ class File(Content):
 
         if isinstance(value, bytes):
             value = _to_fieldstorage(fp=StringIO(value),
-                                    filename=target.filename,
-                                    mimetype=target.mimetype,
-                                    size=len(value))
+                                     filename=target.filename,
+                                     mimetype=target.mimetype,
+                                     size=len(value))
 
         newvalue = _SQLAMutationTracker._field_set(
             target, value, oldvalue, initiator)
@@ -755,8 +755,6 @@ class Image(File):
         name=u'Image',
         title=_(u'Image'),
         add_view=u'add_image',
-        addable_to=[u'Document'],
-        selectable_default_views=[],
         uploadable_mimetypes=['image/*', ],
         )
 
@@ -785,7 +783,8 @@ def default_get_root(request=None):
             with Kotti's :func:`default populator <kotti.populate.populate>`
             this will be an instance of :class:`~kotti.resources.Document`.
     """
-    return DBSession.query(Node).filter(Node.parent_id == None).one()
+
+    return DBSession.query(Node).filter(Node.parent_id == None).one()  # noqa
 
 
 def _adjust_for_engine(engine):

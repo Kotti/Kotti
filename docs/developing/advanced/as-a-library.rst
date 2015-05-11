@@ -7,7 +7,7 @@ Instead of taking control of your application, and delegating to your
 extension, you may use Kotti in applications where you define the
 ``main`` *entry point* yourself.
 
-You'll anyway still need to call ``kotti.base_configure`` from your
+You'll still need to call ``kotti.base_configure`` from your
 code to set up essential parts of Kotti:
 
 .. code-block:: python

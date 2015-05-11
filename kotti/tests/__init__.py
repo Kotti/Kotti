@@ -63,7 +63,7 @@ def allwarnings(request):
 def custom_settings():
     """ This is a dummy fixture meant to be overriden in add on package's
     ``conftest.py``.  It can be used to inject arbitrary settings for third
-    party test suites.  The defefault settings dictionary will be updated
+    party test suites.  The default settings dictionary will be updated
     with the dictionary returned by this fixture.
 
     This is also a good place to import your add on's ``resources`` module to
