@@ -40,7 +40,7 @@ class KottiTemplate(PyramidTemplate):
             return env
 
         s = self._settings
-        s[key] = raw_input(u'{} [{}]: '.format(caption, s[key])) or s[key]
+        s[key] = raw_input(u'{0} [{1}]: '.format(caption, s[key])) or s[key]
 
         try:
             s.save_settings()
