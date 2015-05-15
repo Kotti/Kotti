@@ -75,7 +75,7 @@ def validate_token(user, token, valid_hrs=24):
     return False
 
 
-def send_email(request, recipients, template_name, template_vars={}):
+def send_email(request, recipients, template_name, template_vars=None):
     """ General email sender.
 
     :param request: current request.
@@ -92,6 +92,9 @@ def send_email(request, recipients, template_name, template_vars={}):
     :param template_vars: set of variables present on template.
     :type template_vars: dict
     """
+
+    if template_vars is None:
+        template_vars = {}
 
     text = render(template_name, template_vars, request)
     subject, htmlbody = text.strip().split('\n', 1)
