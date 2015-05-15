@@ -48,7 +48,7 @@ def set_max_age(response, delta, cache_ctrl=None):
         if value is None:
             cache_control_header.append(key)
         else:
-            cache_control_header.append('%s=%s' % (key, value))
+            cache_control_header.append(u'{0}={1}'.format(key, value))
     cache_control_header = ','.join(cache_control_header)
     response.headers['cache-control'] = cache_control_header
 

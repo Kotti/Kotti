@@ -285,7 +285,7 @@ class Node(Base, ContainerMixin, PersistentACLMixin):
         self.parent = value
 
     def __repr__(self):
-        return '<%s %s at %s>' % (
+        return u'<{0} {1} at {2}>'.format(
             self.__class__.__name__, self.id, resource_path(self))
 
     def __eq__(self, other):
@@ -436,7 +436,7 @@ class Tag(Base):
     title = Column(Unicode(100), unique=True, nullable=False)
 
     def __repr__(self):
-        return "<Tag ('%s')>" % self.title
+        return u"<Tag ('{0}')>".format(self.title)
 
     @property
     def items(self):
@@ -697,7 +697,7 @@ class File(Content):
         """
 
         if not cls.type_info.is_uploadable_mimetype(fs.type):
-            raise ValueError("Unsupported MIME type: %s" % fs.type)
+            raise ValueError(u"Unsupported MIME type: {0}".format(fs.type))
 
         return cls(data=fs)
 

@@ -79,8 +79,8 @@ class KottiTemplate(PyramidTemplate):
 
         separator = "=" * 79
         msg = dedent(
-            """
-            %(separator)s
+            u"""
+            {0}
             Welcome to Kotti!
 
             Documentation: http://kotti.readthedocs.org/
@@ -88,8 +88,8 @@ class KottiTemplate(PyramidTemplate):
             Issues:        https://github.com/Kotti/Kotti/issues?state=open
             IRC:           irc://irc.freenode.net/#kotti
             Mailing List:  https://groups.google.com/group/kotti
-            %(separator)s
-        """ % {'separator': separator})
+            {0}
+        """.format(separator))
 
         self.out(msg)
 

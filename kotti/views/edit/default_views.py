@@ -68,8 +68,9 @@ class DefaultViewSelection(object):
                     "is_current": name == self.context.default_view,
                 })
             else:
-                warnings.warn("No view called %r is registered for %r." %
-                              (name, self.context))
+                warnings.warn(
+                    u"No view called '{0}' is registered for {1!r}.".format(
+                        name, self.context))
 
         return {
             "selectable_default_views": [

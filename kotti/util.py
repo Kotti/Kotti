@@ -190,7 +190,7 @@ class Link(LinkBase):
         return isinstance(other, Link) and repr(self) == repr(other)
 
     def __repr__(self):
-        return "Link(%r, %r)" % (self.name, self.title)
+        return u'Link({0}, {1})'.format(self.name, self.title)
 
 
 class ActionButton(Link):
@@ -230,7 +230,7 @@ def cache(compute_key, container_factory):
                 key = compute_key(*args, **kwargs)
             except DontCache:
                 return func(*args, **kwargs)
-            key = '%s.%s:%s' % (func.__module__, func.__name__, key)
+            key = u'{0}.{1}:{2}'.format(func.__module__, func.__name__, key)
             cached_value = cache.get(key, marker)
             if cached_value is marker:
                 cached_value = cache[key] = func(*args, **kwargs)

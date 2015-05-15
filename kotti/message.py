@@ -10,19 +10,6 @@ from pyramid_mailer.message import Message
 from kotti import get_settings
 
 
-SET_PASSWORD_SUBJECT = u"Your registration for %(site_title)s"
-SET_PASSWORD_BODY = u"""Hello, %(user_title)s!
-
-You've just been invited to join %(site_title)s.  Click here to set
-your password and log in: %(url)s.
-"""
-
-RESET_PASSWORD_SUBJECT = u"Reset your password for %(site_title)s."
-RESET_PASSWORD_BODY = u"""Hello, %(user_title)s!
-
-Click this link to reset your password at %(site_title)s: %(url)s.
-"""
-
 _inject_mailer = []
 
 
@@ -37,8 +24,8 @@ def make_token(user, seconds=None):
     secret = get_settings()['kotti.secret2']
     if seconds is None:
         seconds = time.time()
-    token = '%s:%s:%s' % (user.name, secret, seconds)
-    return '%s:%s' % (hashlib.sha224(token).hexdigest(), seconds)
+    token = '{0}:{1}:{2}'.format(user.name, secret, seconds)
+    return '{0}:{1}'.format(hashlib.sha224(token).hexdigest(), seconds)
 
 
 def validate_token(user, token, valid_hrs=24):
@@ -122,14 +109,12 @@ def email_set_password(user, request,
     set_password_query = {'token': token, 'email': user.email}
     if add_query:
         set_password_query.update(add_query)
-    url = '%s/@@set-password?%s' % (
+    url = '{0}/@@set-password?{1}'.format(
         request.application_url,
-        urllib.urlencode(set_password_query),
-        )
+        urllib.urlencode(set_password_query))
     variables = dict(
         user_title=user.title,
         site_title=site_title,
-        url=url,
-        )
-    recipients = [u'"%s" <%s>' % (user.title, user.email)]  # XXX naive?
+        url=url)
+    recipients = [u'"{0}" <{1}>'.format(user.title, user.email)]  # XXX naive?
     send_email(request, recipients, template_name, variables)
