@@ -68,7 +68,7 @@ class UploadedFileResponse(Response):
         if cache_max_age is not None:
             self.cache_expires = cache_max_age
 
-        disp = u'{0};filename="{1}"'.format(
+        disp = '{0};filename="{1}"'.format(
             disposition, data.filename.encode('ascii', 'ignore'))
         self.headerlist.append(('Content-Disposition', disp))
 
