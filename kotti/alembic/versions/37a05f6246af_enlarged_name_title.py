@@ -23,6 +23,10 @@ def upgrade():
                     'name',
                     type_=sa.Unicode(250),
                     )
+    op.alter_column('nodes',
+                    'path',
+                    type_=sa.Unicode(2000),
+                    )
 
 
 def downgrade():
@@ -33,4 +37,8 @@ def downgrade():
     op.alter_column('nodes',
                     'name',
                     type_=sa.Unicode(50),
+                    )
+    op.alter_column('nodes',
+                    'path',
+                    type_=sa.Unicode(1000),
                     )

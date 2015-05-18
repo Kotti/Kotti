@@ -240,7 +240,7 @@ class Node(Base, ContainerMixin, PersistentACLMixin):
     annotations = Column(NestedMutationDict.as_mutable(JsonType))
     #: The path can be used to efficiently filter for child objects
     #: (:class:`sqlalchemy.types.Unicode`).
-    path = Column(Unicode(1000), index=True)
+    path = Column(Unicode(2000), index=True)
 
     parent = relation(
         'Node',
