@@ -331,7 +331,13 @@ def disambiguate_name(name):
     return u'-'.join(parts)
 
 
-def title_to_name(title, blacklist=()):
+def title_to_name(title, blacklist=(), max_length=None):
+    """ If max_length is None, fallback to the ``name`` column
+        size (:class:`kotti.resources.Node`)
+    """
+    if max_length is not None:
+        from kotti.resources import Node
+        max_length = Node.name.property.columns[0].type.length
     request = get_current_request()
     if request is not None:
         locale_name = get_locale_name(request)
@@ -339,7 +345,7 @@ def title_to_name(title, blacklist=()):
         locale_name = 'en'
     from kotti import get_settings
     urlnormalizer = get_settings()['kotti.url_normalizer'][0]
-    name = unicode(urlnormalizer(title, locale_name, max_length=40))
+    name = unicode(urlnormalizer(title, locale_name, max_length=max_length))
     if name not in blacklist:
         return name
     name += u'-1'

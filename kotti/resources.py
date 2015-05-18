@@ -231,10 +231,10 @@ class Node(Base, ContainerMixin, PersistentACLMixin):
     _acl = Column(MutationList.as_mutable(ACLType))
     #: Name of the node as used in the URL
     #: (:class:`sqlalchemy.types.Unicode`)
-    name = Column(Unicode(50), nullable=False)
+    name = Column(Unicode(250), nullable=False)
     #: Title of the node, e.g. as shown in search results
     #: (:class:`sqlalchemy.types.Unicode`)
-    title = Column(Unicode(100))
+    title = Column(Unicode(250))
     #: Annotations can be used to store arbitrary data in a nested dictionary
     #: (:class:`kotti.sqla.NestedMustationDict`)
     annotations = Column(NestedMutationDict.as_mutable(JsonType))
