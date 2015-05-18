@@ -335,7 +335,7 @@ def title_to_name(title, blacklist=(), max_length=None):
     """ If max_length is None, fallback to the ``name`` column
         size (:class:`kotti.resources.Node`)
     """
-    if max_length is not None:
+    if max_length is None:
         from kotti.resources import Node
         max_length = Node.name.property.columns[0].type.length
     request = get_current_request()
