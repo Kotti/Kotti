@@ -84,7 +84,7 @@ class TestTitleToName:
     def test_max_length_40_no_default(self):
         self.setUp()
         from kotti.util import title_to_name
-        assert len(title_to_name(u'a' * 50), max_length=40) == 40
+        assert len(title_to_name(u'a' * 50, max_length=40)) == 40
 
     def test_numbering(self):
         self.setUp()
