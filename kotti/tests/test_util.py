@@ -69,12 +69,12 @@ class TestTitleToName:
     def test_max_length_250(self):
         self.setUp()
         from kotti.util import title_to_name
-        assert len(title_to_name(u'a' * 250)) == 250
+        assert len(title_to_name(u'a' * 250)) == 240
 
     def test_max_length_255(self):
         self.setUp()
         from kotti.util import title_to_name
-        assert len(title_to_name(u'a' * 255)) == 250
+        assert len(title_to_name(u'a' * 255)) == 240
 
     def test_normal(self):
         self.setUp()

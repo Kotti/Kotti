@@ -337,7 +337,8 @@ def title_to_name(title, blacklist=(), max_length=None):
     """
     if max_length is None:
         from kotti.resources import Node
-        max_length = Node.name.property.columns[0].type.length
+        # See #428, #427 and #31
+        max_length = Node.name.property.columns[0].type.length - 10
     request = get_current_request()
     if request is not None:
         locale_name = get_locale_name(request)
