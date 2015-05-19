@@ -31,7 +31,7 @@ class ContentSchema(colander.MappingSchema):
     title = colander.SchemaNode(
         colander.String(),
         title=_(u'Title'),
-        validator=colander.Length(max=Node.name.property.columns[0].type.length),
+        validator=colander.Length(max=Node.title.property.columns[0].type.length),
         )
     description = colander.SchemaNode(
         colander.String(),
