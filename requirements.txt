@@ -11,7 +11,7 @@ Pygments==2.0.2
 SQLAlchemy==0.9.9
 Unidecode==0.04.17
 WebOb==1.4.1
-alembic==0.6.7
+alembic==0.7.6
 appdirs==1.4.0
 bleach==1.4.1
 bleach-whitelist==0.0.7
