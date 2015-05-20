@@ -109,17 +109,22 @@ def get_locations():
 
 
 def stamp_head(location=DEFAULT_LOCATION, revision=None):
+
+    env = PackageEnvironment(location)
+
     def do_stamp(rev, context, revision=revision):
-        current = context._current_rev()
+
         if revision is None:
             revision = context.script.get_current_head()
         elif revision == 'None':
             revision = None
-        context._update_current_rev(current, revision)
+
+        context.stamp(env.script_dir, revision)
+
         mark_changed(DBSession())
         return []
 
-    PackageEnvironment(location).run_env(do_stamp)
+    env.run_env(do_stamp)
 
 
 def stamp_heads():
@@ -138,12 +143,16 @@ def upgrade(location=DEFAULT_LOCATION):
     revision = pkg_env.script_dir.get_current_head()
     print(u'Upgrading {0}:'.format(pkg_env.location))
 
-    def upgrade(rev, context):
+    def upgrade(heads, context):
+        rev = heads[0]   # alembic supports multiple heads, we don't
+
         if rev == revision:
             print(u'  - already up to date.')
             return []
+
         print(u'  - upgrading from {0} to {1}...'.format(
             rev, revision))
+
         return context.script._upgrade_revs(revision, rev)
 
     pkg_env.run_env(
