@@ -71,3 +71,46 @@ class TestUploadFile:
         browser.getControl('save').click()
         browser.getLink("Download file").click()
         assert browser.contents == 'GHI'
+
+
+class TestValidatorMaxLength:
+
+    @user('admin')
+    def test_title_max_length_document_ko(self, browser, filedepot):
+        browser.open(BASE_URL + '/@@add_document')
+        from kotti.resources import Node
+        max_length = Node.name.property.columns[0].type.length
+        browser.getControl("Title").value = '1' * (max_length + 1)  # the error
+        browser.getControl('save').click()
+        assert "Item was added" not in browser.contents
+
+    @user('admin')
+    def test_title_max_length_document_ok(self, browser):
+        browser.open(BASE_URL + '/@@add_document')
+        from kotti.resources import Node
+        max_length = Node.name.property.columns[0].type.length
+        browser.getControl("Title").value = '1' * max_length
+        browser.getControl('save').click()
+        assert "Item was added" in browser.contents
+
+    @user('admin')
+    def test_title_max_length_file_ok(self, browser):
+        browser.open(BASE_URL + '/@@add_file')
+        from kotti.resources import Node
+        max_length = Node.name.property.columns[0].type.length
+        browser.getControl("Title").value = '1' * max_length
+        file_ctrl = browser.getControl("File").mech_control
+        file_ctrl.add_file(StringIO("abc"), filename='my_image.gif')
+        browser.getControl('save').click()
+        assert "Item was added" in browser.contents
+
+    @user('admin')
+    def test_title_max_length_file_ko(self, browser):
+        browser.open(BASE_URL + '/@@add_file')
+        from kotti.resources import Node
+        max_length = Node.name.property.columns[0].type.length
+        browser.getControl("Title").value = '1' * (max_length + 1)  # the error
+        file_ctrl = browser.getControl("File").mech_control
+        file_ctrl.add_file(StringIO("abc"), filename='my_image.gif')
+        browser.getControl('save').click()
+        assert "Item was added" not in browser.contents

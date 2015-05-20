@@ -61,15 +61,30 @@ class TestTitleToName:
         settings['kotti.url_normalizer'] = [url_normalizer]
         settings['kotti.url_normalizer.map_non_ascii_characters'] = False
 
-    def test_max_length(self):
+    def test_max_length_40(self):
         self.setUp()
         from kotti.util import title_to_name
-        assert len(title_to_name(u'a' * 50)) == 40
+        assert len(title_to_name(u'a' * 50)) == 50
+
+    def test_max_length_250(self):
+        self.setUp()
+        from kotti.util import title_to_name
+        assert len(title_to_name(u'a' * 250)) == 240
+
+    def test_max_length_255(self):
+        self.setUp()
+        from kotti.util import title_to_name
+        assert len(title_to_name(u'a' * 255)) == 240
 
     def test_normal(self):
         self.setUp()
         from kotti.util import title_to_name
         assert title_to_name(u'Foo Bar') == u'foo-bar'
+
+    def test_max_length_40_no_default(self):
+        self.setUp()
+        from kotti.util import title_to_name
+        assert len(title_to_name(u'a' * 50, max_length=40)) == 40
 
     def test_numbering(self):
         self.setUp()
