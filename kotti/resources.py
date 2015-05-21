@@ -10,25 +10,25 @@ Inheritance Diagram
 
 import os
 import warnings
-
+from copy import copy
 from fnmatch import fnmatch
 from cStringIO import StringIO
 from UserDict import DictMixin
 
-from depot.fields.sqlalchemy import UploadedFileField
 from depot.fields.sqlalchemy import _SQLAMutationTracker
-
+from depot.fields.sqlalchemy import UploadedFileField
+from kotti import _resolve_dotted
 from pyramid.traversal import resource_path
 from sqlalchemy import Boolean
 from sqlalchemy import Column
 from sqlalchemy import DateTime
+from sqlalchemy import event
 from sqlalchemy import ForeignKey
 from sqlalchemy import Integer
 from sqlalchemy import String
 from sqlalchemy import Unicode
 from sqlalchemy import UnicodeText
 from sqlalchemy import UniqueConstraint
-from sqlalchemy import event
 from sqlalchemy.ext.associationproxy import association_proxy
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.ext.orderinglist import ordering_list
@@ -42,7 +42,6 @@ from sqlalchemy.util import classproperty
 from transaction import commit
 from zope.interface import implements
 
-from kotti import _resolve_dotted
 from kotti import Base
 from kotti import DBSession
 from kotti import get_settings
@@ -361,6 +360,7 @@ class TypeInfo(object):
         """
 
         d = self.__dict__.copy()
+        d['selectable_default_views'] = copy(self.selectable_default_views)
         d.update(kwargs)
 
         return TypeInfo(**d)

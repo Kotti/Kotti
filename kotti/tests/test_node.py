@@ -441,7 +441,11 @@ class TestLocalGroup:
 
 
 class TestTypeInfo:
+
     def test_add_selectable_default_view(self):
+
+        from kotti.resources import Content
+        from kotti.resources import Document
         from kotti.resources import TypeInfo
 
         type_info = TypeInfo(selectable_default_views=[])
@@ -449,6 +453,10 @@ class TestTypeInfo:
         assert type_info.selectable_default_views == [
             ('foo', u'Fannick'),
             ]
+
+        Document.type_info.add_selectable_default_view('one', 'two')
+        assert ('one', 'two') in Document.type_info.selectable_default_views
+        assert ('one', 'two') not in Content.type_info.selectable_default_views
 
     def test_action_links_deprecated(self, allwarnings):
         from kotti.resources import TypeInfo
