@@ -15,6 +15,7 @@ from deform.widget import TextAreaWidget
 from kotti.resources import Document
 from kotti.resources import File
 from kotti.resources import Image
+from kotti.resources import Node
 from kotti.util import _
 from kotti.util import _to_fieldstorage
 from kotti.views.form import get_appstruct
@@ -30,6 +31,7 @@ class ContentSchema(colander.MappingSchema):
     title = colander.SchemaNode(
         colander.String(),
         title=_(u'Title'),
+        validator=colander.Length(max=Node.title.property.columns[0].type.length),
         )
     description = colander.SchemaNode(
         colander.String(),

@@ -4,7 +4,16 @@ Change History
 1.1.2 - unreleased
 ------------------
 
-- No changes yet.
+- Enlarge column sizes for ``name``, ``path`` and ``title`` (see #427). 
+  Upgrading from any version older than 1.1.2 requires you to run a migration
+  script on your database. To run the migration, call::
+
+    $ bin/kotti-migrate <myconfig.ini> upgrade
+
+- Add length validator for ``title`` (fix partially #404). See #428
+
+- Remove 40 chars max length constraint for the html segment ``name``
+  (``Kotti.util.title_to_name``). See #428
 
 1.1.1 2015-05-11
 ----------------
