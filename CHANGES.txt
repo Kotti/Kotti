@@ -17,6 +17,8 @@ Change History
 
 - Update italian translation
 
+- Update documentation
+
 1.1.1 2015-05-11
 ----------------
 
