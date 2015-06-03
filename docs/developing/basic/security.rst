@@ -34,3 +34,36 @@ Role
     Local Roles
         Local roles are assigned to a user or group via the "Sharing" screen
         of a content object.  They apply only to this object and its children.
+
+
+How to create a new role
+------------------------
+
+Small recipe you can use if you want to create a new role:
+
+.. code-block:: python
+  
+  from kotti.security import (
+      Principal,
+      ROLES,
+      SHARING_ROLES,
+      set_roles,
+      set_sharing_roles,
+      set_user_management_roles,
+      )
+  from kotti_yourpackage import _
+  
+  
+  def add_role(role_id, role_title):
+      """ Add role in share view and user management views """
+      UPDATED_ROLES = ROLES.copy()
+      UPDATED_ROLES[role_id] = Principal(role_id,
+                                         title=role_title)
+      UPDATED_SHARING_ROLES = list(SHARING_ROLES)
+      UPDATED_SHARING_ROLES.append(role_id)
+      set_roles(UPDATED_ROLES)
+      set_sharing_roles(UPDATED_SHARING_ROLES)
+      set_user_management_roles(UPDATED_SHARING_ROLES + ['role:admin'])
+  
+  
+  add_role(u'role:customer', _(u'Customer'))
