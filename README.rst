@@ -89,7 +89,7 @@ Read Kotti's extensive `documentation <http://kotti.readthedocs.org/>`_ on `Read
 
 If you have questions or need help, you can post on our `mailing list / forum <http://groups.google.com/group/kotti>`_ or join us on IRC: `#kotti on irc.freenode.net <irc://irc.freenode.net/#kotti>`_.
 
-If you think you found a bug, open an issue on or `Github bugtracker <https://github.com/Kotti/Kotti/issues>`_.
+If you think you found a bug, open an issue on our `Github bugtracker <https://github.com/Kotti/Kotti/issues>`_.
 
 Development
 ===========
