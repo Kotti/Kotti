@@ -3,7 +3,7 @@
 Security
 ========
 
-Kotti security is based on the concepts of users, groups, roles and permissions.
+Kotti security is based on the concepts of users, groups, roles, permissions and workflow.
 
 .. image:: /_static/user-group-role-permission.svg
 
@@ -35,6 +35,12 @@ Role
         Local roles are assigned to a user or group via the "Sharing" screen
         of a content object.  They apply only to this object and its children.
 
+Workflow
+    The workflow keeps track of the current state of each object lifecycle to manage content security.
+    There is an initial state and you can move to other states thanks to transitions; on each state is defined
+    a security matrix with roles and permissions.
+    Kotti provides by default a two-state workflow (private and publish) for all objects excepts files and images.
+    Kotti's workflow implementation is based on `repoze.workflow`_.
 
 How to create a new role
 ------------------------
@@ -67,3 +73,105 @@ Small recipe you can use if you want to create a new role:
   
   
   add_role(u'role:customer', _(u'Customer'))
+
+Workflows
+---------
+
+Basically you can use an xml file (zcml) in order to describe your workflow definition.
+You can see an example here: `workflow.zcml`_.
+
+As you can see it is quite straightforward adding new states, new transitions, new permissions, etc. You can easily turn your 2-states
+website workflow into something of completely different or turn Kotti app into an intranet application.
+
+The default workflow definition is loaded from your project ``.ini`` file settings (using the ``kotti.use_workflow`` setting).
+The ``kotti.use_workflow`` setting's default value is:
+
+.. code-block:: ini
+
+    kotti.use_workflow = kotti:workflow.zcml
+
+but can change change default workflow for the whole site, register new workflows related to specific content types or disable it as well. 
+
+How to disable the default workflow
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Kotti is shipped with a simple workflow implementation based on private and public states. If your particular use case does not require workflows at all, you can disable this feature with a non true value. For example:
+
+.. code-block:: ini
+
+    kotti.use_workflow = 0
+
+How to override the Kotti's default workflow for all content types
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+The default workflow is quite useful for websites, but sometimes you need something of different. Just change your workflow setting and point to your zcml file:
+
+.. code-block:: ini
+    kotti.use_workflow = kotti_yourplugin:workflow.zcml
+
+The simplest way to deal with workflow definitions is::
+
+1. create a copy of the default workflow definition
+2. customize it (change permissions, add new states, permissions, transitions, initial state and so on)
+
+If you change workflow settings, you need to reset all your content's workflow and permission settings using the ``kotti-reset-workflow`` console script.
+
+kotti-reset-workflow command usage
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+If you change workflow settings you'll need to update security.
+
+.. code-block:: bash
+
+    $ kotti-reset-workflow --help
+    Reset the workflow of all content objects in the database.
+    
+        This is useful when you want to migrate an existing database to
+        use a different workflow.  When run, this script will reset all
+        your content objects to use the new workflow, while trying to
+        preserve workflow state information.
+    
+        For this command to work, all currently persisted states must map
+        directly to a state in the new workflow.  As an example, if
+        there's a 'public' object in the database, the new workflow must
+        define 'public' also.
+    
+        If this is not the case, you may choose to reset all your content
+        objects to the new workflow's *initial state* by passing the
+        '--purge-existing' option.
+    
+        Usage:
+          kotti-reset-workflow <config_uri> [--purge-existing]
+    
+        Options:
+          -h --help          Show this screen.
+          --purge-existing   Reset all objects to new workflow's initial state.
+ 
+How to enable the standard workflow for images and files
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Images and files are not associated with the default workflow. If you need a workflow for these items you need to attach the ``IDefaultWorkflow`` marker interface.
+
+You can add the following lines in your includeme function:
+
+.. code-block:: python
+
+    from zope.interface import implementer
+    from kotti.interfaces import IDefaultWorkflow
+    from kotti.resources import File
+    from kotti.resources import Image
+    ...
+    
+    def includeme(config):
+        ...
+        # enable workflow for images and files
+        implementer(IDefaultWorkflow)(Image)
+        implementer(IDefaultWorkflow)(File)
+        ...
+
+How to assign a different workflow to a content type
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+TODO
+
+.. _repoze.workflow: http://docs.repoze.org/workflow/
+.. _workflow.zcml: https://github.com/Kotti/Kotti/blob/master/kotti/workflow.zcml.
