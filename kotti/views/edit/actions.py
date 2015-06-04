@@ -459,7 +459,7 @@ def contents_buttons(context, request):
     return [button for button in buttons if button.permitted(context, request)]
 
 
-@view_config(name='add-dropdown', permission='add',
+@view_config(name='add-dropdown',
              renderer='kotti:templates/add-dropdown.pt')
 def content_type_factories(context, request):
     """
