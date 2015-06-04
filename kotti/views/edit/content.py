@@ -154,7 +154,7 @@ def includeme(config):
     config.add_view(
         DocumentAddForm,
         name=Document.type_info.add_view,
-        permission='add',
+        permission=Document.type_info.add_permission,
         renderer='kotti:templates/edit/node.pt',
         )
 
@@ -169,7 +169,7 @@ def includeme(config):
     config.add_view(
         FileAddForm,
         name=File.type_info.add_view,
-        permission='add',
+        permission=File.type_info.add_permission,
         renderer='kotti:templates/edit/node.pt',
         )
 
@@ -184,6 +184,6 @@ def includeme(config):
     config.add_view(
         ImageAddForm,
         name=Image.type_info.add_view,
-        permission='add',
+        permission=Image.type_info.add_permission,
         renderer='kotti:templates/edit/node.pt',
         )
