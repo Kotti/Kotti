@@ -180,7 +180,7 @@ I assume you are starting with a standard Kotti package created with ``pcreate -
 Four steps are needed:
 
 1. create a new marker interface ICustomContent
-2. change your kotti_wf.resource (replace IDefaultWorkflow with our new ICustomContent)
+2. change your ``kotti_wf.resource`` (replace ``IDefaultWorkflow`` with our new ``ICustomContent``)
 3. create the new workflow definition
 4. register your workflow definition
 
@@ -211,7 +211,7 @@ Change your ``kotti_wf.resources`` module like so:
         
         implements(ICustomContent)
 
-Here it is our workflow definition (or better, you can put in content_types our ``ICustomContent`` marker interface):
+Here it is our "custom" workflow definition assigned to our ``ICustomContent`` marker interface:
 
 .. code-block:: xml
 
@@ -226,7 +226,7 @@ Here it is our workflow definition (or better, you can put in content_types our 
           name="custom"
           state_attr="state"
           initial_state="private"
-          content_types="kotti_wf.resources.CustomContent"
+          content_types="kotti_wf.interfaces.ICustomContent"
           permission_checker="pyramid.security.has_permission"
           >
     
@@ -252,10 +252,17 @@ And now you have to tell Kotti to register your new custom workflow including ou
 .. code-block:: ini
     kotti.zcml_includes = kotti_wf:workflow.zcml
 
-If you are performing more complex workflow overrides you might have to write and register in your workflow definition a workflow ``elector`` or
-update your includeme function.
+Special cases:
 
-If your ``CustomContent`` already exists, you need to update the workflow settings using the ``kotti-reset-workflow`` command.
+* if you change workflow settings on a site where already
+  existed ``CustomContent`` instances, you need to update
+  the workflow settings using the ``kotti-reset-workflow`` command.
+
+* if you assign a new workflow definition to a content that already provides
+  the ``IDefaultWorkflow`` marker interface (so all content types excluded
+  files and images), you will have to create
+  and attach on your workflow definition an ``elector`` function (it is
+  just a function accepting a context that should return ``True`` or ``False``)
     
 .. _repoze.workflow: http://docs.repoze.org/workflow/
 .. _workflow.zcml: https://github.com/Kotti/Kotti/blob/master/kotti/workflow.zcml.
