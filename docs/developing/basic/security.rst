@@ -254,6 +254,8 @@ And now you have to tell Kotti to register your new custom workflow including ou
 
 If you are performing more complex workflow overrides you might have to write and register in your workflow definition a workflow ``elector`` or
 update your includeme function.
+
+If your ``CustomContent`` already exists, you need to update the workflow settings using the ``kotti-reset-workflow`` command.
     
 .. _repoze.workflow: http://docs.repoze.org/workflow/
 .. _workflow.zcml: https://github.com/Kotti/Kotti/blob/master/kotti/workflow.zcml.
