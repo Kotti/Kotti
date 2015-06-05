@@ -479,3 +479,13 @@ class TestTypeInfo:
                 edit_links=[],
                 action_links=[my_item],
                 )
+
+    def test_type_info_add_permission_default(self):
+        from kotti.resources import TypeInfo
+        type_info = TypeInfo()
+        assert type_info.add_permission == 'add'
+
+    def test_type_info_add_permission_custom(self):
+        from kotti.resources import TypeInfo
+        type_info = TypeInfo(add_permission='customadd')
+        assert type_info.add_permission == 'customadd'

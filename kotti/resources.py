@@ -328,6 +328,7 @@ class TypeInfo(object):
             -   edit_links
             -   selectable_default_views
             -   uploadable_mimetypes
+            -   add_permission
     """
 
     addable_to = ()
@@ -349,6 +350,10 @@ class TypeInfo(object):
                 warnings.warn(msg, DeprecationWarning)
             else:
                 raise ValueError(msg)
+
+        # default value for add_permission should be 'add'
+        if 'add_permission' not in kwargs:
+            kwargs['add_permission'] = 'add'
 
         self.__dict__.update(kwargs)
 
