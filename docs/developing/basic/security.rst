@@ -171,7 +171,89 @@ You can add the following lines in your includeme function:
 How to assign a different workflow to a content type
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-TODO
+We are going to use the default workflow for standard content types and a custom workflow for content providing the pretend ``ICustomContent`` marker interface.
+The other kind of content types will still use the default workflow.
+Other developers will be able to override our custom workflow without having to touch any line of code (just a ``.ini`` configuration file)
 
+I assume you are starting with a standard Kotti package created with ``pcreate -t kotti kotti_wf``.
+
+Four steps are needed:
+
+1. create a new marker interface ICustomContent
+2. change your kotti_wf.resource (replace IDefaultWorkflow with our new ICustomContent)
+3. create the new workflow definition
+4. register your workflow definition
+
+Create a new module ``kotti_wf/interfaces.py`` with this code.
+This is **optional** but it doesn't hurt, the important thing is omitting the ``IDefaultWorkflow``
+implementer from ``kotti_wf.resurces``:
+
+.. code-block:: python
+
+    from zope.interface import Interface
+    
+    
+    class ICustomContent(Interface):
+        """ Custom content marker interface """
+
+Change your ``kotti_wf.resources`` module like so:
+
+.. code-block:: python
+
+    from kotti.resources import Content
+    from zope.interface import implements
+    
+    from kotti_wf.interfaces import ICustomContent
+    
+    
+    class CustomContent(Content):
+        """ A custom content type. """
+        
+        implements(ICustomContent)
+
+Here it is our workflow definition (or better, you can put in content_types our ``ICustomContent`` marker interface):
+
+.. code-block:: xml
+
+    <configure xmlns="http://namespaces.repoze.org/bfg"
+               xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+               i18n:domain="Kotti">
+    
+      <include package="repoze.workflow" file="meta.zcml"/>
+    
+      <workflow
+          type="security"
+          name="custom"
+          state_attr="state"
+          initial_state="private"
+          content_types="kotti_wf.resources.CustomContent"
+          permission_checker="pyramid.security.has_permission"
+          >
+    
+        <state name="private" callback="kotti.workflow.workflow_callback">
+    
+          <key name="title" value="_(u'Private')" />
+          <key name="order" value="1" />
+    
+          <key name="inherit" value="0" />
+          <key name="system.Everyone" value="" />
+          <key name="role:viewer" value="view" />
+          <key name="role:editor" value="view add edit delete state_change" />
+          <key name="role:owner" value="view add edit delete manage state_change" />
+    
+        </state>
+    
+      </workflow>
+    
+    </configure>
+
+And now you have to tell Kotti to register your new custom workflow including our ``zcml`` file:
+
+.. code-block:: ini
+    kotti.zcml_includes = kotti_wf:workflow.zcml
+
+If you are performing more complex workflow overrides you might have to write and register in your workflow definition a workflow ``elector`` or
+update your includeme function.
+    
 .. _repoze.workflow: http://docs.repoze.org/workflow/
 .. _workflow.zcml: https://github.com/Kotti/Kotti/blob/master/kotti/workflow.zcml.
