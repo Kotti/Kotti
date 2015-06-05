@@ -19,6 +19,9 @@ Change History
 
 - Update documentation
 
+- Add an ``add_permission`` attribute to ``kotti.resources.TypeInfo`` with a
+  default value of ``add``. See #436
+
 1.1.1 2015-05-11
 ----------------
 
