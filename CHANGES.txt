@@ -1,7 +1,7 @@
 Change History
 ==============
 
-1.1.2 - unreleased
+1.1.2 - 2015-06-12
 ------------------
 
 - Enlarge column sizes for ``name``, ``path`` and ``title`` (see #427).
