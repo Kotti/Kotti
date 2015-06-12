@@ -305,15 +305,15 @@ class TestStorage:
         return f
 
     def create(self, content, filename=None, content_type=None):
-        id = max(self._storage) + 1
+        _id = max(self._storage) + 1
         filename = filename or getattr(content, 'filename', None)
         content_type = content_type or getattr(content, 'type', None)
         if not isinstance(content, str):
             content = content.file.read()
-        self._storage[id] = {'content': content,
-                             'filename': filename,
-                             'content_type': content_type}
-        return id
+        self._storage[_id] = {'content': content,
+                              'filename': filename,
+                              'content_type': content_type}
+        return _id
 
     def delete(self, id):
         del self._storage[int(id)]

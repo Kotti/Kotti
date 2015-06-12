@@ -44,7 +44,8 @@ class SettingHasValuePredicate(object):
             raise ValueError("Only boolean values supported")
 
     def text(self):
-        return "if_setting_has_value = %s == %s" % (self.name, self.value)
+        return u'if_setting_has_value = {0} == {1}'.format(
+            self.name, self.value)
 
     phash = text
 
@@ -57,7 +58,7 @@ class RootOnlyPredicate(object):
         self.val = val
 
     def text(self):
-        return "root_only = %s" % self.val
+        return u'root_only = {0}'.format(self.val)
 
     phash = text
 
@@ -181,7 +182,7 @@ class TemplateAPI(object):
         if view_title:
             view_title += u' '
         view_title += self.context.title
-        return u'%s - %s' % (view_title, self.site_title)
+        return u'{0} - {1}'.format(view_title, self.site_title)
 
     def url(self, context=None, *elements, **kwargs):
         """
@@ -291,7 +292,7 @@ class TemplateAPI(object):
             email = user.name
         h = hashlib.md5(email).hexdigest()
         query = {'default': default_image, 'size': str(size)}
-        url = 'https://secure.gravatar.com/avatar/%s?%s' % (
+        url = u'https://secure.gravatar.com/avatar/{0}?{1}'.format(
             h, urllib.urlencode(query))
         return url
 
@@ -433,7 +434,7 @@ def search_content(search_term, request=None):
 
 def default_search_content(search_term, request=None):
 
-    searchstring = u'%%%s%%' % search_term
+    searchstring = u'%{0}%'.format(search_term)
 
     # generic_filter can be applied to all Node (and subclassed) objects
     generic_filter = or_(Content.name.like(searchstring),

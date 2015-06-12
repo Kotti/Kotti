@@ -164,7 +164,7 @@ class TestTags:
         assert TagsToContents.query.count() == 3
 
         request = DummyRequest()
-        request.POST['delete'] = 'on'
+        request.POST['delete'] = 'delete'
         NodeActions(root[u'folder_1'], request).delete_node()
         assert Tag.query.count() == 0
         assert TagsToContents.query.count() == 0

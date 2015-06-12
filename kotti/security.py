@@ -115,7 +115,7 @@ class Principal(Base):
         self.last_login_date = None
 
     def __repr__(self):  # pragma: no cover
-        return '<Principal %r>' % self.name
+        return u'<Principal {0!r}>'.format(self.name)
 
 
 class AbstractPrincipals(object):

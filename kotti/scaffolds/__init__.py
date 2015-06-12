@@ -40,7 +40,7 @@ class KottiTemplate(PyramidTemplate):
             return env
 
         s = self._settings
-        s[key] = raw_input(u'{} [{}]: '.format(caption, s[key])) or s[key]
+        s[key] = raw_input(u'{0} [{1}]: '.format(caption, s[key])) or s[key]
 
         try:
             s.save_settings()
@@ -79,8 +79,8 @@ class KottiTemplate(PyramidTemplate):
 
         separator = "=" * 79
         msg = dedent(
-            """
-            %(separator)s
+            u"""
+            {0}
             Welcome to Kotti!
 
             Documentation: http://kotti.readthedocs.org/
@@ -88,8 +88,8 @@ class KottiTemplate(PyramidTemplate):
             Issues:        https://github.com/Kotti/Kotti/issues?state=open
             IRC:           irc://irc.freenode.net/#kotti
             Mailing List:  https://groups.google.com/group/kotti
-            %(separator)s
-        """ % {'separator': separator})
+            {0}
+        """.format(separator))
 
         self.out(msg)
 

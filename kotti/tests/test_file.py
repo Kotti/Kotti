@@ -18,7 +18,7 @@ class TestFileViews:
 
     def _test_common_headers(self, headers):
         for name in ('Content-Disposition', 'Content-Length', 'Content-Type'):
-            assert type(headers[name]) == str
+            assert isinstance(headers[name], str)
         assert headers["Content-Length"] == "13"
         assert headers["Content-Type"] == "image/png"
 

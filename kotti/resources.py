@@ -10,25 +10,25 @@ Inheritance Diagram
 
 import os
 import warnings
-
+from copy import copy
 from fnmatch import fnmatch
 from cStringIO import StringIO
 from UserDict import DictMixin
 
-from depot.fields.sqlalchemy import UploadedFileField
 from depot.fields.sqlalchemy import _SQLAMutationTracker
-
+from depot.fields.sqlalchemy import UploadedFileField
+from kotti import _resolve_dotted
 from pyramid.traversal import resource_path
 from sqlalchemy import Boolean
 from sqlalchemy import Column
 from sqlalchemy import DateTime
+from sqlalchemy import event
 from sqlalchemy import ForeignKey
 from sqlalchemy import Integer
 from sqlalchemy import String
 from sqlalchemy import Unicode
 from sqlalchemy import UnicodeText
 from sqlalchemy import UniqueConstraint
-from sqlalchemy import event
 from sqlalchemy.ext.associationproxy import association_proxy
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.ext.orderinglist import ordering_list
@@ -42,7 +42,6 @@ from sqlalchemy.util import classproperty
 from transaction import commit
 from zope.interface import implements
 
-from kotti import _resolve_dotted
 from kotti import Base
 from kotti import DBSession
 from kotti import get_settings
@@ -231,16 +230,16 @@ class Node(Base, ContainerMixin, PersistentACLMixin):
     _acl = Column(MutationList.as_mutable(ACLType))
     #: Name of the node as used in the URL
     #: (:class:`sqlalchemy.types.Unicode`)
-    name = Column(Unicode(50), nullable=False)
+    name = Column(Unicode(250), nullable=False)
     #: Title of the node, e.g. as shown in search results
     #: (:class:`sqlalchemy.types.Unicode`)
-    title = Column(Unicode(100))
+    title = Column(Unicode(250))
     #: Annotations can be used to store arbitrary data in a nested dictionary
     #: (:class:`kotti.sqla.NestedMustationDict`)
     annotations = Column(NestedMutationDict.as_mutable(JsonType))
     #: The path can be used to efficiently filter for child objects
     #: (:class:`sqlalchemy.types.Unicode`).
-    path = Column(Unicode(1000), index=True)
+    path = Column(Unicode(2000), index=True)
 
     parent = relation(
         'Node',
@@ -285,7 +284,7 @@ class Node(Base, ContainerMixin, PersistentACLMixin):
         self.parent = value
 
     def __repr__(self):
-        return '<%s %s at %s>' % (
+        return u'<{0} {1} at {2}>'.format(
             self.__class__.__name__, self.id, resource_path(self))
 
     def __eq__(self, other):
@@ -329,6 +328,7 @@ class TypeInfo(object):
             -   edit_links
             -   selectable_default_views
             -   uploadable_mimetypes
+            -   add_permission
     """
 
     addable_to = ()
@@ -351,6 +351,10 @@ class TypeInfo(object):
             else:
                 raise ValueError(msg)
 
+        # default value for add_permission should be 'add'
+        if 'add_permission' not in kwargs:
+            kwargs['add_permission'] = 'add'
+
         self.__dict__.update(kwargs)
 
     def copy(self, **kwargs):
@@ -361,6 +365,7 @@ class TypeInfo(object):
         """
 
         d = self.__dict__.copy()
+        d['selectable_default_views'] = copy(self.selectable_default_views)
         d.update(kwargs)
 
         return TypeInfo(**d)
@@ -436,7 +441,7 @@ class Tag(Base):
     title = Column(Unicode(100), unique=True, nullable=False)
 
     def __repr__(self):
-        return "<Tag ('%s')>" % self.title
+        return u"<Tag ('{0}')>".format(self.title)
 
     @property
     def items(self):
@@ -697,7 +702,7 @@ class File(Content):
         """
 
         if not cls.type_info.is_uploadable_mimetype(fs.type):
-            raise ValueError("Unsupported MIME type: %s" % fs.type)
+            raise ValueError(u"Unsupported MIME type: {0}".format(fs.type))
 
         return cls(data=fs)
 
