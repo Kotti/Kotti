@@ -1,4 +1,7 @@
+# -*- coding: utf-8 -*-
+
 from mock import patch
+from pytest import raises
 
 from kotti.testing import Dummy
 from kotti.testing import DummyRequest
@@ -36,6 +39,13 @@ class TestSendEmail:
         message = self.mailer.send.call_args[0][0]
         assert [u'"John Doe" <joedoe@foo.com>'] == message.recipients
         assert 'Reset your password' in message.subject
+
+    def test_send_email_without_template_vars(self, dummy_request):
+        from kotti.message import send_email
+        with raises(NameError):
+            send_email(dummy_request,
+                       [u'"John Doe" <joedoe@foo.com>'],
+                       'kotti:templates/email-reset-password.pt')
 
 
 class TestSendSetPassword:

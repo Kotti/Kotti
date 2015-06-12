@@ -259,7 +259,7 @@ msgstr "Editor"
 
 #: kotti/security.py:191
 msgid "Owner"
-msgstr "Propietario"
+msgstr "Proprietario"
 
 #: kotti/security.py:192
 msgid "Admin"

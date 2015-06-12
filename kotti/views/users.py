@@ -47,7 +47,7 @@ def roles_form_handler(context, request, available_role_names, groups_lister):
                 if role_name not in available_role_names:
                     raise Forbidden()
                 new_value = bool(request.params.get(
-                    'role::%s::%s' % (principal_name, role_name)))
+                    u'role::{0}::{1}'.format(principal_name, role_name)))
                 if principal_name not in p_to_r:
                     p_to_r[principal_name] = set()
                 if new_value:
@@ -88,7 +88,7 @@ def search_principals(request, context=None, ignore=None, extra=()):
             ignore.add(principal_name)
 
     if 'search' in request.POST:
-        query = '*%s*' % request.params['query']
+        query = u'*{0}*'.format(request.params['query'])
         found = False
         for p in principals.search(name=query, title=query, email=query):
             found = True
@@ -248,7 +248,7 @@ def principal_schema(base=PrincipalFull()):
         all_groups = []
         for p in principals.search(name=u'group:*'):
             value = p.name.split(u'group:')[1]
-            label = u"%s, %s" % (p.title, value)
+            label = u"{0}, {1}".format(p.title, value)
             all_groups.append(dict(value=value, label=label))
         schema['groups']['group'].widget.values = all_groups
         schema['roles'].widget.values = [
@@ -290,7 +290,7 @@ def _massage_groups_in(appstruct):
     """
     groups = appstruct.get('groups', [])
     all_groups = list(appstruct.get('roles', [])) + [
-        u'group:%s' % g for g in groups if g]
+        u'group:{0}'.format(g) for g in groups if g]
     if 'roles' in appstruct:
         del appstruct['roles']
     appstruct['groups'] = all_groups
@@ -355,7 +355,7 @@ class GroupAddFormView(UserAddFormView):
         return schema
 
     def add_group_success(self, appstruct):
-        appstruct['name'] = u'group:%s' % appstruct['name'].lower()
+        appstruct['name'] = u'group:{0}'.format(appstruct['name'].lower())
         return self.add_user_success(appstruct)
 
 
@@ -463,12 +463,12 @@ class UserManageFormView(UserEditFormView):
 
     def cancel_success(self, appstruct):
         self.request.session.flash(_(u'No changes were made.'), 'info')
-        location = "%s/@@setup-users" % self.request.application_url
+        location = u'{0}/@@setup-users'.format(self.request.application_url)
         return HTTPFound(location=location)
     cancel_failure = cancel_success
 
     def delete_success(self, appstruct):
-        location = "%s/@@delete-user?name=%s" % (
+        location = u'{0}/@@delete-user?name={1}'.format(
             self.request.application_url, self.request.params['name'])
         return HTTPFound(location=location)
 
@@ -543,7 +543,7 @@ def user_delete(context, request):
                     _(u'${principal_type} ${title} was deleted.',
                       mapping=dict(principal_type=principal_type,
                                    title=principal.title)), 'info')
-                location = "%s/@@setup-users" % request.application_url
+                location = u'{0}/@@setup-users'.format(request.application_url)
                 return HTTPFound(location=location)
 
             api = template_api(

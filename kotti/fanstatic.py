@@ -66,7 +66,10 @@ class NeededGroup(object):
     """A collection of fanstatic resources that supports
        dynamic appending of resources after initialization"""
 
-    def __init__(self, resources=[]):
+    def __init__(self, resources=None):
+
+        if resources is None:
+            resources = []
 
         if not isinstance(resources, list):
             raise ValueError(

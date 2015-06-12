@@ -239,6 +239,10 @@ Delete a document
 
   >>> browser.open(testing.BASE_URL + '/second-child/grandchild')
   >>> browser.getLink('Delete').click()
+  >>> ctrl("cancel").click()
+  >>> "Grandchild was deleted" in browser.contents
+  False
+  >>> browser.getLink('Delete').click()
   >>> ctrl("delete").click()
   >>> "Grandchild was deleted" in browser.contents
   True
