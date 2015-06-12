@@ -266,13 +266,23 @@ class NodeActions(object):
                  template for rendering.
         :rtype: pyramid.httpexceptions.HTTPFound or dict
         """
-        if 'delete' in self.request.POST:
+
+        action = self.request.POST.get(u'delete', None)
+        if action is not None:
+
             parent = self.context.__parent__
-            self.flash(_(u'${title} was deleted.',
-                         mapping=dict(title=self.context.title)), 'success')
-            del parent[self.context.name]
-            location = resource_url(parent, self.request)
+
+            if action == u'delete':
+                location = resource_url(parent, self.request)
+                self.flash(_(u'${title} was deleted.',
+                             mapping=dict(title=self.context.title)),
+                           u'success')
+                del parent[self.context.name]
+            else:
+                location = resource_url(self.context, self.request)
+
             return HTTPFound(location=location)
+
         return {}
 
     @view_config(name='delete_nodes',
