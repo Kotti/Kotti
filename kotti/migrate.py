@@ -144,14 +144,15 @@ def upgrade(location=DEFAULT_LOCATION):
     print(u'Upgrading {0}:'.format(pkg_env.location))
 
     def upgrade(heads, context):
-        rev = heads[0]   # alembic supports multiple heads, we don't
+        # alembic supports multiple heads, we don't.
+        # initial revision is () in alembic >= 0.7
+        rev = heads[0] if heads else None
 
         if rev == revision:
             print(u'  - already up to date.')
             return []
 
-        print(u'  - upgrading from {0} to {1}...'.format(
-            rev, revision))
+        print(u'  - upgrading from {0} to {1}...'.format(rev, revision))
 
         return context.script._upgrade_revs(revision, rev)
 
@@ -181,6 +182,7 @@ def list_all():
                 ))
 
         def current_revision(rev, context):
+            rev = rev[0] if rev else None
             print(u"  - current revision: {0}".format(rev))
             return []
         pkg_env.run_env(current_revision)
