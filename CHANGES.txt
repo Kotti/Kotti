@@ -4,7 +4,9 @@ Change History
 1.1.3 - unreleased
 ------------------
 
-- No changes yet.
+- Fix a bug in kotti-migrate that prevented initial migration steps from being
+  run successfully.
+- Require kotti_tinymce 0.5.3.
 
 1.1.2 - 2015-06-12
 ------------------
