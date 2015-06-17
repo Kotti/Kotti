@@ -98,6 +98,7 @@ Development
 |coveralls|_
 |codacy|_
 |codeclimate|_
+|quantifiedcode|_
 
 .. requirements need to be upgraded before we shoff off
    |requires.io|_
@@ -133,6 +134,10 @@ Contributions are always welcome, read our `contribution guidelines`_ and visit 
 
 .. |codeclimate| image:: https://img.shields.io/codeclimate/github/Kotti/Kotti.svg?style=flat-square
 .. _codeclimate: https://codeclimate.com/github/Kotti/Kotti
+
+.. |quantifiedcode| image:: http://www.quantifiedcode.com/api/v1/project/f2a648c15f8e42788aaa4fa12a82df93/badge.svg
+.. _quantifiedcode: http://www.quantifiedcode.com/app/project/f2a648c15f8e42788aaa4fa12a82df93
+
 
 .. _contribution guidelines: http://kotti.readthedocs.org/en/latest/contributing.html
 .. _Github repository: https://github.com/Kotti/Kotti

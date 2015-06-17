@@ -24,6 +24,7 @@ def kotti_configure(settings):
     """
 
     settings['pyramid.includes'] += ' {{package}}'
+    settings['kotti.alembic_dirs'] += ' {{package}}:alembic'
     settings['kotti.available_types'] += ' {{package}}.resources.CustomContent'
     settings['kotti.fanstatic.view_needed'] += ' {{package}}.fanstatic.css_and_js'
     File.type_info.addable_to.append('CustomContent')
