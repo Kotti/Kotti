@@ -8,7 +8,7 @@ MarkupSafe==0.23
 PasteDeploy==1.5.2
 Pillow==2.8.2
 Pygments==2.0.2
-SQLAlchemy==0.9.9
+SQLAlchemy==1.0.6
 Unidecode==0.04.18
 WebOb==1.4.1
 alembic==0.7.6

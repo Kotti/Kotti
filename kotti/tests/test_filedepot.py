@@ -138,7 +138,8 @@ class TestDBFileStorage:
         DepotManager._default_depot = 'default'
         DepotManager._depots = {'default': DBFileStorage()}
 
-        file_id = DepotManager.get().create('content here', u'f.jpg', 'image/jpg')
+        file_id = DepotManager.get().create(
+            'content here', u'f.jpg', 'image/jpg')
         fs = DepotManager.get().get(file_id)
 
         db_session.add(fs)
@@ -185,8 +186,8 @@ class TestMigrateBetweenStorage:
         import shutil
 
         event.listen(db_session,
-                    'before_commit',
-                    _SQLAMutationTracker._session_committed)
+                     'before_commit',
+                     _SQLAMutationTracker._session_committed)
 
         tmp_location = tempfile.mkdtemp()
 
