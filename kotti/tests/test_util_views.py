@@ -282,6 +282,22 @@ class TestTemplateAPI:
         api = self.make()
         assert api.slots.right == [u"Hello world!"]
 
+    def test_assign_to_slot_forbidden(self, config, db_session,
+                                      events):
+        from kotti.views.slots import assign_slot
+        from pyramid.exceptions import HTTPForbidden
+
+        def special(context, request):
+            return Response(u"Hello world!")
+        assign_slot('special', 'right')
+
+        config.add_view(special, name='special', permission='admin')
+        # the slot rendering must not fail if a HTTPForbidden exception
+        api = self.make()
+        with patch('kotti.views.slots.render_view') as render_view:
+            render_view.side_effect = HTTPForbidden()
+            assert api.slots.right == []
+
     def test_assign_slot_bad_name(self):
         from kotti.views.slots import assign_slot
 
