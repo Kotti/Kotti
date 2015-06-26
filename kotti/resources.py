@@ -645,7 +645,59 @@ class Document(Content):
         self.mime_type = mime_type
 
 
-class File(Content):
+class SaveDataMixin(object):
+    """ The classmethods must not be implemented on a class that inherits
+        from ``Base`` with ``SQLAlchemy>=1.0``, otherwise that class cannot be
+        subclassed further.
+
+        See http://stackoverflow.com/questions/30433960/how-to-use-declare-last-in-sqlalchemy-1-0  # noqa
+    """
+
+    @classmethod
+    def __declare_last__(cls):
+        """ Unconfigure the event set in _SQLAMutationTracker,
+        we have _save_data """
+
+        mapper = cls._sa_class_manager.mapper
+        args = (mapper.attrs['data'], 'set', _SQLAMutationTracker._field_set)
+        if event.contains(*args):
+            event.remove(*args)
+
+        # Declaring the event on the class attribute instead of mapper property
+        # enables proper registration on its subclasses
+        event.listen(cls.data, 'set', cls._save_data, retval=True)
+
+    @classmethod
+    def _save_data(cls, target, value, oldvalue, initiator):
+        """ Refresh metadata and save the binary data to the data field.
+
+        :param target: The File instance
+        :type target: :class:`kotti.resources.File` or subclass
+
+        :param value: The container for binary data
+        :type value: A :class:`cgi.FieldStorage` instance
+        """
+
+        if isinstance(value, bytes):
+            value = _to_fieldstorage(fp=StringIO(value),
+                                     filename=target.filename,
+                                     mimetype=target.mimetype,
+                                     size=len(value))
+
+        newvalue = _SQLAMutationTracker._field_set(
+            target, value, oldvalue, initiator)
+
+        if newvalue is None:
+            return
+
+        target.filename = newvalue.filename
+        target.mimetype = newvalue.content_type
+        target.size = newvalue.file.content_length
+
+        return newvalue
+
+
+class File(Content, SaveDataMixin):
     """File adds some attributes to :class:`~kotti.resources.Content` that are
        useful for storing binary data.
     """
@@ -705,46 +757,6 @@ class File(Content):
             raise ValueError(u"Unsupported MIME type: {0}".format(fs.type))
 
         return cls(data=fs)
-
-    @classmethod
-    def __declare_last__(cls):
-        # Unconfigure the event set in _SQLAMutationTracker, we have _save_data
-        mapper = cls._sa_class_manager.mapper
-        args = (mapper.attrs['data'], 'set', _SQLAMutationTracker._field_set)
-        if event.contains(*args):
-            event.remove(*args)
-
-        # Declaring the event on the class attribute instead of mapper property
-        # enables proper registration on its subclasses
-        event.listen(cls.data, 'set', cls._save_data, retval=True)
-
-    @classmethod
-    def _save_data(cls, target, value, oldvalue, initiator):
-        """ Refresh metadata and save the binary data to the data field.
-
-        :param target: The File instance
-        :type target: :class:`kotti.resources.File` or subclass
-        :param value: The container for binary data
-        :type value: A :class:`cgi.FieldStorage` instance
-        """
-
-        if isinstance(value, bytes):
-            value = _to_fieldstorage(fp=StringIO(value),
-                                     filename=target.filename,
-                                     mimetype=target.mimetype,
-                                     size=len(value))
-
-        newvalue = _SQLAMutationTracker._field_set(
-            target, value, oldvalue, initiator)
-
-        if newvalue is None:
-            return
-
-        target.filename = newvalue.filename
-        target.mimetype = newvalue.content_type
-        target.size = newvalue.file.content_length
-
-        return newvalue
 
 
 class Image(File):

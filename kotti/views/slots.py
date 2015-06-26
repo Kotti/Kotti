@@ -41,6 +41,7 @@ users of your package to include your slot assignments through the
 import urllib
 
 from pyramid.exceptions import PredicateMismatch
+from pyramid.exceptions import HTTPForbidden
 from pyramid.request import Request
 from pyramid.view import render_view
 
@@ -77,7 +78,7 @@ def _render_view_on_slot_event(view_name, event, params):
 
     try:
         result = render_view(context, view_request, view_name)
-    except PredicateMismatch:
+    except (PredicateMismatch, HTTPForbidden):
         return None
     else:
         return result.decode('utf-8')
