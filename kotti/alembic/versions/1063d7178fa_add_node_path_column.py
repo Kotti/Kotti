@@ -16,8 +16,14 @@ from pyramid.location import lineage
 
 
 def upgrade():
-    op.add_column('nodes',
-                  sa.Column('path', sa.Unicode(1000), index=True))
+    from alembic.context import get_bind
+
+    conn = get_bind()
+    if conn.engine.dialect.name == 'mysql':
+        op.add_column('nodes', sa.Column('path', sa.Unicode(1000)))
+    else:
+        op.add_column('nodes', sa.Column('path', sa.Unicode(1000), index=True))
+
 
     from kotti import DBSession
     from kotti.resources import Node

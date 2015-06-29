@@ -14,9 +14,17 @@ down_revision = '1063d7178fa'
 def upgrade():
 
     from kotti.resources import DBSession
-    DBSession.execute(
-        "update nodes set path = path || '/' where path not like '%/'"
-    )
+
+    from alembic.context import get_bind
+
+    conn = get_bind()
+
+    if conn.engine.dialect.name == 'mysql':
+        update = "update nodes set path = concat(path, '/') where path not \
+like '%/'"
+    else:
+        update = "update nodes set path = path || '/' where path not like '%/'"
+    DBSession.execute(update)
 
 
 def downgrade():
