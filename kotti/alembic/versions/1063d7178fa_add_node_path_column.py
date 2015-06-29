@@ -6,13 +6,14 @@ Create Date: 2014-05-26 15:34:31.050983
 
 """
 
-# revision identifiers, used by Alembic.
-revision = '1063d7178fa'
-down_revision = '57fecf5dbd62'
-
 from alembic import op
 import sqlalchemy as sa
 from pyramid.location import lineage
+
+
+# revision identifiers, used by Alembic.
+revision = '1063d7178fa'
+down_revision = '57fecf5dbd62'
 
 
 def upgrade():
@@ -23,7 +24,6 @@ def upgrade():
         op.add_column('nodes', sa.Column('path', sa.Unicode(1000)))
     else:
         op.add_column('nodes', sa.Column('path', sa.Unicode(1000), index=True))
-
 
     from kotti import DBSession
     from kotti.resources import Node
