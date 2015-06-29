@@ -4,7 +4,7 @@ Change History
 1.1.5 - unreleased
 ------------------
 
-- No changes yet.
+- Fix migration error on MySQL.
 
 1.1.4 - 2015-06-27
 ------------------
