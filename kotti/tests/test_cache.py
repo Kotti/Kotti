@@ -76,4 +76,3 @@ class TestSetCacheHeaders:
             set_cache_headers(event)
 
             assert chooser.call_count == 0
-
