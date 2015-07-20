@@ -5,6 +5,9 @@ Change History
 ------------------
 
 - Fix migration error on MySQL.
+- Don't try to set a caching header from the NewRequest handler when Pyramid's
+  tweens didn't follow the usual chain of calls. This fixes compatibility with
+  ``bowerstatic``.
 
 1.1.4 - 2015-06-27
 ------------------

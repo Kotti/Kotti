@@ -66,3 +66,14 @@ class TestSetCacheHeaders:
                 set_cache_headers(event)
 
         assert chooser.call_count == 0
+
+    def test_request_has_no_context(self):
+        from kotti.views.cache import set_cache_headers
+
+        with patch('kotti.views.cache.caching_policy_chooser') as chooser:
+            event = MagicMock()
+            event.request = {}
+            set_cache_headers(event)
+
+            assert chooser.call_count == 0
+
