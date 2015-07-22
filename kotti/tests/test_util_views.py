@@ -522,6 +522,17 @@ class TestViewUtil:
         add_renderer_globals(event)
         assert 'api' in event
 
+    def test_add_renderer_globals_event_has_no_renderer_name(self, db_session):
+        from kotti.views.util import add_renderer_globals
+
+        request = DummyRequest()
+        event = {
+            'request': request,
+            'context': object(),
+            }
+        add_renderer_globals(event)
+        assert 'api' in event
+
 
 class TestLocalNavigationSlot:
     def test_it(self, config, root):
