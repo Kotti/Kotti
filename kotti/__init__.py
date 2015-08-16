@@ -62,6 +62,7 @@ conf_defaults = {
         'kotti.filedepot',
         'kotti.events',
         'kotti.sanitizers',
+        'kotti.rest',
         'kotti.views',
         'kotti.views.cache',
         'kotti.views.view',
