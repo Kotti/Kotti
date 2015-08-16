@@ -8,7 +8,7 @@ class TestSerializer:
     def make_one(self, config, klass=Content, **kw):
         from kotti.rest import serialize
 
-        config.include('kotti.rest')
+        config.scan('kotti.rest')
 
         props = {
             'name': 'doc-a',
@@ -42,5 +42,6 @@ class TestSerializer:
     def test_serialize_file(self, config, filedepot):
         from kotti.resources import File
         res = self.make_one(config, File, data='file content')
+        print res
 
     # serializing an image

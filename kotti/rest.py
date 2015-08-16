@@ -5,55 +5,65 @@ import colander
 import datetime
 import decimal
 import json
+import venusian
 
 
-class ISchemaFactory(Interface):
-    """ Schema factory
+class ISerializer(Interface):
+    """ A serializer to change objects to colander cstructs
     """
 
     def __call__(request):
-        """ Returns a colander schema for context object """
+        """ Returns a colander cstruct for context object """
 
 
-def serialize(obj, request, view='add', schema=None):
+def serialize(obj, request, view='add'):
     """ Use an object's schema to serialize to a colander cstruct """
     reg = request.registry
 
-    if schema is None:
-        schema = reg.queryMultiAdapter((obj, request), ISchemaFactory, name=view)
-        if schema is None:
-            schema = reg.queryMultiAdapter((obj, request), ISchemaFactory)
+    serialized = reg.queryMultiAdapter((obj, request), ISerializer, name=view)
+    if serialized is None:
+        serialized = reg.queryMultiAdapter((obj, request), ISerializer)
 
-
-    serialized = schema.serialize(obj.__dict__)
     if not 'id' in serialized:  # colander schemas don't usually expose 'name'
         serialized['id'] = obj.__name__
 
     return serialized
 
 
-def content_schema(request, context):
+def serializes(iface_or_class):
+
+    def wrapper(wrapped):
+        def callback(context, name, ob):
+            config = context.config.with_package(info.module)
+            config.registry.registerAdapter(
+                wrapped, required=[iface_or_class, IRequest],
+                provided=ISerializer
+            )
+
+        info = venusian.attach(wrapped, callback, category='pyramid')
+
+        return wrapped
+
+    return wrapper
+
+
+@serializes(IContent)
+def content_serializer(context, request):
     from kotti.views.edit.content import ContentSchema
-    return ContentSchema()
+    return ContentSchema().serialize(context.__dict__)
 
 
-def document_schema(request, context):
+@serializes(IDocument)
+def document_serializer(context, request):
     from kotti.views.edit.content import DocumentSchema
-    return DocumentSchema()
+    return DocumentSchema().serialize(context.__dict__)
 
 
-def file_schema(request, context):
+@serializes(IFile)
+def file_serializer(context, request):
     from kotti.views.edit.content import FileSchema
     # TODO: implement a Base64 file store
-    return FileSchema(None)
-
-
-default_content_schemas = {
-    IContent: content_schema,
-    IDocument: document_schema,
-    IFile: file_schema,
-    IImage: file_schema,
-}
+    return FileSchema(None).serialize(context.__dict__)
 
 
 datetime_types = (datetime.time, datetime.date, datetime.datetime)
@@ -77,8 +87,8 @@ def to_json(obj):
     return json.dumps(obj, cls=JSONEncoder)
 
 
-def includeme(config):
-    for klass, factory in default_content_schemas.items():
-        config.registry.registerAdapter(factory, required=[klass, IRequest],
-            provided=ISchemaFactory)
-
+# def includeme(config):
+#     for klass, factory in default_serializers.items():
+#         config.registry.registerAdapter(factory, required=[klass, IRequest],
+#             provided=ISerializer)
+#
