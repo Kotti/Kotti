@@ -1,7 +1,8 @@
-import colander
-from kotti.testing import DummyRequest
 from kotti.rest import serializes
+from kotti.testing import DummyRequest
+from mock import patch
 from zope.interface import Interface, implements
+import colander
 
 
 class ISomething(Interface):
@@ -76,4 +77,34 @@ class TestSerializeDefaultContent:
         res = self.make_one(config, File, data='file content')
         print res
 
-    # serializing an image
+    # TODO: serializing an image
+
+
+class TestRestView:
+    def get_view(self, context, request, name):
+        from pyramid.compat import map_
+        from pyramid.interfaces import IView
+        from pyramid.interfaces import IViewClassifier
+        from zope.interface import providedBy
+
+        provides = [IViewClassifier] + map_(
+            providedBy,
+            (request, context)
+        )
+
+        return request.registry.adapters.lookup(provides, IView, name=name)
+
+    def test_predicate_matching(self, config):
+        from kotti.resources import Document
+        from kotti.rest import ACCEPT
+        from webob.acceptparse import MIMEAccept
+        config.scan('kotti.rest')
+
+        req = DummyRequest(accept=MIMEAccept(ACCEPT))
+        doc = Document()
+
+        with patch('kotti.rest.serialize') as serialize:
+            serialize.return_value = 'a'
+            view = self.get_view(doc, req, name='json')
+            resp = view(doc, req)
+            assert resp.json == u'a'

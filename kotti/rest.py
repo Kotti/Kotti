@@ -1,5 +1,7 @@
 from kotti.interfaces import IContent, IDocument, IFile #, IImage
 from pyramid.interfaces import IRequest
+from pyramid.response import Response
+from pyramid.view import view_config, view_defaults
 from zope.interface import Interface
 import colander
 import datetime
@@ -64,6 +66,37 @@ def file_serializer(context, request):
     from kotti.views.edit.content import FileSchema
     # TODO: implement a Base64 file store
     return FileSchema(None).serialize(context.__dict__)
+
+
+ACCEPT = 'application/vnd.api+json'
+
+@view_defaults(name='json', accept=ACCEPT)
+class RestView(object):
+
+    def __init__(self, context, request):
+
+        self.context = context
+        self.request = request
+
+    @view_config(request_method='GET')
+    def get(self):
+        return Response(to_json(serialize(self.context, self.request)))
+
+    @view_config(request_method='POST')
+    def post(self):
+        pass
+
+    @view_config(request_method='PATCH')
+    def patch(self):
+        pass
+
+    @view_config(request_method='PUT')
+    def put(self):
+        pass
+
+    @view_config(request_method='DELETE')
+    def delete(self):
+        pass
 
 
 datetime_types = (datetime.time, datetime.date, datetime.datetime)
