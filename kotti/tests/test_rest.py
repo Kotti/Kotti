@@ -1,8 +1,40 @@
 import colander
 from kotti.testing import DummyRequest
+from kotti.rest import serializes
+from zope.interface import Interface, implements
+
+
+class ISomething(Interface):
+    """ dummy """
+
+class Something(object):
+    implements(ISomething)
+
+
+@serializes(ISomething)
+def sa(context, request):
+    return 'a'
+
+
+@serializes(ISomething, name='b')
+def sb(context, request):
+    return 'b'
 
 
 class TestSerializer:
+
+    def test_serializes_decorator(self, config):
+        from kotti.rest import ISerializer
+        from zope.component import getMultiAdapter
+
+        config.scan('kotti.tests.test_rest')
+        obj, req = Something(), DummyRequest()
+
+        assert getMultiAdapter((obj, req), ISerializer, name='b') == 'b'
+        assert getMultiAdapter((obj, req), ISerializer) == 'a'
+
+
+class TestSerializeDefaultContent:
     from kotti.resources import Content
 
     def make_one(self, config, klass=Content, **kw):

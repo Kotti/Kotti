@@ -1,4 +1,4 @@
-from kotti.interfaces import IContent, IDocument, IFile, IImage
+from kotti.interfaces import IContent, IDocument, IFile #, IImage
 from pyramid.interfaces import IRequest
 from zope.interface import Interface
 import colander
@@ -30,14 +30,14 @@ def serialize(obj, request, view='add'):
     return serialized
 
 
-def serializes(iface_or_class):
+def serializes(iface_or_class, name=''):
 
     def wrapper(wrapped):
-        def callback(context, name, ob):
+        def callback(context, funcname, ob):
             config = context.config.with_package(info.module)
             config.registry.registerAdapter(
                 wrapped, required=[iface_or_class, IRequest],
-                provided=ISerializer
+                provided=ISerializer, name=name
             )
 
         info = venusian.attach(wrapped, callback, category='pyramid')
