@@ -98,7 +98,7 @@ class TestRestView:
         from kotti.resources import Document
         from kotti.rest import ACCEPT
         from webob.acceptparse import MIMEAccept
-        config.scan('kotti.rest')
+        config.include('kotti.rest')
 
         req = DummyRequest(accept=MIMEAccept(ACCEPT))
         doc = Document()

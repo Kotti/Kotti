@@ -70,7 +70,7 @@ def file_serializer(context, request):
 
 ACCEPT = 'application/vnd.api+json'
 
-@view_defaults(name='json', accept=ACCEPT)
+@view_defaults(name='json', accept=ACCEPT, renderer="jsonp")
 class RestView(object):
 
     def __init__(self, context, request):
@@ -80,7 +80,8 @@ class RestView(object):
 
     @view_config(request_method='GET')
     def get(self):
-        return Response(to_json(serialize(self.context, self.request)))
+        return serialize(self.context, self.request)
+        #return Response(to_json(serialize(self.context, self.request)))
 
     @view_config(request_method='POST')
     def post(self):
@@ -120,8 +121,9 @@ def to_json(obj):
     return json.dumps(obj, cls=JSONEncoder)
 
 
-# def includeme(config):
-#     for klass, factory in default_serializers.items():
-#         config.registry.registerAdapter(factory, required=[klass, IRequest],
-#             provided=ISerializer)
-#
+def includeme(config):
+    from pyramid.renderers import JSONP
+
+    config.add_renderer('jsonp', JSONP(param_name='callback'))
+    config.scan(__name__)
+
