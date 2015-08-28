@@ -274,6 +274,7 @@ class Node(Base, ContainerMixin, PersistentACLMixin):
         LocalGroup,
         backref=backref('node'),
         cascade='all',
+        lazy='joined',
         )
 
     def __init__(self, name=None, parent=None, title=u"", annotations=None,
