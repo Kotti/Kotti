@@ -9,6 +9,7 @@ env:
   - KOTTI_TEST_DB_STRING=sqlite://
 install:
   - travis_retry pip install "pip==1.3.1"  # fix issue with fanstatic==1.0a
+  - travis_retry pip install "setuptools>=17.1"  # fix issue with mock==1.3.0
   - travis_retry pip install -e . -r requirements.txt --use-mirrors
   - pip uninstall -y Kotti
   - python setup.py develop
