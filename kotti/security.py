@@ -294,7 +294,7 @@ def _cachekey_list_groups_ext(name, context=None, _seen=None, _inherited=None):
         raise DontCache
     else:
         context_id = getattr(context, 'id', id(context))
-        return (name, context_id)
+        return (unicode(name), context_id)
 
 
 @request_cache(_cachekey_list_groups_ext)
@@ -447,9 +447,13 @@ class Principals(DictMixin):
     """
     factory = Principal
 
-    @request_cache(lambda self, name: name)
+    @request_cache(lambda self, name: unicode(name))
     def __getitem__(self, name):
         name = unicode(name)
+        # avoid calls to the DB for roles
+        # (they're not stored in the ``principals`` table)
+        if name.startswith('role:'):
+            raise KeyError(name)
         try:
             return DBSession.query(
                 self.factory).filter(self.factory.name == name).one()
