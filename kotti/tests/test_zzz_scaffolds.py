@@ -51,7 +51,7 @@ def virtualenv(request):
     # update setuptools in the virtualenv
     subprocess.check_call([
         os.path.join('bin', 'pip'),
-        'install', '-U', 'setuptools'])
+        'install', 'setuptools>=17.1'])
 
     # install requirements.txt into the virtualenv
     subprocess.check_call([
