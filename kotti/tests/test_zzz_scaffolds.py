@@ -48,11 +48,6 @@ def virtualenv(request):
     # chdir into the virtualenv directory
     os.chdir(virtualenv_directory)
 
-    # update setuptools in the virtualenv
-    subprocess.check_call([
-        os.path.join('bin', 'pip'),
-        'install', 'setuptools>=17.1'])
-
     # install requirements.txt into the virtualenv
     subprocess.check_call([
         os.path.join('bin', 'pip'),
