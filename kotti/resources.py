@@ -809,7 +809,7 @@ def get_root(request=None):
 
 
 class DefaultRootCache(object):
-    """docstring for DefaultGetRoot"""
+    """ Default implementation for :func:`~kotti.resources.get_root` """
 
     @reify
     def root_id(self):
@@ -831,26 +831,22 @@ class DefaultRootCache(object):
 
         return Node.query.get(self.root_id)
 
+    def __call__(self, request=None):
+        """ Default implementation for :func:`~kotti.resources.get_root`
 
-def default_get_root(request=None):
-    """Default implementation for :func:`~kotti.resources.get_root`.
+        :param request: Current request (optional)
+        :type request: :class:`kotti.request.Request`
 
-    :param request: Current request (optional)
-    :type request: :class:`kotti.request.Request`
+        :result: Node in the object tree that has no parent.
+        :rtype: :class:`~kotti.resources.Node` or descendant;
+                in a fresh Kotti site with Kotti's
+                :func:`default populator <kotti.populate.populate>` this will
+                be an instance of :class:`~kotti.resources.Document`.
+        """
 
-    :result: Node in the object tree that has no parent.
-    :rtype: :class:`~kotti.resources.Node` or descendant; in a fresh Kotti site
-            with Kotti's :func:`default populator <kotti.populate.populate>`
-            this will be an instance of :class:`~kotti.resources.Document`.
-    """
+        return self.get_root()
 
-    # Get the root cache, make one if it doesn't exist yet.
-    try:
-        drc = get_settings()['kotti.default_root_cache']
-    except KeyError:
-        drc = get_settings()['kotti.default_root_cache'] = DefaultRootCache()
-
-    return drc.get_root()
+default_get_root = DefaultRootCache()
 
 
 def _adjust_for_engine(engine):
