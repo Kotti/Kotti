@@ -180,10 +180,10 @@ class LocalGroup(Base):
     id = Column(Integer(), primary_key=True)
     #: ID of the node for this assignment
     #: (:class:`sqlalchemy.types.Integer`)
-    node_id = Column(ForeignKey('nodes.id'))
+    node_id = Column(ForeignKey('nodes.id'), index=True)
     #: Name of the principal (user or group)
     #: (:class:`sqlalchemy.types.Unicode`)
-    principal_name = Column(Unicode(100))
+    principal_name = Column(Unicode(100), index=True)
     #: Name of the assigned group or role
     #: (:class:`sqlalchemy.types.Unicode`)
     group_name = Column(Unicode(100))
@@ -224,7 +224,7 @@ class Node(Base, ContainerMixin, PersistentACLMixin):
     type = Column(String(30), nullable=False)
     #: ID of the node's parent
     #: (:class:`sqlalchemy.types.Integer`)
-    parent_id = Column(ForeignKey('nodes.id'))
+    parent_id = Column(ForeignKey('nodes.id'), index=True)
     #: Position of the node within its container / parent
     #: (:class:`sqlalchemy.types.Integer`)
     position = Column(Integer())
