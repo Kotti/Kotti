@@ -12,6 +12,11 @@ Change History
   a bit ambigous in regards to what the ``system`` parameter should include
   when a renderer gets called. This fixes compatibility with
   ``pyramid_layout``.
+- Add "missing" foreign key indices (with corresponding migration step).
+- Greatly reduce the number of queries that are sent to the DB:
+  - Add caching for the root node.
+  - Use eager / joined loading for local_groups.
+  - Don't query principals for roles
 
 1.1.5 - 2015-09-04
 ------------------
