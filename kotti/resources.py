@@ -18,6 +18,7 @@ from UserDict import DictMixin
 from depot.fields.sqlalchemy import _SQLAMutationTracker
 from depot.fields.sqlalchemy import UploadedFileField
 from kotti import _resolve_dotted
+from pyramid.decorator import reify
 from pyramid.traversal import resource_path
 from sqlalchemy import Boolean
 from sqlalchemy import Column
@@ -111,10 +112,27 @@ class ContainerMixin(object, DictMixin):
             else:
                 return child
 
+        # Get a single child by its name
         if len(path) == 1:
+            # Add a cache dict if it doesn't exist yet
+            if '_child_cache' not in self.__dict__:
+                self._child_cache = {}
+            if path[0] in self._child_cache:
+                child = self._child_cache[path[0]]
+                # Only return an item from the cache if it's still a child
+                # (i.e. it hasn't been assigned to a different parent in the
+                # meantime).
+                if child.parent == self:
+                    return child
+                else:
+                    # remove item from the cache if the parent has changed.
+                    self._child_cache.pop(path[0])
             try:
-                return DBSession.query(Node).filter_by(
+                child = DBSession.query(Node).filter_by(
                     name=path[0], parent=self).one()
+                # put the item in the cache for subsequent access
+                self._child_cache[path[0]] = child
+                return child
             except NoResultFound:
                 raise KeyError(path)
 
@@ -256,6 +274,7 @@ class Node(Base, ContainerMixin, PersistentACLMixin):
         LocalGroup,
         backref=backref('node'),
         cascade='all',
+        lazy='joined',
         )
 
     def __init__(self, name=None, parent=None, title=u"", annotations=None,
@@ -789,19 +808,45 @@ def get_root(request=None):
     return get_settings()['kotti.root_factory'][0](request)
 
 
-def default_get_root(request=None):
-    """Default implementation for :func:`~kotti.resources.get_root`.
+class DefaultRootCache(object):
+    """ Default implementation for :func:`~kotti.resources.get_root` """
 
-    :param request: Current request (optional)
-    :type request: :class:`kotti.request.Request`
+    @reify
+    def root_id(self):
+        """ Query for the one node without a parent and return its id.
 
-    :result: Node in the object tree that has no parent.
-    :rtype: :class:`~kotti.resources.Node` or descendant; in a fresh Kotti site
-            with Kotti's :func:`default populator <kotti.populate.populate>`
-            this will be an instance of :class:`~kotti.resources.Document`.
-    """
+        :result: The root node's id.
+        :rtype: int
+        """
 
-    return DBSession.query(Node).filter(Node.parent_id == None).one()  # noqa
+        return Node.query.filter(Node.parent_id == None).one().id  # noqa
+
+    def get_root(self):
+        """ Query for the root node by its id.  This enables SQLAlchemy's
+        session cache (query is executed only once per session).
+
+        :result: The root node.
+        :rtype: :class:`Node`.
+        """
+
+        return Node.query.get(self.root_id)
+
+    def __call__(self, request=None):
+        """ Default implementation for :func:`~kotti.resources.get_root`
+
+        :param request: Current request (optional)
+        :type request: :class:`kotti.request.Request`
+
+        :result: Node in the object tree that has no parent.
+        :rtype: :class:`~kotti.resources.Node` or descendant;
+                in a fresh Kotti site with Kotti's
+                :func:`default populator <kotti.populate.populate>` this will
+                be an instance of :class:`~kotti.resources.Document`.
+        """
+
+        return self.get_root()
+
+default_get_root = DefaultRootCache()
 
 
 def _adjust_for_engine(engine):
