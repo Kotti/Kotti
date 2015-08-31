@@ -15,11 +15,11 @@ down_revision = '37a05f6246af'
 
 def upgrade():
     op.create_index(
-        'ix_nodes_parent_id', 'nodes', 'parent_id')
+        'ix_nodes_parent_id', 'nodes', ['parent_id', ])
     op.create_index(
-        'ix_local_groups_node_id', 'local_groups', 'node_id')
+        'ix_local_groups_node_id', 'local_groups', ['node_id', ])
     op.create_index(
-        'ix_local_groups_principal_name', 'local_groups', 'principal_name')
+        'ix_local_groups_principal_name', 'local_groups', ['principal_name', ])
 
 
 def downgrade():
