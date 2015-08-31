@@ -269,14 +269,14 @@ def list_groups_raw(name, context):
     Only groups defined in context will be considered, therefore no
     global or inherited groups are returned.
     """
-    from kotti.resources import LocalGroup
+
     from kotti.resources import Node
 
     if isinstance(context, Node):
         return set(
-            r[0] for r in DBSession.query(LocalGroup.group_name).filter(
-                LocalGroup.node_id == context.id).filter(
-                LocalGroup.principal_name == name).all())
+            r.group_name for r in context.local_groups
+            if r.principal_name == name
+        )
     return set()
 
 
@@ -294,7 +294,7 @@ def _cachekey_list_groups_ext(name, context=None, _seen=None, _inherited=None):
         raise DontCache
     else:
         context_id = getattr(context, 'id', id(context))
-        return (name, context_id)
+        return (unicode(name), context_id)
 
 
 @request_cache(_cachekey_list_groups_ext)
@@ -339,14 +339,19 @@ def set_groups(name, context, groups_to_set=()):
     """Set the list of groups for principal with given ``name`` and in
     given ``context``.
     """
-    name = unicode(name)
-    from kotti.resources import LocalGroup
-    DBSession.query(LocalGroup).filter(
-        LocalGroup.node_id == context.id).filter(
-        LocalGroup.principal_name == name).delete()
 
-    for group_name in groups_to_set:
-        DBSession.add(LocalGroup(context, name, unicode(group_name)))
+    from kotti.resources import LocalGroup
+
+    name = unicode(name)
+    context.local_groups = [
+        # keep groups for "other" principals
+        lg for lg in context.local_groups
+        if lg.principal_name != name
+    ] + [
+        # reset groups for given principal
+        LocalGroup(context, name, unicode(group_name))
+        for group_name in groups_to_set
+    ]
 
 
 def list_groups_callback(name, request):
@@ -396,19 +401,19 @@ def principals_with_local_roles(context, inherit=True):
     """Return a list of principal names that have local roles in the
     context.
     """
-    from resources import LocalGroup
+
     principals = set()
     items = [context]
+
     if inherit:
         items = lineage(context)
+
     for item in items:
         principals.update(
-            r[0] for r in
-            DBSession.query(LocalGroup.principal_name).filter(
-                LocalGroup.node_id == item.id).group_by(
-                LocalGroup.principal_name).all()
-            if not r[0].startswith('role:')
-            )
+            r.principal_name for r in item.local_groups
+            if not r.principal_name.startswith('role:')
+        )
+
     return list(principals)
 
 
