@@ -18,6 +18,7 @@ from UserDict import DictMixin
 from depot.fields.sqlalchemy import _SQLAMutationTracker
 from depot.fields.sqlalchemy import UploadedFileField
 from kotti import _resolve_dotted
+from pyramid.decorator import reify
 from pyramid.traversal import resource_path
 from sqlalchemy import Boolean
 from sqlalchemy import Column
@@ -789,19 +790,41 @@ def get_root(request=None):
     return get_settings()['kotti.root_factory'][0](request)
 
 
-def default_get_root(request=None):
-    """Default implementation for :func:`~kotti.resources.get_root`.
+class DefaultRootCache(object):
+    """ Default implementation for :func:`~kotti.resources.get_root` """
 
-    :param request: Current request (optional)
-    :type request: :class:`kotti.request.Request`
+    @reify
+    def root_id(self):
+        """ Query for the one node without a parent and return its id.
+        :result: The root node's id.
+        :rtype: int
+        """
 
-    :result: Node in the object tree that has no parent.
-    :rtype: :class:`~kotti.resources.Node` or descendant; in a fresh Kotti site
-            with Kotti's :func:`default populator <kotti.populate.populate>`
-            this will be an instance of :class:`~kotti.resources.Document`.
-    """
+        return Node.query.filter(Node.parent_id == None).one().id  # noqa
 
-    return DBSession.query(Node).filter(Node.parent_id == None).one()  # noqa
+    def get_root(self):
+        """ Query for the root node by its id.  This enables SQLAlchemy's
+        session cache (query is executed only once per session).
+        :result: The root node.
+        :rtype: :class:`Node`.
+        """
+
+        return Node.query.get(self.root_id)
+
+    def __call__(self, request=None):
+        """ Default implementation for :func:`~kotti.resources.get_root`
+        :param request: Current request (optional)
+        :type request: :class:`kotti.request.Request`
+        :result: Node in the object tree that has no parent.
+        :rtype: :class:`~kotti.resources.Node` or descendant;
+                in a fresh Kotti site with Kotti's
+                :func:`default populator <kotti.populate.populate>` this will
+                be an instance of :class:`~kotti.resources.Document`.
+        """
+
+        return self.get_root()
+
+default_get_root = DefaultRootCache()
 
 
 def _adjust_for_engine(engine):
