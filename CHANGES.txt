@@ -5,6 +5,14 @@ Change History
 ------------------
 
 - Fix migration error on MySQL.
+- Don't try to set a caching header from the NewRequest handler when Pyramid's
+  tweens didn't follow the usual chain of calls. This fixes compatibility with
+  ``bowerstatic``.
+- Don't assume ``renderer_name`` exists in a rendering event (ex.
+  BeforeRender). The official docstring of ``pyramid.interfaces.IRenderer`` is
+  a bit ambigous in regards to what the ``system`` parameter should include
+  when a renderer gets called. This fixes compatibility with
+  ``pyramid_layout``.
 
 1.1.4 - 2015-06-27
 ------------------
