@@ -137,4 +137,4 @@ class TestRestView:
 
         view = self.get_view(doc, req, name='json')
         resp = view(doc, req)
-        import pdb; pdb.set_trace()
+        assert resp.json
