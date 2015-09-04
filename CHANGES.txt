@@ -5,6 +5,10 @@ Change History
 ------------------
 
 - Fix migration error on MySQL.
+- Only wrap methods that do exist on the wrapped type (in
+  ``kotti.sqla.MutationList`` / ``kotti.sqla.MutationDict``).  This
+  fixes an error that occurs when MutationLists are exposed to the UI
+  via ``colander.SequenceSchema``.
 
 1.1.4 - 2015-06-27
 ------------------

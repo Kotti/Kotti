@@ -72,6 +72,7 @@ class TestNestedMutationDict:
 
         wrapper = NestedMutationDict(
             {'name': 'andy', 'age': 77, 'children': []})
+        assert getattr(wrapper, 'get', False) is not False
         changed = wrapper.changed = MagicMock()
 
         wrapper['name'] = 'randy'
@@ -89,6 +90,7 @@ class TestNestedMutationDict:
 
         wrapper = NestedMutationList(
             [{'name': 'andy', 'age': 77, 'children': []}])
+        assert getattr(wrapper, 'get', False) is False
         changed = wrapper.changed = MagicMock()
 
         assert isinstance(wrapper[0], NestedMutationDict)
