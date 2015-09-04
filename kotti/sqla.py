@@ -153,6 +153,7 @@ for wrapper_class in (MutationDict, MutationList):
             ('update', True),
             ('remove', True),
             ):
+        # Only wrap methods that do exist on the wrapped type!
         if getattr(wrapper_class._wraps, methodname, False):
             setattr(
                 wrapper_class, methodname,
