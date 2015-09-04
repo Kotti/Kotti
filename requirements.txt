@@ -19,7 +19,7 @@ colander==1.0
 deform==2.0a2
 docopt==0.6.2
 fanstatic==1.0a5
-filedepot==0.0.6
+filedepot==0.1.0
 html2text==2015.6.21
 html5lib==1.0b7
 iso8601==0.1.10
@@ -66,7 +66,7 @@ transaction==1.4.4
 translationstring==1.3
 usersettings==1.0.7
 venusian==1.0
-waitress==0.8.9
+waitress==0.8.10
 wsgiref==0.1.2
 zope.component==4.2.2
 zope.configuration==4.0.3

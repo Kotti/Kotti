@@ -9,6 +9,7 @@ Change History
   ``kotti.sqla.MutationList`` / ``kotti.sqla.MutationDict``).  This
   fixes an error that occurs when MutationLists are exposed to the UI
   via ``colander.SequenceSchema``.
+- Upgrade requirements to latest versions (``filedepot``, ``waitress``).
 
 1.1.4 - 2015-06-27
 ------------------
