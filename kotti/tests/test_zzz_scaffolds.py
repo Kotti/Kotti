@@ -41,12 +41,17 @@ def virtualenv(request):
     virtualenv.logger = logger
     virtualenv.create_environment(
         virtualenv_directory,
-        site_packages=True,
-        clear=False,
+        site_packages=False,
+        clear=True,
         unzip_setuptools=True)
 
     # chdir into the virtualenv directory
     os.chdir(virtualenv_directory)
+
+    # update setuptools in the virtualenv
+    subprocess.check_call([
+        os.path.join('bin', 'pip'),
+        'install', '-U', 'setuptools>=17.1'])
 
     # install requirements.txt into the virtualenv
     subprocess.check_call([

@@ -71,6 +71,8 @@ class ACLType(JsonType):
 class MutationDict(Mutable):
     """http://www.sqlalchemy.org/docs/orm/extensions/mutable.html
     """
+    _wraps = dict
+
     def __init__(self, data):
         self._d = data
         super(MutationDict, self).__init__()
@@ -91,6 +93,9 @@ class MutationDict(Mutable):
 
 
 class MutationList(Mutable):
+
+    _wraps = list
+
     def __init__(self, data):
         self._d = data
         super(MutationList, self).__init__()
@@ -148,11 +153,13 @@ for wrapper_class in (MutationDict, MutationList):
             ('update', True),
             ('remove', True),
             ):
-        setattr(
-            wrapper_class, methodname,
-            _make_mutable_method_wrapper(
-                wrapper_class, methodname, mutates),
-            )
+        # Only wrap methods that do exist on the wrapped type!
+        if getattr(wrapper_class._wraps, methodname, False):
+            setattr(
+                wrapper_class, methodname,
+                _make_mutable_method_wrapper(
+                    wrapper_class, methodname, mutates),
+                )
 
 
 class NestedMixin(object):
