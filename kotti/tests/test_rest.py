@@ -138,3 +138,29 @@ class TestRestView:
         view = self.get_view(doc, req, name='json')
         resp = view(doc, req)
         assert resp.json
+
+    def test_jsonp_as_renderer(self, config):
+        from pyramid.renderers import render
+        from kotti.resources import Document
+
+        doc = Document('1')
+        config.include('kotti.rest')
+
+        assert render('kotti_jsonp', doc) == '{"body": "1", "tags": null, '\
+            '"description": "", "title": ""}'
+
+    def test_jsonp_as_serializer(self, config):
+        from kotti.rest import jsonp
+        from kotti.resources import Document
+        import colander
+
+        config.include('kotti.rest')
+        default = jsonp._make_default(DummyRequest())
+
+        doc = Document('1')
+        serialized = default(doc)
+
+        assert serialized == {'body': u'1',
+                              'tags': colander.null,
+                              'description': u'',
+                              'title': u''}

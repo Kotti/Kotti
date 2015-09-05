@@ -1,3 +1,6 @@
+""" JSON Encoders, serializers, REST views and utilities
+"""
+
 from kotti.resources import Document
 from pyramid.renderers import JSONP
 from pyramid.view import view_config, view_defaults
@@ -59,6 +62,13 @@ class RestView(object):
 datetime_types = (datetime.time, datetime.date, datetime.datetime)
 
 def _encoder(basedefault):
+    """ A JSONEncoder that can encode some basic odd objects.
+
+    For most objects it will execute the basedefault function, which uses
+    adapter lookup mechanism to achieve the encoding, but for some basic
+    objects, such as datetime and colander.null we solve it here.
+    """
+
     class Encoder(json.JSONEncoder):
 
         def default(self, obj):
@@ -83,6 +93,7 @@ def to_json(obj, default=None, **kw):
 
 jsonp = JSONP(param_name='callback', serializer=to_json)
 jsonp.add_adapter(Document, document_serializer)
+
 
 def includeme(config):
 
