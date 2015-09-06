@@ -1,23 +1,22 @@
+from kotti.resources import TypeInfo, Content
 from kotti.rest import serializes
 from kotti.testing import DummyRequest
-from zope.interface import Interface, implements
+from sqlalchemy import Column, ForeignKey, Integer
 import colander
 import json
 
 
-class ISomething(Interface):
-    """ dummy """
-
-class Something(object):
-    implements(ISomething)
+class Something(Content):
+    id = Column(Integer(), ForeignKey('contents.id'), primary_key=True)
+    type_info = TypeInfo(name="Something")
 
 
-@serializes(ISomething)
+@serializes(Something)
 def sa(context, request):
     return 'a'
 
 
-@serializes(ISomething, name='b')
+@serializes(Something, name='b')
 def sb(context, request):
     return 'b'
 
@@ -32,7 +31,7 @@ class TestSerializer:
         obj, req = Something(), DummyRequest()
 
         assert getMultiAdapter((obj, req), ISerializer, name='b') == 'b'
-        assert getMultiAdapter((obj, req), ISerializer) == 'a'
+        assert getMultiAdapter((obj, req), ISerializer, name='Something') == 'a'
 
 
 class TestSerializeDefaultContent:
@@ -64,7 +63,7 @@ class TestSerializeDefaultContent:
     def test_serialize_document(self, config):
         from kotti.resources import Document
 
-        assert self.make_one(config, Document, body=u'Body text')== {
+        assert self.make_one(config, Document, body=u'Body text') == {
             'id': u'doc-a',
             'title': u'Doc A',
             'tags': colander.null,
@@ -124,4 +123,3 @@ class TestRestViewA:
             "description": "",
             "title": ""
         }
-

@@ -1,7 +1,7 @@
 """ JSON Encoders, serializers, REST views and utilities
 """
 
-from kotti.interfaces import IContent, IDocument, IFile #, IImage
+from kotti.resources import Content, Document, File #, IImage
 from pyramid.interfaces import IRequest
 from pyramid.renderers import JSONP
 from pyramid.view import view_config, view_defaults
@@ -21,11 +21,14 @@ class ISerializer(Interface):
         """ Returns a colander cstruct for context object """
 
 
-def serialize(obj, request, name='view'):
+def serialize(obj, request, name=None):
     """ Serialize an object with the most appropriate serializer
     """
 
     reg = request.registry
+
+    if name is None:
+        name = obj.type_info.name
 
     serialized = reg.queryMultiAdapter((obj, request), ISerializer, name=name)
     if serialized is None:
@@ -37,18 +40,21 @@ def serialize(obj, request, name='view'):
     return serialized
 
 
-def serializes(iface_or_class, name=''):
+def serializes(klass, name=None):
     """ A decorator to be used to mark a function as a serializer.
 
     The decorated function should return a basic python structure usable (along
     the lines of colander's cstruct) by a JSON encoder.
     """
 
+    if name is None:
+        name = klass.type_info.name
+
     def wrapper(wrapped):
         def callback(context, funcname, ob):
             config = context.config.with_package(info.module)
             config.registry.registerAdapter(
-                wrapped, required=[iface_or_class, IRequest],
+                wrapped, required=[Content, IRequest],
                 provided=ISerializer, name=name
             )
 
@@ -59,19 +65,19 @@ def serializes(iface_or_class, name=''):
     return wrapper
 
 
-@serializes(IContent)
+@serializes(Content)
 def content_serializer(context, request):
     from kotti.views.edit.content import ContentSchema
     return ContentSchema().serialize(context.__dict__)
 
 
-@serializes(IDocument)
+@serializes(Document)
 def document_serializer(context, request):
     from kotti.views.edit.content import DocumentSchema
     return DocumentSchema().serialize(context.__dict__)
 
 
-@serializes(IFile)
+@serializes(File)
 def file_serializer(context, request):
     from kotti.views.edit.content import FileSchema
     return FileSchema(None).serialize(context.__dict__)
@@ -104,6 +110,8 @@ class RestView(object):
 
     @view_config(request_method='PUT')
     def put(self):
+        data = self.request.form.get('data')
+        type_ = data['type']
         pass
 
     @view_config(request_method='DELETE')
@@ -144,7 +152,7 @@ def to_json(obj, default=None, **kw):
 
 
 jsonp = JSONP(param_name='callback', serializer=to_json)
-jsonp.add_adapter(IContent, serialize)
+jsonp.add_adapter(Content, serialize)
 
 
 def includeme(config):
