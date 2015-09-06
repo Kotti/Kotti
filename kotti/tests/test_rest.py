@@ -2,6 +2,7 @@ from kotti.rest import serializes
 from kotti.testing import DummyRequest
 from zope.interface import Interface, implements
 import colander
+import json
 
 
 class ISomething(Interface):
@@ -110,29 +111,17 @@ class TestRestViewA:
     def test_jsonp_as_renderer(self, config):
         from pyramid.renderers import render
         from kotti.resources import Document
-        from pyramid.threadlocal import manager
 
         config.include('kotti.rest')
 
         doc = Document('1')
         req = DummyRequest()
 
-        manager.push({'registry': config.registry, 'request': req})
+        assert json.loads(render('kotti_jsonp', doc, request=req)) == {
+            "body": "1",
+            "tags": None,
+            "id": None,
+            "description": "",
+            "title": ""
+        }
 
-        assert render('kotti_jsonp', doc) == '{"body": "1", "tags": null, '\
-            '"description": "", "title": ""}'
-
-    def test_jsonp_as_serializer(self, config):
-        from kotti.rest import jsonp
-        from kotti.resources import Document
-
-        config.include('kotti.rest')
-        default = jsonp._make_default(DummyRequest())
-
-        doc = Document('1')
-        serialized = default(doc)
-
-        assert serialized == {'body': u'1',
-                              'tags': colander.null,
-                              'description': u'',
-                              'title': u''}
