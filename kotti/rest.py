@@ -52,20 +52,6 @@ def _schema_factory_name(context=None, type_name=None, name=u'default'):
     return u"{}/{}".format(type_name, name)
 
 
-def serialize(obj, request, name=u'default'):
-    """ Serialize an object with the most appropriate serializer
-    """
-    factory_name = _schema_factory_name(context=obj, name=name)
-    schema_factory = request.registry.getUtility(ISchemaFactory,
-                                                 name=factory_name)
-    serialized = schema_factory(obj, request).serialize(obj.__dict__)
-
-    if not 'id' in serialized:  # colander schemas don't usually expose 'name'
-        serialized['id'] = obj.__name__
-
-    return serialized
-
-
 def schema_factory(klass, name=u'default'):
     """ A decorator to be used to mark a function as a serializer.
 
@@ -131,10 +117,16 @@ class RestView(object):
 
     @view_config(request_method='PATCH')
     def patch(self):
+        # data, type, id
+        # data = {}
+        # context = self.context
+        # attrs = data['attributes']
+        # schema = get_schema(obj, request)
         pass
 
     @view_config(request_method='PUT')
     def put(self):
+        # we never accept id, it doesn't conform to jsonapi format
         return
 
     @view_config(request_method='DELETE')
@@ -142,7 +134,26 @@ class RestView(object):
         pass
 
 
+def get_schema(obj, request, name=u'default'):
+    factory_name = _schema_factory_name(context=obj, name=name)
+    schema_factory = request.registry.getUtility(ISchemaFactory,
+                                                 name=factory_name)
+    return schema_factory(obj, request)
+
+
+def serialize(obj, request, name=u'default'):
+    """ Serialize an object with the most appropriate serializer
+    """
+    serialized = get_schema(obj, request, name).serialize(obj.__dict__)
+
+    if not 'id' in serialized:  # colander schemas don't usually expose 'name'
+        serialized['id'] = obj.__name__
+
+    return serialized
+
+
 datetime_types = (datetime.time, datetime.date, datetime.datetime)
+
 
 def _encoder(basedefault):
     """ A JSONEncoder that can encode some basic odd objects.
