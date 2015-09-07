@@ -1,5 +1,5 @@
 from kotti.resources import TypeInfo, Content
-from kotti.rest import serializes
+from kotti.rest import schema_factory
 from kotti.testing import DummyRequest
 from sqlalchemy import Column, ForeignKey, Integer
 import colander
@@ -11,12 +11,12 @@ class Something(Content):
     type_info = TypeInfo(name="Something")
 
 
-@serializes(Something)
+@schema_factory(Something)
 def sa(context, request):
     return 'a'
 
 
-@serializes(Something, name='b')
+@schema_factory(Something, name='b')
 def sb(context, request):
     return 'b'
 
@@ -24,18 +24,19 @@ def sb(context, request):
 class TestSerializer:
 
     def test_serializes_decorator(self, config):
-        from kotti.rest import ISerializer
-        from zope.component import getMultiAdapter
+        from kotti.rest import ISchemaFactory
+        from zope.component import getUtility
 
         config.scan('kotti.tests.test_rest')
         obj, req = Something(), DummyRequest()
 
-        assert getMultiAdapter((obj, req), ISerializer, name='b') == 'b'
-        assert getMultiAdapter((obj, req), ISerializer, name='Something') == 'a'
+        assert getUtility(ISchemaFactory,
+                          name='Something/default')(obj, req) == 'a'
+        assert getUtility(ISchemaFactory,
+                          name='Something/b')(obj, req) == 'b'
 
 
 class TestSerializeDefaultContent:
-    from kotti.resources import Content
 
     def make_one(self, config, klass=Content, **kw):
         from kotti.rest import serialize
@@ -79,7 +80,7 @@ class TestSerializeDefaultContent:
     # TODO: serializing an image
 
 
-class TestRestViewA:
+class TestRestView:
     def get_view(self, context, request, name):
         from pyramid.compat import map_
         from pyramid.interfaces import IView

@@ -1,8 +1,28 @@
 """ JSON Encoders, serializers, REST views and utilities
+
+
+WIP: we need schema factory.
+
+We need to serialize an object, to publish it as JSON.
+
+We need to extract appropriate struct from json by calling schema().deserialize(form)
+
+We need to be able to have different schema factories, based on 'view' name and content type name.
+
+We want to have flexible schema factories that can take various discriminators:
+    * optional - the context object for which we want a schema
+    * optional - the schema 'type'. It can be 'default', 'edit', 'view', etc.
+    * optional - the schema content type name. Useful when we want to build new
+                 objects
+
+def get_schema_factory(context=None, type_='default', name=None):
+    if not (context or name):
+        raise Exception("Need an object for context or a content type name")
+
+
 """
 
 from kotti.resources import Content, Document, File #, IImage
-from pyramid.interfaces import IRequest
 from pyramid.renderers import JSONP
 from pyramid.view import view_config, view_defaults
 from zope.interface import Interface
@@ -13,26 +33,32 @@ import json
 import venusian
 
 
-class ISerializer(Interface):
-    """ A serializer to change objects to colander cstructs
+class ISchemaFactory(Interface):
+    """ A factory that can return a schema
     """
 
-    def __call__(request):
-        """ Returns a colander cstruct for context object """
+    def __call__(context, request):
+        """ Returns a colander schema instance """
 
 
-def serialize(obj, request, name=None):
+def _schema_factory_name(context=None, type_name=None, name=u'default'):
+
+    if (context is None) and (type_name is None):
+        raise Exception("Need a context or a type name")
+
+    if (context is not None) and (type_name is None):
+        type_name = context.type_info.name
+
+    return u"{}/{}".format(type_name, name)
+
+
+def serialize(obj, request, name=u'default'):
     """ Serialize an object with the most appropriate serializer
     """
-
-    reg = request.registry
-
-    if name is None:
-        name = obj.type_info.name
-
-    serialized = reg.queryMultiAdapter((obj, request), ISerializer, name=name)
-    if serialized is None:
-        serialized = reg.queryMultiAdapter((obj, request), ISerializer)
+    factory_name = _schema_factory_name(context=obj, name=name)
+    schema_factory = request.registry.getUtility(ISchemaFactory,
+                                                 name=factory_name)
+    serialized = schema_factory(obj, request).serialize(obj.__dict__)
 
     if not 'id' in serialized:  # colander schemas don't usually expose 'name'
         serialized['id'] = obj.__name__
@@ -40,50 +66,46 @@ def serialize(obj, request, name=None):
     return serialized
 
 
-def serializes(klass, name=None):
+def schema_factory(klass, name=u'default'):
     """ A decorator to be used to mark a function as a serializer.
 
     The decorated function should return a basic python structure usable (along
     the lines of colander's cstruct) by a JSON encoder.
     """
 
-    if name is None:
-        name = klass.type_info.name
+    name = _schema_factory_name(context=klass, name=name)
 
     def wrapper(wrapped):
         def callback(context, funcname, ob):
             config = context.config.with_package(info.module)
-            config.registry.registerAdapter(
-                wrapped, required=[Content, IRequest],
-                provided=ISerializer, name=name
-            )
+            config.registry.registerUtility(wrapped, ISchemaFactory, name=name)
 
         info = venusian.attach(wrapped, callback, category='pyramid')
-
         return wrapped
 
     return wrapper
 
 
-@serializes(Content)
+@schema_factory(Content)
 def content_serializer(context, request):
     from kotti.views.edit.content import ContentSchema
-    return ContentSchema().serialize(context.__dict__)
+    return ContentSchema()
 
 
-@serializes(Document)
+@schema_factory(Document)
 def document_serializer(context, request):
     from kotti.views.edit.content import DocumentSchema
-    return DocumentSchema().serialize(context.__dict__)
+    return DocumentSchema()
 
 
-@serializes(File)
+@schema_factory(File)
 def file_serializer(context, request):
     from kotti.views.edit.content import FileSchema
-    return FileSchema(None).serialize(context.__dict__)
+    return FileSchema(None)
 
 
 ACCEPT = 'application/vnd.api+json'
+
 
 @view_defaults(name='json', accept=ACCEPT, renderer="kotti_jsonp")
 class RestView(object):
@@ -102,7 +124,10 @@ class RestView(object):
 
     @view_config(request_method='POST')
     def post(self):
-        pass
+        schema = schema_factory(self.context, name='edit')(
+            self.context, self.request)
+        validated = schema.deserialize(self.request.form.get('data'))
+        self.context.__dict__.update(**validated)
 
     @view_config(request_method='PATCH')
     def patch(self):
@@ -110,9 +135,7 @@ class RestView(object):
 
     @view_config(request_method='PUT')
     def put(self):
-        data = self.request.form.get('data')
-        type_ = data['type']
-        pass
+        return
 
     @view_config(request_method='DELETE')
     def delete(self):
@@ -156,7 +179,5 @@ jsonp.add_adapter(Content, serialize)
 
 
 def includeme(config):
-
     config.add_renderer('kotti_jsonp', jsonp)
     config.scan(__name__)
-
