@@ -103,6 +103,12 @@ def caching_policy_chooser(context, request, response):
 @subscriber(NewResponse)
 def set_cache_headers(event):
     request, response = event.request, event.response
+
+    # this can happen if a Pyramid tween will shortcut the normal tween
+    # chain processing and return its own response early
+    if not hasattr(event.request, 'context'):
+        return
+
     context = event.request.context
 
     # If no caching policy was previously set (by setting the
