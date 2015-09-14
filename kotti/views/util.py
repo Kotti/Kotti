@@ -72,7 +72,7 @@ def template_api(context, request, **kwargs):
 
 
 def add_renderer_globals(event):
-    if event['renderer_name'] != 'json':
+    if event.get('renderer_name') != 'json':
         request = event['request']
         api = getattr(request, 'template_api', None)
         if api is None and request is not None:
