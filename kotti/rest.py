@@ -15,7 +15,7 @@ you should write a serializer such as this:
     from kotti.views.edit.content import DocumentSchema
 
     @content_factory(Document)
-    def document_serializer(context, request):
+    def document_schema_factory(context, request):
         from kotti.views.edit.content import DocumentSchema
         return DocumentSchema()
 
