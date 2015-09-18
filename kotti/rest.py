@@ -62,11 +62,10 @@ class IContentFactory(Interface):
 
 def _schema_factory_name(context=None, type_name=None, name=u'default'):
 
-    if not any([context, type_name]):
+    if not any(map(lambda x: x is not None, [context, type_name])):
         raise Exception("Provide a context or a type name")
 
-    if (context is not None) and (type_name is None):
-        type_name = context.type_info.name
+    type_name = (context is not None) and context.type_info.name or type_name
 
     return u"{}/{}".format(type_name, name)
 
