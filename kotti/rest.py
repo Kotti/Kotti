@@ -14,9 +14,10 @@ you should write a serializer such as this:
 
     from kotti.views.edit.content import DocumentSchema
 
-    @serializes(Document)
-    def document_serializer(context, request):
-        return DocumentSchema().serialize(context.__dict__)
+    @content_factory(Document)
+    def document_schema_factory(context, request):
+        from kotti.views.edit.content import DocumentSchema
+        return DocumentSchema()
 
 This will also register a content factory for types with name 'Document'.
 
@@ -95,19 +96,19 @@ def schema_factory(klass, name=u'default'):
 
 
 @schema_factory(Content)
-def content_serializer(context, request):
+def content_schema_factory(context, request):
     from kotti.views.edit.content import ContentSchema
     return ContentSchema()
 
 
 @schema_factory(Document)
-def document_serializer(context, request):
+def document_schema_factory(context, request):
     from kotti.views.edit.content import DocumentSchema
     return DocumentSchema()
 
 
 @schema_factory(File)
-def file_serializer(context, request):
+def file_schema_factory(context, request):
     from kotti.views.edit.content import FileSchema
     return FileSchema(None)
 
