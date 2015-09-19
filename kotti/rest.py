@@ -35,7 +35,8 @@ from kotti.resources import Content, Document, File #, IImage
 from kotti.util import _
 from kotti.util import title_to_name
 from pyramid.httpexceptions import HTTPNoContent
-from pyramid.renderers import JSONP
+from pyramid.httpexceptions import HTTPCreated
+from pyramid.renderers import JSONP, render
 from pyramid.view import view_config, view_defaults
 from zope.interface import Interface
 import colander
@@ -178,10 +179,14 @@ class RestView(object):
         name = title_to_name(validated['title'], blacklist=self.context.keys())
         new_item = self.context[name] = klass(**validated)
 
-        return new_item
+        response = HTTPCreated()
+        response.body = render('kotti_jsonp', new_item, self.request)
+        return response
 
     @view_config(request_method='DELETE')
     def delete(self):
+        # data = self.request.json_body['data']
+
         parent = self.context.__parent__
         del parent[self.context.__name__]
         return HTTPNoContent()

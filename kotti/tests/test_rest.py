@@ -209,4 +209,26 @@ class TestRestView:
         assert data['data']['attributes']['title'] == u"Title was changed"
         assert data['data']['attributes']['body'] == u"Body was changed"
 
-    # TODO: test delete method
+    def test_delete(self, config, db_session):
+        config.include('kotti.rest')
+
+        parent = Document(name="parent")
+        child = Document(name='child')
+        parent['child'] = child
+
+        req = self._make_request(config, REQUEST_METHOD='DELETE')
+        req.body = json.dumps({
+            'data': {
+                'id': 'child',
+                'type': 'Document',
+            }
+        })
+
+        db_session.add(parent)
+
+        view = self._get_view(child, req)
+
+        assert 'child' in parent.keys()
+        resp = view(child, req)
+        assert resp.status == '204 No Content'
+        assert 'child' not in parent.keys()
