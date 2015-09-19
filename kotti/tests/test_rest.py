@@ -148,11 +148,12 @@ class TestRestView:
         })
         doc = Document(name='parent')
         view = self._get_view(doc, req)
-        data = view(doc, req).json_body['data']
+        resp = view(doc, req)
+        data = resp.json_body['data']
 
+        assert resp.status == '201 Created'
         assert data['attributes']['title'] == u'Title here'
         assert data['id'] == 'title-here'
-
         assert doc.keys() == ['title-here']
 
     def test_patch(self, config):
