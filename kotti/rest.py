@@ -34,8 +34,9 @@ TODO: handle permissions/security
 from kotti.resources import Content, Document, File #, IImage
 from kotti.util import _
 from kotti.util import title_to_name
-from pyramid.httpexceptions import HTTPNoContent
 from pyramid.httpexceptions import HTTPCreated
+from pyramid.httpexceptions import HTTPForbidden
+from pyramid.httpexceptions import HTTPNoContent
 from pyramid.renderers import JSONP, render
 from pyramid.view import view_config, view_defaults
 from zope.interface import Interface
@@ -128,11 +129,11 @@ class RestView(object):
         self.context = context
         self.request = request
 
-    @view_config(request_method='GET')
+    @view_config(request_method='GET', permission='view')
     def get(self):
         return self.context
 
-    @view_config(request_method='POST')
+    @view_config(request_method='POST', permission='edit')
     def post(self):
         data = self.request.json_body['data']
 
@@ -148,7 +149,7 @@ class RestView(object):
 
         return self.context
 
-    @view_config(request_method='PATCH')
+    @view_config(request_method='PATCH', permission='edit')
     def patch(self):
         data = self.request.json_body['data']
 
@@ -169,13 +170,18 @@ class RestView(object):
         # we never accept id, it doesn't conform to jsonapi format
         data = self.request.json_body['data']
 
-        name=_schema_factory_name(type_name=data['type'])
+        klass = obj_factory(self.request, data['type'])
+
+        add_permission = klass.type_info.add_permission
+        if not self.request.has_permission(add_permission, self.context):
+            raise HTTPForbidden()
+
+        schema_name = _schema_factory_name(type_name=data['type'])
         schema_factory = self.request.registry.getUtility(ISchemaFactory,
-                                                          name=name)
+                                                          name=schema_name)
         schema = schema_factory(None, self.request)
         validated = schema.deserialize(data['attributes'])
 
-        klass = get_factory(self.request, data['type'])
         name = title_to_name(validated['title'], blacklist=self.context.keys())
         new_item = self.context[name] = klass(**validated)
 
@@ -183,7 +189,7 @@ class RestView(object):
         response.body = render('kotti_jsonp', new_item, self.request)
         return response
 
-    @view_config(request_method='DELETE')
+    @view_config(request_method='DELETE', permission='delete')
     def delete(self):
         # data = self.request.json_body['data']
 
@@ -199,7 +205,7 @@ def get_schema(obj, request, name=u'default'):
     return schema_factory(obj, request)
 
 
-def get_factory(request, name):
+def obj_factory(request, name):
     return request.registry.getUtility(IContentFactory, name=name)
 
 
