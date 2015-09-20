@@ -14,7 +14,7 @@ you should write a serializer such as this:
 
     from kotti.views.edit.content import DocumentSchema
 
-    @content_factory(Document)
+    @restify(Document)
     def document_schema_factory(context, request):
         from kotti.views.edit.content import DocumentSchema
         return DocumentSchema()
@@ -64,6 +64,8 @@ class IContentFactory(Interface):
 
 
 def _schema_factory_name(context=None, type_name=None, name=u'default'):
+    """ Returns a named factory name based on either context or type named
+    """
 
     if not any(map(lambda x: x is not None, [context, type_name])):
         raise Exception("Provide a context or a type name")
@@ -73,13 +75,12 @@ def _schema_factory_name(context=None, type_name=None, name=u'default'):
     return u"{}/{}".format(type_name, name)
 
 
-def schema_factory(klass, name=u'default'):
-    """ A decorator to be used to mark a function as a serializer.
+def restify(klass, name=u'default'):
+    """ A decorator to be used to mark a function as a content schema factory.
 
-    The decorated function should return a basic python structure usable (along
-    the lines of colander's cstruct) by a JSON encoder.
+    The decorated function should return a colander schema instance.
 
-    It will also register the context class as a factory for that content.
+    It will also register the context klass as a factory for that content.
     """
 
     name = _schema_factory_name(context=klass, name=name)
@@ -97,19 +98,19 @@ def schema_factory(klass, name=u'default'):
     return wrapper
 
 
-@schema_factory(Content)
+@restify(Content)
 def content_schema_factory(context, request):
     from kotti.views.edit.content import ContentSchema
     return ContentSchema()
 
 
-@schema_factory(Document)
+@restify(Document)
 def document_schema_factory(context, request):
     from kotti.views.edit.content import DocumentSchema
     return DocumentSchema()
 
 
-@schema_factory(File)
+@restify(File)
 def file_schema_factory(context, request):
     from kotti.views.edit.content import FileSchema
     return FileSchema(None)
@@ -140,8 +141,7 @@ class RestView(object):
         assert data['id'] == self.context.name
         assert data['type'] == self.context.type_info.name
 
-        schema = schema_factory(self.context, name='edit')(
-            self.context, self.request)
+        schema = get_schema(self.context, self.request)
         validated = schema.deserialize(data['attributes'])
 
         for k, v in validated.items():
@@ -170,7 +170,7 @@ class RestView(object):
         # we never accept id, it doesn't conform to jsonapi format
         data = self.request.json_body['data']
 
-        klass = obj_factory(self.request, data['type'])
+        klass = get_content_factory(self.request, data['type'])
 
         add_permission = klass.type_info.add_permission
         if not self.request.has_permission(add_permission, self.context):
@@ -205,7 +205,7 @@ def get_schema(obj, request, name=u'default'):
     return schema_factory(obj, request)
 
 
-def obj_factory(request, name):
+def get_content_factory(request, name):
     return request.registry.getUtility(IContentFactory, name=name)
 
 

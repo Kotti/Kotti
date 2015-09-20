@@ -1,5 +1,5 @@
 from kotti.resources import TypeInfo, Content, Document
-from kotti.rest import schema_factory
+from kotti.rest import restify
 from kotti.testing import DummyRequest
 from pyramid.exceptions import Forbidden
 from pytest import raises
@@ -14,12 +14,12 @@ class Something(Content):
     type_info = TypeInfo(name="Something")
 
 
-@schema_factory(Something)
+@restify(Something)
 def sa(context, request):
     return 'a'
 
 
-@schema_factory(Something, name='b')
+@restify(Something, name='b')
 def sb(context, request):
     return 'b'
 
@@ -39,7 +39,19 @@ class TestSerializer:
                           name='Something/b')(obj, req) == 'b'
 
 
-# TODO: test content factories
+class TestContentFactory:
+
+    def test_get_content_factory(self, config):
+        from kotti.rest import get_content_factory
+        config.scan('kotti.tests.test_rest')
+        assert get_content_factory(DummyRequest(), 'Something') is Something
+
+    def test_IContentFactory_registration(self, config):
+        from kotti.rest import IContentFactory
+        from zope.component import getUtility
+
+        config.scan('kotti.tests.test_rest')
+        assert getUtility(IContentFactory, name='Something') is Something
 
 
 class TestSerializeDefaultContent:
@@ -104,7 +116,7 @@ class TestRestView:
             'SERVER_NAME': 'example.com',
             'SERVER_PORT': '80',
             'wsgi.url_scheme': 'http',
-            'REQUEST_METHOD': 'PATCH'
+            'REQUEST_METHOD': 'GET'
             }
         _environ.update(**kw)
 
@@ -126,13 +138,10 @@ class TestRestView:
         return request.registry.adapters.lookup(provides, IView, name=name)
 
     def test_get(self, config):
-        from kotti.rest import ACCEPT
-        from webob.acceptparse import MIMEAccept
 
-        config.testing_securitypolicy(permissive=False)
         config.include('kotti.rest')
 
-        req = DummyRequest(accept=MIMEAccept(ACCEPT))
+        req = self._make_request(config)
         doc = Document()
 
         view = self._get_view(doc, req)
@@ -142,9 +151,9 @@ class TestRestView:
         assert 'meta' in data
 
     def test_put(self, config):
-        config.testing_securitypolicy(permissive=False)
 
         config.include('kotti.rest')
+
         req = self._make_request(config, REQUEST_METHOD='PUT')
         req.body = json.dumps({
             'data': {
@@ -166,7 +175,7 @@ class TestRestView:
         assert doc.keys() == ['title-here']
 
     def test_patch(self, config):
-        config.testing_securitypolicy(permissive=False)
+
         config.include('kotti.rest')
 
         doc = Document(name='first',
@@ -174,7 +183,7 @@ class TestRestView:
                        description=u"Description here",
                        body=u"body here")
 
-        req = self._make_request(config)
+        req = self._make_request(config, REQUEST_METHOD='PATCH')
         req.body = json.dumps({
             'data': {
                 'id': 'first',
@@ -193,6 +202,7 @@ class TestRestView:
         assert data['data']['attributes']['body'] == u"Body was changed"
 
     def test_post(self, config):
+
         config.include('kotti.rest')
 
         doc = Document(name='first',
