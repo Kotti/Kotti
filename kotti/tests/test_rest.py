@@ -24,9 +24,9 @@ def sb(context, request):
     return 'b'
 
 
-class TestSerializer:
+class TestRestify:
 
-    def test_serializes_decorator(self, config):
+    def test_restify_decorator(self, config):
         from kotti.rest import ISchemaFactory
         from zope.component import getUtility
 
@@ -37,9 +37,6 @@ class TestSerializer:
                           name='Something/default')(obj, req) == 'a'
         assert getUtility(ISchemaFactory,
                           name='Something/b')(obj, req) == 'b'
-
-
-class TestContentFactory:
 
     def test_get_content_factory(self, config):
         from kotti.rest import get_content_factory
