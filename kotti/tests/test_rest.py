@@ -1,9 +1,12 @@
 from kotti.resources import TypeInfo, Content, Document
 from kotti.rest import schema_factory
 from kotti.testing import DummyRequest
+from pyramid.exceptions import Forbidden
+from pytest import raises
 from sqlalchemy import Column, ForeignKey, Integer
 import colander
 import json
+import pytest
 
 
 class Something(Content):
@@ -75,6 +78,20 @@ class TestSerializeDefaultContent:
     # TODO: serializing an image
 
 
+class TestKottiJsonpRenderer:
+
+    def test_jsonp_as_renderer(self, config):
+        from pyramid.renderers import render
+
+        config.include('kotti.rest')
+
+        doc = Document('1')
+        req = DummyRequest()
+
+        js = json.loads(render('kotti_jsonp', doc, request=req))
+        assert js['data']['attributes']['body'] == "1"
+
+
 class TestRestView:
 
     def _make_request(self, config, **kw):
@@ -112,6 +129,7 @@ class TestRestView:
         from kotti.rest import ACCEPT
         from webob.acceptparse import MIMEAccept
 
+        config.testing_securitypolicy(permissive=False)
         config.include('kotti.rest')
 
         req = DummyRequest(accept=MIMEAccept(ACCEPT))
@@ -123,18 +141,9 @@ class TestRestView:
         assert 'attributes' in data['data']
         assert 'meta' in data
 
-    def test_jsonp_as_renderer(self, config):
-        from pyramid.renderers import render
-
-        config.include('kotti.rest')
-
-        doc = Document('1')
-        req = DummyRequest()
-
-        js = json.loads(render('kotti_jsonp', doc, request=req))
-        assert js['data']['attributes']['body'] == "1"
-
     def test_put(self, config):
+        config.testing_securitypolicy(permissive=False)
+
         config.include('kotti.rest')
         req = self._make_request(config, REQUEST_METHOD='PUT')
         req.body = json.dumps({
@@ -157,7 +166,7 @@ class TestRestView:
         assert doc.keys() == ['title-here']
 
     def test_patch(self, config):
-
+        config.testing_securitypolicy(permissive=False)
         config.include('kotti.rest')
 
         doc = Document(name='first',
@@ -184,7 +193,6 @@ class TestRestView:
         assert data['data']['attributes']['body'] == u"Body was changed"
 
     def test_post(self, config):
-
         config.include('kotti.rest')
 
         doc = Document(name='first',
@@ -192,7 +200,7 @@ class TestRestView:
                        description=u"Description here",
                        body=u"body here")
 
-        req = self._make_request(config)
+        req = self._make_request(config, REQUEST_METHOD='POST')
         req.body = json.dumps({
             'data': {
                 'id': 'first',
@@ -233,3 +241,23 @@ class TestRestView:
         resp = view(child, req)
         assert resp.status == '204 No Content'
         assert 'child' not in parent.keys()
+
+    @pytest.mark.parametrize("request_method",
+                             ['GET', 'POST', 'PATCH', 'PUT', 'DELETE'])
+    def test_restviews_permissions(self, request_method, config, db_session):
+        config.testing_securitypolicy(permissive=False)
+        config.include('kotti.rest')
+
+        doc = Document(name='doc')
+
+        req = self._make_request(config, REQUEST_METHOD=request_method)
+        req.body = json.dumps({
+            'data': {
+                'id': 'doc',
+                'type': 'Document',
+            }
+        })
+        view = self._get_view(doc, req)
+
+        with raises(Forbidden):
+            view(doc, req)
