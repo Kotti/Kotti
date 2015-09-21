@@ -72,7 +72,7 @@ def _schema_factory_name(context=None, type_name=None, name=u'default'):
 
     type_name = (context is not None) and context.type_info.name or type_name
 
-    return u"{}/{}".format(type_name, name)
+    return u"{0}/{1}".format(type_name, name)
 
 
 def restify(klass, name=u'default'):
@@ -277,39 +277,12 @@ def serialize(obj, request, name=u'default'):
     return dict(data=res, meta=meta)
 
 
-def _encoder(basedefault):
-    """ A JSONEncoder that can encode some basic odd objects.
-
-    For most objects it will execute the basedefault function, which uses
-    adapter lookup mechanism to achieve the encoding, but for some basic
-    objects, such as datetime and colander.null we solve it here.
-    """
-
-    class Encoder(json.JSONEncoder):
-
-        def default(self, obj):
-            """Convert ``obj`` to something JSON encoder can handle."""
-            # if isinstance(obj, NamedTuple):
-            #     obj = dict((k, getattr(obj, k)) for k in obj.keys())
-            if isinstance(obj, decimal.Decimal):
-                return str(obj)
-            elif isinstance(obj,
-                            (datetime.time, datetime.date, datetime.datetime)):
-                return str(obj)
-            elif obj is colander.null:
-                return None
-
-            return basedefault(obj)
-
-    return Encoder
-
-
-def to_json(obj, default=None, **kw):
-    return json.dumps(obj, cls=_encoder(default), **kw)
-
-
-jsonp = JSONP(param_name='callback', serializer=to_json)
+jsonp = JSONP(param_name='callback')
 jsonp.add_adapter(Content, serialize)
+jsonp.add_adapter(colander._null, lambda obj, req: None)
+jsonp.add_adapter(datetime.date, lambda obj, req: str(obj))
+jsonp.add_adapter(datetime.datetime, lambda obj, req: str(obj))
+jsonp.add_adapter(datetime.time, lambda obj, req: str(obj))
 
 
 def includeme(config):
