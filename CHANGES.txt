@@ -1,9 +1,18 @@
 Change History
 ==============
 
-1.1.6 - unreleased
+1.2.0 - unreleased
 ------------------
 
+- **Greatly** reduce the number of queries that are sent to the DB:
+  - Add caching for the root node.
+  - Use eager / joined loading for local_groups.
+  - Don't query principals for roles
+- Add "missing" foreign key indices (with corresponding migration step).
+- Add a ``kotti.modification_date_excludes`` configuration option.
+  It takes a list of attributes in dotted name notation that should not trigger
+  an update of ``modification_date`` on change.  Defaults to
+  ``kotti.resources.Node.position``.
 - Don't try to set a caching header from the NewRequest handler when Pyramid's
   tweens didn't follow the usual chain of calls. This fixes compatibility with
   ``bowerstatic``.
