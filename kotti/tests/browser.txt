@@ -544,10 +544,8 @@ Contents view change state actions
   >>> browser.getLink("Contents").click()
   >>> 'http://localhost:6543/second-child-1/third-child/@@workflow-change?new_state=public' in browser.contents
   True
-  >>> browser.getLink("Make Public", index=2).click()
-  >>> 'http://localhost:6543/second-child-1/third-child/@@workflow-change?new_state=private' in browser.contents
-  True
 
+  >>> browser.getLink("Make Public", index=2).click()
   >>> childs = ctrl(name='children')
   >>> childs.value = childs.options[0:3]
   >>> ctrl(name='change_state').click()
