@@ -20,6 +20,10 @@ def upgrade():
         'ix_local_groups_node_id', 'local_groups', ['node_id', ])
     op.create_index(
         'ix_local_groups_principal_name', 'local_groups', ['principal_name', ])
+    op.create_index(
+        'ix_tags_to_contents_tag_id', 'tags_to_contents', ['tag_id', ])
+    op.create_index(
+        'ix_tags_to_contents_content_id', 'tags_to_contents', ['content_id', ])
 
 
 def downgrade():

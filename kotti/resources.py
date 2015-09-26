@@ -464,10 +464,12 @@ class TagsToContents(Base):
 
     #: Foreign key referencing :attr:`Tag.id`
     #: (:class:`sqlalchemy.types.Integer`)
-    tag_id = Column(Integer, ForeignKey('tags.id'), primary_key=True)
+    tag_id = Column(Integer, ForeignKey('tags.id'), primary_key=True,
+                    index=True)
     #: Foreign key referencing :attr:`Content.id`
     #: (:class:`sqlalchemy.types.Integer`)
-    content_id = Column(Integer, ForeignKey('contents.id'), primary_key=True)
+    content_id = Column(Integer, ForeignKey('contents.id'), primary_key=True,
+                        index=True)
     #: Relation that adds a ``content_tags`` :func:`sqlalchemy.orm.backref`
     #: to :class:`~kotti.resources.Tag` instances to allow easy access to all
     #: content tagged with that tag.
