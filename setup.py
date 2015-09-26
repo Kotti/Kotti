@@ -16,7 +16,7 @@ install_requires = [
     'Babel',
     'Chameleon>=2.7.4',  # Fixes error when raising HTTPFound
     'Pillow',  # dependency of plone.scale
-    'alembic',
+    'alembic>=0.8.0',
     'bleach',
     'bleach-whitelist',
     'colander>=0.9.3',
@@ -49,7 +49,8 @@ install_requires = [
     'pyramid_zcml',
     'repoze.lru',
     'repoze.workflow',
-    'sqlalchemy>=0.7.6',
+    'sqlalchemy>=1.0.0',
+    'sqlalchemy-utils',
     'transaction>=1.1.0',
     'unidecode',
     'usersettings',

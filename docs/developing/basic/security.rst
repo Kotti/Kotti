@@ -108,9 +108,10 @@ The default workflow is quite useful for websites, but sometimes you need someth
 Just point the ``kotti.use_workflow`` setting to your zcml file:
 
 .. code-block:: ini
+
     kotti.use_workflow = kotti_yourplugin:workflow.zcml
 
-The simplest way to deal with workflow definitions is::
+The simplest way to deal with workflow definitions is:
 
 1. create a copy of the default workflow definition and
 2. customize it (change permissions, add new states, permissions, transitions, initial state and so on).
@@ -252,6 +253,7 @@ Here it is, our "custom" workflow definition assigned to our ``ICustomContent`` 
 Last you have to tell Kotti to register your new custom workflow including our ``zcml`` file:
 
 .. code-block:: ini
+
     kotti.zcml_includes = kotti_wf:workflow.zcml
 
 Special cases:
