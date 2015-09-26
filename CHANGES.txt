@@ -17,6 +17,10 @@ Change History
   - Add caching for the root node.
   - Use eager / joined loading for local_groups.
   - Don't query principals for roles
+- Add a ``kotti.modification_date_excludes`` configuration option.
+  It takes a list of attributes in dotted name notation that should not trigger
+  an update of ``modification_date`` on change.  Defaults to
+  ``kotti.resources.Node.position``.
 
 1.1.5 - 2015-09-04
 ------------------
