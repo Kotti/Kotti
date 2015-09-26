@@ -247,7 +247,7 @@ class Node(Base, ContainerMixin, PersistentACLMixin):
         remote_side=[id],
         backref=backref(
             '_children',
-            collection_class=ordering_list('position'),
+            collection_class=ordering_list('position', reorder_on_append=True),
             order_by=[position],
             cascade='all',
         )
