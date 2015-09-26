@@ -82,10 +82,6 @@ class Principal(Base):
         receiver of the email.  This attribute should be set to
         'None' once confirmation has succeeded.
     """
-    __tablename__ = 'principals'
-    __mapper_args__ = dict(
-        order_by='principals.name',
-        )
 
     id = Column(Integer, primary_key=True)
     name = Column(Unicode(100), unique=True)
@@ -97,6 +93,11 @@ class Principal(Base):
     groups = Column(MutationList.as_mutable(JsonType), nullable=False)
     creation_date = Column(DateTime(), nullable=False)
     last_login_date = Column(DateTime())
+
+    __tablename__ = 'principals'
+    __mapper_args__ = dict(
+        order_by=name,
+        )
 
     def __init__(self, name, password=None, active=True, confirm_token=None,
                  title=u"", email=None, groups=None):
