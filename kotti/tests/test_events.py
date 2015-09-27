@@ -139,8 +139,8 @@ class TestEvents:
         from kotti.resources import Document
 
         # create 2 documents
-        d1 = root['d1'] = Document(title='One')
-        d2 = root['d2'] = Document(title='Two')
+        d1 = root['d1'] = Document(title=u'One')
+        d2 = root['d2'] = Document(title=u'Two')
         assert d1.position == 0
         assert d2.position == 1
         db_session.flush()
@@ -158,8 +158,8 @@ class TestEvents:
         assert d2.modification_date == md2
 
         # changing anything else should update modification_date
-        d1.title = 'Eins'
-        d2.title = 'Zwei'
+        d1.title = u'Eins'
+        d2.title = u'Zwei'
         db_session.flush()
         assert d1.modification_date != md1
         assert d2.modification_date != md2
