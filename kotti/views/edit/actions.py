@@ -145,7 +145,7 @@ class NodeActions(object):
                     item.__parent__.children.remove(item)
                     item.name = title_to_name(item.name,
                                               blacklist=self.context.keys())
-                    self.context.children.append(item)
+                    self.context[item.name] = item
                     if count is len(ids) - 1:
                         del self.request.session['kotti.paste']
                 elif action == 'copy':
@@ -155,7 +155,7 @@ class NodeActions(object):
                         name = copy.title
                     name = title_to_name(name, blacklist=self.context.keys())
                     copy.name = name
-                    self.context.children.append(copy)
+                    self.context[name] = copy
                 self.flash(_(u'${title} was pasted.',
                              mapping=dict(title=item.title)), 'success')
             else:
