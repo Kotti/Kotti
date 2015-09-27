@@ -1,4 +1,4 @@
-[app:kotti]
+[app:{{project}}]
 use = egg:kotti
 
 pyramid.reload_templates = true
@@ -26,7 +26,7 @@ use = egg:fanstatic#fanstatic
 [pipeline:main]
 pipeline =
     fanstatic
-    kotti
+    {{project}}
 
 [server:main]
 use = egg:waitress#main
