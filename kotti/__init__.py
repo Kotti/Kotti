@@ -92,6 +92,9 @@ conf_defaults = {
     'kotti.fanstatic.edit_needed': 'kotti.fanstatic.edit_needed',
     'kotti.fanstatic.view_needed': 'kotti.fanstatic.view_needed',
     'kotti.max_file_size': '10',
+    'kotti.modification_date_excludes': ' '.join([
+        'kotti.resources.Node.position',
+    ]),
     'kotti.populators': 'kotti.populate.populate',
     'kotti.principals_factory': 'kotti.security.principals_factory',
     'kotti.register': 'False',
@@ -134,6 +137,7 @@ conf_dotted = set([
     'kotti.configurators',
     'kotti.fanstatic.edit_needed',
     'kotti.fanstatic.view_needed',
+    'kotti.modification_date_excludes',
     'kotti.populators',
     'kotti.principals_factory',
     'kotti.request_factory',
