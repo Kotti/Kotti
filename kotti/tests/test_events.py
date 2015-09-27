@@ -132,3 +132,34 @@ class TestEvents:
         assert (handler, dec.register, 'kotti') in dec.venusian.attached
         assert handler not in listeners[ObjectEvent]
         assert handler in objectevent_listeners[(ObjectEvent, Document)]
+
+    def test_set_modification_date(self, root, db_session, events):
+
+        from time import sleep
+        from kotti.resources import Document
+
+        # create 2 documents
+        d1 = root['d1'] = Document(title=u'One')
+        d2 = root['d2'] = Document(title=u'Two')
+        assert d1.position == 0
+        assert d2.position == 1
+        db_session.flush()
+        md1 = d1.modification_date
+        md2 = d2.modification_date
+
+        # changing positions should not update modification_date
+        sleep(1)
+        d1.position = 1
+        d2.position = 0
+        db_session.flush()
+        assert d1.position == 1
+        assert d2.position == 0
+        assert d1.modification_date == md1
+        assert d2.modification_date == md2
+
+        # changing anything else should update modification_date
+        d1.title = u'Eins'
+        d2.title = u'Zwei'
+        db_session.flush()
+        assert d1.modification_date != md1
+        assert d2.modification_date != md2

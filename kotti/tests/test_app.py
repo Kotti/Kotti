@@ -8,7 +8,9 @@ from pyramid.interfaces import IView
 from pyramid.interfaces import IViewClassifier
 from pyramid.request import Request
 from pyramid.threadlocal import get_current_registry
+from sqlalchemy import column
 from sqlalchemy import select
+from sqlalchemy import table
 from zope.interface import implementedBy
 from zope.interface import providedBy
 
@@ -208,7 +210,8 @@ class TestApp:
                 main({}, **settings)
 
         res = db_session.execute(select(
-            columns=['version_num'], from_obj=['kotti_alembic_version']))
+            columns=[column('version_num')],
+            from_obj=[table('kotti_alembic_version')]))
         assert tuple(res)  # a version_num should exist
 
 

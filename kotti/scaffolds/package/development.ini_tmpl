@@ -1,4 +1,4 @@
-[app:kotti]
+[app:{{project}}]
 use = egg:kotti
 
 pyramid.reload_templates = true
@@ -26,11 +26,10 @@ use = egg:fanstatic#fanstatic
 [pipeline:main]
 pipeline =
     fanstatic
-    kotti
+    {{project}}
 
 [server:main]
 use = egg:waitress#main
-host = 0.0.0.0
 port = 5000
 
 [alembic]

@@ -23,11 +23,13 @@ import sqlalchemy.event
 from sqlalchemy.orm import load_only
 import venusian
 from sqlalchemy.orm import mapper
+from sqlalchemy_utils.functions import has_changes
 from pyramid.location import lineage
 from pyramid.threadlocal import get_current_request
 from zope.deprecation.deprecation import deprecated
 
 from kotti import DBSession
+from kotti import get_settings
 from kotti.resources import Content
 from kotti.resources import LocalGroup
 from kotti.resources import Node
@@ -255,7 +257,14 @@ def set_modification_date(event):
     :type event: :class:`ObjectUpdate`
     """
 
-    event.object.modification_date = datetime.now()
+    exclude = []
+
+    for e in get_settings()['kotti.modification_date_excludes']:
+        if isinstance(event.object, e.class_):
+            exclude.append(e.key)
+
+    if has_changes(event.object, exclude=exclude):
+        event.object.modification_date = datetime.now()
 
 
 def delete_orphaned_tags(event):

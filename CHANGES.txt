@@ -1,6 +1,31 @@
 Change History
 ==============
 
+1.2.0 - 2015-09-27
+------------------
+
+- **Greatly** reduce the number of queries that are sent to the DB:
+  - Add caching for the root node.
+  - Use eager / joined loading for local_groups.
+  - Don't query principals for roles
+- Add "missing" foreign key indices (with corresponding migration step).
+- Add a ``kotti.modification_date_excludes`` configuration option.
+  It takes a list of attributes in dotted name notation that should not trigger
+  an update of ``modification_date`` on change.  Defaults to
+  ``kotti.resources.Node.position``.
+- Don't try to set a caching header from the NewRequest handler when Pyramid's
+  tweens didn't follow the usual chain of calls. This fixes compatibility with
+  ``bowerstatic``.
+- Don't assume ``renderer_name`` exists in a rendering event (ex.
+  BeforeRender). The official docstring of ``pyramid.interfaces.IRenderer`` is
+  a bit ambigous in regards to what the ``system`` parameter should include
+  when a renderer gets called. This fixes compatibility with
+  ``pyramid_layout``.
+- Add a ``kotti.modification_date_excludes`` configuration option.
+  It takes a list of attributes in dotted name notation that should not trigger
+  an update of ``modification_date`` on change.  Defaults to
+  ``kotti.resources.Node.position``.
+
 1.1.5 - 2015-09-04
 ------------------
 
