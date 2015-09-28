@@ -14,7 +14,6 @@ from pyramid.location import lineage
 from pyramid.renderers import get_renderer
 from pyramid.renderers import render
 from pyramid.settings import asbool
-
 from sqlalchemy import and_
 from sqlalchemy import not_
 from sqlalchemy import or_
