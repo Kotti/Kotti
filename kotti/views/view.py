@@ -7,7 +7,6 @@ from pyramid.view import render_view_to_response
 from pyramid.view import view_config
 
 from kotti.interfaces import IContent
-
 from kotti.views.util import search_content
 from kotti.views.util import search_content_for_tags
 
