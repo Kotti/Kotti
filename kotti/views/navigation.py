@@ -6,9 +6,11 @@ This module contains navigation related views.
 
 from pyramid.view import view_config
 
-from kotti.interfaces import INavigationRoot, INode
+from kotti.interfaces import INavigationRoot
+from kotti.interfaces import INode
 from kotti.resources import get_root
 from kotti.security import has_permission
+from kotti.views.util import nodes_tree
 
 
 @view_config(name='render_tree_navigation', permission='view',
@@ -21,13 +23,7 @@ def render_tree_navigation(context, request):
     :result: Dictionary passed to the template for rendering.
     :rtype: dict
     """
-
-    # Import is needed in function scope to resolve circular imports caused by
-    # compatibility imports in slots.py.
-    from kotti.views.util import nodes_tree
-
     tree = nodes_tree(request)
-
     return {
         'tree': {
             'children': [tree],
