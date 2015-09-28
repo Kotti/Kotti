@@ -3,6 +3,7 @@
 import warnings
 
 from pyramid.exceptions import NotFound
+from pyramid.view import notfound_view_config
 from pyramid.view import render_view_to_response
 from pyramid.view import view_config
 
@@ -65,6 +66,12 @@ def search_results_for_tag(context, request):
 @view_config(name='view', context=IContent, permission='view',
              renderer='kotti:templates/view/document.pt')
 def view(context, request):
+    return {}
+
+
+@notfound_view_config(renderer='kotti:templates/http-errors/notfound.pt')
+def notfound_view(context, request):
+    request.response = context
     return {}
 
 
