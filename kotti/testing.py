@@ -276,7 +276,8 @@ def setUpFunctionalStrippedDownApp(global_config=None, **settings):
     # An app that doesn't use Nodes at all
     _settings = {
         'kotti.base_includes': (
-            'kotti kotti.views kotti.views.login kotti.views.users'),
+            'kotti kotti.views kotti.views.login kotti.views.users '
+            'kotti.views.view'),
         'kotti.use_tables': 'principals',
         'kotti.populators': 'kotti.populate.populate_users',
         'pyramid.includes': 'kotti.testing.include_testing_view',
