@@ -9,6 +9,7 @@ from babel.dates import format_time
 from babel.numbers import format_currency
 from pyramid.decorator import reify
 from pyramid.i18n import get_locale_name
+from pyramid.interfaces import ILocation
 from pyramid.location import inside
 from pyramid.location import lineage
 from pyramid.renderers import get_renderer
@@ -138,6 +139,16 @@ class TemplateAPI(object):
         self.slots = Slots(context, request)
         self.__dict__.update(kwargs)
 
+    def is_location(self, context):
+        """Is the context a location?
+
+        :param context: The context.
+        :type context: kotti.interfaces.INode
+        :rtype: bool
+        :returns: True if Is the context available in the content lineage
+        """
+        return ILocation.providedBy(context)
+
     @reify
     def edit_needed(self):
         if 'kotti.fanstatic.edit_needed' in self.S:
@@ -194,6 +205,8 @@ class TemplateAPI(object):
 
         if context is None:
             context = self.context
+        if not ILocation.providedBy(context):
+            return self.request.url
         return self.request.resource_url(context, *elements, **kwargs)
 
     @reify

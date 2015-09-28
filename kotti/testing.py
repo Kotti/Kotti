@@ -14,8 +14,10 @@ from pytest import mark
 
 from pyramid import testing
 from pyramid.events import NewResponse
+from pyramid.interfaces import ILocation
 from pyramid.security import ALL_PERMISSIONS
 from zope.deprecation.deprecation import deprecate
+from zope.interface import implementer
 import transaction
 
 
@@ -243,6 +245,7 @@ class FunctionalTestBase(TestCase):
         return browser
 
 
+@implementer(ILocation)
 class TestingRootFactory(dict):
     __name__ = ''  # root is required to have an empty name!
     __parent__ = None

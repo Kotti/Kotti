@@ -4,7 +4,7 @@
       xmlns:i18n="http://xml.zope.org/namespaces/i18n"
       tal:define="page_slots api.slots;
                   dummy api.view_needed;
-                  has_location_context hasattr(context, '__name__')"
+                  has_location_context api.is_location(context);"
       metal:define-macro="main">
 
   <head>

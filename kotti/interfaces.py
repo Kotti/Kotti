@@ -3,9 +3,10 @@
 """
 
 from zope.interface import Interface
+from pyramid.interfaces import ILocation
 
 
-class INode(Interface):
+class INode(ILocation):
     """Marker interface for all nodes (and subclasses)"""
 
 
