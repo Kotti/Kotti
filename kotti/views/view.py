@@ -2,7 +2,7 @@
 
 import warnings
 
-from pyramid.exceptions import NotFound
+from pyramid.httpexceptions import HTTPNotFound
 from pyramid.view import notfound_view_config
 from pyramid.view import render_view_to_response
 from pyramid.view import view_config
@@ -28,7 +28,7 @@ def view_content_default(context, request):
         warnings.warn(
             u'Failed to look up default view called {0!r} for {1!r}.'.format(
                 view_name, context))
-        raise NotFound()
+        raise HTTPNotFound()
     return response
 
 
