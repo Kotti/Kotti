@@ -46,8 +46,8 @@ def local_navigation(context, request):
     if not children and getattr(context, '__parent__', None) is not None:
         parent = context.__parent__
         children = ch(parent)
-    if len(children) and parent != get_root() and not \
-            INavigationRoot.providedBy(parent):
+    if children and parent != get_root() and not \
+       INavigationRoot.providedBy(parent):
         return dict(parent=parent, children=children)
     return dict(parent=None)
 
