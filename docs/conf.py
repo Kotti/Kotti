@@ -11,44 +11,45 @@
 # All configuration values have a default; values that are commented out
 # serve to show the default.
 
+import os
 import pkg_resources
+from datetime import date
 
 # -- General configuration -----------------------------------------------------
 
-#needs_sphinx = '1.0'
 extensions = [
     'repoze.sphinx.autointerface',
     'sphinx.ext.autodoc',
+    'sphinx.ext.doctest',
     'sphinx.ext.graphviz',
     'sphinx.ext.inheritance_diagram',
     'sphinx.ext.intersphinx',
     'sphinx.ext.viewcode',
     ]
 
-templates_path = ['_templates']
-source_suffix = '.rst'
-#source_encoding = 'utf-8-sig'
+copyright = u'2012-2014, Kotti developers'.format(date.today().year)
+exclude_patterns = ['_build', '_themes']
 master_doc = 'index'
 project = u'Kotti'
-copyright = u'2012-2014, Kotti developers'
-version = pkg_resources.get_distribution("Kotti").version
-# The full version, including alpha/beta/rc tags.
-release = version
-#language = None
-today_fmt = '%Y-%m-%d'
-exclude_patterns = ['_build', '_themes']
-#default_role = None
-#add_function_parentheses = True
-#add_module_names = True
-#show_authors = False
 pygments_style = 'sphinx'
-#modindex_common_prefix = []
+source_suffix = '.rst'
+templates_path = ['_templates']
+today_fmt = '%Y-%m-%d'
+# The full version, including alpha/beta/rc tags.
+version = pkg_resources.get_distribution("Kotti").version
+release = version
 
+# add_function_parentheses = True
+# add_module_names = True
+# default_role = None
+# language = None
+# modindex_common_prefix = []
+# show_authors = False
+# source_encoding = 'utf-8-sig'
 
 # -- Options for HTML output ---------------------------------------------------
 
 # on_rtd is whether we are on readthedocs.org
-import os
 on_rtd = os.environ.get('READTHEDOCS', None) == 'True'
 
 if not on_rtd:  # only import and set the theme if we're building docs locally
@@ -58,51 +59,50 @@ if not on_rtd:  # only import and set the theme if we're building docs locally
 
 # The name for this set of Sphinx documents.  If None, it defaults to
 # "<project> v<release> documentation".
-#html_title = None
 # A shorter title for the navigation bar.  Default is the same as html_title.
-#html_short_title = None
-#html_logo = None
-#html_favicon = None
-html_static_path = ['_static']
 html_last_updated_fmt = '%Y-%m-%d'
-#html_use_smartypants = True
-#html_sidebars = {}
-#html_additional_pages = {}
-#html_domain_indices = True
-#html_use_index = True
-#html_split_index = False
-#html_show_sourcelink = True
-#html_show_sphinx = True
-#html_show_copyright = True
-#html_use_opensearch = ''
-#html_file_suffix = None
+html_static_path = ['_static']
 htmlhelp_basename = 'Kottidoc'
+# html_additional_pages = {}
+# html_domain_indices = True
+# html_favicon = None
+# html_file_suffix = None
+# html_logo = None
+# html_short_title = None
+# html_show_copyright = True
+# html_show_sourcelink = True
+# html_show_sphinx = True
+# html_sidebars = {}
+# html_split_index = False
+# html_title = None
+# html_use_index = True
+# html_use_opensearch = ''
+# html_use_smartypants = True
 
 
 # -- Options for LaTeX output --------------------------------------------------
 
-#latex_paper_size = 'a4'
-#latex_font_size = '10pt'
-#latex_documents = [
-#  ('index', 'Kotti.tex', u'Kotti Documentation',
-#   u'Daniel Nouri', 'manual'),
-#]
-#latex_logo = None
-#latex_use_parts = False
-#latex_show_pagerefs = False
-#latex_show_urls = False
-#latex_preamble = ''
-#latex_appendices = []
-#latex_domain_indices = True
+# latex_appendices = []
+# latex_documents = [
+#     ('index', 'Kotti.tex', u'Kotti Documentation', u'Daniel Nouri', 'manual'),
+# ]
+# latex_domain_indices = True
+# latex_font_size = '10pt'
+# latex_logo = None
+# latex_paper_size = 'a4'
+# latex_preamble = ''
+# latex_show_pagerefs = False
+# latex_show_urls = False
+# latex_use_parts = False
 
 
 # -- Options for manual page output --------------------------------------------
 
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
-#man_pages = [
-#    ('index', 'kotti', u'Kotti Documentation', [u'Daniel Nouri'], 1)
-#]
+# man_pages = [
+#     ('index', 'kotti', u'Kotti Documentation', [u'Daniel Nouri'], 1)
+# ]
 
 # -- Options for inheritance diagrams ------------------------------------------
 inheritance_graph_attrs = dict(
