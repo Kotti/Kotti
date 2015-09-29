@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Kotti 0.10b2dev\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2015-02-22 11:33+0100\n"
+"POT-Creation-Date: 2015-09-29 14:24+0100\n"
 "PO-Revision-Date: 2014-10-19 08:22+0900\n"
 "Last-Translator: mete0r <mete0r@sarangbang.or.kr>\n"
 "Language-Team: Korean\n"
@@ -17,6 +17,81 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 0.9.6\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
+
+#: kotti/security.py:190
+msgid "Viewer"
+msgstr "열람자"
+
+#: kotti/security.py:191
+msgid "Editor"
+msgstr "편집자"
+
+#: kotti/security.py:192
+msgid "Owner"
+msgstr "소유자"
+
+#: kotti/security.py:193
+msgid "Admin"
+msgstr "관리자"
+
+#: kotti/resources.py:508 kotti/views/edit/actions.py:456
+msgid "Copy"
+msgstr "복사"
+
+#: kotti/resources.py:509 kotti/views/edit/actions.py:457
+msgid "Cut"
+msgstr "잘라내기"
+
+#: kotti/resources.py:510 kotti/views/edit/actions.py:453
+msgid "Paste"
+msgstr "붙여넣기"
+
+#: kotti/resources.py:511 kotti/views/edit/actions.py:458
+#: kotti/templates/edit/rename.pt:31 kotti/templates/edit/rename-nodes.pt:8
+#: kotti/templates/edit/rename-nodes.pt:40
+msgid "Rename"
+msgstr "이름 바꾸기"
+
+#: kotti/resources.py:512 kotti/views/users.py:443
+#: kotti/views/edit/actions.py:460
+#: kotti/templates/site-setup/delete-user.pt:24
+#: kotti/templates/edit/delete-nodes.pt:9
+#: kotti/templates/edit/delete-nodes.pt:50 kotti/templates/edit/delete.pt:24
+msgid "Delete"
+msgstr "삭제"
+
+#: kotti/resources.py:637 kotti/views/edit/content.py:85
+msgid "Document"
+msgstr "문서"
+
+#: kotti/resources.py:726 kotti/views/edit/content.py:113
+#: kotti/views/edit/content.py:66
+msgid "File"
+msgstr "파일"
+
+#: kotti/resources.py:772 kotti/views/edit/content.py:141
+msgid "Image"
+msgstr "화상"
+
+#: kotti/resources.py:529
+msgid "Folder view"
+msgstr "폴더로 보임"
+
+#: kotti/resources.py:523 kotti/templates/view/folder.pt:15
+msgid "Contents"
+msgstr "컨텐츠 항목"
+
+#: kotti/resources.py:524 kotti/templates/edit/nav-tree.pt:10
+msgid "Edit"
+msgstr "편집"
+
+#: kotti/resources.py:525
+msgid "Share"
+msgstr "공유"
+
+#: kotti/resources.py:526 kotti/templates/actions-dropdown.pt:3
+msgid "Actions"
+msgstr "동작"
 
 #: kotti/populate.py:64
 msgid "Welcome to Kotti"
@@ -32,29 +107,25 @@ msgid ""
 "\n"
 "<h2>Log in</h2>\n"
 "<p>\n"
-"    You can <a class=\"btn btn-success\" href=\"login\">log in</a> to your "
-"site\n"
+"    You can <a class=\"btn btn-success\" href=\"login\">log in</a> to your site\n"
 "    and start changing its contents.  If you haven't chosen a password for\n"
 "    your admin account yet, it'll likely be <em>qwerty</em>.\n"
 "</p>\n"
 "<p>\n"
 "    Once you're logged in, you'll see the grey editor bar below the top\n"
-"    navigation bar.  It will allow you to switch between editing and viewing "
-"the\n"
+"    navigation bar.  It will allow you to switch between editing and viewing the\n"
 "    current page as it will appear to your visitors.\n"
 "</p>\n"
 "<div class=\"row\">\n"
 "    <div class=\"col-md-4\">\n"
 "        <h2>Configure</h2>\n"
 "        <p>\n"
-"            Find out how to configure your Kotti's title and many other "
-"settings using a\n"
-"            simple text file in your file system.\n"
+"            Find out how to configure your Kotti's title and many other\n"
+"            settings using a simple text file in your file system.\n"
 "        </p>\n"
 "        <p>\n"
 "            <a class=\"btn btn-info\"\n"
-"               href=\"http://kotti.readthedocs.org/en/latest/developing/"
-"basic/configuration.html\">\n"
+"               href=\"http://kotti.readthedocs.org/en/latest/developing/basic/configuration.html\">\n"
 "               Configuration manual\n"
 "            </a>\n"
 "        </p>\n"
@@ -62,13 +133,12 @@ msgid ""
 "    <div class=\"col-md-4\">\n"
 "        <h2>Add-ons</h2>\n"
 "        <p>\n"
-"            A number of add-ons allow you to extend the functionality of "
-"your Kotti site.\n"
+"            A number of add-ons allow you to extend the functionality of your\n"
+"            Kotti site.\n"
 "        </p>\n"
 "        <p>\n"
 "            <a class=\"btn btn-info\"\n"
-"               href=\"http://pypi.python.org/pypi?%3Aaction=search&amp;"
-"term=kotti\">\n"
+"               href=\"http://pypi.python.org/pypi?%3Aaction=search&amp;term=kotti\">\n"
 "                Kotti add-ons\n"
 "            </a>\n"
 "        </p>\n"
@@ -76,9 +146,9 @@ msgid ""
 "    <div class=\"col-md-4\">\n"
 "        <h2>Documentation</h2>\n"
 "        <p>\n"
-"            Wonder what more you can do with Kotti?  What license it has?  "
-"Read the\n"
-"            manual for more information.\n"
+"            Wonder what more you can do with Kotti?\n"
+"            What license it has?\n"
+"            Read the manual for more information.\n"
 "        </p>\n"
 "        <p>\n"
 "            <a class=\"btn btn-info\"\n"
@@ -92,25 +162,20 @@ msgstr ""
 "\n"
 "<h2>로그인</h2>\n"
 "<p>\n"
-"    <a class=\"btn btn-success\" href=\"login\">로그인</a>하여 컨텐츠를 편집"
-"할 수 있습니다.아직 관리자 암호를 바꾸지 않았다면, <em>qwerty</em>일 수 있습"
-"니다.\n"
+"    <a class=\"btn btn-success\" href=\"login\">로그인</a>하여 컨텐츠를 편집할 수 있습니다.아직 관리자 암호를 바꾸지 않았다면, <em>qwerty</em>일 수 있습니다.\n"
 "</p>\n"
 "<p>\n"
-"    로그인하면, 화면 위 네비게이션 줄 아래 회색 편집 줄이 보입니다. 그것으로 "
-"현재 페이지를 편집하는 것과 방문객처럼 보는 것 사이를 전환할 수 있습니다.\n"
+"    로그인하면, 화면 위 네비게이션 줄 아래 회색 편집 줄이 보입니다. 그것으로 현재 페이지를 편집하는 것과 방문객처럼 보는 것 사이를 전환할 수 있습니다.\n"
 "</p>\n"
 "<div class=\"row\">\n"
 "    <div class=\"col-md-4\">\n"
 "        <h2>설정</h2>\n"
 "        <p>\n"
-"            Kotti의 제목과 여러 다른 설정을 파일시스템 상의 간단한 텍스트 파"
-"일로 설정하는 법을 알아보세요.\n"
+"            Kotti의 제목과 여러 다른 설정을 파일시스템 상의 간단한 텍스트 파일로 설정하는 법을 알아보세요.\n"
 "        </p>\n"
 "        <p>\n"
 "            <a class=\"btn btn-info\"\n"
-"               href=\"http://kotti.readthedocs.org/en/latest/developing/"
-"configuration.html\">\n"
+"               href=\"http://kotti.readthedocs.org/en/latest/developing/configuration.html\">\n"
 "               설정 매뉴얼\n"
 "            </a>\n"
 "        </p>\n"
@@ -118,13 +183,11 @@ msgstr ""
 "    <div class=\"col-md-4\">\n"
 "        <h2>애드온</h2>\n"
 "        <p>\n"
-"            몇가지 애드온으로 당신의 Kotti 사이트 기능을 확장할 수 있습니"
-"다.\n"
+"            몇가지 애드온으로 당신의 Kotti 사이트 기능을 확장할 수 있습니다.\n"
 "        </p>\n"
 "        <p>\n"
 "            <a class=\"btn btn-info\"\n"
-"               href=\"http://pypi.python.org/pypi?%3Aaction=search&amp;"
-"term=kotti\">\n"
+"               href=\"http://pypi.python.org/pypi?%3Aaction=search&amp;term=kotti\">\n"
 "                Kotti 애드온\n"
 "            </a>\n"
 "        </p>\n"
@@ -132,8 +195,7 @@ msgstr ""
 "    <div class=\"col-md-4\">\n"
 "        <h2>기술문헌</h2>\n"
 "        <p>\n"
-"            Kotti로 무엇을 더 할 수 있는지 궁금하십니까?  사용권은 무엇이"
-"죠?  좀 더 알아보려면 매뉴얼을 읽으십시오.\n"
+"            Kotti로 무엇을 더 할 수 있는지 궁금하십니까?  사용권은 무엇이죠?  좀 더 알아보려면 매뉴얼을 읽으십시오.\n"
 "        </p>\n"
 "        <p>\n"
 "            <a class=\"btn btn-info\"\n"
@@ -144,25 +206,21 @@ msgstr ""
 "    </div>\n"
 "</div>\n"
 
-#: kotti/populate.py:121
+#: kotti/populate.py:123
 msgid "About"
 msgstr "이 사이트에 대하여"
 
-#: kotti/populate.py:122
-msgid ""
-"Our company is the leading manufacturer of foo widgets used in a wide "
-"variety of aviation and and industrial products."
-msgstr ""
-"우리 회사는 다양한 범위의 항공 및 산업 제품들에 사용되는 foo 위젯의 선두 제조"
-"업체입니다."
+#: kotti/populate.py:124
+msgid "Our company is the leading manufacturer of foo widgets used in a wide variety of aviation and and industrial products."
+msgstr "우리 회사는 다양한 범위의 항공 및 산업 제품들에 사용되는 foo 위젯의 선두 제조업체입니다."
 
-#: kotti/populate.py:123
+#: kotti/populate.py:125
+#, fuzzy
 msgid ""
 "\n"
 "<p>\n"
 "  <img alt=\"five colorful Extra EA300 airplanes flying in formation\"\n"
-"   src=\"http://upload.wikimedia.org/wikipedia/commons/thumb/5/5d/"
-"Northern_Lights_Formation.jpg/640px-Northern_Lights_Formation.jpg\"\n"
+"   src=\"http://upload.wikimedia.org/wikipedia/commons/thumb/5/5d/Northern_Lights_Formation.jpg/640px-Northern_Lights_Formation.jpg\"\n"
 "   width=\"640\" height=\"376\" />\n"
 "</p>\n"
 "\n"
@@ -179,20 +237,18 @@ msgid ""
 "</address>\n"
 "\n"
 "<p><small style=\"font-size: smaller\">\n"
-"  <em>Photo credit:</em> \"Northern Lights Formation\" by FlugKerl2.\n"
-"  <a href=\"http://commons.wikimedia.org/wiki/File:Northern_Lights_Formation."
-"jpg\">\n"
-"  Copyright info</a>.\n"
-"  Originally published in the\n"
-"  <a href=\"http://en.wikipedia.org/wiki/Extra_EA-300\"> Extra EA-300</a>\n"
-"  article.\n"
+"<em>Photo credit:</em> \"Northern Lights Formation\" by FlugKerl2.\n"
+"<a href=\"http://commons.wikimedia.org/wiki/File:Northern_Lights_Formation.jpg\">\n"
+"Copyright info</a>.\n"
+"Originally published in the\n"
+"<a href=\"http://en.wikipedia.org/wiki/Extra_EA-300\"> Extra EA-300</a>\n"
+"article.\n"
 "</small></p>\n"
 msgstr ""
 "\n"
 "<p>\n"
 "  <img alt=\"five colorful Extra EA300 airplanes flying in formation\"\n"
-"   src=\"http://upload.wikimedia.org/wikipedia/commons/thumb/5/5d/"
-"Northern_Lights_Formation.jpg/640px-Northern_Lights_Formation.jpg\"\n"
+"   src=\"http://upload.wikimedia.org/wikipedia/commons/thumb/5/5d/Northern_Lights_Formation.jpg/640px-Northern_Lights_Formation.jpg\"\n"
 "   width=\"640\" height=\"376\" />\n"
 "</p>\n"
 "\n"
@@ -210,478 +266,26 @@ msgstr ""
 "\n"
 "<p><small style=\"font-size: smaller\">\n"
 "  <em>사진 크레딧:</em> \"Northern Lights Formation\" by FlugKerl2.\n"
-"  <a href=\"http://commons.wikimedia.org/wiki/File:Northern_Lights_Formation."
-"jpg\">\n"
+"  <a href=\"http://commons.wikimedia.org/wiki/File:Northern_Lights_Formation.jpg\">\n"
 "  저작권 정보</a>.\n"
 "  Originally published in the\n"
 "  <a href=\"http://en.wikipedia.org/wiki/Extra_EA-300\"> Extra EA-300</a>\n"
 "  article.\n"
 "</small></p>\n"
 
-#: kotti/resources.py:627 kotti/views/edit/content.py:82
-msgid "Document"
-msgstr "문서"
-
-#: kotti/resources.py:666 kotti/views/edit/content.py:110
-#: kotti/views/edit/content.py:63
-msgid "File"
-msgstr "파일"
-
-#: kotti/resources.py:753 kotti/views/edit/content.py:138
-msgid "Image"
-msgstr "화상"
-
-#: kotti/resources.py:517
-msgid "Folder view"
-msgstr "폴더로 보임"
-
-#: kotti/resources.py:504 kotti/templates/view/folder.pt:17
-msgid "Contents"
-msgstr "컨텐츠 항목"
-
-#: kotti/resources.py:505 kotti/templates/edit/nav-tree.pt:10
-msgid "Edit"
-msgstr "편집"
-
-#: kotti/resources.py:506
-msgid "Share"
-msgstr "공유"
-
-#: kotti/resources.py:507 kotti/templates/actions-dropdown.pt:5
-msgid "Actions"
-msgstr "동작"
-
-#: kotti/resources.py:508 kotti/views/edit/actions.py:446
-msgid "Copy"
-msgstr "복사"
-
-#: kotti/resources.py:509 kotti/views/edit/actions.py:447
-msgid "Cut"
-msgstr "잘라내기"
-
-#: kotti/resources.py:510 kotti/views/edit/actions.py:443
-msgid "Paste"
-msgstr "붙여넣기"
-
-#: kotti/resources.py:511 kotti/templates/edit/rename-nodes.pt:7
-#: kotti/templates/edit/rename-nodes.pt:55 kotti/templates/edit/rename.pt:42
-#: kotti/views/edit/actions.py:448
-msgid "Rename"
-msgstr "이름 바꾸기"
-
-#: kotti/resources.py:512 kotti/templates/edit/delete-nodes.pt:8
-#: kotti/templates/edit/delete-nodes.pt:90 kotti/templates/edit/delete.pt:28
-#: kotti/templates/site-setup/delete-user.pt:36 kotti/views/users.py:443
-#: kotti/views/edit/actions.py:450
-msgid "Delete"
-msgstr "삭제"
-
-#: kotti/security.py:189
-msgid "Viewer"
-msgstr "열람자"
-
-#: kotti/security.py:190
-msgid "Editor"
-msgstr "편집자"
-
-#: kotti/security.py:191
-msgid "Owner"
-msgstr "소유자"
-
-#: kotti/security.py:192
-msgid "Admin"
-msgstr "관리자"
-
-#: kotti/templates/add-dropdown.pt:5
-msgid "Add"
-msgstr "추가"
-
-#: kotti/templates/add-dropdown.pt:27
-msgid "Upload Content"
-msgstr "컨텐트 올리기"
-
-#: kotti/templates/default-view-selector.pt:5
-msgid "Set default view"
-msgstr "보이는 방식 설정"
-
-#: kotti/templates/editor-bar.pt:35
-msgid "View"
-msgstr "보기"
-
-#: kotti/templates/editor-bar.pt:76
-msgid "Navigate"
-msgstr "둘러보기"
-
-#: kotti/templates/editor-bar.pt:98
-msgid "Preferences"
-msgstr "기본 설정"
-
-#: kotti/templates/editor-bar.pt:109
-msgid "Site Setup"
-msgstr "사이트 설정"
-
-#: kotti/templates/editor-bar.pt:131
-msgid "Logout"
-msgstr "로그아웃"
-
-#: kotti/templates/email-reset-password.pt:3
-msgid "Reset your password for ${site_title}."
-msgstr "${site_title}의 암호를 재설정하십시오."
-
-#: kotti/templates/email-reset-password.pt:7
-#: kotti/templates/email-set-password.pt:6
-msgid "Hello, ${user_title}!"
-msgstr "${user_title}님, 안녕하세요!"
-
-#: kotti/templates/email-reset-password.pt:10
-msgid "Click this link to reset your password at ${site_title}: ${url}"
-msgstr "이 링크를 눌러 ${site_title}에서의 암호를 설정하십시오: ${url}"
-
-#: kotti/templates/email-set-password.pt:3
-msgid "Your registration for ${site_title}"
-msgstr "${site_title} 가입"
-
-#: kotti/templates/email-set-password.pt:9
-msgid "You are joining ${site_title}."
-msgstr "${site_title}에 가입 중입니다."
-
-#: kotti/templates/email-set-password.pt:12
-msgid "Click here to set your password and log in: ${url}"
-msgstr "여기를 눌러 암호를 설정 후 로그인하십시오: ${url}"
-
-#: kotti/templates/forbidden.pt:7
-msgid "Forbidden"
-msgstr "금지됨"
-
-#: kotti/templates/login.pt:16
-msgid "Login"
-msgstr "로그인"
-
-#: kotti/templates/login.pt:25 kotti/templates/login.pt:87
-msgid "Username or email"
-msgstr "사용자 이름 혹은 전자메일"
-
-#: kotti/templates/login.pt:34 kotti/views/login.py:212
-#: kotti/views/users.py:212
-msgid "Password"
-msgstr "암호"
-
-#: kotti/templates/login.pt:47
-msgid "Log in"
-msgstr "로그인"
-
-#: kotti/templates/login.pt:65
-msgid "Forgot your password?"
-msgstr "암호를 잊으셨습니까?"
-
-#. Used in sentence: "Fill out your username or email and click
-#. ${reset_password} below to receive an email with a link to reset your
-#. password."
-#.
-#: kotti/templates/login.pt:77 kotti/templates/login.pt:100
-msgid "Reset password"
-msgstr "암호 재설정"
-
-#. Canonical text for ${reset_password} is: "Reset password"
-#: kotti/templates/login.pt:74
-msgid ""
-"Fill out your username or email and click ${reset_password} below to receive "
-"an email with a link to reset your password."
-msgstr ""
-"사용자 이름이나 전자메일을 입력한 뒤 아래의 ${reset_password}를 누르면 암호"
-"를 재설정할 수 있는 링크를 전자메일로 받으실 수 있습니다."
-
-#: kotti/templates/login.pt:118
-msgid "Not registered yet?"
-msgstr "아직 등록하지 않으셨습니까?"
-
-#: kotti/templates/login.pt:127
-msgid "Register for an account on this site."
-msgstr "이 사이트에 계정을 등록하십시오."
-
-#: kotti/templates/workflow-dropdown.pt:19
-msgid "Make ${state}"
-msgstr "\"${state}\"로(으로) 바꿈"
-
-#: kotti/templates/edit/breadcrumbs.pt:5
-msgid "You are here:"
-msgstr "현재 위치:"
-
-#: kotti/templates/edit/change-state.pt:7
-msgid "Change workflow state"
-msgstr "작업 상태 바꾸기"
-
-#: kotti/templates/edit/change-state.pt:14
-msgid "An item's workflow state determines who can see, edit and/or manage it."
-msgstr ""
-"항목의 작업 상태에 따라 항목을 누가 읽거나 고치고, 관리할 수 있는지 달라집니"
-"다."
-
-#: kotti/templates/edit/change-state.pt:26 kotti/templates/edit/contents.pt:57
-#: kotti/templates/edit/delete-nodes.pt:33 kotti/templates/view/folder.pt:28
-#: kotti/views/users.py:196 kotti/views/edit/content.py:32
-msgid "Title"
-msgstr "제목"
-
-#: kotti/templates/edit/change-state.pt:29 kotti/templates/edit/contents.pt:60
-#: kotti/templates/edit/delete-nodes.pt:36 kotti/templates/edit/share.pt:70
-#: kotti/templates/edit/upload.pt:23 kotti/templates/edit/upload.pt:167
-#: kotti/templates/site-setup/users.pt:105 kotti/templates/view/folder.pt:31
-msgid "Type"
-msgstr "유형"
-
-#: kotti/templates/edit/change-state.pt:32 kotti/templates/edit/contents.pt:63
-#: kotti/templates/edit/delete-nodes.pt:39
-msgid "State"
-msgstr "작업 상태"
-
-#: kotti/templates/edit/change-state.pt:35 kotti/templates/edit/contents.pt:69
-#: kotti/templates/edit/delete-nodes.pt:42 kotti/templates/view/folder.pt:34
-msgid "Creation Date"
-msgstr "만든 날"
-
-#: kotti/templates/edit/change-state.pt:38 kotti/templates/edit/contents.pt:72
-#: kotti/templates/edit/delete-nodes.pt:45 kotti/templates/view/folder.pt:37
-msgid "Modification Date"
-msgstr "바꾼 날"
-
-#: kotti/templates/edit/change-state.pt:79
-#: kotti/templates/edit/change-state.pt:90
-msgid "Include children"
-msgstr "하위 항목 포함 여부"
-
-#: kotti/templates/edit/change-state.pt:82
-msgid ""
-"If checked, this will attempt to modify the status of all children in any "
-"selected documents and their subdocuments."
-msgstr "체크하면, 고른 문서와 그 하위 문서 모두를 바꿉니다."
-
-#: kotti/templates/edit/change-state.pt:100
-msgid "Change state to"
-msgstr "바꿀 상태"
-
-#: kotti/templates/edit/change-state.pt:103
-msgid "Select the new state where all chosen items should be set."
-msgstr "고른 항목 모두가 갖게 될 상태를 선택하십시오."
-
-#: kotti/templates/edit/change-state.pt:111
-msgid "No change"
-msgstr "바꾸지 않음"
-
-#: kotti/templates/edit/change-state.pt:127 kotti/templates/edit/share.pt:121
-#: kotti/templates/site-setup/users.pt:165
-msgid "Apply changes"
-msgstr "바꾸기 적용"
-
-#: kotti/templates/edit/change-state.pt:130
-#: kotti/templates/edit/delete-nodes.pt:93
-#: kotti/templates/edit/rename-nodes.pt:58 kotti/views/form.py:78
-#: kotti/views/users.py:316 kotti/views/users.py:350 kotti/views/users.py:442
-msgid "Cancel"
-msgstr "취소"
-
-#: kotti/templates/edit/contents.pt:43
-msgid "No content items are contained here."
-msgstr "여기엔 하위 항목이 없습니다."
-
-#: kotti/templates/edit/contents.pt:66
-msgid "Visibility"
-msgstr "가시성"
-
-#: kotti/templates/edit/contents.pt:125
-msgid "Visible"
-msgstr "보임"
-
-#: kotti/templates/edit/contents.pt:134
-msgid "Hidden"
-msgstr "숨김"
-
-#: kotti/templates/edit/delete-nodes.pt:17
-msgid "Are you sure you want to delete the following items?"
-msgstr "다음 항목을 정말 지우겠습니까?"
-
-#: kotti/templates/edit/delete.pt:8
-#: kotti/templates/site-setup/delete-user.pt:8
-msgid "Delete ${title}"
-msgstr "\"${title}\" 삭제"
-
-#: kotti/templates/edit/delete.pt:20
-msgid "Are you sure you want to delete ${title}?"
-msgstr "\"${title}\"을(를) 정말 지우겠습니까?"
-
-#: kotti/templates/edit/nav-tree-view.pt:7
-msgid "Navigate Site"
-msgstr "사이트 둘러보기"
-
-#: kotti/templates/edit/rename-nodes.pt:16 kotti/templates/edit/rename.pt:14
-msgid ""
-"Each content item has a name, which is used to create the url, and a title. "
-"Read the user manual about proper formatting of name and title if needed. "
-"You can change both below."
-msgstr ""
-"각 컨텐트 항목은 이름을 가지며, 이는 URL과 제목을 만드는데 사용됩니다. 이름"
-"과 제목의 올바른 형식에 대해 알려면 사용자 매뉴얼을 읽으십시오. 둘 다 아래에"
-"서 바꿀 수 있습니다."
-
-#: kotti/templates/edit/rename-nodes.pt:35 kotti/templates/edit/rename.pt:26
-msgid "New name"
-msgstr "새 이름"
-
-#: kotti/templates/edit/rename-nodes.pt:45 kotti/templates/edit/rename.pt:35
-msgid "New title"
-msgstr "새 제목"
-
-#: kotti/templates/edit/rename.pt:7
-msgid "Rename ${title}"
-msgstr "\"${title}\" 이름 바꾸기"
-
-#: kotti/templates/edit/share.pt:7
-msgid "Share ${title}"
-msgstr "\"${title}\" 공유하기"
-
-#: kotti/templates/edit/share.pt:19 kotti/templates/edit/share.pt:30
-#: kotti/templates/edit/share.pt:35 kotti/templates/site-setup/users.pt:68
-msgid "Search users and groups"
-msgstr "사용자와 그룹 검색"
-
-#: kotti/templates/edit/share.pt:43 kotti/templates/site-setup/users.pt:81
-msgid "Search"
-msgstr "검색"
-
-#: kotti/templates/edit/share.pt:60
-msgid "Assign local roles"
-msgstr "컨텐츠별 역할 부여"
-
-#: kotti/templates/edit/share.pt:73 kotti/templates/site-setup/users.pt:108
-#: kotti/views/users.py:207
-msgid "Name"
-msgstr "이름"
-
-#: kotti/templates/edit/share.pt:91 kotti/templates/site-setup/users.pt:126
-#: kotti/views/users.py:313 kotti/views/users.py:501 kotti/views/users.py:536
-msgid "User"
-msgstr "사용자"
-
-#: kotti/templates/edit/share.pt:94 kotti/templates/site-setup/users.pt:129
-#: kotti/views/users.py:347 kotti/views/users.py:188 kotti/views/users.py:501
-#: kotti/views/users.py:536
-msgid "Group"
-msgstr "그룹"
-
-#: kotti/templates/edit/share.pt:101 kotti/templates/site-setup/users.pt:136
-msgid "Gravatar"
-msgstr ""
-
-#: kotti/templates/edit/upload.pt:9
-msgid "Upload content from local file(s)"
-msgstr "내 컴퓨터에서 컨텐트 올리기"
-
-#: kotti/templates/edit/upload.pt:20 kotti/templates/edit/upload.pt:164
-msgid "Filename"
-msgstr "파일 이름"
-
-#: kotti/templates/edit/upload.pt:26 kotti/templates/edit/upload.pt:170
-msgid "Size"
-msgstr "크기"
-
-#: kotti/templates/edit/upload.pt:29
-msgid "Status"
-msgstr "상태"
-
-#: kotti/templates/edit/upload.pt:32
-msgid "Progress"
-msgstr "진행률"
-
-#: kotti/templates/edit/upload.pt:124
-msgid "Select file(s) to upload..."
-msgstr ""
-
-#: kotti/templates/edit/upload.pt:134
-msgid "Upload ${number} files."
-msgstr ""
-
-#: kotti/templates/edit/upload.pt:144
-msgid "Dismiss all errors"
-msgstr ""
-
-#: kotti/templates/site-setup/delete-user.pt:20
-msgid "Are you sure you want to delete ${type} ${title}?"
-msgstr "${type} \"${title}\"을 정말 지우겠습니까?"
-
-#: kotti/templates/site-setup/user.pt:13
-msgid "Back to User Management"
-msgstr "사용자 관리로 되돌아가기"
-
-#: kotti/templates/site-setup/user.pt:25 kotti/views/form.py:156
-#, python-format
-msgid "Edit ${title}"
-msgstr "\"${title}\" 편집"
-
-#: kotti/templates/site-setup/users.pt:15
-#, fuzzy
-msgid "Search user(s) / group(s)"
-msgstr "사용자/그룹 검색"
-
-#: kotti/templates/site-setup/users.pt:24
-msgid "Add user"
-msgstr "사용자 추가"
-
-#: kotti/templates/site-setup/users.pt:33
-msgid "Add group"
-msgstr "그룹 추가"
-
-#: kotti/templates/site-setup/users.pt:52
-msgid "Find users or groups"
-msgstr "사용자나 그룹 찾기"
-
-#: kotti/templates/site-setup/users.pt:63
-msgid "User- / groupname"
-msgstr "사용자나 그룹 이름"
-
-#: kotti/templates/site-setup/users.pt:70
-msgid "Blank search text finds all."
-msgstr "비워두면 모두 찾습니다."
-
-#: kotti/templates/site-setup/users.pt:96
-msgid "Assign global roles"
-msgstr "사이트 전체 역할 부여"
-
-#: kotti/templates/site-setup/users.pt:180
-msgid "Add new user"
-msgstr "새 사용자 추가"
-
-#: kotti/templates/site-setup/users.pt:190
-msgid "Add new group"
-msgstr "새 그룹 추가"
-
-#: kotti/templates/view/search-results.pt:8
-msgid "Search Results"
-msgstr "검색결과"
-
-#: kotti/templates/view/search.pt:5
-msgid "Search..."
-msgstr "검색..."
-
-#: kotti/templates/view/tags.pt:5
-msgid "Tagged with:"
-msgstr "태그:"
-
-#: kotti/tests/testing_view.pt:7
-msgid "Welcome, ${user}! You are logged in."
-msgstr "${user}님, 환영합니다! 로그인되었습니다."
-
-#: kotti/tests/testing_view.pt:14
-msgid "Welcome, you are not logged in."
-msgstr "환영합니다, 로그인되지 않았습니다."
-
 #: kotti/views/form.py:79 kotti/views/users.py:69
-#: kotti/views/edit/actions.py:364 kotti/views/edit/actions.py:408
+#: kotti/views/edit/actions.py:374 kotti/views/edit/actions.py:418
 msgid "Your changes have been saved."
 msgstr "수정사항이 저장되었습니다."
 
 #: kotti/views/form.py:174
 msgid "Item was added."
 msgstr "항목이 추가되었습니다."
+
+#: kotti/views/form.py:156 kotti/templates/site-setup/user.pt:21
+#, python-format
+msgid "Edit ${title}"
+msgstr "\"${title}\" 편집"
 
 #: kotti/views/form.py:264
 #, python-format
@@ -692,6 +296,13 @@ msgstr "최대 파일 크기: ${size}MB"
 msgid "Save"
 msgstr "저장"
 
+#: kotti/views/form.py:78 kotti/views/users.py:316 kotti/views/users.py:350
+#: kotti/views/users.py:442 kotti/templates/edit/delete-nodes.pt:45
+#: kotti/templates/edit/delete.pt:19 kotti/templates/edit/change-state.pt:66
+#: kotti/templates/edit/rename-nodes.pt:42
+msgid "Cancel"
+msgstr "취소"
+
 #: kotti/views/form.py:198
 #, python-format
 msgid "Add ${type} to ${title}."
@@ -701,6 +312,10 @@ msgstr "${type}을(를) \"${title}\"에 추가합니다."
 #, python-format
 msgid "Add ${type}."
 msgstr "${type}을(를) 추가합니다."
+
+#: kotti/views/site_setup.py:6 kotti/views/users.py:378
+msgid "User Management"
+msgstr "사용자 관리"
 
 #: kotti/views/login.py:237
 msgid "You have reset your password."
@@ -723,12 +338,8 @@ msgid "Email"
 msgstr "전자메일"
 
 #: kotti/views/login.py:108
-msgid ""
-"Congratulations! You are successfully registered. You should be receiving an "
-"email with a link to set your password. Doing so will activate your account."
-msgstr ""
-"축하합니다! 성공적으로 등록되었습니다. 전자메일로 암호를 설정하는 전자메일을 "
-"받게 됩니다. 암호 설정 후 계정이 활성화됩니다."
+msgid "Congratulations! You are successfully registered. You should be receiving an email with a link to set your password. Doing so will activate your account."
+msgstr "축하합니다! 성공적으로 등록되었습니다. 전자메일로 암호를 설정하는 전자메일을 받게 됩니다. 암호 설정 후 계정이 활성화됩니다."
 
 #: kotti/views/login.py:123
 #, python-format
@@ -738,6 +349,11 @@ msgstr "등록 - ${title}"
 #: kotti/views/login.py:163
 msgid "Login failed."
 msgstr "로그인이 실패했습니다."
+
+#: kotti/views/login.py:212 kotti/views/users.py:212
+#: kotti/templates/login.pt:25
+msgid "Password"
+msgstr "암호"
 
 #: kotti/views/login.py:285
 #, python-format
@@ -750,11 +366,8 @@ msgid "Welcome, ${user}!"
 msgstr "${user}님, 환영합니다!"
 
 #: kotti/views/login.py:172
-msgid ""
-"You should be receiving an email with a link to reset your password. Doing "
-"so will activate your account."
-msgstr ""
-"암호를 재설정할 링크를 전자메일로 받게 됩니다. 설정하면 계정이 활성화됩니다."
+msgid "You should be receiving an email with a link to reset your password. Doing so will activate your account."
+msgstr "암호를 재설정할 링크를 전자메일로 받게 됩니다. 설정하면 계정이 활성화됩니다."
 
 #: kotti/views/login.py:177
 msgid "That username or email is not known by this system."
@@ -776,17 +389,20 @@ msgstr "제출"
 msgid "Your password reset token may have expired."
 msgstr "암호 재설정 토큰이 만료된 것 같습니다."
 
-#: kotti/views/site_setup.py:6 kotti/views/users.py:378
-msgid "User Management"
-msgstr "사용자 관리"
+#: kotti/views/users.py:313 kotti/views/users.py:501 kotti/views/users.py:536
+#: kotti/templates/site-setup/users.pt:79 kotti/templates/edit/share.pt:59
+msgid "User"
+msgstr "사용자"
+
+#: kotti/views/users.py:347 kotti/views/users.py:188 kotti/views/users.py:501
+#: kotti/views/users.py:536 kotti/templates/site-setup/users.pt:80
+#: kotti/templates/edit/share.pt:60
+msgid "Group"
+msgstr "그룹"
 
 #: kotti/views/users.py:267
-msgid ""
-"Leave this empty and tick the 'Send password registration' box below to have "
-"the user set their own password."
-msgstr ""
-"여길 비워두고 아래 '암호 등록 링크 발송'을 체크하면 사용자가 직접 암호를 설정"
-"합니다."
+msgid "Leave this empty and tick the 'Send password registration' box below to have the user set their own password."
+msgstr "여길 비워두고 아래 '암호 등록 링크 발송'을 체크하면 사용자가 직접 암호를 설정합니다."
 
 #: kotti/views/users.py:587
 #, python-format
@@ -809,6 +425,17 @@ msgstr "그 전자메일을 쓰는 사용자가 이미 있습니다."
 #, python-format
 msgid "No such group: ${group}"
 msgstr "그런 그룹이 없습니다: ${group}"
+
+#: kotti/views/users.py:196 kotti/views/edit/content.py:33
+#: kotti/templates/view/folder.pt:20 kotti/templates/edit/delete-nodes.pt:22
+#: kotti/templates/edit/contents.pt:39 kotti/templates/edit/change-state.pt:18
+msgid "Title"
+msgstr "제목"
+
+#: kotti/views/users.py:207 kotti/templates/site-setup/users.pt:68
+#: kotti/templates/edit/share.pt:48
+msgid "Name"
+msgstr "이름"
 
 #: kotti/views/users.py:219
 msgid "Active"
@@ -840,8 +467,8 @@ msgid "Add Group"
 msgstr "그룹 추가"
 
 #: kotti/views/users.py:465 kotti/views/users.py:71
-#: kotti/views/edit/actions.py:302 kotti/views/edit/actions.py:368
-#: kotti/views/edit/actions.py:414 kotti/views/edit/actions.py:410
+#: kotti/views/edit/actions.py:312 kotti/views/edit/actions.py:378
+#: kotti/views/edit/actions.py:424 kotti/views/edit/actions.py:420
 msgid "No changes were made."
 msgstr "아무 것도 바뀌지 않았습니다."
 
@@ -891,11 +518,6 @@ msgstr "\"${title}\"이(가) 잘라내어졌습니다."
 msgid "${title} was moved."
 msgstr "\"${title}\"이(가) 옮겨졌습니다."
 
-#: kotti/views/edit/actions.py:271 kotti/views/edit/actions.py:296
-#, python-format
-msgid "${title} was deleted."
-msgstr "\"${title}\"이(가) 지워졌습니다."
-
 #: kotti/views/edit/actions.py:159
 #, python-format
 msgid "${title} was pasted."
@@ -915,69 +537,411 @@ msgstr "\"${title}\"이(가) 이제 둘러보기에 나타납니다."
 msgid "${title} is no longer visible in the navigation."
 msgstr "\"${title}\"이(가) 이젠 둘러보기에 나타나지 않습니다."
 
-#: kotti/views/edit/actions.py:293
+#: kotti/views/edit/actions.py:277 kotti/views/edit/actions.py:306
+#, python-format
+msgid "${title} was deleted."
+msgstr "\"${title}\"이(가) 지워졌습니다."
+
+#: kotti/views/edit/actions.py:303
 msgid "Nothing was deleted."
 msgstr "아무것도 지워지지 않았습니다."
 
-#: kotti/views/edit/actions.py:329 kotti/views/edit/actions.py:356
+#: kotti/views/edit/actions.py:339 kotti/views/edit/actions.py:366
 msgid "Name and title are required."
 msgstr "이름과 제목이 필요합니다."
 
-#: kotti/views/edit/actions.py:333
+#: kotti/views/edit/actions.py:343
 msgid "Item was renamed."
 msgstr "항목이 재명명되었습니다."
 
-#: kotti/views/edit/actions.py:455
+#: kotti/views/edit/actions.py:465
 msgid "Move up"
 msgstr "위로 옮김"
 
-#: kotti/views/edit/actions.py:456
+#: kotti/views/edit/actions.py:466
 msgid "Move down"
 msgstr "아래로 옮김"
 
-#: kotti/views/edit/actions.py:457
+#: kotti/views/edit/actions.py:467
 msgid "Show"
 msgstr "보이기"
 
-#: kotti/views/edit/actions.py:458
+#: kotti/views/edit/actions.py:468
 msgid "Hide"
 msgstr "숨기기"
 
-#: kotti/views/edit/actions.py:497
+#: kotti/views/edit/actions.py:507
 msgid "You have to select items to perform an action."
 msgstr "적용할 항목을 선택해야합니다."
 
-#: kotti/views/edit/actions.py:454
+#: kotti/views/edit/actions.py:464
 msgid "Change State"
 msgstr "작업 상태 바꾸기"
 
-#: kotti/views/edit/content.py:36
+#: kotti/views/edit/content.py:38
 msgid "Description"
 msgstr "설명"
 
-#: kotti/views/edit/content.py:42
+#: kotti/views/edit/content.py:44
 msgid "Tags"
 msgstr "태그"
 
-#: kotti/views/edit/content.py:51
+#: kotti/views/edit/content.py:53
 msgid "Body"
 msgstr "본문"
 
-#: kotti/views/edit/default_views.py:99
+#: kotti/views/edit/default_views.py:100
 msgid "Default view has been reset to default."
 msgstr "기본형 보기로 재설정되었습니다."
 
-#: kotti/views/edit/default_views.py:78
+#: kotti/views/edit/default_views.py:79
 msgid "Default view"
 msgstr "기본형으로 보임"
 
-#: kotti/views/edit/default_views.py:106
+#: kotti/views/edit/default_views.py:107
 msgid "Default view has been set."
 msgstr "보이는 방식이 설정되었습니다."
 
-#: kotti/views/edit/default_views.py:111
+#: kotti/views/edit/default_views.py:112
 msgid "Default view could not be set."
 msgstr "보이는 방식을 설정할 수 없었습니다."
+
+#: kotti/templates/forbidden.pt:10
+msgid "Forbidden"
+msgstr "금지됨"
+
+#: kotti/templates/email-reset-password.pt:2
+msgid "Reset your password for ${site_title}."
+msgstr "${site_title}의 암호를 재설정하십시오."
+
+#: kotti/templates/email-reset-password.pt:4
+#: kotti/templates/email-set-password.pt:4
+msgid "Hello, ${user_title}!"
+msgstr "${user_title}님, 안녕하세요!"
+
+#: kotti/templates/email-reset-password.pt:5
+msgid "Click this link to reset your password at ${site_title}: ${url}"
+msgstr "이 링크를 눌러 ${site_title}에서의 암호를 설정하십시오: ${url}"
+
+#: kotti/templates/add-dropdown.pt:3
+msgid "Add"
+msgstr "추가"
+
+#: kotti/templates/add-dropdown.pt:13
+msgid "Upload Content"
+msgstr "컨텐트 올리기"
+
+#: kotti/templates/email-set-password.pt:2
+msgid "Your registration for ${site_title}"
+msgstr "${site_title} 가입"
+
+#: kotti/templates/email-set-password.pt:5
+msgid "You are joining ${site_title}."
+msgstr "${site_title}에 가입 중입니다."
+
+#: kotti/templates/email-set-password.pt:6
+msgid "Click here to set your password and log in: ${url}"
+msgstr "여기를 눌러 암호를 설정 후 로그인하십시오: ${url}"
+
+#: kotti/templates/editor-bar.pt:21
+msgid "View"
+msgstr "보기"
+
+#: kotti/templates/editor-bar.pt:44
+msgid "Navigate"
+msgstr "둘러보기"
+
+#: kotti/templates/editor-bar.pt:55
+msgid "Preferences"
+msgstr "기본 설정"
+
+#: kotti/templates/editor-bar.pt:60
+msgid "Site Setup"
+msgstr "사이트 설정"
+
+#: kotti/templates/editor-bar.pt:71
+msgid "Logout"
+msgstr "로그아웃"
+
+#: kotti/templates/workflow-dropdown.pt:14
+msgid "Make ${state}"
+msgstr "\"${state}\"로(으로) 바꿈"
+
+#: kotti/templates/default-view-selector.pt:3
+msgid "Set default view"
+msgstr "보이는 방식 설정"
+
+#: kotti/templates/login.pt:15
+msgid "Login"
+msgstr "로그인"
+
+#: kotti/templates/login.pt:20 kotti/templates/login.pt:57
+msgid "Username or email"
+msgstr "사용자 이름 혹은 전자메일"
+
+#: kotti/templates/login.pt:33
+msgid "Log in"
+msgstr "로그인"
+
+#: kotti/templates/login.pt:43
+msgid "Forgot your password?"
+msgstr "암호를 잊으셨습니까?"
+
+#. Used in sentence: "Fill out your username or email and click
+#. ${reset_password} below to receive an email with a link to reset your
+#. password."
+#.
+#: kotti/templates/login.pt:50 kotti/templates/login.pt:65
+msgid "Reset password"
+msgstr "암호 재설정"
+
+#. Canonical text for ${reset_password} is: "Reset password"
+#: kotti/templates/login.pt:48
+msgid "Fill out your username or email and click ${reset_password} below to receive an email with a link to reset your password."
+msgstr "사용자 이름이나 전자메일을 입력한 뒤 아래의 ${reset_password}를 누르면 암호를 재설정할 수 있는 링크를 전자메일로 받으실 수 있습니다."
+
+#: kotti/templates/login.pt:76
+msgid "Not registered yet?"
+msgstr "아직 등록하지 않으셨습니까?"
+
+#: kotti/templates/login.pt:82
+msgid "Register for an account on this site."
+msgstr "이 사이트에 계정을 등록하십시오."
+
+#: kotti/templates/view/tags.pt:7
+msgid "Tagged with:"
+msgstr "태그:"
+
+#: kotti/templates/view/search.pt:12
+msgid "Search..."
+msgstr "검색..."
+
+#: kotti/templates/view/folder.pt:21 kotti/templates/site-setup/users.pt:67
+#: kotti/templates/edit/upload.pt:19 kotti/templates/edit/upload.pt:112
+#: kotti/templates/edit/delete-nodes.pt:23 kotti/templates/edit/contents.pt:40
+#: kotti/templates/edit/share.pt:47 kotti/templates/edit/change-state.pt:19
+msgid "Type"
+msgstr "유형"
+
+#: kotti/templates/view/folder.pt:22 kotti/templates/edit/delete-nodes.pt:25
+#: kotti/templates/edit/contents.pt:43 kotti/templates/edit/change-state.pt:21
+msgid "Creation Date"
+msgstr "만든 날"
+
+#: kotti/templates/view/folder.pt:23 kotti/templates/edit/delete-nodes.pt:26
+#: kotti/templates/edit/contents.pt:44 kotti/templates/edit/change-state.pt:22
+msgid "Modification Date"
+msgstr "바꾼 날"
+
+#: kotti/templates/view/search-results.pt:9
+msgid "Search Results"
+msgstr "검색결과"
+
+#: kotti/templates/http-errors/notfound.pt:6
+msgid "Not Found"
+msgstr ""
+
+#: kotti/templates/http-errors/notfound.pt:7
+msgid "The resource could not be found"
+msgstr ""
+
+#: kotti/templates/site-setup/delete-user.pt:9
+#: kotti/templates/edit/delete.pt:9
+msgid "Delete ${title}"
+msgstr "\"${title}\" 삭제"
+
+#: kotti/templates/site-setup/delete-user.pt:15
+msgid "Are you sure you want to delete ${type} ${title}?"
+msgstr "${type} \"${title}\"을 정말 지우겠습니까?"
+
+#: kotti/templates/site-setup/user.pt:12
+msgid "Back to User Management"
+msgstr "사용자 관리로 되돌아가기"
+
+#: kotti/templates/site-setup/users.pt:12
+#, fuzzy
+msgid "Search user(s) / group(s)"
+msgstr "사용자/그룹 검색"
+
+#: kotti/templates/site-setup/users.pt:17
+msgid "Add user"
+msgstr "사용자 추가"
+
+#: kotti/templates/site-setup/users.pt:22
+msgid "Add group"
+msgstr "그룹 추가"
+
+#: kotti/templates/site-setup/users.pt:34
+msgid "Find users or groups"
+msgstr "사용자나 그룹 찾기"
+
+#: kotti/templates/site-setup/users.pt:39
+msgid "User- / groupname"
+msgstr "사용자나 그룹 이름"
+
+#: kotti/templates/site-setup/users.pt:47 kotti/templates/edit/share.pt:14
+#: kotti/templates/edit/share.pt:19 kotti/templates/edit/share.pt:26
+msgid "Search users and groups"
+msgstr "사용자와 그룹 검색"
+
+#: kotti/templates/site-setup/users.pt:49
+msgid "Blank search text finds all."
+msgstr "비워두면 모두 찾습니다."
+
+#: kotti/templates/site-setup/users.pt:55 kotti/templates/edit/share.pt:33
+msgid "Search"
+msgstr "검색"
+
+#: kotti/templates/site-setup/users.pt:63
+msgid "Assign global roles"
+msgstr "사이트 전체 역할 부여"
+
+#: kotti/templates/site-setup/users.pt:83 kotti/templates/edit/share.pt:63
+msgid "Gravatar"
+msgstr ""
+
+#: kotti/templates/site-setup/users.pt:105 kotti/templates/edit/share.pt:83
+#: kotti/templates/edit/change-state.pt:64
+msgid "Apply changes"
+msgstr "바꾸기 적용"
+
+#: kotti/templates/site-setup/users.pt:115
+msgid "Add new user"
+msgstr "새 사용자 추가"
+
+#: kotti/templates/site-setup/users.pt:121
+msgid "Add new group"
+msgstr "새 그룹 추가"
+
+#: kotti/templates/edit/nav-tree-view.pt:8
+msgid "Navigate Site"
+msgstr "사이트 둘러보기"
+
+#: kotti/templates/edit/upload.pt:10
+msgid "Upload content from local file(s)"
+msgstr "내 컴퓨터에서 컨텐트 올리기"
+
+#: kotti/templates/edit/upload.pt:18 kotti/templates/edit/upload.pt:111
+msgid "Filename"
+msgstr "파일 이름"
+
+#: kotti/templates/edit/upload.pt:20 kotti/templates/edit/upload.pt:113
+msgid "Size"
+msgstr "크기"
+
+#: kotti/templates/edit/upload.pt:21
+msgid "Status"
+msgstr "상태"
+
+#: kotti/templates/edit/upload.pt:22
+msgid "Progress"
+msgstr "진행률"
+
+#: kotti/templates/edit/upload.pt:88
+msgid "Select file(s) to upload..."
+msgstr ""
+
+#: kotti/templates/edit/upload.pt:96
+msgid "Upload ${number} files."
+msgstr ""
+
+#: kotti/templates/edit/upload.pt:101
+msgid "Dismiss all errors"
+msgstr ""
+
+#: kotti/templates/edit/delete-nodes.pt:14
+msgid "Are you sure you want to delete the following items?"
+msgstr "다음 항목을 정말 지우겠습니까?"
+
+#: kotti/templates/edit/delete-nodes.pt:24 kotti/templates/edit/contents.pt:41
+#: kotti/templates/edit/change-state.pt:20
+msgid "State"
+msgstr "작업 상태"
+
+#: kotti/templates/edit/breadcrumbs.pt:8
+msgid "You are here:"
+msgstr "현재 위치:"
+
+#: kotti/templates/edit/contents.pt:30
+msgid "No content items are contained here."
+msgstr "여기엔 하위 항목이 없습니다."
+
+#: kotti/templates/edit/contents.pt:42
+msgid "Visibility"
+msgstr "가시성"
+
+#: kotti/templates/edit/contents.pt:75
+msgid "Visible"
+msgstr "보임"
+
+#: kotti/templates/edit/contents.pt:79
+msgid "Hidden"
+msgstr "숨김"
+
+#: kotti/templates/edit/rename.pt:8
+msgid "Rename ${title}"
+msgstr "\"${title}\" 이름 바꾸기"
+
+#: kotti/templates/edit/rename.pt:11 kotti/templates/edit/rename-nodes.pt:13
+msgid "Each content item has a name, which is used to create the url, and a title. Read the user manual about proper formatting of name and title if needed. You can change both below."
+msgstr "각 컨텐트 항목은 이름을 가지며, 이는 URL과 제목을 만드는데 사용됩니다. 이름과 제목의 올바른 형식에 대해 알려면 사용자 매뉴얼을 읽으십시오. 둘 다 아래에서 바꿀 수 있습니다."
+
+#: kotti/templates/edit/rename.pt:19 kotti/templates/edit/rename-nodes.pt:26
+msgid "New name"
+msgstr "새 이름"
+
+#: kotti/templates/edit/rename.pt:25 kotti/templates/edit/rename-nodes.pt:33
+msgid "New title"
+msgstr "새 제목"
+
+#: kotti/templates/edit/delete.pt:13
+msgid "Are you sure you want to delete ${title}?"
+msgstr "\"${title}\"을(를) 정말 지우겠습니까?"
+
+#: kotti/templates/edit/share.pt:8
+msgid "Share ${title}"
+msgstr "\"${title}\" 공유하기"
+
+#: kotti/templates/edit/share.pt:42
+msgid "Assign local roles"
+msgstr "컨텐츠별 역할 부여"
+
+#: kotti/templates/edit/change-state.pt:8
+msgid "Change workflow state"
+msgstr "작업 상태 바꾸기"
+
+#: kotti/templates/edit/change-state.pt:12
+msgid "An item's workflow state determines who can see, edit and/or manage it."
+msgstr "항목의 작업 상태에 따라 항목을 누가 읽거나 고치고, 관리할 수 있는지 달라집니다."
+
+#: kotti/templates/edit/change-state.pt:40
+#: kotti/templates/edit/change-state.pt:45
+msgid "Include children"
+msgstr "하위 항목 포함 여부"
+
+#: kotti/templates/edit/change-state.pt:41
+msgid "If checked, this will attempt to modify the status of all children in any selected documents and their subdocuments."
+msgstr "체크하면, 고른 문서와 그 하위 문서 모두를 바꿉니다."
+
+#: kotti/templates/edit/change-state.pt:50
+msgid "Change state to"
+msgstr "바꿀 상태"
+
+#: kotti/templates/edit/change-state.pt:51
+msgid "Select the new state where all chosen items should be set."
+msgstr "고른 항목 모두가 갖게 될 상태를 선택하십시오."
+
+#: kotti/templates/edit/change-state.pt:55
+msgid "No change"
+msgstr "바꾸지 않음"
+
+#: kotti/tests/testing_view.pt:11
+msgid "Welcome, ${user}! You are logged in."
+msgstr "${user}님, 환영합니다! 로그인되었습니다."
+
+#: kotti/tests/testing_view.pt:15
+msgid "Welcome, you are not logged in."
+msgstr "환영합니다, 로그인되지 않았습니다."
 
 #~ msgid "Private"
 #~ msgstr "내부 전용"
