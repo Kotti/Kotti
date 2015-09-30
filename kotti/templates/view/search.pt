@@ -1,4 +1,5 @@
-<form xmlns:i18nxmlns="http://www.w3.org/1999/xhtml"
+<form
+    xmlns="http://www.w3.org/1999/xhtml"
     xmlns:i18n="http://xml.zope.org/namespaces/i18n" i18n:domain="Kotti"
     class="navbar-form navbar-right"
     action="${api.url(api.root)}@@search-results"
