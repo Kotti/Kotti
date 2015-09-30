@@ -64,7 +64,7 @@ kotti.depot.*.*                   Configure the blob storage. More details below
 kotti.fanstatic.edit_needed       List of static resources used for edit interface
 kotti.fanstatic.view_needed       List of static resources used for public interface
 kotti.login_success_callback      Override Kotti's default login_success_callback function
-kotti.max_file_size               Max size for file uploads, default: ```10`` (MB)
+kotti.max_file_size               Max size for file uploads, default: ``10`` (MB)
 kotti.modification_date_excludes  List of attributes in dotted name notation that should not trigger an update of ``modification_date`` on change
 kotti.populators                  List of functions to fill initial database
 kotti.request_factory             Override Kotti's default request factory
