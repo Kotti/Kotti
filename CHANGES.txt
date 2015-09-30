@@ -4,7 +4,8 @@ Change History
 1.2.1 - unreleased
 ------------------
 
-- No changes yet.
+- Outfactor the code that runs after successful authentication into a
+  configurable ``kotti.login_success_callback`` function.
 
 1.2.0 - 2015-09-27
 ------------------

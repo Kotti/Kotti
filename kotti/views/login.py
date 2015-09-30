@@ -130,6 +130,33 @@ def register(context, request):
         }
 
 
+def login_success_callback(request, user, came_from):
+    """ Default implementation of ``kotti.login_success_callback``.  You can
+    implement a custom function with the same signature and point the
+    ``kotti.login_success_callback`` setting to it.
+
+    :param request: Current request
+    :type request: :class:`kotti.request.Request`
+
+    :param user: Principal, who just logged in successfully.
+    :type user: :class:`kotti.security.Princial`
+
+    :param came_from: URL the user came from
+    :type came_from: str
+
+    :result: Any Pyramid response object, by default a redirect to
+             ``came_from`` or the context where login was called.
+    :rtype: :class:`pyramid.httpexceptions.HTTPFound`
+    """
+
+    headers = remember(request, user.name)
+    request.session.flash(
+        _(u"Welcome, ${user}!",
+          mapping=dict(user=user.title or user.name)), 'success')
+    user.last_login_date = datetime.now()
+    return HTTPFound(location=came_from, headers=headers)
+
+
 @view_config(name='login', renderer='kotti:templates/login.pt')
 def login(context, request):
     """
@@ -154,12 +181,8 @@ def login(context, request):
 
         if (user is not None and user.active and
                 principals.validate_password(password, user.password)):
-            headers = remember(request, user.name)
-            request.session.flash(
-                _(u"Welcome, ${user}!",
-                  mapping=dict(user=user.title or user.name)), 'success')
-            user.last_login_date = datetime.now()
-            return HTTPFound(location=came_from, headers=headers)
+            return get_settings()['kotti.login_success_callback'][0](
+                request, user, came_from)
         request.session.flash(_(u"Login failed."), 'error')
 
     if 'reset-password' in request.POST:

@@ -91,6 +91,7 @@ conf_defaults = {
     'kotti.depot.0.name': 'dbfiles',
     'kotti.fanstatic.edit_needed': 'kotti.fanstatic.edit_needed',
     'kotti.fanstatic.view_needed': 'kotti.fanstatic.view_needed',
+    'kotti.login_success_callback': 'kotti.views.login.login_success_callback',
     'kotti.max_file_size': '10',
     'kotti.modification_date_excludes': ' '.join([
         'kotti.resources.Node.position',
@@ -137,6 +138,7 @@ conf_dotted = set([
     'kotti.configurators',
     'kotti.fanstatic.edit_needed',
     'kotti.fanstatic.view_needed',
+    'kotti.login_success_callback',
     'kotti.modification_date_excludes',
     'kotti.populators',
     'kotti.principals_factory',
