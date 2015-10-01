@@ -490,7 +490,7 @@ class Principals(DictMixin):
         filters = []
         for key, value in kwargs.items():
             col = getattr(self.factory, key)
-            if '*' in value:
+            if isinstance(value, basestring) and '*' in value:
                 value = value.replace('*', '%').lower()
                 filters.append(func.lower(col).like(value))
             else:

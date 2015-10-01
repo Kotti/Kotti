@@ -6,6 +6,7 @@ Change History
 
 - Outfactor the code that runs after successful authentication into a
   configurable ``kotti.login_success_callback`` function.
+- Support principal search on non string attributes.
 
 1.2.0 - 2015-09-27
 ------------------
