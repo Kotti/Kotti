@@ -401,7 +401,7 @@ class TestPrincipals:
         assert bob in list(users.search(active=True))
         # test operator
         assert len(list(users.search(name=u'bob', active=True))) == 2
-        assert len(list(users.search(operator=u'and', name=u'bob',
+        assert len(list(users.search(match=u'all', name=u'bob',
                                      active=True))) == 1
 
     def test_groups_from_users(self, db_session, root):

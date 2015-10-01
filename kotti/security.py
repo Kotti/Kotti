@@ -484,10 +484,26 @@ class Principals(DictMixin):
     def keys(self):
         return list(self.iterkeys())
 
-    def search(self, operator='or', **kwargs):
+    def search(self, match='any', **kwargs):
+        """ Search the principal database.
+
+        :param match: ``any`` to return all principals matching any search
+                      param, ``all`` to return only principals matching
+                      all params
+        :type match: str
+
+        :param **kwargs: Search conditions, e.g. ``name='bob', active=True``.
+        :type **kwargs: varying.
+
+        :result: SQLAlchemy query object
+        :rtype: :class:`sqlalchemy.orm.query.Query``
+        """
+
         if not kwargs:
             return []
+
         filters = []
+
         for key, value in kwargs.items():
             col = getattr(self.factory, key)
             if isinstance(value, basestring) and '*' in value:
@@ -497,12 +513,14 @@ class Principals(DictMixin):
                 filters.append(col == value)
 
         query = DBSession.query(self.factory)
-        if operator == 'or':
+
+        if match == 'any':
             query = query.filter(or_(*filters))
-        elif operator == 'and':
+        elif match == 'all':
             query = query.filter(and_(*filters))
         else:
-            raise ValueError('Operator must be either "or" or "and".')
+            raise ValueError('match must be either "any" or "all".')
+
         return query
 
     log_rounds = 10
