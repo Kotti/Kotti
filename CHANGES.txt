@@ -7,6 +7,8 @@ Change History
 - Outfactor the code that runs after successful authentication into a
   configurable ``kotti.login_success_callback`` function.
 - Support principal search on non string attributes.
+- Support principal searches matching *all* arguments
+  (i.e. using the ``and`` operator, ``or`` is still the default).
 
 1.2.0 - 2015-09-27
 ------------------

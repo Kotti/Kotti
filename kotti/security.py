@@ -10,6 +10,7 @@ from sqlalchemy import DateTime
 from sqlalchemy import Integer
 from sqlalchemy import Unicode
 from sqlalchemy import func
+from sqlalchemy.sql.expression import and_
 from sqlalchemy.sql.expression import or_
 from sqlalchemy.orm.exc import NoResultFound
 from pyramid.location import lineage
@@ -483,10 +484,9 @@ class Principals(DictMixin):
     def keys(self):
         return list(self.iterkeys())
 
-    def search(self, **kwargs):
+    def search(self, operator='or', **kwargs):
         if not kwargs:
             return []
-
         filters = []
         for key, value in kwargs.items():
             col = getattr(self.factory, key)
@@ -497,7 +497,12 @@ class Principals(DictMixin):
                 filters.append(col == value)
 
         query = DBSession.query(self.factory)
-        query = query.filter(or_(*filters))
+        if operator == 'or':
+            query = query.filter(or_(*filters))
+        elif operator == 'and':
+            query = query.filter(and_(*filters))
+        else:
+            raise ValueError('Operator must be either "or" or "and".')
         return query
 
     log_rounds = 10
