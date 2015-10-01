@@ -291,7 +291,8 @@ def set_password(context, request,
     :rtype: pyramid.httpexceptions.HTTPFound or dict
     """
 
-    form = Form(SetPasswordSchema(), buttons=(Button('submit', _(u'Submit')),))
+    form = Form(SetPasswordSchema(),
+                buttons=(Button('submit', _(u'Set password')),))
     rendered_form = None
 
     if 'submit' in request.POST:
