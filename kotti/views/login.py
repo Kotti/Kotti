@@ -299,7 +299,6 @@ def set_password(context, request,
         try:
             appstruct = form.validate(request.POST.items())
         except ValidationFailure, e:
-            request.session.flash(_(u"There was an error."), 'error')
             rendered_form = e.render()
         else:
             token = appstruct['token']

@@ -779,7 +779,7 @@ We'll use that link to set our password:
   >>> ctrl("Password", index=0).value = "newpassword"
   >>> ctrl(name='password-confirm').value = "newpasswoops" # a silly error
   >>> ctrl(name="submit").click()
-  >>> "There was an error" in browser.contents
+  >>> "There was a problem with your submission" in browser.contents
   True
   >>> ctrl("Password", index=0).value = "newpassword"
   >>> ctrl(name='password-confirm').value = "newpassword"
