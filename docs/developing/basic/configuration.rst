@@ -63,11 +63,12 @@ kotti.datetime_format             Datetime format to use, default: ``medium``
 kotti.depot.*.*                   Configure the blob storage. More details below
 kotti.fanstatic.edit_needed       List of static resources used for edit interface
 kotti.fanstatic.view_needed       List of static resources used for public interface
-kotti.login_success_callback      Override Kotti's default login_success_callback function
+kotti.login_success_callback      Override Kotti's default ``login_success_callback`` function
 kotti.max_file_size               Max size for file uploads, default: ``10`` (MB)
 kotti.modification_date_excludes  List of attributes in dotted name notation that should not trigger an update of ``modification_date`` on change
 kotti.populators                  List of functions to fill initial database
 kotti.request_factory             Override Kotti's default request factory
+kotti.reset_password_callback     Override Kotti's default ``reset_password_callback`` function
 kotti.root_factory                Override Kotti's default Pyramid *root factory*
 kotti.sanitize_on_write           Configure :ref:`sanitizers` to be used on write access to resource objects
 kotti.sanitizers                  Configure available :ref:`sanitizers`

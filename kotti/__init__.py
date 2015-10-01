@@ -102,6 +102,7 @@ conf_defaults = {
     'kotti.register.group': '',
     'kotti.register.role': '',
     'kotti.request_factory': 'kotti.request.Request',
+    'kotti.reset_password_callback': 'kotti.views.login.reset_password_callback',  # noqa
     'kotti.root_factory': 'kotti.resources.default_get_root',
     'kotti.sanitizers': ' '.join([
         'xss_protection:kotti.sanitizers.xss_protection',
@@ -143,6 +144,7 @@ conf_dotted = set([
     'kotti.populators',
     'kotti.principals_factory',
     'kotti.request_factory',
+    'kotti.reset_password_callback',
     'kotti.root_factory',
     'kotti.search_content',
     'kotti.session_factory',
