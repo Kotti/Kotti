@@ -11,6 +11,7 @@ Change History
 - Support principal search on non string attributes.
 - Support principal searches matching *all* arguments
   (i.e. using the ``and`` operator, ``or`` is still the default).
+- Support optional --rev with kotti-migrate upgrade.
 
 1.2.0 - 2015-09-27
 ------------------
