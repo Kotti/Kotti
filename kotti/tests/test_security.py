@@ -397,6 +397,12 @@ class TestPrincipals:
         with raises(AttributeError):
             users.search(name=u"bob", foo=u"bar")
         assert list(users.search()) == []
+        # search on a non string attribute
+        assert bob in list(users.search(active=True))
+        # test operator
+        assert len(list(users.search(name=u'bob', active=True))) == 2
+        assert len(list(users.search(match=u'all', name=u'bob',
+                                     active=True))) == 1
 
     def test_groups_from_users(self, db_session, root):
         from kotti.resources import Node
