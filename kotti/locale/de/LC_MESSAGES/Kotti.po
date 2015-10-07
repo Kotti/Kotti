@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Kotti 0.7dev4\n"
 "Report-Msgid-Bugs-To: kotti@googlegroups.com\n"
-"POT-Creation-Date: 2015-10-01 15:07+0200\n"
+"POT-Creation-Date: 2015-10-07 21:40+0200\n"
 "PO-Revision-Date: 2015-10-01 15:07+0200\n"
 "Last-Translator: Andreas Kaiser <kaiser@xo7.de>\n"
 "Language-Team: de <kotti@googlegroups.com>\n"
@@ -709,7 +709,7 @@ msgstr "Registrieren - ${title}"
 msgid "Login failed."
 msgstr "Anmeldung fehlgeschlagen."
 
-#: kotti/views/login.py:331
+#: kotti/views/login.py:330
 #, python-format
 msgid "Reset your password - ${title}."
 msgstr "Passwort zurücksetzen - ${title}"
@@ -722,7 +722,7 @@ msgstr "Der angegebene Benutzername oder die E-Mail-Adresse ist nicht bekannt."
 msgid "Register"
 msgstr "Registrieren"
 
-#: kotti/views/login.py:89 kotti/views/login.py:302
+#: kotti/views/login.py:89
 msgid "There was an error."
 msgstr "Ein Fehler ist aufgetreten."
 
@@ -730,7 +730,7 @@ msgstr "Ein Fehler ist aufgetreten."
 msgid "Set password"
 msgstr "Passwort setzen"
 
-#: kotti/views/login.py:324
+#: kotti/views/login.py:323
 msgid "Your password reset token may have expired."
 msgstr "Der Link zum Zurücksetzen Ihres Passwortes ist abgelaufen!"
 
