@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2015-10-01 15:07+0200\n"
+"POT-Creation-Date: 2015-10-07 21:40+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -662,7 +662,7 @@ msgstr ""
 msgid "Login failed."
 msgstr ""
 
-#: ./kotti/views/login.py:331
+#: ./kotti/views/login.py:330
 #, python-format
 msgid "Reset your password - ${title}."
 msgstr ""
@@ -675,7 +675,7 @@ msgstr ""
 msgid "Register"
 msgstr ""
 
-#: ./kotti/views/login.py:89 ./kotti/views/login.py:302
+#: ./kotti/views/login.py:89
 msgid "There was an error."
 msgstr ""
 
@@ -683,7 +683,7 @@ msgstr ""
 msgid "Set password"
 msgstr ""
 
-#: ./kotti/views/login.py:324
+#: ./kotti/views/login.py:323
 msgid "Your password reset token may have expired."
 msgstr ""
 
