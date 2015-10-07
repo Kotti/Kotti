@@ -10,6 +10,7 @@ from sqlalchemy import DateTime
 from sqlalchemy import Integer
 from sqlalchemy import Unicode
 from sqlalchemy import func
+from sqlalchemy.sql.expression import and_
 from sqlalchemy.sql.expression import or_
 from sqlalchemy.orm.exc import NoResultFound
 from pyramid.location import lineage
@@ -483,21 +484,43 @@ class Principals(DictMixin):
     def keys(self):
         return list(self.iterkeys())
 
-    def search(self, **kwargs):
+    def search(self, match='any', **kwargs):
+        """ Search the principal database.
+
+        :param match: ``any`` to return all principals matching any search
+                      param, ``all`` to return only principals matching
+                      all params
+        :type match: str
+
+        :param **kwargs: Search conditions, e.g. ``name='bob', active=True``.
+        :type **kwargs: varying.
+
+        :result: SQLAlchemy query object
+        :rtype: :class:`sqlalchemy.orm.query.Query``
+        """
+
         if not kwargs:
             return []
 
         filters = []
+
         for key, value in kwargs.items():
             col = getattr(self.factory, key)
-            if '*' in value:
+            if isinstance(value, basestring) and '*' in value:
                 value = value.replace('*', '%').lower()
                 filters.append(func.lower(col).like(value))
             else:
                 filters.append(col == value)
 
         query = DBSession.query(self.factory)
-        query = query.filter(or_(*filters))
+
+        if match == 'any':
+            query = query.filter(or_(*filters))
+        elif match == 'all':
+            query = query.filter(and_(*filters))
+        else:
+            raise ValueError('match must be either "any" or "all".')
+
         return query
 
     log_rounds = 10

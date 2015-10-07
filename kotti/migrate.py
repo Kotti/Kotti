@@ -132,7 +132,7 @@ def stamp_heads():
         stamp_head(location)
 
 
-def upgrade(location=DEFAULT_LOCATION):
+def upgrade(location=DEFAULT_LOCATION, revision=None):
     # We don't want to fire any kind of events during a migration,
     # because "migrations are a low-level thing".
     from kotti import events
@@ -140,7 +140,8 @@ def upgrade(location=DEFAULT_LOCATION):
 
     pkg_env = PackageEnvironment(location)
 
-    revision = pkg_env.script_dir.get_current_head()
+    if revision is None:
+        revision = pkg_env.script_dir.get_current_head()
     print(u'Upgrading {0}:'.format(pkg_env.location))
 
     def upgrade(heads, context):
@@ -194,7 +195,7 @@ def kotti_migrate_command():
 
     Usage:
       kotti-migrate <config_uri> list_all
-      kotti-migrate <config_uri> upgrade [--scripts=<location>]
+      kotti-migrate <config_uri> upgrade [--scripts=<location>] [--rev=<rev>]
       kotti-migrate <config_uri> upgrade_all
       kotti-migrate <config_uri> stamp_head [--scripts=<location>] [--rev=<rev>]
 
@@ -240,7 +241,7 @@ def kotti_migrate_command():
             func = list_all
         elif arguments['upgrade']:
             func = upgrade
-            args = args_with_location
+            args = args_with_location + (arguments['--rev'],)
         elif arguments['upgrade_all']:
             func = upgrade_all
         elif arguments['stamp_head']:
