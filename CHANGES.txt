@@ -4,7 +4,7 @@ Change History
 1.2.2 - unreleased
 ------------------
 
-- No changes yet.
+- Add simple, default ``not found view``.
 
 1.2.1 - 2015-10-07
 ------------------

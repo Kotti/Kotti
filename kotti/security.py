@@ -33,7 +33,7 @@ def get_principals():
 
 @request_cache(lambda request: None)
 def get_user(request):
-    userid = request.authenticated_userid
+    userid = request.unauthenticated_userid
     return get_principals().get(userid)
 
 

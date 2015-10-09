@@ -22,7 +22,7 @@
                tal:condition="snippets"
                tal:repeat="snippet snippets"
                tal:replace="structure snippet" />
-    <script>
+    <script tal:condition="api.is_location(context)">
       kotti_context_url = '${request.resource_url(context)}';
     </script>
   </head>

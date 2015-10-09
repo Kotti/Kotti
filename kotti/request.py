@@ -6,6 +6,8 @@ from pyramid.decorator import reify
 from pyramid.interfaces import IRequest
 from pyramid.request import Request as BaseRequest
 
+from kotti.security import get_user
+
 
 @implementer(IRequest)
 class Request(BaseRequest):
@@ -25,8 +27,6 @@ class Request(BaseRequest):
                 the custom principals database defined in the
                 ``kotti.principals_factory`` setting
         """
-
-        from kotti.security import get_user
         return get_user(self)
 
     def has_permission(self, permission, context=None):
