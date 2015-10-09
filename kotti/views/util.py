@@ -140,12 +140,13 @@ class TemplateAPI(object):
         self.__dict__.update(kwargs)
 
     def is_location(self, context):
-        """Is the context a location?
+        """Does `context` implement :class:`pyramid.interfaces.ILocation`?
 
         :param context: The context.
         :type context: kotti.interfaces.INode
         :rtype: bool
-        :returns: True if Is the context available in the content lineage
+        :returns: True if Is the context object implements
+                  :class:`pyramid.interfaces.ILocation`.
         """
         return ILocation.providedBy(context)
 
