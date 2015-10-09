@@ -70,8 +70,7 @@
                     style="width: {{f.transfered.percent}}%"
                     ng-class="{
                       'progress-bar-info': f.status == 'uploading',
-                      'progress-bar-danger': f.status == 'cancelled',
-                      'progress-bar-danger': f.status == 'failed',
+                      'progress-bar-danger': (f.status == 'cancelled') || (f.status == 'failed'),
                       'progress-bar-success': f.status == 'complete'}">
                     {{f.transfered.bytes | bytes}} / {{f.size | bytes}}
                   </div>

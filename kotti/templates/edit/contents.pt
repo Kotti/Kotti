@@ -35,7 +35,7 @@
           tal:condition="children">
           <thead>
             <tr>
-              <th><input type="checkbox" id="toggle-all" /></th>
+              <th><input type="checkbox" id="toggle-all" title="Select / deselect all" i18n:attributes="title" /></th>
               <th i18n:translate="">Title</th>
               <th i18n:translate="">Type</th>
               <th i18n:translate="">State</th>
@@ -47,7 +47,7 @@
             <tbody>
             <tr tal:repeat="child children" id="${child.position}">
               <td>
-                <input name="children" type="checkbox" value="${child.id}" />
+                <input name="children" type="checkbox" value="${child.id}" title="Select item" i18n:attributes="title" />
               </td>
               <td>
                 <a href="${request.resource_url(child, '@@contents')}">

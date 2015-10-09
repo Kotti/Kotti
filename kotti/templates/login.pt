@@ -78,7 +78,8 @@
             </h3>
           </div>
           <div class="panel-body">
-            <a type="submit" class="btn btn-success btn-block" href='register'
+            <a type="submit" class="btn btn-success btn-block"
+               tal:attributes="href request.resource_url(api.root, 'register')"
                i18n:translate="">
               Register for an account on this site.
             </a>

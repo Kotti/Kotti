@@ -21,11 +21,11 @@
             <th i18n:translate="">Creation Date</th>
             <th i18n:translate="">Modification Date</th>
           </tr>
-          </thead>
-          <tbody>
+        </thead>
+        <tbody>
           <tr tal:repeat="item items">
             <tal:block tal:define="url request.resource_url(item, '@@contents')">
-              <td><input name="children-to-change-state" type="checkbox" value="${item.id}" checked="checked" /></td>
+              <td><input name="children-to-change-state" type="checkbox" value="${item.id}" checked="checked" title="Select item" i18n:attributes="title" /></td>
               <td><a href="${url}">${item.title}</a></td>
               <td>${item.type_info.title}</td>
               <td>${states[item.state]['title']}</td>
@@ -41,9 +41,13 @@
         <span class="help-block" i18n:translate="">
           If checked, this will attempt to modify the status of all children in any selected documents and their subdocuments.
         </span>
-        <label class="checkbox">
-          <input type="checkbox" name="include-children" value="include-children" /> <span  i18n:translate="">Include children</span>
-        </label>
+        <div class="checkbox">
+          <label>
+            <input type="checkbox" name="include-children"
+                   value="include-children" />
+            <span  i18n:translate="">Include children</span>
+          </label>
+        </div>
       </fieldset>
 
       <fieldset>
@@ -51,12 +55,16 @@
         <span class="help-block" i18n:translate="">
           Select the new state where all chosen items should be set.
         </span>
-        <label class="radio">
-          <input type="radio" name="to-state" value="no-change" checked="checked" /> <span i18n:translate="">No change</span>
-        </label>
-        <label class="radio" tal:repeat="transition transitions">
-          <input type="radio" name="to-state" value="${transition['to_state']}" /> ${states[transition['to_state']]['title']}
-        </label>
+        <div class="radio">
+          <label>
+            <input type="radio" name="to-state" value="no-change" checked="checked" /> <span i18n:translate="">No change</span>
+          </label>
+        </div>
+        <div class="radio" tal:repeat="transition transitions">
+          <label>
+            <input type="radio" name="to-state" value="${transition['to_state']}" /> ${states[transition['to_state']]['title']}
+          </label>
+        </div>
       </fieldset>
 
       <div class="form-actions">
