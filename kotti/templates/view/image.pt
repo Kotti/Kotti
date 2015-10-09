@@ -9,7 +9,7 @@
     </p>
     <div tal:replace="api.render_template('kotti:templates/view/tags.pt')" />
     <div class="body">
-        <img src="${request.resource_url(context)}image" />
+        <img src="${request.resource_url(context, 'image')}" />
     </div>
   </article>
 

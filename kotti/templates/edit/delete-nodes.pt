@@ -28,7 +28,7 @@
             </thead>
             <tbody>
             <tr tal:repeat="item items">
-              <tal:block tal:define="url string:${request.resource_url(item)}@@contents">
+              <tal:block tal:define="url request.resource_url(item, '@@contents')">
                 <td><input name="children-to-delete" type="checkbox" value="${item.id}" checked="checked" /></td>
                 <td><a href="${url}">${item.title}</a></td>
                 <td>${item.type_info.title}</td>

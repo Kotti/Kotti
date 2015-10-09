@@ -9,9 +9,8 @@
     <div ng-app="kotti">
       <h1 i18n:translate="">Upload content from local file(s)</h1>
       <form id="uploader" ng-controller="UploadController" style="padding-top: 60px"
-        ng-init="endpoints={
-          upload:'${request.resource_url(context, 'upload')}',
-          content_types:'${request.resource_url(context, 'content_types')}'}">
+            tal:define="upload_url request.resource_url(context, 'upload'); content_types_url request.resource_url(context, 'content_types')"
+        ng-init="endpoints={upload: '${upload_url}', content_types: '${content_types_url}'}">
         <table class="table table-condensed table-hover">
           <thead ng-show="(files.length > 0)">
             <tr>
