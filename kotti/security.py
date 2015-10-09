@@ -492,8 +492,8 @@ class Principals(DictMixin):
                       all params
         :type match: str
 
-        :param **kwargs: Search conditions, e.g. ``name='bob', active=True``.
-        :type **kwargs: varying.
+        :param kwargs: Search conditions, e.g. ``name='bob', active=True``.
+        :type kwargs: varying.
 
         :result: SQLAlchemy query object
         :rtype: :class:`sqlalchemy.orm.query.Query``

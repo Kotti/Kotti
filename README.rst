@@ -5,7 +5,7 @@ Kotti
 |pypi|_
 |downloads_month|_
 |license|_
-|build status stable|_
+|build_status_stable|_
 
 .. |pypi| image:: https://img.shields.io/pypi/v/Kotti.svg?style=flat-square
 .. _pypi: https://pypi.python.org/pypi/Kotti/
@@ -16,8 +16,8 @@ Kotti
 .. |license| image:: https://img.shields.io/pypi/l/Kotti.svg?style=flat-square
 .. _license: http://www.repoze.org/LICENSE.txt
 
-.. |build status stable| image:: https://img.shields.io/travis/Kotti/Kotti/stable.svg?style=flat-square
-.. _build status stable: http://travis-ci.org/Kotti/Kotti
+.. |build_status_stable| image:: https://img.shields.io/travis/Kotti/Kotti/stable.svg?style=flat-square
+.. _build_status_stable: http://travis-ci.org/Kotti/Kotti
 
 Kotti is a high-level, Pythonic web application framework based on Pyramid_ and SQLAlchemy_.
 It includes an extensible Content Management System called the Kotti CMS (see below).
@@ -94,7 +94,7 @@ If you think you found a bug, open an issue on our `Github bugtracker <https://g
 Development
 ===========
 
-|build status master|_
+|build_status_master|_
 |coveralls|_
 |codacy|_
 |codeclimate|_
@@ -111,8 +111,8 @@ We adhere to `high quality coding standards`_, have an extensive test suite with
 
 Contributions are always welcome, read our `contribution guidelines`_ and visit our `Github repository`_.
 
-.. |build status master| image:: https://img.shields.io/travis/Kotti/Kotti/master.svg?style=flat-square
-.. _build status master: http://travis-ci.org/Kotti/Kotti
+.. |build_status_master| image:: https://img.shields.io/travis/Kotti/Kotti/master.svg?style=flat-square
+.. _build_status_master: http://travis-ci.org/Kotti/Kotti
 .. _continuous integration: http://travis-ci.org/Kotti/Kotti
 
 .. |requires.io| image:: https://img.shields.io/requires/github/Kotti/Kotti.svg?style=flat-square
