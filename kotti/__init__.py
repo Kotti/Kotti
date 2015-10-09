@@ -91,6 +91,7 @@ conf_defaults = {
     'kotti.depot.0.name': 'dbfiles',
     'kotti.fanstatic.edit_needed': 'kotti.fanstatic.edit_needed',
     'kotti.fanstatic.view_needed': 'kotti.fanstatic.view_needed',
+    'kotti.login_success_callback': 'kotti.views.login.login_success_callback',
     'kotti.max_file_size': '10',
     'kotti.modification_date_excludes': ' '.join([
         'kotti.resources.Node.position',
@@ -101,6 +102,7 @@ conf_defaults = {
     'kotti.register.group': '',
     'kotti.register.role': '',
     'kotti.request_factory': 'kotti.request.Request',
+    'kotti.reset_password_callback': 'kotti.views.login.reset_password_callback',  # noqa
     'kotti.root_factory': 'kotti.resources.default_get_root',
     'kotti.sanitizers': ' '.join([
         'xss_protection:kotti.sanitizers.xss_protection',
@@ -137,10 +139,12 @@ conf_dotted = set([
     'kotti.configurators',
     'kotti.fanstatic.edit_needed',
     'kotti.fanstatic.view_needed',
+    'kotti.login_success_callback',
     'kotti.modification_date_excludes',
     'kotti.populators',
     'kotti.principals_factory',
     'kotti.request_factory',
+    'kotti.reset_password_callback',
     'kotti.root_factory',
     'kotti.search_content',
     'kotti.session_factory',

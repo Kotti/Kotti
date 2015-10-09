@@ -130,6 +130,59 @@ def register(context, request):
         }
 
 
+def login_success_callback(request, user, came_from):
+    """ Default implementation of ``kotti.login_success_callback``.  You can
+    implement a custom function with the same signature and point the
+    ``kotti.login_success_callback`` setting to it.
+
+    :param request: Current request
+    :type request: :class:`kotti.request.Request`
+
+    :param user: Principal, who just logged in successfully.
+    :type user: :class:`kotti.security.Princial`
+
+    :param came_from: URL the user came from
+    :type came_from: str
+
+    :result: Any Pyramid response object, by default a redirect to
+             ``came_from`` or the context where login was called.
+    :rtype: :class:`pyramid.httpexceptions.HTTPFound`
+    """
+
+    headers = remember(request, user.name)
+    request.session.flash(
+        _(u"Welcome, ${user}!",
+          mapping=dict(user=user.title or user.name)), 'success')
+    user.last_login_date = datetime.now()
+    return HTTPFound(location=came_from, headers=headers)
+
+
+def reset_password_callback(request, user):
+    """ Default implementation of ``kotti.reset_password_callback``.  You can
+    implement a custom function with the same signature and point the
+    ``kotti.reset_password_callback`` setting to it.
+
+    :param request: Current request
+    :type request: :class:`kotti.request.Request`
+
+    :param user: Principal, who's password was requested to be reset.
+    :type user: :class:`kotti.security.Princial`
+
+    :result: Any Pyramid response object, by default a redirect to to the same
+             URL from where the password reset was called.
+    :rtype: :class:`pyramid.httpexceptions.HTTPFound`
+    """
+
+    email_set_password(
+        user, request,
+        template_name='kotti:templates/email-reset-password.pt')
+    request.session.flash(_(
+        u"You should be receiving an email with a link to reset your "
+        u"password. Doing so will activate your account."), 'success')
+
+    return HTTPFound(location=request.url)
+
+
 @view_config(name='login', renderer='kotti:templates/login.pt')
 def login(context, request):
     """
@@ -154,24 +207,16 @@ def login(context, request):
 
         if (user is not None and user.active and
                 principals.validate_password(password, user.password)):
-            headers = remember(request, user.name)
-            request.session.flash(
-                _(u"Welcome, ${user}!",
-                  mapping=dict(user=user.title or user.name)), 'success')
-            user.last_login_date = datetime.now()
-            return HTTPFound(location=came_from, headers=headers)
+            return get_settings()['kotti.login_success_callback'][0](
+                request, user, came_from)
         request.session.flash(_(u"Login failed."), 'error')
 
     if 'reset-password' in request.POST:
         login = request.params['login']
         user = _find_user(login)
         if user is not None and user.active:
-            email_set_password(
-                user, request,
-                template_name='kotti:templates/email-reset-password.pt')
-            request.session.flash(_(
-                u"You should be receiving an email with a link to reset your "
-                u"password. Doing so will activate your account."), 'success')
+            return get_settings()['kotti.reset_password_callback'][0](
+                request, user)
         else:
             request.session.flash(
                 _(u"That username or email is not known by this system."),
@@ -246,14 +291,14 @@ def set_password(context, request,
     :rtype: pyramid.httpexceptions.HTTPFound or dict
     """
 
-    form = Form(SetPasswordSchema(), buttons=(Button('submit', _(u'Submit')),))
+    form = Form(SetPasswordSchema(),
+                buttons=(Button('submit', _(u'Set password')),))
     rendered_form = None
 
     if 'submit' in request.POST:
         try:
             appstruct = form.validate(request.POST.items())
         except ValidationFailure, e:
-            request.session.flash(_(u"There was an error."), 'error')
             rendered_form = e.render()
         else:
             token = appstruct['token']

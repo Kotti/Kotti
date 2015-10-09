@@ -1,10 +1,22 @@
 Change History
 ==============
 
-1.2.1 - unreleased
+1.2.2 - unreleased
 ------------------
 
 - No changes yet.
+
+1.2.1 - 2015-10-07
+------------------
+
+- Outfactor the code that runs after successful authentication into a
+  configurable ``kotti.login_success_callback`` function.
+- Outfactor the code that runs after a valid password reset request into a
+  configurable ``kotti.password_reset_callback`` function.
+- Support principal search on non string attributes.
+- Support principal searches matching *all* arguments
+  (i.e. using the ``and`` operator, ``or`` is still the default).
+- Support optional --rev with kotti-migrate upgrade.
 
 1.2.0 - 2015-09-27
 ------------------
