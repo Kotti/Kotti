@@ -41,7 +41,7 @@ from sqlalchemy.sql import and_
 from sqlalchemy.sql import select
 from sqlalchemy.util import classproperty
 from transaction import commit
-from zope.interface import implements
+from zope.interface import implementer
 
 from kotti import Base
 from kotti import DBSession
@@ -202,11 +202,10 @@ class LocalGroup(Base):
         return self.__class__(**kwargs)
 
 
+@implementer(INode)
 class Node(Base, ContainerMixin, PersistentACLMixin):
     """Basic node in the persistance hierarchy.
     """
-
-    implements(INode)
 
     __table_args__ = (
         UniqueConstraint('parent_id', 'name'),
@@ -532,12 +531,11 @@ default_type_info = TypeInfo(
     )
 
 
+@implementer(IContent)
 class Content(Node):
     """Content adds some attributes to :class:`~kotti.resources.Node` that are
        useful for content objects in a CMS.
     """
-
-    implements(IContent)
 
     @classproperty
     def __mapper_args__(cls):
@@ -613,6 +611,7 @@ class Content(Node):
         return super(Content, self).copy(**kwargs)
 
 
+@implementer(IDocument, IDefaultWorkflow)
 class Document(Content):
     """Document extends :class:`~kotti.resources.Content` with a body and its
        mime_type.  In addition Document and its descendants implement
@@ -620,8 +619,6 @@ class Document(Content):
        are associated with the default workflow (at least in
        unmodified Kotti installations).
     """
-
-    implements(IDocument, IDefaultWorkflow)
 
     #: Primary key column in the DB
     #: (:class:`sqlalchemy.types.Integer`)
@@ -702,13 +699,11 @@ class SaveDataMixin(object):
         return newvalue
 
 
+@implementer(IFile)
 class File(Content, SaveDataMixin):
     """File adds some attributes to :class:`~kotti.resources.Content` that are
        useful for storing binary data.
     """
-
-    implements(IFile)
-
     #: Primary key column in the DB
     #: (:class:`sqlalchemy.types.Integer`)
     id = Column(Integer(), ForeignKey('contents.id'), primary_key=True)
@@ -764,12 +759,11 @@ class File(Content, SaveDataMixin):
         return cls(data=fs)
 
 
+@implementer(IImage)
 class Image(File):
     """Image doesn't add anything to :class:`~kotti.resources.File`, but images
        have different views, that e.g. support on the fly scaling.
     """
-
-    implements(IImage)
 
     id = Column(Integer(), ForeignKey('files.id'), primary_key=True)
 

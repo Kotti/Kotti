@@ -1,5 +1,5 @@
-<input name="${field.name}" id="${field.oid}" type="text"
-  tal:attributes="value ','.join(cstruct)" />
+<input name="${field.name}" id="${field.oid}" type="text" title="Tags"
+  tal:attributes="value ','.join(cstruct)" i18n:attributes="title" />
 <script type="text/javascript">
   deform.addCallback(
     '${field.oid}',

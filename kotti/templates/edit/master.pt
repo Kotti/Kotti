@@ -2,8 +2,7 @@
       xmlns:metal="http://xml.zope.org/namespaces/metal"
       xmlns:tal="http://xml.zope.org/namespaces/tal"
       xmlns:i18n="http://xml.zope.org/namespaces/i18n"
-      tal:define="page_slots api.slots;
-                  dummy api.edit_needed"
+      tal:define="page_slots api.slots; dummy api.edit_needed"
       metal:define-macro="main">
   <head>
     <meta charset="utf-8" />
@@ -14,7 +13,7 @@
     <!-- Fav icons -->
     <link rel="shortcut icon" href="${request.static_url('kotti:static/favicon.ico')}" />
 
-    <more tal:omit-tag="" metal:define-slot="head-more"></more>
+    <metal:headmore define-slot="head-more" tal:omit-tag=""></metal:headmore>
 
     <!-- 'edit_inhead' slots: support third party injection of things that
          go into the head -->
@@ -22,16 +21,15 @@
                tal:condition="snippets"
                tal:repeat="snippet snippets"
                tal:replace="structure snippet" />
-    <script>
+    <script tal:condition="api.is_location(context)">
       kotti_context_url = '${request.resource_url(context)}';
     </script>
   </head>
 
   <body class="view-${request.view_name or 'default'} ${api.body_css_class} logged-in">
     <nav tal:replace="api.render_template('kotti:templates/view/nav.pt')" />
-    <div metal:define-slot="editor-bar"
-         tal:condition="request.user is not None"
-         tal:replace="api.render_template('kotti:templates/editor-bar.pt')" />
+    <metal:editorbar define-slot="editor-bar" tal:condition="request.user is not None"
+                     tal:replace="api.render_template('kotti:templates/editor-bar.pt')" />
 
     <div class="container">
       <div class="row">
@@ -39,9 +37,9 @@
           <div tal:replace="api.render_template('kotti:templates/edit/breadcrumbs.pt')" />
           <div tal:replace="api.render_template('kotti:templates/messages.pt')" />
           <div class="inner-content">
-            <div metal:define-slot="content">
+            <metal:content define-slot="content">
               <h1>${context.title}</h1>
-            </div>
+            </metal:content>
           </div>
           </div>
       </div>
@@ -50,6 +48,6 @@
       </footer>
 
     </div>
-    <more tal:omit-tag="" metal:define-slot="js-more"></more>
+    <metal:jsmore define-slot="js-more" tal:omit-tag=""></metal:jsmore>
   </body>
 </html>

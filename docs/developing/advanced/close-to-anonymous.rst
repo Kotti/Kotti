@@ -1,7 +1,7 @@
 .. _close-to-anonymous:
 
 Close your site to anonymous users
-===================================
+==================================
 
 This recipe describes how to configure Kotti to require users to log
 in before they can view any of your site's pages.

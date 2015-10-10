@@ -65,7 +65,7 @@
                 ${entry[0].title}
               </td>
               <td tal:repeat="role available_roles">
-                <input type="checkbox"
+                <input type="checkbox" title="Assign role" i18n:attributes="title"
                        name="role::${entry[0].name}::${role.name}"
                        checked="${role.name in entry[1][0] and 'checked' or None}"
                        disabled="${role.name in entry[1][1] and 'disabled' or None}"

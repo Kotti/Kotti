@@ -28,8 +28,8 @@
             </thead>
             <tbody>
             <tr tal:repeat="item items">
-              <tal:block tal:define="url string:${request.resource_url(item)}@@contents">
-                <td><input name="children-to-delete" type="checkbox" value="${item.id}" checked="checked" /></td>
+              <tal:block tal:define="url request.resource_url(item, '@@contents')">
+                <td><input name="children-to-delete" type="checkbox" value="${item.id}" checked="checked" title="Select item" i18n:attributes="title" /></td>
                 <td><a href="${url}">${item.title}</a></td>
                 <td>${item.type_info.title}</td>
                 <td>${item.state in states and states[item.state]['title']}</td>

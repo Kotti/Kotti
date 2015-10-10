@@ -6,7 +6,7 @@
 
   <div metal:fill-slot="content">
     <div>
-      <a href="./@@setup-users?extra=${api.principal.name}"
+      <a tal:attributes="href request.resource_url(api.root, '@@setup-users', query={'extra': api.principal.name})"
          class="btn btn-default">
         <i class="glyphicon glyphicon-circle-arrow-left"></i>
         <span tal:omit-tag="" i18n:translate="">

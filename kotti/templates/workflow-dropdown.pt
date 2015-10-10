@@ -11,7 +11,8 @@
   </a>
   <ul class="dropdown-menu">
     <li tal:repeat="trans transitions">
-      <a href="${api.url(context, '@@workflow-change', query={'new_state': trans['to_state']})}" i18n:translate="">
+      <a tal:attributes="href api.url(context, '@@workflow-change', query={'new_state': trans['to_state']})"
+         i18n:translate="">
         Make <span i18n:name="state">${states[trans['to_state']]['title']}</span>
       </a>
     </li>

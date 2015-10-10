@@ -1,7 +1,12 @@
 Change History
 ==============
 
-1.2.1 - unreleased
+1.2.2 - unreleased
+------------------
+
+- Add simple, default ``not found view``.
+
+1.2.1 - 2015-10-07
 ------------------
 
 - Outfactor the code that runs after successful authentication into a

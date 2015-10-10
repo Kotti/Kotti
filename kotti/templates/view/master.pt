@@ -3,7 +3,8 @@
       xmlns:tal="http://xml.zope.org/namespaces/tal"
       xmlns:i18n="http://xml.zope.org/namespaces/i18n"
       tal:define="page_slots api.slots;
-                  dummy api.view_needed"
+                  dummy api.view_needed;
+                  has_location_context api.is_location(context);"
       metal:define-macro="main">
 
   <head>
@@ -20,7 +21,7 @@
                tal:condition="snippets"
                tal:repeat="snippet snippets"
                tal:replace="structure snippet" />
-    <script>
+    <script tal:condition="has_location_context">
       kotti_context_url = '${request.resource_url(context)}';
     </script>
   </head>
@@ -29,21 +30,23 @@
                view-${request.view_name or 'default'}
                ${api.body_css_class}">
     <nav tal:replace="api.render_template('kotti:templates/view/nav.pt')" />
-    <div tal:condition="request.user is not None"
+    <div tal:condition="request.user is not None and has_location_context"
          tal:replace="api.render_template('kotti:templates/editor-bar.pt')" />
 
     <div class="container">
       <div tal:replace="api.render_template('kotti:templates/edit/breadcrumbs.pt')" />
 
-      <div class="row">
+      <div class="row"
+           tal:define="n_slots_left has_location_context and int(bool(page_slots.left)) * 3 or 0;
+                       n_slots_right has_location_context and int(bool(page_slots.right)) * 3 or 0;">
         <div class="col-md-3 left-column"
              tal:condition="page_slots.left"
              tal:content="api.render_template('kotti:templates/render_column_slot.pt', slot=page_slots.left)">
         </div>
 
-        <div tal:define="span 12 - int(bool(page_slots.left)) * 3 - int(bool(page_slots.right)) * 3" class="col-md-${span}">
+        <div tal:define="span 12 - n_slots_left - n_slots_right" class="col-md-${span}">
           <div class="above-content"
-               tal:condition="page_slots.abovecontent"
+               tal:condition="has_location_context and page_slots.abovecontent"
                tal:content="api.render_template('kotti:templates/render_content_slot.pt', slot=page_slots.abovecontent)">
           </div>
 
