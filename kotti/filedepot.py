@@ -227,8 +227,8 @@ class DBFileStorage(FileStorage):
         Given a :class:`StoredFile` or its ID it will replace the current
         content with the provided ``content`` value. If ``filename`` and
         ``content_type`` are provided or can be deducted by the ``content``
-        itself they will also replace the previous values, otherwise the current
-        values are kept.
+        itself they will also replace the previous values, otherwise
+        the current values are kept.
 
         :param file_or_id: can be either ``DBStoredFile`` or a ``file_id``
 
@@ -284,8 +284,7 @@ class DBFileStorage(FileStorage):
             DBSession.query(DBStoredFile).filter_by(file_id=file_id).count())
 
     def list(self, *args):
-        raise NotImplementedError, "list() method is unimplemented."
-    
+        raise NotImplementedError("list() method is unimplemented.")
 
     def _get_file_id(self, file_or_id):
         if hasattr(file_or_id, 'file_id'):
