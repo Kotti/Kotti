@@ -283,6 +283,10 @@ class DBFileStorage(FileStorage):
         return bool(
             DBSession.query(DBStoredFile).filter_by(file_id=file_id).count())
 
+    def list(self, *args):
+        raise NotImplementedError, "list() method is unimplemented."
+    
+
     def _get_file_id(self, file_or_id):
         if hasattr(file_or_id, 'file_id'):
             return file_or_id.file_id
