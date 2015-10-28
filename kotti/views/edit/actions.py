@@ -573,7 +573,9 @@ def workflow(context, request):
     if wf is not None:
         state_info = _state_info(context, request)
         curr_state = [i for i in state_info if i['current']][0]
-        trans_info = wf.get_transitions(context, request)
+        trans_info = [trans for trans in wf.get_transitions(context, request)
+                      if request.has_permission(trans['permission'], context)]
+
         return {
             'states': _states(context, request),
             'transitions': trans_info,
