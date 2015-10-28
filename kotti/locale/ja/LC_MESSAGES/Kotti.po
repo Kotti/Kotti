@@ -1,23 +1,8 @@
-# Japanese translations for Kotti.
-# Copyright (C) 2012 ORGANIZATION
-# This file is distributed under the same license as the Kotti project.
-# OCHIAI, Gouji <gjo.ext@gmail.com>, 2012-2013.
-# MORIMOTO, Tetsuya <tetsuya.morimoto@gmail.com>, 2012.
-#
 msgid ""
 msgstr ""
-"Project-Id-Version: Kotti 0.7.0\n"
-"Report-Msgid-Bugs-To: kotti@googlegroups.com\n"
-"POT-Creation-Date: 2015-10-07 21:40+0200\n"
-"PO-Revision-Date: 2013-09-19 02:45+0900\n"
-"Last-Translator: OCHIAI, Gouji <gjo.ext@gmail.com>\n"
-"Language-Team: ja <kotti@googlegroups.com>\n"
-"Language: \n"
+"POT-Creation-Date: 2015-10-09 21:02+0200\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=1; plural=0\n"
-"Generated-By: Babel 0.9.6\n"
 
 #: kotti/populate.py:64
 msgid "Welcome to Kotti"
@@ -125,61 +110,61 @@ msgid ""
 "</small></p>\n"
 msgstr ""
 
-#: kotti/resources.py:509 kotti/views/edit/actions.py:456
+#: kotti/resources.py:508 kotti/views/edit/actions.py:456
 msgid "Copy"
 msgstr "コピー"
 
-#: kotti/resources.py:510 kotti/views/edit/actions.py:457
+#: kotti/resources.py:509 kotti/views/edit/actions.py:457
 msgid "Cut"
 msgstr "切り取り"
 
-#: kotti/resources.py:511 kotti/views/edit/actions.py:453
+#: kotti/resources.py:510 kotti/views/edit/actions.py:453
 msgid "Paste"
 msgstr "貼り付け"
 
-#: kotti/resources.py:512 kotti/templates/edit/rename-nodes.pt:8
-#: kotti/templates/edit/rename-nodes.pt:40 kotti/templates/edit/rename.pt:31
+#: kotti/resources.py:511 kotti/templates/edit/rename-nodes.pt:8
+#: kotti/templates/edit/rename-nodes.pt:42 kotti/templates/edit/rename.pt:31
 #: kotti/views/edit/actions.py:458
 msgid "Rename"
 msgstr "名称変更"
 
-#: kotti/resources.py:513 kotti/templates/edit/delete-nodes.pt:9
+#: kotti/resources.py:512 kotti/templates/edit/delete-nodes.pt:9
 #: kotti/templates/edit/delete-nodes.pt:50 kotti/templates/edit/delete.pt:24
 #: kotti/templates/site-setup/delete-user.pt:24 kotti/views/users.py:443
 #: kotti/views/edit/actions.py:460
 msgid "Delete"
 msgstr "削除"
 
-#: kotti/resources.py:640 kotti/views/edit/content.py:85
+#: kotti/resources.py:637 kotti/views/edit/content.py:85
 msgid "Document"
 msgstr "ドキュメント"
 
-#: kotti/resources.py:731 kotti/views/edit/content.py:113
+#: kotti/resources.py:726 kotti/views/edit/content.py:113
 #: kotti/views/edit/content.py:66
 msgid "File"
 msgstr "ファイル"
 
-#: kotti/resources.py:778 kotti/views/edit/content.py:141
+#: kotti/resources.py:772 kotti/views/edit/content.py:141
 msgid "Image"
 msgstr "画像"
 
-#: kotti/resources.py:530
+#: kotti/resources.py:529
 msgid "Folder view"
 msgstr "フォルダー表示"
 
-#: kotti/resources.py:524 kotti/templates/view/folder.pt:15
+#: kotti/resources.py:523 kotti/templates/view/folder.pt:15
 msgid "Contents"
 msgstr "コンテンツ"
 
-#: kotti/resources.py:525 kotti/templates/edit/nav-tree.pt:10
+#: kotti/resources.py:524 kotti/templates/edit/nav-tree.pt:10
 msgid "Edit"
 msgstr "編集"
 
-#: kotti/resources.py:526
+#: kotti/resources.py:525
 msgid "Share"
 msgstr "共有"
 
-#: kotti/resources.py:527 kotti/templates/actions-dropdown.pt:3
+#: kotti/resources.py:526 kotti/templates/actions-dropdown.pt:3
 msgid "Actions"
 msgstr "アクション"
 
@@ -299,14 +284,18 @@ msgstr "上の入力欄のユーザー名かメールアドレスを埋めて、
 msgid "Not registered yet?"
 msgstr ""
 
-#: kotti/templates/login.pt:82
+#: kotti/templates/login.pt:83
 #, fuzzy
 msgid "Register for an account on this site."
 msgstr "まだ登録していませんか? このサイトにアカウントを ${register} しましょう。"
 
-#: kotti/templates/workflow-dropdown.pt:14
+#: kotti/templates/workflow-dropdown.pt:15
 msgid "Make ${state}"
 msgstr "${state} にする"
+
+#: kotti/templates/deform/tag_it.pt:1 kotti/views/edit/content.py:44
+msgid "Tags"
+msgstr "タグ"
 
 #: kotti/templates/edit/breadcrumbs.pt:8
 msgid "You are here:"
@@ -328,7 +317,7 @@ msgstr "タイトル"
 
 #: kotti/templates/edit/change-state.pt:19 kotti/templates/edit/contents.pt:40
 #: kotti/templates/edit/delete-nodes.pt:23 kotti/templates/edit/share.pt:47
-#: kotti/templates/edit/upload.pt:19 kotti/templates/edit/upload.pt:112
+#: kotti/templates/edit/upload.pt:18 kotti/templates/edit/upload.pt:110
 #: kotti/templates/site-setup/users.pt:67 kotti/templates/view/folder.pt:21
 msgid "Type"
 msgstr "種類"
@@ -347,6 +336,11 @@ msgstr "作成日"
 #: kotti/templates/edit/delete-nodes.pt:26 kotti/templates/view/folder.pt:23
 msgid "Modification Date"
 msgstr "変更日"
+
+#: kotti/templates/edit/change-state.pt:28 kotti/templates/edit/contents.pt:50
+#: kotti/templates/edit/delete-nodes.pt:32
+msgid "Select item"
+msgstr ""
 
 #: kotti/templates/edit/change-state.pt:40
 #: kotti/templates/edit/change-state.pt:45
@@ -376,7 +370,7 @@ msgstr "変更を適用"
 
 #: kotti/templates/edit/change-state.pt:66
 #: kotti/templates/edit/delete-nodes.pt:45 kotti/templates/edit/delete.pt:19
-#: kotti/templates/edit/rename-nodes.pt:42 kotti/views/form.py:78
+#: kotti/templates/edit/rename-nodes.pt:44 kotti/views/form.py:78
 #: kotti/views/users.py:316 kotti/views/users.py:350 kotti/views/users.py:442
 msgid "Cancel"
 msgstr "キャンセル"
@@ -384,6 +378,10 @@ msgstr "キャンセル"
 #: kotti/templates/edit/contents.pt:30
 msgid "No content items are contained here."
 msgstr "ここにはコンテンツアイテムが含まれていません。"
+
+#: kotti/templates/edit/contents.pt:38
+msgid "Select / deselect all"
+msgstr ""
 
 #: kotti/templates/edit/contents.pt:42
 msgid "Visibility"
@@ -418,11 +416,13 @@ msgstr "ナビゲート"
 msgid "Each content item has a name, which is used to create the url, and a title. Read the user manual about proper formatting of name and title if needed. You can change both below."
 msgstr "それぞれのコンテンツには名称とタイトルがあり、名称は URL を生成するのに使用します。下のフォームでは、その両方を変更することができます。"
 
-#: kotti/templates/edit/rename-nodes.pt:26 kotti/templates/edit/rename.pt:19
+#: kotti/templates/edit/rename-nodes.pt:26
+#: kotti/templates/edit/rename-nodes.pt:28 kotti/templates/edit/rename.pt:19
 msgid "New name"
 msgstr "新しい名称"
 
-#: kotti/templates/edit/rename-nodes.pt:33 kotti/templates/edit/rename.pt:25
+#: kotti/templates/edit/rename-nodes.pt:34
+#: kotti/templates/edit/rename-nodes.pt:36 kotti/templates/edit/rename.pt:25
 msgid "New title"
 msgstr "新しいタイトル"
 
@@ -467,37 +467,50 @@ msgstr "グループ"
 msgid "Gravatar"
 msgstr "Gravatar"
 
+#: kotti/templates/edit/share.pt:68 kotti/templates/site-setup/users.pt:89
+#, fuzzy
+msgid "Assign role"
+msgstr "ローカルロールに割り当て"
+
 #: kotti/templates/edit/upload.pt:10
 msgid "Upload content from local file(s)"
 msgstr ""
 
-#: kotti/templates/edit/upload.pt:18 kotti/templates/edit/upload.pt:111
+#: kotti/templates/edit/upload.pt:17 kotti/templates/edit/upload.pt:109
 #, fuzzy
 msgid "Filename"
 msgstr "名称変更"
 
-#: kotti/templates/edit/upload.pt:20 kotti/templates/edit/upload.pt:113
+#: kotti/templates/edit/upload.pt:19 kotti/templates/edit/upload.pt:111
 msgid "Size"
 msgstr ""
 
-#: kotti/templates/edit/upload.pt:21
+#: kotti/templates/edit/upload.pt:20
 msgid "Status"
 msgstr ""
 
-#: kotti/templates/edit/upload.pt:22
+#: kotti/templates/edit/upload.pt:21
 msgid "Progress"
 msgstr ""
 
-#: kotti/templates/edit/upload.pt:88
+#: kotti/templates/edit/upload.pt:86
 msgid "Select file(s) to upload..."
 msgstr ""
 
-#: kotti/templates/edit/upload.pt:96
+#: kotti/templates/edit/upload.pt:94
 msgid "Upload ${number} files."
 msgstr ""
 
-#: kotti/templates/edit/upload.pt:101
+#: kotti/templates/edit/upload.pt:99
 msgid "Dismiss all errors"
+msgstr ""
+
+#: kotti/templates/http-errors/notfound.pt:6
+msgid "Not Found"
+msgstr ""
+
+#: kotti/templates/http-errors/notfound.pt:7
+msgid "The resource could not be found"
 msgstr ""
 
 #: kotti/templates/site-setup/delete-user.pt:15
@@ -845,10 +858,6 @@ msgstr "状態を変更"
 #: kotti/views/edit/content.py:38
 msgid "Description"
 msgstr "説明"
-
-#: kotti/views/edit/content.py:44
-msgid "Tags"
-msgstr "タグ"
 
 #: kotti/views/edit/content.py:53
 msgid "Body"

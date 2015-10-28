@@ -1,22 +1,8 @@
-# French (France) translations for Kotti.
-# Copyright (C) 2013 ORGANIZATION
-# This file is distributed under the same license as the Kotti project.
-# Fabien <fabien.castarede@free.fr>, 2013.
-# #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: Kotti 0.9a3dev\n"
-"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2015-10-07 21:40+0200\n"
-"PO-Revision-Date: 2013-09-22 20:21+0100\n"
-"Last-Translator: Fabien Castarède <fabien.castarede@free.fr>\n"
-"Language-Team: French\n"
-"Language: \n"
+"POT-Creation-Date: 2015-10-09 21:02+0200\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n > 1)\n"
-"Generated-By: Babel 0.9.6\n"
 
 #: kotti/populate.py:64
 msgid "Welcome to Kotti"
@@ -204,61 +190,61 @@ msgstr ""
 "  article.\n"
 "</small></p>\n"
 
-#: kotti/resources.py:509 kotti/views/edit/actions.py:456
+#: kotti/resources.py:508 kotti/views/edit/actions.py:456
 msgid "Copy"
 msgstr "Copier"
 
-#: kotti/resources.py:510 kotti/views/edit/actions.py:457
+#: kotti/resources.py:509 kotti/views/edit/actions.py:457
 msgid "Cut"
 msgstr "Couper"
 
-#: kotti/resources.py:511 kotti/views/edit/actions.py:453
+#: kotti/resources.py:510 kotti/views/edit/actions.py:453
 msgid "Paste"
 msgstr "Coller"
 
-#: kotti/resources.py:512 kotti/templates/edit/rename-nodes.pt:8
-#: kotti/templates/edit/rename-nodes.pt:40 kotti/templates/edit/rename.pt:31
+#: kotti/resources.py:511 kotti/templates/edit/rename-nodes.pt:8
+#: kotti/templates/edit/rename-nodes.pt:42 kotti/templates/edit/rename.pt:31
 #: kotti/views/edit/actions.py:458
 msgid "Rename"
 msgstr "Renommer"
 
-#: kotti/resources.py:513 kotti/templates/edit/delete-nodes.pt:9
+#: kotti/resources.py:512 kotti/templates/edit/delete-nodes.pt:9
 #: kotti/templates/edit/delete-nodes.pt:50 kotti/templates/edit/delete.pt:24
 #: kotti/templates/site-setup/delete-user.pt:24 kotti/views/users.py:443
 #: kotti/views/edit/actions.py:460
 msgid "Delete"
 msgstr "Supprimer"
 
-#: kotti/resources.py:640 kotti/views/edit/content.py:85
+#: kotti/resources.py:637 kotti/views/edit/content.py:85
 msgid "Document"
 msgstr "Document"
 
-#: kotti/resources.py:731 kotti/views/edit/content.py:113
+#: kotti/resources.py:726 kotti/views/edit/content.py:113
 #: kotti/views/edit/content.py:66
 msgid "File"
 msgstr "Fichier"
 
-#: kotti/resources.py:778 kotti/views/edit/content.py:141
+#: kotti/resources.py:772 kotti/views/edit/content.py:141
 msgid "Image"
 msgstr "Image"
 
-#: kotti/resources.py:530
+#: kotti/resources.py:529
 msgid "Folder view"
 msgstr "Contenus"
 
-#: kotti/resources.py:524 kotti/templates/view/folder.pt:15
+#: kotti/resources.py:523 kotti/templates/view/folder.pt:15
 msgid "Contents"
 msgstr "Contenus"
 
-#: kotti/resources.py:525 kotti/templates/edit/nav-tree.pt:10
+#: kotti/resources.py:524 kotti/templates/edit/nav-tree.pt:10
 msgid "Edit"
 msgstr "Modifier"
 
-#: kotti/resources.py:526
+#: kotti/resources.py:525
 msgid "Share"
 msgstr "Permissions"
 
-#: kotti/resources.py:527 kotti/templates/actions-dropdown.pt:3
+#: kotti/resources.py:526 kotti/templates/actions-dropdown.pt:3
 msgid "Actions"
 msgstr "Actions"
 
@@ -377,13 +363,17 @@ msgstr "Indiquez votre identifiant ou votre adresse e-mail ci-dessous et cliquez
 msgid "Not registered yet?"
 msgstr ""
 
-#: kotti/templates/login.pt:82
+#: kotti/templates/login.pt:83
 msgid "Register for an account on this site."
 msgstr "Enregistrez-vous sur ce site."
 
-#: kotti/templates/workflow-dropdown.pt:14
+#: kotti/templates/workflow-dropdown.pt:15
 msgid "Make ${state}"
 msgstr "Rendre ${state}"
+
+#: kotti/templates/deform/tag_it.pt:1 kotti/views/edit/content.py:44
+msgid "Tags"
+msgstr "Mots-clés"
 
 #: kotti/templates/edit/breadcrumbs.pt:8
 msgid "You are here:"
@@ -405,7 +395,7 @@ msgstr "Titre"
 
 #: kotti/templates/edit/change-state.pt:19 kotti/templates/edit/contents.pt:40
 #: kotti/templates/edit/delete-nodes.pt:23 kotti/templates/edit/share.pt:47
-#: kotti/templates/edit/upload.pt:19 kotti/templates/edit/upload.pt:112
+#: kotti/templates/edit/upload.pt:18 kotti/templates/edit/upload.pt:110
 #: kotti/templates/site-setup/users.pt:67 kotti/templates/view/folder.pt:21
 msgid "Type"
 msgstr "Type"
@@ -424,6 +414,11 @@ msgstr "Date de création"
 #: kotti/templates/edit/delete-nodes.pt:26 kotti/templates/view/folder.pt:23
 msgid "Modification Date"
 msgstr "Date de modification"
+
+#: kotti/templates/edit/change-state.pt:28 kotti/templates/edit/contents.pt:50
+#: kotti/templates/edit/delete-nodes.pt:32
+msgid "Select item"
+msgstr ""
 
 #: kotti/templates/edit/change-state.pt:40
 #: kotti/templates/edit/change-state.pt:45
@@ -453,7 +448,7 @@ msgstr "Appliquer les modifications"
 
 #: kotti/templates/edit/change-state.pt:66
 #: kotti/templates/edit/delete-nodes.pt:45 kotti/templates/edit/delete.pt:19
-#: kotti/templates/edit/rename-nodes.pt:42 kotti/views/form.py:78
+#: kotti/templates/edit/rename-nodes.pt:44 kotti/views/form.py:78
 #: kotti/views/users.py:316 kotti/views/users.py:350 kotti/views/users.py:442
 msgid "Cancel"
 msgstr "Annuler"
@@ -461,6 +456,10 @@ msgstr "Annuler"
 #: kotti/templates/edit/contents.pt:30
 msgid "No content items are contained here."
 msgstr "Aucun contenu ici."
+
+#: kotti/templates/edit/contents.pt:38
+msgid "Select / deselect all"
+msgstr ""
 
 #: kotti/templates/edit/contents.pt:42
 msgid "Visibility"
@@ -495,11 +494,13 @@ msgstr "Parcourir le Site"
 msgid "Each content item has a name, which is used to create the url, and a title. Read the user manual about proper formatting of name and title if needed. You can change both below."
 msgstr "Chaque contenu a un nom, qui est utilisé pour créer une url, et un titre. Consultez, si besoin, le manuel à propos du format des nom et titre. Vous pouvez modifier les deux."
 
-#: kotti/templates/edit/rename-nodes.pt:26 kotti/templates/edit/rename.pt:19
+#: kotti/templates/edit/rename-nodes.pt:26
+#: kotti/templates/edit/rename-nodes.pt:28 kotti/templates/edit/rename.pt:19
 msgid "New name"
 msgstr "Nouveau nom"
 
-#: kotti/templates/edit/rename-nodes.pt:33 kotti/templates/edit/rename.pt:25
+#: kotti/templates/edit/rename-nodes.pt:34
+#: kotti/templates/edit/rename-nodes.pt:36 kotti/templates/edit/rename.pt:25
 msgid "New title"
 msgstr "Nouveau titre"
 
@@ -544,37 +545,50 @@ msgstr "Groupe"
 msgid "Gravatar"
 msgstr "Gravatar"
 
+#: kotti/templates/edit/share.pt:68 kotti/templates/site-setup/users.pt:89
+#, fuzzy
+msgid "Assign role"
+msgstr "Assigner des rôles locaux"
+
 #: kotti/templates/edit/upload.pt:10
 msgid "Upload content from local file(s)"
 msgstr "Téléverser des contenus à partir de fichiers locaux"
 
-#: kotti/templates/edit/upload.pt:18 kotti/templates/edit/upload.pt:111
+#: kotti/templates/edit/upload.pt:17 kotti/templates/edit/upload.pt:109
 msgid "Filename"
 msgstr "Nom du fichier"
 
-#: kotti/templates/edit/upload.pt:20 kotti/templates/edit/upload.pt:113
+#: kotti/templates/edit/upload.pt:19 kotti/templates/edit/upload.pt:111
 msgid "Size"
 msgstr "Poids"
 
-#: kotti/templates/edit/upload.pt:21
+#: kotti/templates/edit/upload.pt:20
 msgid "Status"
 msgstr "Statut"
 
-#: kotti/templates/edit/upload.pt:22
+#: kotti/templates/edit/upload.pt:21
 msgid "Progress"
 msgstr "Progression"
 
-#: kotti/templates/edit/upload.pt:88
+#: kotti/templates/edit/upload.pt:86
 msgid "Select file(s) to upload..."
 msgstr "Selectionner des fichiers à téléverser..."
 
-#: kotti/templates/edit/upload.pt:96
+#: kotti/templates/edit/upload.pt:94
 msgid "Upload ${number} files."
 msgstr "Téléverser ${number} fichiers."
 
-#: kotti/templates/edit/upload.pt:101
+#: kotti/templates/edit/upload.pt:99
 msgid "Dismiss all errors"
 msgstr "Ignorer toutes les erreurs"
+
+#: kotti/templates/http-errors/notfound.pt:6
+msgid "Not Found"
+msgstr ""
+
+#: kotti/templates/http-errors/notfound.pt:7
+msgid "The resource could not be found"
+msgstr ""
 
 #: kotti/templates/site-setup/delete-user.pt:15
 msgid "Are you sure you want to delete ${type} ${title}?"
@@ -916,10 +930,6 @@ msgstr "Modifier le statut"
 msgid "Description"
 msgstr "Description"
 
-#: kotti/views/edit/content.py:44
-msgid "Tags"
-msgstr "Mots-clés"
-
 #: kotti/views/edit/content.py:53
 msgid "Body"
 msgstr "Contenu"
@@ -939,6 +949,170 @@ msgstr "La vue par défaut a été définie."
 #: kotti/views/edit/default_views.py:112
 msgid "Default view could not be set."
 msgstr "La vue par défaut ne peut pas être définie."
+
+#~ msgid ""
+#~ "\n"
+#~ "<h2>Log in</h2>\n"
+#~ "<p>\n"
+#~ "    You can <a class=\"btn btn-success\" href=\"login\">log in</a> to your site\n"
+#~ "    and start changing its contents.  If you haven't chosen a password for\n"
+#~ "    your admin account yet, it'll likely be <em>qwerty</em>.\n"
+#~ "</p>\n"
+#~ "<p>\n"
+#~ "    Once you're logged in, you'll see the grey editor bar below the top\n"
+#~ "    navigation bar.  It will allow you to switch between editing and viewing the\n"
+#~ "    current page as it will appear to your visitors.\n"
+#~ "</p>\n"
+#~ "<div class=\"row\">\n"
+#~ "    <div class=\"col-md-4\">\n"
+#~ "        <h2>Configure</h2>\n"
+#~ "        <p>\n"
+#~ "            Find out how to configure your Kotti's title and many other settings using a\n"
+#~ "            simple text file in your file system.\n"
+#~ "        </p>\n"
+#~ "        <p>\n"
+#~ "            <a class=\"btn btn-info\"\n"
+#~ "               href=\"http://kotti.readthedocs.org/en/latest/developing/basic/configuration.html\">\n"
+#~ "               Configuration manual\n"
+#~ "            </a>\n"
+#~ "        </p>\n"
+#~ "    </div>\n"
+#~ "    <div class=\"col-md-4\">\n"
+#~ "        <h2>Add-ons</h2>\n"
+#~ "        <p>\n"
+#~ "            A number of add-ons allow you to extend the functionality of your Kotti site.\n"
+#~ "        </p>\n"
+#~ "        <p>\n"
+#~ "            <a class=\"btn btn-info\"\n"
+#~ "               href=\"http://pypi.python.org/pypi?%3Aaction=search&amp;term=kotti\">\n"
+#~ "                Kotti add-ons\n"
+#~ "            </a>\n"
+#~ "        </p>\n"
+#~ "    </div>\n"
+#~ "    <div class=\"col-md-4\">\n"
+#~ "        <h2>Documentation</h2>\n"
+#~ "        <p>\n"
+#~ "            Wonder what more you can do with Kotti?  What license it has?  Read the\n"
+#~ "            manual for more information.\n"
+#~ "        </p>\n"
+#~ "        <p>\n"
+#~ "            <a class=\"btn btn-info\"\n"
+#~ "               href=\"http://kotti.readthedocs.org/en/latest/\">\n"
+#~ "               Documentation\n"
+#~ "            </a>\n"
+#~ "        </p>\n"
+#~ "    </div>\n"
+#~ "</div>\n"
+#~ msgstr ""
+#~ "\n"
+#~ "<h2>Identifiez vous</h2>\n"
+#~ "<p>\n"
+#~ "    Vous pouvez vous <a class=\"btn btn-success\" href=\"login\">identifier</a> sur votre site internet\n"
+#~ "    et commencer à créer du contenu. Si vous n'avez pas choisi un mot de passe pour\n"
+#~ "    votre compte administrateur, celui-ci devrait être <em>qwerty</em>.\n"
+#~ "</p>\n"
+#~ "<p>\n"
+#~ "    Lorsque que vous serez identifié, vous verrez la barre grise d'édition en dessous de la\n"
+#~ "    barre de navigation. Celle-ci vous permettra de basculer entre l'édition et la visualisation, telle qu'\n"
+#~ "    elle apparaitra aux visiteurs.\n"
+#~ "</p>\n"
+#~ "<div class=\"row\">\n"
+#~ "    <div class=\"col-md-4\">\n"
+#~ "        <h2>Configuration</h2>\n"
+#~ "        <p>\n"
+#~ "            Trouvez comment configurer le titre de votre site ainsi que d'autres paramètres en utilisant\n"
+#~ "            un éditeur de texte.\n"
+#~ "        </p>\n"
+#~ "        <p>\n"
+#~ "            <a class=\"btn btn-info\"\n"
+#~ "               href=\"http://kotti.readthedocs.org/en/latest/developing/basic/configuration.html\">\n"
+#~ "               Configuration manuelle\n"
+#~ "            </a>\n"
+#~ "        </p>\n"
+#~ "    </div>\n"
+#~ "    <div class=\"col-md-4\">\n"
+#~ "        <h2>Extensions</h2>\n"
+#~ "        <p>\n"
+#~ "            Des extensions vous permettent d'étendre les fonctionnalités de votre site internet Kotti.\n"
+#~ "        </p>\n"
+#~ "        <p>\n"
+#~ "            <a class=\"btn btn-info\"\n"
+#~ "               href=\"http://pypi.python.org/pypi?%3Aaction=search&amp;term=kotti\">\n"
+#~ "                Extensions de Kotti\n"
+#~ "            </a>\n"
+#~ "        </p>\n"
+#~ "    </div>\n"
+#~ "    <div class=\"col-md-4\">\n"
+#~ "        <h2>Documentation</h2>\n"
+#~ "        <p>\n"
+#~ "            Découvrez tout ce que vous pouvez faire avec Kotti? La License de Kotti?Parcourez le\n"
+#~ "            manuel pour plus d'informations.\n"
+#~ "        </p>\n"
+#~ "        <p>\n"
+#~ "            <a class=\"btn btn-info\"\n"
+#~ "               href=\"http://kotti.readthedocs.org/en/latest/\">\n"
+#~ "               Documentation\n"
+#~ "            </a>\n"
+#~ "        </p>\n"
+#~ "    </div>\n"
+#~ "</div>\n"
+
+#~ msgid ""
+#~ "\n"
+#~ "<p>\n"
+#~ "  <img alt=\"five colorful Extra EA300 airplanes flying in formation\"\n"
+#~ "   src=\"http://upload.wikimedia.org/wikipedia/commons/thumb/5/5d/Northern_Lights_Formation.jpg/640px-Northern_Lights_Formation.jpg\"\n"
+#~ "   width=\"640\" height=\"376\" />\n"
+#~ "</p>\n"
+#~ "\n"
+#~ "<p>\n"
+#~ "   Our worldwide headquarters:\n"
+#~ "</p>\n"
+#~ "\n"
+#~ "<address>\n"
+#~ "  Foo World<br />\n"
+#~ "  123 Nowhere Street, Suite 777<br />\n"
+#~ "  Omak, WA   98841   USA<br />\n"
+#~ "  +1-509-555-0100<br />\n"
+#~ "  widgets@foowrld.example.com\n"
+#~ "</address>\n"
+#~ "\n"
+#~ "<p><small style=\"font-size: smaller\">\n"
+#~ "  <em>Photo credit:</em> \"Northern Lights Formation\" by FlugKerl2.\n"
+#~ "  <a href=\"http://commons.wikimedia.org/wiki/File:Northern_Lights_Formation.jpg\">\n"
+#~ "  Copyright info</a>.\n"
+#~ "  Originally published in the\n"
+#~ "  <a href=\"http://en.wikipedia.org/wiki/Extra_EA-300\"> Extra EA-300</a>\n"
+#~ "  article.\n"
+#~ "</small></p>\n"
+#~ msgstr ""
+#~ "\n"
+#~ "<p>\n"
+#~ "  <img alt=\"Cinq avions EA300 volants en formation\"\n"
+#~ "   src=\"http://upload.wikimedia.org/wikipedia/commons/thumb/5/5d/Northern_Lights_Formation.jpg/640px-Northern_Lights_Formation.jpg\"\n"
+#~ "   width=\"640\" height=\"376\" />\n"
+#~ "</p>\n"
+#~ "\n"
+#~ "<p>\n"
+#~ "   Nos bureaux:\n"
+#~ "</p>\n"
+#~ "\n"
+#~ "<address>\n"
+#~ "  Foo World<br />\n"
+#~ "  123 Rue inconnue, Boite 777<br />\n"
+#~ "  Omak, WA   98841   USA<br />\n"
+#~ "  +1-509-555-0100<br />\n"
+#~ "  widgets@foowrld.example.com\n"
+#~ "</address>\n"
+#~ "\n"
+#~ "<p><small style=\"font-size: smaller\">\n"
+#~ "  <em>Crédit de la photot:</em> \"Northern Lights Formation\" by FlugKerl2.\n"
+#~ "  <a href=\"http://commons.wikimedia.org/wiki/File:Northern_Lights_Formation.jpg\">\n"
+#~ "  Copyright info</a>.\n"
+#~ "  Originalement publié sur\n"
+#~ "  <a href=\"http://en.wikipedia.org/wiki/Extra_EA-300\"> Extra EA-300</a>\n"
+#~ "  article.\n"
+#~ "</small></p>\n"
 
 #~ msgid "Submit"
 #~ msgstr "Soumettre"

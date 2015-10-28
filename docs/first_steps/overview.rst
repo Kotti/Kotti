@@ -74,7 +74,7 @@ Use this command:
 
   git clone git@github.com:Kotti/Kotti
 
-`Continuous testing`_ against different versions of Python and with *PostgreSQL*, *MySQL* and *SQLite* and a complete test coverage make Kotti a **stable** platform to work with.  |build status|_
+`Continuous testing`_ against different versions of Python and with *PostgreSQL*, *MySQL* and *SQLite* and a complete test coverage make Kotti a **stable** platform to work with.  |build_status|_
 
 Support
 -------
@@ -90,8 +90,8 @@ Support
 .. _continuous testing: http://travis-ci.org/Kotti/Kotti
 .. _Deform: http://docs.pylonsproject.org/projects/deform/en/latest/
 .. _developed on Github: https://github.com/Kotti/Kotti
-.. |build status| image:: https://secure.travis-ci.org/Kotti/Kotti.png?branch=master
-.. _build status: http://travis-ci.org/Kotti/Kotti
+.. |build_status| image:: https://secure.travis-ci.org/Kotti/Kotti.png?branch=master
+.. _build_status: http://travis-ci.org/Kotti/Kotti
 .. _installation:
 .. _other SQL databases: http://www.sqlalchemy.org/docs/core/engines.html#supported-databases
 .. _variety of web servers: http://wsgi.org/wsgi/Servers

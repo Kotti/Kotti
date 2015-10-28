@@ -33,7 +33,7 @@ def get_principals():
 
 @request_cache(lambda request: None)
 def get_user(request):
-    userid = request.authenticated_userid
+    userid = request.unauthenticated_userid
     return get_principals().get(userid)
 
 
@@ -492,8 +492,8 @@ class Principals(DictMixin):
                       all params
         :type match: str
 
-        :param **kwargs: Search conditions, e.g. ``name='bob', active=True``.
-        :type **kwargs: varying.
+        :param kwargs: Search conditions, e.g. ``name='bob', active=True``.
+        :type kwargs: varying.
 
         :result: SQLAlchemy query object
         :rtype: :class:`sqlalchemy.orm.query.Query``

@@ -25,6 +25,7 @@
             <label class="control-label desc" for="${item.id}-name"
                    i18n:translate="">New name</label>
             <input type="text" name="${item.id}-name" class="form-control"
+                   title="New name" i18n:attributes="title"
                    value="${request.POST.get(str(item.id) + '-name') or item.name}" />
           </div>
 
@@ -32,6 +33,7 @@
             <label class="control-label desc" for="${item.id}-title"
                    i18n:translate="">New title</label>
             <input type="text" name="${item.id}-title" class="form-control"
+                   title="New title" i18n:attributes="title"
                    value="${request.POST.get(str(item.id) + '-title') or item.title}" />
           </div>
         </fieldset>

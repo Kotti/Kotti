@@ -2,12 +2,12 @@
 
 import warnings
 
-from pyramid.exceptions import NotFound
+from pyramid.httpexceptions import HTTPNotFound
+from pyramid.view import notfound_view_config
 from pyramid.view import render_view_to_response
 from pyramid.view import view_config
 
 from kotti.interfaces import IContent
-
 from kotti.views.util import search_content
 from kotti.views.util import search_content_for_tags
 
@@ -28,7 +28,7 @@ def view_content_default(context, request):
         warnings.warn(
             u'Failed to look up default view called {0!r} for {1!r}.'.format(
                 view_name, context))
-        raise NotFound()
+        raise HTTPNotFound()
     return response
 
 
@@ -66,6 +66,12 @@ def search_results_for_tag(context, request):
 @view_config(name='view', context=IContent, permission='view',
              renderer='kotti:templates/view/document.pt')
 def view(context, request):
+    return {}
+
+
+@notfound_view_config(renderer='kotti:templates/http-errors/notfound.pt')
+def notfound_view(context, request):
+    request.response = context
     return {}
 
 

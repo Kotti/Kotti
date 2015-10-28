@@ -14,8 +14,10 @@ from pytest import mark
 
 from pyramid import testing
 from pyramid.events import NewResponse
+from pyramid.interfaces import ILocation
 from pyramid.security import ALL_PERMISSIONS
 from zope.deprecation.deprecation import deprecate
+from zope.interface import implementer
 import transaction
 
 
@@ -243,6 +245,7 @@ class FunctionalTestBase(TestCase):
         return browser
 
 
+@implementer(ILocation)
 class TestingRootFactory(dict):
     __name__ = ''  # root is required to have an empty name!
     __parent__ = None
@@ -276,7 +279,8 @@ def setUpFunctionalStrippedDownApp(global_config=None, **settings):
     # An app that doesn't use Nodes at all
     _settings = {
         'kotti.base_includes': (
-            'kotti kotti.views kotti.views.login kotti.views.users'),
+            'kotti kotti.views kotti.views.login kotti.views.users '
+            'kotti.views.view'),
         'kotti.use_tables': 'principals',
         'kotti.populators': 'kotti.populate.populate_users',
         'pyramid.includes': 'kotti.testing.include_testing_view',

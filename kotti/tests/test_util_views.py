@@ -4,8 +4,10 @@ import decimal
 from mock import patch
 from mock import Mock
 from mock import MagicMock
+from pyramid.interfaces import ILocation
 from pyramid.request import Response
 from pytest import raises
+from zope.interface import implementer
 
 from kotti.testing import Dummy
 from kotti.testing import DummyRequest
@@ -36,7 +38,13 @@ def create_contents(root):
     return a, aa, ab, ac, aca, acb
 
 
+@implementer(ILocation)
+class MockContext(object):
+    pass
+
+
 class TestTemplateAPI:
+
     def make(self, context=None, request=None, id=1, **kwargs):
         from kotti.resources import get_root
         from kotti.views.util import TemplateAPI
@@ -217,19 +225,19 @@ class TestTemplateAPI:
             assert get_renderer().implementation().macros['main'] == macro
 
     def test_url_without_context(self, db_session):
-        context, request = object(), MagicMock()
+        context, request = MockContext(), MagicMock()
         api = self.make(context=context, request=request)
         api.url()
         request.resource_url.assert_called_with(context)
 
     def test_url_with_context(self, db_session):
-        context, request = object(), MagicMock()
+        context, request = MockContext(), MagicMock()
         api = self.make(request=request)
         api.url(context)
         request.resource_url.assert_called_with(context)
 
     def test_url_with_context_and_elements(self, db_session):
-        context, request = object(), MagicMock()
+        context, request = MockContext(), MagicMock()
         api = self.make(request=request)
         api.url(context, 'first', second='second')
         request.resource_url.assert_called_with(

@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2015-10-07 21:40+0200\n"
+"POT-Creation-Date: 2015-10-12 10:15+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -124,62 +124,62 @@ msgid ""
 "</small></p>\n"
 msgstr ""
 
-#: ./kotti/resources.py:509 ./kotti/views/edit/actions.py:456
+#: ./kotti/resources.py:508 ./kotti/views/edit/actions.py:456
 msgid "Copy"
 msgstr ""
 
-#: ./kotti/resources.py:510 ./kotti/views/edit/actions.py:457
+#: ./kotti/resources.py:509 ./kotti/views/edit/actions.py:457
 msgid "Cut"
 msgstr ""
 
-#: ./kotti/resources.py:511 ./kotti/views/edit/actions.py:453
+#: ./kotti/resources.py:510 ./kotti/views/edit/actions.py:453
 msgid "Paste"
 msgstr ""
 
-#: ./kotti/resources.py:512 ./kotti/templates/edit/rename-nodes.pt:8
-#: ./kotti/templates/edit/rename-nodes.pt:40
-#: ./kotti/templates/edit/rename.pt:31 ./kotti/views/edit/actions.py:458
+#: ./kotti/resources.py:511 ./kotti/templates/edit/rename.pt:31
+#: ./kotti/templates/edit/rename-nodes.pt:8
+#: ./kotti/templates/edit/rename-nodes.pt:42 ./kotti/views/edit/actions.py:458
 msgid "Rename"
 msgstr ""
 
-#: ./kotti/resources.py:513 ./kotti/templates/edit/delete-nodes.pt:9
+#: ./kotti/resources.py:512 ./kotti/templates/edit/delete.pt:24
+#: ./kotti/templates/edit/delete-nodes.pt:9
 #: ./kotti/templates/edit/delete-nodes.pt:50
-#: ./kotti/templates/edit/delete.pt:24
 #: ./kotti/templates/site-setup/delete-user.pt:24 ./kotti/views/users.py:443
 #: ./kotti/views/edit/actions.py:460
 msgid "Delete"
 msgstr ""
 
-#: ./kotti/resources.py:640 ./kotti/views/edit/content.py:85
+#: ./kotti/resources.py:637 ./kotti/views/edit/content.py:85
 msgid "Document"
 msgstr ""
 
-#: ./kotti/resources.py:731 ./kotti/views/edit/content.py:113
+#: ./kotti/resources.py:726 ./kotti/views/edit/content.py:113
 #: ./kotti/views/edit/content.py:66
 msgid "File"
 msgstr ""
 
-#: ./kotti/resources.py:778 ./kotti/views/edit/content.py:141
+#: ./kotti/resources.py:772 ./kotti/views/edit/content.py:141
 msgid "Image"
 msgstr ""
 
-#: ./kotti/resources.py:530
+#: ./kotti/resources.py:529
 msgid "Folder view"
 msgstr ""
 
-#: ./kotti/resources.py:524 ./kotti/templates/view/folder.pt:15
+#: ./kotti/resources.py:523 ./kotti/templates/view/folder.pt:15
 msgid "Contents"
 msgstr ""
 
-#: ./kotti/resources.py:525 ./kotti/templates/edit/nav-tree.pt:10
+#: ./kotti/resources.py:524 ./kotti/templates/edit/nav-tree.pt:10
 msgid "Edit"
 msgstr ""
 
-#: ./kotti/resources.py:526
+#: ./kotti/resources.py:525
 msgid "Share"
 msgstr ""
 
-#: ./kotti/resources.py:527 ./kotti/templates/actions-dropdown.pt:3
+#: ./kotti/resources.py:526 ./kotti/templates/actions-dropdown.pt:3
 msgid "Actions"
 msgstr ""
 
@@ -205,30 +205,6 @@ msgstr ""
 
 #: ./kotti/templates/add-dropdown.pt:13
 msgid "Upload Content"
-msgstr ""
-
-#: ./kotti/templates/default-view-selector.pt:3
-msgid "Set default view"
-msgstr ""
-
-#: ./kotti/templates/editor-bar.pt:21
-msgid "View"
-msgstr ""
-
-#: ./kotti/templates/editor-bar.pt:44
-msgid "Navigate"
-msgstr ""
-
-#: ./kotti/templates/editor-bar.pt:55
-msgid "Preferences"
-msgstr ""
-
-#: ./kotti/templates/editor-bar.pt:60
-msgid "Site Setup"
-msgstr ""
-
-#: ./kotti/templates/editor-bar.pt:71
-msgid "Logout"
 msgstr ""
 
 #: ./kotti/templates/email-reset-password.pt:2
@@ -260,6 +236,30 @@ msgstr ""
 msgid "Forbidden"
 msgstr ""
 
+#: ./kotti/templates/default-view-selector.pt:3
+msgid "Set default view"
+msgstr ""
+
+#: ./kotti/templates/editor-bar.pt:21
+msgid "View"
+msgstr ""
+
+#: ./kotti/templates/editor-bar.pt:44
+msgid "Navigate"
+msgstr ""
+
+#: ./kotti/templates/editor-bar.pt:55
+msgid "Preferences"
+msgstr ""
+
+#: ./kotti/templates/editor-bar.pt:60
+msgid "Site Setup"
+msgstr ""
+
+#: ./kotti/templates/editor-bar.pt:71
+msgid "Logout"
+msgstr ""
+
 #: ./kotti/templates/login.pt:15
 msgid "Login"
 msgstr ""
@@ -268,8 +268,8 @@ msgstr ""
 msgid "Username or email"
 msgstr ""
 
-#: ./kotti/templates/login.pt:25 ./kotti/views/login.py:257
-#: ./kotti/views/users.py:212
+#: ./kotti/templates/login.pt:25 ./kotti/views/users.py:212
+#: ./kotti/views/login.py:257
 msgid "Password"
 msgstr ""
 
@@ -300,16 +300,66 @@ msgstr ""
 msgid "Not registered yet?"
 msgstr ""
 
-#: ./kotti/templates/login.pt:82
+#: ./kotti/templates/login.pt:83
 msgid "Register for an account on this site."
 msgstr ""
 
-#: ./kotti/templates/workflow-dropdown.pt:14
+#: ./kotti/templates/workflow-dropdown.pt:15
 msgid "Make ${state}"
+msgstr ""
+
+#: ./kotti/templates/deform/tag_it.pt:1 ./kotti/views/edit/content.py:44
+msgid "Tags"
 msgstr ""
 
 #: ./kotti/templates/edit/breadcrumbs.pt:8
 msgid "You are here:"
+msgstr ""
+
+#: ./kotti/templates/edit/delete.pt:9
+#: ./kotti/templates/site-setup/delete-user.pt:9
+msgid "Delete ${title}"
+msgstr ""
+
+#: ./kotti/templates/edit/delete.pt:13
+msgid "Are you sure you want to delete ${title}?"
+msgstr ""
+
+#: ./kotti/templates/edit/delete.pt:19
+#: ./kotti/templates/edit/change-state.pt:74
+#: ./kotti/templates/edit/delete-nodes.pt:45
+#: ./kotti/templates/edit/rename-nodes.pt:44 ./kotti/views/form.py:78
+#: ./kotti/views/users.py:316 ./kotti/views/users.py:350
+#: ./kotti/views/users.py:442
+msgid "Cancel"
+msgstr ""
+
+#: ./kotti/templates/edit/nav-tree-view.pt:8
+msgid "Navigate Site"
+msgstr ""
+
+#: ./kotti/templates/edit/rename.pt:8
+msgid "Rename ${title}"
+msgstr ""
+
+#: ./kotti/templates/edit/rename.pt:11
+#: ./kotti/templates/edit/rename-nodes.pt:13
+msgid ""
+"Each content item has a name, which is used to create the url, and a title. "
+"Read the user manual about proper formatting of name and title if needed. You"
+" can change both below."
+msgstr ""
+
+#: ./kotti/templates/edit/rename.pt:19
+#: ./kotti/templates/edit/rename-nodes.pt:26
+#: ./kotti/templates/edit/rename-nodes.pt:28
+msgid "New name"
+msgstr ""
+
+#: ./kotti/templates/edit/rename.pt:25
+#: ./kotti/templates/edit/rename-nodes.pt:34
+#: ./kotti/templates/edit/rename-nodes.pt:36
+msgid "New title"
 msgstr ""
 
 #: ./kotti/templates/edit/change-state.pt:8
@@ -331,7 +381,7 @@ msgstr ""
 #: ./kotti/templates/edit/change-state.pt:19
 #: ./kotti/templates/edit/contents.pt:40
 #: ./kotti/templates/edit/delete-nodes.pt:23 ./kotti/templates/edit/share.pt:47
-#: ./kotti/templates/edit/upload.pt:19 ./kotti/templates/edit/upload.pt:112
+#: ./kotti/templates/edit/upload.pt:18 ./kotti/templates/edit/upload.pt:110
 #: ./kotti/templates/site-setup/users.pt:67 ./kotti/templates/view/folder.pt:21
 msgid "Type"
 msgstr ""
@@ -356,8 +406,14 @@ msgstr ""
 msgid "Modification Date"
 msgstr ""
 
+#: ./kotti/templates/edit/change-state.pt:28
+#: ./kotti/templates/edit/contents.pt:50
+#: ./kotti/templates/edit/delete-nodes.pt:32
+msgid "Select item"
+msgstr ""
+
 #: ./kotti/templates/edit/change-state.pt:40
-#: ./kotti/templates/edit/change-state.pt:45
+#: ./kotti/templates/edit/change-state.pt:48
 msgid "Include children"
 msgstr ""
 
@@ -367,34 +423,29 @@ msgid ""
 "selected documents and their subdocuments."
 msgstr ""
 
-#: ./kotti/templates/edit/change-state.pt:50
+#: ./kotti/templates/edit/change-state.pt:54
 msgid "Change state to"
 msgstr ""
 
-#: ./kotti/templates/edit/change-state.pt:51
+#: ./kotti/templates/edit/change-state.pt:55
 msgid "Select the new state where all chosen items should be set."
 msgstr ""
 
-#: ./kotti/templates/edit/change-state.pt:55
+#: ./kotti/templates/edit/change-state.pt:60
 msgid "No change"
 msgstr ""
 
-#: ./kotti/templates/edit/change-state.pt:64 ./kotti/templates/edit/share.pt:83
+#: ./kotti/templates/edit/change-state.pt:72 ./kotti/templates/edit/share.pt:83
 #: ./kotti/templates/site-setup/users.pt:105
 msgid "Apply changes"
 msgstr ""
 
-#: ./kotti/templates/edit/change-state.pt:66
-#: ./kotti/templates/edit/delete-nodes.pt:45
-#: ./kotti/templates/edit/delete.pt:19
-#: ./kotti/templates/edit/rename-nodes.pt:42 ./kotti/views/form.py:78
-#: ./kotti/views/users.py:316 ./kotti/views/users.py:350
-#: ./kotti/views/users.py:442
-msgid "Cancel"
-msgstr ""
-
 #: ./kotti/templates/edit/contents.pt:30
 msgid "No content items are contained here."
+msgstr ""
+
+#: ./kotti/templates/edit/contents.pt:38
+msgid "Select / deselect all"
 msgstr ""
 
 #: ./kotti/templates/edit/contents.pt:42
@@ -411,41 +462,6 @@ msgstr ""
 
 #: ./kotti/templates/edit/delete-nodes.pt:14
 msgid "Are you sure you want to delete the following items?"
-msgstr ""
-
-#: ./kotti/templates/edit/delete.pt:9
-#: ./kotti/templates/site-setup/delete-user.pt:9
-msgid "Delete ${title}"
-msgstr ""
-
-#: ./kotti/templates/edit/delete.pt:13
-msgid "Are you sure you want to delete ${title}?"
-msgstr ""
-
-#: ./kotti/templates/edit/nav-tree-view.pt:8
-msgid "Navigate Site"
-msgstr ""
-
-#: ./kotti/templates/edit/rename-nodes.pt:13
-#: ./kotti/templates/edit/rename.pt:11
-msgid ""
-"Each content item has a name, which is used to create the url, and a title. "
-"Read the user manual about proper formatting of name and title if needed. You"
-" can change both below."
-msgstr ""
-
-#: ./kotti/templates/edit/rename-nodes.pt:26
-#: ./kotti/templates/edit/rename.pt:19
-msgid "New name"
-msgstr ""
-
-#: ./kotti/templates/edit/rename-nodes.pt:33
-#: ./kotti/templates/edit/rename.pt:25
-msgid "New title"
-msgstr ""
-
-#: ./kotti/templates/edit/rename.pt:8
-msgid "Rename ${title}"
 msgstr ""
 
 #: ./kotti/templates/edit/share.pt:8
@@ -486,35 +502,39 @@ msgstr ""
 msgid "Gravatar"
 msgstr ""
 
+#: ./kotti/templates/edit/share.pt:68 ./kotti/templates/site-setup/users.pt:89
+msgid "Assign role"
+msgstr ""
+
 #: ./kotti/templates/edit/upload.pt:10
 msgid "Upload content from local file(s)"
 msgstr ""
 
-#: ./kotti/templates/edit/upload.pt:18 ./kotti/templates/edit/upload.pt:111
+#: ./kotti/templates/edit/upload.pt:17 ./kotti/templates/edit/upload.pt:109
 msgid "Filename"
 msgstr ""
 
-#: ./kotti/templates/edit/upload.pt:20 ./kotti/templates/edit/upload.pt:113
+#: ./kotti/templates/edit/upload.pt:19 ./kotti/templates/edit/upload.pt:111
 msgid "Size"
 msgstr ""
 
-#: ./kotti/templates/edit/upload.pt:21
+#: ./kotti/templates/edit/upload.pt:20
 msgid "Status"
 msgstr ""
 
-#: ./kotti/templates/edit/upload.pt:22
+#: ./kotti/templates/edit/upload.pt:21
 msgid "Progress"
 msgstr ""
 
-#: ./kotti/templates/edit/upload.pt:88
+#: ./kotti/templates/edit/upload.pt:86
 msgid "Select file(s) to upload..."
 msgstr ""
 
-#: ./kotti/templates/edit/upload.pt:96
+#: ./kotti/templates/edit/upload.pt:94
 msgid "Upload ${number} files."
 msgstr ""
 
-#: ./kotti/templates/edit/upload.pt:101
+#: ./kotti/templates/edit/upload.pt:99
 msgid "Dismiss all errors"
 msgstr ""
 
@@ -567,6 +587,10 @@ msgstr ""
 msgid "Add new group"
 msgstr ""
 
+#: ./kotti/templates/view/tags.pt:7
+msgid "Tagged with:"
+msgstr ""
+
 #: ./kotti/templates/view/search-results.pt:9
 msgid "Search Results"
 msgstr ""
@@ -575,8 +599,12 @@ msgstr ""
 msgid "Search..."
 msgstr ""
 
-#: ./kotti/templates/view/tags.pt:7
-msgid "Tagged with:"
+#: ./kotti/templates/http-errors/notfound.pt:6
+msgid "Not Found"
+msgstr ""
+
+#: ./kotti/templates/http-errors/notfound.pt:7
+msgid "The resource could not be found"
 msgstr ""
 
 #: ./kotti/tests/testing_view.pt:11
@@ -615,80 +643,12 @@ msgstr ""
 msgid "Add ${type}."
 msgstr ""
 
-#: ./kotti/views/login.py:282
-msgid "You have reset your password."
-msgstr ""
-
-#: ./kotti/views/login.py:154
-#, python-format
-msgid "Welcome, ${user}!"
-msgstr ""
-
-#: ./kotti/views/login.py:179
-msgid ""
-"You should be receiving an email with a link to reset your password. Doing so"
-" will activate your account."
-msgstr ""
-
-#: ./kotti/views/login.py:244
-msgid "You have been logged out."
-msgstr ""
-
-#: ./kotti/views/login.py:65 ./kotti/views/users.py:270
-msgid "Full name"
-msgstr ""
-
-#: ./kotti/views/login.py:68
-msgid "Username"
-msgstr ""
-
-#: ./kotti/views/login.py:73 ./kotti/views/login.py:269
-#: ./kotti/views/users.py:199
-msgid "Email"
-msgstr ""
-
-#: ./kotti/views/login.py:108
-msgid ""
-"Congratulations! You are successfully registered. You should be receiving an "
-"email with a link to set your password. Doing so will activate your account."
-msgstr ""
-
-#: ./kotti/views/login.py:123
-#, python-format
-msgid "Register - ${title}"
-msgstr ""
-
-#: ./kotti/views/login.py:212
-msgid "Login failed."
-msgstr ""
-
-#: ./kotti/views/login.py:330
-#, python-format
-msgid "Reset your password - ${title}."
-msgstr ""
-
-#: ./kotti/views/login.py:222
-msgid "That username or email is not known by this system."
-msgstr ""
-
-#: ./kotti/views/login.py:82
-msgid "Register"
-msgstr ""
-
-#: ./kotti/views/login.py:89
-msgid "There was an error."
-msgstr ""
-
-#: ./kotti/views/login.py:295
-msgid "Set password"
-msgstr ""
-
-#: ./kotti/views/login.py:323
-msgid "Your password reset token may have expired."
-msgstr ""
-
 #: ./kotti/views/site_setup.py:6 ./kotti/views/users.py:378
 msgid "User Management"
+msgstr ""
+
+#: ./kotti/views/users.py:270 ./kotti/views/login.py:65
+msgid "Full name"
 msgstr ""
 
 #: ./kotti/views/users.py:267
@@ -717,6 +677,11 @@ msgstr ""
 #: ./kotti/views/users.py:181
 #, python-format
 msgid "No such group: ${group}"
+msgstr ""
+
+#: ./kotti/views/users.py:199 ./kotti/views/login.py:73
+#: ./kotti/views/login.py:269
+msgid "Email"
 msgstr ""
 
 #: ./kotti/views/users.py:219
@@ -783,6 +748,93 @@ msgstr ""
 #: ./kotti/views/users.py:551
 #, python-format
 msgid "Delete ${principal_type} ${title}"
+msgstr ""
+
+#: ./kotti/views/login.py:282
+msgid "You have reset your password."
+msgstr ""
+
+#: ./kotti/views/login.py:154
+#, python-format
+msgid "Welcome, ${user}!"
+msgstr ""
+
+#: ./kotti/views/login.py:179
+msgid ""
+"You should be receiving an email with a link to reset your password. Doing so"
+" will activate your account."
+msgstr ""
+
+#: ./kotti/views/login.py:244
+msgid "You have been logged out."
+msgstr ""
+
+#: ./kotti/views/login.py:68
+msgid "Username"
+msgstr ""
+
+#: ./kotti/views/login.py:108
+msgid ""
+"Congratulations! You are successfully registered. You should be receiving an "
+"email with a link to set your password. Doing so will activate your account."
+msgstr ""
+
+#: ./kotti/views/login.py:123
+#, python-format
+msgid "Register - ${title}"
+msgstr ""
+
+#: ./kotti/views/login.py:212
+msgid "Login failed."
+msgstr ""
+
+#: ./kotti/views/login.py:330
+#, python-format
+msgid "Reset your password - ${title}."
+msgstr ""
+
+#: ./kotti/views/login.py:222
+msgid "That username or email is not known by this system."
+msgstr ""
+
+#: ./kotti/views/login.py:82
+msgid "Register"
+msgstr ""
+
+#: ./kotti/views/login.py:89
+msgid "There was an error."
+msgstr ""
+
+#: ./kotti/views/login.py:295
+msgid "Set password"
+msgstr ""
+
+#: ./kotti/views/login.py:323
+msgid "Your password reset token may have expired."
+msgstr ""
+
+#: ./kotti/views/edit/content.py:38
+msgid "Description"
+msgstr ""
+
+#: ./kotti/views/edit/content.py:53
+msgid "Body"
+msgstr ""
+
+#: ./kotti/views/edit/default_views.py:100
+msgid "Default view has been reset to default."
+msgstr ""
+
+#: ./kotti/views/edit/default_views.py:79
+msgid "Default view"
+msgstr ""
+
+#: ./kotti/views/edit/default_views.py:107
+msgid "Default view has been set."
+msgstr ""
+
+#: ./kotti/views/edit/default_views.py:112
+msgid "Default view could not be set."
 msgstr ""
 
 #: ./kotti/views/edit/actions.py:106
@@ -858,32 +910,4 @@ msgstr ""
 
 #: ./kotti/views/edit/actions.py:464
 msgid "Change State"
-msgstr ""
-
-#: ./kotti/views/edit/content.py:38
-msgid "Description"
-msgstr ""
-
-#: ./kotti/views/edit/content.py:44
-msgid "Tags"
-msgstr ""
-
-#: ./kotti/views/edit/content.py:53
-msgid "Body"
-msgstr ""
-
-#: ./kotti/views/edit/default_views.py:100
-msgid "Default view has been reset to default."
-msgstr ""
-
-#: ./kotti/views/edit/default_views.py:79
-msgid "Default view"
-msgstr ""
-
-#: ./kotti/views/edit/default_views.py:107
-msgid "Default view has been set."
-msgstr ""
-
-#: ./kotti/views/edit/default_views.py:112
-msgid "Default view could not be set."
 msgstr ""

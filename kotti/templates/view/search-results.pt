@@ -9,16 +9,16 @@
     <h1 i18n:translate="">Search Results</h1>
 
     <dl id="search-results">
-      <tal:repeat tal:repeat="result results">
+      <tal:results tal:repeat="result results">
         <dt class="search-result">
           <a href="${request.application_url}${result.path}">${result.title}</a>
         </dt>
         <dd>
           <p tal:content="result.description"></p>
         </dd>
-      </tal:repeat>
+      </tal:results>
     </dl>
-    
+
     <p tal:condition="not:results">No results were found.</p>
 
   </div>
