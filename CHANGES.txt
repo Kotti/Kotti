@@ -1,10 +1,18 @@
 Change History
 ==============
 
-1.2.2 - unreleased
+1.2.3 - unreleased
+------------------
+
+- No changes yet.
+
+1.2.2 - 2015-10-28
 ------------------
 
 - Add simple, default ``not found view``.
+- In ``workflow-dropdown`` replace hard-coded permission check with individual
+  permission checks for each existing transition.
+- Upgrade requirements.
 
 1.2.1 - 2015-10-07
 ------------------
