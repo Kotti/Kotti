@@ -87,8 +87,14 @@ def search_principals(request, context=None, ignore=None, extra=()):
             entries.append((p, list_groups_ext(principal_name, context)))
             ignore.add(principal_name)
 
-    if 'search' in request.POST:
-        query = u'*{0}*'.format(request.params['query'])
+    postdata = request.POST
+    if request.method == 'POST' and request.is_xhr:
+        postdata = request.json
+    if 'search' in postdata:
+        if request.is_xhr:
+            query = u'*{0}*'.format(postdata['query'])
+        else:
+            query = u'*{0}*'.format(request.params['query'])
         found = False
         for p in principals.search(name=query, title=query, email=query):
             found = True

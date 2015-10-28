@@ -1,0 +1,9 @@
+<!DOCTYPE html>
+<html i18n:domain="Kotti"
+      metal:use-macro="api.macro('kotti:templates/view/master.pt')">
+
+    <div metal:fill-slot="content" class="notfound">
+      <h1 i18n:translate="">Not Found</h1>
+      <p i18n:translate="">The resource could not be found</p>
+    </div>
+</html>

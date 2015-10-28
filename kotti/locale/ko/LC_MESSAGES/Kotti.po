@@ -1,22 +1,8 @@
-# Translations template for Kotti.
-# Copyright (C) 2014 ORGANIZATION
-# This file is distributed under the same license as the Kotti project.
-# mete0r <mete0r@sarangbang.or.kr>, 2014.
-# #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: Kotti 0.10b2dev\n"
-"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2015-10-07 21:40+0200\n"
-"PO-Revision-Date: 2014-10-19 08:22+0900\n"
-"Last-Translator: mete0r <mete0r@sarangbang.or.kr>\n"
-"Language-Team: Korean\n"
-"Language: ko\n"
+"POT-Creation-Date: 2015-10-09 21:02+0200\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 0.9.6\n"
-"Plural-Forms: nplurals=1; plural=0;\n"
 
 #: kotti/populate.py:64
 msgid "Welcome to Kotti"
@@ -198,61 +184,61 @@ msgstr ""
 "  article.\n"
 "</small></p>\n"
 
-#: kotti/resources.py:509 kotti/views/edit/actions.py:456
+#: kotti/resources.py:508 kotti/views/edit/actions.py:456
 msgid "Copy"
 msgstr "복사"
 
-#: kotti/resources.py:510 kotti/views/edit/actions.py:457
+#: kotti/resources.py:509 kotti/views/edit/actions.py:457
 msgid "Cut"
 msgstr "잘라내기"
 
-#: kotti/resources.py:511 kotti/views/edit/actions.py:453
+#: kotti/resources.py:510 kotti/views/edit/actions.py:453
 msgid "Paste"
 msgstr "붙여넣기"
 
-#: kotti/resources.py:512 kotti/templates/edit/rename-nodes.pt:8
-#: kotti/templates/edit/rename-nodes.pt:40 kotti/templates/edit/rename.pt:31
+#: kotti/resources.py:511 kotti/templates/edit/rename-nodes.pt:8
+#: kotti/templates/edit/rename-nodes.pt:42 kotti/templates/edit/rename.pt:31
 #: kotti/views/edit/actions.py:458
 msgid "Rename"
 msgstr "이름 바꾸기"
 
-#: kotti/resources.py:513 kotti/templates/edit/delete-nodes.pt:9
+#: kotti/resources.py:512 kotti/templates/edit/delete-nodes.pt:9
 #: kotti/templates/edit/delete-nodes.pt:50 kotti/templates/edit/delete.pt:24
 #: kotti/templates/site-setup/delete-user.pt:24 kotti/views/users.py:443
 #: kotti/views/edit/actions.py:460
 msgid "Delete"
 msgstr "삭제"
 
-#: kotti/resources.py:640 kotti/views/edit/content.py:85
+#: kotti/resources.py:637 kotti/views/edit/content.py:85
 msgid "Document"
 msgstr "문서"
 
-#: kotti/resources.py:731 kotti/views/edit/content.py:113
+#: kotti/resources.py:726 kotti/views/edit/content.py:113
 #: kotti/views/edit/content.py:66
 msgid "File"
 msgstr "파일"
 
-#: kotti/resources.py:778 kotti/views/edit/content.py:141
+#: kotti/resources.py:772 kotti/views/edit/content.py:141
 msgid "Image"
 msgstr "화상"
 
-#: kotti/resources.py:530
+#: kotti/resources.py:529
 msgid "Folder view"
 msgstr "폴더로 보임"
 
-#: kotti/resources.py:524 kotti/templates/view/folder.pt:15
+#: kotti/resources.py:523 kotti/templates/view/folder.pt:15
 msgid "Contents"
 msgstr "컨텐츠 항목"
 
-#: kotti/resources.py:525 kotti/templates/edit/nav-tree.pt:10
+#: kotti/resources.py:524 kotti/templates/edit/nav-tree.pt:10
 msgid "Edit"
 msgstr "편집"
 
-#: kotti/resources.py:526
+#: kotti/resources.py:525
 msgid "Share"
 msgstr "공유"
 
-#: kotti/resources.py:527 kotti/templates/actions-dropdown.pt:3
+#: kotti/resources.py:526 kotti/templates/actions-dropdown.pt:3
 msgid "Actions"
 msgstr "동작"
 
@@ -371,13 +357,17 @@ msgstr "사용자 이름이나 전자메일을 입력한 뒤 아래의 ${reset_p
 msgid "Not registered yet?"
 msgstr "아직 등록하지 않으셨습니까?"
 
-#: kotti/templates/login.pt:82
+#: kotti/templates/login.pt:83
 msgid "Register for an account on this site."
 msgstr "이 사이트에 계정을 등록하십시오."
 
-#: kotti/templates/workflow-dropdown.pt:14
+#: kotti/templates/workflow-dropdown.pt:15
 msgid "Make ${state}"
 msgstr "\"${state}\"로(으로) 바꿈"
+
+#: kotti/templates/deform/tag_it.pt:1 kotti/views/edit/content.py:44
+msgid "Tags"
+msgstr "태그"
 
 #: kotti/templates/edit/breadcrumbs.pt:8
 msgid "You are here:"
@@ -399,7 +389,7 @@ msgstr "제목"
 
 #: kotti/templates/edit/change-state.pt:19 kotti/templates/edit/contents.pt:40
 #: kotti/templates/edit/delete-nodes.pt:23 kotti/templates/edit/share.pt:47
-#: kotti/templates/edit/upload.pt:19 kotti/templates/edit/upload.pt:112
+#: kotti/templates/edit/upload.pt:18 kotti/templates/edit/upload.pt:110
 #: kotti/templates/site-setup/users.pt:67 kotti/templates/view/folder.pt:21
 msgid "Type"
 msgstr "유형"
@@ -418,6 +408,11 @@ msgstr "만든 날"
 #: kotti/templates/edit/delete-nodes.pt:26 kotti/templates/view/folder.pt:23
 msgid "Modification Date"
 msgstr "바꾼 날"
+
+#: kotti/templates/edit/change-state.pt:28 kotti/templates/edit/contents.pt:50
+#: kotti/templates/edit/delete-nodes.pt:32
+msgid "Select item"
+msgstr ""
 
 #: kotti/templates/edit/change-state.pt:40
 #: kotti/templates/edit/change-state.pt:45
@@ -447,7 +442,7 @@ msgstr "바꾸기 적용"
 
 #: kotti/templates/edit/change-state.pt:66
 #: kotti/templates/edit/delete-nodes.pt:45 kotti/templates/edit/delete.pt:19
-#: kotti/templates/edit/rename-nodes.pt:42 kotti/views/form.py:78
+#: kotti/templates/edit/rename-nodes.pt:44 kotti/views/form.py:78
 #: kotti/views/users.py:316 kotti/views/users.py:350 kotti/views/users.py:442
 msgid "Cancel"
 msgstr "취소"
@@ -455,6 +450,10 @@ msgstr "취소"
 #: kotti/templates/edit/contents.pt:30
 msgid "No content items are contained here."
 msgstr "여기엔 하위 항목이 없습니다."
+
+#: kotti/templates/edit/contents.pt:38
+msgid "Select / deselect all"
+msgstr ""
 
 #: kotti/templates/edit/contents.pt:42
 msgid "Visibility"
@@ -489,11 +488,13 @@ msgstr "사이트 둘러보기"
 msgid "Each content item has a name, which is used to create the url, and a title. Read the user manual about proper formatting of name and title if needed. You can change both below."
 msgstr "각 컨텐트 항목은 이름을 가지며, 이는 URL과 제목을 만드는데 사용됩니다. 이름과 제목의 올바른 형식에 대해 알려면 사용자 매뉴얼을 읽으십시오. 둘 다 아래에서 바꿀 수 있습니다."
 
-#: kotti/templates/edit/rename-nodes.pt:26 kotti/templates/edit/rename.pt:19
+#: kotti/templates/edit/rename-nodes.pt:26
+#: kotti/templates/edit/rename-nodes.pt:28 kotti/templates/edit/rename.pt:19
 msgid "New name"
 msgstr "새 이름"
 
-#: kotti/templates/edit/rename-nodes.pt:33 kotti/templates/edit/rename.pt:25
+#: kotti/templates/edit/rename-nodes.pt:34
+#: kotti/templates/edit/rename-nodes.pt:36 kotti/templates/edit/rename.pt:25
 msgid "New title"
 msgstr "새 제목"
 
@@ -538,36 +539,49 @@ msgstr "그룹"
 msgid "Gravatar"
 msgstr ""
 
+#: kotti/templates/edit/share.pt:68 kotti/templates/site-setup/users.pt:89
+#, fuzzy
+msgid "Assign role"
+msgstr "컨텐츠별 역할 부여"
+
 #: kotti/templates/edit/upload.pt:10
 msgid "Upload content from local file(s)"
 msgstr "내 컴퓨터에서 컨텐트 올리기"
 
-#: kotti/templates/edit/upload.pt:18 kotti/templates/edit/upload.pt:111
+#: kotti/templates/edit/upload.pt:17 kotti/templates/edit/upload.pt:109
 msgid "Filename"
 msgstr "파일 이름"
 
-#: kotti/templates/edit/upload.pt:20 kotti/templates/edit/upload.pt:113
+#: kotti/templates/edit/upload.pt:19 kotti/templates/edit/upload.pt:111
 msgid "Size"
 msgstr "크기"
 
-#: kotti/templates/edit/upload.pt:21
+#: kotti/templates/edit/upload.pt:20
 msgid "Status"
 msgstr "상태"
 
-#: kotti/templates/edit/upload.pt:22
+#: kotti/templates/edit/upload.pt:21
 msgid "Progress"
 msgstr "진행률"
 
-#: kotti/templates/edit/upload.pt:88
+#: kotti/templates/edit/upload.pt:86
 msgid "Select file(s) to upload..."
 msgstr ""
 
-#: kotti/templates/edit/upload.pt:96
+#: kotti/templates/edit/upload.pt:94
 msgid "Upload ${number} files."
 msgstr ""
 
-#: kotti/templates/edit/upload.pt:101
+#: kotti/templates/edit/upload.pt:99
 msgid "Dismiss all errors"
+msgstr ""
+
+#: kotti/templates/http-errors/notfound.pt:6
+msgid "Not Found"
+msgstr ""
+
+#: kotti/templates/http-errors/notfound.pt:7
+msgid "The resource could not be found"
 msgstr ""
 
 #: kotti/templates/site-setup/delete-user.pt:15
@@ -911,10 +925,6 @@ msgstr "작업 상태 바꾸기"
 msgid "Description"
 msgstr "설명"
 
-#: kotti/views/edit/content.py:44
-msgid "Tags"
-msgstr "태그"
-
 #: kotti/views/edit/content.py:53
 msgid "Body"
 msgstr "본문"
@@ -934,6 +944,165 @@ msgstr "보이는 방식이 설정되었습니다."
 #: kotti/views/edit/default_views.py:112
 msgid "Default view could not be set."
 msgstr "보이는 방식을 설정할 수 없었습니다."
+
+#, fuzzy
+#~ msgid ""
+#~ "\n"
+#~ "<h2>Log in</h2>\n"
+#~ "<p>\n"
+#~ "    You can <a class=\"btn btn-success\" href=\"login\">log in</a> to your site\n"
+#~ "    and start changing its contents.  If you haven't chosen a password for\n"
+#~ "    your admin account yet, it'll likely be <em>qwerty</em>.\n"
+#~ "</p>\n"
+#~ "<p>\n"
+#~ "    Once you're logged in, you'll see the grey editor bar below the top\n"
+#~ "    navigation bar.  It will allow you to switch between editing and viewing the\n"
+#~ "    current page as it will appear to your visitors.\n"
+#~ "</p>\n"
+#~ "<div class=\"row\">\n"
+#~ "    <div class=\"col-md-4\">\n"
+#~ "        <h2>Configure</h2>\n"
+#~ "        <p>\n"
+#~ "            Find out how to configure your Kotti's title and many other settings using a\n"
+#~ "            simple text file in your file system.\n"
+#~ "        </p>\n"
+#~ "        <p>\n"
+#~ "            <a class=\"btn btn-info\"\n"
+#~ "               href=\"http://kotti.readthedocs.org/en/latest/developing/basic/configuration.html\">\n"
+#~ "               Configuration manual\n"
+#~ "            </a>\n"
+#~ "        </p>\n"
+#~ "    </div>\n"
+#~ "    <div class=\"col-md-4\">\n"
+#~ "        <h2>Add-ons</h2>\n"
+#~ "        <p>\n"
+#~ "            A number of add-ons allow you to extend the functionality of your Kotti site.\n"
+#~ "        </p>\n"
+#~ "        <p>\n"
+#~ "            <a class=\"btn btn-info\"\n"
+#~ "               href=\"http://pypi.python.org/pypi?%3Aaction=search&amp;term=kotti\">\n"
+#~ "                Kotti add-ons\n"
+#~ "            </a>\n"
+#~ "        </p>\n"
+#~ "    </div>\n"
+#~ "    <div class=\"col-md-4\">\n"
+#~ "        <h2>Documentation</h2>\n"
+#~ "        <p>\n"
+#~ "            Wonder what more you can do with Kotti?  What license it has?  Read the\n"
+#~ "            manual for more information.\n"
+#~ "        </p>\n"
+#~ "        <p>\n"
+#~ "            <a class=\"btn btn-info\"\n"
+#~ "               href=\"http://kotti.readthedocs.org/en/latest/\">\n"
+#~ "               Documentation\n"
+#~ "            </a>\n"
+#~ "        </p>\n"
+#~ "    </div>\n"
+#~ "</div>\n"
+#~ msgstr ""
+#~ "\n"
+#~ "<h2>로그인</h2>\n"
+#~ "<p>\n"
+#~ "    <a class=\"btn btn-success\" href=\"login\">로그인</a>하여 컨텐츠를 편집할 수 있습니다.아직 관리자 암호를 바꾸지 않았다면, <em>qwerty</em>일 수 있습니다.\n"
+#~ "</p>\n"
+#~ "<p>\n"
+#~ "    로그인하면, 화면 위 네비게이션 줄 아래 회색 편집 줄이 보입니다. 그것으로 현재 페이지를 편집하는 것과 방문객처럼 보는 것 사이를 전환할 수 있습니다.\n"
+#~ "</p>\n"
+#~ "<div class=\"row\">\n"
+#~ "    <div class=\"col-md-4\">\n"
+#~ "        <h2>설정</h2>\n"
+#~ "        <p>\n"
+#~ "            Kotti의 제목과 여러 다른 설정을 파일시스템 상의 간단한 텍스트 파일로 설정하는 법을 알아보세요.\n"
+#~ "        </p>\n"
+#~ "        <p>\n"
+#~ "            <a class=\"btn btn-info\"\n"
+#~ "               href=\"http://kotti.readthedocs.org/en/latest/developing/configuration.html\">\n"
+#~ "               설정 매뉴얼\n"
+#~ "            </a>\n"
+#~ "        </p>\n"
+#~ "    </div>\n"
+#~ "    <div class=\"col-md-4\">\n"
+#~ "        <h2>애드온</h2>\n"
+#~ "        <p>\n"
+#~ "            몇가지 애드온으로 당신의 Kotti 사이트 기능을 확장할 수 있습니다.\n"
+#~ "        </p>\n"
+#~ "        <p>\n"
+#~ "            <a class=\"btn btn-info\"\n"
+#~ "               href=\"http://pypi.python.org/pypi?%3Aaction=search&amp;term=kotti\">\n"
+#~ "                Kotti 애드온\n"
+#~ "            </a>\n"
+#~ "        </p>\n"
+#~ "    </div>\n"
+#~ "    <div class=\"col-md-4\">\n"
+#~ "        <h2>기술문헌</h2>\n"
+#~ "        <p>\n"
+#~ "            Kotti로 무엇을 더 할 수 있는지 궁금하십니까?  사용권은 무엇이죠?  좀 더 알아보려면 매뉴얼을 읽으십시오.\n"
+#~ "        </p>\n"
+#~ "        <p>\n"
+#~ "            <a class=\"btn btn-info\"\n"
+#~ "               href=\"http://kotti.readthedocs.org/en/latest/\">\n"
+#~ "               기술문헌\n"
+#~ "            </a>\n"
+#~ "        </p>\n"
+#~ "    </div>\n"
+#~ "</div>\n"
+
+#~ msgid ""
+#~ "\n"
+#~ "<p>\n"
+#~ "  <img alt=\"five colorful Extra EA300 airplanes flying in formation\"\n"
+#~ "   src=\"http://upload.wikimedia.org/wikipedia/commons/thumb/5/5d/Northern_Lights_Formation.jpg/640px-Northern_Lights_Formation.jpg\"\n"
+#~ "   width=\"640\" height=\"376\" />\n"
+#~ "</p>\n"
+#~ "\n"
+#~ "<p>\n"
+#~ "   Our worldwide headquarters:\n"
+#~ "</p>\n"
+#~ "\n"
+#~ "<address>\n"
+#~ "  Foo World<br />\n"
+#~ "  123 Nowhere Street, Suite 777<br />\n"
+#~ "  Omak, WA   98841   USA<br />\n"
+#~ "  +1-509-555-0100<br />\n"
+#~ "  widgets@foowrld.example.com\n"
+#~ "</address>\n"
+#~ "\n"
+#~ "<p><small style=\"font-size: smaller\">\n"
+#~ "  <em>Photo credit:</em> \"Northern Lights Formation\" by FlugKerl2.\n"
+#~ "  <a href=\"http://commons.wikimedia.org/wiki/File:Northern_Lights_Formation.jpg\">\n"
+#~ "  Copyright info</a>.\n"
+#~ "  Originally published in the\n"
+#~ "  <a href=\"http://en.wikipedia.org/wiki/Extra_EA-300\"> Extra EA-300</a>\n"
+#~ "  article.\n"
+#~ "</small></p>\n"
+#~ msgstr ""
+#~ "\n"
+#~ "<p>\n"
+#~ "  <img alt=\"five colorful Extra EA300 airplanes flying in formation\"\n"
+#~ "   src=\"http://upload.wikimedia.org/wikipedia/commons/thumb/5/5d/Northern_Lights_Formation.jpg/640px-Northern_Lights_Formation.jpg\"\n"
+#~ "   width=\"640\" height=\"376\" />\n"
+#~ "</p>\n"
+#~ "\n"
+#~ "<p>\n"
+#~ "   본사:\n"
+#~ "</p>\n"
+#~ "\n"
+#~ "<address>\n"
+#~ "  Foo World<br />\n"
+#~ "  123 Nowhere Street, Suite 777<br />\n"
+#~ "  Omak, WA   98841   USA<br />\n"
+#~ "  +1-509-555-0100<br />\n"
+#~ "  widgets@foowrld.example.com\n"
+#~ "</address>\n"
+#~ "\n"
+#~ "<p><small style=\"font-size: smaller\">\n"
+#~ "  <em>사진 크레딧:</em> \"Northern Lights Formation\" by FlugKerl2.\n"
+#~ "  <a href=\"http://commons.wikimedia.org/wiki/File:Northern_Lights_Formation.jpg\">\n"
+#~ "  저작권 정보</a>.\n"
+#~ "  Originally published in the\n"
+#~ "  <a href=\"http://en.wikipedia.org/wiki/Extra_EA-300\"> Extra EA-300</a>\n"
+#~ "  article.\n"
+#~ "</small></p>\n"
 
 #~ msgid "Submit"
 #~ msgstr "제출"

@@ -61,7 +61,8 @@ function UploadController($scope, $http, $log) {
             endpoint: null
         },
         callbacks: {
-            onValidate: function (fileOrBlobData) {
+            //onValidate: function (fileOrBlobData) {
+            onValidate: function () {
                 $log.info("onValidate");
             },
             onSubmit: function (id, name) {
@@ -71,7 +72,8 @@ function UploadController($scope, $http, $log) {
                     $http.get(
                         $scope.endpoints.content_types,
                         {params: {mimetype: file.type}}
-                    ).success(function (data, status, headers, config) {
+                    //).success(function (data, status, headers, config) {
+                    ).success(function (data) {
                         var contentTypes = data.content_types,
                             file = {
                                 id: id,
@@ -98,7 +100,8 @@ function UploadController($scope, $http, $log) {
                     });
                 });
             },
-            onUpload: function (id, name) {
+            //onUpload: function (id, name) {
+            onUpload: function (id) {
                 $log.info("onUpload");
                 $scope.apply(function () {
                     $scope.files[id].status = 'uploading';
@@ -114,13 +117,15 @@ function UploadController($scope, $http, $log) {
                     $scope.files[id].transfered.percent = Math.round(uploadedBytes / totalBytes * 100);
                 });
             },
-            onCancel: function (id, name) {
+            //onCancel: function (id, name) {
+            onCancel: function (id) {
                 $log.info("onCancel");
                 $scope.apply(function () {
                     $scope.files[id].status = 'cancelled';
                 });
             },
-            onError: function (id, name, errorReason) {
+            //onError: function (id, name, errorReason) {
+            onError: function (id) {
                 $log.info("onError");
                 $scope.apply(function () {
                     $scope.files[id].status = 'failed';

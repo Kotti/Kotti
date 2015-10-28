@@ -82,11 +82,11 @@
                 <td>
                   <img src="${api.avatar_url(entry[0])}" alt="Gravatar"
                        i18n:attributes="alt"/>
-                  <a href="./setup-user?name=${entry[0].name}">${entry[0].title}</a>
+                  <a tal:attributes="href request.resource_url(api.root, 'setup-user', query={'name': entry[0].name})">${entry[0].title}</a>
                   <span tal:condition="entry[0].email">&lt;${entry[0].email}&gt;</span>
                 </td>
                 <td tal:repeat="role available_roles">
-                  <input type="checkbox"
+                  <input type="checkbox" title="Assign role" i18n:attributes="title"
                          name="role::${entry[0].name}::${role.name}"
                          checked="${role.name in entry[1][0] and 'checked' or None}"
                          disabled="${role.name in entry[1][1] and 'disabled' or None}"

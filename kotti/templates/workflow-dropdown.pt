@@ -1,9 +1,8 @@
 <tal:block>
 <li class="dropdown"
-    tal:condition="current_state and api.has_permission('state_change')"
+    tal:condition="current_state and transitions"
     i18n:domain="Kotti">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown"
-     tal:condition="transitions">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown">
     <span class="state-${current_state['name']}">
       ${current_state['title']}
       <b class="caret"></b>
@@ -11,14 +10,15 @@
   </a>
   <ul class="dropdown-menu">
     <li tal:repeat="trans transitions">
-      <a href="${api.url(context, '@@workflow-change', query={'new_state': trans['to_state']})}" i18n:translate="">
+      <a tal:attributes="href api.url(context, '@@workflow-change', query={'new_state': trans['to_state']})"
+         i18n:translate="">
         Make <span i18n:name="state">${states[trans['to_state']]['title']}</span>
       </a>
     </li>
   </ul>
 </li>
 
-<li tal:condition="current_state and not api.has_permission('state_change')">
+<li tal:condition="current_state and not transitions">
   <a class="state-${current_state['name']}">${current_state['title']}</a>
 </li>
 </tal:block>
