@@ -35,6 +35,9 @@ def reset_workflow(objs=None, purge_existing=False):
 def initialize_workflow(event):
     wf = get_workflow(event.object)
     if wf is not None:
+        initial_state = wf._state_data[wf.initial_state]
+        if 'callback' not in initial_state:
+            initial_state['callback'] = None
         wf.initialize(event.object)
 
 
