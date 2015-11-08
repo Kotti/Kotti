@@ -4,7 +4,7 @@ Change History
 1.2.3 - unreleased
 ------------------
 
-- No changes yet.
+- Use Kotti logo as favicon.
 
 1.2.2 - 2015-10-28
 ------------------
