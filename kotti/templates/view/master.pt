@@ -12,6 +12,7 @@
     <title metal:define-slot="page-title">${api.page_title | api.site_title}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content="${context.description | ''}" />
+    ${api.render_template('kotti:templates/icons.pt')}
 
     <more tal:omit-tag="" metal:define-slot="head-more"></more>
 

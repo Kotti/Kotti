@@ -4,7 +4,9 @@ Change History
 1.2.3 - unreleased
 ------------------
 
+- Add Kotti logo and icon to static assets.
 - Use Kotti logo as favicon.
+- Move favicon definition to separate template to make it easily overridable.
 
 1.2.2 - 2015-10-28
 ------------------
