@@ -7,6 +7,7 @@ Change History
 - Add Kotti logo and icon to static assets.
 - Use Kotti logo as favicon.
 - Move favicon definition to separate template to make it easily overridable.
+- Fix permission check in ``kotti.views.util.nodes_tree``.
 
 1.2.2 - 2015-10-28
 ------------------
