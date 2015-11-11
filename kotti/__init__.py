@@ -1,5 +1,5 @@
 import pkg_resources
-
+from depot.manager import DepotManager
 from sqlalchemy import engine_from_config
 from sqlalchemy import MetaData
 from sqlalchemy.ext.declarative import declarative_base
@@ -185,7 +185,8 @@ def main(global_config, **settings):
     config = base_configure(global_config, **settings)
     engine = engine_from_config(config.registry.settings, 'sqlalchemy.')
     initialize_sql(engine)
-    return config.make_wsgi_app()
+    app = config.make_wsgi_app()
+    return DepotManager.make_middleware(app, replace_wsgi_filewrapper=True)
 
 
 def base_configure(global_config, **settings):
