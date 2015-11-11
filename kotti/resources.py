@@ -15,8 +15,13 @@ from fnmatch import fnmatch
 from cStringIO import StringIO
 from UserDict import DictMixin
 
+from depot.fields.filters.thumbnails import WithThumbnailFilter
+from depot.fields.specialized.image import UploadedImageWithThumb
 from depot.fields.sqlalchemy import _SQLAMutationTracker
 from depot.fields.sqlalchemy import UploadedFileField
+from depot.fields.upload import UploadedFile
+from sqlalchemy.ext.declarative import declared_attr
+
 from kotti import _resolve_dotted
 from pyramid.decorator import reify
 from pyramid.traversal import resource_path
@@ -655,6 +660,24 @@ class SaveDataMixin(object):
         See http://stackoverflow.com/questions/30433960/how-to-use-declare-last-in-sqlalchemy-1-0  # noqa
     """
 
+    #: The filename is used in the attachment view to give downloads
+    #: the original filename it had when it was uploaded.
+    #: (:class:`sqlalchemy.types.Unicode`)
+    filename = Column(Unicode(100))
+    #: MIME type of the file
+    #: (:class:`sqlalchemy.types.String`)
+    mimetype = Column(String(100))
+    #: Size of the file in bytes
+    #: (:class:`sqlalchemy.types.Integer`)
+    size = Column(Integer())
+
+    #: Filedepot mapped blob
+    #: (:class:`depot.fileds.sqlalchemy.UploadedFileField`)
+    @declared_attr
+    def data(cls):
+
+        return cls.__table__.c.get('data', Column(cls._data_field))
+
     @classmethod
     def __declare_last__(cls):
         """ Unconfigure the event set in _SQLAMutationTracker,
@@ -698,48 +721,6 @@ class SaveDataMixin(object):
 
         return newvalue
 
-
-@implementer(IFile)
-class File(Content, SaveDataMixin):
-    """File adds some attributes to :class:`~kotti.resources.Content` that are
-       useful for storing binary data.
-    """
-    #: Primary key column in the DB
-    #: (:class:`sqlalchemy.types.Integer`)
-    id = Column(Integer(), ForeignKey('contents.id'), primary_key=True)
-    #: Filedepot mapped blob
-    #: (:class:`depot.fileds.sqlalchemy.UploadedFileField`)
-    data = Column(UploadedFileField)
-    #: The filename is used in the attachment view to give downloads
-    #: the original filename it had when it was uploaded.
-    #: (:class:`sqlalchemy.types.Unicode`)
-    filename = Column(Unicode(100))
-    #: MIME type of the file
-    #: (:class:`sqlalchemy.types.String`)
-    mimetype = Column(String(100))
-    #: Size of the file in bytes
-    #: (:class:`sqlalchemy.types.Integer`)
-    size = Column(Integer())
-
-    type_info = Content.type_info.copy(
-        name=u'File',
-        title=_(u'File'),
-        add_view=u'add_file',
-        addable_to=[u'Document'],
-        selectable_default_views=[],
-        uploadable_mimetypes=['*', ],
-        )
-
-    def __init__(self, data=None, filename=None, mimetype=None, size=None,
-                 **kwargs):
-
-        super(File, self).__init__(**kwargs)
-
-        self.filename = filename
-        self.mimetype = mimetype
-        self.size = size
-        self.data = data
-
     @classmethod
     def from_field_storage(cls, fs):
         """ Create and return an instance of this class from a file upload
@@ -758,19 +739,59 @@ class File(Content, SaveDataMixin):
 
         return cls(data=fs)
 
+    def __init__(self, data=None, filename=None, mimetype=None, size=None,
+                 **kwargs):
+
+        super(SaveDataMixin, self).__init__(**kwargs)
+
+        self.filename = filename
+        self.mimetype = mimetype
+        self.size = size
+        self.data = data
+
+
+@implementer(IFile)
+class File(Content, SaveDataMixin):
+    """File adds some attributes to :class:`~kotti.resources.Content` that are
+       useful for storing binary data.
+    """
+
+    #: Primary key column in the DB
+    #: (:class:`sqlalchemy.types.Integer`)
+    id = Column(Integer(), ForeignKey('contents.id'), primary_key=True)
+
+    _data_field = UploadedFileField()
+
+    type_info = Content.type_info.copy(
+        name=u'File',
+        title=_(u'File'),
+        add_view=u'add_file',
+        addable_to=[u'Document'],
+        selectable_default_views=[],
+        uploadable_mimetypes=['*', ],
+        )
+
 
 @implementer(IImage)
-class Image(File):
+class Image(Content, SaveDataMixin):
     """Image doesn't add anything to :class:`~kotti.resources.File`, but images
        have different views, that e.g. support on the fly scaling.
     """
 
-    id = Column(Integer(), ForeignKey('files.id'), primary_key=True)
+    _data_field = UploadedFileField(
+        filters=(
+            WithThumbnailFilter(size=(128, 128), format='PNG'),
+            WithThumbnailFilter(size=(256, 256), format='PNG')),
+        upload_type=UploadedImageWithThumb)
 
-    type_info = File.type_info.copy(
+    id = Column(Integer(), ForeignKey('contents.id'), primary_key=True)
+
+    type_info = Document.type_info.copy(
         name=u'Image',
         title=_(u'Image'),
         add_view=u'add_image',
+        addable_to=[u'Document'],
+        selectable_default_views=[],
         uploadable_mimetypes=['image/*', ],
         )
 
