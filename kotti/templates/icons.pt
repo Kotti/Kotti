@@ -1,0 +1,2 @@
+<link rel="shortcut icon"
+      href="${request.static_url('kotti:static/favicon.ico')}">
