@@ -1,4 +1,4 @@
-Kotti==1.2.2
+Kotti==1.2.3
 Babel==2.1.1
 Beaker==1.7.0
 Chameleon==2.24

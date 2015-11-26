@@ -422,7 +422,7 @@ def nodes_tree(request, context=None, permission='view'):
     item_to_children = defaultdict(lambda: [])
     for node in DBSession.query(Content).with_polymorphic(Content):
         item_mapping[node.id] = node
-        if has_permission('view', node, request):
+        if has_permission(permission, node, request):
             item_to_children[node.parent_id].append(node)
 
     for children in item_to_children.values():

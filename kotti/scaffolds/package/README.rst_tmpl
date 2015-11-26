@@ -3,14 +3,27 @@
 
 This is an extension to Kotti that allows to add foo to your site.
 
-|build status|_
+|pypi|_
+|downloads_month|_
+|license|_
+|build_status_stable|_
+
+.. |pypi| image:: https://img.shields.io/pypi/v/{{package}}.svg?style=flat-square
+.. _pypi: https://pypi.python.org/pypi/{{package}}/
+
+.. |downloads_month| image:: https://img.shields.io/pypi/dm/{{package}}.svg?style=flat-square
+.. _downloads_month: https://pypi.python.org/pypi/{{package}}/
+
+.. |license| image:: https://img.shields.io/pypi/l/{{package}}.svg?style=flat-square
+.. _license: http://www.repoze.org/LICENSE.txt
+
+.. |build_status_stable| image:: https://img.shields.io/travis/{{gh_user}}/{{package}}/production.svg?style=flat-square
+.. _build_status_stable: http://travis-ci.org/{{gh_user}}/{{package}}
 
 `Find out more about Kotti`_
 
 Development happens at https://github.com/{{gh_user}}/{{package}}
 
-.. |build status| image:: https://secure.travis-ci.org/{{gh_user}}/{{package}}.png?branch=master
-.. _build status: http://travis-ci.org/{{gh_user}}/{{package}}
 .. _Find out more about Kotti: http://pypi.python.org/pypi/Kotti
 
 Setup
@@ -35,6 +48,11 @@ please create a new issue in the `tracker`_.
 
 Development
 ===========
+
+|build_status_master|_
+
+.. |build_status_master| image:: https://img.shields.io/travis/{{gh_user}}/{{package}}/master.svg?style=flat-square
+.. _build_status_master: http://travis-ci.org/{{gh_user}}/{{package}}
 
 Contributions to {{project}} are highly welcome.
 Just clone its `Github repository`_ and submit your contributions as pull requests.
