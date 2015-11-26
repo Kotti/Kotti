@@ -1,6 +1,11 @@
 Change History
 ==============
 
+1.2.4 - 2015-11-26
+------------------
+
+- Fix broken packaging of 1.2.3.  Sorry for the inconvenience!
+
 1.2.3 - 2015-11-26
 ------------------
 
