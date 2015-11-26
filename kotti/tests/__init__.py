@@ -41,11 +41,26 @@ Fixture dependencies
 # public pytest fixtures
 
 import warnings
+from datetime import datetime
 
 from pytest import fixture
 from mock import MagicMock
 
-from datetime import datetime
+from kotti import testing
+
+
+@fixture
+def image_asset():
+    """ Return an image file """
+
+    return testing.asset('sendeschluss.jpg')
+
+
+@fixture
+def image_asset2():
+    """ Return another image file """
+
+    return testing.asset('logo.png')
 
 
 @fixture
@@ -217,7 +232,7 @@ def events(config, request):
 
 
 @fixture
-def setup_app(unresolved_settings):
+def setup_app(unresolved_settings, filedepot):
     from kotti import base_configure
     config = base_configure({}, **unresolved_settings)
     return config.make_wsgi_app()
@@ -225,7 +240,8 @@ def setup_app(unresolved_settings):
 
 @fixture
 def app(workflow, db_session, dummy_mailer, events, setup_app):
-    return setup_app
+    from depot.manager import DepotManager
+    return DepotManager.make_middleware(setup_app)
 
 
 @fixture
