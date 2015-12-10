@@ -72,9 +72,7 @@ tests_require = [
     'zope.testbrowser',
     ]
 
-development_requires = [
-    'minify',
-    ]
+development_requires = []
 
 docs_require = [
     'Sphinx',
