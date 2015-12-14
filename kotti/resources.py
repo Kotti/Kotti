@@ -676,7 +676,10 @@ class SaveDataMixin(object):
     @declared_attr
     def data(cls):
 
-        return cls.__table__.c.get('data', Column(cls._data_field))
+        return cls.__table__.c.get('data',
+                                   Column(UploadedFileField(cls.data_filters)))
+
+    data_filters = ()
 
     @classmethod
     def __declare_last__(cls):
@@ -760,8 +763,6 @@ class File(SaveDataMixin, Content):
     #: (:class:`sqlalchemy.types.Integer`)
     id = Column(Integer(), ForeignKey('contents.id'), primary_key=True)
 
-    _data_field = UploadedFileField()
-
     type_info = Content.type_info.copy(
         name=u'File',
         title=_(u'File'),
@@ -782,10 +783,9 @@ class Image(SaveDataMixin, Content):
     #: (:class:`sqlalchemy.types.Integer`)
     id = Column(Integer(), ForeignKey('contents.id'), primary_key=True)
 
-    _data_field = UploadedFileField(
-        filters=(
-            WithThumbnailFilter(size=(128, 128), format='PNG'),
-            WithThumbnailFilter(size=(256, 256), format='PNG')),)
+    data_filters = (
+        WithThumbnailFilter(size=(128, 128), format='PNG'),
+        WithThumbnailFilter(size=(256, 256), format='PNG'))
 
     type_info = Content.type_info.copy(
         name=u'Image',
