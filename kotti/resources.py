@@ -751,7 +751,7 @@ class SaveDataMixin(object):
 
 
 @implementer(IFile)
-class File(Content, SaveDataMixin):
+class File(SaveDataMixin, Content):
     """File adds some attributes to :class:`~kotti.resources.Content` that are
        useful for storing binary data.
     """
@@ -773,7 +773,7 @@ class File(Content, SaveDataMixin):
 
 
 @implementer(IImage)
-class Image(Content, SaveDataMixin):
+class Image(SaveDataMixin, Content):
     """Image doesn't add anything to :class:`~kotti.resources.File`, but images
        have different views, that e.g. support on the fly scaling.
     """
@@ -785,10 +785,9 @@ class Image(Content, SaveDataMixin):
     _data_field = UploadedFileField(
         filters=(
             WithThumbnailFilter(size=(128, 128), format='PNG'),
-            WithThumbnailFilter(size=(256, 256), format='PNG')),
-        upload_type=UploadedImageWithThumb)
+            WithThumbnailFilter(size=(256, 256), format='PNG')),)
 
-    type_info = Document.type_info.copy(
+    type_info = Content.type_info.copy(
         name=u'Image',
         title=_(u'Image'),
         add_view=u'add_image',
@@ -796,7 +795,6 @@ class Image(Content, SaveDataMixin):
         selectable_default_views=[],
         uploadable_mimetypes=['image/*', ],
         )
-
 
 
 def get_root(request=None):
