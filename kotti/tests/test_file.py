@@ -36,9 +36,9 @@ class TestFileViews:
         assert res.headers["Content-Disposition"] == disposition + \
             ';filename="myfle.png"'
 
-        assert res.app_iter.file.read() == 'file contents'
+        assert res.app_iter.file.read() == asset('logo.png').read()
         res.app_iter.file.seek(0)
-        assert res.body == 'file contents'
+        assert res.body == asset('logo.png').read()
 
 
 class TestFileEditForm:
@@ -139,23 +139,31 @@ class TestDepotStore:
     from kotti.resources import File, Image
 
     @pytest.mark.parametrize("factory", [File, Image])
-    def test_create(self, factory, filedepot, image_asset):
+    def test_create(self, factory, filedepot, image_asset, app):
         data = image_asset.read()
         f = factory(data)
-        assert len(f.data['files']) == 1
+        if factory.__class__.__name__ == 'File':
+            assert len(f.data['files']) == 1
+        elif factory.__class__.__name__ == 'Image':
+            assert len(f.data['files']) == 4
         assert f.data.file.read() == data
 
     @pytest.mark.parametrize("factory", [File, Image])
-    def test_edit_content(self, factory, filedepot, image_asset, image_asset2):
+    def test_edit_content(self, factory, filedepot, image_asset, image_asset2,
+                          app, db_session):
         data = image_asset.read()
         f = factory(data)
         assert f.data.file.read() == data
+        db_session.flush()
         data2 = image_asset2.read()
         f.data = data2
+        db_session.flush()
+
         assert f.data.file.read() == data2
 
     @pytest.mark.parametrize("factory", [File, Image])
-    def test_session_rollback(self, factory, db_session, filedepot, image_asset):
+    def test_session_rollback(self, factory, db_session, filedepot, image_asset,
+                              app):
         from depot.manager import DepotManager
 
         f = factory(data=image_asset.read(), name=u'content', title=u'content')
@@ -170,7 +178,8 @@ class TestDepotStore:
         assert DepotManager.get().delete.called
 
     @pytest.mark.parametrize("factory", [File, Image])
-    def test_delete(self, factory, db_session, root, filedepot, image_asset):
+    def test_delete(self, factory, db_session, root, filedepot, image_asset,
+                    app):
         from depot.manager import DepotManager
 
         f = factory(data=image_asset, name=u'content', title=u'content')
@@ -211,7 +220,7 @@ class TestUploadedFileResponse:
         assert ''.join(resp.app_iter) == data
 
     def test_unknown_filename(self, filedepot, image_asset2):
-        f = self._create_file(image_asset2.read(), u"file.txt", None)
+        f = self._create_file(b'foo', u"file.bar", None)
         resp = UploadedFileResponse(f.data, DummyRequest())
         assert resp.headers['Content-Type'] == 'application/octet-stream'
 
