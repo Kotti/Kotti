@@ -1,14 +1,14 @@
 # -*- coding: utf-8 -*-
 
+import mimetypes
+
 from pyramid.httpexceptions import HTTPMovedPermanently
 from pyramid.response import _BLOCK_SIZE
 from pyramid.response import FileIter
 from pyramid.response import Response
 from pyramid.view import view_config
 
-from kotti.resources import File
-
-import mimetypes
+from kotti.interfaces import IFile
 
 
 class UploadedFileResponse(Response):
@@ -73,18 +73,18 @@ class UploadedFileResponse(Response):
         self.headerlist.append(('Content-Disposition', disp))
 
 
-@view_config(name='view', context=File, permission='view',
+@view_config(name='view', context=IFile, permission='view',
              renderer='kotti:templates/view/file.pt')
 def view(context, request):
     return {}
 
 
-@view_config(name='inline-view', context=File, permission='view')
+@view_config(name='inline-view', context=IFile, permission='view')
 def inline_view(context, request):
     return UploadedFileResponse(context.data, request, disposition='inline')
 
 
-@view_config(name='attachment-view', context=File, permission='view')
+@view_config(name='attachment-view', context=IFile, permission='view')
 def attachment_view(context, request):
     return UploadedFileResponse(context.data, request, disposition='attachment')
 

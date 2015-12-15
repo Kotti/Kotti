@@ -141,6 +141,7 @@ def setUp(init_db=True, **kwargs):
 
 
 def tearDown():
+    from depot.manager import DepotManager
     from kotti import events
     from kotti import security
     from kotti.message import _inject_mailer
@@ -152,6 +153,7 @@ def tearDown():
 
     _inject_mailer[:] = []
     transaction.abort()
+    DepotManager._clear()
     testing.tearDown()
 
 

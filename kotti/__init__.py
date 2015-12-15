@@ -1,5 +1,4 @@
 import pkg_resources
-
 from sqlalchemy import engine_from_config
 from sqlalchemy import MetaData
 from sqlalchemy.ext.declarative import declarative_base

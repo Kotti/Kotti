@@ -1,6 +1,13 @@
 import uuid
 from datetime import datetime
+from time import time
+from os import environ
 
+from depot.middleware import FileServeApp, _FileIter, _BLOCK_SIZE, \
+    DepotMiddleware
+from pyramid.httpexceptions import HTTPNotFound, HTTPMovedPermanently, \
+    HTTPBadRequest, HTTPNotModified
+from pyramid.response import Response
 from sqlalchemy import Column
 from sqlalchemy import DateTime
 from sqlalchemy import Integer
@@ -383,12 +390,125 @@ def adjust_for_engine(conn, branch):
         UploadedFileField.process_result_value = patched_processed_result_value
 
 
+class FiledepotServeApp(FileServeApp):
+    """ Slighty modified version :class:`deport.middleware.FileServeApp` that
+    operates on a :class:`pyramid.request.Request` object instead of the WSGI
+    environment.
+    """
+
+    def has_been_modified(self, request, etag,
+                          last_modified):  # pragma: no cover (tested in depot)
+        unmodified = False
+
+        if request.if_modified_since and last_modified and \
+                last_modified <= request.if_modified_since:
+            unmodified = True
+
+        if request.if_none_match and etag == request.if_none_match:
+            unmodified = True
+
+        return not unmodified
+
+    def __call__(self, request):  # pragma: no cover (tested in depot)
+        headers = []
+        timeout = self.cache_expires
+        etag = self.generate_etag()
+        headers += [('ETag', '%s' % etag),
+                    ('Cache-Control', 'max-age=%d, public' % timeout)]
+
+        try:
+            has_been_modified = self.has_been_modified(request, etag,
+                                                       self.last_modified)
+        except RuntimeError:
+            return HTTPBadRequest(detail='ETag or If-Modified-Since headers '
+                                         'were malformed in request')
+
+        if not has_been_modified:
+            self.file.close()
+            HTTPNotModified(headers=headers)
+
+        headers.extend((
+            ('Expires', self.make_date(time() + timeout)),
+            ('Content-Type', str(self.content_type)),
+            ('Content-Length', str(self.content_length)),
+            ('Last-Modified', self.make_date(self.last_modified)),
+            ('Content-Disposition',
+             self.make_content_disposition('inline', self.filename))
+        ))
+        response = Response(body=None, status=200, headerlist=headers,
+                            app_iter=_FileIter(self.file, _BLOCK_SIZE),
+                            content_type=self.content_type)
+
+        return response
+
+
+class TweenFactory(DepotMiddleware):
+    """Factory for a Pyramid tween in charge of serving Depot files.
+
+    This is the Pyramid tween version of
+    :class:`depot.middleware.DepotMiddleware`.  It does exactly the same as
+    Depot's WSGI middleware, but operates on a :class:`pyramid.request.Request`
+    object instead of the WSGI environment.
+    """
+
+    def __init__(self, handler, registry):
+
+        self.handler = handler
+        self.registry = registry
+
+        self.mountpoint = '/depot'
+        self.cache_max_age = 3600 * 24 * 7
+        self.replace_wsgi_filewrapper = True
+
+        from depot.manager import DepotManager
+
+        DepotManager.set_middleware(self)
+
+    def __call__(self, request):
+
+        if request.method not in ('GET', 'HEAD') \
+                or not request.path.startswith(self.mountpoint):
+            return self.handler(request)
+
+        path = request.path.split('/')
+        if len(path) and not path[0]:
+            path = path[1:]
+
+        if len(path) < 3:
+            return HTTPNotFound()
+
+        from depot.manager import DepotManager
+
+        __, depot, fileid = path[:3]
+        depot = DepotManager.get(depot)
+        if not depot:
+            return HTTPNotFound()
+
+        try:
+            f = depot.get(fileid)
+        except (IOError, ValueError):
+            return HTTPNotFound()
+
+        public_url = f.public_url
+        if public_url is not None:
+            HTTPMovedPermanently(public_url)
+
+        fileapp = FiledepotServeApp(f, self.cache_max_age,
+                                    self.replace_wsgi_filewrapper)
+        return fileapp(request)
+
+
 def includeme(config):
     """ Pyramid includeme hook.
 
     :param config: app config
     :type config: :class:`pyramid.config.Configurator`
     """
+
+    from pyramid import tweens
+
+    config.add_tween('kotti.filedepot.TweenFactory', over=tweens.MAIN,
+                     under=tweens.INGRESS)
 
     from kotti.events import objectevent_listeners
     from kotti.events import ObjectInsert

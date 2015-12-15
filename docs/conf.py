@@ -123,6 +123,7 @@ intersphinx_mapping = {
     'bleach': ('http://bleach.readthedocs.org/en/latest/', None),
     'colander': ('http://colander.readthedocs.org/en/latest/', None),
     'deform': ('http://deform.readthedocs.org/en/latest/', None),
+    'depot': ('http://depot.readthedocs.org/en/latest/', None),
     'fanstatic': ('http://www.fanstatic.org/en/latest/', None),
     'pyramid': ('http://pyramid.readthedocs.org/en/latest/', None),
     'sqlalchemy': ('http://sqlalchemy.readthedocs.org/en/latest/', None),

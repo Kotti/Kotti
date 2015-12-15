@@ -24,9 +24,9 @@ def delta(date_string):
 
 @pytest.fixture
 def cachetest_content(root, filedepot):
-    image = asset('sendeschluss.jpg').read()
+    image = asset('sendeschluss.jpg')
     root['textfile'] = File("file contents", u"mytext.txt", u"text/plain")
-    root['image'] = Image(image, u"sendeschluss.jpg", u"image/jpeg")
+    root['image'] = Image(image.read(), u"sendeschluss.jpg", u"image/jpeg")
 
 
 class TestSetMaxAge:
