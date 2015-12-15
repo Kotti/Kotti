@@ -304,7 +304,7 @@ class TestStorage:
         self._storage.setdefault(0)
 
     def get(self, id):
-        info = self._storage[id]
+        info = self._storage[int(id)]
 
         from StringIO import StringIO
 

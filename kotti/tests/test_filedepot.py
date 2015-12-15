@@ -241,3 +241,36 @@ class TestMigrateBetweenStorage:
         assert db_session.query(DBStoredFile).count() == 0
 
         shutil.rmtree(tmp_location)
+
+
+class TestTween:
+
+    @pytest.mark.user('admin')
+    def test_tween(self, webtest, filedepot, root, image_asset, db_session):
+
+        from kotti.resources import Image, get_root
+
+        # create an image resource
+        img = root['img'] = Image(data=image_asset.read(), title='Image')
+        db_session.flush()
+        root = get_root()
+        img = root['img']
+
+        # the image resource itself is served by the full Kotti stack
+        resp = webtest.app.get('/img')
+        assert resp.content_type == 'text/html'
+        assert resp.etag is None
+        assert resp.cache_control.max_age == 0
+        assert '<img src="http://localhost/img/image" />' in resp.body
+
+        # the attachments (created by the filters) are served by the
+        # FiledepotServeApp
+        resp = webtest.app.get(img.data['thumb_128x128_url'])
+        assert resp.etag is not None
+        assert resp.cache_control.max_age == 604800
+        assert resp.body.startswith('\x89PNG')
+
+        resp = webtest.app.get(img.data['thumb_256x256_url'])
+        assert resp.etag is not None
+        assert resp.cache_control.max_age == 604800
+        assert resp.body.startswith('\x89PNG')

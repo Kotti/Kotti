@@ -395,7 +395,9 @@ class FiledepotServeApp(FileServeApp):
     operates on a :class:`pyramid.request.Request` object instead of the WSGI
     environment.
     """
-    def has_been_modified(self, request, etag, last_modified):
+
+    def has_been_modified(self, request, etag,
+                          last_modified):  # pragma: no cover (tested in depot)
         unmodified = False
 
         if request.if_modified_since and last_modified and \
@@ -407,7 +409,7 @@ class FiledepotServeApp(FileServeApp):
 
         return not unmodified
 
-    def __call__(self, request):
+    def __call__(self, request):  # pragma: no cover (tested in depot)
         headers = []
         timeout = self.cache_expires
         etag = self.generate_etag()
@@ -433,7 +435,6 @@ class FiledepotServeApp(FileServeApp):
             ('Content-Disposition',
              self.make_content_disposition('inline', self.filename))
         ))
-
         response = Response(body=None, status=200, headerlist=headers,
                             app_iter=_FileIter(self.file, _BLOCK_SIZE),
                             content_type=self.content_type)
@@ -464,8 +465,6 @@ class TweenFactory(DepotMiddleware):
         DepotManager.set_middleware(self)
 
     def __call__(self, request):
-        # code to be executed for each request before
-        # the actual application code goes here
 
         if request.method not in ('GET', 'HEAD') \
                 or not request.path.startswith(self.mountpoint):
