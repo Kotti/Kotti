@@ -18,7 +18,6 @@ from pyramid.settings import asbool
 from sqlalchemy import and_
 from sqlalchemy import not_
 from sqlalchemy import or_
-from zope.deprecation.deprecation import deprecate
 from zope.deprecation import deprecated
 
 from kotti import DBSession
@@ -81,11 +80,11 @@ def add_renderer_globals(event):
         event['api'] = api
 
 
-@deprecate("'is_root' is deprecated as of Kotti 1.0.0. "
-           "Use the 'root_only=True' if you were using this as a "
-           "'custom_predicates' predicate.")
 def is_root(context, request):
     return context is request.root
+deprecated('is_root', "'is_root' is deprecated as of Kotti 1.0.0. "
+           "Use the 'root_only=True' if you were using this as a "
+           "'custom_predicates' predicate.")
 
 
 class Slots(object):

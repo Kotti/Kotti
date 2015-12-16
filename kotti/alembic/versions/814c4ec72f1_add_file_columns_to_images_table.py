@@ -20,8 +20,6 @@ from kotti import DBSession
 
 def upgrade():
 
-    from kotti.resources import Image
-
     op.drop_table('images')
     op.create_table(
         'images',
@@ -50,7 +48,10 @@ def downgrade():
         SELECT id, filename, mimetype, size, data
         FROM images""")
     op.drop_table('images')
-    op.create_table('images', Image.id)
+    op.create_table(
+        'images',
+        sa.Column('id', sa.Integer(), sa.ForeignKey('files.id'),
+                  primary_key=True))
     DBSession.execute("""
         INSERT INTO images (id)
         SELECT id
