@@ -14,7 +14,6 @@ kotti.views
    kotti.views.edit/index
    kotti.views.file
    kotti.views.form
-   kotti.views.image
    kotti.views.login
    kotti.views.site_setup
    kotti.views.slots

@@ -19,10 +19,6 @@ from depot.fields.filters.thumbnails import WithThumbnailFilter
 from depot.fields.specialized.image import UploadedImageWithThumb
 from depot.fields.sqlalchemy import _SQLAMutationTracker
 from depot.fields.sqlalchemy import UploadedFileField
-from depot.fields.upload import UploadedFile
-from sqlalchemy.ext.declarative import declared_attr
-
-from kotti import _resolve_dotted
 from pyramid.decorator import reify
 from pyramid.traversal import resource_path
 from sqlalchemy import Boolean
@@ -36,6 +32,7 @@ from sqlalchemy import Unicode
 from sqlalchemy import UnicodeText
 from sqlalchemy import UniqueConstraint
 from sqlalchemy.ext.associationproxy import association_proxy
+from sqlalchemy.ext.declarative import declared_attr
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.ext.orderinglist import ordering_list
 from sqlalchemy.orm import backref
@@ -48,6 +45,7 @@ from sqlalchemy.util import classproperty
 from transaction import commit
 from zope.interface import implementer
 
+from kotti import _resolve_dotted
 from kotti import Base
 from kotti import DBSession
 from kotti import get_settings
@@ -57,7 +55,6 @@ from kotti.interfaces import IContent
 from kotti.interfaces import IDefaultWorkflow
 from kotti.interfaces import IDocument
 from kotti.interfaces import IFile
-from kotti.interfaces import IImage
 from kotti.interfaces import INode
 from kotti.migrate import stamp_heads
 from kotti.security import has_permission
@@ -773,30 +770,6 @@ class File(SaveDataMixin, Content):
         )
 
 
-@implementer(IImage)
-class Image(SaveDataMixin, Content):
-    """Image doesn't add anything to :class:`~kotti.resources.File`, but images
-       have different views, that e.g. support on the fly scaling.
-    """
-
-    #: Primary key column in the DB
-    #: (:class:`sqlalchemy.types.Integer`)
-    id = Column(Integer(), ForeignKey('contents.id'), primary_key=True)
-
-    data_filters = (
-        WithThumbnailFilter(size=(128, 128), format='PNG'),
-        WithThumbnailFilter(size=(256, 256), format='PNG'))
-
-    type_info = Content.type_info.copy(
-        name=u'Image',
-        title=_(u'Image'),
-        add_view=u'add_image',
-        addable_to=[u'Document'],
-        selectable_default_views=[],
-        uploadable_mimetypes=['image/*', ],
-        )
-
-
 def get_root(request=None):
     """Call the function defined by the ``kotti.root_factory`` setting and
        return its result.
@@ -886,3 +859,14 @@ def initialize_sql(engine, drop_all=False):
     commit()
 
     return DBSession
+
+
+# DEPRECATED
+
+from zope.deprecation.deprecation import deprecated
+from kotti_image.resources import Image
+
+__ = Image
+deprecated('Image',
+           'Image was outfactored to the kotti_image package.  '
+           'Please import from there.')

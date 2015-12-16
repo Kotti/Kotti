@@ -1,10 +1,27 @@
 Change History
 ==============
 
-1.2.5 - unreleased
+1.3.0 - unreleased
 ------------------
 
-- No changes yet.
+- Make ``kotti.resources.SaveDataMixin`` more versatile in that it now supports
+  a ``data_filters`` attribute (or even a completely overridden ``data``
+  attribute) on subclasses.  For an example for what this is useful, see the
+  new ``kotti_image`` package's readme and the Depot documentation (http://depot.readthedocs.org/en/latest/database.html#custom-behaviour-in-attachments).
+
+  ** These changes require a database migration. **
+
+  A migration script is included, which can be executed by running
+  ``kotti-migrate <your.ini> upgrade_all``.  However, this script will fail if
+  you subclassed from ``kotti.resources.Image`` in your application.  It also
+  doesn't cover custom classes inherited from ``kotti.resources.File`` (other
+  than Kotti's ``Image``).  Migration of those can be performed easily, by
+  copying the code from the included migration step to your package's migration
+  environment and adjust it to your needs.
+
+- Move all image related code to the new ``kotti_image`` add on package.
+  All classes and functions are imported into their former place, so that code
+  that imports from there will still be working.
 
 1.2.4 - 2015-11-26
 ------------------
