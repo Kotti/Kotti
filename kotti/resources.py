@@ -15,8 +15,6 @@ from fnmatch import fnmatch
 from cStringIO import StringIO
 from UserDict import DictMixin
 
-from depot.fields.filters.thumbnails import WithThumbnailFilter
-from depot.fields.specialized.image import UploadedImageWithThumb
 from depot.fields.sqlalchemy import _SQLAMutationTracker
 from depot.fields.sqlalchemy import UploadedFileField
 from pyramid.decorator import reify

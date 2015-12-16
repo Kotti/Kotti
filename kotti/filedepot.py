@@ -1,7 +1,6 @@
 import uuid
 from datetime import datetime
 from time import time
-from os import environ
 
 from depot.middleware import FileServeApp, _FileIter, _BLOCK_SIZE, \
     DepotMiddleware
