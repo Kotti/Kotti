@@ -3,7 +3,6 @@
 import mimetypes
 
 from pyramid.httpexceptions import HTTPMovedPermanently
-from pyramid.response import _BLOCK_SIZE
 from pyramid.response import FileIter
 from pyramid.response import Response
 from pyramid.view import view_config
@@ -61,7 +60,7 @@ class UploadedFileResponse(Response):
             content_encoding=content_encoding
         )
 
-        self.app_iter = FileIter(data.file, _BLOCK_SIZE)
+        self.app_iter = FileIter(data.file)
         # assignment of content_length must come after assignment of app_iter
         self.content_length = data.file.content_length
         self.last_modified = data.file.last_modified

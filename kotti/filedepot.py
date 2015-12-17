@@ -2,11 +2,10 @@ import uuid
 from datetime import datetime
 from time import time
 
-from depot.middleware import FileServeApp, _FileIter, _BLOCK_SIZE, \
-    DepotMiddleware
+from depot.middleware import FileServeApp, DepotMiddleware
 from pyramid.httpexceptions import HTTPNotFound, HTTPMovedPermanently, \
     HTTPBadRequest, HTTPNotModified
-from pyramid.response import Response
+from pyramid.response import Response, FileIter
 from sqlalchemy import Column
 from sqlalchemy import DateTime
 from sqlalchemy import Integer
@@ -435,7 +434,7 @@ class FiledepotServeApp(FileServeApp):
              self.make_content_disposition('inline', self.filename))
         ))
         response = Response(body=None, status=200, headerlist=headers,
-                            app_iter=_FileIter(self.file, _BLOCK_SIZE),
+                            app_iter=FileIter(self.file),
                             content_type=self.content_type)
 
         return response
