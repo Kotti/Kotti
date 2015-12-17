@@ -3,32 +3,55 @@
 Working with blob data in Kotti
 ===============================
 
-Kotti provides a flexible mechanism of storing blob data by with the help of `filedepot`_ storages.
+Kotti provides a flexible mechanism of storing blob data by with the help of `Depot`_ storages.
 Both ``File`` and ``Image`` store their data in :class:`depot.fields.sqlalchemy.UploadedFileField` and they will offload their blob data to the configured depot storage.
-Working together with `filedepot`_ configured storages means it is possible to store blob data in a variety of ways: filesystem, GridFS, Amazon storage, etc.
+Working together with `Depot`_ configured storages means it is possible to store blob data in a variety of ways: filesystem, GridFS, Amazon storage, etc.
+
+- :class:`depot.io.local.LocalFileStorage`
+- :class:`depot.io.awss3.S3Storage`
+- :class:`depot.io.gridfs.GridFSStorage`
+- etc.
 
 By default Kotti will store its blob data in the configured SQL database, using :class:`kotti.filedepot.DBFileStorage` storage, but you can configure your own preferred way of storing your blob data.
-The benefit of storing files in ``DBFileStorage`` is having *all* content in a single place (the DB) which makes backups, exporting and importing of your site's data easy, as long as you don't have too many or too large files.
+The benefit of storing files in :class:`kotti.filedepot.DBFileStorage` is having *all* content in a single place (the DB) which makes backups, exporting and importing of your site's data easy, as long as you don't have too many or too large files.
 The downsides of this approach appear when your database server resides on a different host (network performance becomes a greater issue) or your DB dumps become too large to be handled efficiently.
 
 Configuring a depot store
 -------------------------
 
-While `filedepot`_ allows storing data in any of the configured filestorages, at this time there's no mechanism in Kotti to select, at runtime, the depot where new data will be saved.
+Mountpoint
+~~~~~~~~~~
+
+Kotti provides a Pyramid tween (:ref:`pyramid.registering_tweens`) that is responsible for the actual serving of blob data.
+It does pretty much the same as :class:`depot.middleware.DepotMiddleware`, but is better integrated into Pyramid and therefore Kotti.
+
+This tween "intercepts" all requests before they reach the main application (Kotti).
+If it's a request for blob data (identified by the configured ``kotti.depot_mountpoint``), it will be served by the tween itself (or redirected to an external storage like S3), otherwise it will be "forwarded" to the main application.
+This mountpoint is also used to generate URLs to blobs.
+The default value for ``kotti.depot_mountpoint`` is ``/depot``::
+
+    kotti.depot_mountpoint = /depot
+
+Storages
+~~~~~~~~
+
+While `Depot`_ allows storing data in any of the configured filestorages, at this time there's no mechanism in Kotti to select, at runtime, the depot where new data will be saved.
 Instead, Kotti will store new files only in the configured ``default`` store.
 If, for example, you add a new depot and make that the default, you should leave the old depot configured so that Kotti will continue serving files uploaded there.
 
-By default, Kotti comes configured with a db-based filestorage.::
+By default, Kotti comes configured with a db-based filestorage::
 
     kotti.depot.0.name = dbfiles
     kotti.depot.0.backend = kotti.filedepot.DBFileStorage
 
-The depot configured at position 0 is the default file depot.
-The minimum information required to configure a depot are the ``name`` and ``backend``.
-The ``name`` can be any string and it is used by `filedepot`_ to identify the depot store for a particular saved file.
-The ``name`` should never be changed, as it will make the saved files unaccessible.
-
+To configure a depot, several ``kotti.depot.*.*`` lines need to be added.
+The number in the first position is used to group backend configuration and to order the file storages in the configuration of `Depot`_.
+The depot configured with number 0 will be the default depot, where all new blob data will be saved.
+There are 2 options that are required for every storage configuration: ``name`` and ``backend``.
+The ``name`` is a unique string that will be used to identify the path of saved files (it is recorded with each blob info), so once configured for a particular storage, it should never change.
+The ``backend`` should point to a dotted path for the storage class.
 Any further parameters for a particular backend will be passed as keyword arguments to the backend class.
+
 See this example, in which we store, by default, files in ``/var/local/files/`` using the :class:`depot.io.local.LocalFileStorage`::
 
     kotti.depot.0.name = localfs
@@ -146,4 +169,4 @@ Now you can invoke the migration with:::
 
 As always when dealing with migrations, make sure you backup your data first!
 
-.. _filedepot: https://pypi.python.org/pypi/filedepot/
+.. _Depot: http://depot.readthedocs.org/en/latest/

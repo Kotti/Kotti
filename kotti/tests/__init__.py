@@ -339,7 +339,7 @@ class TestStorage:
 
 
 @fixture
-def depot_tween(request):
+def depot_tween(request, config):
     """ Sets up the Depot tween and patches Depot's ``set_middleware`` to
     suppress exceptions on subsequent calls """
 
@@ -347,7 +347,7 @@ def depot_tween(request):
     from kotti.filedepot import TweenFactory
 
     _set_middleware = DepotManager.set_middleware
-    TweenFactory(None, None)
+    TweenFactory(None, config.registry)
 
     @classmethod
     def set_middleware_patched(cls, mw):

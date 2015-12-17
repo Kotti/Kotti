@@ -131,7 +131,7 @@ class TestBrowser:
         resp = webtest.app.get('/textfile/inline-view')
         assert resp.status_code == 303
         resp = resp.follow()
-        #assert resp.headers.get('X-Caching-Policy') == 'Cache Media Content'
+        # assert resp.headers.get('X-Caching-Policy') == 'Cache Media Content'
         assert resp.headers.get('Cache-Control') == 'max-age=604800, public'
         d = delta(resp.headers.get('Expires'))
         assert (d.days, d.seconds) > (0, 14000)

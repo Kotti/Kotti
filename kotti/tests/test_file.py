@@ -37,7 +37,7 @@ class TestFileViews:
         dummy_request.path = res.headers['location']
         dummy_request.if_modified_since = None
         dummy_request.if_none_match = None
-        res = TweenFactory(None, None)(dummy_request)
+        res = TweenFactory(None, config.registry)(dummy_request)
 
         self._test_common_headers(res.headers)
 

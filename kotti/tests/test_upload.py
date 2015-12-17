@@ -31,8 +31,6 @@ def test_upload_anonymous(root, dummy_request, browser):
     browser.open(u'{0}/content_types'.format(BASE_URL))
     assert browser.url.startswith(u'{0}/@@login'.format(BASE_URL))
 
-    # import pdb; pdb.set_trace()
-
 
 @user('admin')
 def test_upload_authenticated_wo_mimetype(root, dummy_request, browser):

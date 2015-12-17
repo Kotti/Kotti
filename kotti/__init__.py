@@ -84,6 +84,7 @@ conf_defaults = {
     'kotti.configurators': '',
     'kotti.date_format': 'medium',
     'kotti.datetime_format': 'medium',
+    'kotti.depot_mountpoint': '/depot',
     'kotti.depot.0.backend': 'kotti.filedepot.DBFileStorage',
     'kotti.depot.0.name': 'dbfiles',
     'kotti.fanstatic.edit_needed': 'kotti.fanstatic.edit_needed',

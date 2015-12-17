@@ -1,26 +1,36 @@
+import logging
 import uuid
 from datetime import datetime
 from time import time
 
-from depot.middleware import FileServeApp, DepotMiddleware
-from pyramid.httpexceptions import HTTPNotFound, HTTPMovedPermanently, \
-    HTTPBadRequest, HTTPNotModified
-from pyramid.response import Response, FileIter
+from depot.fields.sqlalchemy import _SQLAMutationTracker
+from depot.io.interfaces import FileStorage
+from depot.manager import DepotManager
+from depot.middleware import DepotMiddleware
+from depot.middleware import FileServeApp
+from pyramid import tweens
+from pyramid.httpexceptions import HTTPBadRequest
+from pyramid.httpexceptions import HTTPMovedPermanently
+from pyramid.httpexceptions import HTTPNotFound
+from pyramid.httpexceptions import HTTPNotModified
+from pyramid.response import FileIter
+from pyramid.response import FileResponse
+from pyramid.response import Response
 from sqlalchemy import Column
 from sqlalchemy import DateTime
+from sqlalchemy import event
 from sqlalchemy import Integer
 from sqlalchemy import LargeBinary
 from sqlalchemy import String
 from sqlalchemy import Unicode
-from sqlalchemy import event
 from sqlalchemy.orm import deferred
-
-from depot.io.interfaces import FileStorage
 
 from kotti import Base
 from kotti import DBSession
 from kotti.util import camel_case_to_name
 from kotti.util import command
+from kotti.util import extract_from_settings
+from kotti.util import _to_fieldstorage
 
 _marker = object()
 
@@ -297,9 +307,47 @@ class DBFileStorage(FileStorage):
         return file_or_id
 
 
+def extract_depot_settings(prefix="kotti.depot.", settings=None):
+    """ Merges items from a dictionary that have keys that start with `prefix`
+    to a list of dictionaries.
+
+    :param prefix: A dotted string representing the prefix for the common values
+    :type prefix: string
+
+    :param settings: A dictionary with settings. Result is extracted from this
+    :type settings: dict
+
+      >>> settings = {
+      ...     'kotti.depot_mountpoint': '/depot',
+      ...     'kotti.depot.0.backend': 'kotti.filedepot.DBFileStorage',
+      ...     'kotti.depot.0.file_storage': 'var/files',
+      ...     'kotti.depot.0.name': 'local',
+      ...     'kotti.depot.1.backend': 'depot.io.gridfs.GridStorage',
+      ...     'kotti.depot.1.name': 'mongodb',
+      ...     'kotti.depot.1.uri': 'localhost://',
+      ... }
+      >>> res = extract_depot_settings('kotti.depot.', settings)
+      >>> print sorted(res[0].items())
+      [('backend', 'kotti.filedepot.DBFileStorage'), ('file_storage', 'var/files'), ('name', 'local')]
+      >>> print sorted(res[1].items())
+      [('backend', 'depot.io.gridfs.GridStorage'), ('name', 'mongodb'), ('uri', 'localhost://')]
+    """
+
+    extracted = {}
+    for k, v in extract_from_settings(prefix, settings).items():
+        index, conf = k.split('.', 1)
+        index = int(index)
+        extracted.setdefault(index, {})
+        extracted[index][conf] = v
+
+    result = []
+    for k in sorted(extracted.keys()):
+        result.append(extracted[k])
+
+    return result
+
+
 def configure_filedepot(settings):
-    from kotti.util import extract_depot_settings
-    from depot.manager import DepotManager
 
     config = extract_depot_settings('kotti.depot.', settings)
     for conf in config:
@@ -309,10 +357,6 @@ def configure_filedepot(settings):
 
 
 def migrate_storage(from_storage, to_storage):
-    from depot.fields.sqlalchemy import _SQLAMutationTracker
-    from depot.manager import DepotManager
-    from kotti.util import _to_fieldstorage
-    import logging
 
     log = logging.getLogger(__name__)
 
@@ -445,6 +489,15 @@ class FiledepotServeApp(FileServeApp):
         return response
 
 
+class FiledepotResponse(FileResponse):
+    def __init__(self, path, request=None, cache_max_age=None,
+                 content_type=None, content_encoding=None):
+        super(FiledepotResponse, self).__init__(path, request=request,
+                                                cache_max_age=None,
+                                                content_type=None,
+                                                content_encoding=None)
+
+
 class TweenFactory(DepotMiddleware):
     """Factory for a Pyramid tween in charge of serving Depot files.
 
@@ -455,15 +508,20 @@ class TweenFactory(DepotMiddleware):
     """
 
     def __init__(self, handler, registry):
+        """
+        :param handler: Downstream tween or main Pyramid request handler (Kotti)
+        :type handler: function
 
+        :param registry: Application registry
+        :type registry: :class:`pyramid.registry.Registry`
+        """
+
+        self.mountpoint = registry.settings['kotti.depot_mountpoint']
         self.handler = handler
         self.registry = registry
 
-        self.mountpoint = '/depot'
         self.cache_max_age = 3600 * 24 * 7
         self.replace_wsgi_filewrapper = True
-
-        from depot.manager import DepotManager
 
         DepotManager.set_middleware(self)
 
@@ -479,8 +537,6 @@ class TweenFactory(DepotMiddleware):
 
         if len(path) < 3:
             return HTTPNotFound()
-
-        from depot.manager import DepotManager
 
         __, depot, fileid = path[:3]
         depot = DepotManager.get(depot)
@@ -501,6 +557,10 @@ class TweenFactory(DepotMiddleware):
         return fileapp(request)
 
 
+def uploaded_file_response(uploaded_file, content_disposition='inline'):
+    pass
+
+
 def includeme(config):
     """ Pyramid includeme hook.
 
@@ -508,15 +568,16 @@ def includeme(config):
     :type config: :class:`pyramid.config.Configurator`
     """
 
-    from pyramid import tweens
-
-    config.add_tween('kotti.filedepot.TweenFactory', over=tweens.MAIN,
+    config.add_tween('kotti.filedepot.TweenFactory',
+                     over=tweens.MAIN,
                      under=tweens.INGRESS)
+    config.add_request_method(uploaded_file_response,
+                              name='uploaded_file_response')
+    # config.add_request_method(depot_url, name='depot_url')
 
     from kotti.events import objectevent_listeners
     from kotti.events import ObjectInsert
     from kotti.events import ObjectUpdate
-    from depot.fields.sqlalchemy import _SQLAMutationTracker
 
     from sqlalchemy.event import listen
     from sqlalchemy.engine import Engine
