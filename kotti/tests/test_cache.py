@@ -110,15 +110,6 @@ class TestBrowser:
         d = delta(resp.headers.get('Expires'))
         assert (d.days, d.seconds) < (0, 0)
 
-        # media content
-        resp = webtest.app.get('/textfile/inline-view')
-        assert resp.headers.get('X-Caching-Policy') == 'Cache Media Content'
-        assert resp.headers.get('Cache-Control') == 'max-age=14400'
-        d = delta(resp.headers.get('Expires'))
-        assert (d.days, d.seconds) > (0, 14000)
-        resp = webtest.app.get('/image/inline-view')
-        assert resp.headers.get('X-Caching-Policy') == 'Cache Media Content'
-
         # resources
         resp = webtest.app.get('/static-kotti/base.css')
         assert resp.headers.get('X-Caching-Policy') == 'Cache Resource'
@@ -135,17 +126,28 @@ class TestBrowser:
         resp = webtest.app.get('/this-isnt-here', status=404)
         assert 'X-Caching-Policy' not in resp.headers
 
+        # media content is served by the Depot tween and can be
+        # cached "forever" (every change to the content causes a new URL)
+        resp = webtest.app.get('/textfile/inline-view')
+        assert resp.status_code == 303
+        resp = resp.follow()
+        #assert resp.headers.get('X-Caching-Policy') == 'Cache Media Content'
+        assert resp.headers.get('Cache-Control') == 'max-age=604800, public'
+        d = delta(resp.headers.get('Expires'))
+        assert (d.days, d.seconds) > (0, 14000)
+        resp = webtest.app.get('/image/inline-view')
+        assert resp.status_code == 303
+        resp = resp.follow()
+        assert resp.headers.get('Cache-Control') == 'max-age=604800, public'
+        d = delta(resp.headers.get('Expires'))
+        assert (d.days, d.seconds) > (0, 14000)
+        # assert resp.headers.get('X-Caching-Policy') == 'Cache Media Content'
+
     @pytest.mark.user('admin')
     def test_cache_auth(self, webtest, cachetest_content):
 
         # html
         resp = webtest.app.get('/')
-        assert resp.headers.get('X-Caching-Policy') == 'No Cache'
-
-        # media content
-        resp = webtest.app.get('/textfile/inline-view')
-        assert resp.headers.get('X-Caching-Policy') == 'No Cache'
-        resp = webtest.app.get('/image/inline-view')
         assert resp.headers.get('X-Caching-Policy') == 'No Cache'
 
         # resources
@@ -155,3 +157,18 @@ class TestBrowser:
         # 404
         resp = webtest.app.get('/this-isnt-here', status=404)
         assert 'X-Caching-Policy' not in resp.headers
+
+        # media content is served by the Depot tween and can be
+        # cached "forever" (every change to the content causes a new URL)
+        resp = webtest.app.get('/textfile/inline-view')
+        assert resp.status_code == 303
+        resp = resp.follow()
+        assert resp.headers.get('Cache-Control') == 'max-age=604800, public'
+        d = delta(resp.headers.get('Expires'))
+        assert (d.days, d.seconds) > (0, 14000)
+        resp = webtest.app.get('/image/inline-view')
+        assert resp.status_code == 303
+        resp = resp.follow()
+        assert resp.headers.get('Cache-Control') == 'max-age=604800, public'
+        d = delta(resp.headers.get('Expires'))
+        assert (d.days, d.seconds) > (0, 14000)

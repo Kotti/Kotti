@@ -51,6 +51,12 @@ class TestToBeRemovedIn20:
             __ = is_root  # pyflakes
             assert_deprecations(w, "deprecated as of Kotti 1.0")
 
+    def test_uploaded_file_response(self, allwarnings):
+        with warnings.catch_warnings(record=True) as w:
+            from kotti.views.file import UploadedFileResponse
+            __ = UploadedFileResponse  # pyflakes
+            assert_deprecations(w, "removed in Kotti 2.0.0")
+
     def test_image_deprecations(self, allwarnings):
         with warnings.catch_warnings(record=True) as w:
             from kotti.interfaces import IImage

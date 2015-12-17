@@ -26,15 +26,23 @@ class TestFileViews:
     @pytest.mark.parametrize("params",
                              [(inline_view, 'inline'),
                               (attachment_view, 'attachment')])
-    def test_file_views(self, params, config, filedepot):
+    def test_file_views(self, params, config, filedepot, dummy_request):
+        from kotti.filedepot import TweenFactory
+
         view, disposition = params
         self._create_file(config)
         res = view(self.file, None)
+        assert res.status_code == 303
+
+        dummy_request.path = res.headers['location']
+        dummy_request.if_modified_since = None
+        dummy_request.if_none_match = None
+        res = TweenFactory(None, None)(dummy_request)
 
         self._test_common_headers(res.headers)
 
-        assert res.headers["Content-Disposition"] == disposition + \
-            ';filename="myfle.png"'
+        assert res.headers["Content-Disposition"].startswith(
+            '{};filename=my'.format(disposition))
 
         assert res.app_iter.file.read() == asset('logo.png').read()
         res.app_iter.file.seek(0)

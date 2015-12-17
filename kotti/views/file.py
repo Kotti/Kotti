@@ -1,13 +1,40 @@
 # -*- coding: utf-8 -*-
 
+from pyramid.httpexceptions import HTTPSeeOther
+from pyramid.view import view_config
+
+
+from kotti.interfaces import IFile
+
+
+@view_config(name='view', context=IFile, permission='view',
+             renderer='kotti:templates/view/file.pt')
+def view(context, request):
+    return {}
+
+
+@view_config(name='inline-view', context=IFile, permission='view')
+def inline_view(context, request):
+    return HTTPSeeOther('/depot/{}'.format(context.data.path))
+
+
+@view_config(name='attachment-view', context=IFile, permission='view')
+def attachment_view(context, request):
+    return HTTPSeeOther('/depot/{}/download'.format(context.data.path))
+
+
+def includeme(config):
+    config.scan(__name__)
+
+
+# DEPRECATED
+
 import mimetypes
 
 from pyramid.httpexceptions import HTTPMovedPermanently
 from pyramid.response import FileIter
 from pyramid.response import Response
-from pyramid.view import view_config
-
-from kotti.interfaces import IFile
+from zope.deprecation.deprecation import deprecated
 
 
 class UploadedFileResponse(Response):
@@ -40,6 +67,7 @@ class UploadedFileResponse(Response):
         if data._public_url:
             raise HTTPMovedPermanently(data._public_url)
 
+        # raise HTTPMovedPermanently('/depot/{}'.format(data.path))
         filename = data.filename
 
         content_type = content_type or getattr(data, 'content_type', None)
@@ -71,22 +99,7 @@ class UploadedFileResponse(Response):
             disposition, data.filename.encode('ascii', 'ignore'))
         self.headerlist.append(('Content-Disposition', disp))
 
-
-@view_config(name='view', context=IFile, permission='view',
-             renderer='kotti:templates/view/file.pt')
-def view(context, request):
-    return {}
-
-
-@view_config(name='inline-view', context=IFile, permission='view')
-def inline_view(context, request):
-    return UploadedFileResponse(context.data, request, disposition='inline')
-
-
-@view_config(name='attachment-view', context=IFile, permission='view')
-def attachment_view(context, request):
-    return UploadedFileResponse(context.data, request, disposition='attachment')
-
-
-def includeme(config):
-    config.scan(__name__)
+deprecated('UploadedFileResponse',
+           'UploadedFileResponse is deprecated and will be removed in '
+           'Kotti 2.0.0.  Return '
+           'HTTPSeeOther("/depot/{}".format(context.data.path)) instead.')

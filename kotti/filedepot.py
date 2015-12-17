@@ -425,13 +425,18 @@ class FiledepotServeApp(FileServeApp):
             self.file.close()
             HTTPNotModified(headers=headers)
 
+        if request.path.split('/')[-1] == 'download':
+            disposition = 'attachment'
+        else:
+            disposition = 'inline'
+
         headers.extend((
             ('Expires', self.make_date(time() + timeout)),
             ('Content-Type', str(self.content_type)),
             ('Content-Length', str(self.content_length)),
             ('Last-Modified', self.make_date(self.last_modified)),
             ('Content-Disposition',
-             self.make_content_disposition('inline', self.filename))
+             self.make_content_disposition(disposition, self.filename))
         ))
         response = Response(body=None, status=200, headerlist=headers,
                             app_iter=FileIter(self.file),
