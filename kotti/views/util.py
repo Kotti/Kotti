@@ -29,7 +29,6 @@ from kotti.resources import Document
 from kotti.resources import Tag
 from kotti.resources import TagsToContents
 from kotti.sanitizers import sanitize
-from kotti.security import has_permission
 from kotti.security import view_permitted
 from kotti.util import render_view
 from kotti.util import TemplateStructure
@@ -264,7 +263,7 @@ class TemplateAPI(object):
         context is passed to ``has_permission``."""
         if context is None:
             context = self.context
-        return has_permission(permission, context, self.request)
+        return self.request.has_permission(permission, context)
 
     def render_view(self, name='', context=None, request=None, secure=True,
                     bare=True):
@@ -291,7 +290,7 @@ class TemplateAPI(object):
         if hasattr(context, 'values'):
             for child in context.values():
                 if (not permission or
-                        has_permission(permission, child, self.request)):
+                        self.request.has_permission(permission, child)):
                     children.append(child)
         return children
 
@@ -400,7 +399,7 @@ class NodesTree(object):
                 self._permission,
             )
             for child in self._item_to_children[self.id]
-            if has_permission(self._permission, child, self._request)
+            if self._request.has_permission(self._permission, child)
         ]
 
     def _flatten(self, item):
@@ -421,7 +420,7 @@ def nodes_tree(request, context=None, permission='view'):
     item_to_children = defaultdict(lambda: [])
     for node in DBSession.query(Content).with_polymorphic(Content):
         item_mapping[node.id] = node
-        if has_permission(permission, node, request):
+        if request.has_permission(permission, node):
             item_to_children[node.parent_id].append(node)
 
     for children in item_to_children.values():
@@ -471,7 +470,7 @@ def default_search_content(search_term, request=None):
     result_dicts = []
 
     for result in results:
-        if has_permission('view', result, request):
+        if request.has_permission('view', result):
             result_dicts.append(dict(
                 name=result.name,
                 title=result.title,
@@ -492,7 +491,7 @@ def search_content_for_tags(tags, request=None):
     result_dicts = []
 
     for result in content_with_tags(tags):
-        if has_permission('view', result, request):
+        if request.has_permission('view', result):
             result_dicts.append(dict(
                 name=result.name,
                 title=result.title,

@@ -55,7 +55,6 @@ from kotti.interfaces import IDocument
 from kotti.interfaces import IFile
 from kotti.interfaces import INode
 from kotti.migrate import stamp_heads
-from kotti.security import has_permission
 from kotti.security import PersistentACLMixin
 from kotti.security import view_permitted
 from kotti.sqla import ACLType
@@ -161,7 +160,7 @@ class ContainerMixin(object, DictMixin):
 
         return [
             c for c in self.children
-            if has_permission(permission, c, request)
+            if request.has_permission(permission, c)
         ]
 
 

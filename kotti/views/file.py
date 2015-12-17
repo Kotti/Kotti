@@ -101,5 +101,5 @@ class UploadedFileResponse(Response):
 
 deprecated('UploadedFileResponse',
            'UploadedFileResponse is deprecated and will be removed in '
-           'Kotti 2.0.0.  Return '
-           'HTTPSeeOther("/depot/{}".format(context.data.path)) instead.')
+           'Kotti 2.0.0.  Use "request.uploaded_file_response(context.data)" '
+           'instead.')
