@@ -41,7 +41,7 @@ class TestFileViews:
         self._test_common_headers(res.headers)
 
         assert res.content_disposition.startswith(
-            '{}; filename=my'.format(disposition))
+            '{0}; filename=my'.format(disposition))
 
         assert res.app_iter.file.read() == asset('logo.png').read()
         res.app_iter.file.seek(0)
