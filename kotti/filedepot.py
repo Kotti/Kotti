@@ -468,8 +468,8 @@ def uploaded_file_url(self, uploaded_file, disposition='inline'):
         suffix = ''
     url = '{}/{}/{}{}'.format(
         self.application_url,
-        get_settings()['kotti.depot_mountpoint'],
-        uploaded_file.file['path'],
+        get_settings()['kotti.depot_mountpoint'][1:],
+        uploaded_file.path,
         suffix)
     return url
 

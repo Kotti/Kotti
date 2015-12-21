@@ -1,9 +1,15 @@
 .. _blobs:
 
-Working with blob data in Kotti
+Working with Blob Data in Kotti
 ===============================
 
-Kotti provides a flexible mechanism of storing blob data by with the help of `Depot`_ storages.
+Kotti provides flexible mechanisms for storing and serving blob data by with the help of `Depot`_.
+
+.. contents::
+
+How File-like Content is stored
+-------------------------------
+
 Both ``File`` and ``Image`` store their data in :class:`depot.fields.sqlalchemy.UploadedFileField` and they will offload their blob data to the configured depot storage.
 Working together with `Depot`_ configured storages means it is possible to store blob data in a variety of ways: filesystem, GridFS, Amazon storage, etc.
 
@@ -16,8 +22,8 @@ By default Kotti will store its blob data in the configured SQL database, using 
 The benefit of storing files in :class:`kotti.filedepot.DBFileStorage` is having *all* content in a single place (the DB) which makes backups, exporting and importing of your site's data easy, as long as you don't have too many or too large files.
 The downsides of this approach appear when your database server resides on a different host (network performance becomes a greater issue) or your DB dumps become too large to be handled efficiently.
 
-Configuring a depot store
--------------------------
+Configuration
+-------------
 
 Mountpoint
 ~~~~~~~~~~
@@ -63,8 +69,73 @@ See this example, in which we store, by default, files in ``/var/local/files/`` 
 Notice that we kept the ``dbfiles`` storage, but we moved it to position 1.
 No blob data will be saved there anymore, but existing files in that storage will continue to be available from there.
 
-Add a blob field to your model
-------------------------------
+How File-like Content is served
+-------------------------------
+
+Starting with Kotti 1.3.0, file-like content can be served in two different ways.
+Let's look at an example to compare them.
+
+Say we have a :class:`kotti.resources.File` object in our resource tree, located at ``/foo/bar/file``.
+
+Method 1
+~~~~~~~~
+
+In the default views this file is served under the URL ``http://localhost/foo/bar/file/attachment-view``.
+This URL can be created like this::
+
+    >>> from kotti.resources import File
+    >>> file = File.query.filter(File.name == 'file').one()
+    >>> request.resource_url(file, 'attachment-view')
+    'http://localhost/foo/bar/file/attachment-view'
+
+When this URL is requested, a :class:`kotti.filedepot.StoredFileResponse` is returned::
+
+    >>> request.uploaded_file_response(file.data)
+    <StoredFileResponse at 0x10c8d22d0 200 OK>
+
+The request is processed in the same way as for every other type of content in Kotti.
+It goes through the full traversal and view lookup machinery *with full permission checks*.
+
+Method 2
+~~~~~~~~
+
+Often these permission checks do not need to be enforced strictly.
+For such cases Kotti provides a "shortcut" in form of a Pyramid tween, that directly processes all requests under a certain path befor they even reach Kotti.
+This means: no traversal, no view lookup, no permission checks.
+The URL for this method can be created very similarily::
+
+    >>> request.uploaded_file_url(file.data, 'attachment')
+    'http://localhost//depot/dbfiles/68f31e97-a7f9-11e5-be07-c82a1403e6a7/download'
+
+Comparison
+~~~~~~~~~~
+
+Obviously method 2 is *a lot* faster than method 1 - typically at least by the factor of 3.
+
+If you take a look at the callgraphs, you'll understand where this difference comes from:
+
+========== ==========
+|m1kotti|_ |m2kotti|_
+========== ==========
+ Method 1   Method 2
+========== ==========
+
+.. |m1kotti| image:: /_static/callgraph-served-by-kotti.svg
+   :width: 100%
+.. _m1kotti: ../../_static/callgraph-served-by-kotti.svg
+.. |m2kotti| image:: /_static/callgraph-served-by-tween.svg
+   :width: 100%
+.. _m2kotti: ../../_static/callgraph-served-by-tween.svg
+
+The difference will be even more drastic, when you set up proper HTTP caching.
+All responses for method 2 can be cached *forever*, because the URL will change when the file's content changes.
+
+Developing (with) File-like Content
+-----------------------------------
+
+Add a Blob Field to your Model
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 Adding a blob data attribute to your models can be as simple as::
 
     from depot.fields.sqlalchemy import UploadedFileField
@@ -91,8 +162,8 @@ While you can directly assign a ``bytes`` value to the ``avatar`` column, the ``
 Note that the ``data`` dictionary described here has the same format as the deserialized value of a ``deform.widget.FileUploadWidget``.
 See :class:`kotti.views.edit.content.FileAddForm` and :class:`kotti.views.edit.content.FileEditForm` for a full example of how to add or edit a model with a blob field.
 
-Reading blob data
------------------
+Reading Blob Data
+~~~~~~~~~~~~~~~~~
 
 If you try directly to read data from an ``UploadedFileField`` you'll get a :class:`depot.fields.upload.UploadedFile` instance, which offers a dictionary-like interface to the stored file metadata and direct access to a stream with the stored file through the ``file`` attribute::
 
@@ -102,22 +173,8 @@ If you try directly to read data from an ``UploadedFileField`` you'll get a :cla
 You should never write to the file stream directly.
 Instead, you should assign a new value to the ``UploadedFileField`` column, as described in the previous section.
 
-Downloading blob data
----------------------
-
-Serving blob data is facilitated by the :class:`kotti.filedepot.TweenFactory`.
-You should return a redirect to the concatenated Depot mountpoint and data path as the response of your view, and it will stream the blob from the storage to the client browser.
-If you append ``/download`` the content disposition will be ``attachment``, if you don't it will be ``inline``.
-This, for example is the ``inline-view`` view for a :class:`kotti.resources.File`::
-
-    @view_config(name='inline-view', context=File, permission='view')
-    def inline_view(context, request):
-        return HTTPSeeOther("/depot/{}".format(context.data.path))'
-
-If the used depot storage offers a ``public_url`` value for the blob, then the tween, instead of streaming the data, will redirect to that location.
-
-Testing UploadedFileField columns
----------------------------------
+Testing UploadedFileField Columns
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Because :class:`depot.manager.DepotManager` acts as a singleton, special care needs to be taken when testing features that involve saving data into ``UploadedFileField`` columns.
 
@@ -126,8 +183,8 @@ You can use a fixture called ``filedepot`` to have a mock file storage available
 
 If you're developing new depot file storages you should use the ``no_filedepots`` fixture, which resets the configured depots for the test run and restores the default depots back, as a teardown.
 
-Inheritance issues with UploadedFileField columns
--------------------------------------------------
+Inheritance Issues with UploadedFileField Columns
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 You should be aware that, presently, subclassing a model with an ``UploadedFileField`` column doesn't work properly.
 As a workaround, add a ``__declare_last__`` classmethod in your superclass model, similar to the one below, where we're fixing the ``data`` column of the ``File`` class. ::
@@ -168,5 +225,6 @@ Now you can invoke the migration with:::
     kotti-migrate-storage <config_uri> --from-storage dbfiles --to-storage localfs
 
 As always when dealing with migrations, make sure you backup your data first!
+
 
 .. _Depot: http://depot.readthedocs.org/en/latest/
