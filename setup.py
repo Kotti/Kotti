@@ -50,6 +50,7 @@ install_requires = [
     'pyramid_zcml',
     'repoze.lru',
     'repoze.workflow',
+    'rfc6266',
     'sqlalchemy>=1.0.0',
     'sqlalchemy-utils',
     'transaction>=1.1.0',

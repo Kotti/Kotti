@@ -1,20 +1,18 @@
 import logging
+import mimetypes
 import uuid
 from datetime import datetime
 from time import time
 
+import rfc6266
 from depot.fields.sqlalchemy import _SQLAMutationTracker
 from depot.io.interfaces import FileStorage
 from depot.manager import DepotManager
-from depot.middleware import DepotMiddleware
-from depot.middleware import FileServeApp
 from pyramid import tweens
-from pyramid.httpexceptions import HTTPBadRequest
 from pyramid.httpexceptions import HTTPMovedPermanently
 from pyramid.httpexceptions import HTTPNotFound
-from pyramid.httpexceptions import HTTPNotModified
+from pyramid.response import _BLOCK_SIZE
 from pyramid.response import FileIter
-from pyramid.response import FileResponse
 from pyramid.response import Response
 from sqlalchemy import Column
 from sqlalchemy import DateTime
@@ -24,8 +22,9 @@ from sqlalchemy import LargeBinary
 from sqlalchemy import String
 from sqlalchemy import Unicode
 from sqlalchemy.orm import deferred
+from unidecode import unidecode
 
-from kotti import Base
+from kotti import Base, get_settings
 from kotti import DBSession
 from kotti.util import camel_case_to_name
 from kotti.util import command
@@ -122,13 +121,27 @@ class DBStoredFile(Base):
         """
         return True
 
-    def seek(self, n):
-        """ Move the file cursor to position `n`
+    def seek(self, offset, whence=0):
+        """ Change stream position.
+
+        Change the stream position to the given byte offset. The offset is
+        interpreted relative to the position indicated by whence.
 
         :param n: Position for the cursor
         :type n: int
+
+        :param whence: * 0 -- start of stream (the default);
+                              offset should be zero or positive
+                       * 1 -- current stream position; offset may be negative
+                       * 2 -- end of stream; offset is usually negative
+        :type whence: int
         """
-        self._cursor = n
+        if whence == 0:
+            self._cursor = offset
+        elif whence in (1, 2):
+            self._cursor = self._cursor + offset
+        else:
+            raise ValueError('whence must be 0, 1 or 2')
 
     def tell(self):
         """ Returns current position of file cursor
@@ -307,55 +320,6 @@ class DBFileStorage(FileStorage):
         return file_or_id
 
 
-def extract_depot_settings(prefix="kotti.depot.", settings=None):
-    """ Merges items from a dictionary that have keys that start with `prefix`
-    to a list of dictionaries.
-
-    :param prefix: A dotted string representing the prefix for the common values
-    :type prefix: string
-
-    :param settings: A dictionary with settings. Result is extracted from this
-    :type settings: dict
-
-      >>> settings = {
-      ...     'kotti.depot_mountpoint': '/depot',
-      ...     'kotti.depot.0.backend': 'kotti.filedepot.DBFileStorage',
-      ...     'kotti.depot.0.file_storage': 'var/files',
-      ...     'kotti.depot.0.name': 'local',
-      ...     'kotti.depot.1.backend': 'depot.io.gridfs.GridStorage',
-      ...     'kotti.depot.1.name': 'mongodb',
-      ...     'kotti.depot.1.uri': 'localhost://',
-      ... }
-      >>> res = extract_depot_settings('kotti.depot.', settings)
-      >>> print sorted(res[0].items())
-      [('backend', 'kotti.filedepot.DBFileStorage'), ('file_storage', 'var/files'), ('name', 'local')]
-      >>> print sorted(res[1].items())
-      [('backend', 'depot.io.gridfs.GridStorage'), ('name', 'mongodb'), ('uri', 'localhost://')]
-    """
-
-    extracted = {}
-    for k, v in extract_from_settings(prefix, settings).items():
-        index, conf = k.split('.', 1)
-        index = int(index)
-        extracted.setdefault(index, {})
-        extracted[index][conf] = v
-
-    result = []
-    for k in sorted(extracted.keys()):
-        result.append(extracted[k])
-
-    return result
-
-
-def configure_filedepot(settings):
-
-    config = extract_depot_settings('kotti.depot.', settings)
-    for conf in config:
-        name = conf.pop('name')
-        if name not in DepotManager._depots:
-            DepotManager.configure(name, conf, prefix='')
-
-
 def migrate_storage(from_storage, to_storage):
 
     log = logging.getLogger(__name__)
@@ -410,95 +374,107 @@ def migrate_storages_command():  # pragma: no cover
     )
 
 
-def adjust_for_engine(conn, branch):
-    # adjust for engine type
+class StoredFileResponse(Response):
+    """ A Response object that can be used to serve an UploadedFile instance.
 
-    if conn.engine.dialect.name == 'mysql':  # pragma: no cover
-        from sqlalchemy.dialects.mysql.base import LONGBLOB
-        DBStoredFile.__table__.c.data.type = LONGBLOB()
-
-    # sqlite's Unicode columns return a buffer which can't be encoded by
-    # a json encoder. We have to convert to a unicode string so that the value
-    # can be saved corectly by
-    # :class:`depot.fields.sqlalchemy.upload.UploadedFile`
-
-    def patched_processed_result_value(self, value, dialect):
-        if not value:
-            return None
-        return self._upload_type.decode(unicode(value))
-
-    if conn.engine.dialect.name == 'sqlite':  # pragma: no cover
-        from depot.fields.sqlalchemy import UploadedFileField
-        UploadedFileField.process_result_value = patched_processed_result_value
-
-
-class FiledepotServeApp(FileServeApp):
-    """ Slighty modified version :class:`deport.middleware.FileServeApp` that
-    operates on a :class:`pyramid.request.Request` object instead of the WSGI
-    environment.
+    Code adapted from :class:`pyramid.response.FileResponse`.
     """
 
-    def has_been_modified(self, request, etag,
-                          last_modified):  # pragma: no cover (tested in depot)
-        unmodified = False
+    def __init__(self, f, request, disposition='attachment',
+                 cache_max_age=604800, content_type=None,
+                 content_encoding=None):
+        """
+        :param f: the ``UploadedFile`` file field value.
+        :type f: :class:`depot.io.interfaces.StoredFile`
 
-        if request.if_modified_since and last_modified and \
-                last_modified <= request.if_modified_since:
-            unmodified = True
+        :param request: Current request.
+        :type request: :class:`pyramid.request.Request`
 
-        if request.if_none_match and etag == request.if_none_match:
-            unmodified = True
+        :param disposition:
+        :type disposition:
 
-        return not unmodified
+        :param cache_max_age: The number of seconds that should be used to HTTP
+                              cache this response.
 
-    def __call__(self, request):  # pragma: no cover (tested in depot)
-        headers = []
-        timeout = self.cache_expires
-        etag = self.generate_etag()
-        headers += [('ETag', '%s' % etag),
-                    ('Cache-Control', 'max-age=%d, public' % timeout)]
+        :param content_type: The content_type of the response.
 
-        try:
-            has_been_modified = self.has_been_modified(request, etag,
-                                                       self.last_modified)
-        except RuntimeError:
-            return HTTPBadRequest(detail='ETag or If-Modified-Since headers '
-                                         'were malformed in request')
+        :param content_encoding: The content_encoding of the response.
+                                 It's generally safe to leave this set to
+                                 ``None`` if you're serving a binary file.
+                                 This argument will be ignored if you also
+                                 leave ``content-type`` as ``None``.
+        """
 
-        if not has_been_modified:
-            self.file.close()
-            HTTPNotModified(headers=headers)
+        if f.public_url:
+            raise HTTPMovedPermanently(f.public_url)
 
-        if request.path.split('/')[-1] == 'download':
-            disposition = 'attachment'
-        else:
-            disposition = 'inline'
+        content_encoding, content_type = self._get_type_and_encoding(
+            content_encoding, content_type, f)
 
-        headers.extend((
-            ('Expires', self.make_date(time() + timeout)),
-            ('Content-Type', str(self.content_type)),
-            ('Content-Length', str(self.content_length)),
-            ('Last-Modified', self.make_date(self.last_modified)),
-            ('Content-Disposition',
-             self.make_content_disposition(disposition, self.filename))
-        ))
-        response = Response(body=None, status=200, headerlist=headers,
-                            app_iter=FileIter(self.file),
-                            content_type=self.content_type)
+        super(StoredFileResponse, self).__init__(
+            conditional_response=True,
+            content_type=content_type,
+            content_encoding=content_encoding)
 
-        return response
+        app_iter = None
+        if request is not None:
+            environ = request.environ
+            if 'wsgi.file_wrapper' in environ:
+                app_iter = environ['wsgi.file_wrapper'](f, _BLOCK_SIZE)
+        if app_iter is None:
+            app_iter = FileIter(f)
+        self.app_iter = app_iter
+
+        # assignment of content_length must come after assignment of app_iter
+        self.content_length = f.content_length
+        self.last_modified = f.last_modified
+
+        if cache_max_age is not None:
+            self.cache_expires = cache_max_age
+            self.cache_control.public = True
+
+        self.etag = self.generate_etag(f)
+        self.content_disposition = rfc6266.build_header(
+            f.filename, disposition=disposition,
+            filename_compat=unidecode(f.filename))
+
+    def _get_type_and_encoding(self, content_encoding, content_type, f):
+        content_type = content_type or getattr(f, 'content_type', None)
+        if content_type is None:
+            content_type, content_encoding = \
+                mimetypes.guess_type(f.filename, strict=False)
+        if content_type is None:
+            content_type = 'application/octet-stream'
+        # str-ifying content_type is a workaround for a bug in Python 2.7.7
+        # on Windows where mimetypes.guess_type returns unicode for the
+        # content_type.
+        content_type = str(content_type)
+        return content_encoding, content_type
+
+    @classmethod
+    def generate_etag(self, f):
+        return '"%s-%s"' % (f.last_modified, f.content_length)
 
 
-class FiledepotResponse(FileResponse):
-    def __init__(self, path, request=None, cache_max_age=None,
-                 content_type=None, content_encoding=None):
-        super(FiledepotResponse, self).__init__(path, request=request,
-                                                cache_max_age=None,
-                                                content_type=None,
-                                                content_encoding=None)
+def uploaded_file_response(self, uploaded_file, disposition='inline'):
+    return StoredFileResponse(uploaded_file.file, self,
+                              disposition=disposition)
 
 
-class TweenFactory(DepotMiddleware):
+def uploaded_file_url(self, uploaded_file, disposition='inline'):
+    if disposition == 'attachment':
+        suffix = '/download'
+    else:
+        suffix = ''
+    url = '{}/{}/{}{}'.format(
+        self.application_url,
+        get_settings()['kotti.depot_mountpoint'],
+        uploaded_file.file['path'],
+        suffix)
+    return url
+
+
+class TweenFactory(object):
     """Factory for a Pyramid tween in charge of serving Depot files.
 
     This is the Pyramid tween version of
@@ -525,40 +501,131 @@ class TweenFactory(DepotMiddleware):
 
         DepotManager.set_middleware(self)
 
-    def __call__(self, request):
+    def url_for(self, path):
+        return u'/'.join((self.mountpoint, path))
 
+    def __call__(self, request):
+        """
+        :param request: Current request
+        :type request: :class:`kotti.request.Request`
+
+        :return: Respone object
+        :rtype: :class:`pyramid.response.Response`
+        """
+
+        # Only handle GET and HEAD requests for the mountpoint.
+        # All other requests are passed to downstream handlers.
         if request.method not in ('GET', 'HEAD') \
                 or not request.path.startswith(self.mountpoint):
-            return self.handler(request)
+            response = self.handler(request)
+            return response
 
+        # paths match this pattern
+        # /<mountpoint>/<depot name>/<file id>[/download]
         path = request.path.split('/')
         if len(path) and not path[0]:
             path = path[1:]
 
         if len(path) < 3:
-            return HTTPNotFound()
+            response = HTTPNotFound()
+            return response
 
         __, depot, fileid = path[:3]
         depot = DepotManager.get(depot)
         if not depot:
-            return HTTPNotFound()
+            response = HTTPNotFound()
+            return response
 
         try:
             f = depot.get(fileid)
         except (IOError, ValueError):
-            return HTTPNotFound()
+            response = HTTPNotFound()
+            return response
 
+        # if the file has a public_url, it's stored somewhere else (e.g. S3)
         public_url = f.public_url
         if public_url is not None:
-            HTTPMovedPermanently(public_url)
+            response = HTTPMovedPermanently(public_url)
+            return response
 
-        fileapp = FiledepotServeApp(f, self.cache_max_age,
-                                    self.replace_wsgi_filewrapper)
-        return fileapp(request)
+        # file is not directly accessible for user agents, serve it ourselves
+        if path[-1] == 'download':
+            disposition = 'attachment'
+        else:
+            disposition = 'inline'
+        response = StoredFileResponse(f, request, disposition=disposition)
+        return response
 
 
-def uploaded_file_response(uploaded_file, content_disposition='inline'):
-    pass
+def adjust_for_engine(conn, branch):
+    # adjust for engine type
+
+    if conn.engine.dialect.name == 'mysql':  # pragma: no cover
+        from sqlalchemy.dialects.mysql.base import LONGBLOB
+        DBStoredFile.__table__.c.data.type = LONGBLOB()
+
+    # sqlite's Unicode columns return a buffer which can't be encoded by
+    # a json encoder. We have to convert to a unicode string so that the value
+    # can be saved corectly by
+    # :class:`depot.fields.sqlalchemy.upload.UploadedFile`
+
+    def patched_processed_result_value(self, value, dialect):
+        if not value:
+            return None
+        return self._upload_type.decode(unicode(value))
+
+    if conn.engine.dialect.name == 'sqlite':  # pragma: no cover
+        from depot.fields.sqlalchemy import UploadedFileField
+        UploadedFileField.process_result_value = patched_processed_result_value
+
+
+def extract_depot_settings(prefix="kotti.depot.", settings=None):
+    """ Merges items from a dictionary that have keys that start with `prefix`
+    to a list of dictionaries.
+
+    :param prefix: A dotted string representing the prefix for the common values
+    :type prefix: string
+
+    :param settings: A dictionary with settings. Result is extracted from this
+    :type settings: dict
+
+      >>> settings = {
+      ...     'kotti.depot_mountpoint': '/depot',
+      ...     'kotti.depot.0.backend': 'kotti.filedepot.DBFileStorage',
+      ...     'kotti.depot.0.file_storage': 'var/files',
+      ...     'kotti.depot.0.name': 'local',
+      ...     'kotti.depot.1.backend': 'depot.io.gridfs.GridStorage',
+      ...     'kotti.depot.1.name': 'mongodb',
+      ...     'kotti.depot.1.uri': 'localhost://',
+      ... }
+      >>> res = extract_depot_settings('kotti.depot.', settings)
+      >>> print sorted(res[0].items())
+      [('backend', 'kotti.filedepot.DBFileStorage'), ('file_storage', 'var/files'), ('name', 'local')]
+      >>> print sorted(res[1].items())
+      [('backend', 'depot.io.gridfs.GridStorage'), ('name', 'mongodb'), ('uri', 'localhost://')]
+    """
+
+    extracted = {}
+    for k, v in extract_from_settings(prefix, settings).items():
+        index, conf = k.split('.', 1)
+        index = int(index)
+        extracted.setdefault(index, {})
+        extracted[index][conf] = v
+
+    result = []
+    for k in sorted(extracted.keys()):
+        result.append(extracted[k])
+
+    return result
+
+
+def configure_filedepot(settings):
+
+    config = extract_depot_settings('kotti.depot.', settings)
+    for conf in config:
+        name = conf.pop('name')
+        if name not in DepotManager._depots:
+            DepotManager.configure(name, conf, prefix='')
 
 
 def includeme(config):
@@ -573,7 +640,7 @@ def includeme(config):
                      under=tweens.INGRESS)
     config.add_request_method(uploaded_file_response,
                               name='uploaded_file_response')
-    # config.add_request_method(depot_url, name='depot_url')
+    config.add_request_method(uploaded_file_url, name='uploaded_file_url')
 
     from kotti.events import objectevent_listeners
     from kotti.events import ObjectInsert

@@ -61,6 +61,7 @@ repoze.lru==0.6
 repoze.sendmail==4.2
 repoze.workflow==0.6.1
 repoze.zcml==1.0b1
+rfc6266==0.0.4
 shutilwhich==1.1.0
 six==1.10.0
 transaction==1.4.4

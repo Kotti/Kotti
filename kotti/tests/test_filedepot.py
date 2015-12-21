@@ -266,6 +266,7 @@ class TestTween:
         # the attachments (created by the filters) are served by the
         # FiledepotServeApp
         resp = webtest.app.get(img.data['thumb_128x128_url'])
+
         assert resp.etag is not None
         assert resp.cache_control.max_age == 604800
         assert resp.body.startswith('\x89PNG')

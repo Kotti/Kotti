@@ -9,9 +9,9 @@ Fixture dependencies
 
    digraph kotti_fixtures {
       "allwarnings";
-      "mock_filedepot";
       "app" -> "webtest";
       "config" -> "db_session";
+      "config" -> "depot_tween";
       "config" -> "dummy_request";
       "config" -> "events";
       "config" -> "workflow";
@@ -22,11 +22,16 @@ Fixture dependencies
       "custom_settings" -> "unresolved_settings";
       "db_session" -> "app";
       "db_session" -> "browser";
-      "db_session" -> "root";
       "db_session" -> "filedepot";
+      "db_session" -> "root";
       "dummy_mailer" -> "app";
       "dummy_mailer";
+      "dummy_request" -> "depot_tween";
       "events" -> "app";
+      "filedepot" -> "depot_tween";
+      "mock_filedepot" -> "depot_tween";
+      "mock_filedepot";
+      "no_filedepots" -> "depot_tween";
       "settings" -> "config";
       "settings" -> "content";
       "setup_app" -> "app";
@@ -310,7 +315,7 @@ class TestStorage:
 
         f = MagicMock(wraps=StringIO(info['content']))
         f.seek(0)
-        f.public_url = ''
+        f.public_url = None
         f.filename = info['filename']
         f.content_type = info['content_type']
         f.content_length = len(info['content'])
@@ -339,12 +344,17 @@ class TestStorage:
 
 
 @fixture
-def depot_tween(request, config):
+def depot_tween(request, config, dummy_request):
     """ Sets up the Depot tween and patches Depot's ``set_middleware`` to
     suppress exceptions on subsequent calls """
 
     from depot.manager import DepotManager
     from kotti.filedepot import TweenFactory
+    from kotti.filedepot import uploaded_file_response
+    from kotti.filedepot import uploaded_file_url
+
+    dummy_request.__class__.uploaded_file_response = uploaded_file_response
+    dummy_request.__class__.uploaded_file_url = uploaded_file_url
 
     _set_middleware = DepotManager.set_middleware
     TweenFactory(None, config.registry)
