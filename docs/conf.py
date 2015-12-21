@@ -27,7 +27,7 @@ extensions = [
     'sphinx.ext.viewcode',
     ]
 
-copyright = u'2012-2014, Kotti developers'.format(date.today().year)
+copyright = u'2012-{0}, Kotti developers'.format(date.today().year)
 exclude_patterns = ['_build', '_themes']
 master_doc = 'index'
 project = u'Kotti'
