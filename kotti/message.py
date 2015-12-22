@@ -56,9 +56,9 @@ def validate_token(user, token, valid_hrs=24):
         seconds = float(token.split(':')[1])
     except (IndexError, ValueError):
         return False
-    if token == make_token(user, seconds):
-        if time.time() - seconds < 60 * 60 * valid_hrs:
-            return True
+    if token == make_token(user, seconds) \
+            and time.time() - seconds < 60 * 60 * valid_hrs:
+        return True
     return False
 
 

@@ -419,9 +419,8 @@ class TypeInfo(object):
         match_score = 0
 
         for mt in self.uploadable_mimetypes:
-            if fnmatch(mimetype, mt):
-                if len(mt) > match_score:
-                    match_score = len(mt)
+            if fnmatch(mimetype, mt) and len(mt) > match_score:
+                match_score = len(mt)
 
         return match_score
 
