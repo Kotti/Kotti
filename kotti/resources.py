@@ -17,7 +17,6 @@ from UserDict import DictMixin
 
 from depot.fields.sqlalchemy import _SQLAMutationTracker
 from depot.fields.sqlalchemy import UploadedFileField
-from kotti import _resolve_dotted
 from pyramid.decorator import reify
 from pyramid.traversal import resource_path
 from sqlalchemy import Boolean
@@ -31,6 +30,7 @@ from sqlalchemy import Unicode
 from sqlalchemy import UnicodeText
 from sqlalchemy import UniqueConstraint
 from sqlalchemy.ext.associationproxy import association_proxy
+from sqlalchemy.ext.declarative import declared_attr
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.ext.orderinglist import ordering_list
 from sqlalchemy.orm import backref
@@ -43,6 +43,7 @@ from sqlalchemy.util import classproperty
 from transaction import commit
 from zope.interface import implementer
 
+from kotti import _resolve_dotted
 from kotti import Base
 from kotti import DBSession
 from kotti import get_settings
@@ -52,10 +53,8 @@ from kotti.interfaces import IContent
 from kotti.interfaces import IDefaultWorkflow
 from kotti.interfaces import IDocument
 from kotti.interfaces import IFile
-from kotti.interfaces import IImage
 from kotti.interfaces import INode
 from kotti.migrate import stamp_heads
-from kotti.security import has_permission
 from kotti.security import PersistentACLMixin
 from kotti.security import view_permitted
 from kotti.sqla import ACLType
@@ -161,7 +160,7 @@ class ContainerMixin(object, DictMixin):
 
         return [
             c for c in self.children
-            if has_permission(permission, c, request)
+            if request.has_permission(permission, c)
         ]
 
 
@@ -655,6 +654,27 @@ class SaveDataMixin(object):
         See http://stackoverflow.com/questions/30433960/how-to-use-declare-last-in-sqlalchemy-1-0  # noqa
     """
 
+    #: The filename is used in the attachment view to give downloads
+    #: the original filename it had when it was uploaded.
+    #: (:class:`sqlalchemy.types.Unicode`)
+    filename = Column(Unicode(100))
+    #: MIME type of the file
+    #: (:class:`sqlalchemy.types.String`)
+    mimetype = Column(String(100))
+    #: Size of the file in bytes
+    #: (:class:`sqlalchemy.types.Integer`)
+    size = Column(Integer())
+
+    #: Filedepot mapped blob
+    #: (:class:`depot.fileds.sqlalchemy.UploadedFileField`)
+    @declared_attr
+    def data(cls):
+
+        return cls.__table__.c.get('data',
+                                   Column(UploadedFileField(cls.data_filters)))
+
+    data_filters = ()
+
     @classmethod
     def __declare_last__(cls):
         """ Unconfigure the event set in _SQLAMutationTracker,
@@ -698,48 +718,6 @@ class SaveDataMixin(object):
 
         return newvalue
 
-
-@implementer(IFile)
-class File(Content, SaveDataMixin):
-    """File adds some attributes to :class:`~kotti.resources.Content` that are
-       useful for storing binary data.
-    """
-    #: Primary key column in the DB
-    #: (:class:`sqlalchemy.types.Integer`)
-    id = Column(Integer(), ForeignKey('contents.id'), primary_key=True)
-    #: Filedepot mapped blob
-    #: (:class:`depot.fileds.sqlalchemy.UploadedFileField`)
-    data = Column(UploadedFileField)
-    #: The filename is used in the attachment view to give downloads
-    #: the original filename it had when it was uploaded.
-    #: (:class:`sqlalchemy.types.Unicode`)
-    filename = Column(Unicode(100))
-    #: MIME type of the file
-    #: (:class:`sqlalchemy.types.String`)
-    mimetype = Column(String(100))
-    #: Size of the file in bytes
-    #: (:class:`sqlalchemy.types.Integer`)
-    size = Column(Integer())
-
-    type_info = Content.type_info.copy(
-        name=u'File',
-        title=_(u'File'),
-        add_view=u'add_file',
-        addable_to=[u'Document'],
-        selectable_default_views=[],
-        uploadable_mimetypes=['*', ],
-        )
-
-    def __init__(self, data=None, filename=None, mimetype=None, size=None,
-                 **kwargs):
-
-        super(File, self).__init__(**kwargs)
-
-        self.filename = filename
-        self.mimetype = mimetype
-        self.size = size
-        self.data = data
-
     @classmethod
     def from_field_storage(cls, fs):
         """ Create and return an instance of this class from a file upload
@@ -758,20 +736,34 @@ class File(Content, SaveDataMixin):
 
         return cls(data=fs)
 
+    def __init__(self, data=None, filename=None, mimetype=None, size=None,
+                 **kwargs):
 
-@implementer(IImage)
-class Image(File):
-    """Image doesn't add anything to :class:`~kotti.resources.File`, but images
-       have different views, that e.g. support on the fly scaling.
+        super(SaveDataMixin, self).__init__(**kwargs)
+
+        self.filename = filename
+        self.mimetype = mimetype
+        self.size = size
+        self.data = data
+
+
+@implementer(IFile)
+class File(SaveDataMixin, Content):
+    """File adds some attributes to :class:`~kotti.resources.Content` that are
+       useful for storing binary data.
     """
 
-    id = Column(Integer(), ForeignKey('files.id'), primary_key=True)
+    #: Primary key column in the DB
+    #: (:class:`sqlalchemy.types.Integer`)
+    id = Column(Integer(), ForeignKey('contents.id'), primary_key=True)
 
-    type_info = File.type_info.copy(
-        name=u'Image',
-        title=_(u'Image'),
-        add_view=u'add_image',
-        uploadable_mimetypes=['image/*', ],
+    type_info = Content.type_info.copy(
+        name=u'File',
+        title=_(u'File'),
+        add_view=u'add_file',
+        addable_to=[u'Document'],
+        selectable_default_views=[],
+        uploadable_mimetypes=['*', ],
         )
 
 
@@ -864,3 +856,14 @@ def initialize_sql(engine, drop_all=False):
     commit()
 
     return DBSession
+
+
+# DEPRECATED
+
+from zope.deprecation.deprecation import deprecated
+from kotti_image.resources import Image
+
+__ = Image
+deprecated('Image',
+           'Image was outfactored to the kotti_image package.  '
+           'Please import from there.')

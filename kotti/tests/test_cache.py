@@ -24,9 +24,9 @@ def delta(date_string):
 
 @pytest.fixture
 def cachetest_content(root, filedepot):
-    image = asset('sendeschluss.jpg').read()
+    image = asset('sendeschluss.jpg')
     root['textfile'] = File("file contents", u"mytext.txt", u"text/plain")
-    root['image'] = Image(image, u"sendeschluss.jpg", u"image/jpeg")
+    root['image'] = Image(image.read(), u"sendeschluss.jpg", u"image/jpeg")
 
 
 class TestSetMaxAge:
@@ -110,15 +110,6 @@ class TestBrowser:
         d = delta(resp.headers.get('Expires'))
         assert (d.days, d.seconds) < (0, 0)
 
-        # media content
-        resp = webtest.app.get('/textfile/inline-view')
-        assert resp.headers.get('X-Caching-Policy') == 'Cache Media Content'
-        assert resp.headers.get('Cache-Control') == 'max-age=14400'
-        d = delta(resp.headers.get('Expires'))
-        assert (d.days, d.seconds) > (0, 14000)
-        resp = webtest.app.get('/image/inline-view')
-        assert resp.headers.get('X-Caching-Policy') == 'Cache Media Content'
-
         # resources
         resp = webtest.app.get('/static-kotti/base.css')
         assert resp.headers.get('X-Caching-Policy') == 'Cache Resource'
@@ -135,17 +126,23 @@ class TestBrowser:
         resp = webtest.app.get('/this-isnt-here', status=404)
         assert 'X-Caching-Policy' not in resp.headers
 
+        # media content
+        resp = webtest.app.get('/textfile/inline-view')
+        assert resp.headers.get('X-Caching-Policy') == 'Cache Media Content'
+        assert resp.headers.get('Cache-Control') == 'max-age=14400,public'
+        d = delta(resp.headers.get('Expires'))
+        assert (d.days, d.seconds) > (0, 14000)
+        resp = webtest.app.get('/image/inline-view')
+        assert resp.headers.get('X-Caching-Policy') == 'Cache Media Content'
+        assert resp.headers.get('Cache-Control') == 'max-age=14400,public'
+        d = delta(resp.headers.get('Expires'))
+        assert (d.days, d.seconds) > (0, 14000)
+
     @pytest.mark.user('admin')
     def test_cache_auth(self, webtest, cachetest_content):
 
         # html
         resp = webtest.app.get('/')
-        assert resp.headers.get('X-Caching-Policy') == 'No Cache'
-
-        # media content
-        resp = webtest.app.get('/textfile/inline-view')
-        assert resp.headers.get('X-Caching-Policy') == 'No Cache'
-        resp = webtest.app.get('/image/inline-view')
         assert resp.headers.get('X-Caching-Policy') == 'No Cache'
 
         # resources
@@ -155,3 +152,15 @@ class TestBrowser:
         # 404
         resp = webtest.app.get('/this-isnt-here', status=404)
         assert 'X-Caching-Policy' not in resp.headers
+
+        # media content
+        resp = webtest.app.get('/textfile/inline-view')
+        resp.headers.get('X-Caching-Policy') == 'No Cache'
+        assert resp.headers.get('Cache-Control') == 'max-age=0,public'
+        d = delta(resp.headers.get('Expires'))
+        assert (d.days, d.seconds) <= (0, 0)
+        resp = webtest.app.get('/image/inline-view')
+        resp.headers.get('X-Caching-Policy') == 'No Cache'
+        assert resp.headers.get('Cache-Control') == 'max-age=0,public'
+        d = delta(resp.headers.get('Expires'))
+        assert (d.days, d.seconds) <= (0, 0)

@@ -41,6 +41,7 @@ js.jqueryui-tagit==2.0.24-2
 js.modernizr==2.5.3.1
 js.select2==3.4.1
 kotti-tinymce==0.5.4
+kotti-image==0.1.2
 lingua==4.5.1
 peppercorn==0.5
 plone.scale==1.4
@@ -60,6 +61,7 @@ repoze.lru==0.6
 repoze.sendmail==4.2
 repoze.workflow==0.6.1
 repoze.zcml==1.0b1
+rfc6266==0.0.4
 shutilwhich==1.1.0
 six==1.10.0
 transaction==1.4.4
