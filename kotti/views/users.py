@@ -138,13 +138,13 @@ def share_node(context, request):
 
 def name_pattern_validator(node, value):
     """
-      >>> name_pattern_validator(None, u'bob')
-      >>> name_pattern_validator(None, u'b ob')
-      Traceback (most recent call last):
-      Invalid: <unprintable Invalid object>
-      >>> name_pattern_validator(None, u'b:ob')
-      Traceback (most recent call last):
-      Invalid: <unprintable Invalid object>
+        >>> name_pattern_validator(None, u'bob')
+        >>> name_pattern_validator(None, u'b ob')
+        Traceback (most recent call last):
+        Invalid: <unprintable Invalid object>
+        >>> name_pattern_validator(None, u'b:ob')
+        Traceback (most recent call last):
+        Invalid: <unprintable Invalid object>
     """
     valid_pattern = re.compile(r"^[a-zA-Z0-9_\-\.]+$")
     if not valid_pattern.match(value):

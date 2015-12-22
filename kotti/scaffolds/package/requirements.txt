@@ -1,1 +1,1 @@
--r https://raw.githubusercontent.com/Kotti/Kotti/stable/requirements.txt
+-r https://raw.githubusercontent.com/Kotti/Kotti/testing/requirements.txt

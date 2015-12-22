@@ -14,7 +14,6 @@ from deform.widget import TextAreaWidget
 
 from kotti.resources import Document
 from kotti.resources import File
-from kotti.resources import Image
 from kotti.resources import Node
 from kotti.util import _
 from kotti.util import _to_fieldstorage
@@ -31,7 +30,8 @@ class ContentSchema(colander.MappingSchema):
     title = colander.SchemaNode(
         colander.String(),
         title=_(u'Title'),
-        validator=colander.Length(max=Node.title.property.columns[0].type.length),
+        validator=colander.Length(
+            max=Node.title.property.columns[0].type.length),
         )
     description = colander.SchemaNode(
         colander.String(),
@@ -133,15 +133,6 @@ class FileAddForm(AddFormView):
         return item
 
 
-class ImageEditForm(FileEditForm):
-    pass
-
-
-class ImageAddForm(FileAddForm):
-    item_type = _(u"Image")
-    item_class = Image
-
-
 def includeme(config):
     config.add_view(
         DocumentEditForm,
@@ -173,17 +164,13 @@ def includeme(config):
         renderer='kotti:templates/edit/node.pt',
         )
 
-    config.add_view(
-        ImageEditForm,
-        context=Image,
-        name='edit',
-        permission='edit',
-        renderer='kotti:templates/edit/node.pt',
-        )
+# DEPRECATED
 
-    config.add_view(
-        ImageAddForm,
-        name=Image.type_info.add_view,
-        permission=Image.type_info.add_permission,
-        renderer='kotti:templates/edit/node.pt',
-        )
+from zope.deprecation import deprecated
+from kotti_image.views.edit import ImageAddForm
+from kotti_image.views.edit import ImageEditForm
+__ = ImageAddForm, ImageEditForm   # pyflakes
+
+deprecated(('ImageAddForm', 'ImageEditForm'),
+           'Image was outfactored to the kotti_image package.  '
+           'Please import from there.')

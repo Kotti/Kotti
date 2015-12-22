@@ -6,7 +6,6 @@ from pyramid.httpexceptions import HTTPFound
 from pyramid.url import resource_url
 from pyramid.view import view_config
 from pyramid.exceptions import Forbidden
-from pyramid.security import has_permission
 from pyramid.view import view_defaults
 from zope.deprecation import deprecated
 
@@ -140,7 +139,7 @@ class NodeActions(object):
             item = DBSession.query(Node).get(id)
             if item is not None:
                 if action == 'cut':
-                    if not has_permission('edit', item, self.request):
+                    if not self.request.has_permission('edit', item):
                         raise Forbidden()
                     item.__parent__.children.remove(item)
                     item.name = title_to_name(item.name,
