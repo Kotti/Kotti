@@ -1,5 +1,4 @@
 import pkg_resources
-
 from sqlalchemy import engine_from_config
 from sqlalchemy import MetaData
 from sqlalchemy.ext.declarative import declarative_base
@@ -61,7 +60,6 @@ conf_defaults = {
     'kotti.available_types': ' '.join([
         'kotti.resources.Document',
         'kotti.resources.File',
-        'kotti.resources.Image',
         ]),
     'kotti.base_includes': ' '.join([
         'kotti',
@@ -77,7 +75,6 @@ conf_defaults = {
         'kotti.views.edit.default_views',
         'kotti.views.edit.upload',
         'kotti.views.file',
-        'kotti.views.image',
         'kotti.views.login',
         'kotti.views.navigation',
         'kotti.views.users',
@@ -87,6 +84,7 @@ conf_defaults = {
     'kotti.configurators': '',
     'kotti.date_format': 'medium',
     'kotti.datetime_format': 'medium',
+    'kotti.depot_mountpoint': '/depot',
     'kotti.depot.0.backend': 'kotti.filedepot.DBFileStorage',
     'kotti.depot.0.name': 'dbfiles',
     'kotti.fanstatic.edit_needed': 'kotti.fanstatic.edit_needed',
@@ -200,6 +198,10 @@ def base_configure(global_config, **settings):
     for key, value in settings.items():
         if key.startswith('kotti') and isinstance(value, basestring):
             settings[key] = unicode(value, 'utf8')
+
+    # will be removed in 2.0
+    import kotti_image
+    kotti_image.kotti_configure(settings)
 
     # Allow extending packages to change 'settings' w/ Python:
     k = 'kotti.configurators'

@@ -39,10 +39,13 @@ def get_appstruct(context, schema):
 class ObjectType(colander.SchemaType):
     """ A type leaving the value untouched.
     """
-    def serialize(self, node, value):
+
+    @classmethod
+    def serialize(cls, node, value):
         return value
 
-    def deserialize(self, node, value):
+    @classmethod
+    def deserialize(cls, node, value):
         return value
 
 

@@ -1,5 +1,3 @@
-from warnings import catch_warnings
-
 from pytest import mark
 from pytest import raises
 from pyramid.security import ALL_PERMISSIONS
@@ -457,28 +455,6 @@ class TestTypeInfo:
         Document.type_info.add_selectable_default_view('one', 'two')
         assert ('one', 'two') in Document.type_info.selectable_default_views
         assert ('one', 'two') not in Content.type_info.selectable_default_views
-
-    def test_action_links_deprecated(self, allwarnings):
-        from kotti.resources import TypeInfo
-        from kotti.util import LinkParent
-
-        my_item = object()
-        with catch_warnings(record=True) as wngs:
-            # If there's a last LinkParent item, we'll assume that is
-            # the action menu.
-            TypeInfo(
-                edit_links=[LinkParent('foo', [])],
-                action_links=[my_item],
-                )
-            assert wngs[0].category == DeprecationWarning
-
-        with raises(ValueError):
-            # If there's no last LinkParent item, we'll raise an
-            # error, since we can't do anything useful with the link.
-            TypeInfo(
-                edit_links=[],
-                action_links=[my_item],
-                )
 
     def test_type_info_add_permission_default(self):
         from kotti.resources import TypeInfo

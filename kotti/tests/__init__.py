@@ -9,9 +9,9 @@ Fixture dependencies
 
    digraph kotti_fixtures {
       "allwarnings";
-      "mock_filedepot";
       "app" -> "webtest";
       "config" -> "db_session";
+      "config" -> "depot_tween";
       "config" -> "dummy_request";
       "config" -> "events";
       "config" -> "workflow";
@@ -22,11 +22,16 @@ Fixture dependencies
       "custom_settings" -> "unresolved_settings";
       "db_session" -> "app";
       "db_session" -> "browser";
-      "db_session" -> "root";
       "db_session" -> "filedepot";
+      "db_session" -> "root";
       "dummy_mailer" -> "app";
       "dummy_mailer";
+      "dummy_request" -> "depot_tween";
       "events" -> "app";
+      "filedepot" -> "depot_tween";
+      "mock_filedepot" -> "depot_tween";
+      "mock_filedepot";
+      "no_filedepots" -> "depot_tween";
       "settings" -> "config";
       "settings" -> "content";
       "setup_app" -> "app";
@@ -41,11 +46,26 @@ Fixture dependencies
 # public pytest fixtures
 
 import warnings
+from datetime import datetime
 
 from pytest import fixture
 from mock import MagicMock
 
-from datetime import datetime
+from kotti import testing
+
+
+@fixture
+def image_asset():
+    """ Return an image file """
+
+    return testing.asset('sendeschluss.jpg')
+
+
+@fixture
+def image_asset2():
+    """ Return another image file """
+
+    return testing.asset('logo.png')
 
 
 @fixture
@@ -217,7 +237,7 @@ def events(config, request):
 
 
 @fixture
-def setup_app(unresolved_settings):
+def setup_app(unresolved_settings, filedepot):
     from kotti import base_configure
     config = base_configure({}, **unresolved_settings)
     return config.make_wsgi_app()
@@ -289,13 +309,13 @@ class TestStorage:
         self._storage.setdefault(0)
 
     def get(self, id):
-        info = self._storage[id]
+        info = self._storage[int(id)]
 
         from StringIO import StringIO
 
         f = MagicMock(wraps=StringIO(info['content']))
         f.seek(0)
-        f.public_url = ''
+        f.public_url = None
         f.filename = info['filename']
         f.content_type = info['content_type']
         f.content_length = len(info['content'])
@@ -308,8 +328,12 @@ class TestStorage:
         _id = max(self._storage) + 1
         filename = filename or getattr(content, 'filename', None)
         content_type = content_type or getattr(content, 'type', None)
-        if not isinstance(content, str):
+
+        if hasattr(content, 'file') and hasattr(content.file, 'read'):
             content = content.file.read()
+        elif hasattr(content, 'read'):
+            content = content.read()
+
         self._storage[_id] = {'content': content,
                               'filename': filename,
                               'content_type': content_type}
@@ -320,7 +344,35 @@ class TestStorage:
 
 
 @fixture
-def mock_filedepot(request):
+def depot_tween(request, config, dummy_request):
+    """ Sets up the Depot tween and patches Depot's ``set_middleware`` to
+    suppress exceptions on subsequent calls """
+
+    from depot.manager import DepotManager
+    from kotti.filedepot import TweenFactory
+    from kotti.filedepot import uploaded_file_response
+    from kotti.filedepot import uploaded_file_url
+
+    dummy_request.__class__.uploaded_file_response = uploaded_file_response
+    dummy_request.__class__.uploaded_file_url = uploaded_file_url
+
+    _set_middleware = DepotManager.set_middleware
+    TweenFactory(None, config.registry)
+
+    @classmethod
+    def set_middleware_patched(cls, mw):
+        pass
+
+    DepotManager.set_middleware = set_middleware_patched
+
+    def restore():
+        DepotManager.set_middleware = _set_middleware
+
+    request.addfinalizer(restore)
+
+
+@fixture
+def mock_filedepot(request, depot_tween):
     """ Configures a mock depot store for :class:`depot.manager.DepotManager`
 
     This filedepot is not integrated with dbsession.
@@ -328,29 +380,24 @@ def mock_filedepot(request):
     """
     from depot.manager import DepotManager
 
-    _old_depots = DepotManager._depots
-    _old_default_depot = DepotManager._default_depot
     DepotManager._depots = {
         'mockdepot': MagicMock(wraps=TestStorage())
     }
     DepotManager._default_depot = 'mockdepot'
 
     def restore():
-        DepotManager._depots = _old_depots
-        DepotManager._default_depot = _old_default_depot
+        DepotManager._clear()
 
     request.addfinalizer(restore)
 
 
 @fixture
-def filedepot(db_session, request):
+def filedepot(db_session, request, depot_tween):
     """ Configures a dbsession integrated mock depot store for
     :class:`depot.manager.DepotManager`
     """
     from depot.manager import DepotManager
 
-    _old_depots = DepotManager._depots
-    _old_default_depot = DepotManager._default_depot
     DepotManager._depots = {
         'filedepot': MagicMock(wraps=TestStorage())
     }
@@ -358,27 +405,22 @@ def filedepot(db_session, request):
 
     def restore():
         db_session.rollback()
-        DepotManager._depots = _old_depots
-        DepotManager._default_depot = _old_default_depot
+        DepotManager._clear()
 
     request.addfinalizer(restore)
 
 
 @fixture
-def no_filedepots(db_session, request):
+def no_filedepots(db_session, request, depot_tween):
     """ A filedepot fixture to empty and then restore DepotManager configuration
     """
     from depot.manager import DepotManager
-
-    _old_depots = DepotManager._depots
-    _old_default_depot = DepotManager._default_depot
 
     DepotManager._depots = {}
     DepotManager._default_depot = None
 
     def restore():
         db_session.rollback()
-        DepotManager._depots = _old_depots
-        DepotManager._default_depot = _old_default_depot
+        DepotManager._clear()
 
     request.addfinalizer(restore)
