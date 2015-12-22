@@ -355,7 +355,8 @@ class GroupAddFormView(UserAddFormView):
     buttons = (Button('add_group', _(u'Add Group')),
                Button('cancel', _(u'Cancel')))
 
-    def schema_factory(self):
+    @classmethod
+    def schema_factory(cls):
         schema = group_schema()
         del schema['active']
         return schema

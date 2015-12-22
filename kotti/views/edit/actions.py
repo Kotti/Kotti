@@ -266,7 +266,7 @@ class NodeActions(object):
         :rtype: pyramid.httpexceptions.HTTPFound or dict
         """
 
-        action = self.request.POST.get(u'delete', None)
+        action = self.request.POST.get(u'delete')
         if action is not None:
 
             parent = self.context.__parent__

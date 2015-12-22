@@ -438,7 +438,8 @@ class StoredFileResponse(Response):
             f.filename, disposition=disposition,
             filename_compat=unidecode(f.filename))
 
-    def _get_type_and_encoding(self, content_encoding, content_type, f):
+    @classmethod
+    def _get_type_and_encoding(cls, content_encoding, content_type, f):
         content_type = content_type or getattr(f, 'content_type', None)
         if content_type is None:
             content_type, content_encoding = \
@@ -452,8 +453,8 @@ class StoredFileResponse(Response):
         return content_encoding, content_type
 
     @classmethod
-    def generate_etag(self, f):
-        return '"%s-%s"' % (f.last_modified, f.content_length)
+    def generate_etag(cls, f):
+        return '"{0}-{1}"'.format(f.last_modified, f.content_length)
 
 
 def uploaded_file_response(self, uploaded_file, disposition='inline'):

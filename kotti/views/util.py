@@ -137,7 +137,8 @@ class TemplateAPI(object):
         self.slots = Slots(context, request)
         self.__dict__.update(kwargs)
 
-    def is_location(self, context):
+    @classmethod
+    def is_location(cls, context):
         """Does `context` implement :class:`pyramid.interfaces.ILocation`?
 
         :param context: The context.
@@ -333,7 +334,8 @@ class TemplateAPI(object):
         return format_currency(n, currency,
                                format=format, locale=self.locale_name)
 
-    def get_type(self, name):
+    @classmethod
+    def get_type(cls, name):
         for class_ in get_settings()['kotti.available_types']:
             if class_.type_info.name == name:
                 return class_
@@ -358,7 +360,8 @@ class TemplateAPI(object):
         return [l for l in CONTROL_PANEL_LINKS
                 if l.visible(self.root, self.request)]
 
-    def sanitize(self, html, sanitizer='default'):
+    @classmethod
+    def sanitize(cls, html, sanitizer='default'):
         """ Convenience wrapper for :func:`kotti.sanitizers.sanitize`.
 
         :param html: HTML to be sanitized
