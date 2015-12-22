@@ -321,7 +321,8 @@ class UserAddFormView(AddFormView):
     buttons = (Button('add_user', _(u'Add User')),
                Button('cancel', _(u'Cancel')))
 
-    def schema_factory(self):
+    @staticmethod
+    def schema_factory():
         schema = user_schema()
         del schema['active']
         schema.add(colander.SchemaNode(
@@ -355,8 +356,8 @@ class GroupAddFormView(UserAddFormView):
     buttons = (Button('add_group', _(u'Add Group')),
                Button('cancel', _(u'Cancel')))
 
-    @classmethod
-    def schema_factory(cls):
+    @staticmethod
+    def schema_factory():
         schema = group_schema()
         del schema['active']
         return schema
@@ -439,7 +440,8 @@ class UserEditFormView(EditFormView):
     def success_url(self):
         return self.request.url
 
-    def schema_factory(self):
+    @staticmethod
+    def schema_factory():
         return user_schema(PrincipalBasic())
 
 
@@ -449,7 +451,8 @@ class UserManageFormView(UserEditFormView):
                Button('cancel', _(u'Cancel')),
                Button('delete', _(u'Delete'), css_class='btn btn-danger'))
 
-    def schema_factory(self):
+    @staticmethod
+    def schema_factory():
         schema = user_schema()
         del schema['name']
         return schema
@@ -481,7 +484,9 @@ class UserManageFormView(UserEditFormView):
 
 
 class GroupManageFormView(UserManageFormView):
-    def schema_factory(self):
+
+    @staticmethod
+    def schema_factory():
         schema = group_schema()
         del schema['name']
         del schema['active']

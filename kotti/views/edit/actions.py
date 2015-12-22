@@ -398,7 +398,7 @@ class NodeActions(object):
         if 'change_state' in self.request.POST:
             ids = self.request.POST.getall('children-to-change-state')
             to_state = self.request.POST.get('to-state', u'no-change')
-            include_children = self.request.POST.get('include-children', None)
+            include_children = self.request.POST.get('include-children')
             if to_state != u'no-change':
                 items = DBSession.query(Node).filter(Node.id.in_(ids)).all()
                 for item in items:

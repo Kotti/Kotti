@@ -689,8 +689,8 @@ class SaveDataMixin(object):
         # enables proper registration on its subclasses
         event.listen(cls.data, 'set', cls._save_data, retval=True)
 
-    @classmethod
-    def _save_data(cls, target, value, oldvalue, initiator):
+    @staticmethod
+    def _save_data(target, value, oldvalue, initiator):
         """ Refresh metadata and save the binary data to the data field.
 
         :param target: The File instance

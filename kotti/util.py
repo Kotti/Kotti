@@ -149,7 +149,8 @@ class LinkRenderer(LinkBase):
     def __call__(self, context, request):
         return TemplateStructure(render_view(context, request, name=self.name))
 
-    def selected(self, context, request):
+    @staticmethod
+    def selected(context, request):
         return False
 
 

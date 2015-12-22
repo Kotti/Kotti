@@ -91,7 +91,8 @@ class PackageEnvironment(object):
                                 version_table=self.version_table, **kw):
             self.script_dir.run_env()
 
-    def _make_config(self, location):
+    @staticmethod
+    def _make_config(location):
         cfg = Config()
         cfg.set_main_option("script_location", location)
         cfg.set_main_option("sqlalchemy.url", get_settings()['sqlalchemy.url'])

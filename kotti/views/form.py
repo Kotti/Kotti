@@ -40,12 +40,12 @@ class ObjectType(colander.SchemaType):
     """ A type leaving the value untouched.
     """
 
-    @classmethod
-    def serialize(cls, node, value):
+    @staticmethod
+    def serialize(node, value):
         return value
 
-    @classmethod
-    def deserialize(cls, node, value):
+    @staticmethod
+    def deserialize(node, value):
         return value
 
 

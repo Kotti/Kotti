@@ -36,12 +36,14 @@ class JsonType(TypeDecorator):
     """
     impl = TEXT
 
-    def process_bind_param(self, value, dialect):
+    @staticmethod
+    def process_bind_param(value, dialect):
         if value is not None:
             value = json.dumps(value, default=dump_default)
         return value
 
-    def process_result_value(self, value, dialect):
+    @staticmethod
+    def process_result_value(value, dialect):
         if value is not None:
             value = json.loads(value)
         return value
