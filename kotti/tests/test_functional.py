@@ -264,7 +264,6 @@ class TestBrowser:
             File.type_info.addable_to = save_addable_file
             Image.type_info.addable_to = save_addable_image
 
-
         # Add a file
         resp = app.get('/')
         resp = resp.click('File', index=0)
@@ -455,17 +454,17 @@ class TestBrowser:
         resp = app.get('/child-one/@@contents')
         form = resp.forms['form-contents']
         form['children'] = ['3', '15', ]
-        resp = form.submit('cut', status=302).follow().follow()
+        form.submit('cut', status=302).follow().follow()
         resp = app.get('/')
         resp = resp.click('Document', index=0)
         form = resp.forms['deform']
         form['title'] = 'Forth child'
-        resp = form.submit('save', status=302).follow()
+        form.submit('save', status=302).follow()
         resp = app.get('/forth-child/@@contents')
         assert "Grandchild" not in resp.body
         assert "My Third Child" not in resp.body
         resp = resp.forms['form-contents'].submit('paste', status=302).follow()
-        resp = resp.follow()
+        resp.follow()
         resp = app.get('/forth-child/@@contents')
         assert "Grandchild" in resp.body
         assert "My Third Child" in resp.body
@@ -623,10 +622,10 @@ class TestBrowser:
         #   >>> browser.url == testing.BASE_URL + '/second-child-1/'
         #   True
         #
-        # User management
-        # ---------------
 
 """
+User management
+---------------
 The user management screen is available through the "Site Setup" submenu:
 
   >>> browser.getLink("User Management").click()
