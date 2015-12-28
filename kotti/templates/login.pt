@@ -9,7 +9,8 @@
   <div metal:fill-slot="content" class="login-form">
 
     <div class="row">
-      <form class="col-md-6 col-md-offset-3" action="${url}" method="post">
+      <form class="col-md-6 col-md-offset-3" id="login-form"
+            action="${url}" method="post">
         <div class="panel panel-default">
           <div class="panel-heading">
             <h3 class="panel-title" i18n:translate="">Login</h3>
@@ -37,7 +38,8 @@
         </div>
       </form>
 
-      <form class="col-md-6 col-md-offset-3" action="${url}" method="post">
+      <form class="col-md-6 col-md-offset-3" id="forgot-password-form"
+            action="${url}" method="post">
         <div class="panel panel-default">
           <div class="panel-heading">
             <h3 class="panel-title" i18n:translate="">
@@ -69,8 +71,8 @@
         </div>
       </form>
 
-      <form class="col-md-6 col-md-offset-3" action="${url}" method="post"
-            tal:condition="register">
+      <form class="col-md-6 col-md-offset-3" id="register-form"
+            action="${url}" method="post" tal:condition="register">
         <div class="panel panel-default">
           <div class="panel-heading">
             <h3 class="panel-title" i18n:translate="">
