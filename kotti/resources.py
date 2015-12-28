@@ -746,6 +746,15 @@ class SaveDataMixin(object):
         self.data = data
 
 
+    def copy(self, **kwargs):
+        """ Same as `Content.copy` with additional data support.  ``data`` needs
+        some special attention, because we don't want the same depot file to be
+        assigned to multiple content nodes.
+        """
+        _copy = super(SaveDataMixin, self).copy(**kwargs)
+        _copy.data = self.data.file.read()
+        return _copy
+
 @implementer(IFile)
 class File(SaveDataMixin, Content):
     """File adds some attributes to :class:`~kotti.resources.Content` that are
