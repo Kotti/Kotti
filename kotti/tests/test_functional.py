@@ -123,6 +123,8 @@ class TestValidatorMaxLength:
 
 class TestBrowser:
     """ This is a one to one conversion of the former browsert.txt.
+    These tests should definitively be rewritten and splitted into multiple
+    methods to ease readability.
     """
 
     def test_login(self, webtest):
@@ -497,131 +499,111 @@ class TestBrowser:
         assert 'child-the-third' in resp.body
         assert 'Hello Bob' in resp.body
 
-        #   >>> browser.getLink('File').click()
-        #   >>> ctrl('Description').value = 'A file'
-        #   >>> ctrl('File').add_file('something', 'text/plain', 'some.txt')
-        #   >>> ctrl('save').click()
-        #   >>> browser.open(testing.BASE_URL + '/forth-child/@@contents')
-        #   >>> childs = ctrl(name='children')
-        #   >>> childs.value = childs.options[0:3]
-        #   >>> ctrl(name='delete_nodes').click()
-        #   >>> ctrl(name='cancel').click()
-        #   >>> u'No changes were made.' in browser.contents
-        #   True
-        #   >>> browser.url == testing.BASE_URL + '/forth-child/@@contents'
-        #   True
-        #
-        #   >>> childs = ctrl(name='children')
-        #   >>> childs.value = childs.options[0:3]
-        #   >>> ctrl(name='delete_nodes').click()
-        #   >>> "Are you sure" in browser.contents
-        #   True
-        #
-        #   >>> ctrl(name='children-to-delete').value = childs.options[0:3]
-        #   >>> ctrl(name='delete_nodes').click()
-        #   >>> "child, the third was deleted." in browser.contents
-        #   True
-        #   >>> "Hello Bob was deleted." in browser.contents
-        #   True
-        #   >>> "some.txt was deleted." in browser.contents
-        #   True
-        #
-        #   >>> browser.open(testing.BASE_URL + '/forth-child/@@contents')
-        #   >>> "Welcome to Kotti" in browser.contents
-        #   True
-        #   >>> '<i class="glyphicon glyphicon-home"></i>' in browser.contents
-        #   True
-        #   >>> '<i class="glyphicon glyphicon-folder-open"></i>' in browser.contents
-        #   True
-        #   >>> '<i class="glyphicon glyphicon-folder-close"></i>' in browser.contents
-        #   False
-        #
-        #
+        resp = resp.click('File', index=0)
+        form = resp.forms['deform']
+        form['description'] = 'A file'
+        form['upload'] = Upload('some.txt', 'something', 'text/plain')
+        form.submit('save', status=302).follow()
+        resp = app.get('/forth-child/@@contents')
+        form = resp.forms['form-contents']
+        form['children'] = ['3', '15', '104', ]
+        resp = form.submit('delete_nodes', status=302).follow()
+        resp = resp.forms['form-delete-nodes'].submit('cancel', status=302)
+        resp = resp.follow()
+        assert 'No changes were made.' in resp.body
+        assert resp.request.path == '/forth-child/@@contents'
+        form = resp.forms['form-contents']
+        form['children'] = ['3', '15', '104', ]
+        resp = form.submit('delete_nodes', status=302).follow()
+        assert "Are you sure" in resp.body
+        resp = resp.forms['form-delete-nodes'].submit('delete_nodes',
+                                                      status=302).follow()
+        assert "child, the third was deleted." in resp.body
+        assert "Hello Bob was deleted." in resp.body
+        assert "some.txt was deleted." in resp.body
+        resp = app.get('/forth-child/@@contents')
+        assert "Welcome to Kotti" in resp.body
+        assert '<i class="glyphicon glyphicon-home"></i>' in resp.body
+        assert '<i class="glyphicon glyphicon-folder-open"></i>' in resp.body
+        assert '<i class="glyphicon glyphicon-folder-close"></i>' \
+               not in resp.body
+
         # Contents view change state actions
-        # ----------------------------------
-        #
-        #   >>> browser.getLink("Second Child").click()
-        #   >>> browser.getLink("Contents").click()
-        #   >>> 'http://localhost:6543/second-child-1/third-child/@@workflow-change?new_state=public' in browser.contents
-        #   True
-        #   >>> browser.getLink("Make Public", index=3).click()
-        #   >>> 'http://localhost:6543/second-child-1/third-child/@@workflow-change?new_state=private' in browser.contents
-        #   True
-        #
-        #   >>> childs = ctrl(name='children')
-        #   >>> childs.value = childs.options[0:3]
-        #   >>> ctrl(name='change_state').click()
-        #   >>> 'Change workflow state' in browser.contents
-        #   True
-        #   >>> ctrl(name='cancel').click()
-        #   >>> u'No changes were made.' in browser.contents
-        #   True
-        #   >>> browser.url == testing.BASE_URL + '/second-child-1/@@contents'
-        #   True
-        #
-        #   >>> childs = ctrl(name='children')
-        #   >>> childs.value = childs.options[0:3]
-        #   >>> ctrl(name='change_state').click()
-        #   >>> childs = ctrl(name='children-to-change-state')
-        #   >>> childs.value = []
-        #   >>> ctrl(name='change_state').click()
-        #   >>> u'No changes were made.' in browser.contents
-        #   True
-        #
-        #   >>> childs = ctrl(name='children')
-        #   >>> childs.value = childs.options[0:3]
-        #   >>> ctrl(name='change_state').click()
-        #   >>> ctrl(name='to-state').value = ['private']
-        #   >>> ctrl(name='change_state').click()
-        #   >>> 'Your changes have been saved.' in browser.contents
-        #   True
-        #   >>> 'http://localhost:6543/second-child-1/third-child/@@workflow-change?new_state=public' in browser.contents
-        #   True
-        #   >>> 'http://localhost:6543/second-child-1/grandchild-2/@@workflow-change?new_state=public' in browser.contents
-        #   True
-        #   >>> 'http://localhost:6543/second-child-1/grandchild-3/@@workflow-change?new_state=public' in browser.contents
-        #   True
-        #
-        #   >>> browser.getLink('My Third Child').click()
-        #   >>> 'http://localhost:6543/second-child-1/third-child/child-one/@@workflow-change?new_state=public' in browser.contents
-        #   True
-        #   >>> browser.open(testing.BASE_URL + '/second-child-1/third-child/child-one/@@workflow-change?new_state=public')
-        #   >>> browser.open(testing.BASE_URL + '/second-child-1/third-child/@@contents')
-        #   >>> 'http://localhost:6543/second-child-1/third-child/child-one/@@workflow-change?new_state=private' in browser.contents
-        #   True
-        #
-        #   >>> browser.getLink('First Child', index=1).click()
-        #   >>> browser.getLink('Document').click()
-        #   >>> ctrl('Title').value = 'Sub child'
-        #   >>> ctrl(name='save').click()
-        #   >>> 'http://localhost:6543/second-child-1/third-child/child-one/sub-child/@@workflow-change?new_state=public' in browser.contents
-        #   True
-        #
-        #   >>> browser.getLink("Second Child").click()
-        #   >>> browser.getLink("Contents").click()
-        #   >>> childs = ctrl(name='children')
-        #   >>> childs.value = childs.options[0:3]
-        #   >>> ctrl(name='change_state').click()
-        #   >>> ctrl(name='include-children').value = ['include-children']
-        #   >>> ctrl(name='to-state').value = ['public']
-        #   >>> ctrl(name='change_state').click()
-        #   >>> 'Your changes have been saved.' in browser.contents
-        #   True
-        #   >>> 'http://localhost:6543/second-child-1/third-child/@@workflow-change?new_state=private' in browser.contents
-        #   True
-        #   >>> browser.open(testing.BASE_URL + '/second-child-1/third-child/child-one/sub-child/')
-        #   >>> 'http://localhost:6543/second-child-1/third-child/child-one/sub-child/@@workflow-change?new_state=private' in browser.contents
-        #   True
-        #
-        #
+        resp = resp.click("Second Child")
+        resp = resp.click("Contents")
+        assert '/second-child-1/third-child/@@workflow-change' \
+               '?new_state=public' in resp.body
+        resp = resp.click(href='/second-child-1/third-child/@@workflow-change'
+                               '\?new_state=public').follow()
+        assert '/second-child-1/third-child/@@workflow-change' \
+               '?new_state=private' in resp.body
+        resp = app.get('/second-child-1/third-child/@@contents')
+        form = resp.forms['form-contents']
+        form['children'] = ['58', '57', '2', ]
+        resp = form.submit('change_state', status=302).follow()
+        assert 'Change workflow state' in resp.body
+        resp = resp.forms['form-change-state'].submit('cancel', status=302)
+        resp = resp.follow()
+        assert 'No changes were made.' in resp.body
+        assert resp.request.path == '/second-child-1/third-child/@@contents'
+        form = resp.forms['form-contents']
+        form['children'] = ['58', '57', '2', ]
+        resp = form.submit('change_state', status=302).follow()
+        form = resp.forms['form-change-state']
+        form['children-to-change-state'] = []
+        resp = form.submit('change_state', status=302).follow()
+        assert 'No changes were made.' in resp.body
+        form = resp.forms['form-contents']
+        form['children'] = ['58', '57', '2', ]
+        resp = form.submit('change_state', status=302).follow()
+        form = resp.forms['form-change-state']
+        form['to-state'] = 'public'
+        resp = form.submit('change_state', status=302).follow()
+        assert 'Your changes have been saved.' in resp.body
+        assert '/second-child-1/third-child/grandchild-1/@@workflow-change' \
+               '?new_state=private' in resp.body
+        assert '/second-child-1/third-child/grandchild-2/@@workflow-change' \
+               '?new_state=private' in resp.body
+        assert '/second-child-1/third-child/grandchild-3/@@workflow-change' \
+               '?new_state=public' in resp.body
+
+        resp = resp.click('My Third Child')
+        assert '/second-child-1/third-child/child-one/@@workflow-change' \
+               '?new_state=public' in resp.body
+        resp = app.get('/second-child-1/third-child/child-one/@@workflow-change?new_state=public')
+        resp = app.get('/second-child-1/third-child/@@contents')
+        assert '/second-child-1/third-child/child-one/@@workflow-change' \
+               '?new_state=private' in resp.body
+
+        resp = resp.click('First Child', index=1)
+        resp = resp.click('Document', index=0)
+        form = resp.forms['deform']
+        form['title'] = 'Sub child'
+        resp = form.submit('save', status=302).follow()
+        assert '/second-child-1/third-child/child-one/sub-child/' \
+               '@@workflow-change?new_state=public' in resp.body
+
+        resp = resp.click("Second Child", index=0)
+        resp = resp.click("Contents")
+        form = resp.forms['form-contents']
+        form['children'] = ['14', '16', '56', ]
+        resp = form.submit('change_state', status=302).follow()
+        form = resp.forms['form-change-state']
+        form['include-children'] = 'include-children'
+        form['to-state'] = 'public'
+        resp = form.submit('change_state', status=302).follow()
+        assert 'Your changes have been saved.' in resp.body
+        assert '/second-child-1/third-child/@@workflow-change' \
+               '?new_state=private' in resp.body
+        resp = app.get('/second-child-1/third-child/child-one/sub-child/')
+        assert '/second-child-1/third-child/child-one/sub-child/' \
+               '@@workflow-change?new_state=private' in resp.body
+
         # Navigation
-        # ----------
-        #
-        #   >>> browser.getLink("Navigate").click()
-        #   >>> browser.getLink("Second Child").click()
-        #   >>> browser.url == testing.BASE_URL + '/second-child-1/'
-        #   True
-        #
+        resp = resp.click("Navigate")
+        resp = resp.click("Second Child", index=0)
+        assert resp.request.path == '/second-child-1/'
+
 
 """
 User management
