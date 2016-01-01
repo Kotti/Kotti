@@ -745,7 +745,6 @@ class SaveDataMixin(object):
         self.size = size
         self.data = data
 
-
     def copy(self, **kwargs):
         """ Same as `Content.copy` with additional data support.  ``data`` needs
         some special attention, because we don't want the same depot file to be
@@ -754,6 +753,7 @@ class SaveDataMixin(object):
         _copy = super(SaveDataMixin, self).copy(**kwargs)
         _copy.data = self.data.file.read()
         return _copy
+
 
 @implementer(IFile)
 class File(SaveDataMixin, Content):

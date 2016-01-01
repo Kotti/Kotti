@@ -127,6 +127,14 @@ class TestBrowser:
     methods to ease readability.
     """
 
+    def _login(self, app, login, password):
+        resp = app.get('/@@login')
+        form = resp.forms['login-form']
+        form['login'] = login
+        form['password'] = password
+        resp = form.submit('submit')
+        return resp
+
     def test_login(self, webtest):
 
         # get the frontpage
@@ -604,408 +612,331 @@ class TestBrowser:
         resp = resp.click("Second Child", index=0)
         assert resp.request.path == '/second-child-1/'
 
-
-"""
-User management
----------------
-The user management screen is available through the "Site Setup" submenu:
-
-  >>> browser.getLink("User Management").click()
-
-We add Bob's Group and assign the ``Viewer`` role:
-
-  >>> ctrl("Name", index=1).value = "bobsgroup"
-  >>> ctrl("Title", index=1).value = "Bob's Group"
-  >>> ctrl("Viewer", index=1).click()
-  >>> ctrl(name="add_group").click()
-  >>> "Bob's Group was added" in browser.contents
-  True
-  >>> ctrl(name="role::group:bobsgroup::role:viewer").value
-  True
-
-And a Bob.  Only alphanumeric characters are allowed for the name:
-
-  >>> ctrl("Name", index=0).value = "bob:"
-  >>> ctrl("Full name", index=0).value = "Bob Dabolina"
-  >>> ctrl("Password", index=0).value = "secret"
-  >>> ctrl(name='password-confirm').value = "secret"
-  >>> ctrl("Email", index=0).value = "bob@DABOLINA.com"
-  >>> ctrl(name="add_user").click()
-  >>> "There was a problem" in browser.contents
-  True
-
-Use a valid username now.  Note how the checkbox to send a password
-registration link is ticked:
-
-  >>> ctrl("Name", index=0).value = u"Bob"
-  >>> ctrl("Email", index=0).value = "bob@dabolina.com"
-  >>> ctrl("Send password registration link", index=0).selected
-  True
-  >>> ctrl(name="add_user").click()
-  >>> "Bob Dabolina was added" in browser.contents
-  True
-
-We cannot add Bob twice:
-
-  >>> ctrl("Name", index=0).value = "bob"
-  >>> ctrl("Full name", index=0).value = "Bobby Brown"
-  >>> ctrl("Password", index=0).value = "secret"
-  >>> ctrl(name='password-confirm').value = "secret"
-  >>> ctrl(name="add_user").click()
-  >>> "A user with that name already exists" in browser.contents
-  True
-
-We cannot add Bob Dabolina's email twice:
-
-  >>> ctrl("Name", index=0).value = "bob2"
-  >>> ctrl("Full name", index=0).value = "Bobby Brown"
-  >>> ctrl("Email", index=0).value = "bob@dabolina.com"
-  >>> ctrl("Password", index=0).value = "secret"
-  >>> ctrl(name='password-confirm').value = "secret"
-  >>> ctrl(name="add_user").click()
-  >>> "A user with that email already exists" in browser.contents
-  True
-  >>> ctrl("Email", index=0).value = "bob@gmail.com"
-  >>> ctrl(name="add_user").click()
-  >>> "Bobby Brown was added" in browser.contents
-  True
-
-Searching for Bob will return both Bob and Bob's Group:
-
-  >>> ctrl(name="query").value = "Bob"
-  >>> ctrl(name="search").click()
-  >>> "Bob Dabolina" in browser.contents
-  True
-  >>> "Bob's Group" in browser.contents
-  True
-  >>> ctrl(name="role::group:bobsgroup::role:viewer").value
-  True
-  >>> ctrl(name="role::group:bobsgroup::role:editor").value
-  False
-  >>> ctrl(name="role::bob::role:editor").value
-  False
-
-We can click on the Bob's entry to edit the list of groups he belongs
-to:
-
-  >>> browser.getLink("Bob Dabolina").click()
-  >>> ctrl(name="group").value = "bobsgroup"
-  >>> ctrl(name="save").click()
-  >>> "Your changes have been saved" in browser.contents
-  True
-
-We cannot update on the Bobby Brown's entry with duplicated email:
-
-  >>> browser.getLink("Back to User Management").click()
-  >>> ctrl(name="query").value = "Bobby"
-  >>> ctrl(name="search").click()
-  >>> browser.getLink("Bobby Brown").click()
-  >>> ctrl("Email", index=0).value = "bob@dabolina.com"
-  >>> ctrl(name="save").click()
-  >>> "A user with that email already exists" in browser.contents
-  True
-
-If we cancel the edit of the user, we are redirected to the user management
-screen:
-
-  >>> ctrl(name="cancel").click()
-  >>> "No changes were made." in browser.contents
-  True
-  >>> browser.url
-  'http://localhost:6543/@@setup-users'
-
-
-Back in user management we can see how Bob's inherited the Viewer role
-from Bob's Group:
-
-  >>> ctrl(name="query").value = "Bob"
-  >>> ctrl(name="search").click()
-  >>> ctrl(name="role::group:bobsgroup::role:viewer").value
-  True
-  >>> ctrl(name="role::group:bobsgroup::role:viewer").disabled
-  False
-  >>> ctrl(name="role::bob::role:viewer").value
-  True
-  >>> ctrl(name="role::bob::role:viewer").disabled
-  True
-
-We can click on the Bob's Group entry to edit an email address:
-
-  >>> browser.getLink("Bob's Group").click()
-  >>> ctrl(name="email").value = 'bogsgroup@gmail.com'
-  >>> ctrl(name="save").click()
-  >>> "Your changes have been saved" in browser.contents
-  True
-
-Set password
-------------
-
-Remember that we sent Bob an email for registration.  He can use it to
-set his own password:
-
-  >>> [email, email2] = mailer.outbox
-  >>> print email.recipients
-  [u'"Bob Dabolina" <bob@dabolina.com>']
-  >>> print email.subject
-  Your registration for Website des Kottbusser Tors
-  >>> print email.body # doctest: +ELLIPSIS +NORMALIZE_WHITESPACE
-  Hello, Bob Dabolina!
-  You are joining Website des Kottbusser Tors.
-  Click here to set your password and log in:
-  http://localhost:6543/@@set-password?token=...
-
-We'll use that link to set our password:
-
-  >>> browser.getLink("Logout").click()
-  >>> link = email.body[email.body.index('http://localhost'):].split()[0]
-  >>> browser.open(link)
-  >>> ctrl("Password", index=0).value = "newpassword"
-  >>> ctrl(name='password-confirm').value = "newpasswoops" # a silly error
-  >>> ctrl(name="submit").click()
-  >>> "There was a problem with your submission" in browser.contents
-  True
-  >>> ctrl("Password", index=0).value = "newpassword"
-  >>> ctrl(name='password-confirm').value = "newpassword"
-  >>> ctrl(name="submit").click()
-  >>> "You have reset your password" in browser.contents
-  True
-  >>> browser.getLink("Logout").click()
-
-We cannot use that link again:
-
-  >>> browser.open(link)
-  >>> ctrl("Password", index=0).value = "wontwork"
-  >>> ctrl(name='password-confirm').value = "wontwork"
-  >>> ctrl(name="submit").click()
-  >>> "Your password reset token may have expired" in browser.contents
-  True
-
-Log in as Bob with the new password:
-
-  >>> browser.open(testing.BASE_URL + '/@@edit')
-  >>> ctrl("Username or email", index=0).value = "bOB"
-  >>> ctrl("Password").value = "newpassword"
-  >>> ctrl(name="submit").click()
-  >>> "Welcome, Bob Dabolina" in browser.contents
-  True
-  >>> browser.open(testing.BASE_URL + '/@@edit')
-  >>> browser.getLink("Logout").click()
-
-The login form has a "Reset password" button.  Let's try it:
-
-  >>> browser.open(testing.BASE_URL + '/@@edit')
-  >>> ctrl("Username or email", index=1).value = "bobby" # silly error
-  >>> ctrl("Password").value = ""
-  >>> ctrl(name="reset-password").click()
-  >>> "That username or email is not known by this system" in browser.contents
-  True
-  >>> ctrl("Username or email", index=1).value = "bob"
-  >>> ctrl(name="reset-password").click()
-  >>> "You should be receiving an email" in browser.contents
-  True
-
-  >>> [email1, email2, email3] = mailer.outbox
-  >>> print email3.body # doctest: +ELLIPSIS +NORMALIZE_WHITESPACE
-  Hello, Bob Dabolina!
-  <BLANKLINE>
-  Click this link to reset your password at Website des Kottbusser Tors:...
-
-User preferences
-----------------
-
-The "Preferences" link leads us to a form where the user can change
-their preferences so the user need to be authenticated:
-
-  >>> browser.open(testing.BASE_URL + '/@@prefs')
-  >>> ctrl("Username or email", index=0).value = "admin"
-  >>> ctrl("Password").value = "secret"
-  >>> ctrl(name="submit").click()
-  >>> "Welcome, Administrator" in browser.contents
-  True
-
-  >>> ctrl("Full name").value = "Mr. Administrator"
-  >>> ctrl("Email").value = 'admin@minad.com'
-  >>> ctrl(name="save").click()
-  >>> "Your changes have been saved" in browser.contents
-  True
-
-The email could not be used if already a users with that email exists:
-
-  >>> ctrl("Email").value = 'bob@dabolina.com'
-  >>> ctrl(name="save").click()
-  >>> "A user with that email already exists" in browser.contents
-  True
-
-
-If the user cancel the process he will be redirected to the site root:
-
-  >>> ctrl(name="cancel").click()
-  >>> 'Welcome to Kotti' in browser.contents
-  True
-
-
-Share
------
-
-The Share tab allows us to assign users and groups to roles:
-
-  >>> browser.open(testing.BASE_URL)
-  >>> browser.getLink("Edit").click()
-  >>> browser.getLink("Share").click()
-
-We can search for users:
-
-  >>> ctrl(name='query').value = "Bob"
-  >>> ctrl(name="search").click()
-
-Bob and Bob's Group are listed now:
-
-  >>> "Bob Dabolina" in browser.contents
-  True
-  >>> "Bob's Group" in browser.contents
-  True
-
-We add Bob's Group to Owners and Editors before taking away Owners
-again:
-
-  >>> ctrl(name="role::group:bobsgroup::role:owner").value = True
-  >>> ctrl(name="role::group:bobsgroup::role:editor").value = True
-  >>> ctrl(name="apply").click()
-  >>> "Your changes have been saved" in browser.contents
-  True
-  >>> browser.reload()
-  >>> ctrl(name="role::group:bobsgroup::role:owner").value
-  True
-  >>> ctrl(name="role::group:bobsgroup::role:editor").value
-  True
-  >>> ctrl(name="role::group:bobsgroup::role:owner").value = False
-  >>> ctrl(name="apply").click()
-  >>> "Your changes have been saved" in browser.contents
-  True
-  >>> ctrl(name="role::group:bobsgroup::role:owner").value
-  False
-
-Not making any changes will give us a different feedback message:
-
-  >>> ctrl(name="apply").click()
-  >>> "Your changes have been saved" in browser.contents
-  False
-  >>> ctrl(name="role::group:bobsgroup::role:owner").value
-  False
-  >>> ctrl(name="role::group:bobsgroup::role:editor").value
-  True
-
-Bob should now have an inherited Editor role, because he's part of
-Bob's Group:
-
-  >>> ctrl(name="query").value = "Bob Dabolina"
-  >>> ctrl(name="search").click()
-  >>> ctrl(name="role::bob::role:editor").value
-  True
-  >>> ctrl(name="role::bob::role:owner").value
-  False
-  >>> ctrl(name="role::bob::role:editor").disabled
-  True
-
-Lastly, let's take away the remaining Editor role from Bob's Group
-again:
-
-  >>> "Bob's Group" in browser.contents
-  True
-  >>> ctrl(name="role::group:bobsgroup::role:editor").value = False
-  >>> ctrl(name="apply").click()
-  >>> "Your changes have been saved" in browser.contents
-  True
-  >>> "Bob's Group" in browser.contents
-  False
-
-
-Delete users
-------------
-
-  >>> browser.getLink("User Management").click()
-
-We add a group and assign the ``Manager`` role to one:
-
-  >>> ctrl("Name", index=1).value = "pelayogroup"
-  >>> ctrl("Title", index=1).value = "Pelayo Group"
-  >>> ctrl("Admin", index=1).click()
-  >>> ctrl(name="add_group").click()
-  >>> "Pelayo Group was added" in browser.contents
-  True
-  >>> ctrl(name="role::group:pelayogroup::role:admin").value
-  True
-
-And add some users to this group.
-
-  >>> ctrl("Name", index=0).value = "Bruce"
-  >>> ctrl("Full name", index=0).value = "Bruce Pelayo"
-  >>> ctrl("Password", index=0).value = "secret"
-  >>> ctrl(name='password-confirm').value = "secret"
-  >>> ctrl("Email", index=0).value = "bruce@pelayno.com"
-  >>> ctrl(name="group", index=0).value = "pelayogroup"
-  >>> ctrl(name="add_user").click()
-  >>> "Bruce Pelayo was added" in browser.contents
-  True
-
-  >>> ctrl("Name", index=0).value = "Brian"
-  >>> ctrl("Full name", index=0).value = "Brian Pelayo"
-  >>> ctrl("Password", index=0).value = "secret"
-  >>> ctrl(name='password-confirm').value = "secret"
-  >>> ctrl("Email", index=0).value = "brian@pelayno.com"
-  >>> ctrl(name="group", index=0).value = "pelayogroup"
-  >>> ctrl(name="add_user").click()
-  >>> "Brian Pelayo was added" in browser.contents
-  True
-
-Lets login as Bruce and add some content:
-
-  >>> browser.getLink("Logout").click()
-  >>> browser.open(testing.BASE_URL + '/login')
-  >>> ctrl("Username or email", index=0).value = "bruce"
-  >>> ctrl("Password").value = "secret"
-  >>> ctrl(name="submit").click()
-  >>> "Welcome, Bruce Pelayo!" in browser.contents
-  True
-
-  >>> browser.getLink("Document").click()
-  >>> ctrl("Title").value = "Bruce one"
-  >>> ctrl("save").click()
-  >>> browser.open(testing.BASE_URL)
-  >>> browser.getLink("Document").click()
-  >>> ctrl("Title").value = "Bruce two"
-  >>> ctrl("save").click()
-
-Now let's delete Bruce::
-
-  >>> browser.getLink("Logout").click()
-  >>> browser.open(testing.BASE_URL + '/login')
-  >>> ctrl("Username or email", index=0).value = "admin"
-  >>> ctrl("Password").value = "secret"
-  >>> ctrl(name="submit").click()
-
-  >>> browser.getLink("User Management").click()
-  >>> ctrl(name="query").value = "Bruce"
-  >>> ctrl(name="search").click()
-  >>> browser.getLink("Bruce Pelayo").click()
-  >>> ctrl(name='delete').click()
-
-  >>> "Delete <em>Bruce Pelayo</em>" in browser.contents
-  True
-  >>> "Are you sure you want to delete <span>User</span> <em>Bruce Pelayo</em>?" in browser.contents
-  True
-
-  >>> ctrl(name='delete').click()
-  >>> "User Bruce Pelayo was deleted." in browser.contents
-  True
-
-  >>> ctrl(name="query").value = "Bruce"
-  >>> ctrl(name="search").click()
-  >>> "No users or groups were found." in browser.contents
-  True
-
-TearDown
---------
-
-  >>> testing.tearDown()
-"""
+    def test_user_management(self, webtest, settings, dummy_mailer):
+        from kotti import get_settings
+        get_settings()['kotti.site_title'] = u'Website des Kottbusser Tors'
+
+        app = webtest.app
+        resp = self._login(app, 'admin', 'secret').follow()
+
+        # The user management screen is available through
+        # the "Site Setup" submenu
+        resp = resp.click('User Management')
+
+        # Add Bob's Group and assign the ``viewer`` role
+        form = resp.forms['deform_group_add']
+        form['name'] = 'bobsgroup'
+        form['title'] = "Bob's Group"
+        form.get('checkbox', index=0).checked = True
+        resp = form.submit('add_group', status=302).follow()
+        assert "Bob's Group was added" in resp.body
+        assert resp.forms['form-global-roles'][
+            'role::group:bobsgroup::role:viewer'].value == 'on'
+
+        # And a Bob.
+        # Only alphanumeric characters are allowed for the name
+        form = resp.forms['deform_user_add']
+        form["name"] = "bob:"
+        form["title"] = "Bob Dabolina"
+        form["password"] = "secret"
+        form['password-confirm'] = "secret"
+        form["email"] = "bob@DABOLINA.com"
+        resp = form.submit("add_user")
+        assert "There was a problem" in resp.body
+
+        # Use a valid username now.  Note how the checkbox to send a password
+        # registration link is ticked:
+        form = resp.forms['deform_user_add']
+        form["name"] = "Bob"
+        form["email"] = "bob@DABOLINA.com"
+        form["send_email"].checked = True
+        resp = form.submit("add_user", status=302).follow()
+        assert "Bob Dabolina was added" in resp.body
+
+        # We cannot add Bob twice:
+        form = resp.forms['deform_user_add']
+        form["name"] = "bob"
+        form["title"] = "Bobby Brown"
+        form["password"] = "secret"
+        form["password-confirm"] = "secret"
+        resp = form.submit("add_user")
+        assert "A user with that name already exists" in resp.body
+
+        # We cannot add Bob Dabolina's email twice:
+        form = resp.forms['deform_user_add']
+        form["name"] = "bob2"
+        form["title"] = "Bobby Brown"
+        form["email"] = "bob@dabolina.com"
+        form["password"] = "secret"
+        form['password-confirm'] = "secret"
+        resp = form.submit("add_user")
+        assert "A user with that email already exists" in resp.body
+        form = resp.forms['deform_user_add']
+        form["email"] = "bob@gmail.com"
+        resp = form.submit("add_user", status=302).follow()
+        assert "Bobby Brown was added" in resp.body
+
+        # Searching for Bob will return both Bob and Bob's Group:
+        form = resp.forms['form-principal-search']
+        form["query"] = "Bob"
+        resp = form.submit("search")
+        assert "Bob Dabolina" in resp.body
+        assert "Bob's Group" in resp.body
+        form = resp.forms['form-global-roles']
+        assert form["role::group:bobsgroup::role:viewer"].checked
+        assert not form["role::group:bobsgroup::role:editor"].checked
+        assert not form["role::bob::role:editor"].checked
+
+        # We can click on the Bob's entry to edit the list of groups
+        # he belongs to:
+        resp = resp.click("Bob Dabolina")
+        form = resp.forms['deform']
+        form["group"] = "bobsgroup"
+        resp = form.submit("save", status=302).follow()
+        assert "Your changes have been saved" in resp.body
+
+        # We cannot update on the Bobby Brown's entry with duplicated email:
+        resp = resp.click("Back to User Management")
+        form = resp.forms['form-principal-search']
+        form["query"] = "Bobby"
+        resp = form.submit("search")
+        resp = resp.click("Bobby Brown")
+        form = resp.forms['deform']
+        form["email"] = "bob@dabolina.com"
+        resp = form.submit("save")
+        assert "A user with that email already exists" in resp.body
+
+        # If we cancel the edit of the user, we are redirected to the
+        # user management screen:
+        resp = resp.forms['deform'].submit("cancel", status=302).follow()
+        assert "No changes were made." in resp.body
+        assert resp.request.path == '/@@setup-users'
+
+        # Back in user management we can see how Bob's inherited the
+        # viewer role from Bob's Group:
+        form = resp.forms['form-principal-search']
+        form["query"] = "Bob"
+        resp = form.submit("search")
+        form = resp.forms['form-global-roles']
+        assert form["role::group:bobsgroup::role:viewer"].checked
+        assert 'disabled' not in form[
+            "role::group:bobsgroup::role:viewer"].attrs
+        assert form["role::bob::role:viewer"].checked
+        assert 'disabled' in form["role::bob::role:viewer"].attrs
+
+        # We can click on the Bob's Group entry to edit an email address:
+        resp = resp.click("Bob's Group")
+        form = resp.forms['deform']
+        form["email"] = 'bogsgroup@gmail.com'
+        resp = form.submit("save", status=302).follow()
+        assert "Your changes have been saved" in resp.body
+
+        # Set password
+        # ------------
+
+        # Remember that we sent Bob an email for registration.
+        # He can use it to set his own password:
+        [email, email2] = dummy_mailer.outbox
+        assert email.recipients == [u'"Bob Dabolina" <bob@dabolina.com>']
+        assert email.subject == "Your registration for Website des " \
+                                "Kottbusser Tors"
+        assert "Hello, Bob Dabolina!" in email.body
+        assert "You are joining Website des Kottbusser Tors." in email.body
+        assert "Click here to set your password and log in:" in email.body
+        assert "@@set-password?token=" in email.body
+
+        # We'll use that link to set our password:
+        resp.click("Logout").follow()
+        path = email.body[email.body.index('http://localhost'):].split()[0][16:]
+        resp = app.get(path)
+        form = resp.forms['deform']
+        form['password'] = "newpassword"
+        form['password-confirm'] = "newpasswoops"  # a silly error
+        resp = form.submit("submit")
+        assert "There was a problem with your submission" in resp.body
+        form = resp.forms['deform']
+        form['password'] = "newpassword"
+        form['password-confirm'] = "newpassword"
+        resp = form.submit("submit", status=302).follow()
+        assert "You have reset your password" in resp.body
+
+        # We cannot use that link again:
+        resp = app.get(path)
+        form = resp.forms['deform']
+        form['password'] = "won't work"
+        form['password-confirm'] = "won't work"
+        resp = form.submit("submit")
+        assert "Your password reset token may have expired" in resp.body
+
+        # Log in as Bob with the new password:
+        resp = self._login(app, 'bOB', 'newpassword').follow()
+        assert "Welcome, Bob Dabolina" in resp.body
+        app.get('/@@edit')
+        resp = resp.click("Logout").follow()
+
+        # The login form has a "Reset password" button.  Let's try it:
+        resp = self._login(app, "bobby", "")
+        assert "Login failed." in resp.body
+        form = resp.forms['forgot-password-form']
+        form['login'] = "bob"
+        resp = form.submit('reset-password').follow()
+        assert "You should be receiving an email" in resp.body
+        [email1, email2, email3] = dummy_mailer.outbox
+        assert 'Hello, Bob Dabolina!' in email3.body
+        assert 'Click this link to reset your password at Website des ' \
+               'Kottbusser Tors:' in email3.body
+
+        # User preferences
+        # ----------------
+
+        # The "Preferences" link leads us to a form where the user can change
+        # their preferences so the user need to be authenticated:
+        resp = self._login(app, 'admin', 'secret').follow()
+        assert "Welcome, Administrator" in resp.body
+        resp = app.get('/@@prefs')
+        form = resp.forms['deform']
+        form['title'] = "Mr. Administrator"
+        form['email'] = 'admin@minad.com'
+        resp = form.submit("save").follow()
+        assert "Your changes have been saved" in resp.body
+
+        # The email could not be used if already a users with that email exists:
+        form = resp.forms['deform']
+        form['email'] = 'bob@dabolina.com'
+        resp = form.submit("save")
+
+        # If the user cancel the process he will be redirected to the site root:
+        form = resp.forms['deform']
+        resp = form.submit("cancel").follow()
+        assert 'Welcome to Kotti' in resp.body
+
+        # Share
+        # -----
+
+        # The Share tab allows us to assign users and groups to roles:
+        resp = app.get('/')
+        resp = resp.click("Edit")
+        resp = resp.click("Share")
+
+        # We can search for users:
+        form = resp.forms['form-share-search']
+        form['query'] = "Bob"
+        resp = form.submit("search")
+
+        # Bob and Bob's Group are listed now:
+        assert "Bob Dabolina" in resp.body
+        assert "Bob's Group" in resp.body
+
+        # We add Bob's Group to Owners and Editors before taking away Owners
+        # again:
+        form = resp.forms['form-share-assign']
+        form["role::group:bobsgroup::role:owner"].checked = True
+        form["role::group:bobsgroup::role:editor"].checked = True
+        resp = form.submit("apply").follow()
+        assert "Your changes have been saved" in resp.body
+        resp = app.get(resp.request.path)  # >>> browser.reload()
+        form = resp.forms['form-share-assign']
+        assert form["role::group:bobsgroup::role:owner"].checked
+        assert form["role::group:bobsgroup::role:editor"].checked
+        form["role::group:bobsgroup::role:owner"].checked = False
+        resp = form.submit("apply").follow()
+        assert "Your changes have been saved" in resp.body
+        form = resp.forms['form-share-assign']
+        assert not form["role::group:bobsgroup::role:owner"].checked
+
+        # Not making any changes will give us a different feedback message:
+        resp = form.submit("apply")
+        assert "Your changes have been saved" not in resp.body
+        form = resp.forms['form-share-assign']
+        assert not form["role::group:bobsgroup::role:owner"].checked
+        assert form["role::group:bobsgroup::role:editor"].checked
+
+        # Bob should now have an inherited Editor role, because he's part of
+        # Bob's Group:
+        form = resp.forms['form-share-search']
+        form["query"] = "Bob Dabolina"
+        resp = form.submit("search")
+        form = resp.forms['form-share-assign']
+        assert form["role::bob::role:editor"].checked
+        # TODO assert 'disabled' in form["role::bob::role:editor"].attrs
+        # TODO assert not form["role::bob::role:owner"].checked
+
+        # Lastly, let's take away the remaining Editor role from Bob's Group
+        # again:
+        assert "Bob's Group" in resp.body
+        form["role::group:bobsgroup::role:editor"].checked = None
+        resp = form.submit("apply").follow()
+        assert "Your changes have been saved" in resp.body
+        # TODO assert "Bob's Group" not in resp.body
+        form = resp.forms['form-share-assign']
+        assert not form["role::group:bobsgroup::role:editor"].checked
+
+        # Delete users
+        # ------------
+
+        resp = app.get('/')
+        resp = resp.click("User Management")
+
+        # We add a group and assign the ``Manager`` role to one:
+        form = resp.forms['deform_group_add']
+        form['name'] = "pelayogroup"
+        form['title'] = "Pelayo Group"
+        form.get('checkbox', index=3).checked = True
+        resp = form.submit("add_group").maybe_follow()
+        assert "Pelayo Group was added" in resp.body
+        form = resp.forms['form-global-roles']
+        assert form["role::group:pelayogroup::role:admin"].checked
+
+        # And add some users to this group.
+        form = resp.forms['deform_user_add']
+        form['name'] = "Bruce"
+        form['title'] = "Bruce Pelayo"
+        form['password'] = "secret"
+        form['password-confirm'] = "secret"
+        form['email'] = "bruce@pelayno.com"
+        form["group"] = "pelayogroup"
+        resp = form.submit("add_user").maybe_follow()
+        assert "Bruce Pelayo was added" in resp.body
+
+        form = resp.forms['deform_user_add']
+        form['name'] = "Brian"
+        form['title'] = "Brian Pelayo"
+        form['password'] = "secret"
+        form['password-confirm'] = "secret"
+        form['email'] = "brian@pelayno.com"
+        form["group"] = "pelayogroup"
+        resp = form.submit("add_user").maybe_follow()
+        assert "Brian Pelayo was added" in resp.body
+
+        # Lets login as Bruce and add some content:
+        resp.click("Logout").maybe_follow()
+        resp = self._login(app, 'bruce', 'secret').maybe_follow()
+        assert "Welcome, Bruce Pelayo!" in resp.body
+        resp = resp.click("Document", index=0)
+        form = resp.forms['deform']
+        form["title"] = "Bruce one"
+        form.submit("save").maybe_follow()
+        resp = app.get('/')
+        resp = resp.click("Document", index=0)
+        form = resp.forms['deform']
+        form["title"] = "Bruce two"
+        form.submit("save").maybe_follow()
+
+        # Now let's delete Bruce::
+        resp.click('Logout').maybe_follow()
+        resp = self._login(app, 'admin', 'secret').maybe_follow()
+        resp = resp.click("User Management")
+        form = resp.forms['form-principal-search']
+        form["query"] = "Bruce"
+        resp = form.submit("search").maybe_follow()
+        resp = resp.click("Bruce Pelayo")
+        resp = resp.forms['deform'].submit('delete').maybe_follow()
+        assert "Delete <em>Bruce Pelayo</em>" in resp.body
+        assert "Are you sure you want to delete <span>User</span> " \
+               "<em>Bruce Pelayo</em>?" in resp.body
+        resp = resp.forms['form-delete-user'].submit('delete').maybe_follow()
+        assert "User Bruce Pelayo was deleted." in resp.body
+        form = resp.forms['form-principal-search']
+        form["query"] = "Bruce"
+        resp = form.submit("search").maybe_follow()
+        assert "No users or groups were found." in resp.body

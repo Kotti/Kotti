@@ -284,7 +284,7 @@ def root(db_session):
 
 
 @fixture
-def webtest(app, monkeypatch, request, filedepot):
+def webtest(app, monkeypatch, request, filedepot, dummy_mailer):
     from webtest import TestApp
     if 'user' in request.keywords:
         login = request.keywords['user'].args[0]
