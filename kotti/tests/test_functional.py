@@ -155,7 +155,7 @@ class TestBrowser:
         assert "Welcome, Administrator" in resp.body
 
         # log out
-        resp = resp.click('Logout').follow().follow()
+        resp = resp.click('Logout').maybe_follow()
         assert "You have been logged out" in resp.body
 
         # attempt to login with wrong credentials
@@ -450,7 +450,7 @@ class TestBrowser:
         resp = app.get('/second-child-1/@@contents')
         form = resp.forms['form-contents']
         form['children'] = ['15', ]
-        resp = form.submit('cut').maybe_follow().follow()
+        resp = form.submit('cut').maybe_follow()
         assert 'cut.' in resp.body
         resp = app.get('/child-one/@@contents')
         assert "Grandchild" not in resp.body
@@ -461,7 +461,7 @@ class TestBrowser:
         resp = app.get('/child-one/@@contents')
         form = resp.forms['form-contents']
         form['children'] = ['3', '15', ]
-        form.submit('cut').maybe_follow().follow()
+        form.submit('cut').maybe_follow()
         resp = app.get('/')
         resp = resp.click('Document', index=0)
         form = resp.forms['deform']
