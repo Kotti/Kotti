@@ -442,12 +442,10 @@ class TestBrowser:
         form = resp.forms['form-contents']
         form['children'] = ['3', ]
         resp = resp.forms['form-contents'].submit('copy').maybe_follow()
-        resp = resp.follow()
         assert 'My Third Child was copied.' in resp.body
         resp = app.get('/second-child-1/@@contents')
         assert 'My Third Child' not in resp.body
         resp = resp.forms['form-contents'].submit('paste').maybe_follow()
-        resp = resp.follow()
         assert 'My Third Child' in resp.body
         resp = app.get('/second-child-1/@@contents')
         form = resp.forms['form-contents']
@@ -457,7 +455,6 @@ class TestBrowser:
         resp = app.get('/child-one/@@contents')
         assert "Grandchild" not in resp.body
         resp = resp.forms['form-contents'].submit('paste').maybe_follow()
-        resp = resp.follow()
         assert "Grandchild" in resp.body
         with pytest.raises(IndexError):
             resp.click('Paste')
@@ -474,7 +471,6 @@ class TestBrowser:
         assert "Grandchild" not in resp.body
         assert "My Third Child" not in resp.body
         resp = resp.forms['form-contents'].submit('paste').maybe_follow()
-        resp.follow()
         resp = app.get('/forth-child/@@contents')
         assert "Grandchild" in resp.body
         assert "My Third Child" in resp.body
@@ -488,8 +484,7 @@ class TestBrowser:
         form = resp.forms['form-contents']
         form['children'] = ['3', '15', ]
         resp = form.submit('rename_nodes').maybe_follow()
-        resp = resp.forms['form-rename-nodes'].submit('cancel', status=302)
-        resp = resp.follow()
+        resp = resp.forms['form-rename-nodes'].submit('cancel').maybe_follow()
         assert 'No changes were made.' in resp.body
         assert resp.request.path == '/forth-child/@@contents'
         form = resp.forms['form-contents']
@@ -516,8 +511,7 @@ class TestBrowser:
         form = resp.forms['form-contents']
         form['children'] = ['3', '15', '104', ]
         resp = form.submit('delete_nodes').maybe_follow()
-        resp = resp.forms['form-delete-nodes'].submit('cancel', status=302)
-        resp = resp.follow()
+        resp = resp.forms['form-delete-nodes'].submit('cancel').maybe_follow()
         assert 'No changes were made.' in resp.body
         assert resp.request.path == '/forth-child/@@contents'
         form = resp.forms['form-contents']
@@ -550,8 +544,7 @@ class TestBrowser:
         form['children'] = ['58', '57', '2', ]
         resp = form.submit('change_state').maybe_follow()
         assert 'Change workflow state' in resp.body
-        resp = resp.forms['form-change-state'].submit('cancel', status=302)
-        resp = resp.follow()
+        resp = resp.forms['form-change-state'].submit('cancel').maybe_follow()
         assert 'No changes were made.' in resp.body
         assert resp.request.path == '/second-child-1/third-child/@@contents'
         form = resp.forms['form-contents']
