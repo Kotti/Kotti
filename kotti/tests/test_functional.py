@@ -142,7 +142,7 @@ class TestBrowser:
         assert "You have successfully installed Kotti." in resp.body
 
         # access a protected URL
-        resp = webtest.app.get('/edit', status=302).follow()
+        resp = webtest.app.get('/edit').maybe_follow()
         assert "Log in" in resp.body
 
         # submit the login form
@@ -151,7 +151,7 @@ class TestBrowser:
         form['login'] = 'admin'
         form['password'] = 'secret'
 
-        resp = form.submit('submit', status=302).follow()
+        resp = form.submit('submit').maybe_follow()
         assert "Welcome, Administrator" in resp.body
 
         # log out
@@ -173,7 +173,7 @@ class TestBrowser:
         assert form['came_from'].value == 'http://localhost/edit'
         form['login'] = 'admin'
         form['password'] = 'secret'
-        resp = form.submit('submit', status=302).follow()
+        resp = form.submit('submit').maybe_follow()
         assert "Welcome, Administrator" in resp.body
 
     @pytest.mark.user('admin')
@@ -195,7 +195,7 @@ class TestBrowser:
         assert "Add Document to Welcome to Kotti" in resp.body
         form = resp.forms['deform']
         form['title'] = "Child One"
-        resp = form.submit('save', status=302).follow()
+        resp = form.submit('save').maybe_follow()
         assert "Item was added" in resp.body
         assert resp.request.path == '/child-one/'
 
@@ -204,7 +204,7 @@ class TestBrowser:
         assert "Edit Child One" in resp.body
         form = resp.forms['deform']
         form['title'] = "First Child"
-        resp = form.submit('save', status=302).follow()
+        resp = form.submit('save').maybe_follow()
         assert "Your changes have been saved" in resp.body
         resp = resp.click('Edit')
         form = resp.forms['deform']
@@ -224,7 +224,7 @@ class TestBrowser:
         resp = resp.click('Edit')
         form = resp.forms['deform']
         form['title'] = "Firstborn"
-        resp = form.submit('cancel', status=302).follow()
+        resp = form.submit('cancel').maybe_follow()
         assert 'deform' not in resp.forms
         assert "Firstborn" not in resp.body
 
@@ -232,7 +232,7 @@ class TestBrowser:
         resp = resp.click('Edit')
         form = resp.forms['deform']
         form['title'] = ""
-        resp = form.submit('cancel', status=302).follow()
+        resp = form.submit('cancel').maybe_follow()
         assert 'deform' not in resp.forms
         assert "Firstborn" not in resp.body
 
@@ -241,14 +241,14 @@ class TestBrowser:
         resp = resp.click('Document', index=0)
         form = resp.forms['deform']
         form['title'] = "Second Child"
-        resp = form.submit('save', status=302).follow()
+        resp = form.submit('save').maybe_follow()
         assert "Item was added" in resp.body
         assert resp.request.path == '/second-child/'
 
         resp = resp.click('Document', index=0)
         form = resp.forms['deform']
         form['title'] = "Grandchild"
-        resp = form.submit('save', status=302).follow()
+        resp = form.submit('save').maybe_follow()
         assert "Item was added" in resp.body
         assert resp.request.path == '/second-child/grandchild/'
 
@@ -257,7 +257,7 @@ class TestBrowser:
         resp = resp.click('Document', index=0)
         form = resp.forms['deform']
         form['title'] = "Grandchild"
-        resp = form.submit('save', status=302).follow()
+        resp = form.submit('save').maybe_follow()
         assert "Item was added" in resp.body
         assert resp.request.path == '/second-child/grandchild-1/'
 
@@ -280,7 +280,7 @@ class TestBrowser:
         form = resp.forms['deform']
         form['description'] = "A tiny file"
         form['upload'] = Upload('tiny.txt', 'tiny', 'text/plain')
-        resp = form.submit('save', status=302).follow()
+        resp = form.submit('save').maybe_follow()
         assert "Item was added" in resp.body
         assert resp.request.path == '/tiny.txt/'
 
@@ -302,20 +302,20 @@ class TestBrowser:
         form = resp.forms['deform']
         form['title'] = "Grandchild"
         form['tags'] = ''
-        form.submit('save', status=302).follow()
+        form.submit('save').maybe_follow()
         resp = app.get('/second-child/')
         resp = resp.click('Document', index=0)
         form = resp.forms['deform']
         form['title'] = "Grandchild"
         form['tags'] = 'tag 1, tag 2,tag 3'
-        form.submit('save', status=302).follow()
+        form.submit('save').maybe_follow()
         resp = app.get('/second-child/grandchild-2/@@edit')
         form = resp.forms['deform']
         assert 'tag 1' in resp.body
         assert 'tag 2' in resp.body
         assert 'tag 3' in resp.body
         form['tags'] = 'tag 1, tag 4, tag 5,tag 6, tag 7, übertag'
-        form.submit('save', status=302).follow()
+        form.submit('save').maybe_follow()
         resp = app.get('/second-child/grandchild-2/@@edit')
         assert 'value="tag 1,tag 4,tag 5,tag 6,tag 7,übertag"' in resp.body
 
@@ -328,7 +328,7 @@ class TestBrowser:
         resp = app.get('/second-child/grandchild/')
         resp = resp.click('Delete', index=0)
         form = resp.forms['form-delete']
-        resp = form.submit('delete', value='delete', status=302).follow()
+        resp = form.submit('delete', value='delete').maybe_follow()
         assert "Grandchild was deleted" in resp.body
         assert resp.request.path == '/second-child/'
 
@@ -415,7 +415,7 @@ class TestBrowser:
         assert form['title'].value == 'Second Child'
         form['name'] = 'thi/rd-ch/ild'
         form['title'] = 'My Third Child'
-        resp = form.submit('rename', status=302).follow()
+        resp = form.submit('rename').maybe_follow()
         assert "Item was renamed" in resp.body
         assert resp.request.path == '/child-one/third-child/'
 
@@ -437,26 +437,26 @@ class TestBrowser:
         resp = app.get('/child-one')
         resp = resp.click('Contents', index=0)
         assert resp.request.path == '/child-one/@@contents'
-        resp = resp.forms['form-contents'].submit('copy', status=302).follow()
+        resp = resp.forms['form-contents'].submit('copy').maybe_follow()
         assert 'You have to select items' in resp.body
         form = resp.forms['form-contents']
         form['children'] = ['3', ]
-        resp = resp.forms['form-contents'].submit('copy', status=302).follow()
+        resp = resp.forms['form-contents'].submit('copy').maybe_follow()
         resp = resp.follow()
         assert 'My Third Child was copied.' in resp.body
         resp = app.get('/second-child-1/@@contents')
         assert 'My Third Child' not in resp.body
-        resp = resp.forms['form-contents'].submit('paste', status=302).follow()
+        resp = resp.forms['form-contents'].submit('paste').maybe_follow()
         resp = resp.follow()
         assert 'My Third Child' in resp.body
         resp = app.get('/second-child-1/@@contents')
         form = resp.forms['form-contents']
         form['children'] = ['15', ]
-        resp = form.submit('cut', status=302).follow().follow()
+        resp = form.submit('cut').maybe_follow().follow()
         assert 'cut.' in resp.body
         resp = app.get('/child-one/@@contents')
         assert "Grandchild" not in resp.body
-        resp = resp.forms['form-contents'].submit('paste', status=302).follow()
+        resp = resp.forms['form-contents'].submit('paste').maybe_follow()
         resp = resp.follow()
         assert "Grandchild" in resp.body
         with pytest.raises(IndexError):
@@ -464,16 +464,16 @@ class TestBrowser:
         resp = app.get('/child-one/@@contents')
         form = resp.forms['form-contents']
         form['children'] = ['3', '15', ]
-        form.submit('cut', status=302).follow().follow()
+        form.submit('cut').maybe_follow().follow()
         resp = app.get('/')
         resp = resp.click('Document', index=0)
         form = resp.forms['deform']
         form['title'] = 'Forth child'
-        form.submit('save', status=302).follow()
+        form.submit('save').maybe_follow()
         resp = app.get('/forth-child/@@contents')
         assert "Grandchild" not in resp.body
         assert "My Third Child" not in resp.body
-        resp = resp.forms['form-contents'].submit('paste', status=302).follow()
+        resp = resp.forms['form-contents'].submit('paste').maybe_follow()
         resp.follow()
         resp = app.get('/forth-child/@@contents')
         assert "Grandchild" in resp.body
@@ -487,20 +487,20 @@ class TestBrowser:
         assert 'Hello Bob' not in resp.body
         form = resp.forms['form-contents']
         form['children'] = ['3', '15', ]
-        resp = form.submit('rename_nodes', status=302).follow()
+        resp = form.submit('rename_nodes').maybe_follow()
         resp = resp.forms['form-rename-nodes'].submit('cancel', status=302)
         resp = resp.follow()
         assert 'No changes were made.' in resp.body
         assert resp.request.path == '/forth-child/@@contents'
         form = resp.forms['form-contents']
         form['children'] = ['3', '15', ]
-        resp = form.submit('rename_nodes', status=302).follow()
+        resp = form.submit('rename_nodes').maybe_follow()
         form = resp.forms['form-rename-nodes']
         form['3-name'] = 'child-the-third'
         form['3-title'] = 'child, the third'
         form['15-name'] = 'hello-bob'
         form['15-title'] = 'Hello Bob'
-        resp = form.submit('rename_nodes', status=302).follow()
+        resp = form.submit('rename_nodes').maybe_follow()
         assert resp.request.path == '/forth-child/@@contents'
         assert 'third-child' not in resp.body
         assert 'Grandchild' not in resp.body
@@ -511,18 +511,18 @@ class TestBrowser:
         form = resp.forms['deform']
         form['description'] = 'A file'
         form['upload'] = Upload('some.txt', 'something', 'text/plain')
-        form.submit('save', status=302).follow()
+        form.submit('save').maybe_follow()
         resp = app.get('/forth-child/@@contents')
         form = resp.forms['form-contents']
         form['children'] = ['3', '15', '104', ]
-        resp = form.submit('delete_nodes', status=302).follow()
+        resp = form.submit('delete_nodes').maybe_follow()
         resp = resp.forms['form-delete-nodes'].submit('cancel', status=302)
         resp = resp.follow()
         assert 'No changes were made.' in resp.body
         assert resp.request.path == '/forth-child/@@contents'
         form = resp.forms['form-contents']
         form['children'] = ['3', '15', '104', ]
-        resp = form.submit('delete_nodes', status=302).follow()
+        resp = form.submit('delete_nodes').maybe_follow()
         assert "Are you sure" in resp.body
         resp = resp.forms['form-delete-nodes'].submit('delete_nodes',
                                                       status=302).follow()
@@ -548,7 +548,7 @@ class TestBrowser:
         resp = app.get('/second-child-1/third-child/@@contents')
         form = resp.forms['form-contents']
         form['children'] = ['58', '57', '2', ]
-        resp = form.submit('change_state', status=302).follow()
+        resp = form.submit('change_state').maybe_follow()
         assert 'Change workflow state' in resp.body
         resp = resp.forms['form-change-state'].submit('cancel', status=302)
         resp = resp.follow()
@@ -556,17 +556,17 @@ class TestBrowser:
         assert resp.request.path == '/second-child-1/third-child/@@contents'
         form = resp.forms['form-contents']
         form['children'] = ['58', '57', '2', ]
-        resp = form.submit('change_state', status=302).follow()
+        resp = form.submit('change_state').maybe_follow()
         form = resp.forms['form-change-state']
         form['children-to-change-state'] = []
-        resp = form.submit('change_state', status=302).follow()
+        resp = form.submit('change_state').maybe_follow()
         assert 'No changes were made.' in resp.body
         form = resp.forms['form-contents']
         form['children'] = ['58', '57', '2', ]
-        resp = form.submit('change_state', status=302).follow()
+        resp = form.submit('change_state').maybe_follow()
         form = resp.forms['form-change-state']
         form['to-state'] = 'public'
-        resp = form.submit('change_state', status=302).follow()
+        resp = form.submit('change_state').maybe_follow()
         assert 'Your changes have been saved.' in resp.body
         assert '/second-child-1/third-child/grandchild-1/@@workflow-change' \
                '?new_state=private' in resp.body
@@ -587,7 +587,7 @@ class TestBrowser:
         resp = resp.click('Document', index=0)
         form = resp.forms['deform']
         form['title'] = 'Sub child'
-        resp = form.submit('save', status=302).follow()
+        resp = form.submit('save').maybe_follow()
         assert '/second-child-1/third-child/child-one/sub-child/' \
                '@@workflow-change?new_state=public' in resp.body
 
@@ -595,11 +595,11 @@ class TestBrowser:
         resp = resp.click("Contents")
         form = resp.forms['form-contents']
         form['children'] = ['14', '16', '56', ]
-        resp = form.submit('change_state', status=302).follow()
+        resp = form.submit('change_state').maybe_follow()
         form = resp.forms['form-change-state']
         form['include-children'] = 'include-children'
         form['to-state'] = 'public'
-        resp = form.submit('change_state', status=302).follow()
+        resp = form.submit('change_state').maybe_follow()
         assert 'Your changes have been saved.' in resp.body
         assert '/second-child-1/third-child/@@workflow-change' \
                '?new_state=private' in resp.body
@@ -628,7 +628,7 @@ class TestBrowser:
         form['name'] = 'bobsgroup'
         form['title'] = "Bob's Group"
         form.get('checkbox', index=0).checked = True
-        resp = form.submit('add_group', status=302).follow()
+        resp = form.submit('add_group').maybe_follow()
         assert "Bob's Group was added" in resp.body
         assert resp.forms['form-global-roles'][
             'role::group:bobsgroup::role:viewer'].value == 'on'
@@ -650,7 +650,7 @@ class TestBrowser:
         form["name"] = "Bob"
         form["email"] = "bob@DABOLINA.com"
         form["send_email"].checked = True
-        resp = form.submit("add_user", status=302).follow()
+        resp = form.submit("add_user").maybe_follow()
         assert "Bob Dabolina was added" in resp.body
 
         # We cannot add Bob twice:
@@ -673,7 +673,7 @@ class TestBrowser:
         assert "A user with that email already exists" in resp.body
         form = resp.forms['deform_user_add']
         form["email"] = "bob@gmail.com"
-        resp = form.submit("add_user", status=302).follow()
+        resp = form.submit("add_user").maybe_follow()
         assert "Bobby Brown was added" in resp.body
 
         # Searching for Bob will return both Bob and Bob's Group:
@@ -692,7 +692,7 @@ class TestBrowser:
         resp = resp.click("Bob Dabolina")
         form = resp.forms['deform']
         form["group"] = "bobsgroup"
-        resp = form.submit("save", status=302).follow()
+        resp = form.submit("save").maybe_follow()
         assert "Your changes have been saved" in resp.body
 
         # We cannot update on the Bobby Brown's entry with duplicated email:
@@ -708,7 +708,7 @@ class TestBrowser:
 
         # If we cancel the edit of the user, we are redirected to the
         # user management screen:
-        resp = resp.forms['deform'].submit("cancel", status=302).follow()
+        resp = resp.forms['deform'].submit("cancel").maybe_follow()
         assert "No changes were made." in resp.body
         assert resp.request.path == '/@@setup-users'
 
@@ -728,7 +728,7 @@ class TestBrowser:
         resp = resp.click("Bob's Group")
         form = resp.forms['deform']
         form["email"] = 'bogsgroup@gmail.com'
-        resp = form.submit("save", status=302).follow()
+        resp = form.submit("save").maybe_follow()
         assert "Your changes have been saved" in resp.body
 
         # Set password
@@ -757,7 +757,7 @@ class TestBrowser:
         form = resp.forms['deform']
         form['password'] = "newpassword"
         form['password-confirm'] = "newpassword"
-        resp = form.submit("submit", status=302).follow()
+        resp = form.submit("submit").maybe_follow()
         assert "You have reset your password" in resp.body
 
         # We cannot use that link again:
