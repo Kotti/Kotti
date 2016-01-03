@@ -226,12 +226,13 @@ def set_owner(event):
     """
 
     obj, request = event.object, event.request
-    if request is not None and isinstance(obj, Node) and obj.owner is None:
+    if request is not None and isinstance(obj, Node):
         userid = request.authenticated_userid
         if userid is not None:
             userid = unicode(userid)
             # Set owner metadata:
-            obj.owner = userid
+            if obj.owner is None:
+                obj.owner = userid
             # Add owner role for userid if it's not inherited already:
             if u'role:owner' not in list_groups(userid, obj):
                 groups = list_groups_raw(userid, obj) | set([u'role:owner'])

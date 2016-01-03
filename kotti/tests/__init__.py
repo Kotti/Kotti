@@ -24,14 +24,15 @@ Fixture dependencies
       "db_session" -> "browser";
       "db_session" -> "filedepot";
       "db_session" -> "root";
+      "depot_tween" -> "webtest";
       "dummy_mailer" -> "app";
       "dummy_mailer";
       "dummy_request" -> "depot_tween";
       "events" -> "app";
-      "filedepot" -> "depot_tween";
-      "mock_filedepot" -> "depot_tween";
+      "depot_tween" -> "filedepot";
+      "depot_tween" -> "mock_filedepot";
       "mock_filedepot";
-      "no_filedepots" -> "depot_tween";
+      "depot_tween" -> "no_filedepots";
       "settings" -> "config";
       "settings" -> "content";
       "setup_app" -> "app";
@@ -283,7 +284,7 @@ def root(db_session):
 
 
 @fixture
-def webtest(app, monkeypatch, request):
+def webtest(app, monkeypatch, request, filedepot, dummy_mailer):
     from webtest import TestApp
     if 'user' in request.keywords:
         login = request.keywords['user'].args[0]

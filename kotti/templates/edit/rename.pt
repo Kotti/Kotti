@@ -13,7 +13,7 @@
     </p>
 
     <div id="rename" tal:condition="context is not api.root">
-      <form action="${request.url}" method="post" id="form-move-3">
+      <form action="${request.url}" method="post" id="form-rename">
         <div class="form-group">
           <label class="control-label desc" for="move-new-name"
                  i18n:translate="">New name</label>
