@@ -127,13 +127,36 @@ class TestBrowser:
     methods to ease readability.
     """
 
-    def _login(self, app, login, password):
+    @staticmethod
+    def _login(app, login, password):
         resp = app.get('/@@login')
         form = resp.forms['login-form']
         form['login'] = login
         form['password'] = password
         resp = form.submit('submit')
         return resp
+
+    @staticmethod
+    def _select_children(resp, *child_idx):
+        """ Mark the checkbox(es) of the rows in the ``contents`` view
+
+        :param resp: response which's body contains the contents table
+        :type resp: :class:`webtest.response.TestResponse`
+
+        :param *child_idx: index of the child in the folder listing
+                           (starting with 0)
+        :type *child_idx: int
+
+        :return: contents form with children selected (ready for submission)
+        :rtype: :class:`webtest.forms.Form`
+        """
+
+        form = resp.forms['form-contents']
+        form['children'] = [
+            cb._value for cb in [
+                form.fields['children'][idx] for idx in child_idx]]
+
+        return form
 
     def test_login(self, webtest):
 
@@ -439,17 +462,15 @@ class TestBrowser:
         assert resp.request.path == '/child-one/@@contents'
         resp = resp.forms['form-contents'].submit('copy').maybe_follow()
         assert 'You have to select items' in resp.body
-        form = resp.forms['form-contents']
-        form['children'] = ['3', ]
-        resp = resp.forms['form-contents'].submit('copy').maybe_follow()
+        form = self._select_children(resp, 0)
+        resp = form.submit('copy').maybe_follow()
         assert 'My Third Child was copied.' in resp.body
         resp = app.get('/second-child-1/@@contents')
         assert 'My Third Child' not in resp.body
         resp = resp.forms['form-contents'].submit('paste').maybe_follow()
         assert 'My Third Child' in resp.body
         resp = app.get('/second-child-1/@@contents')
-        form = resp.forms['form-contents']
-        form['children'] = ['15', ]
+        form = self._select_children(resp, 0)
         resp = form.submit('cut').maybe_follow()
         assert 'cut.' in resp.body
         resp = app.get('/child-one/@@contents')
@@ -460,7 +481,7 @@ class TestBrowser:
             resp.click('Paste')
         resp = app.get('/child-one/@@contents')
         form = resp.forms['form-contents']
-        form['children'] = ['3', '15', ]
+        form = self._select_children(resp, 0, 1)
         form.submit('cut').maybe_follow()
         resp = app.get('/')
         resp = resp.click('Document', index=0)
@@ -481,20 +502,18 @@ class TestBrowser:
         assert 'Grandchild' in resp.body
         assert 'child-the-third' not in resp.body
         assert 'Hello Bob' not in resp.body
-        form = resp.forms['form-contents']
-        form['children'] = ['3', '15', ]
+        form = self._select_children(resp, 0, 1)
         resp = form.submit('rename_nodes').maybe_follow()
         resp = resp.forms['form-rename-nodes'].submit('cancel').maybe_follow()
         assert 'No changes were made.' in resp.body
         assert resp.request.path == '/forth-child/@@contents'
-        form = resp.forms['form-contents']
-        form['children'] = ['3', '15', ]
+        form = self._select_children(resp, 0, 1)
         resp = form.submit('rename_nodes').maybe_follow()
         form = resp.forms['form-rename-nodes']
-        form['3-name'] = 'child-the-third'
-        form['3-title'] = 'child, the third'
-        form['15-name'] = 'hello-bob'
-        form['15-title'] = 'Hello Bob'
+        form[form.submit_fields()[1][0]] = 'child-the-third'
+        form[form.submit_fields()[2][0]] = 'child, the third'
+        form[form.submit_fields()[4][0]] = 'hello-bob'
+        form[form.submit_fields()[5][0]] = 'Hello Bob'
         resp = form.submit('rename_nodes').maybe_follow()
         assert resp.request.path == '/forth-child/@@contents'
         assert 'third-child' not in resp.body
@@ -508,14 +527,12 @@ class TestBrowser:
         form['upload'] = Upload('some.txt', 'something', 'text/plain')
         form.submit('save').maybe_follow()
         resp = app.get('/forth-child/@@contents')
-        form = resp.forms['form-contents']
-        form['children'] = ['3', '15', '104', ]
+        form = self._select_children(resp, 0, 1, 2)
         resp = form.submit('delete_nodes').maybe_follow()
         resp = resp.forms['form-delete-nodes'].submit('cancel').maybe_follow()
         assert 'No changes were made.' in resp.body
         assert resp.request.path == '/forth-child/@@contents'
-        form = resp.forms['form-contents']
-        form['children'] = ['3', '15', '104', ]
+        form = self._select_children(resp, 0, 1, 2)
         resp = form.submit('delete_nodes').maybe_follow()
         assert "Are you sure" in resp.body
         resp = resp.forms['form-delete-nodes'].submit('delete_nodes',
@@ -540,22 +557,19 @@ class TestBrowser:
         assert '/second-child-1/third-child/@@workflow-change' \
                '?new_state=private' in resp.body
         resp = app.get('/second-child-1/third-child/@@contents')
-        form = resp.forms['form-contents']
-        form['children'] = ['58', '57', '2', ]
+        form = self._select_children(resp, 0, 1, 2)
         resp = form.submit('change_state').maybe_follow()
         assert 'Change workflow state' in resp.body
         resp = resp.forms['form-change-state'].submit('cancel').maybe_follow()
         assert 'No changes were made.' in resp.body
         assert resp.request.path == '/second-child-1/third-child/@@contents'
-        form = resp.forms['form-contents']
-        form['children'] = ['58', '57', '2', ]
+        form = self._select_children(resp, 0, 1, 2)
         resp = form.submit('change_state').maybe_follow()
         form = resp.forms['form-change-state']
         form['children-to-change-state'] = []
         resp = form.submit('change_state').maybe_follow()
         assert 'No changes were made.' in resp.body
-        form = resp.forms['form-contents']
-        form['children'] = ['58', '57', '2', ]
+        form = self._select_children(resp, 0, 1, 2)
         resp = form.submit('change_state').maybe_follow()
         form = resp.forms['form-change-state']
         form['to-state'] = 'public'
@@ -566,7 +580,7 @@ class TestBrowser:
         assert '/second-child-1/third-child/grandchild-2/@@workflow-change' \
                '?new_state=private' in resp.body
         assert '/second-child-1/third-child/grandchild-3/@@workflow-change' \
-               '?new_state=public' in resp.body
+               '?new_state=private' in resp.body
 
         resp = resp.click('My Third Child')
         assert '/second-child-1/third-child/child-one/@@workflow-change' \
@@ -586,8 +600,7 @@ class TestBrowser:
 
         resp = resp.click("Second Child", index=0)
         resp = resp.click("Contents")
-        form = resp.forms['form-contents']
-        form['children'] = ['14', '16', '56', ]
+        form = self._select_children(resp, 0, 1, 2)
         resp = form.submit('change_state').maybe_follow()
         form = resp.forms['form-change-state']
         form['include-children'] = 'include-children'
