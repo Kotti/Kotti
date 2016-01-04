@@ -22,6 +22,12 @@ def attachment_view(context, request):
 
 
 def includeme(config):
+    """ Pyramid includeme hook.
+
+    :param config: app config
+    :type config: :class:`pyramid.config.Configurator`
+    """
+
     config.scan(__name__)
 
 

@@ -125,7 +125,7 @@ class NodeTreeTraverser(ResourceTreeTraverser):
         else:
             vpath_tuple = split_path_info(vpath)
             traversed_nodes = self.traverse(root, vpath_tuple)
-            if len(traversed_nodes) == 0:
+            if not traversed_nodes:
                 view_name = vpath_tuple[0]
                 if view_name[:lvs] == vs:
                     view_name = view_name[lvs:]
@@ -179,7 +179,8 @@ class NodeTreeTraverser(ResourceTreeTraverser):
 
         return nodes
 
-    def _traverse_cte(self, root, vpath_tuple):  # pragma: no cover
+    @staticmethod
+    def _traverse_cte(root, vpath_tuple):  # pragma: no cover
         """ Version of the traverse method, that uses a CTE instead of the
         Node.path attribute.  Unfortunately this is **much** slower and works
         only on PostgreSQL.
@@ -233,4 +234,10 @@ class NodeTreeTraverser(ResourceTreeTraverser):
 
 
 def includeme(config):
+    """ Pyramid includeme hook.
+
+    :param config: app config
+    :type config: :class:`pyramid.config.Configurator`
+    """
+
     config.add_traverser(NodeTreeTraverser, Node)

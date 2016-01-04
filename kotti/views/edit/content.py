@@ -134,6 +134,12 @@ class FileAddForm(AddFormView):
 
 
 def includeme(config):
+    """ Pyramid includeme hook.
+
+    :param config: app config
+    :type config: :class:`pyramid.config.Configurator`
+    """
+
     config.add_view(
         DocumentEditForm,
         context=Document,

@@ -98,7 +98,8 @@ class PackageEnvironment(object):
         cfg.set_main_option("sqlalchemy.url", get_settings()['sqlalchemy.url'])
         return cfg
 
-    def _make_script_dir(self, alembic_cfg):
+    @staticmethod
+    def _make_script_dir(alembic_cfg):
         script_dir = ScriptDirectory.from_config(alembic_cfg)
         script_dir.__class__ = ScriptDirectoryWithDefaultEnvPy  # O_o
         return script_dir

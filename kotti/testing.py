@@ -60,6 +60,12 @@ def asset(name):
 
 
 def includeme_login(config):
+    """ Pyramid includeme hook.
+
+    :param config: app config
+    :type config: :class:`pyramid.config.Configurator`
+    """
+
     config.add_view(
         login_view,
         name='login',
@@ -67,7 +73,14 @@ def includeme_login(config):
 
 
 def includeme_layout(config):
+    """ Pyramid includeme hook.
+
+    :param config: app config
+    :type config: :class:`pyramid.config.Configurator`
+    """
+
     # override edit master layout with view master layout
+
     config.override_asset(
         to_override='kotti:templates/edit/master.pt',
         override_with='kotti:templates/view/master.pt')
@@ -262,6 +275,12 @@ def dummy_view(context, request):
 
 
 def include_testing_view(config):
+    """ Pyramid includeme hook.
+
+    :param config: app config
+    :type config: :class:`pyramid.config.Configurator`
+    """
+
     config.add_view(
         dummy_view,
         context=TestingRootFactory,

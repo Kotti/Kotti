@@ -603,6 +603,12 @@ def actions(context, request):
 
 
 def includeme(config):
+    """ Pyramid includeme hook.
+
+    :param config: app config
+    :type config: :class:`pyramid.config.Configurator`
+    """
+
     import warnings
     with warnings.catch_warnings():
         warnings.simplefilter("ignore")
