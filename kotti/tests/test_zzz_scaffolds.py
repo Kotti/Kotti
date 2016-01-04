@@ -15,6 +15,7 @@ import os
 import shutil
 import subprocess
 import sys
+from copy import copy
 from tempfile import mkdtemp
 
 from pytest import fixture
@@ -54,19 +55,24 @@ def virtualenv(request, travis):
             os.path.join('bin', 'pip'),
             'install', '-U', 'pip', 'setuptools', 'pip-accel'])
 
+        # create a local copy of the environment, where we can override
+        # VIRTUAL_ENV to make pip-accel work
+        env = copy(os.environ)
+        env.update({'VIRTUAL_ENV': virtualenv_directory, })
+
         # install requirements.txt into the virtualenv
         subprocess.check_call([
             os.path.join('bin', 'pip-accel'),
             'install', '-r',
             os.path.join(cwd, 'requirements.txt')],
-            env={'VIRTUAL_ENV': virtualenv_directory, })
+            env=env)
 
         # setuptools-git is required to be able to call setup.py install
         # sucessfully.  also install psycopg2 and oursql.
         subprocess.check_call([
             os.path.join('bin', 'pip-accel'),
             'install', 'setuptools-git', 'psycopg2', 'oursql'],
-            env={'VIRTUAL_ENV': virtualenv_directory, })
+            env=env)
 
         shutil.copytree(cwd, os.path.join(virtualenv_directory, 'kotti'))
 
