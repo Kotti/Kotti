@@ -68,6 +68,7 @@ tests_require = [
     'pytest>=2.4.2',
     'pytest-cov',
     'pytest-pep8!=1.0.3',
+    'pytest-travis-fold',
     'pytest-xdist',
     'virtualenv',  # needed for scaffolding tests
     'wsgi_intercept==0.5.1',

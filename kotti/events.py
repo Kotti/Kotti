@@ -315,7 +315,7 @@ def reset_content_owner(event):
 def _update_children_paths(old_parent_path, new_parent_path):
     for child in DBSession.query(Node).options(
         load_only('path', 'type')).filter(
-            Node.path.startswith(old_parent_path)):
+            Node.path.startswith(old_parent_path)).order_by(Node.path):
         if child.path == new_parent_path:
             # The child is the node itself and has already be renamed.
             # Nothing to do!
@@ -386,7 +386,7 @@ def _all_children(item, _all=None):
 def _set_path_for_new_parent(target, value, oldvalue, initiator):
     """Triggered whenever the Node's 'parent' attribute is set.
     """
-    if value is None:
+    if value is None or value == oldvalue:
         # The parent is about to be set to 'None', so skip.
         return
 

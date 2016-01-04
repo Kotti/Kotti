@@ -2,7 +2,6 @@ import logging
 import mimetypes
 import uuid
 from datetime import datetime
-from time import time
 
 import rfc6266
 from depot.fields.sqlalchemy import _SQLAMutationTracker

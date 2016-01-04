@@ -63,6 +63,7 @@ conf_defaults = {
         ]),
     'kotti.base_includes': ' '.join([
         'kotti',
+        'kotti.traversal',
         'kotti.filedepot',
         'kotti.events',
         'kotti.sanitizers',

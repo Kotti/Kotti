@@ -15,7 +15,7 @@ class TestLogin:
         res = app.post(
             '/@@login', dict(login='admin', password='secret', submit='submit'))
         assert res.status == '302 Found'
-        res = res.follow()
+        res = res.maybe_follow()
         assert res.status == '200 OK'
 
 
@@ -357,22 +357,22 @@ class TestBrowser:
 
         # Copy and paste
         resp = app.get('/second-child/')
-        resp = resp.click('Cut', index=0).follow()
+        resp = resp.click('Cut', index=0).maybe_follow()
         assert "Second Child was cut" in resp.body
         resp = app.get('/child-one/')
-        resp = resp.click('Paste', index=0).follow()
+        resp = resp.click('Paste', index=0).maybe_follow()
         assert "Second Child was pasted" in resp.body
         app.get('/second-child/', status=404)
         resp = app.get('/child-one/second-child/')
-        resp = resp.click('Copy', index=0).follow()
+        resp = resp.click('Copy', index=0).maybe_follow()
         assert "Second Child was copied" in resp.body
         resp = app.get('/')
-        resp = resp.click('Paste', index=0).follow()
+        resp = resp.click('Paste', index=0).maybe_follow()
         assert "Second Child was pasted" in resp.body
 
         # We can paste twice since we copied:
         resp = app.get('/')
-        resp = resp.click('Paste', index=0).follow()
+        resp = resp.click('Paste', index=0).maybe_follow()
         assert "Second Child was pasted" in resp.body
         resp = app.get('/second-child/')
         assert "Second Child" in resp.body
@@ -382,10 +382,10 @@ class TestBrowser:
         # We can also copy and paste items that contain children,
         # like the whole site:
         resp = app.get('/')
-        resp = resp.click('Copy', index=0).follow()
+        resp = resp.click('Copy', index=0).maybe_follow()
         assert "Welcome to Kotti was copied" in resp.body
         resp = app.get('/second-child/')
-        resp = resp.click('Paste', index=0).follow()
+        resp = resp.click('Paste', index=0).maybe_follow()
         assert "Welcome to Kotti was pasted" in resp.body
         resp = app.get('/second-child/welcome-to-kotti/')
         assert resp.status_code == 200
@@ -394,32 +394,32 @@ class TestBrowser:
 
         # And finally cut and paste a tree:
         resp = app.get('/second-child/')
-        resp.click('Cut', index=0).follow()
+        resp.click('Cut', index=0).maybe_follow()
         resp = app.get('/child-one/second-child/')
-        resp = resp.click('Paste', index=0).follow()
+        resp = resp.click('Paste', index=0).maybe_follow()
         assert "Second Child was pasted" in resp.body
         app.get('/second-child/', status=404)
 
         # Note how we can't cut and paste an item into itself:
         resp = app.get('/child-one/')
-        resp.click('Cut', index=0).follow()
+        resp.click('Cut', index=0).maybe_follow()
         with pytest.raises(IndexError):
-            resp.click('Paste', index=0).follow()
+            resp.click('Paste', index=0).maybe_follow()
         resp = app.get('/child-one/second-child/')
         with pytest.raises(IndexError):
-            resp.click('Paste', index=0).follow()
+            resp.click('Paste', index=0).maybe_follow()
 
         # Whether we can paste or not also depends on the
         # ``type_info.addable`` property:
         resp = app.get('/child-one/')
-        resp.click('Copy', index=0).follow()
+        resp.click('Copy', index=0).maybe_follow()
         resp = app.get('/child-one/second-child/')
-        resp.click('Paste', index=0).follow()
+        resp.click('Paste', index=0).maybe_follow()
         try:
             Document.type_info.addable_to = ()
             resp = app.get('/child-one/second-child/')
             with pytest.raises(IndexError):
-                resp.click('Paste', index=0).follow()
+                resp.click('Paste', index=0).maybe_follow()
         finally:
             Document.type_info.addable_to = save_addable_document
 
@@ -480,7 +480,6 @@ class TestBrowser:
         with pytest.raises(IndexError):
             resp.click('Paste')
         resp = app.get('/child-one/@@contents')
-        form = resp.forms['form-contents']
         form = self._select_children(resp, 0, 1)
         form.submit('cut').maybe_follow()
         resp = app.get('/')
@@ -491,7 +490,7 @@ class TestBrowser:
         resp = app.get('/forth-child/@@contents')
         assert "Grandchild" not in resp.body
         assert "My Third Child" not in resp.body
-        resp = resp.forms['form-contents'].submit('paste').maybe_follow()
+        resp.forms['form-contents'].submit('paste').maybe_follow()
         resp = app.get('/forth-child/@@contents')
         assert "Grandchild" in resp.body
         assert "My Third Child" in resp.body
@@ -536,7 +535,7 @@ class TestBrowser:
         resp = form.submit('delete_nodes').maybe_follow()
         assert "Are you sure" in resp.body
         resp = resp.forms['form-delete-nodes'].submit('delete_nodes',
-                                                      status=302).follow()
+                                                      status=302).maybe_follow()
         assert "child, the third was deleted." in resp.body
         assert "Hello Bob was deleted." in resp.body
         assert "some.txt was deleted." in resp.body
@@ -544,18 +543,14 @@ class TestBrowser:
         assert "Welcome to Kotti" in resp.body
         assert '<i class="glyphicon glyphicon-home"></i>' in resp.body
         assert '<i class="glyphicon glyphicon-folder-open"></i>' in resp.body
-        assert '<i class="glyphicon glyphicon-folder-close"></i>' \
-               not in resp.body
+        assert '<i class="glyphicon glyphicon-folder-close"></i>' not in resp.body  # noqa
 
         # Contents view change state actions
         resp = resp.click("Second Child")
         resp = resp.click("Contents")
-        assert '/second-child-1/third-child/@@workflow-change' \
-               '?new_state=public' in resp.body
-        resp = resp.click(href='/second-child-1/third-child/@@workflow-change'
-                               '\?new_state=public').follow()
-        assert '/second-child-1/third-child/@@workflow-change' \
-               '?new_state=private' in resp.body
+        assert '/second-child-1/third-child/@@workflow-change?new_state=public' in resp.body  # noqa
+        resp = app.get('/second-child-1/third-child/@@workflow-change?new_state=public').maybe_follow()  # noqa
+        assert '/second-child-1/third-child/@@workflow-change?new_state=private' in resp.body  # noqa
         resp = app.get('/second-child-1/third-child/@@contents')
         form = self._select_children(resp, 0, 1, 2)
         resp = form.submit('change_state').maybe_follow()
@@ -575,29 +570,21 @@ class TestBrowser:
         form['to-state'] = 'public'
         resp = form.submit('change_state').maybe_follow()
         assert 'Your changes have been saved.' in resp.body
-        assert '/second-child-1/third-child/grandchild-1/@@workflow-change' \
-               '?new_state=private' in resp.body
-        assert '/second-child-1/third-child/grandchild-2/@@workflow-change' \
-               '?new_state=private' in resp.body
-        assert '/second-child-1/third-child/grandchild-3/@@workflow-change' \
-               '?new_state=private' in resp.body
+        assert '/second-child-1/third-child/grandchild-1/@@workflow-change?new_state=private' in resp.body  # noqa
+        assert '/second-child-1/third-child/grandchild-2/@@workflow-change?new_state=private' in resp.body  # noqa
+        assert '/second-child-1/third-child/grandchild-3/@@workflow-change?new_state=private' in resp.body  # noqa
 
         resp = resp.click('My Third Child')
-        assert '/second-child-1/third-child/child-one/@@workflow-change' \
-               '?new_state=public' in resp.body
-        resp = app.get('/second-child-1/third-child/child-one/@@workflow-change?new_state=public')
+        assert '/second-child-1/third-child/child-one/@@workflow-change?new_state=public' in resp.body  # noqa
+        app.get('/second-child-1/third-child/child-one/@@workflow-change?new_state=public')  # noqa
         resp = app.get('/second-child-1/third-child/@@contents')
-        assert '/second-child-1/third-child/child-one/@@workflow-change' \
-               '?new_state=private' in resp.body
-
+        assert '/second-child-1/third-child/child-one/@@workflow-change?new_state=private' in resp.body  # noqa
         resp = resp.click('First Child', index=1)
         resp = resp.click('Document', index=0)
         form = resp.forms['deform']
         form['title'] = 'Sub child'
         resp = form.submit('save').maybe_follow()
-        assert '/second-child-1/third-child/child-one/sub-child/' \
-               '@@workflow-change?new_state=public' in resp.body
-
+        assert '/second-child-1/third-child/child-one/sub-child/@@workflow-change?new_state=public' in resp.body  # noqa
         resp = resp.click("Second Child", index=0)
         resp = resp.click("Contents")
         form = self._select_children(resp, 0, 1, 2)
@@ -607,11 +594,9 @@ class TestBrowser:
         form['to-state'] = 'public'
         resp = form.submit('change_state').maybe_follow()
         assert 'Your changes have been saved.' in resp.body
-        assert '/second-child-1/third-child/@@workflow-change' \
-               '?new_state=private' in resp.body
+        assert '/second-child-1/third-child/@@workflow-change?new_state=private' in resp.body
         resp = app.get('/second-child-1/third-child/child-one/sub-child/')
-        assert '/second-child-1/third-child/child-one/sub-child/' \
-               '@@workflow-change?new_state=private' in resp.body
+        assert '/second-child-1/third-child/child-one/sub-child/@@workflow-change?new_state=private' in resp.body
 
         # Navigation
         resp = resp.click("Navigate")
@@ -623,7 +608,7 @@ class TestBrowser:
         get_settings()['kotti.site_title'] = u'Website des Kottbusser Tors'
 
         app = webtest.app
-        resp = self._login(app, 'admin', 'secret').follow()
+        resp = self._login(app, 'admin', 'secret').maybe_follow()
 
         # The user management screen is available through
         # the "Site Setup" submenu
@@ -752,7 +737,7 @@ class TestBrowser:
         assert "@@set-password?token=" in email.body
 
         # We'll use that link to set our password:
-        resp.click("Logout").follow()
+        resp.click("Logout").maybe_follow()
         path = email.body[email.body.index('http://localhost'):].split()[0][16:]
         resp = app.get(path)
         form = resp.forms['deform']
@@ -775,17 +760,17 @@ class TestBrowser:
         assert "Your password reset token may have expired" in resp.body
 
         # Log in as Bob with the new password:
-        resp = self._login(app, 'bOB', 'newpassword').follow()
+        resp = self._login(app, 'bOB', 'newpassword').maybe_follow()
         assert "Welcome, Bob Dabolina" in resp.body
         app.get('/@@edit')
-        resp = resp.click("Logout").follow()
+        resp = resp.click("Logout").maybe_follow()
 
         # The login form has a "Reset password" button.  Let's try it:
         resp = self._login(app, "bobby", "")
         assert "Login failed." in resp.body
         form = resp.forms['forgot-password-form']
         form['login'] = "bob"
-        resp = form.submit('reset-password').follow()
+        resp = form.submit('reset-password').maybe_follow()
         assert "You should be receiving an email" in resp.body
         [email1, email2, email3] = dummy_mailer.outbox
         assert 'Hello, Bob Dabolina!' in email3.body
@@ -797,13 +782,13 @@ class TestBrowser:
 
         # The "Preferences" link leads us to a form where the user can change
         # their preferences so the user need to be authenticated:
-        resp = self._login(app, 'admin', 'secret').follow()
+        resp = self._login(app, 'admin', 'secret').maybe_follow()
         assert "Welcome, Administrator" in resp.body
         resp = app.get('/@@prefs')
         form = resp.forms['deform']
         form['title'] = "Mr. Administrator"
         form['email'] = 'admin@minad.com'
-        resp = form.submit("save").follow()
+        resp = form.submit("save").maybe_follow()
         assert "Your changes have been saved" in resp.body
 
         # The email could not be used if already a users with that email exists:
@@ -813,7 +798,7 @@ class TestBrowser:
 
         # If the user cancel the process he will be redirected to the site root:
         form = resp.forms['deform']
-        resp = form.submit("cancel").follow()
+        resp = form.submit("cancel").maybe_follow()
         assert 'Welcome to Kotti' in resp.body
 
         # Share
@@ -838,14 +823,14 @@ class TestBrowser:
         form = resp.forms['form-share-assign']
         form["role::group:bobsgroup::role:owner"].checked = True
         form["role::group:bobsgroup::role:editor"].checked = True
-        resp = form.submit("apply").follow()
+        resp = form.submit("apply").maybe_follow()
         assert "Your changes have been saved" in resp.body
         resp = app.get(resp.request.path)  # >>> browser.reload()
         form = resp.forms['form-share-assign']
         assert form["role::group:bobsgroup::role:owner"].checked
         assert form["role::group:bobsgroup::role:editor"].checked
         form["role::group:bobsgroup::role:owner"].checked = False
-        resp = form.submit("apply").follow()
+        resp = form.submit("apply").maybe_follow()
         assert "Your changes have been saved" in resp.body
         form = resp.forms['form-share-assign']
         assert not form["role::group:bobsgroup::role:owner"].checked
@@ -871,7 +856,7 @@ class TestBrowser:
         # again:
         assert "Bob's Group" in resp.body
         form["role::group:bobsgroup::role:editor"].checked = None
-        resp = form.submit("apply").follow()
+        resp = form.submit("apply").maybe_follow()
         assert "Your changes have been saved" in resp.body
         # TODO assert "Bob's Group" not in resp.body
         form = resp.forms['form-share-assign']

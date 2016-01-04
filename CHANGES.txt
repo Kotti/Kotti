@@ -4,12 +4,19 @@ Change History
 1.3.0 - unreleased
 ------------------
 
+- Add a custom traverser, which gets all nodes in a single DB query.  For deeply
+  nested trees this results in drastic perfor,ance improvements.  See
+  http://kotti.readthedocs.org/en/master/api/kotti.traversal.html for details.
+
 - Bugfix: copy and paste of file nodes wouldn't create a new depot file, but
   instead lead to multiple references to a single file which would cause
   undesired results when one of them was deleted later.
 
 - Bugfix: local 'role:owner' was not set when a new node was created by copy
   and paste.
+
+- Bugfix: kotti.events._update_children_paths could fail under unclear
+  conditions (at least under Python 2.6 with SQLite).
 
 - Get rid of more browser doctests (converted to webtest).
 

@@ -10,9 +10,13 @@ Inheritance Diagram
 from pyramid.compat import json
 from pyramid.security import ALL_PERMISSIONS
 from pyramid.security import Allow
-from sqlalchemy.types import TypeDecorator, TEXT
-from sqlalchemy.ext.mutable import Mutable
+from sqlalchemy.ext import baked
 from sqlalchemy.ext.declarative import declared_attr
+from sqlalchemy.ext.mutable import Mutable
+from sqlalchemy.types import TypeDecorator, TEXT
+
+bakery = baked.bakery()
+baked.bake_lazy_loaders()
 
 
 def dump_default(obj):

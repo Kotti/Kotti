@@ -23,6 +23,7 @@ API Documentation
    kotti.sqla
    kotti.testing
    kotti.tests
+   kotti.traversal
    kotti.util
    kotti.views/index
    kotti.workflow

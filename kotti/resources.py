@@ -11,14 +11,15 @@ Inheritance Diagram
 import os
 import warnings
 from copy import copy
-from fnmatch import fnmatch
 from cStringIO import StringIO
+from fnmatch import fnmatch
 from UserDict import DictMixin
 
 from depot.fields.sqlalchemy import _SQLAMutationTracker
 from depot.fields.sqlalchemy import UploadedFileField
 from pyramid.decorator import reify
 from pyramid.traversal import resource_path
+from sqlalchemy import bindparam
 from sqlalchemy import Boolean
 from sqlalchemy import Column
 from sqlalchemy import DateTime
@@ -58,6 +59,7 @@ from kotti.migrate import stamp_heads
 from kotti.security import PersistentACLMixin
 from kotti.security import view_permitted
 from kotti.sqla import ACLType
+from kotti.sqla import bakery
 from kotti.sqla import JsonType
 from kotti.sqla import MutationList
 from kotti.sqla import NestedMutationDict
@@ -94,7 +96,8 @@ class ContainerMixin(object, DictMixin):
         return [child.name for child in self.children]
 
     def __getitem__(self, path):
-        DBSession()._autoflush()
+        db_session = DBSession()
+        db_session._autoflush()
 
         if not hasattr(path, '__iter__'):
             path = (path,)
@@ -112,10 +115,16 @@ class ContainerMixin(object, DictMixin):
             else:
                 return child
 
+        baked_query = bakery(lambda session: session.query(Node))
+
         if len(path) == 1:
             try:
-                return DBSession.query(Node).filter_by(
-                    name=path[0], parent=self).one()
+                baked_query += lambda q: q.filter(
+                    Node.name == bindparam('name'),
+                    Node.parent_id == bindparam('parent_id')
+                )
+                return baked_query(db_session).params(
+                    name=path[0], parent_id=self.id).one()
             except NoResultFound:
                 raise KeyError(path)
 
@@ -129,10 +138,10 @@ class ContainerMixin(object, DictMixin):
             conditions.append(alias.c.parent_id == old_alias.c.id)
             conditions.append(alias.c.name == name)
         expr = select([alias.c.id], and_(*conditions))
-        row = DBSession.execute(expr).fetchone()
+        row = db_session.execute(expr).fetchone()
         if row is None:
             raise KeyError(path)
-        return DBSession.query(Node).get(row.id)
+        return baked_query(db_session).get(row.id)
 
     @hybrid_property
     def children(self):
@@ -472,7 +481,8 @@ class TagsToContents(Base):
     #: to :class:`~kotti.resources.Tag` instances to allow easy access to all
     #: content tagged with that tag.
     #: (:func:`sqlalchemy.orm.relationship`)
-    tag = relation(Tag, backref=backref('content_tags', cascade='all'))
+    tag = relation(Tag, backref=backref('content_tags', cascade='all'),
+                   lazy='joined',)
     #: Ordering position of the tag
     #: :class:`sqlalchemy.types.Integer`
     position = Column(Integer, nullable=False)
@@ -572,6 +582,7 @@ class Content(Node):
     _tags = relation(
         TagsToContents,
         backref=backref('item'),
+        lazy='joined',
         order_by=[TagsToContents.position],
         collection_class=ordering_list("position"),
         cascade='all, delete-orphan',
@@ -790,6 +801,7 @@ def get_root(request=None):
 
 class DefaultRootCache(object):
     """ Default implementation for :func:`~kotti.resources.get_root` """
+    _id = None
 
     @reify
     def root_id(self):
@@ -798,7 +810,11 @@ class DefaultRootCache(object):
         :rtype: int
         """
 
-        return Node.query.filter(Node.parent_id == None).one().id  # noqa
+        query = bakery(lambda session: session.query(Node)
+                       .with_polymorphic(Node).add_columns(Node.id)
+                       .enable_eagerloads(False).filter(Node.parent_id == None))
+
+        return query(DBSession()).one().id
 
     def get_root(self):
         """ Query for the root node by its id.  This enables SQLAlchemy's
