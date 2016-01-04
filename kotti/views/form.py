@@ -211,7 +211,8 @@ class CommaSeparatedListWidget(deform.widget.Widget):
             cstruct = []
         return field.renderer(self.template, field=field, cstruct=cstruct)
 
-    def deserialize(self, field, pstruct):
+    @staticmethod
+    def deserialize(field, pstruct):
         if pstruct is colander.null:
             return colander.null
         return [item.strip() for item in pstruct.split(',') if item]
@@ -247,7 +248,8 @@ class FileUploadTempStore(DictMixin):
     def __delitem__(self, name):
         del self.session[name]
 
-    def preview_url(self, name):
+    @staticmethod
+    def preview_url(name):
         return None
 
 
