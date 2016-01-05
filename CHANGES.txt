@@ -1,8 +1,11 @@
 Change History
 ==============
 
-1.3.0 - unreleased
-------------------
+1.3.0-alpha.2 - 2016-01-05
+--------------------------
+
+**This is a alpha release.  Blindly upgrading your production environments will
+make the universe collapse!**
 
 - Add a custom traverser, which gets all nodes in a single DB query.  For deeply
   nested trees this results in drastic perfor,ance improvements.  See
