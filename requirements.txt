@@ -6,7 +6,7 @@ FormEncode==1.3.0
 Mako==1.0.3
 MarkupSafe==0.23
 PasteDeploy==1.5.2
-Pillow==3.0.0
+Pillow==3.1.0
 Pygments==2.0.2
 SQLAlchemy==1.0.11
 SQLAlchemy-Utils==0.31.4
@@ -48,7 +48,7 @@ peppercorn==0.5
 plone.scale==1.4
 polib==1.0.7
 py-bcrypt==0.4
-pyramid==1.5.7
+pyramid==1.6
 pyramid-beaker==0.8
 pyramid-chameleon==0.3
 pyramid-debugtoolbar==2.4.2
