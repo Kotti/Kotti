@@ -15,6 +15,7 @@ import os
 import shutil
 import subprocess
 import sys
+from copy import copy
 from tempfile import mkdtemp
 
 from pytest import fixture
@@ -24,59 +25,62 @@ slow = mark.slow
 
 
 @fixture
-def virtualenv(request):
+def virtualenv(request, travis):
     """ Create a virtualenv and ``chdir`` into it.  Remove it and ``chdir``
     into the previous working directory again when the test has been run.
     """
 
-    import virtualenv
-    from virtualenv import Logger
+    with travis.folding_output():
+        import virtualenv
+        from virtualenv import Logger
 
-    # create a temp directory
-    cwd = os.getcwd()
-    virtualenv_directory = mkdtemp()
+        # create a temp directory
+        cwd = os.getcwd()
+        virtualenv_directory = mkdtemp()
 
-    # install a virtualenv
-    logger = Logger([(Logger.level_for_integer(2), sys.stdout)])
-    virtualenv.logger = logger
-    virtualenv.create_environment(
-        virtualenv_directory,
-        site_packages=False,
-        clear=True,
-        unzip_setuptools=True)
+        # install a virtualenv
+        logger = Logger([(Logger.level_for_integer(2), sys.stdout)])
+        virtualenv.logger = logger
+        virtualenv.create_environment(
+            virtualenv_directory,
+            site_packages=False,
+            clear=True,
+            unzip_setuptools=True)
 
-    # chdir into the virtualenv directory
-    os.chdir(virtualenv_directory)
+        # chdir into the virtualenv directory
+        os.chdir(virtualenv_directory)
 
-    # update setuptools in the virtualenv
-    subprocess.check_call([
-        os.path.join('bin', 'pip'),
-        'install', '-U', 'setuptools>=17.1'])
+        # update setuptools in the virtualenv
+        subprocess.check_call([
+            os.path.join('bin', 'pip'),
+            'install', '-U', 'pip', 'setuptools', 'pip-accel'])
 
-    # install requirements.txt into the virtualenv
-    subprocess.check_call([
-        os.path.join('bin', 'pip'),
-        'install', '-r',
-        os.path.join(cwd, 'requirements.txt')])
+        # create a local copy of the environment, where we can override
+        # VIRTUAL_ENV to make pip-accel work
+        env = copy(os.environ)
+        env.update({'VIRTUAL_ENV': virtualenv_directory, })
 
-    # also install psycopg2 and oursql
-    subprocess.check_call([
-        os.path.join('bin', 'pip'),
-        'install', 'psycopg2', 'oursql'])
+        # install requirements.txt into the virtualenv
+        subprocess.check_call([
+            os.path.join('bin', 'pip-accel'),
+            'install', '-r',
+            os.path.join(cwd, 'requirements.txt')],
+            env=env)
 
-    # setuptools-git is required to be able to call setup.py install
-    # sucessfully.
-    subprocess.check_call([
-        os.path.join('bin', 'pip'),
-        'install', 'setuptools-git'])
+        # setuptools-git is required to be able to call setup.py install
+        # sucessfully.  also install psycopg2 and oursql.
+        subprocess.check_call([
+            os.path.join('bin', 'pip-accel'),
+            'install', 'setuptools-git', 'psycopg2', 'oursql'],
+            env=env)
 
-    shutil.copytree(cwd, os.path.join(virtualenv_directory, 'kotti'))
+        shutil.copytree(cwd, os.path.join(virtualenv_directory, 'kotti'))
 
-    # install Kotti into the virtualenv
-    os.chdir('kotti')
-    subprocess.check_call([
-        os.path.join('..', 'bin', 'python'), 'setup.py', 'develop'])
-    os.chdir('..')
+        # install Kotti into the virtualenv
+        os.chdir('kotti')
+        subprocess.check_call([
+            os.path.join('..', 'bin', 'python'), 'setup.py', 'develop'])
+        os.chdir('..')
 
     def delete_virtualenv():
         shutil.rmtree(virtualenv_directory)
@@ -86,32 +90,31 @@ def virtualenv(request):
 
 
 @slow
-def test_scaffold_kotti_addon(virtualenv):
+def test_scaffold_kotti_addon(virtualenv, travis):
 
-    # print available scaffolds
-    subprocess.check_call([os.path.join('bin', 'pcreate'), '-l'])
+    with travis.folding_output():
+        # print available scaffolds
+        subprocess.check_call([os.path.join('bin', 'pcreate'), '-l'])
 
-    # set some environment variables to make pcreate non interactive
-    os.environ["author"] = "Kotti developers"
-    os.environ["email"] = "kotti@googlegroups.com"
-    os.environ["gh_user"] = "Kotti"
+        # set some environment variables to make pcreate non interactive
+        os.environ["author"] = "Kotti developers"
+        os.environ["email"] = "kotti@googlegroups.com"
+        os.environ["gh_user"] = "Kotti"
 
-    # create a project from the scaffold
-    subprocess.check_call([
-        os.path.join('bin', 'pcreate'),
-        '-s', 'kotti', 'kotti_my_addon'])
+        # create a project from the scaffold
+        subprocess.check_call([
+            os.path.join('bin', 'pcreate'),
+            '-s', 'kotti', 'kotti_my_addon'])
 
-    # develop the package
-    os.chdir('kotti_my_addon')
-    subprocess.check_call([
-        os.path.join('..', 'bin', 'python'),
-        'setup.py', 'develop'])
-    subprocess.check_call([
-        os.path.join('..', 'bin', 'python'),
-        'setup.py', 'dev'])
+        # develop the package
+        os.chdir('kotti_my_addon')
+        subprocess.check_call([
+            os.path.join('..', 'bin', 'python'),
+            'setup.py', 'develop'])
+        subprocess.check_call([
+            os.path.join('..', 'bin', 'python'),
+            'setup.py', 'dev'])
 
-    # run the tests
-    subprocess.check_call([
-        os.path.join('..', 'bin', 'py.test')])
-
-    pass
+        # run the tests
+        subprocess.check_call([
+            os.path.join('..', 'bin', 'py.test')])

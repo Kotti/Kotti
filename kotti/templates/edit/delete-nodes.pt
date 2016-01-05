@@ -8,50 +8,48 @@
 
     <h1 i18n:translate="">Delete</h1>
 
-    <div class="tab-pane" id="delete-nodes">
-      <form action="${request.url}" method="post">
+    <form id="form-delete-nodes" action="${request.url}" method="post">
 
-        <p class="lead" i18n:translate="">
-          Are you sure you want to delete the following items?
-        </p>
+      <p class="lead" i18n:translate="">
+        Are you sure you want to delete the following items?
+      </p>
 
-        <table class="table table-condensed" tal:condition="items">
-          <thead>
-            <tr>
-              <th></th>
-              <th i18n:translate="">Title</th>
-              <th i18n:translate="">Type</th>
-              <th i18n:translate="">State</th>
-              <th i18n:translate="">Creation Date</th>
-              <th i18n:translate="">Modification Date</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr tal:repeat="item items">
-              <tal:block tal:define="url request.resource_url(item, '@@contents')">
-                <td><input name="children-to-delete" type="checkbox" value="${item.id}" checked="checked" title="Select item" i18n:attributes="title" /></td>
-                <td><a href="${url}">${item.title}</a></td>
-                <td>${item.type_info.title}</td>
-                <td>${item.state in states and states[item.state]['title']}</td>
-                <td>${api.format_date(item.creation_date)}</td>
-                <td>${api.format_date(item.modification_date)}</td>
-              </tal:block>
-            </tr>
-          </tbody>
-        </table>
-        <div class="form-actions">
-          <button type="submit" name="cancel" value="cancel"
-                  class="btn btn-default">
-            <span i18n:translate="">Cancel</span>
-          </button>
-          <button type="submit" name="delete_nodes" value="delete_nodes"
-                  class="btn btn-danger">
-            <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
-            <span i18n:translate="">Delete</span>
-          </button>
-        </div>
-      </form>
-    </div>
+      <table class="table table-condensed" tal:condition="items">
+        <thead>
+          <tr>
+            <th></th>
+            <th i18n:translate="">Title</th>
+            <th i18n:translate="">Type</th>
+            <th i18n:translate="">State</th>
+            <th i18n:translate="">Creation Date</th>
+            <th i18n:translate="">Modification Date</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr tal:repeat="item items">
+            <tal:block tal:define="url request.resource_url(item, '@@contents')">
+              <td><input name="children-to-delete" type="checkbox" value="${item.id}" checked="checked" title="Select item" i18n:attributes="title" /></td>
+              <td><a href="${url}">${item.title}</a></td>
+              <td>${item.type_info.title}</td>
+              <td>${item.state in states and states[item.state]['title']}</td>
+              <td>${api.format_date(item.creation_date)}</td>
+              <td>${api.format_date(item.modification_date)}</td>
+            </tal:block>
+          </tr>
+        </tbody>
+      </table>
+      <div class="form-actions">
+        <button type="submit" name="cancel" value="cancel"
+                class="btn btn-default">
+          <span i18n:translate="">Cancel</span>
+        </button>
+        <button type="submit" name="delete_nodes" value="delete_nodes"
+                class="btn btn-danger">
+          <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
+          <span i18n:translate="">Delete</span>
+        </button>
+      </div>
+    </form>
 
   </div>
 </html>

@@ -52,6 +52,12 @@ def local_navigation(context, request):
 
 
 def includeme_local_navigation(config):
+    """ Pyramid includeme hook.
+
+    :param config: app config
+    :type config: :class:`pyramid.config.Configurator`
+    """
+
     # Import is needed in function scope to resolve circular imports caused by
     # compatibility imports in slots.py.
     from kotti.views.slots import assign_slot
@@ -60,4 +66,10 @@ def includeme_local_navigation(config):
 
 
 def includeme(config):
+    """ Pyramid includeme hook.
+
+    :param config: app config
+    :type config: :class:`pyramid.config.Configurator`
+    """
+
     config.scan(__name__)

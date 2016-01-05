@@ -149,7 +149,8 @@ class LinkRenderer(LinkBase):
     def __call__(self, context, request):
         return TemplateStructure(render_view(context, request, name=self.name))
 
-    def selected(self, context, request):
+    @staticmethod
+    def selected(context, request):
         return False
 
 
@@ -163,10 +164,10 @@ class LinkParent(LinkBase):
         self.children = children
 
     def visible(self, context, request):
-        return any([ch.visible(context, request) for ch in self.children])
+        return any(ch.visible(context, request) for ch in self.children)
 
     def selected(self, context, request):
-        return any([ch.selected(context, request) for ch in self.children])
+        return any(ch.selected(context, request) for ch in self.children)
 
     def get_visible_children(self, context, request):
         return [ch for ch in self.children if ch.visible(context, request)]

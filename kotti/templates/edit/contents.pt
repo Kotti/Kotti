@@ -25,7 +25,8 @@
         </tal:repeat>
       </div>
 
-      <form action="${request.resource_url(context, '@@contents')}" method="post">
+      <form id="form-contents" method="post"
+            action="${request.resource_url(context, '@@contents')}">
         <tal:no-content tal:condition="not:children">
           <span class="text-info" i18n:translate="">No content items are contained here.</span>
         </tal:no-content>

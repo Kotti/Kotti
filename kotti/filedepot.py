@@ -2,7 +2,6 @@ import logging
 import mimetypes
 import uuid
 from datetime import datetime
-from time import time
 
 import rfc6266
 from depot.fields.sqlalchemy import _SQLAMutationTracker
@@ -69,6 +68,8 @@ class DBStoredFile(Base):
     _cursor = 0
     _data = _marker
 
+    public_url = None
+
     def __init__(self, file_id, filename=None, content_type=None,
                  last_modified=None, content_length=None, **kwds):
         self.file_id = file_id
@@ -100,23 +101,27 @@ class DBStoredFile(Base):
 
         return result
 
-    def close(self, *args, **kwargs):
+    @staticmethod
+    def close(*args, **kwargs):
         """Implement :meth:`StoredFile.close`.
         :class:`DBStoredFile` never closes.
         """
         return
 
-    def closed(self):
+    @staticmethod
+    def closed():
         """Implement :meth:`StoredFile.closed`.
         """
         return False
 
-    def writable(self):
+    @staticmethod
+    def writable():
         """Implement :meth:`StoredFile.writable`.
         """
         return False
 
-    def seekable(self):
+    @staticmethod
+    def seekable():
         """Implement :meth:`StoredFile.seekable`.
         """
         return True
@@ -160,17 +165,6 @@ class DBStoredFile(Base):
         """
         return self.filename
 
-    @property
-    def public_url(self):
-        """ Integration with :class:`depot.middleware.DepotMiddleware`
-
-        When supported by the storage this will provide the
-        public url to which the file content can be accessed.
-        In case this returns ``None`` it means that the file can
-        only be served by the :class:`depot.middleware.DepotMiddleware` itself.
-        """
-        return None
-
     @classmethod
     def __declare_last__(cls):
         """ Executed by SQLAlchemy as part of mapper configuration
@@ -203,7 +197,8 @@ class DBFileStorage(FileStorage):
     Uses `kotti.filedepot.DBStoredFile` to store blob data in an SQL database.
     """
 
-    def get(self, file_id):
+    @staticmethod
+    def get(file_id):
         """Returns the file given by the file_id
 
         :param file_id: the unique id associated to the file
@@ -311,10 +306,12 @@ class DBFileStorage(FileStorage):
         return bool(
             DBSession.query(DBStoredFile).filter_by(file_id=file_id).count())
 
-    def list(self, *args):
+    @staticmethod
+    def list(*args):
         raise NotImplementedError("list() method is unimplemented.")
 
-    def _get_file_id(self, file_or_id):
+    @staticmethod
+    def _get_file_id(file_or_id):
         if hasattr(file_or_id, 'file_id'):
             return file_or_id.file_id
         return file_or_id
@@ -438,7 +435,8 @@ class StoredFileResponse(Response):
             f.filename, disposition=disposition,
             filename_compat=unidecode(f.filename))
 
-    def _get_type_and_encoding(self, content_encoding, content_type, f):
+    @staticmethod
+    def _get_type_and_encoding(content_encoding, content_type, f):
         content_type = content_type or getattr(f, 'content_type', None)
         if content_type is None:
             content_type, content_encoding = \
@@ -451,9 +449,9 @@ class StoredFileResponse(Response):
         content_type = str(content_type)
         return content_encoding, content_type
 
-    @classmethod
-    def generate_etag(self, f):
-        return '"%s-%s"' % (f.last_modified, f.content_length)
+    @staticmethod
+    def generate_etag(f):
+        return '"{0}-{1}"'.format(f.last_modified, f.content_length)
 
 
 def uploaded_file_response(self, uploaded_file, disposition='inline'):

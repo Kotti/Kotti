@@ -266,7 +266,7 @@ class NodeActions(object):
         :rtype: pyramid.httpexceptions.HTTPFound or dict
         """
 
-        action = self.request.POST.get(u'delete', None)
+        action = self.request.POST.get(u'delete')
         if action is not None:
 
             parent = self.context.__parent__
@@ -398,7 +398,7 @@ class NodeActions(object):
         if 'change_state' in self.request.POST:
             ids = self.request.POST.getall('children-to-change-state')
             to_state = self.request.POST.get('to-state', u'no-change')
-            include_children = self.request.POST.get('include-children', None)
+            include_children = self.request.POST.get('include-children')
             if to_state != u'no-change':
                 items = DBSession.query(Node).filter(Node.id.in_(ids)).all()
                 for item in items:
@@ -603,6 +603,12 @@ def actions(context, request):
 
 
 def includeme(config):
+    """ Pyramid includeme hook.
+
+    :param config: app config
+    :type config: :class:`pyramid.config.Configurator`
+    """
+
     import warnings
     with warnings.catch_warnings():
         warnings.simplefilter("ignore")

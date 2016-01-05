@@ -226,12 +226,13 @@ def set_owner(event):
     """
 
     obj, request = event.object, event.request
-    if request is not None and isinstance(obj, Node) and obj.owner is None:
+    if request is not None and isinstance(obj, Node):
         userid = request.authenticated_userid
         if userid is not None:
             userid = unicode(userid)
             # Set owner metadata:
-            obj.owner = userid
+            if obj.owner is None:
+                obj.owner = userid
             # Add owner role for userid if it's not inherited already:
             if u'role:owner' not in list_groups(userid, obj):
                 groups = list_groups_raw(userid, obj) | set([u'role:owner'])
@@ -314,7 +315,7 @@ def reset_content_owner(event):
 def _update_children_paths(old_parent_path, new_parent_path):
     for child in DBSession.query(Node).options(
         load_only('path', 'type')).filter(
-            Node.path.startswith(old_parent_path)):
+            Node.path.startswith(old_parent_path)).order_by(Node.path):
         if child.path == new_parent_path:
             # The child is the node itself and has already be renamed.
             # Nothing to do!
@@ -385,7 +386,7 @@ def _all_children(item, _all=None):
 def _set_path_for_new_parent(target, value, oldvalue, initiator):
     """Triggered whenever the Node's 'parent' attribute is set.
     """
-    if value is None:
+    if value is None or value == oldvalue:
         # The parent is about to be set to 'None', so skip.
         return
 

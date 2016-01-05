@@ -24,7 +24,7 @@ def view_content_default(context, request):
 
     view_name = context.default_view or 'view'
     response = render_view_to_response(context, request, name=view_name)
-    if response is None:  # pragma: no coverage
+    if response is None:  # pragma: no cover
         warnings.warn(
             u'Failed to look up default view called {0!r} for {1!r}.'.format(
                 view_name, context))
@@ -32,7 +32,7 @@ def view_content_default(context, request):
     return response
 
 
-def view_node(context, request):  # pragma: no coverage
+def view_node(context, request):  # pragma: no cover
     return {}  # BBB
 
 
@@ -76,4 +76,10 @@ def notfound_view(context, request):
 
 
 def includeme(config):
+    """ Pyramid includeme hook.
+
+    :param config: app config
+    :type config: :class:`pyramid.config.Configurator`
+    """
+
     config.scan(__name__)

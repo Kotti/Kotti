@@ -153,6 +153,11 @@ def _setup_listeners(settings):
 
 
 def includeme(config):
+    """ Pyramid includeme hook.
+
+    :param config: app config
+    :type config: :class:`pyramid.config.Configurator`
+    """
 
     _setup_sanitizers(config.registry.settings)
     _setup_listeners(config.registry.settings)

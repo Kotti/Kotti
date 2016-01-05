@@ -63,6 +63,7 @@ conf_defaults = {
         ]),
     'kotti.base_includes': ' '.join([
         'kotti',
+        'kotti.traversal',
         'kotti.filedepot',
         'kotti.events',
         'kotti.sanitizers',
@@ -251,6 +252,12 @@ def base_configure(global_config, **settings):
 
 
 def includeme(config):
+    """ Pyramid includeme hook.
+
+    :param config: app config
+    :type config: :class:`pyramid.config.Configurator`
+    """
+
     import kotti.views.util
 
     settings = config.get_settings()

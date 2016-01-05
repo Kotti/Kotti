@@ -4,24 +4,25 @@ from datetime import datetime
 from UserDict import DictMixin
 
 import bcrypt
-from sqlalchemy import Boolean
-from sqlalchemy import Column
-from sqlalchemy import DateTime
-from sqlalchemy import Integer
-from sqlalchemy import Unicode
-from sqlalchemy import func
-from sqlalchemy.sql.expression import and_
-from sqlalchemy.sql.expression import or_
-from sqlalchemy.orm.exc import NoResultFound
 from pyramid.location import lineage
 from pyramid.security import view_execution_permitted
+from sqlalchemy import Boolean, bindparam
+from sqlalchemy import Column
+from sqlalchemy import DateTime
+from sqlalchemy import func
+from sqlalchemy import Integer
+from sqlalchemy import Unicode
+from sqlalchemy.orm.exc import NoResultFound
+from sqlalchemy.sql.expression import and_
+from sqlalchemy.sql.expression import or_
 from zope.deprecation.deprecation import deprecated
 
-from kotti import get_settings
-from kotti import DBSession
 from kotti import Base
-from kotti.sqla import MutationList
+from kotti import DBSession
+from kotti import get_settings
+from kotti.sqla import bakery
 from kotti.sqla import JsonType
+from kotti.sqla import MutationList
 from kotti.util import _
 from kotti.util import request_cache
 from kotti.util import DontCache
@@ -449,6 +450,12 @@ class Principals(DictMixin):
     """
     factory = Principal
 
+    @classmethod
+    def _principal_by_name(cls, name):
+        query = bakery(lambda session: session.query(cls.factory).filter(
+            cls.factory.name == bindparam('name')))
+        return query(DBSession()).params(name=name).one()
+
     @request_cache(lambda self, name: unicode(name))
     def __getitem__(self, name):
         name = unicode(name)
@@ -457,8 +464,9 @@ class Principals(DictMixin):
         if name.startswith('role:'):
             raise KeyError(name)
         try:
-            return DBSession.query(
-                self.factory).filter(self.factory.name == name).one()
+            return self._principal_by_name(name)
+            # return DBSession.query(
+            #     self.factory).filter(self.factory.name == name).one()
         except NoResultFound:
             raise KeyError(name)
 
@@ -471,8 +479,7 @@ class Principals(DictMixin):
     def __delitem__(self, name):
         name = unicode(name)
         try:
-            principal = DBSession.query(
-                self.factory).filter(self.factory.name == name).one()
+            principal = self._principal_by_name(name)
             DBSession.delete(principal)
         except NoResultFound:
             raise KeyError(name)

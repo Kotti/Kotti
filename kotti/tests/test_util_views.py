@@ -407,8 +407,8 @@ class TestTemplateAPI:
         api = self.make()
         assert u'€13.99' == api.format_currency(13.99, 'EUR')
         assert u'$15,499.12' == api.format_currency(15499.12, 'USD')
-        assert u'€1' == api.format_currency(1, format=u'€#,##0',
-                                            currency='EUR')
+        assert u'€1.00' == api.format_currency(1, format=u'€#,##0',
+                                               currency='EUR')
         assert u'CHF3.14' == api.format_currency(
             decimal.Decimal((0, (3, 1, 4), -2)), 'CHF')
 
