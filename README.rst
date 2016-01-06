@@ -141,3 +141,8 @@ Contributions are always welcome, read our `contribution guidelines`_ and visit 
 
 .. _contribution guidelines: http://kotti.readthedocs.org/en/latest/contributing.html
 .. _Github repository: https://github.com/Kotti/Kotti
+
+
+.. image:: https://badges.gitter.im/Kotti/Kotti.svg
+   :alt: Join the chat at https://gitter.im/Kotti/Kotti
+   :target: https://gitter.im/Kotti/Kotti?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge
