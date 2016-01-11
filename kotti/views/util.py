@@ -26,6 +26,7 @@ from kotti.events import objectevent_listeners
 from kotti.interfaces import INavigationRoot
 from kotti.resources import Content
 from kotti.resources import Document
+from kotti.resources import get_root
 from kotti.resources import Tag
 from kotti.resources import TagsToContents
 from kotti.sanitizers import sanitize
@@ -217,7 +218,11 @@ class TemplateAPI(object):
         :result: The root object of the site.
         :rtype: :class:`kotti.resources.Node`
         """
-        return self.lineage[-1]
+
+        if ILocation.providedBy(self.context):
+            return self.lineage[-1]
+        else:
+            return get_root()
 
     @reify
     def navigation_root(self):
