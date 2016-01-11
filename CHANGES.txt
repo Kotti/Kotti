@@ -4,7 +4,8 @@ Change History
 1.3.0 - unreleased
 ------------------
 
-- No changes yet.
+- Bugfix: don't try to get api.root via the lineage if not in a location aware
+  context (for example 404 view).  Return the site root instead.
 
 1.3.0-alpha.2 - 2016-01-05
 --------------------------
