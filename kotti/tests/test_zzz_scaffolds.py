@@ -53,7 +53,7 @@ def virtualenv(request, travis):
         # update setuptools in the virtualenv
         subprocess.check_call([
             os.path.join('bin', 'pip'),
-            'install', '-U', 'pip', 'setuptools', 'pip-accel'])
+            'install', '-U', 'pip', 'wheel', 'setuptools', ])
 
         # create a local copy of the environment, where we can override
         # VIRTUAL_ENV to make pip-accel work
@@ -62,7 +62,7 @@ def virtualenv(request, travis):
 
         # install requirements.txt into the virtualenv
         subprocess.check_call([
-            os.path.join('bin', 'pip-accel'),
+            os.path.join('bin', 'pip'),
             'install', '-r',
             os.path.join(cwd, 'requirements.txt')],
             env=env)
@@ -70,7 +70,7 @@ def virtualenv(request, travis):
         # setuptools-git is required to be able to call setup.py install
         # sucessfully.  also install psycopg2 and oursql.
         subprocess.check_call([
-            os.path.join('bin', 'pip-accel'),
+            os.path.join('bin', 'pip'),
             'install', 'setuptools-git', 'psycopg2', 'oursql'],
             env=env)
 
