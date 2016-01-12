@@ -387,12 +387,10 @@ class TestBrowser:
         resp = app.get('/second-child/')
         resp = resp.click('Paste', index=0).maybe_follow()
         assert "Welcome to Kotti was pasted" in resp.body
-        # These SOMETIMES fail on Travis (never locally).
-        # We disable them for now, as they're more than annoying.
-        # resp = app.get('/second-child/welcome-to-kotti/')
-        # assert resp.status_code == 200
-        # resp = app.get('/second-child/welcome-to-kotti/second-child/')
-        # assert resp.status_code == 200
+        resp = app.get('/second-child/welcome-to-kotti/')
+        assert resp.status_code == 200
+        resp = app.get('/second-child/welcome-to-kotti/second-child/')
+        assert resp.status_code == 200
 
         # And finally cut and paste a tree:
         resp = app.get('/second-child/')
