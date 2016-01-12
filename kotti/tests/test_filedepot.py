@@ -99,6 +99,15 @@ class TestDBFileStorage:
         fs = db_session.query(DBStoredFile).filter_by(file_id=file_id).one()
         assert fs.data == "content here"
 
+    def test_list(self):
+        with pytest.raises(NotImplementedError):
+            DBFileStorage().list()
+
+    def test_exists(self, db_session):
+        assert DBFileStorage().exists("1") == False
+        file_id = self.make_one()
+        assert DBFileStorage().exists(file_id) == True
+
     def test_get(self, db_session):
         with pytest.raises(IOError):
             DBFileStorage().get("1")
@@ -275,3 +284,11 @@ class TestTween:
         assert resp.etag is not None
         assert resp.cache_control.max_age == 604800
         assert resp.body.startswith('\x89PNG')
+
+        # test 404
+        resp = webtest.app.get('/depot/non_existing/fileid', status=404)
+        assert resp.status_code == 404
+
+        resp = webtest.app.get(img.data['thumb_256x256_url'] + 'not',
+                               status=404)
+        assert resp.status_code == 404

@@ -414,7 +414,8 @@ class StoredFileResponse(Response):
             content_encoding=content_encoding)
 
         app_iter = None
-        if request is not None:
+        if request is not None and \
+                not get_settings()['kotti.depot_replace_wsgi_file_wrapper']:
             environ = request.environ
             if 'wsgi.file_wrapper' in environ:
                 app_iter = environ['wsgi.file_wrapper'](f, _BLOCK_SIZE)
@@ -493,9 +494,6 @@ class TweenFactory(object):
         self.mountpoint = registry.settings['kotti.depot_mountpoint']
         self.handler = handler
         self.registry = registry
-
-        self.cache_max_age = 3600 * 24 * 7
-        self.replace_wsgi_filewrapper = True
 
         DepotManager.set_middleware(self)
 
