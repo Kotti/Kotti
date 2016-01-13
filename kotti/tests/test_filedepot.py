@@ -104,9 +104,9 @@ class TestDBFileStorage:
             DBFileStorage().list()
 
     def test_exists(self, db_session):
-        assert DBFileStorage().exists("1") == False
+        assert DBFileStorage().exists("1") is False
         file_id = self.make_one()
-        assert DBFileStorage().exists(file_id) == True
+        assert DBFileStorage().exists(file_id) is True
 
     def test_get(self, db_session):
         with pytest.raises(IOError):
