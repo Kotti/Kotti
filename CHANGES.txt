@@ -1,8 +1,8 @@
 Change History
 ==============
 
-1.3.0 - unreleased
-------------------
+1.3.0-alpha.4 - 2015-01-15
+--------------------------
 
 - Add a ``kotti.depot_replace_wsgi_file_wrapper`` option to replace the WSGI
   file wrapper with ``pyramid.response.FileIter`` for problematic environments.
