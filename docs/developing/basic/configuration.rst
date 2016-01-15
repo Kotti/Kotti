@@ -43,46 +43,47 @@ The rest has defaults.
 Do take a look at the required settings (in bold) and adjust them in your site's configuration.
 A few of the settings are less important, and sometimes only used by developers, not integrators.
 
-================================  ==============================================
-Setting                           Description
-================================  ==============================================
-**kotti.site_title**              The title of your site
-**kotti.secret**                  Secret token used for the initial admin password
-kotti.secret2                     Secret token used for email password reset token
-**sqlalchemy.url**                `SQLAlchemy database URL`_
-**mail.default_sender**           Sender address for outgoing email
-kotti.asset_overrides             Override Kotti's templates
-kotti.authn_policy_factory        Component used for authentication
-kotti.authz_policy_factory        Component used for authorization
-kotti.available_types             List of active content types
-kotti.base_includes               List of base Python configuration hooks
-kotti.caching_policy_chooser      Component for choosing the cache header policy
-kotti.configurators               List of advanced functions for config
-kotti.date_format                 Date format to use, default: ``medium``
-kotti.datetime_format             Datetime format to use, default: ``medium``
-kotti.depot_mountpoint            Configure the mountpoint for the blob storage.  See :ref:`blobs` for details.
-kotti.depot.*.*                   Configure the blob storage.  See :ref:`blobs` for details.
-kotti.fanstatic.edit_needed       List of static resources used for edit interface
-kotti.fanstatic.view_needed       List of static resources used for public interface
-kotti.login_success_callback      Override Kotti's default ``login_success_callback`` function
-kotti.max_file_size               Max size for file uploads, default: ``10`` (MB)
-kotti.modification_date_excludes  List of attributes in dotted name notation that should not trigger an update of ``modification_date`` on change
-kotti.populators                  List of functions to fill initial database
-kotti.request_factory             Override Kotti's default request factory
-kotti.reset_password_callback     Override Kotti's default ``reset_password_callback`` function
-kotti.root_factory                Override Kotti's default Pyramid *root factory*
-kotti.sanitize_on_write           Configure :ref:`sanitizers` to be used on write access to resource objects
-kotti.sanitizers                  Configure available :ref:`sanitizers`
-kotti.search_content              Override Kotti's default search function
-kotti.session_factory             Component used for sessions
-kotti.templates.api               Override ``api`` object available in templates
-kotti.time_format                 Time format to use, default: ``medium``
-kotti.url_normalizer              Component used for url normalization
-kotti.zcml_includes               List of packages to include the ZCML from
-mail.host                         Email host to send from
-pyramid.default_locale_name       Set the user interface language, default ``en``
-pyramid.includes                  List of Python configuration hooks
-================================  ==============================================
+=====================================  =========================================
+Setting                                Description
+=====================================  =========================================
+**kotti.site_title**                   The title of your site
+**kotti.secret**                       Secret token used for the initial admin password
+kotti.secret2                          Secret token used for email password reset token
+**sqlalchemy.url**                     `SQLAlchemy database URL`_
+**mail.default_sender**                Sender address for outgoing email
+kotti.asset_overrides                  Override Kotti's templates
+kotti.authn_policy_factory             Component used for authentication
+kotti.authz_policy_factory             Component used for authorization
+kotti.available_types                  List of active content types
+kotti.base_includes                    List of base Python configuration hooks
+kotti.caching_policy_chooser           Component for choosing the cache header policy
+kotti.configurators                    List of advanced functions for config
+kotti.date_format                      Date format to use, default: ``medium``
+kotti.datetime_format                  Datetime format to use, default: ``medium``
+kotti.depot_mountpoint                 Configure the mountpoint for the blob storage.  See :ref:`blobs` for details.
+kotti.depot_replace_wsgi_file_wrapper  Replace you WSGI server's file wrapper with :class:`pyramid.response.FileIter`.
+kotti.depot.*.*                        Configure the blob storage.  See :ref:`blobs` for details.
+kotti.fanstatic.edit_needed            List of static resources used for edit interface
+kotti.fanstatic.view_needed            List of static resources used for public interface
+kotti.login_success_callback           Override Kotti's default ``login_success_callback`` function
+kotti.max_file_size                    Max size for file uploads, default: ``10`` (MB)
+kotti.modification_date_excludes       List of attributes in dotted name notation that should not trigger an update of ``modification_date`` on change
+kotti.populators                       List of functions to fill initial database
+kotti.request_factory                  Override Kotti's default request factory
+kotti.reset_password_callback          Override Kotti's default ``reset_password_callback`` function
+kotti.root_factory                     Override Kotti's default Pyramid *root factory*
+kotti.sanitize_on_write                Configure :ref:`sanitizers` to be used on write access to resource objects
+kotti.sanitizers                       Configure available :ref:`sanitizers`
+kotti.search_content                   Override Kotti's default search function
+kotti.session_factory                  Component used for sessions
+kotti.templates.api                    Override ``api`` object available in templates
+kotti.time_format                      Time format to use, default: ``medium``
+kotti.url_normalizer                   Component used for url normalization
+kotti.zcml_includes                    List of packages to include the ZCML from
+mail.host                              Email host to send from
+pyramid.default_locale_name            Set the user interface language, default ``en``
+pyramid.includes                       List of Python configuration hooks
+=====================================  =========================================
 
 kotti.secret and kotti.secret2
 ------------------------------

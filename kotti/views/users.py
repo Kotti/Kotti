@@ -469,7 +469,7 @@ class UserManageFormView(UserEditFormView):
         else:
             appstruct.pop('password', None)
         _massage_groups_in(appstruct)
-        return super(UserEditFormView, self).save_success(appstruct)
+        return super(UserManageFormView, self).save_success(appstruct)
 
     def cancel_success(self, appstruct):
         self.request.session.flash(_(u'No changes were made.'), 'info')

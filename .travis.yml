@@ -3,7 +3,6 @@ sudo: false
 cache:
   directories:
     - $HOME/.cache/pip
-    - $HOME/.pip-accel
 before_cache:
   - rm -f $HOME/.cache/pip/log/debug.log
 python:
@@ -14,9 +13,9 @@ env:
   - KOTTI_TEST_DB_STRING=mysql+oursql://root@localhost:3306/kotti_testing
   - KOTTI_TEST_DB_STRING=sqlite://
 install:
-  - travis_retry pip install --cache-dir $HOME/.cache/pip -U pip setuptools pip-accel
-  - travis_retry pip-accel install psycopg2 oursql python-coveralls codecov
-  - travis_retry pip-accel install -e . -r requirements.txt
+  - travis_retry pip install -U pip wheel setuptools
+  - travis_retry pip install psycopg2 oursql python-coveralls codecov
+  - travis_retry pip install -e . -r requirements.txt
   - pip uninstall -y Kotti
   - python setup.py develop
   - python setup.py dev

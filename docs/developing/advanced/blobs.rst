@@ -38,6 +38,12 @@ The default value for ``kotti.depot_mountpoint`` is ``/depot``::
 
     kotti.depot_mountpoint = /depot
 
+WSGI File Wrapper
+-----------------
+
+In case you have issues serving files with your WSGI server, your can try to set ``kotti.depot_replace_wsgi_file_wrapper = true``.
+This forces Kotti to use :class:`pyramid.response.FileIter` instead of the one provided by your WSGI server.
+
 Storages
 ~~~~~~~~
 
