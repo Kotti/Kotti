@@ -14,17 +14,11 @@ Bigger tasks
   application exceptions.  Possibly other introspectable features,
   like version numbers etc.
 
-- Multilingual support (in core or kotti_multilingual add-on?), probably
-  based on annotations.
-
 Have an idea for this list?  Discuss at
 http://groups.google.com/group/kotti or #kotti on IRC.
 
 Smaller tasks
 =============
-
-- Many of the templates used in 'kotti/views/edit.py' have some legacy
-  cruft in them.  Clean up.
 
 - Move more navigation related functionality out of TemplateAPI and
   into snippets.
@@ -37,8 +31,3 @@ Smaller tasks
 
 - Add ordering of children and hide/show(Content.in_navigation) to the contents
   view.
-
-Upstream tasks
-==============
-
-- Release deform 0.9.6 to be able to use Button(css_class="btn-foo") feature.
