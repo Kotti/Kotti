@@ -7,6 +7,9 @@ Change History
 - Add a fallback in ``contents.pt`` when ``creation_date`` or
   ``modification_date`` is ``None``.
 
+- Transform workflow state title to TranslationStrings without eval and
+  deprecate it.
+
 1.3.0-alpha.4 - 2015-01-15
 --------------------------
 

@@ -2,6 +2,7 @@
 
 import warnings
 
+from pyramid.i18n import TranslationString
 from pytest import raises
 
 
@@ -70,3 +71,14 @@ class TestToBeRemovedIn20:
             __ = (IImage, Image, _load_image_scales, image_scales, ImageView,
                   includeme, ImageAddForm, ImageEditForm)  # pyflakes
             assert_deprecations(w, *('kotti_image', ) * 8)
+
+    def test_translate_titles_deprecated(self, allwarnings):
+        from kotti.views.edit import _translate_titles
+
+        with warnings.catch_warnings(record=True) as w:
+            info = [
+                {'data': {'title': u"_(u'Private')"}, 'title': u"_(u'Private')", },
+                {'data': {'title': u"_(u'Public')"}, 'title': u"_(u'Public')", },
+            ]
+            _translate_titles(info)
+            assert_deprecations(w, "removed in Kotti 2.0.0")
