@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """Add ForeignKey indices
 
 Revision ID: 4a3de0d0804a

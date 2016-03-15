@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from webob.multidict import MultiDict
 from pytest import raises
 from pyramid.exceptions import Forbidden
@@ -444,7 +445,7 @@ class TestNodeShare:
                 [u'Your changes have been saved.'])
         assert (
             set(list_groups('bob', root)) ==
-            set(['role:owner', 'role:editor', 'role:special'])
+            {'role:owner', 'role:editor', 'role:special'}
             )
 
         # We cannot set a role that's not displayed, even if we forged
@@ -455,5 +456,5 @@ class TestNodeShare:
             share_node(root, request)
         assert (
             set(list_groups('bob', root)) ==
-            set(['role:owner', 'role:editor', 'role:special'])
+            {'role:owner', 'role:editor', 'role:special'}
             )

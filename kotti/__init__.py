@@ -1,4 +1,6 @@
+# -*- coding: utf-8 -*-
 import pkg_resources
+from six import string_types
 from sqlalchemy import engine_from_config
 from sqlalchemy import MetaData
 from sqlalchemy.ext.declarative import declarative_base
@@ -167,7 +169,7 @@ def _resolve_dotted(d, keys=conf_dotted):
 
     for key in keys:
         value = resolved[key]
-        if not isinstance(value, basestring):
+        if not isinstance(value, string_types):
             continue
         new_value = []
         for dottedname in value.split():
@@ -198,7 +200,7 @@ def base_configure(global_config, **settings):
         settings.setdefault(key, value)
 
     for key, value in settings.items():
-        if key.startswith('kotti') and isinstance(value, basestring):
+        if key.startswith('kotti') and isinstance(value, string_types):
             settings[key] = unicode(value, 'utf8')
 
     # will be removed in 2.0

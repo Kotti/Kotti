@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """ Kotti HTTP Exception browser tests """
 
 import pytest

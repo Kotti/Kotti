@@ -15,6 +15,7 @@ from kotti import get_settings
 from kotti.fanstatic import contents_view_js
 from kotti.interfaces import IContent
 from kotti.resources import Node
+# noinspection PyProtectedMember
 from kotti.util import _
 from kotti.util import ActionButton
 from kotti.util import get_paste_items
@@ -541,18 +542,18 @@ def move_child_position(context, request):
 
         max_pos = len(context.children) - 1
         try:
-            oldPosition = int(data['from'])
-            newPosition = int(data['to'])
-            if not ((0 <= oldPosition <= max_pos) and
-                    (0 <= newPosition <= max_pos)):
+            old_position = int(data['from'])
+            new_position = int(data['to'])
+            if not ((0 <= old_position <= max_pos) and
+                    (0 <= new_position <= max_pos)):
                 raise ValueError
         except ValueError:
             return {'result': 'error'}
 
         # sqlalchemy.ext.orderinglist takes care of the "right" sequence
         # numbers (immediately consecutive, starting with 0) for us.
-        context.children.insert(newPosition,
-                                context.children.pop(oldPosition))
+        context.children.insert(new_position,
+                                context.children.pop(old_position))
         result = 'success'
     else:
         result = 'error'

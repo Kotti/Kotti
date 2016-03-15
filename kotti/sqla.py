@@ -40,12 +40,14 @@ class JsonType(TypeDecorator):
     """
     impl = TEXT
 
+    # noinspection PyMethodOverriding
     @staticmethod
     def process_bind_param(value, dialect):
         if value is not None:
             value = json.dumps(value, default=dump_default)
         return value
 
+    # noinspection PyMethodOverriding
     @staticmethod
     def process_result_value(value, dialect):
         if value is not None:

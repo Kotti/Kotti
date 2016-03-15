@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import logging
 import mimetypes
 import uuid
@@ -132,8 +133,8 @@ class DBStoredFile(Base):
         Change the stream position to the given byte offset. The offset is
         interpreted relative to the position indicated by whence.
 
-        :param n: Position for the cursor
-        :type n: int
+        :param offset: Position for the cursor
+        :type offset: int
 
         :param whence: * 0 -- start of stream (the default);
                               offset should be zero or positive
@@ -197,6 +198,7 @@ class DBFileStorage(FileStorage):
     Uses `kotti.filedepot.DBStoredFile` to store blob data in an SQL database.
     """
 
+    # noinspection PyMethodOverriding
     @staticmethod
     def get(file_id):
         """Returns the file given by the file_id
@@ -595,9 +597,9 @@ def extract_depot_settings(prefix="kotti.depot.", settings=None):
       ...     'kotti.depot.1.uri': 'localhost://',
       ... }
       >>> res = extract_depot_settings('kotti.depot.', settings)
-      >>> print sorted(res[0].items())
+      >>> print(sorted(res[0].items()))
       [('backend', 'kotti.filedepot.DBFileStorage'), ('file_storage', 'var/files'), ('name', 'local')]
-      >>> print sorted(res[1].items())
+      >>> print(sorted(res[1].items()))
       [('backend', 'depot.io.gridfs.GridStorage'), ('name', 'mongodb'), ('uri', 'localhost://')]
     """
 

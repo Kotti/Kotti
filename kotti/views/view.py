@@ -32,10 +32,12 @@ def view_content_default(context, request):
     return response
 
 
+# noinspection PyUnusedLocal
 def view_node(context, request):  # pragma: no cover
     return {}  # BBB
 
 
+# noinspection PyUnusedLocal
 @view_config(name='search-results', permission='view',
              renderer='kotti:templates/view/search-results.pt')
 def search_results(context, request):
@@ -46,6 +48,7 @@ def search_results(context, request):
     return {'results': results}
 
 
+# noinspection PyUnusedLocal
 @view_config(name='search-tag', permission='view',
              renderer='kotti:templates/view/search-results.pt')
 def search_results_for_tag(context, request):
@@ -59,6 +62,7 @@ def search_results_for_tag(context, request):
     return {'results': results}
 
 
+# noinspection PyUnusedLocal
 @view_config(name='search', permission='view',
              renderer='kotti:templates/view/search.pt')
 @view_config(name='folder_view', context=IContent, permission='view',

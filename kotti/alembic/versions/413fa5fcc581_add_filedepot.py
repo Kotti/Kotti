@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """Migrate binary file storage to filedepot
 
 Revision ID: 413fa5fcc581
@@ -10,11 +11,12 @@ Create Date: 2014-12-07 05:10:04.294222
 revision = '413fa5fcc581'
 down_revision = '559ce6eb0949'
 
-from alembic import op
 import logging
-import sqlalchemy as sa
 import sys
 import time
+
+import sqlalchemy as sa
+from alembic import op
 
 log = logging.getLogger('kotti')
 log.addHandler(logging.StreamHandler(sys.stdout))
@@ -74,7 +76,7 @@ def upgrade():
         values({files.c.data: bindparam('data')})
 
     def chunks(l, n):
-        for i in xrange(0, len(l), n):
+        for i in range(0, len(l), n):
             yield l[i:i + n]
 
     for cdata in chunks(_saved, 10):

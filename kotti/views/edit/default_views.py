@@ -14,6 +14,7 @@ from pyramid.view import view_config
 from pyramid.view import view_defaults
 from zope.interface import providedBy
 
+# noinspection PyProtectedMember
 from kotti.util import _
 
 

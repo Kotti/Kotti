@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """This module includes a simple events system that allows users to
 subscribe to specific events, and more particularly to *object events*
 of specific object types.
@@ -46,20 +47,20 @@ from kotti.sqla import no_autoflush
 class ObjectEvent(object):
     """Event related to an object."""
 
-    def __init__(self, object, request=None):
+    def __init__(self, obj, request=None):
         """Constructor.
 
-        :param object: The (content) object related to the event.  This is an
+        :param obj: The (content) object related to the event.  This is an
                        instance of :class:`kotti.resources.Node` or one its
                        descendants for content related events, but it can be
                        anything.
-        :type object: arbitrary
+        :type obj: arbitrary
 
         :param request: current request
         :type request: :class:`kotti.request.Request`
         """
 
-        self.object = object
+        self.object = obj
         self.request = request
 
 
@@ -104,11 +105,11 @@ class Dispatcher(DispatcherDict):
       >>> class SubEvent(BaseEvent): pass
       >>> class UnrelatedEvent(object): pass
       >>> def base_listener(event):
-      ...     print 'Called base listener'
+      ...     print('Called base listener')
       >>> def sub_listener(event):
-      ...     print 'Called sub listener'
+      ...     print('Called sub listener')
       >>> def unrelated_listener(event):
-      ...     print 'Called unrelated listener'
+      ...     print('Called unrelated listener')
       ...     return 1
 
       >>> dispatcher = Dispatcher()

@@ -6,6 +6,7 @@ Edit views.
 
 import warnings
 
+# noinspection PyProtectedMember
 from kotti.util import _
 from kotti.views.edit.content import ContentSchema
 from kotti.views.edit.content import DocumentSchema
@@ -44,6 +45,7 @@ def _states(context, request):
     return dict([(i['name'], i) for i in state_info])
 
 
+# noinspection PyUnusedLocal
 def includeme(config):
     """ Pyramid includeme hook.
 

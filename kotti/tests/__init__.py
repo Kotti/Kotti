@@ -360,6 +360,7 @@ def depot_tween(request, config, dummy_request):
     _set_middleware = DepotManager.set_middleware
     TweenFactory(None, config.registry)
 
+    # noinspection PyDecorator
     @classmethod
     def set_middleware_patched(cls, mw):
         pass

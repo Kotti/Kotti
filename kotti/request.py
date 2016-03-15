@@ -1,16 +1,15 @@
 # -*- coding: utf-8 -*-
 
-from zope.interface import implementer
-
+import pyramid.request
 from pyramid.decorator import reify
 from pyramid.interfaces import IRequest
-from pyramid.request import Request as BaseRequest
+from zope.interface import implementer
 
 from kotti.security import get_user
 
 
 @implementer(IRequest)
-class Request(BaseRequest):
+class Request(pyramid.request.Request):
     """ Kotti subclasses :class:`pyramid.request.Request` to make additional
     attributes / methods available on request objects and override Pyramid's
     :meth:`pyramid.request.Request.has_permission`.  The latter is needed to
@@ -50,4 +49,4 @@ class Request(BaseRequest):
         from kotti.security import authz_context
 
         with authz_context(context, self):
-            return BaseRequest.has_permission(self, permission, context)
+            return super(Request, self).has_permission(permission, context)

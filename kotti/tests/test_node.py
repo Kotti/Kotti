@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from pytest import mark
 from pytest import raises
 from pyramid.security import ALL_PERMISSIONS

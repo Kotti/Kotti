@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """This module aims to make it easier to run the Alembic migration
 scripts of Kotti and Kotti add-ons by providing a uniform access.
 
@@ -164,7 +165,7 @@ def upgrade(location=DEFAULT_LOCATION, revision=None):
         starting_rev=None,
         destination_rev=revision,
         )
-    print
+    print()
 
 
 def upgrade_all():
@@ -189,7 +190,7 @@ def list_all():
             print(u"  - current revision: {0}".format(rev))
             return []
         pkg_env.run_env(current_revision)
-        print
+        print()
 
 
 def kotti_migrate_command():
@@ -249,6 +250,8 @@ def kotti_migrate_command():
         elif arguments['stamp_head']:
             func = stamp_head
             args = args_with_location + (arguments['--rev'],)
+        else:
+            raise ValueError('Unknown command')
         func(*args)
 
     try:

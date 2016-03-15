@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """ This module contains Kotti's node tree traverser.
 
 In Kotti versions < 1.3.0, Pyramid's default traverser

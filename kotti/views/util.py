@@ -93,12 +93,12 @@ class Slots(object):
         self.context = context
         self.request = request
 
-    def __getattr__(self, name):
+    def __getattr__(self, key):
         for event_type in slot_events:
-            if event_type.name == name:
+            if event_type.name == key:
                 break
         else:
-            raise AttributeError(name)
+            raise AttributeError(key)
         value = []
         event = event_type(self.context, self.request)
         for snippet in objectevent_listeners(event):
@@ -107,7 +107,7 @@ class Slots(object):
                     value.extend(snippet)
                 else:
                     value.append(snippet)
-        setattr(self, name, value)
+        setattr(self, key, value)
         return value
 
 
@@ -319,26 +319,26 @@ class TemplateAPI(object):
     def locale_name(self):
         return get_locale_name(self.request)
 
-    def format_date(self, d, format=None):
-        if format is None:
-            format = self.S['kotti.date_format']
-        return format_date(d, format=format, locale=self.locale_name)
+    def format_date(self, d, fmt=None):
+        if fmt is None:
+            fmt = self.S['kotti.date_format']
+        return format_date(d, format=fmt, locale=self.locale_name)
 
-    def format_datetime(self, dt, format=None):
-        if format is None:
-            format = self.S['kotti.datetime_format']
+    def format_datetime(self, dt, fmt=None):
+        if fmt is None:
+            fmt = self.S['kotti.datetime_format']
         if not isinstance(dt, datetime):
             dt = datetime.fromtimestamp(dt)
-        return format_datetime(dt, format=format, locale=self.locale_name)
+        return format_datetime(dt, format=fmt, locale=self.locale_name)
 
-    def format_time(self, t, format=None):
-        if format is None:
-            format = self.S['kotti.time_format']
-        return format_time(t, format=format, locale=self.locale_name)
+    def format_time(self, t, fmt=None):
+        if fmt is None:
+            fmt = self.S['kotti.time_format']
+        return format_time(t, format=fmt, locale=self.locale_name)
 
-    def format_currency(self, n, currency, format=None):
+    def format_currency(self, n, currency, fmt=None):
         return format_currency(n, currency,
-                               format=format, locale=self.locale_name)
+                               format=fmt, locale=self.locale_name)
 
     @staticmethod
     def get_type(name):
@@ -412,6 +412,7 @@ class NodesTree(object):
         ]
 
     def _flatten(self, item):
+        # noinspection PyProtectedMember
         yield item._node
         for ch in item.children:
             for item in self._flatten(ch):
@@ -420,8 +421,8 @@ class NodesTree(object):
     def tolist(self):
         return list(self._flatten(self))
 
-    def __getattr__(self, name):
-        return getattr(self._node, name)
+    def __getattr__(self, key):
+        return getattr(self._node, key)
 
 
 def nodes_tree(request, context=None, permission='view'):
@@ -455,6 +456,7 @@ def search_content(search_term, request=None):
 
 def default_search_content(search_term, request=None):
 
+    # noinspection PyUnresolvedReferences
     searchstring = u'%{0}%'.format(search_term)
 
     # generic_filter can be applied to all Node (and subclassed) objects

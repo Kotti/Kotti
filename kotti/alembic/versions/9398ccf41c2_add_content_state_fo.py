@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """Add 'Content.state' for workflow
 
 Revision ID: 9398ccf41c2

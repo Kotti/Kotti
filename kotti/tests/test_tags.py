@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import colander
 from mock import Mock
 

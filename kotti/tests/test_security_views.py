@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import colander
 import pytest
 from mock import patch
@@ -69,7 +70,7 @@ class TestUserManagement:
                 [u'Your changes have been saved.'])
         assert (
             set(list_groups('bob')) ==
-            set(['role:owner', 'role:editor', 'role:special'])
+            {'role:owner', 'role:editor', 'role:special'}
             )
 
     def test_group_validator(self, db_session):
