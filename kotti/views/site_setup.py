@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from kotti.util import _
 from kotti.util import Link
 

@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 Form related base views from which you can inherit.
 

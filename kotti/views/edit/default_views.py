@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 :summary: Default view selctor views
 """

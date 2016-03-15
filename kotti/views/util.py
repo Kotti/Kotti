@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import hashlib
 import urllib
 from collections import defaultdict
