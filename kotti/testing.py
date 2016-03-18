@@ -49,7 +49,8 @@ class DummyRequest(testing.DummyRequest):
     user = None
     referrer = None
 
-    def is_response(self, ob):
+    @staticmethod
+    def is_response(ob):
         return (hasattr(ob, 'app_iter') and hasattr(ob, 'headerlist') and
                 hasattr(ob, 'status'))
 

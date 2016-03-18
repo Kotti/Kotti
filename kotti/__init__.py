@@ -1,12 +1,5 @@
 # -*- coding: utf-8 -*-
 import pkg_resources
-from six import string_types
-from sqlalchemy import engine_from_config
-from sqlalchemy import MetaData
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import scoped_session
-from sqlalchemy.orm import sessionmaker
-from zope.sqlalchemy import ZopeTransactionExtension
 from pyramid.authentication import AuthTktAuthenticationPolicy
 from pyramid.authorization import ACLAuthorizationPolicy
 from pyramid.config import Configurator
@@ -14,9 +7,15 @@ from pyramid.events import BeforeRender
 from pyramid.threadlocal import get_current_registry
 from pyramid.util import DottedNameResolver
 from pyramid_beaker import session_factory_from_settings
+from six import string_types
+from sqlalchemy import MetaData
+from sqlalchemy import engine_from_config
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import scoped_session
+from sqlalchemy.orm import sessionmaker
+from zope.sqlalchemy import ZopeTransactionExtension
 
 from kotti.sqla import Base as KottiBase
-
 
 metadata = MetaData()
 DBSession = scoped_session(sessionmaker(extension=ZopeTransactionExtension()))
@@ -132,7 +131,7 @@ conf_defaults = {
     'pyramid_deform.template_search_path': 'kotti:templates/deform',
     }
 
-conf_dotted = set([
+conf_dotted = {
     'kotti.authn_policy_factory',
     'kotti.authz_policy_factory',
     'kotti.available_types',
@@ -152,7 +151,7 @@ conf_dotted = set([
     'kotti.session_factory',
     'kotti.templates.api',
     'kotti.url_normalizer',
-    ])
+}
 
 
 def get_version():
@@ -173,7 +172,7 @@ def _resolve_dotted(d, keys=conf_dotted):
             continue
         new_value = []
         for dottedname in value.split():
-            new_value.append(DottedNameResolver(None).resolve(dottedname))
+            new_value.append(DottedNameResolver().resolve(dottedname))
         resolved[key] = new_value
 
     return resolved
@@ -185,7 +184,7 @@ def main(global_config, **settings):
 
     from kotti.resources import initialize_sql
     config = base_configure(global_config, **settings)
-    engine = engine_from_config(config.registry.settings, 'sqlalchemy.')
+    engine = engine_from_config(config.registry.settings)
     initialize_sql(engine)
     return config.make_wsgi_app()
 

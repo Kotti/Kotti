@@ -16,7 +16,6 @@ from collections import defaultdict
 from datetime import datetime
 try:  # pragma: no cover
     from collections import OrderedDict
-    OrderedDict  # pyflakes
 except ImportError:  # pragma: no cover
     from ordereddict import OrderedDict
 
@@ -236,7 +235,7 @@ def set_owner(event):
                 obj.owner = userid
             # Add owner role for userid if it's not inherited already:
             if u'role:owner' not in list_groups(userid, obj):
-                groups = list_groups_raw(userid, obj) | set([u'role:owner'])
+                groups = list_groups_raw(userid, obj) | {u'role:owner'}
                 set_groups(userid, obj, groups)
 
 

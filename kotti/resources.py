@@ -79,7 +79,7 @@ class ContainerMixin(object, DictMixin):
     """
 
     def __setitem__(self, key, node):
-        key = node.name = unicode(key)
+        node.name = unicode(key)
         self.children.append(node)
         self.children.reorder()
 

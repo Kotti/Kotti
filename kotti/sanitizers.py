@@ -56,8 +56,7 @@ def xss_protection(html):
         tags=generally_xss_safe,
         attributes=lambda self, key, value: True,
         styles=all_styles,
-        strip=True,
-        strip_comments=True)
+        strip=True)
 
     return sanitized
 
@@ -85,8 +84,7 @@ def minimal_html(html):
         tags=markdown_tags + print_tags,
         attributes=attributes,
         styles=[],
-        strip=True,
-        strip_comments=True)
+        strip=True)
 
     return sanitized
 
@@ -106,8 +104,7 @@ def no_html(html):
         tags=[],
         attributes={},
         styles=[],
-        strip=True,
-        strip_comments=True)
+        strip=True)
 
     return sanitized
 
@@ -124,7 +121,7 @@ def _setup_sanitizers(settings):
 
     for s in settings['kotti.sanitizers'].split():
         name, dottedname = s.split(':')
-        sanitizers[name.strip()] = DottedNameResolver(None).resolve(dottedname)
+        sanitizers[name.strip()] = DottedNameResolver().resolve(dottedname)
 
     settings['kotti.sanitizers'] = sanitizers
 
@@ -137,7 +134,7 @@ def _setup_listeners(settings):
         dotted, sanitizers = s.split(':')
 
         classname, attributename = dotted.rsplit('.', 1)
-        _class = DottedNameResolver(None).resolve(classname)
+        _class = DottedNameResolver().resolve(classname)
 
         def _create_handler(attributename, sanitizers):
             def handler(event):
