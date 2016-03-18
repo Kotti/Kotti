@@ -11,26 +11,26 @@ Inheritance Diagram
 
 import os
 import warnings
-from copy import copy
-from cStringIO import StringIO
-from fnmatch import fnmatch
 from UserDict import DictMixin
+from cStringIO import StringIO
+from copy import copy
+from fnmatch import fnmatch
 
-from depot.fields.sqlalchemy import _SQLAMutationTracker
 from depot.fields.sqlalchemy import UploadedFileField
+from depot.fields.sqlalchemy import _SQLAMutationTracker
 from pyramid.decorator import reify
 from pyramid.traversal import resource_path
-from sqlalchemy import bindparam
 from sqlalchemy import Boolean
 from sqlalchemy import Column
 from sqlalchemy import DateTime
-from sqlalchemy import event
 from sqlalchemy import ForeignKey
 from sqlalchemy import Integer
 from sqlalchemy import String
 from sqlalchemy import Unicode
 from sqlalchemy import UnicodeText
 from sqlalchemy import UniqueConstraint
+from sqlalchemy import bindparam
+from sqlalchemy import event
 from sqlalchemy.ext.associationproxy import association_proxy
 from sqlalchemy.ext.declarative import declared_attr
 from sqlalchemy.ext.hybrid import hybrid_property
@@ -45,12 +45,12 @@ from sqlalchemy.util import classproperty
 from transaction import commit
 from zope.interface import implementer
 
-from kotti import _resolve_dotted
 from kotti import Base
 from kotti import DBSession
+from kotti import TRUE_VALUES
+from kotti import _resolve_dotted
 from kotti import get_settings
 from kotti import metadata
-from kotti import TRUE_VALUES
 from kotti.interfaces import IContent
 from kotti.interfaces import IDefaultWorkflow
 from kotti.interfaces import IDocument
@@ -60,17 +60,17 @@ from kotti.migrate import stamp_heads
 from kotti.security import PersistentACLMixin
 from kotti.security import view_permitted
 from kotti.sqla import ACLType
-from kotti.sqla import bakery
 from kotti.sqla import JsonType
 from kotti.sqla import MutationList
 from kotti.sqla import NestedMutationDict
+from kotti.sqla import bakery
+from kotti.util import Link
+from kotti.util import LinkParent
+from kotti.util import LinkRenderer
 from kotti.util import _
 from kotti.util import _to_fieldstorage
 from kotti.util import camel_case_to_name
 from kotti.util import get_paste_items
-from kotti.util import Link
-from kotti.util import LinkParent
-from kotti.util import LinkRenderer
 
 
 class ContainerMixin(object, DictMixin):
@@ -472,12 +472,10 @@ class TagsToContents(Base):
 
     #: Foreign key referencing :attr:`Tag.id`
     #: (:class:`sqlalchemy.types.Integer`)
-    tag_id = Column(Integer, ForeignKey('tags.id'), primary_key=True,
-                    index=True)
+    tag_id = Column(ForeignKey('tags.id'), primary_key=True, index=True)
     #: Foreign key referencing :attr:`Content.id`
     #: (:class:`sqlalchemy.types.Integer`)
-    content_id = Column(Integer, ForeignKey('contents.id'), primary_key=True,
-                        index=True)
+    content_id = Column(ForeignKey('contents.id'), primary_key=True, index=True)
     #: Relation that adds a ``content_tags`` :func:`sqlalchemy.orm.backref`
     #: to :class:`~kotti.resources.Tag` instances to allow easy access to all
     #: content tagged with that tag.
@@ -552,7 +550,7 @@ class Content(Node):
 
     #: Primary key column in the DB
     #: (:class:`sqlalchemy.types.Integer`)
-    id = Column(Integer, ForeignKey('nodes.id'), primary_key=True)
+    id = Column(ForeignKey(Node.id), primary_key=True)
     #: Name of the view that should be displayed to the user when
     #: visiting an URL without a explicit view name appended
     #: (:class:`sqlalchemy.types.String`)
@@ -632,7 +630,7 @@ class Document(Content):
 
     #: Primary key column in the DB
     #: (:class:`sqlalchemy.types.Integer`)
-    id = Column(Integer(), ForeignKey('contents.id'), primary_key=True)
+    id = Column(ForeignKey(Content.id), primary_key=True)
     #: Body text of the Document
     #: (:class:`sqlalchemy.types.Unicode`)
     body = Column(UnicodeText())
@@ -775,7 +773,7 @@ class File(SaveDataMixin, Content):
 
     #: Primary key column in the DB
     #: (:class:`sqlalchemy.types.Integer`)
-    id = Column(Integer(), ForeignKey('contents.id'), primary_key=True)
+    id = Column(ForeignKey(Content.id), primary_key=True)
 
     type_info = Content.type_info.copy(
         name=u'File',

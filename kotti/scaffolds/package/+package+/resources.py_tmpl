@@ -21,7 +21,7 @@ class CustomContent(Content):
 
     implements(IDefaultWorkflow)
 
-    id = Column(Integer, ForeignKey('contents.id'), primary_key=True)
+    id = Column(ForeignKey('contents.id'), primary_key=True)
     custom_attribute = Column(Unicode(1000))
 
     type_info = Content.type_info.copy(
