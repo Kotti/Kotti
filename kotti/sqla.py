@@ -13,7 +13,7 @@ from pyramid.security import Allow
 from sqlalchemy.ext import baked
 from sqlalchemy.ext.declarative import declared_attr
 from sqlalchemy.ext.mutable import Mutable
-from sqlalchemy.types import TypeDecorator, TEXT
+from sqlalchemy.types import TypeDecorator, Text
 
 bakery = baked.bakery()
 baked.bake_lazy_loaders()
@@ -38,7 +38,7 @@ def no_autoflush(func):
 class JsonType(TypeDecorator):
     """http://www.sqlalchemy.org/docs/core/types.html#marshal-json-strings
     """
-    impl = TEXT
+    impl = Text
 
     # noinspection PyMethodOverriding
     @staticmethod
