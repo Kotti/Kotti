@@ -13,7 +13,7 @@
     </div>
     <div class="collapse navbar-collapse" id="navbar-edit">
       <ul class="nav navbar-nav navbar-left">
-        <tal:condition tal:condition="api.has_permission('edit')">
+        <tal:condition tal:condition="api.has_permission('state_change')">
           <li tal:replace="api.render_view('workflow-dropdown')" />
         </tal:condition>
 
