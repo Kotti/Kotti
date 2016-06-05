@@ -80,12 +80,12 @@ Install
 
 See `installation instructions`_.
 
-.. _installation instructions: http://kotti.readthedocs.org/en/latest/first_steps/installation.html
+.. _installation instructions: https://kotti.readthedocs.io/en/latest/first_steps/installation.html
 
 Support and Documentation
 =========================
 
-Read Kotti's extensive `documentation <http://kotti.readthedocs.org/>`_ on `Read the Docs <https://readthedocs.org/>`_.
+Read Kotti's extensive `documentation <https://kotti.readthedocs.io/>`_ on `Read the Docs <https://readthedocs.org/>`_.
 
 If you have questions or need help, you can post on our `mailing list / forum <http://groups.google.com/group/kotti>`_ or join us on IRC: `#kotti on irc.freenode.net <irc://irc.freenode.net/#kotti>`_.
 
@@ -144,5 +144,5 @@ Contributions are always welcome, read our `contribution guidelines`_ and visit 
 .. |landscape| image:: https://landscape.io/github/Kotti/Kotti/master/landscape.svg?style=flat-square
 .. _landscape: https://landscape.io/github/Kotti/Kotti
 
-.. _contribution guidelines: http://kotti.readthedocs.org/en/latest/contributing.html
+.. _contribution guidelines: https://kotti.readthedocs.io/en/latest/contributing.html
 .. _Github repository: https://github.com/Kotti/Kotti

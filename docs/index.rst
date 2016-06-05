@@ -65,5 +65,5 @@ Future and Past
     Roadmap <https://github.com/Kotti/Kotti/milestones>
     Changelog <changes>
 
-.. _Kotti User Manual: http://kotti-user-manual.readthedocs.org/
+.. _Kotti User Manual: https://kotti-user-manual.readthedocs.io/
 .. _Roadmap: https://github.com/Kotti/Kotti/milestones

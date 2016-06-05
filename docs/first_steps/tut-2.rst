@@ -312,5 +312,5 @@ Restart the application, take a look at the new ``Poll`` view and play around wi
 In the :ref:`next tutorial <tut-3>`, we will learn how to enable our users to actually vote for one of the ``Poll`` options.
 
 .. _SQLAlchemy: http://www.sqlalchemy.org/
-.. _Colander: http://colander.readthedocs.org/
+.. _Colander: https://colander.readthedocs.io/
 .. _scan: http://docs.pylonsproject.org/docs/pyramid/en/latest/api/config.html#pyramid.config.Configurator.scan
