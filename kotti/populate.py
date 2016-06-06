@@ -86,7 +86,7 @@ _ROOT_ATTRS = dict(
         </p>
         <p>
             <a class="btn btn-info"
-               href="http://kotti.readthedocs.org/en/latest/developing/basic/configuration.html">
+               href="https://kotti.readthedocs.io/en/latest/developing/basic/configuration.html">
                Configuration manual
             </a>
         </p>
@@ -113,7 +113,7 @@ _ROOT_ATTRS = dict(
         </p>
         <p>
             <a class="btn btn-info"
-               href="http://kotti.readthedocs.org/en/latest/">
+               href="https://kotti.readthedocs.io/en/latest/">
                Documentation
             </a>
         </p>

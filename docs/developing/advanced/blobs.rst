@@ -233,4 +233,4 @@ Now you can invoke the migration with:::
 As always when dealing with migrations, make sure you backup your data first!
 
 
-.. _Depot: http://depot.readthedocs.org/en/latest/
+.. _Depot: https://depot.readthedocs.io/en/latest/
