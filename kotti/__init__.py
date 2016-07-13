@@ -7,7 +7,7 @@ from pyramid.events import BeforeRender
 from pyramid.threadlocal import get_current_registry
 from pyramid.util import DottedNameResolver
 from pyramid_beaker import session_factory_from_settings
-from six import string_types
+from six import binary_type, string_types
 from sqlalchemy import MetaData
 from sqlalchemy import engine_from_config
 from sqlalchemy.ext.declarative import declarative_base
@@ -199,7 +199,7 @@ def base_configure(global_config, **settings):
         settings.setdefault(key, value)
 
     for key, value in settings.items():
-        if key.startswith('kotti') and isinstance(value, string_types):
+        if key.startswith('kotti') and isinstance(value, binary_type):
             settings[key] = unicode(value, 'utf8')
 
     # will be removed in 2.0
