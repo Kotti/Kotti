@@ -83,7 +83,7 @@ class KottiTemplate(PyramidTemplate):
             {0}
             Welcome to Kotti!
 
-            Documentation: http://kotti.readthedocs.org/
+            Documentation: https://kotti.readthedocs.io/
             Development:   https://github.com/Kotti/Kotti/
             Issues:        https://github.com/Kotti/Kotti/issues?state=open
             IRC:           irc://irc.freenode.net/#kotti
