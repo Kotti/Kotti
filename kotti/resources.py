@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
 The :mod:`~kotti.resources` module contains all the classes for Kotti's
-persistance layer, which is based on SQLAlchemy.
+persistence layer, which is based on SQLAlchemy.
 
 Inheritance Diagram
 -------------------
