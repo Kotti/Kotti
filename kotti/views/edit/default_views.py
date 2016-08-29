@@ -50,6 +50,14 @@ class DefaultViewSelection(object):
 
         return self._get_view(view_name) is not None
 
+    def _is_valid_default_view(self, view_name):
+        """Return True if a view with name view_name is a valid choice as
+        default view for context.
+        """
+
+        return self._is_valid_view(view_name) and view_name in [
+            v[0] for v in self.context.type_info.selectable_default_views]
+
     @view_config(name='default-view-selector',
                  renderer='kotti:templates/default-view-selector.pt')
     def default_view_selector(self):
@@ -103,7 +111,7 @@ class DefaultViewSelection(object):
                     'success'
                 )
             else:
-                if self._is_valid_view(view_name):
+                if self._is_valid_default_view(view_name):
                     self.context.default_view = view_name
                     self.request.session.flash(
                         _("Default view has been set."),
