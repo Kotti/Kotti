@@ -17,6 +17,7 @@ install_requires = [
     'Chameleon>=2.7.4',  # Fixes error when raising HTTPFound
     'Pillow',  # dependency of plone.scale
     'alembic>=0.8.0',
+    'Beaker<1.8',
     'bleach',
     'bleach-whitelist',
     'colander>=0.9.3',
@@ -36,6 +37,7 @@ install_requires = [
     'js.jquery_timepicker_addon',
     'js.jqueryui>=1.8.24',
     'js.jqueryui_tagit',
+    'kotti_tinymce',
     'lingua>=1.3',
     'plone.scale',  # needed for image resizing capabilities
     'py_bcrypt',
