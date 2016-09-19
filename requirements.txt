@@ -12,8 +12,8 @@ deform==2.0a2
 docopt==0.6.2
 fanstatic==1.0a7
 filedepot==0.4.0
-FormEncode==1.3.0
-html2text==2016.5.29
+FormEncode==1.3.1
+html2text==2016.6.19
 html5lib==0.9999999
 iso8601==0.1.11
 js.angular==1.1.4
