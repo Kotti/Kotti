@@ -19,7 +19,7 @@ install_requires = [
     'alembic>=0.8.0',
     'bleach',
     'bleach-whitelist',
-    'colander>=0.9.3',
+    'colander<1.3',  # until https://github.com/Pylons/colander/pull/272 is merged and released  # noqa
     'deform>=2.0a1',  # >=2.0a1 to support Bootstrap 2
     'docopt',
     'filedepot',
