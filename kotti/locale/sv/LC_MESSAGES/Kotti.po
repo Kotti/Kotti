@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2016-10-07 18:23+0300\n"
+"POT-Creation-Date: 2016-10-07 20:03+0300\n"
 "PO-Revision-Date: 2016-10-05 21:34+0300\n"
 "Last-Translator: Anders Nylund <stokkheim@gmail.com>\n"
 "Language-Team: Swedish\n"
@@ -301,7 +301,7 @@ msgstr "Dokumentet har lagts till."
 #: kotti/views/form.py:201
 #, python-format
 msgid "Add ${type} to ${title}."
-msgstr "Lätt till ${type} till ${title}."
+msgstr "Lägg till ${type} till ${title}."
 
 #: kotti/views/form.py:205
 #, python-format
