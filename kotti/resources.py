@@ -210,6 +210,11 @@ class LocalGroup(Base):
 
         return self.__class__(**kwargs)
 
+    def __repr__(self):
+        return u'<{0} {1} => {2} at {3}>'.format(
+            self.__class__.__name__, self.principal_name, self.group_name,
+            resource_path(self.node))
+
 
 @implementer(INode)
 class Node(Base, ContainerMixin, PersistentACLMixin):
