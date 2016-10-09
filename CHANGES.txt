@@ -39,6 +39,12 @@ Change History
   ``kotti.testing.RootFactory`` to prevent another deprecation warning with
   ``pytest>=3.0``.
 
+- Upgrade to ``repoze.workflow==1.0b``.  **If your application has a custom
+  ``workflow.zcml``, it needs a little modification: ``state`` and
+  ``transition`` titles are no longer ``key`` nodes, but attributes on the
+  respective ``state`` or ``transition`` nodes.  See Kotti's ``workflow.zcml``
+  for an example.**
+
 1.3.0-alpha.4 - 2015-01-15
 --------------------------
 

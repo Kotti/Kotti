@@ -15,7 +15,6 @@ except IOError:
 install_requires = [
     'Babel',
     'Chameleon>=2.7.4',  # Fixes error when raising HTTPFound
-    'Pillow',  # dependency of plone.scale
     'alembic>=0.8.0',
     'bleach',
     'bleach-whitelist',
@@ -38,18 +37,16 @@ install_requires = [
     'js.jqueryui_tagit',
     'kotti_image',
     'lingua>=1.3',
-    'plone.scale',  # needed for image resizing capabilities
     'py_bcrypt',
     'pyramid>=1.5',  # needed for ``request.has_permission``
     'pyramid_beaker',
     'pyramid_chameleon',
-    'pyramid_debugtoolbar',
     'pyramid_deform>=0.2a3',  # language and template path config includeme
     'pyramid_mailer',
     'pyramid_tm',
     'pyramid_zcml',
     'repoze.lru',
-    'repoze.workflow',
+    'repoze.workflow>=1.0b',
     'rfc6266',
     'sqlalchemy>=1.0.0',
     'sqlalchemy-utils',
@@ -65,7 +62,8 @@ tests_require = [
     'WebTest',
     'mock',
     'pyquery',
-    'pytest>=2.4.2',
+    'pyramid_debugtoolbar',
+    'pytest>=3.0.0',
     'pytest-cov',
     'pytest-pep8!=1.0.3',
     'pytest-travis-fold',
