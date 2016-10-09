@@ -61,6 +61,7 @@ install_requires = [
 tests_require = [
     'WebTest',
     'mock',
+    'py>=1.4.29',
     'pyquery',
     'pyramid_debugtoolbar',
     'pytest>=3.0.0',
