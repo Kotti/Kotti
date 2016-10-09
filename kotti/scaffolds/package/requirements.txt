@@ -1,1 +1,3 @@
--r https://raw.githubusercontent.com/Kotti/Kotti/testing/requirements.txt
+-e git://github.com/Kotti/Kotti.git#egg=Kotti
+
+# -r https://raw.githubusercontent.com/Kotti/Kotti/testing/requirements.txt
