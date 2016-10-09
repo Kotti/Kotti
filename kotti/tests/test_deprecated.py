@@ -82,3 +82,10 @@ class TestToBeRemovedIn20:
             ]
             _translate_titles(info)
             assert_deprecations(w, "removed in Kotti 2.0.0")
+
+    def test_testing_root_factory(self, allwarnings):
+        with warnings.catch_warnings(record=True) as w:
+            from kotti.testing import TestingRootFactory
+            __ = TestingRootFactory  # pyflakes
+            assert_deprecations(w, "will be no longer available starting with "
+                                   "Kotti 2.0.0.")

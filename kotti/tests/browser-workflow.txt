@@ -46,7 +46,7 @@ Make the front page public again:
   >>> browser.getLink("Make Public").click()
   >>> "Your changes have been saved" in browser.contents
   True
-  >>> browser_anonymous.reload()
+  >>> browser_anonymous.open(testing.BASE_URL)
   >>> WELCOME in browser_anonymous.contents
   True
 

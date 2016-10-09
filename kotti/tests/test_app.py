@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
 
-from mock import patch, Mock
+from warnings import filterwarnings
 
+from mock import Mock
+from mock import patch
 from pyramid.interfaces import IAuthenticationPolicy
 from pyramid.interfaces import IAuthorizationPolicy
 from pyramid.interfaces import IView
@@ -14,12 +16,10 @@ from sqlalchemy import table
 from zope.interface import implementedBy
 from zope.interface import providedBy
 
-from kotti.testing import TestingRootFactory
+from kotti.testing import RootFactory
 from kotti.testing import testing_db_url
 
-
 # filter deprecation warnings for code that is still tested...
-from warnings import filterwarnings
 filterwarnings('ignore', "^The 'kotti.includes' setting")
 
 
@@ -116,19 +116,19 @@ class TestApp:
         from kotti.resources import get_root
 
         settings = self.required_settings()
-        settings['kotti.root_factory'] = (TestingRootFactory,)
+        settings['kotti.root_factory'] = (RootFactory,)
         with patch('kotti.resources.initialize_sql'):
             with patch('kotti.filedepot.TweenFactory'):
                 app = main({}, **settings)
-        assert isinstance(get_root(), TestingRootFactory)
-        assert isinstance(app.root_factory(), TestingRootFactory)
+        assert isinstance(get_root(), RootFactory)
+        assert isinstance(app.root_factory(), RootFactory)
 
     def test_render_master_edit_template_minimal_root(self, no_filedepots,
                                                       settings=None):
         from kotti import main
 
         settings = settings or self.required_settings()
-        settings['kotti.root_factory'] = (TestingRootFactory,)
+        settings['kotti.root_factory'] = (RootFactory,)
         settings['kotti.site_title'] = 'My Site'
         with patch('kotti.resources.initialize_sql'):
             app = main({}, **settings)

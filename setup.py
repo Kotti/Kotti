@@ -71,8 +71,7 @@ tests_require = [
     'pytest-travis-fold',
     'pytest-xdist',
     'virtualenv',  # needed for scaffolding tests
-    'wsgi_intercept==0.5.1',
-    'zope.testbrowser',
+    'zope.testbrowser>=5.0.0',
     ]
 
 development_requires = []

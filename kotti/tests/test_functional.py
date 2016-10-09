@@ -1,13 +1,10 @@
 # coding:utf8
 
-from StringIO import StringIO
-from mock import patch
-
 import pytest
-from webtest.forms import Upload
-
 from kotti.testing import BASE_URL
 from kotti.testing import user
+from mock import patch
+from webtest.forms import Upload
 
 
 class TestLogin:
@@ -36,8 +33,8 @@ class TestForbidden:
 class TestUploadFile:
 
     def add_file(self, browser, contents='ABC'):
-        file_ctrl = browser.getControl("File").mech_control
-        file_ctrl.add_file(StringIO(contents), filename='my_image.gif')
+        file_ctrl = browser.getControl("File")
+        file_ctrl.add_file(contents, 'image/gif', 'my_image.gif')
         browser.getControl('save').click()
 
     @user('admin')
@@ -104,8 +101,8 @@ class TestValidatorMaxLength:
         from kotti.resources import Node
         max_length = Node.name.property.columns[0].type.length
         browser.getControl("Title").value = '1' * max_length
-        file_ctrl = browser.getControl("File").mech_control
-        file_ctrl.add_file(StringIO("abc"), filename='my_image.gif')
+        file_ctrl = browser.getControl("File")
+        file_ctrl.add_file("abc", 'image/gif', 'my_image.gif')
         browser.getControl('save').click()
         assert "Item was added" in browser.contents
 
@@ -115,8 +112,8 @@ class TestValidatorMaxLength:
         from kotti.resources import Node
         max_length = Node.name.property.columns[0].type.length
         browser.getControl("Title").value = '1' * (max_length + 1)  # the error
-        file_ctrl = browser.getControl("File").mech_control
-        file_ctrl.add_file(StringIO("abc"), filename='my_image.gif')
+        file_ctrl = browser.getControl("File")
+        file_ctrl.add_file("abc", 'image/gif', 'my_image.gif')
         browser.getControl('save').click()
         assert "Item was added" not in browser.contents
 
