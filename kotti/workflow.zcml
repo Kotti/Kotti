@@ -17,8 +17,8 @@
             content_types="kotti.interfaces.IDefaultWorkflow"
             permission_checker="pyramid.security.has_permission">
 
-    <state name="private" callback="kotti.workflow.workflow_callback">
-      <key name="title" value="Private" i18n:attributes="value"/>
+    <state name="private" title="Private" i18n:attributes="title"
+           callback="kotti.workflow.workflow_callback">
       <key name="order" value="1" />
       <key name="inherit" value="0" />
       <key name="system.Everyone" value="" />
@@ -27,8 +27,8 @@
       <key name="role:owner" value="view add edit delete manage state_change" />
     </state>
 
-    <state name="public" callback="kotti.workflow.workflow_callback">
-      <key name="title" value="Public" i18n:attributes="value"/>
+    <state name="public" title="Public" i18n:attributes="title"
+           callback="kotti.workflow.workflow_callback">
       <key name="order" value="2" />
       <key name="inherit" value="0" />
       <key name="system.Everyone" value="view" />
@@ -38,13 +38,13 @@
     </state>
 
     <transition name="private_to_public" permission="state_change"
-                from_state="private" to_state="public">
-      <key name="title" value="publish" i18n:attributes="value"/>
+                from_state="private" to_state="public"
+                title="publish" i18n:attributes="title">
     </transition>
 
     <transition name="public_to_private" permission="state_change"
-                from_state="public" to_state="private">
-      <key name="title" value="unpublish" i18n:attributes="value"/>
+                from_state="public" to_state="private"
+                title="unpublish" i18n:attributes="title">
     </transition>
 
   </workflow>

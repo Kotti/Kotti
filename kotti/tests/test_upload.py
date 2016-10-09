@@ -2,12 +2,11 @@
 
 import json
 
-from mechanize._mechanize import LinkNotFoundError
-from pytest import raises
-
 from kotti.testing import BASE_URL
 from kotti.testing import user
 from kotti.views.edit.upload import UploadView
+from pytest import raises
+from zope.testbrowser.browser import LinkNotFoundError
 
 
 def test_upload_anonymous(root, dummy_request, browser):

@@ -17,7 +17,6 @@ install:
   - travis_retry pip install psycopg2 oursql python-coveralls codecov
   - pip install -e . -r https://raw.github.com/Kotti/Kotti/stable/requirements.txt
   - pip install --pre Kotti
-  - pip install "wsgi_intercept==0.5.1"
   - python setup.py devbefore_script:
   - psql -c 'create database {{package}}_testing;' -U postgres
   - mysql -e 'create database {{package}}_testing;'

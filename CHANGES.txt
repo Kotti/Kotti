@@ -26,9 +26,24 @@ Change History
   systems for which SQLAlchemy provides dialects except Oracle (Firebird,
   Microsoft SQL Server, MySQL, Postgres, SQLite, Sybase) there's no need to
   do anything.
-  
+
 - We use PEP 440 normalized form for the project's version thus current
   "1.3.0-alpha.5-dev" became "1.3.0a5.dev0".
+
+- Upgrade tests to ``zope.testbrowser>=5.0.0``.
+
+- Move ``pytest`` config from ``setup.cfg`` to new ``pytest.ini``.  This
+  prevents a deprecation warning with ``pytest>=3.0``.
+
+- Rename ``kotti.testing.TestingRootFactory`` to
+  ``kotti.testing.RootFactory`` to prevent another deprecation warning with
+  ``pytest>=3.0``.
+
+- Upgrade to ``repoze.workflow==1.0b``.  **If your application has a custom
+  ``workflow.zcml``, it needs a little modification: ``state`` and
+  ``transition`` titles are no longer ``key`` nodes, but attributes on the
+  respective ``state`` or ``transition`` nodes.  See Kotti's ``workflow.zcml``
+  for an example.**
 
 1.3.0-alpha.4 - 2015-01-15
 --------------------------
