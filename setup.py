@@ -24,6 +24,7 @@ install_requires = [
     'Babel',
     'Chameleon>=2.7.4',  # Fixes error when raising HTTPFound
     'alembic>=0.8.0',
+    'Beaker<1.8',
     'bleach',
     'bleach-whitelist',
     'colander<1.3',  # until https://github.com/Pylons/colander/pull/272 is merged and released  # noqa
