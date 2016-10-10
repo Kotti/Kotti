@@ -79,7 +79,7 @@ Use this command:
 Support
 -------
 
-- Python 2.6 or 2.7 (Python 3 coming soon)
+- Python 2.7 (Python 3 coming soon)
 - Support for PostgreSQL, MySQL and SQLite (tested regularly), and a list of `other SQL databases`_
 - Support for WSGI and a `variety of web servers`_, including Apache
 

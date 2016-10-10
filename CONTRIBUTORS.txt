@@ -12,7 +12,7 @@ below, and b) the resulting document is accepted into the canonical
 version control repository.
 
 Treatment of Account
----------------------
+--------------------
 
 Contributor will not allow anyone other than the Contributor to use
 his or her username or source repository login to submit code to a

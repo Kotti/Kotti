@@ -1,7 +1,7 @@
 Authors
 =======
 
-Kotti was created by Daniel Nouri.
+Kotti was created by Daniel Nouri and is currently maintained by Andreas Kaiser.
 
 Major contributing authors include:
 

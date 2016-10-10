@@ -1,16 +1,24 @@
-import os
-import sys
+# -*- coding: utf-8 -*-
 
-from setuptools import setup
+import codecs
+import os
+
 from setuptools import find_packages
+from setuptools import setup
 
 here = os.path.abspath(os.path.dirname(__file__))
-try:
-    README = open(os.path.join(here, 'README.rst')).read()
-    AUTHORS = open(os.path.join(here, 'AUTHORS.txt')).read()
-    CHANGES = open(os.path.join(here, 'CHANGES.txt')).read()
-except IOError:
-    README = AUTHORS = CHANGES = ''
+
+def read(*parts):
+    """ Build an absolute path from *parts* and and return the contents of the
+    resulting file.  Assume UTF-8 encoding.
+
+    Copied from
+    https://hynek.me/articles/sharing-your-labor-of-love-pypi-quick-and-dirty/
+    """
+
+    with codecs.open(os.path.join(here, *parts), "rb", "utf-8") as f:
+        return f.read()
+
 
 install_requires = [
     'Babel',
@@ -76,6 +84,8 @@ tests_require = [
     ]
 
 development_requires = [
+    'check-manifest',
+    'pipdeptree',
     'pyramid_debugtoolbar',
 ]
 
@@ -86,22 +96,55 @@ docs_require = [
     'sphinx_rtd_theme',
     ]
 
-if sys.version_info[:3] < (2, 7, 0):
-    install_requires.append('ordereddict')
+setup_requires = [
+    'setuptools_git>=0.3',
+]
 
 setup(name='Kotti',
-      version='1.3.0a5.dev0',
+      version='1.3.0',
       description="A high-level, Pythonic web application framework based on Pyramid and SQLAlchemy.  It includes an extensible Content Management System called the Kotti CMS.",  # noqa
-      long_description='\n\n'.join([README, AUTHORS, CHANGES]),
+      long_description='\n\n'.join([
+          read('README.rst'),
+          read('AUTHORS.txt'),
+          read('CHANGES.txt'),
+      ]),
       classifiers=[
-        "Programming Language :: Python",
-        "Programming Language :: Python :: 2.6",
-        "Programming Language :: Python :: 2.7",
-        "Framework :: Pylons",
-        "Topic :: Internet :: WWW/HTTP",
-        "Topic :: Internet :: WWW/HTTP :: Dynamic Content",
-        "Topic :: Internet :: WWW/HTTP :: WSGI :: Application",
-        "License :: Repoze Public License",
+          # 'Development Status :: 3 - Alpha',
+          # 'Development Status :: 4 - Beta',
+          'Development Status :: 5 - Production/Stable',
+          'Environment :: Web Environment',
+          'Framework :: Pylons',
+          'Framework :: Pyramid',
+          'License :: Repoze Public License',
+          'Natural Language :: Dutch',
+          'Natural Language :: English',
+          'Natural Language :: French',
+          'Natural Language :: German',
+          'Natural Language :: Italian',
+          'Natural Language :: Japanese',
+          'Natural Language :: Polish',
+          'Natural Language :: Portuguese',
+          'Natural Language :: Swedish',
+          'Operating System :: POSIX',
+          'Operating System :: Unix',
+          # 'Programming Language :: JavaScript',
+          'Programming Language :: Python',
+          'Programming Language :: Python :: 2',
+          'Programming Language :: Python :: 2.7',
+          # 'Programming Language :: Python :: 3',
+          # 'Programming Language :: Python :: 3.3',
+          # 'Programming Language :: Python :: 3.4',
+          # 'Programming Language :: Python :: 3.5',
+          # 'Programming Language :: Python :: 3.6',
+          'Programming Language :: SQL',
+          'Topic :: Internet',
+          'Topic :: Internet :: WWW/HTTP',
+          'Topic :: Internet :: WWW/HTTP :: Dynamic Content',
+          'Topic :: Internet :: WWW/HTTP :: Dynamic Content :: CGI Tools/Libraries',  # noqa
+          'Topic :: Internet :: WWW/HTTP :: WSGI',
+          'Topic :: Internet :: WWW/HTTP :: WSGI :: Application',
+          'Topic :: Software Development',
+          'Topic :: Software Development :: Libraries :: Application Frameworks',  # noqa
       ],
       author='Kotti developers',
       author_email='kotti@googlegroups.com',
@@ -112,6 +155,7 @@ setup(name='Kotti',
       include_package_data=True,
       zip_safe=False,
       install_requires=install_requires,
+      setup_requires=setup_requires,
       tests_require=tests_require,
       dependency_links=[],
       entry_points="""\
