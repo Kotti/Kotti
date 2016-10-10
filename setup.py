@@ -101,7 +101,7 @@ setup_requires = [
 ]
 
 setup(name='Kotti',
-      version='1.3.0',
+      version='1.3.1.dev0',
       description="A high-level, Pythonic web application framework based on Pyramid and SQLAlchemy.  It includes an extensible Content Management System called the Kotti CMS.",  # noqa
       long_description='\n\n'.join([
           read('README.rst'),
