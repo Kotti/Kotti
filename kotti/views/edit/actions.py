@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 Action views
 """
@@ -6,7 +7,6 @@ from pyramid.httpexceptions import HTTPFound
 from pyramid.url import resource_url
 from pyramid.view import view_config
 from pyramid.exceptions import Forbidden
-from pyramid.security import has_permission
 from pyramid.view import view_defaults
 from zope.deprecation import deprecated
 
@@ -15,6 +15,7 @@ from kotti import get_settings
 from kotti.fanstatic import contents_view_js
 from kotti.interfaces import IContent
 from kotti.resources import Node
+# noinspection PyProtectedMember
 from kotti.util import _
 from kotti.util import ActionButton
 from kotti.util import get_paste_items
@@ -140,7 +141,7 @@ class NodeActions(object):
             item = DBSession.query(Node).get(id)
             if item is not None:
                 if action == 'cut':
-                    if not has_permission('edit', item, self.request):
+                    if not self.request.has_permission('edit', item):
                         raise Forbidden()
                     item.__parent__.children.remove(item)
                     item.name = title_to_name(item.name,
@@ -267,7 +268,7 @@ class NodeActions(object):
         :rtype: pyramid.httpexceptions.HTTPFound or dict
         """
 
-        action = self.request.POST.get(u'delete', None)
+        action = self.request.POST.get(u'delete')
         if action is not None:
 
             parent = self.context.__parent__
@@ -399,7 +400,7 @@ class NodeActions(object):
         if 'change_state' in self.request.POST:
             ids = self.request.POST.getall('children-to-change-state')
             to_state = self.request.POST.get('to-state', u'no-change')
-            include_children = self.request.POST.get('include-children', None)
+            include_children = self.request.POST.get('include-children')
             if to_state != u'no-change':
                 items = DBSession.query(Node).filter(Node.id.in_(ids)).all()
                 for item in items:
@@ -541,18 +542,18 @@ def move_child_position(context, request):
 
         max_pos = len(context.children) - 1
         try:
-            oldPosition = int(data['from'])
-            newPosition = int(data['to'])
-            if not ((0 <= oldPosition <= max_pos) and
-                    (0 <= newPosition <= max_pos)):
+            old_position = int(data['from'])
+            new_position = int(data['to'])
+            if not ((0 <= old_position <= max_pos) and
+                    (0 <= new_position <= max_pos)):
                 raise ValueError
         except ValueError:
             return {'result': 'error'}
 
         # sqlalchemy.ext.orderinglist takes care of the "right" sequence
         # numbers (immediately consecutive, starting with 0) for us.
-        context.children.insert(newPosition,
-                                context.children.pop(oldPosition))
+        context.children.insert(new_position,
+                                context.children.pop(old_position))
         result = 'success'
     else:
         result = 'error'
@@ -604,6 +605,12 @@ def actions(context, request):
 
 
 def includeme(config):
+    """ Pyramid includeme hook.
+
+    :param config: app config
+    :type config: :class:`pyramid.config.Configurator`
+    """
+
     import warnings
     with warnings.catch_warnings():
         warnings.simplefilter("ignore")

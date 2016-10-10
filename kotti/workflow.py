@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from pyramid.security import DENY_ALL
 from repoze.workflow import get_workflow as base_get_workflow
 import transaction
@@ -11,8 +12,8 @@ from kotti.util import command
 
 
 class WorkflowTransition(ObjectEvent):
-    def __init__(self, object, info, **kwargs):
-        super(WorkflowTransition, self).__init__(object, **kwargs)
+    def __init__(self, obj, info, **kwargs):
+        super(WorkflowTransition, self).__init__(obj, **kwargs)
         self.info = info
 
 

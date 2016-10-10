@@ -1,6 +1,134 @@
 Change History
 ==============
 
+1.3.0 - 2016-10-10
+------------------
+
+Breaking Changes
+~~~~~~~~~~~~~~~~
+
+- Upgrade to ``repoze.workflow==1.0b``.  **If your application has a custom
+  ``workflow.zcml``, it needs a little modification: ``state`` and
+  ``transition`` titles are no longer ``key`` nodes, but attributes on the
+  respective ``state`` or ``transition`` nodes.  See Kotti's ``workflow.zcml``
+  for an example.**
+
+Features and Fixes
+~~~~~~~~~~~~~~~~~~
+
+- Add a fallback in ``contents.pt`` when ``creation_date`` or
+  ``modification_date`` is ``None``.
+
+- Transform workflow state title to TranslationStrings without eval and
+  deprecate it.
+
+- Replace some Python 2 only code with equivalents that also support Python 3.
+
+- Use generic SQLAlchemy type Text as base type for JsonType. This allows
+  SQLAlchemy to map Text type to the most suitable type available on given
+  database system. Previously used TEXT type is not available in Oracle
+  database. In case of existing installation of Kotti with database system,
+  for which SQLAlchemy maps generic Text type to type different than TEXT it's
+  necessary to either convert existing columns "nodes._acl" and
+  "nodes.annotations" to that type or configure SQLAlchemy to map generic Text
+  type to existing type of these two columns. For example of how to do this
+  please see http://stackoverflow.com/a/36506666/95735. For all database
+  systems for which SQLAlchemy provides dialects except Oracle (Firebird,
+  Microsoft SQL Server, MySQL, Postgres, SQLite, Sybase) there's no need to
+  do anything.
+
+- We use PEP 440 normalized form for the project's version thus current
+  "1.3.0-alpha.5-dev" became "1.3.0a5.dev0".
+
+- Upgrade tests to ``zope.testbrowser>=5.0.0``.  This removes the ``mechanize``
+  and ``wsgi_intercept`` dependencies and thus the last blocker for Python 3
+  compatibility.
+
+- Move ``pytest`` config from ``setup.cfg`` to new ``pytest.ini``.  This
+  prevents a deprecation warning with ``pytest>=3.0``.
+
+- Rename ``kotti.testing.TestingRootFactory`` to
+  ``kotti.testing.RootFactory`` to prevent another deprecation warning with
+  ``pytest>=3.0``.
+
+1.3.0-alpha.4 - 2015-01-15
+--------------------------
+
+**This is a alpha release.  Blindly upgrading your production environments will
+make the universe collapse!**
+
+
+- Add a ``kotti.depot_replace_wsgi_file_wrapper`` option to replace the WSGI
+  file wrapper with ``pyramid.response.FileIter`` for problematic environments.
+
+1.3.0-alpha.3 - 2016-01-11
+--------------------------
+
+**This is a alpha release.  Blindly upgrading your production environments will
+make the universe collapse!**
+
+
+- Bugfix: don't try to get api.root via the lineage if not in a location aware
+  context (for example 404 view).  Return the site root instead.
+
+1.3.0-alpha.2 - 2016-01-05
+--------------------------
+
+**This is a alpha release.  Blindly upgrading your production environments will
+make the universe collapse!**
+
+- Add a custom traverser, which gets all nodes in a single DB query.  For deeply
+  nested trees this results in drastic performance improvements.  See
+  https://kotti.readthedocs.io/en/master/api/kotti.traversal.html for details.
+
+- Bugfix: copy and paste of file nodes wouldn't create a new depot file, but
+  instead lead to multiple references to a single file which would cause
+  undesired results when one of them was deleted later.
+
+- Bugfix: local 'role:owner' was not set when a new node was created by copy
+  and paste.
+
+- Bugfix: kotti.events._update_children_paths could fail under unclear
+  conditions (at least under Python 2.6 with SQLite).
+
+- Get rid of more browser doctests (converted to webtest).
+
+1.3.0-alpha.1 - 2015-12-22
+--------------------------
+
+**This is a alpha release.  Blindly upgrading your production environments will
+make the universe collapse!**
+
+- Completely revised ``Depot`` integration.  See
+  https://kotti.readthedocs.io/en/latest/developing/advanced/blobs.html
+  for details.
+
+- Make ``kotti.resources.SaveDataMixin`` more versatile in that it now supports
+  a ``data_filters`` attribute (or even a completely overridden ``data``
+  attribute) on subclasses.  For an example for what this is useful, see the
+  new ``kotti_image`` package's readme and the Depot documentation
+  (https://depot.readthedocs.io/en/latest/database.html#custom-behaviour-in-attachments).
+
+  **These changes require a database migration.**
+
+  A migration script is included, which can be executed by running
+  ``kotti-migrate <your.ini> upgrade_all``.  However, this script will fail if
+  you subclassed from ``kotti.resources.Image`` in your application.  It also
+  doesn't cover custom classes inherited from ``kotti.resources.File`` (other
+  than Kotti's ``Image``).  Migration of those can be performed easily, by
+  copying the code from the included migration step to your package's migration
+  environment and adjust it to your needs.
+
+- Move all image related code to the new ``kotti_image`` add on package.
+  All classes and functions are imported into their former place, so that code
+  that imports from there will still be working.
+
+- Fix broken upload type selector.
+
+- Create RFC6266 compliant content disposition headers for non-ASCII filenames.
+
+- Add request.uploaded_file_response method.
+
 1.2.4 - 2015-11-26
 ------------------
 

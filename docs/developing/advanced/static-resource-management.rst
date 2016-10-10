@@ -133,5 +133,5 @@ fanstatic:
 
 
 .. _Fanstatic: http://www.fanstatic.org/
-.. _as described in the corresponding Fanstatic documentation: http://fanstatic.readthedocs.org/en/latest/library.html
-.. _Fanstatic's documentation: http://fanstatic.readthedocs.org/
+.. _as described in the corresponding Fanstatic documentation: https://fanstatic.readthedocs.io/en/latest/library.html
+.. _Fanstatic's documentation: https://fanstatic.readthedocs.io/

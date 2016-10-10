@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 Content edit views
 """
@@ -14,9 +15,10 @@ from deform.widget import TextAreaWidget
 
 from kotti.resources import Document
 from kotti.resources import File
-from kotti.resources import Image
 from kotti.resources import Node
+# noinspection PyProtectedMember
 from kotti.util import _
+# noinspection PyProtectedMember
 from kotti.util import _to_fieldstorage
 from kotti.views.form import get_appstruct
 from kotti.views.form import AddFormView
@@ -31,7 +33,8 @@ class ContentSchema(colander.MappingSchema):
     title = colander.SchemaNode(
         colander.String(),
         title=_(u'Title'),
-        validator=colander.Length(max=Node.title.property.columns[0].type.length),
+        validator=colander.Length(
+            max=Node.title.property.columns[0].type.length),
         )
     description = colander.SchemaNode(
         colander.String(),
@@ -59,6 +62,7 @@ class DocumentSchema(ContentSchema):
         )
 
 
+# noinspection PyPep8Naming
 def FileSchema(tmpstore, title_missing=None):
     class FileSchema(ContentSchema):
         file = SchemaNode(
@@ -68,6 +72,7 @@ def FileSchema(tmpstore, title_missing=None):
             validator=validate_file_size_limit,
             )
 
+    # noinspection PyUnusedLocal
     def set_title_missing(node, kw):
         if title_missing is not None:
             node['title'].missing = title_missing
@@ -133,16 +138,13 @@ class FileAddForm(AddFormView):
         return item
 
 
-class ImageEditForm(FileEditForm):
-    pass
-
-
-class ImageAddForm(FileAddForm):
-    item_type = _(u"Image")
-    item_class = Image
-
-
 def includeme(config):
+    """ Pyramid includeme hook.
+
+    :param config: app config
+    :type config: :class:`pyramid.config.Configurator`
+    """
+
     config.add_view(
         DocumentEditForm,
         context=Document,
@@ -173,17 +175,16 @@ def includeme(config):
         renderer='kotti:templates/edit/node.pt',
         )
 
-    config.add_view(
-        ImageEditForm,
-        context=Image,
-        name='edit',
-        permission='edit',
-        renderer='kotti:templates/edit/node.pt',
-        )
+# DEPRECATED
 
-    config.add_view(
-        ImageAddForm,
-        name=Image.type_info.add_view,
-        permission=Image.type_info.add_permission,
-        renderer='kotti:templates/edit/node.pt',
-        )
+# noinspection PyPep8
+from zope.deprecation import deprecated
+# noinspection PyPep8
+from kotti_image.views.edit import ImageAddForm
+# noinspection PyPep8
+from kotti_image.views.edit import ImageEditForm
+__ = ImageAddForm, ImageEditForm   # pyflakes
+
+deprecated(('ImageAddForm', 'ImageEditForm'),
+           'Image was outfactored to the kotti_image package.  '
+           'Please import from there.')

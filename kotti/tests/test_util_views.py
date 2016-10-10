@@ -78,22 +78,25 @@ class TestTemplateAPI:
 
         # Now try it on a little graph:
         a, aa, ab, ac, aca, acb = create_contents(root)
-        with patch('kotti.views.util.has_permission', return_value=True):
+        with patch('kotti.testing.DummyRequest.has_permission',
+                   return_value=True):
             assert api.list_children() == [a]
             assert api.list_children(root) == [a]
             assert api.list_children(a) == [aa, ab, ac]
             assert api.list_children(aca) == []
 
         # Try permissions
-        with patch('kotti.views.util.has_permission') as has_permission:
+        with patch('kotti.testing.DummyRequest.has_permission') \
+                as has_permission:
             has_permission.return_value = False
             assert api.list_children(root) == []
-            has_permission.assert_called_once_with('view', a, api.request)
+            has_permission.assert_called_once_with('view', a)
 
-        with patch('kotti.views.util.has_permission') as has_permission:
+        with patch('kotti.testing.DummyRequest.has_permission') \
+                as has_permission:
             has_permission.return_value = False
             assert api.list_children(root, permission='edit') == []
-            has_permission.assert_called_once_with('edit', a, api.request)
+            has_permission.assert_called_once_with('edit', a)
 
     def test_root(self, db_session):
         api = self.make()
@@ -136,10 +139,11 @@ class TestTemplateAPI:
         assert breadcrumbs == [a, ac, acb]
 
     def test_has_permission(self, db_session):
-        with patch('kotti.views.util.has_permission') as has_permission:
+        with patch('kotti.testing.DummyRequest.has_permission') \
+                as has_permission:
             api = self.make()
             api.has_permission('drink')
-            has_permission.assert_called_with('drink', api.root, api.request)
+            has_permission.assert_called_with('drink', api.root)
 
     def test_edit_links(self, config, db_session):
         from kotti import views
@@ -403,8 +407,8 @@ class TestTemplateAPI:
         api = self.make()
         assert u'€13.99' == api.format_currency(13.99, 'EUR')
         assert u'$15,499.12' == api.format_currency(15499.12, 'USD')
-        assert u'€1' == api.format_currency(1, format=u'€#,##0',
-                                            currency='EUR')
+        assert u'€1.00' == api.format_currency(1, fmt=u'€#,##0',
+                                               currency='EUR')
         assert u'CHF3.14' == api.format_currency(
             decimal.Decimal((0, (3, 1, 4), -2)), 'CHF')
 
@@ -413,7 +417,7 @@ class TestTemplateAPI:
         from babel.dates import format_datetime
         from babel.core import UnknownLocaleError
         api = self.make()
-        first = datetime.datetime(2012, 1, 1, 0)
+        first = datetime.datetime(2012, 1, 1)
         assert (
             api.format_datetime(first) ==
             format_datetime(first, format='medium', locale='en'))
@@ -421,7 +425,7 @@ class TestTemplateAPI:
             api.format_datetime(time.mktime(first.timetuple())) ==
             format_datetime(first, format='medium', locale='en'))
         assert (
-            api.format_datetime(first, format='short') ==
+            api.format_datetime(first, fmt='short') ==
             format_datetime(first, format='short', locale='en'))
         api.locale_name = 'unknown'
         with raises(UnknownLocaleError):
@@ -437,7 +441,7 @@ class TestTemplateAPI:
             api.format_date(first) ==
             format_date(first, format='medium', locale='en'))
         assert (
-            api.format_date(first, format='short') ==
+            api.format_date(first, fmt='short') ==
             format_date(first, format='short', locale='en'))
         api.locale_name = 'unknown'
         with raises(UnknownLocaleError):
@@ -453,7 +457,7 @@ class TestTemplateAPI:
             api.format_time(first) ==
             format_time(first, format='medium', locale='en'))
         assert (
-            api.format_time(first, format='short') ==
+            api.format_time(first, fmt='short') ==
             format_time(first, format='short', locale='en'))
         api.locale_name = 'unknown'
         with raises(UnknownLocaleError):
@@ -566,10 +570,10 @@ class TestLocalNavigationSlot:
         from kotti.views.navigation import local_navigation
         a, aa, ab, ac, aca, acb = create_contents(root)
 
-        with patch('kotti.views.navigation.has_permission', return_value=True):
+        with patch('kotti.testing.DummyRequest.has_permission', return_value=True):
             assert local_navigation(ac, DummyRequest())['parent'] is not None
 
-        with patch('kotti.views.navigation.has_permission', return_value=False):
+        with patch('kotti.testing.DummyRequest.has_permission', return_value=False):
             assert local_navigation(ac, DummyRequest())['parent'] is None
 
     def test_in_navigation(self, config, root):

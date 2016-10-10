@@ -143,7 +143,7 @@ class UploadView(object):
 
         try:
             factory = self.factory_by_name(self.request.POST['content_type'])
-        except KeyError, e:
+        except KeyError as e:
             result = {
                 'success': False,
                 'error': e.message,
@@ -166,4 +166,10 @@ class UploadView(object):
 
 
 def includeme(config):
+    """ Pyramid includeme hook.
+
+    :param config: app config
+    :type config: :class:`pyramid.config.Configurator`
+    """
+
     config.scan(__name__)

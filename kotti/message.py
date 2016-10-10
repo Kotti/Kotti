@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import hashlib
 import time
 import urllib
@@ -30,35 +31,35 @@ def make_token(user, seconds=None):
 
 def validate_token(user, token, valid_hrs=24):
     """
-      >>> from kotti.testing import setUp, tearDown
-      >>> ignore = setUp()
-      >>> class User(object):
-      ...     pass
-      >>> daniel = User()
-      >>> daniel.name = u'daniel'
-      >>> alice = User()
-      >>> alice.name = u'alice'
-      >>> token = make_token(daniel)
-      >>> validate_token(daniel, token)
-      True
-      >>> validate_token(alice, token)
-      False
-      >>> validate_token(daniel, 'foo')
-      False
-      >>> token = make_token(daniel, seconds=time.time() - 100000)
-      >>> validate_token(daniel, token)
-      False
-      >>> validate_token(daniel, token, valid_hrs=48)
-      True
-      >>> tearDown()
+        >>> from kotti.testing import setUp, tearDown
+        >>> ignore = setUp()
+        >>> class User(object):
+        ...     pass
+        >>> daniel = User()
+        >>> daniel.name = u'daniel'
+        >>> alice = User()
+        >>> alice.name = u'alice'
+        >>> token = make_token(daniel)
+        >>> validate_token(daniel, token)
+        True
+        >>> validate_token(alice, token)
+        False
+        >>> validate_token(daniel, 'foo')
+        False
+        >>> token = make_token(daniel, seconds=time.time() - 100000)
+        >>> validate_token(daniel, token)
+        False
+        >>> validate_token(daniel, token, valid_hrs=48)
+        True
+        >>> tearDown()
     """
     try:
         seconds = float(token.split(':')[1])
     except (IndexError, ValueError):
         return False
-    if token == make_token(user, seconds):
-        if time.time() - seconds < 60 * 60 * valid_hrs:
-            return True
+    if token == make_token(user, seconds) \
+            and time.time() - seconds < 60 * 60 * valid_hrs:
+        return True
     return False
 
 

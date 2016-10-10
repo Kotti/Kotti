@@ -58,6 +58,6 @@ Contributions to {{project}} are highly welcome.
 Just clone its `Github repository`_ and submit your contributions as pull requests.
 
 .. _alembic: http://pypi.python.org/pypi/alembic
-.. _alembic documentation: http://alembic.readthedocs.org/en/latest/index.html
+.. _alembic documentation: https://alembic.readthedocs.io/en/latest/index.html
 .. _tracker: https://github.com/{{gh_user}}/{{package}}/issues
 .. _Github repository: https://github.com/{{gh_user}}/{{package}}

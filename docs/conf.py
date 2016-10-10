@@ -27,7 +27,7 @@ extensions = [
     'sphinx.ext.viewcode',
     ]
 
-copyright = u'2012-2014, Kotti developers'.format(date.today().year)
+copyright = u'2012-{0}, Kotti developers'.format(date.today().year)
 exclude_patterns = ['_build', '_themes']
 master_doc = 'index'
 project = u'Kotti'
@@ -50,7 +50,7 @@ release = version
 # -- Options for HTML output ---------------------------------------------------
 
 # on_rtd is whether we are on readthedocs.org
-on_rtd = os.environ.get('READTHEDOCS', None) == 'True'
+on_rtd = os.environ.get('READTHEDOCS') == 'True'
 
 if not on_rtd:  # only import and set the theme if we're building docs locally
     import sphinx_rtd_theme
@@ -120,10 +120,11 @@ graphviz_output_format = 'svg'
 
 # -- Options for Intersphinx ---------------------------------------------------
 intersphinx_mapping = {
-    'bleach': ('http://bleach.readthedocs.org/en/latest/', None),
-    'colander': ('http://colander.readthedocs.org/en/latest/', None),
-    'deform': ('http://deform.readthedocs.org/en/latest/', None),
+    'bleach': ('https://bleach.readthedocs.io/en/latest/', None),
+    'colander': ('https://colander.readthedocs.io/en/latest/', None),
+    'deform': ('https://deform.readthedocs.io/en/latest/', None),
+    'depot': ('https://depot.readthedocs.io/en/latest/', None),
     'fanstatic': ('http://www.fanstatic.org/en/latest/', None),
-    'pyramid': ('http://pyramid.readthedocs.org/en/latest/', None),
-    'sqlalchemy': ('http://sqlalchemy.readthedocs.org/en/latest/', None),
+    'pyramid': ('https://pyramid.readthedocs.io/en/latest/', None),
+    'sqlalchemy': ('https://sqlalchemy.readthedocs.io/en/latest/', None),
 }

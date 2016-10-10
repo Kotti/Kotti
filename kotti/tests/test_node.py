@@ -1,8 +1,7 @@
-from warnings import catch_warnings
-
+# -*- coding: utf-8 -*-
 from pytest import mark
 from pytest import raises
-from pyramid.security import ALL_PERMISSIONS
+from pyramid.security import ALL_PERMISSIONS, Deny, Everyone
 from pyramid.security import Allow
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.exc import SQLAlchemyError
@@ -12,28 +11,33 @@ class TestNode:
     def test_root_acl(self, db_session, root):
 
         # The root object has a persistent ACL set:
-        assert (
-            root.__acl__[1:] == [
-                ('Allow', 'role:owner', u'view'),
-                ('Allow', 'role:owner', u'add'),
-                ('Allow', 'role:owner', u'edit'),
-                ('Allow', 'role:owner', u'delete'),
-                ('Allow', 'role:owner', u'manage'),
-                ('Allow', 'role:owner', u'state_change'),
-                ('Allow', 'role:viewer', u'view'),
-                ('Allow', 'role:editor', u'view'),
-                ('Allow', 'role:editor', u'add'),
-                ('Allow', 'role:editor', u'edit'),
-                ('Allow', 'role:editor', u'delete'),
-                ('Allow', 'role:editor', u'state_change'),
-                ('Allow', 'system.Everyone', u'view'),
-                ('Deny', 'system.Everyone', ALL_PERMISSIONS),
-            ])
+        for ace in (
+            (Allow, 'role:owner', u'view'),
+            (Allow, 'role:owner', u'add'),
+            (Allow, 'role:owner', u'edit'),
+            (Allow, 'role:owner', u'delete'),
+            (Allow, 'role:owner', u'manage'),
+            (Allow, 'role:owner', u'state_change'),
+            (Allow, 'role:viewer', u'view'),
+            (Allow, 'role:editor', u'view'),
+            (Allow, 'role:editor', u'add'),
+            (Allow, 'role:editor', u'edit'),
+            (Allow, 'role:editor', u'delete'),
+            (Allow, 'role:editor', u'state_change'),
+            (Allow, Everyone, u'view'),
+        ):
+            assert ace in root.__acl__[1:-1]
 
         # The first ACE is here to prevent lock-out:
         assert (
             root.__acl__[0] ==
             (Allow, 'role:admin', ALL_PERMISSIONS))
+
+        # The last ACE denies everything for everyone
+        assert (
+            root.__acl__[-1] ==
+            (Deny, Everyone, ALL_PERMISSIONS)
+        )
 
     def test_set_and_get_acl(self, db_session, root):
 
@@ -457,28 +461,6 @@ class TestTypeInfo:
         Document.type_info.add_selectable_default_view('one', 'two')
         assert ('one', 'two') in Document.type_info.selectable_default_views
         assert ('one', 'two') not in Content.type_info.selectable_default_views
-
-    def test_action_links_deprecated(self, allwarnings):
-        from kotti.resources import TypeInfo
-        from kotti.util import LinkParent
-
-        my_item = object()
-        with catch_warnings(record=True) as wngs:
-            # If there's a last LinkParent item, we'll assume that is
-            # the action menu.
-            TypeInfo(
-                edit_links=[LinkParent('foo', [])],
-                action_links=[my_item],
-                )
-            assert wngs[0].category == DeprecationWarning
-
-        with raises(ValueError):
-            # If there's no last LinkParent item, we'll raise an
-            # error, since we can't do anything useful with the link.
-            TypeInfo(
-                edit_links=[],
-                action_links=[my_item],
-                )
 
     def test_type_info_add_permission_default(self):
         from kotti.resources import TypeInfo

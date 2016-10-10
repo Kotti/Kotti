@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """User management screens
 """
 
@@ -14,6 +15,7 @@ from pyramid.exceptions import Forbidden
 from pyramid.httpexceptions import HTTPFound
 from pyramid.view import view_config
 from pyramid_deform import FormView
+from six import string_types
 
 from kotti.events import UserDeleted
 from kotti.events import notify
@@ -27,6 +29,7 @@ from kotti.security import list_groups_ext
 from kotti.security import list_groups_raw
 from kotti.security import map_principals_with_local_roles
 from kotti.security import set_groups
+# noinspection PyProtectedMember
 from kotti.util import _
 from kotti.views.form import AddFormView
 from kotti.views.form import EditFormView
@@ -138,13 +141,13 @@ def share_node(context, request):
 
 def name_pattern_validator(node, value):
     """
-      >>> name_pattern_validator(None, u'bob')
-      >>> name_pattern_validator(None, u'b ob')
-      Traceback (most recent call last):
-      Invalid: <unprintable Invalid object>
-      >>> name_pattern_validator(None, u'b:ob')
-      Traceback (most recent call last):
-      Invalid: <unprintable Invalid object>
+        >>> name_pattern_validator(None, u'bob')
+        >>> name_pattern_validator(None, u'b ob')
+        Traceback (most recent call last):
+        Invalid: <unprintable Invalid object>
+        >>> name_pattern_validator(None, u'b:ob')
+        Traceback (most recent call last):
+        Invalid: <unprintable Invalid object>
     """
     valid_pattern = re.compile(r"^[a-zA-Z0-9_\-\.]+$")
     if not valid_pattern.match(value):
@@ -321,7 +324,8 @@ class UserAddFormView(AddFormView):
     buttons = (Button('add_user', _(u'Add User')),
                Button('cancel', _(u'Cancel')))
 
-    def schema_factory(self):
+    @staticmethod
+    def schema_factory():
         schema = user_schema()
         del schema['active']
         schema.add(colander.SchemaNode(
@@ -355,7 +359,8 @@ class GroupAddFormView(UserAddFormView):
     buttons = (Button('add_group', _(u'Add Group')),
                Button('cancel', _(u'Cancel')))
 
-    def schema_factory(self):
+    @staticmethod
+    def schema_factory():
         schema = group_schema()
         del schema['active']
         return schema
@@ -374,8 +379,8 @@ class UsersManage(FormView):
     GroupAddFormView = GroupAddFormView
 
     def __init__(self, context, request):
+        super(UsersManage, self).__init__(request)
         self.context = context
-        self.request = request
 
     def __call__(self):
         api = template_api(self.context, self.request,
@@ -402,7 +407,7 @@ class UsersManage(FormView):
             return HTTPFound(location=location)
 
         extra = self.request.params.get('extra') or ()
-        if extra:
+        if isinstance(extra, string_types):
             extra = extra.split(',')
         search_entries = search_principals(self.request, extra=extra)
         available_roles = [ROLES[role_name]
@@ -438,7 +443,8 @@ class UserEditFormView(EditFormView):
     def success_url(self):
         return self.request.url
 
-    def schema_factory(self):
+    @staticmethod
+    def schema_factory():
         return user_schema(PrincipalBasic())
 
 
@@ -448,7 +454,8 @@ class UserManageFormView(UserEditFormView):
                Button('cancel', _(u'Cancel')),
                Button('delete', _(u'Delete'), css_class='btn btn-danger'))
 
-    def schema_factory(self):
+    @staticmethod
+    def schema_factory():
         schema = user_schema()
         del schema['name']
         return schema
@@ -465,7 +472,7 @@ class UserManageFormView(UserEditFormView):
         else:
             appstruct.pop('password', None)
         _massage_groups_in(appstruct)
-        return super(UserEditFormView, self).save_success(appstruct)
+        return super(UserManageFormView, self).save_success(appstruct)
 
     def cancel_success(self, appstruct):
         self.request.session.flash(_(u'No changes were made.'), 'info')
@@ -480,7 +487,9 @@ class UserManageFormView(UserEditFormView):
 
 
 class GroupManageFormView(UserManageFormView):
-    def schema_factory(self):
+
+    @staticmethod
+    def schema_factory():
         schema = group_schema()
         del schema['name']
         del schema['active']
@@ -496,8 +505,8 @@ class UserManage(FormView):
     UserManageFormView = UserManageFormView
 
     def __init__(self, context, request):
+        super(UserManage, self).__init__(request)
         self.context = context
-        self.request = request
 
     def __call__(self):
         user_or_group = self.request.params['name']
@@ -581,8 +590,8 @@ class Preferences(FormView):
     PreferencesFormView = PreferencesFormView
 
     def __init__(self, context, request):
+        super(Preferences, self).__init__(request)
         self.context = context
-        self.request = request
 
     def __call__(self):
         user = self.request.user
@@ -606,4 +615,10 @@ class Preferences(FormView):
 
 
 def includeme(config):
+    """ Pyramid includeme hook.
+
+    :param config: app config
+    :type config: :class:`pyramid.config.Configurator`
+    """
+
     config.scan(__name__)

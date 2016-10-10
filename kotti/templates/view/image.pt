@@ -1,16 +1,6 @@
-<!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml"
-      metal:use-macro="api.macro('kotti:templates/view/master.pt')">
-
-  <article metal:fill-slot="content" class="document-view content">
-    <h1>${context.title}</h1>
-    <p class="lead">
-      ${context.description}
-    </p>
-    <div tal:replace="api.render_template('kotti:templates/view/tags.pt')" />
-    <div class="body">
-        <img src="${request.resource_url(context, 'image')}" />
-    </div>
-  </article>
-
-</html>
+<div tal:replace="api.render_template('kotti_image:templates/image.pt')">
+  <!--
+  This template was moved to 'kotti_image:templates/image.pt'.
+  Use / override that instead.
+  -->
+</div>

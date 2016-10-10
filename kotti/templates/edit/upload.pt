@@ -30,24 +30,22 @@
               <td>
                 {{f.file.type}} <br>
                 <div class="btn-group" ng-show="f.status=='ready for upload'">
-                  <button type="button"
-                    class="btn btn-default btn-xs dropdown-toggle"
-                    data-toggle="dropdown">
-                    Create as:
-                    {{f.desired_type.title}}
-                    <span class="caret" ng-show="f.allowed_types.length>1">
-                    </span>
-                  </button>
-                  <ul class="dropdown-menu" role="menu"
-                      ng-show="f.allowed_types.length>1">
-                    <li ng-repeat="t in f.allowed_types">
-                      <a ng-click="f.desired_type=t">
-                        <i class="icon-ok pull-right"
-                           ng-show="t==f.desired_type"></i>
-                        {{t.title}}
-                      </a>
-                    </li>
-                  </ul>
+                  <div class="dropdown">
+                    <button class="btn btn-xs btn-default dropdown-toggle" type="button" id="uploadType" data-toggle="dropdown">
+                      Create as:
+                      {{f.desiredType.title}}
+                      <span class="caret" ng-show="f.allowedTypes.length>1"></span>
+                    </button>
+                    <ul class="dropdown-menu" role="menu" aria-labelledby="uploadType" ng-show="f.allowedTypes.length>1">
+                      <li ng-repeat="t in f.allowedTypes" role="presentation">
+                        <a role="menuitem" tabindex="-1" href="#" ng-click="f.desiredType=t">
+                          <i class="icon-ok pull-right"
+                             ng-show="t==f.desiredType"></i>
+                          {{t.title}}
+                        </a>
+                      </li>
+                    </ul>
+                  </div>
                 </div>
               </td>
               <td class="col-md-2">{{f.size | bytes}}</td>

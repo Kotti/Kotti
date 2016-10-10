@@ -43,45 +43,47 @@ The rest has defaults.
 Do take a look at the required settings (in bold) and adjust them in your site's configuration.
 A few of the settings are less important, and sometimes only used by developers, not integrators.
 
-================================  ==============================================
-Setting                           Description
-================================  ==============================================
-**kotti.site_title**              The title of your site
-**kotti.secret**                  Secret token used for the initial admin password
-kotti.secret2                     Secret token used for email password reset token
-**sqlalchemy.url**                `SQLAlchemy database URL`_
-**mail.default_sender**           Sender address for outgoing email
-kotti.asset_overrides             Override Kotti's templates
-kotti.authn_policy_factory        Component used for authentication
-kotti.authz_policy_factory        Component used for authorization
-kotti.available_types             List of active content types
-kotti.base_includes               List of base Python configuration hooks
-kotti.caching_policy_chooser      Component for choosing the cache header policy
-kotti.configurators               List of advanced functions for config
-kotti.date_format                 Date format to use, default: ``medium``
-kotti.datetime_format             Datetime format to use, default: ``medium``
-kotti.depot.*.*                   Configure the blob storage. More details below
-kotti.fanstatic.edit_needed       List of static resources used for edit interface
-kotti.fanstatic.view_needed       List of static resources used for public interface
-kotti.login_success_callback      Override Kotti's default ``login_success_callback`` function
-kotti.max_file_size               Max size for file uploads, default: ``10`` (MB)
-kotti.modification_date_excludes  List of attributes in dotted name notation that should not trigger an update of ``modification_date`` on change
-kotti.populators                  List of functions to fill initial database
-kotti.request_factory             Override Kotti's default request factory
-kotti.reset_password_callback     Override Kotti's default ``reset_password_callback`` function
-kotti.root_factory                Override Kotti's default Pyramid *root factory*
-kotti.sanitize_on_write           Configure :ref:`sanitizers` to be used on write access to resource objects
-kotti.sanitizers                  Configure available :ref:`sanitizers`
-kotti.search_content              Override Kotti's default search function
-kotti.session_factory             Component used for sessions
-kotti.templates.api               Override ``api`` object available in templates
-kotti.time_format                 Time format to use, default: ``medium``
-kotti.url_normalizer              Component used for url normalization
-kotti.zcml_includes               List of packages to include the ZCML from
-mail.host                         Email host to send from
-pyramid.default_locale_name       Set the user interface language, default ``en``
-pyramid.includes                  List of Python configuration hooks
-================================  ==============================================
+=====================================  =========================================
+Setting                                Description
+=====================================  =========================================
+**kotti.site_title**                   The title of your site
+**kotti.secret**                       Secret token used for the initial admin password
+kotti.secret2                          Secret token used for email password reset token
+**sqlalchemy.url**                     `SQLAlchemy database URL`_
+**mail.default_sender**                Sender address for outgoing email
+kotti.asset_overrides                  Override Kotti's templates
+kotti.authn_policy_factory             Component used for authentication
+kotti.authz_policy_factory             Component used for authorization
+kotti.available_types                  List of active content types
+kotti.base_includes                    List of base Python configuration hooks
+kotti.caching_policy_chooser           Component for choosing the cache header policy
+kotti.configurators                    List of advanced functions for config
+kotti.date_format                      Date format to use, default: ``medium``
+kotti.datetime_format                  Datetime format to use, default: ``medium``
+kotti.depot_mountpoint                 Configure the mountpoint for the blob storage.  See :ref:`blobs` for details.
+kotti.depot_replace_wsgi_file_wrapper  Replace you WSGI server's file wrapper with :class:`pyramid.response.FileIter`.
+kotti.depot.*.*                        Configure the blob storage.  See :ref:`blobs` for details.
+kotti.fanstatic.edit_needed            List of static resources used for edit interface
+kotti.fanstatic.view_needed            List of static resources used for public interface
+kotti.login_success_callback           Override Kotti's default ``login_success_callback`` function
+kotti.max_file_size                    Max size for file uploads, default: ``10`` (MB)
+kotti.modification_date_excludes       List of attributes in dotted name notation that should not trigger an update of ``modification_date`` on change
+kotti.populators                       List of functions to fill initial database
+kotti.request_factory                  Override Kotti's default request factory
+kotti.reset_password_callback          Override Kotti's default ``reset_password_callback`` function
+kotti.root_factory                     Override Kotti's default Pyramid *root factory*
+kotti.sanitize_on_write                Configure :ref:`sanitizers` to be used on write access to resource objects
+kotti.sanitizers                       Configure available :ref:`sanitizers`
+kotti.search_content                   Override Kotti's default search function
+kotti.session_factory                  Component used for sessions
+kotti.templates.api                    Override ``api`` object available in templates
+kotti.time_format                      Time format to use, default: ``medium``
+kotti.url_normalizer                   Component used for url normalization
+kotti.zcml_includes                    List of packages to include the ZCML from
+mail.host                              Email host to send from
+pyramid.default_locale_name            Set the user interface language, default ``en``
+pyramid.includes                       List of Python configuration hooks
+=====================================  =========================================
 
 kotti.secret and kotti.secret2
 ------------------------------
@@ -304,43 +306,6 @@ The default configuration here is:
 
   kotti.url_normalzier = kotti.url_normalizer.url_normalizer
   kotti.url_normalizer.map_non_ascii_characters = True
-
-
-Blob storage configuration
---------------------------
-
-By default, Kotti will store blob data (files uploaded in File and Image instances) in the database.
-Internally, Kotti integrates with ``filedepot``, so it is possible to use any ``filedepot`` compatible storage, including those provided by ``filedepot`` itself:
-
-- :class:`depot.io.local.LocalFileStorage`
-- :class:`depot.io.awss3.S3Storage`
-- :class:`depot.io.gridfs.GridFSStorage`
-
-The default storage for Kotti is :class:`~kotti.filedepot.DBFileStorage`.
-The benefit of storing files in ``DBFileStorage`` is having *all* content in a single place (the DB) which makes backups, exporting and importing of your site's data easy, as long as you don't have too many or too large files.
-The downsides of this approach appear when your database server resides on a different host (network performance becomes a greater issue) or your DB dumps become too large to be handled efficiently.
-
-To configure a depot, several ``kotti.depot.*.*`` lines need to be added.
-The number in the first position is used to group backend configuration and to order the file storages in the configuration of ``filedepot``.
-The depot configured with number 0 will be the default depot, where all new blob data will be saved.
-There are 2 options that are required for every storage configuration: ``name`` and ``backend``.
-The ``name`` is a unique string that will be used to identify the path of saved files (it is recorded with each blob info), so once configured for a particular storage, it should never change.
-The ``backend`` should point to a dotted path for the storage class.
-Then, any number of keyword arguments can be added, and they will be passed to the backend class on initialization.
-
-Example of a possible configurationi that stores blob data on the disk, in
-``/var/local/files`` using the ``filedepot`` :class:`depot.io.local.LocalFileStorage` provided backend.
-Kotti's default backend, ``DBFileStorage`` has been moved to position **1** and all data stored there will continue to be available.
-See :ref:`blobs` to see how to migrate blob data between storages.
-
-.. code-block:: ini
-
-  kotti.depot.0.name = localfs
-  kotti.depot.0.backend = depot.io.local.LocalFileStorage
-  kotti.depot.0.storage_path = /var/local/files
-  kotti.depot.1.name = dbfiles
-  kotti.depot.1.backend = kotti.filedepot.DBFileStorage
-
 
 Local navigation
 ----------------

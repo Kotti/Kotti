@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import datetime
 from logging import getLogger
 
@@ -40,7 +41,7 @@ def set_max_age(response, delta, cache_ctrl=None):
             if len(kv) == 2:
                 cache_ctrl.setdefault(kv[0], kv[1])
             else:
-                cache_ctrl.setdefault(kv[0], None)
+                cache_ctrl.setdefault(kv[0])
 
     # Render the cache-control header:
     cache_control_header = []
@@ -115,6 +116,7 @@ def set_cache_headers(event):
     # CACHE_POLICY_HEADER header), we'll choose one at this point:
     caching_policy = response.headers.get(CACHE_POLICY_HEADER)
     if caching_policy is None:
+        # noinspection PyBroadException
         try:
             caching_policy = caching_policy_chooser(context, request, response)
         except:
@@ -131,4 +133,10 @@ def set_cache_headers(event):
 
 
 def includeme(config):
+    """ Pyramid includeme hook.
+
+    :param config: app config
+    :type config: :class:`pyramid.config.Configurator`
+    """
+
     config.scan(__name__)

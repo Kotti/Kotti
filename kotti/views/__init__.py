@@ -25,6 +25,12 @@ class BaseView(object):
 
 
 def includeme(config):
+    """ Pyramid includeme hook.
+
+    :param config: app config
+    :type config: :class:`pyramid.config.Configurator`
+    """
+
     config.add_static_view('static-kotti', 'kotti:static')
 
     # deform stuff

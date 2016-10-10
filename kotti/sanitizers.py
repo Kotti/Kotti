@@ -13,6 +13,7 @@ from bleach_whitelist import markdown_tags
 from bleach_whitelist import print_attrs
 from bleach_whitelist import print_tags
 from pyramid.util import DottedNameResolver
+from six import string_types
 
 from kotti import get_settings
 from kotti.events import objectevent_listeners
@@ -55,8 +56,7 @@ def xss_protection(html):
         tags=generally_xss_safe,
         attributes=lambda self, key, value: True,
         styles=all_styles,
-        strip=True,
-        strip_comments=True)
+        strip=True)
 
     return sanitized
 
@@ -84,8 +84,7 @@ def minimal_html(html):
         tags=markdown_tags + print_tags,
         attributes=attributes,
         styles=[],
-        strip=True,
-        strip_comments=True)
+        strip=True)
 
     return sanitized
 
@@ -105,8 +104,7 @@ def no_html(html):
         tags=[],
         attributes={},
         styles=[],
-        strip=True,
-        strip_comments=True)
+        strip=True)
 
     return sanitized
 
@@ -116,14 +114,14 @@ def _setup_sanitizers(settings):
     # step 1: resolve sanitizer functions and make ``kotti.sanitizers`` a
     # dictionary containing resolved functions
 
-    if not isinstance(settings['kotti.sanitizers'], basestring):
+    if not isinstance(settings['kotti.sanitizers'], string_types):
         return
 
     sanitizers = {}
 
     for s in settings['kotti.sanitizers'].split():
         name, dottedname = s.split(':')
-        sanitizers[name.strip()] = DottedNameResolver(None).resolve(dottedname)
+        sanitizers[name.strip()] = DottedNameResolver().resolve(dottedname)
 
     settings['kotti.sanitizers'] = sanitizers
 
@@ -136,7 +134,7 @@ def _setup_listeners(settings):
         dotted, sanitizers = s.split(':')
 
         classname, attributename = dotted.rsplit('.', 1)
-        _class = DottedNameResolver(None).resolve(classname)
+        _class = DottedNameResolver().resolve(classname)
 
         def _create_handler(attributename, sanitizers):
             def handler(event):
@@ -153,6 +151,11 @@ def _setup_listeners(settings):
 
 
 def includeme(config):
+    """ Pyramid includeme hook.
+
+    :param config: app config
+    :type config: :class:`pyramid.config.Configurator`
+    """
 
     _setup_sanitizers(config.registry.settings)
     _setup_listeners(config.registry.settings)

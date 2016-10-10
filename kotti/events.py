@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """This module includes a simple events system that allows users to
 subscribe to specific events, and more particularly to *object events*
 of specific object types.
@@ -15,7 +16,6 @@ from collections import defaultdict
 from datetime import datetime
 try:  # pragma: no cover
     from collections import OrderedDict
-    OrderedDict  # pyflakes
 except ImportError:  # pragma: no cover
     from ordereddict import OrderedDict
 
@@ -46,20 +46,20 @@ from kotti.sqla import no_autoflush
 class ObjectEvent(object):
     """Event related to an object."""
 
-    def __init__(self, object, request=None):
+    def __init__(self, obj, request=None):
         """Constructor.
 
-        :param object: The (content) object related to the event.  This is an
+        :param obj: The (content) object related to the event.  This is an
                        instance of :class:`kotti.resources.Node` or one its
                        descendants for content related events, but it can be
                        anything.
-        :type object: arbitrary
+        :type obj: arbitrary
 
         :param request: current request
         :type request: :class:`kotti.request.Request`
         """
 
-        self.object = object
+        self.object = obj
         self.request = request
 
 
@@ -104,11 +104,11 @@ class Dispatcher(DispatcherDict):
       >>> class SubEvent(BaseEvent): pass
       >>> class UnrelatedEvent(object): pass
       >>> def base_listener(event):
-      ...     print 'Called base listener'
+      ...     print('Called base listener')
       >>> def sub_listener(event):
-      ...     print 'Called sub listener'
+      ...     print('Called sub listener')
       >>> def unrelated_listener(event):
-      ...     print 'Called unrelated listener'
+      ...     print('Called unrelated listener')
       ...     return 1
 
       >>> dispatcher = Dispatcher()
@@ -226,15 +226,16 @@ def set_owner(event):
     """
 
     obj, request = event.object, event.request
-    if request is not None and isinstance(obj, Node) and obj.owner is None:
+    if request is not None and isinstance(obj, Node):
         userid = request.authenticated_userid
         if userid is not None:
             userid = unicode(userid)
             # Set owner metadata:
-            obj.owner = userid
+            if obj.owner is None:
+                obj.owner = userid
             # Add owner role for userid if it's not inherited already:
             if u'role:owner' not in list_groups(userid, obj):
-                groups = list_groups_raw(userid, obj) | set([u'role:owner'])
+                groups = list_groups_raw(userid, obj) | {u'role:owner'}
                 set_groups(userid, obj, groups)
 
 
@@ -314,7 +315,7 @@ def reset_content_owner(event):
 def _update_children_paths(old_parent_path, new_parent_path):
     for child in DBSession.query(Node).options(
         load_only('path', 'type')).filter(
-            Node.path.startswith(old_parent_path)):
+            Node.path.startswith(old_parent_path)).order_by(Node.path):
         if child.path == new_parent_path:
             # The child is the node itself and has already be renamed.
             # Nothing to do!
@@ -385,7 +386,7 @@ def _all_children(item, _all=None):
 def _set_path_for_new_parent(target, value, oldvalue, initiator):
     """Triggered whenever the Node's 'parent' attribute is set.
     """
-    if value is None:
+    if value is None or value == oldvalue:
         # The parent is about to be set to 'None', so skip.
         return
 

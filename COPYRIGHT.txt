@@ -1,2 +1,2 @@
-Copyright (c) 2010-2015 Daniel Nouri and Contributors.
+Copyright (c) 2010-2016 Daniel Nouri and Contributors.
 All Rights Reserved

@@ -34,7 +34,8 @@
             <h3 class="panel-title" i18n:translate="">Find users or groups</h3>
           </div>
           <div class="panel-body">
-            <form action="${request.url}" method="post" class="form">
+            <form action="${request.url}" id="form-principal-search"
+                  method="post" class="form">
               <div class="control-group">
                 <label for="search-query" i18n:translate="">
                   User- / groupname
@@ -58,7 +59,8 @@
           </div>
         </div>
 
-        <form action="${request.url}" method="post" tal:condition="entries">
+        <form action="${request.url}" id="form-global-roles" method="post"
+              tal:condition="entries">
 
           <h2 i18n:translate="">Assign global roles</h2>
           <table class="table table-bordered table-hover">

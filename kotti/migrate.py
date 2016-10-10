@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """This module aims to make it easier to run the Alembic migration
 scripts of Kotti and Kotti add-ons by providing a uniform access.
 
@@ -91,13 +92,15 @@ class PackageEnvironment(object):
                                 version_table=self.version_table, **kw):
             self.script_dir.run_env()
 
-    def _make_config(self, location):
+    @staticmethod
+    def _make_config(location):
         cfg = Config()
         cfg.set_main_option("script_location", location)
         cfg.set_main_option("sqlalchemy.url", get_settings()['sqlalchemy.url'])
         return cfg
 
-    def _make_script_dir(self, alembic_cfg):
+    @staticmethod
+    def _make_script_dir(alembic_cfg):
         script_dir = ScriptDirectory.from_config(alembic_cfg)
         script_dir.__class__ = ScriptDirectoryWithDefaultEnvPy  # O_o
         return script_dir
@@ -162,7 +165,7 @@ def upgrade(location=DEFAULT_LOCATION, revision=None):
         starting_rev=None,
         destination_rev=revision,
         )
-    print
+    print()
 
 
 def upgrade_all():
@@ -187,7 +190,7 @@ def list_all():
             print(u"  - current revision: {0}".format(rev))
             return []
         pkg_env.run_env(current_revision)
-        print
+        print()
 
 
 def kotti_migrate_command():
@@ -247,6 +250,8 @@ def kotti_migrate_command():
         elif arguments['stamp_head']:
             func = stamp_head
             args = args_with_location + (arguments['--rev'],)
+        else:
+            raise ValueError('Unknown command')
         func(*args)
 
     try:

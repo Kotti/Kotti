@@ -9,8 +9,16 @@ Inheritance Diagram
 
 import cgi
 import re
-import urllib
-from urlparse import urlparse, urlunparse
+try:
+    # PY2
+    from urllib import unquote
+    from urlparse import urlparse
+    from urlparse import urlunparse
+except ImportError:
+    from urllib.parse import unquote
+    from urllib.parse import urlparse
+    from urllib.parse import urlunparse
+
 
 from docopt import docopt
 from pyramid.i18n import get_localizer
@@ -105,7 +113,7 @@ class LinkBase(object):
 
         If the link name is '', it will be selected for all urls ending in '/'
         """
-        parsed = urlparse(urllib.unquote(request.url))
+        parsed = urlparse(unquote(request.url))
 
         # insert view markers @@ in last component of the path
         path = parsed.path.split('/')
@@ -149,7 +157,9 @@ class LinkRenderer(LinkBase):
     def __call__(self, context, request):
         return TemplateStructure(render_view(context, request, name=self.name))
 
-    def selected(self, context, request):
+    # noinspection PyMethodOverriding
+    @staticmethod
+    def selected(context, request):
         return False
 
 
@@ -163,10 +173,10 @@ class LinkParent(LinkBase):
         self.children = children
 
     def visible(self, context, request):
-        return any([ch.visible(context, request) for ch in self.children])
+        return any(ch.visible(context, request) for ch in self.children)
 
     def selected(self, context, request):
-        return any([ch.selected(context, request) for ch in self.children])
+        return any(ch.selected(context, request) for ch in self.children)
 
     def get_visible_children(self, context, request):
         return [ch for ch in self.children if ch.visible(context, request)]
@@ -267,7 +277,7 @@ def extract_from_settings(prefix, settings=None):
     """
       >>> settings = {
       ...     'kotti_twitter.foo_bar': '1', 'kotti.spam_eggs': '2'}
-      >>> print extract_from_settings('kotti_twitter.', settings)
+      >>> print(extract_from_settings('kotti_twitter.', settings))
       {'foo_bar': '1'}
     """
     from kotti import get_settings
@@ -277,44 +287,6 @@ def extract_from_settings(prefix, settings=None):
         if key.startswith(prefix):
             extracted[key[len(prefix):]] = value
     return extracted
-
-
-def extract_depot_settings(prefix="kotti.depot.", settings=None):
-    """ Merges items from a dictionary that have keys that start with `prefix`
-    to a list of dictionaries.
-
-    :param prefix: A dotted string representing the prefix for the common values
-    :type prefix: string
-    :value settings: A dictionary with settings. Result is extracted from this
-    :type settings: dict
-
-      >>> settings = {
-      ...     'kotti.depot.0.backend': 'kotti.filedepot.DBFileStorage',
-      ...     'kotti.depot.0.file_storage': 'var/files',
-      ...     'kotti.depot.0.name': 'local',
-      ...     'kotti.depot.1.backend': 'depot.io.gridfs.GridStorage',
-      ...     'kotti.depot.1.name': 'mongodb',
-      ...     'kotti.depot.1.uri': 'localhost://',
-      ... }
-      >>> res = extract_depot_settings('kotti.depot.', settings)
-      >>> print sorted(res[0].items())
-      [('backend', 'kotti.filedepot.DBFileStorage'), ('file_storage', 'var/files'), ('name', 'local')]
-      >>> print sorted(res[1].items())
-      [('backend', 'depot.io.gridfs.GridStorage'), ('name', 'mongodb'), ('uri', 'localhost://')]
-    """
-
-    extracted = {}
-    for k, v in extract_from_settings(prefix, settings).items():
-        index, conf = k.split('.', 1)
-        index = int(index)
-        extracted.setdefault(index, {})
-        extracted[index][conf] = v
-
-    result = []
-    for k in sorted(extracted.keys()):
-        result.append(extracted[k])
-
-    return result
 
 
 def disambiguate_name(name):

@@ -1,11 +1,5 @@
+# -*- coding: utf-8 -*-
 import pkg_resources
-
-from sqlalchemy import engine_from_config
-from sqlalchemy import MetaData
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import scoped_session
-from sqlalchemy.orm import sessionmaker
-from zope.sqlalchemy import ZopeTransactionExtension
 from pyramid.authentication import AuthTktAuthenticationPolicy
 from pyramid.authorization import ACLAuthorizationPolicy
 from pyramid.config import Configurator
@@ -13,9 +7,15 @@ from pyramid.events import BeforeRender
 from pyramid.threadlocal import get_current_registry
 from pyramid.util import DottedNameResolver
 from pyramid_beaker import session_factory_from_settings
+from six import binary_type, string_types
+from sqlalchemy import MetaData
+from sqlalchemy import engine_from_config
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import scoped_session
+from sqlalchemy.orm import sessionmaker
+from zope.sqlalchemy import ZopeTransactionExtension
 
 from kotti.sqla import Base as KottiBase
-
 
 metadata = MetaData()
 DBSession = scoped_session(sessionmaker(extension=ZopeTransactionExtension()))
@@ -61,10 +61,10 @@ conf_defaults = {
     'kotti.available_types': ' '.join([
         'kotti.resources.Document',
         'kotti.resources.File',
-        'kotti.resources.Image',
         ]),
     'kotti.base_includes': ' '.join([
         'kotti',
+        'kotti.traversal',
         'kotti.filedepot',
         'kotti.events',
         'kotti.sanitizers',
@@ -77,7 +77,6 @@ conf_defaults = {
         'kotti.views.edit.default_views',
         'kotti.views.edit.upload',
         'kotti.views.file',
-        'kotti.views.image',
         'kotti.views.login',
         'kotti.views.navigation',
         'kotti.views.users',
@@ -87,6 +86,8 @@ conf_defaults = {
     'kotti.configurators': '',
     'kotti.date_format': 'medium',
     'kotti.datetime_format': 'medium',
+    'kotti.depot_mountpoint': '/depot',
+    'kotti.depot_replace_wsgi_file_wrapper': False,
     'kotti.depot.0.backend': 'kotti.filedepot.DBFileStorage',
     'kotti.depot.0.name': 'dbfiles',
     'kotti.fanstatic.edit_needed': 'kotti.fanstatic.edit_needed',
@@ -130,7 +131,7 @@ conf_defaults = {
     'pyramid_deform.template_search_path': 'kotti:templates/deform',
     }
 
-conf_dotted = set([
+conf_dotted = {
     'kotti.authn_policy_factory',
     'kotti.authz_policy_factory',
     'kotti.available_types',
@@ -150,7 +151,7 @@ conf_dotted = set([
     'kotti.session_factory',
     'kotti.templates.api',
     'kotti.url_normalizer',
-    ])
+}
 
 
 def get_version():
@@ -167,11 +168,11 @@ def _resolve_dotted(d, keys=conf_dotted):
 
     for key in keys:
         value = resolved[key]
-        if not isinstance(value, basestring):
+        if not isinstance(value, string_types):
             continue
         new_value = []
         for dottedname in value.split():
-            new_value.append(DottedNameResolver(None).resolve(dottedname))
+            new_value.append(DottedNameResolver().resolve(dottedname))
         resolved[key] = new_value
 
     return resolved
@@ -183,7 +184,7 @@ def main(global_config, **settings):
 
     from kotti.resources import initialize_sql
     config = base_configure(global_config, **settings)
-    engine = engine_from_config(config.registry.settings, 'sqlalchemy.')
+    engine = engine_from_config(config.registry.settings)
     initialize_sql(engine)
     return config.make_wsgi_app()
 
@@ -198,8 +199,12 @@ def base_configure(global_config, **settings):
         settings.setdefault(key, value)
 
     for key, value in settings.items():
-        if key.startswith('kotti') and isinstance(value, basestring):
+        if key.startswith('kotti') and isinstance(value, binary_type):
             settings[key] = unicode(value, 'utf8')
+
+    # will be removed in 2.0
+    import kotti_image
+    kotti_image.kotti_configure(settings)
 
     # Allow extending packages to change 'settings' w/ Python:
     k = 'kotti.configurators'
@@ -249,6 +254,12 @@ def base_configure(global_config, **settings):
 
 
 def includeme(config):
+    """ Pyramid includeme hook.
+
+    :param config: app config
+    :type config: :class:`pyramid.config.Configurator`
+    """
+
     import kotti.views.util
 
     settings = config.get_settings()

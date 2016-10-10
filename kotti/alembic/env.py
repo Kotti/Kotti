@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from alembic import context
 import traceback
 import transaction

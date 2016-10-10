@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """Initialize workflow and publish all items.
 
 Revision ID: 57fecf5dbd62

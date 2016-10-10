@@ -1,6 +1,7 @@
+# -*- coding: utf-8 -*-
 """
 The :mod:`~kotti.resources` module contains all the classes for Kotti's
-persistance layer, which is based on SQLAlchemy.
+persistence layer, which is based on SQLAlchemy.
 
 Inheritance Diagram
 -------------------
@@ -10,27 +11,28 @@ Inheritance Diagram
 
 import os
 import warnings
+from UserDict import DictMixin
+from cStringIO import StringIO
 from copy import copy
 from fnmatch import fnmatch
-from cStringIO import StringIO
-from UserDict import DictMixin
 
-from depot.fields.sqlalchemy import _SQLAMutationTracker
 from depot.fields.sqlalchemy import UploadedFileField
-from kotti import _resolve_dotted
+from depot.fields.sqlalchemy import _SQLAMutationTracker
 from pyramid.decorator import reify
 from pyramid.traversal import resource_path
 from sqlalchemy import Boolean
 from sqlalchemy import Column
 from sqlalchemy import DateTime
-from sqlalchemy import event
 from sqlalchemy import ForeignKey
 from sqlalchemy import Integer
 from sqlalchemy import String
 from sqlalchemy import Unicode
 from sqlalchemy import UnicodeText
 from sqlalchemy import UniqueConstraint
+from sqlalchemy import bindparam
+from sqlalchemy import event
 from sqlalchemy.ext.associationproxy import association_proxy
+from sqlalchemy.ext.declarative import declared_attr
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.ext.orderinglist import ordering_list
 from sqlalchemy.orm import backref
@@ -45,30 +47,30 @@ from zope.interface import implementer
 
 from kotti import Base
 from kotti import DBSession
+from kotti import TRUE_VALUES
+from kotti import _resolve_dotted
 from kotti import get_settings
 from kotti import metadata
-from kotti import TRUE_VALUES
 from kotti.interfaces import IContent
 from kotti.interfaces import IDefaultWorkflow
 from kotti.interfaces import IDocument
 from kotti.interfaces import IFile
-from kotti.interfaces import IImage
 from kotti.interfaces import INode
 from kotti.migrate import stamp_heads
-from kotti.security import has_permission
 from kotti.security import PersistentACLMixin
 from kotti.security import view_permitted
 from kotti.sqla import ACLType
 from kotti.sqla import JsonType
 from kotti.sqla import MutationList
 from kotti.sqla import NestedMutationDict
+from kotti.sqla import bakery
+from kotti.util import Link
+from kotti.util import LinkParent
+from kotti.util import LinkRenderer
 from kotti.util import _
 from kotti.util import _to_fieldstorage
 from kotti.util import camel_case_to_name
 from kotti.util import get_paste_items
-from kotti.util import Link
-from kotti.util import LinkParent
-from kotti.util import LinkRenderer
 
 
 class ContainerMixin(object, DictMixin):
@@ -77,7 +79,7 @@ class ContainerMixin(object, DictMixin):
     """
 
     def __setitem__(self, key, node):
-        key = node.name = unicode(key)
+        node.name = unicode(key)
         self.children.append(node)
         self.children.reorder()
 
@@ -95,7 +97,8 @@ class ContainerMixin(object, DictMixin):
         return [child.name for child in self.children]
 
     def __getitem__(self, path):
-        DBSession()._autoflush()
+        db_session = DBSession()
+        db_session._autoflush()
 
         if not hasattr(path, '__iter__'):
             path = (path,)
@@ -113,10 +116,16 @@ class ContainerMixin(object, DictMixin):
             else:
                 return child
 
+        baked_query = bakery(lambda session: session.query(Node))
+
         if len(path) == 1:
             try:
-                return DBSession.query(Node).filter_by(
-                    name=path[0], parent=self).one()
+                baked_query += lambda q: q.filter(
+                    Node.name == bindparam('name'),
+                    Node.parent_id == bindparam('parent_id')
+                )
+                return baked_query(db_session).params(
+                    name=path[0], parent_id=self.id).one()
             except NoResultFound:
                 raise KeyError(path)
 
@@ -130,10 +139,10 @@ class ContainerMixin(object, DictMixin):
             conditions.append(alias.c.parent_id == old_alias.c.id)
             conditions.append(alias.c.name == name)
         expr = select([alias.c.id], and_(*conditions))
-        row = DBSession.execute(expr).fetchone()
+        row = db_session.execute(expr).fetchone()
         if row is None:
             raise KeyError(path)
-        return DBSession.query(Node).get(row.id)
+        return baked_query(db_session).get(row.id)
 
     @hybrid_property
     def children(self):
@@ -161,7 +170,7 @@ class ContainerMixin(object, DictMixin):
 
         return [
             c for c in self.children
-            if has_permission(permission, c, request)
+            if request.has_permission(permission, c)
         ]
 
 
@@ -200,6 +209,11 @@ class LocalGroup(Base):
         kwargs.setdefault('group_name', self.group_name)
 
         return self.__class__(**kwargs)
+
+    def __repr__(self):
+        return u'<{0} {1} => {2} at {3}>'.format(
+            self.__class__.__name__, self.principal_name, self.group_name,
+            resource_path(self.node))
 
 
 @implementer(INode)
@@ -420,9 +434,8 @@ class TypeInfo(object):
         match_score = 0
 
         for mt in self.uploadable_mimetypes:
-            if fnmatch(mimetype, mt):
-                if len(mt) > match_score:
-                    match_score = len(mt)
+            if fnmatch(mimetype, mt) and len(mt) > match_score:
+                match_score = len(mt)
 
         return match_score
 
@@ -464,17 +477,16 @@ class TagsToContents(Base):
 
     #: Foreign key referencing :attr:`Tag.id`
     #: (:class:`sqlalchemy.types.Integer`)
-    tag_id = Column(Integer, ForeignKey('tags.id'), primary_key=True,
-                    index=True)
+    tag_id = Column(ForeignKey('tags.id'), primary_key=True, index=True)
     #: Foreign key referencing :attr:`Content.id`
     #: (:class:`sqlalchemy.types.Integer`)
-    content_id = Column(Integer, ForeignKey('contents.id'), primary_key=True,
-                        index=True)
+    content_id = Column(ForeignKey('contents.id'), primary_key=True, index=True)
     #: Relation that adds a ``content_tags`` :func:`sqlalchemy.orm.backref`
     #: to :class:`~kotti.resources.Tag` instances to allow easy access to all
     #: content tagged with that tag.
     #: (:func:`sqlalchemy.orm.relationship`)
-    tag = relation(Tag, backref=backref('content_tags', cascade='all'))
+    tag = relation(Tag, backref=backref('content_tags', cascade='all'),
+                   lazy='joined',)
     #: Ordering position of the tag
     #: :class:`sqlalchemy.types.Integer`
     position = Column(Integer, nullable=False)
@@ -543,7 +555,7 @@ class Content(Node):
 
     #: Primary key column in the DB
     #: (:class:`sqlalchemy.types.Integer`)
-    id = Column(Integer, ForeignKey('nodes.id'), primary_key=True)
+    id = Column(ForeignKey(Node.id), primary_key=True)
     #: Name of the view that should be displayed to the user when
     #: visiting an URL without a explicit view name appended
     #: (:class:`sqlalchemy.types.String`)
@@ -574,6 +586,7 @@ class Content(Node):
     _tags = relation(
         TagsToContents,
         backref=backref('item'),
+        lazy='joined',
         order_by=[TagsToContents.position],
         collection_class=ordering_list("position"),
         cascade='all, delete-orphan',
@@ -622,7 +635,7 @@ class Document(Content):
 
     #: Primary key column in the DB
     #: (:class:`sqlalchemy.types.Integer`)
-    id = Column(Integer(), ForeignKey('contents.id'), primary_key=True)
+    id = Column(ForeignKey(Content.id), primary_key=True)
     #: Body text of the Document
     #: (:class:`sqlalchemy.types.Unicode`)
     body = Column(UnicodeText())
@@ -655,6 +668,27 @@ class SaveDataMixin(object):
         See http://stackoverflow.com/questions/30433960/how-to-use-declare-last-in-sqlalchemy-1-0  # noqa
     """
 
+    #: The filename is used in the attachment view to give downloads
+    #: the original filename it had when it was uploaded.
+    #: (:class:`sqlalchemy.types.Unicode`)
+    filename = Column(Unicode(100))
+    #: MIME type of the file
+    #: (:class:`sqlalchemy.types.String`)
+    mimetype = Column(String(100))
+    #: Size of the file in bytes
+    #: (:class:`sqlalchemy.types.Integer`)
+    size = Column(Integer())
+
+    #: Filedepot mapped blob
+    #: (:class:`depot.fileds.sqlalchemy.UploadedFileField`)
+    @declared_attr
+    def data(cls):
+
+        return cls.__table__.c.get('data',
+                                   Column(UploadedFileField(cls.data_filters)))
+
+    data_filters = ()
+
     @classmethod
     def __declare_last__(cls):
         """ Unconfigure the event set in _SQLAMutationTracker,
@@ -669,8 +703,8 @@ class SaveDataMixin(object):
         # enables proper registration on its subclasses
         event.listen(cls.data, 'set', cls._save_data, retval=True)
 
-    @classmethod
-    def _save_data(cls, target, value, oldvalue, initiator):
+    @staticmethod
+    def _save_data(target, value, oldvalue, initiator):
         """ Refresh metadata and save the binary data to the data field.
 
         :param target: The File instance
@@ -698,48 +732,6 @@ class SaveDataMixin(object):
 
         return newvalue
 
-
-@implementer(IFile)
-class File(Content, SaveDataMixin):
-    """File adds some attributes to :class:`~kotti.resources.Content` that are
-       useful for storing binary data.
-    """
-    #: Primary key column in the DB
-    #: (:class:`sqlalchemy.types.Integer`)
-    id = Column(Integer(), ForeignKey('contents.id'), primary_key=True)
-    #: Filedepot mapped blob
-    #: (:class:`depot.fileds.sqlalchemy.UploadedFileField`)
-    data = Column(UploadedFileField)
-    #: The filename is used in the attachment view to give downloads
-    #: the original filename it had when it was uploaded.
-    #: (:class:`sqlalchemy.types.Unicode`)
-    filename = Column(Unicode(100))
-    #: MIME type of the file
-    #: (:class:`sqlalchemy.types.String`)
-    mimetype = Column(String(100))
-    #: Size of the file in bytes
-    #: (:class:`sqlalchemy.types.Integer`)
-    size = Column(Integer())
-
-    type_info = Content.type_info.copy(
-        name=u'File',
-        title=_(u'File'),
-        add_view=u'add_file',
-        addable_to=[u'Document'],
-        selectable_default_views=[],
-        uploadable_mimetypes=['*', ],
-        )
-
-    def __init__(self, data=None, filename=None, mimetype=None, size=None,
-                 **kwargs):
-
-        super(File, self).__init__(**kwargs)
-
-        self.filename = filename
-        self.mimetype = mimetype
-        self.size = size
-        self.data = data
-
     @classmethod
     def from_field_storage(cls, fs):
         """ Create and return an instance of this class from a file upload
@@ -758,20 +750,43 @@ class File(Content, SaveDataMixin):
 
         return cls(data=fs)
 
+    def __init__(self, data=None, filename=None, mimetype=None, size=None,
+                 **kwargs):
 
-@implementer(IImage)
-class Image(File):
-    """Image doesn't add anything to :class:`~kotti.resources.File`, but images
-       have different views, that e.g. support on the fly scaling.
+        super(SaveDataMixin, self).__init__(**kwargs)
+
+        self.filename = filename
+        self.mimetype = mimetype
+        self.size = size
+        self.data = data
+
+    def copy(self, **kwargs):
+        """ Same as `Content.copy` with additional data support.  ``data`` needs
+        some special attention, because we don't want the same depot file to be
+        assigned to multiple content nodes.
+        """
+        _copy = super(SaveDataMixin, self).copy(**kwargs)
+        _copy.data = self.data.file.read()
+        return _copy
+
+
+@implementer(IFile)
+class File(SaveDataMixin, Content):
+    """File adds some attributes to :class:`~kotti.resources.Content` that are
+       useful for storing binary data.
     """
 
-    id = Column(Integer(), ForeignKey('files.id'), primary_key=True)
+    #: Primary key column in the DB
+    #: (:class:`sqlalchemy.types.Integer`)
+    id = Column(ForeignKey(Content.id), primary_key=True)
 
-    type_info = File.type_info.copy(
-        name=u'Image',
-        title=_(u'Image'),
-        add_view=u'add_image',
-        uploadable_mimetypes=['image/*', ],
+    type_info = Content.type_info.copy(
+        name=u'File',
+        title=_(u'File'),
+        add_view=u'add_file',
+        addable_to=[u'Document'],
+        selectable_default_views=[],
+        uploadable_mimetypes=['*', ],
         )
 
 
@@ -790,6 +805,7 @@ def get_root(request=None):
 
 class DefaultRootCache(object):
     """ Default implementation for :func:`~kotti.resources.get_root` """
+    _id = None
 
     @reify
     def root_id(self):
@@ -798,7 +814,11 @@ class DefaultRootCache(object):
         :rtype: int
         """
 
-        return Node.query.filter(Node.parent_id == None).one().id  # noqa
+        query = bakery(lambda session: session.query(Node)
+                       .with_polymorphic(Node).add_columns(Node.id)
+                       .enable_eagerloads(False).filter(Node.parent_id == None))
+
+        return query(DBSession()).one().id
 
     def get_root(self):
         """ Query for the root node by its id.  This enables SQLAlchemy's
@@ -864,3 +884,14 @@ def initialize_sql(engine, drop_all=False):
     commit()
 
     return DBSession
+
+
+# DEPRECATED
+
+from zope.deprecation.deprecation import deprecated
+from kotti_image.resources import Image
+
+__ = Image
+deprecated('Image',
+           'Image was outfactored to the kotti_image package.  '
+           'Please import from there.')

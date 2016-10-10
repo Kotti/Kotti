@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from mock import patch
 from pytest import raises
 from pyramid.authentication import CallbackAuthenticationPolicy
@@ -25,7 +26,7 @@ class TestGroups:
 
         set_groups('bob', root, ['role:editor'])
         assert list_groups('bob', root) == ['role:editor']
-        assert list_groups_raw(u'bob', root) == set(['role:editor'])
+        assert list_groups_raw(u'bob', root) == {'role:editor'}
 
     def test_not_a_node(self):
         from kotti.security import list_groups_raw
@@ -40,11 +41,11 @@ class TestGroups:
 
         set_groups('bob', root, ['role:editor'])
         assert list_groups('bob', root) == ['role:editor']
-        assert list_groups_raw(u'bob', root) == set(['role:editor'])
+        assert list_groups_raw(u'bob', root) == {'role:editor'}
 
         set_groups('bob', root, ['role:admin'])
         assert list_groups('bob', root) == ['role:admin']
-        assert list_groups_raw(u'bob', root) == set(['role:admin'])
+        assert list_groups_raw(u'bob', root) == {'role:admin'}
 
         set_groups('bob', root)
         assert list_groups('bob', root) == []
@@ -67,11 +68,11 @@ class TestGroups:
         set_groups('bob', child, ['group:somegroup'])
         assert (
             set(list_groups('bob', child)) ==
-            set(['group:somegroup', 'role:editor'])
+            {'group:somegroup', 'role:editor'}
             )
 
         # We can ask to list only those groups that are defined locally:
-        assert list_groups_raw(u'bob', child) == set(['group:somegroup'])
+        assert list_groups_raw(u'bob', child) == {'group:somegroup'}
 
     @staticmethod
     def add_some_groups(db_session, root):
@@ -119,19 +120,19 @@ class TestGroups:
         # Check bob's groups on every level:
         assert list_groups('bob', root) == ['group:bobsgroup']
         assert (set(list_groups('bob', child)) ==
-                set(['group:bobsgroup', 'group:franksgroup', 'role:editor']))
+                {'group:bobsgroup', 'group:franksgroup', 'role:editor'})
         assert (set(list_groups('bob', grandchild)) ==
-                set(['group:bobsgroup', 'group:franksgroup', 'role:editor',
-                     'role:owner']))
+                {'group:bobsgroup', 'group:franksgroup', 'role:editor',
+                 'role:owner'})
 
         # Check group:franksgroup groups on every level:
         assert (set(list_groups('frank', root)) ==
-                set(['group:franksgroup', 'role:editor']))
+                {'group:franksgroup', 'role:editor'})
         assert (set(list_groups('frank', child)) ==
-                set(['group:franksgroup', 'role:editor']))
+                {'group:franksgroup', 'role:editor'})
         assert (set(list_groups('frank', grandchild)) ==
-                set(['group:franksgroup', 'role:editor', 'role:owner',
-                     'group:bobsgroup']))
+                {'group:franksgroup', 'role:editor', 'role:owner',
+                 'group:bobsgroup'})
 
         # Sometimes it's useful to know which of the groups were
         # inherited, that's what 'list_groups_ext' is for:
@@ -141,17 +142,17 @@ class TestGroups:
 
         groups, inherited = list_groups_ext('bob', child)
         assert (set(groups) ==
-                set(['group:bobsgroup', 'group:franksgroup', 'role:editor']))
+                {'group:bobsgroup', 'group:franksgroup', 'role:editor'})
         assert (set(inherited) ==
-                set(['group:bobsgroup', 'group:franksgroup', 'role:editor']))
+                {'group:bobsgroup', 'group:franksgroup', 'role:editor'})
 
         groups, inherited = list_groups_ext('group:bobsgroup', child)
-        assert set(groups) == set(['group:franksgroup', 'role:editor'])
+        assert set(groups) == {'group:franksgroup', 'role:editor'}
         assert inherited == ['role:editor']
 
         groups, inherited = list_groups_ext('group:franksgroup', grandchild)
         assert (set(groups) ==
-                set(['group:bobsgroup', 'role:owner', 'role:editor']))
+                {'group:bobsgroup', 'role:owner', 'role:editor'})
         assert inherited == ['role:editor']
 
     def test_works_with_auth(self, db_session, root):
@@ -184,21 +185,22 @@ class TestGroups:
         set_groups('bob', root, ['group:bobsgroup'])
         request.context = child
         assert (
-            set(auth.effective_principals(request)) == set([
-                'system.Everyone', 'system.Authenticated',
-                'bob', 'group:bobsgroup'
-                ])
+            set(auth.effective_principals(request)) == {'system.Everyone',
+                                                        'system.Authenticated',
+                                                        'bob',
+                                                        'group:bobsgroup'}
             )
 
         # define that bob belongs to franksgroup in the user db:
         get_principals()[u'bob'].groups = [u'group:franksgroup']
         set_groups('group:franksgroup', child, ['group:anothergroup'])
         assert (
-            set(auth.effective_principals(request)) == set([
-                'system.Everyone', 'system.Authenticated',
-                'bob', 'group:bobsgroup', 'group:franksgroup',
-                'group:anothergroup',
-                ])
+            set(auth.effective_principals(request)) == {'system.Everyone',
+                                                        'system.Authenticated',
+                                                        'bob',
+                                                        'group:bobsgroup',
+                                                        'group:franksgroup',
+                                                        'group:anothergroup'}
             )
 
         # And lastly test that circular group defintions are not a
@@ -209,11 +211,13 @@ class TestGroups:
             groups=[u'group:funnygroup', u'group:bobsgroup'],
             )
         assert (
-            set(auth.effective_principals(request)) == set([
-                'system.Everyone', 'system.Authenticated',
-                'bob', 'group:bobsgroup', 'group:franksgroup',
-                'group:anothergroup', 'group:funnygroup',
-                ])
+            set(auth.effective_principals(request)) == {'system.Everyone',
+                                                        'system.Authenticated',
+                                                        'bob',
+                                                        'group:bobsgroup',
+                                                        'group:franksgroup',
+                                                        'group:anothergroup',
+                                                        'group:funnygroup'}
             )
 
     def test_list_groups_callback_with_groups(self, db_session):
@@ -249,15 +253,15 @@ class TestGroups:
 
         assert (
             set(principals_with_local_roles(child)) ==
-            set(['bob', 'group:bobsgroup', 'group:franksgroup'])
+            {'bob', 'group:bobsgroup', 'group:franksgroup'}
             )
         assert (
             set(principals_with_local_roles(child, inherit=False)) ==
-            set(['group:bobsgroup'])
+            {'group:bobsgroup'}
             )
         assert (
             set(principals_with_local_roles(root)) ==
-            set(['bob', 'group:franksgroup'])
+            {'bob', 'group:franksgroup'}
             )
 
     def test_copy_local_groups(self, db_session, root):
@@ -268,7 +272,7 @@ class TestGroups:
         child = root[u'child']
         assert (
             set(principals_with_local_roles(child)) ==
-            set(['bob', 'group:bobsgroup', 'group:franksgroup'])
+            {'bob', 'group:bobsgroup', 'group:franksgroup'}
             )
 
         # We make a copy of 'child', and we expect the local roles set
@@ -277,7 +281,7 @@ class TestGroups:
         db_session.flush()
         assert (
             set(principals_with_local_roles(child2)) ==
-            set([u'bob', u'group:franksgroup']))
+            {u'bob', u'group:franksgroup'})
         assert len(principals_with_local_roles(child)) == 3
 
         # When we now change the local roles of 'child', the copy is
@@ -310,8 +314,8 @@ class TestGroups:
         assert len(value) == 2
         bob, (bob_all, bob_inherited) = value[0]
         bobsgroup, (bobsgroup_all, bobsgroup_inherited) = value[1]
-        assert (set(bob_all) == set(['group:bobsgroup', 'role:editor']))
-        assert (set(bob_inherited) == set(['group:bobsgroup', 'role:editor']))
+        assert (set(bob_all) == {'group:bobsgroup', 'role:editor'})
+        assert (set(bob_inherited) == {'group:bobsgroup', 'role:editor'})
         assert bobsgroup_all == ['role:editor']
         assert bobsgroup_inherited == []
 
@@ -376,7 +380,7 @@ class TestPrincipals:
         self.make_bob()
         users = self.get_principals()
         self._assert_is_bob(users[u'bob'])
-        assert set(users.keys()) == set([u'admin', u'bob'])
+        assert set(users.keys()) == {u'admin', u'bob'}
 
         del users['bob']
         with raises(KeyError):
@@ -419,9 +423,9 @@ class TestPrincipals:
         set_groups('role:editor', child, ['group:foogroup'])
 
         assert (set(list_groups('bob', root)) ==
-                set(['group:bobsgroup', 'role:editor']))
+                {'group:bobsgroup', 'role:editor'})
         assert (set(list_groups('bob', child)) ==
-                set(['group:bobsgroup', 'role:editor', 'group:foogroup']))
+                {'group:bobsgroup', 'role:editor', 'group:foogroup'})
 
     def test_is_user(self, db_session):
         from kotti.security import is_user
@@ -621,7 +625,7 @@ class TestHasPermission:
             args.append((permission, context))
             assert self.environ['authz_context'] == context
 
-        with patch('kotti.request.BaseRequest.has_permission',
+        with patch('kotti.request.pyramid.request.Request.has_permission',
                    new=has_permission_fake):
             request = Request.blank('/')
             request.has_permission(permission, context)

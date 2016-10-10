@@ -9,7 +9,6 @@ from pyramid.view import view_config
 from kotti.interfaces import INavigationRoot
 from kotti.interfaces import INode
 from kotti.resources import get_root
-from kotti.security import has_permission
 from kotti.views.util import nodes_tree
 
 
@@ -39,7 +38,7 @@ def local_navigation(context, request):
     def ch(node):
         return [child for child in node.values()
                 if child.in_navigation and
-                has_permission('view', child, request)]
+                request.has_permission('view', child)]
 
     parent = context
     children = ch(context)
@@ -53,6 +52,12 @@ def local_navigation(context, request):
 
 
 def includeme_local_navigation(config):
+    """ Pyramid includeme hook.
+
+    :param config: app config
+    :type config: :class:`pyramid.config.Configurator`
+    """
+
     # Import is needed in function scope to resolve circular imports caused by
     # compatibility imports in slots.py.
     from kotti.views.slots import assign_slot
@@ -61,4 +66,10 @@ def includeme_local_navigation(config):
 
 
 def includeme(config):
+    """ Pyramid includeme hook.
+
+    :param config: app config
+    :type config: :class:`pyramid.config.Configurator`
+    """
+
     config.scan(__name__)

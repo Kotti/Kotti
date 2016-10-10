@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import hashlib
 import urllib
 from collections import defaultdict
@@ -18,7 +19,6 @@ from pyramid.settings import asbool
 from sqlalchemy import and_
 from sqlalchemy import not_
 from sqlalchemy import or_
-from zope.deprecation.deprecation import deprecate
 from zope.deprecation import deprecated
 
 from kotti import DBSession
@@ -27,10 +27,10 @@ from kotti.events import objectevent_listeners
 from kotti.interfaces import INavigationRoot
 from kotti.resources import Content
 from kotti.resources import Document
+from kotti.resources import get_root
 from kotti.resources import Tag
 from kotti.resources import TagsToContents
 from kotti.sanitizers import sanitize
-from kotti.security import has_permission
 from kotti.security import view_permitted
 from kotti.util import render_view
 from kotti.util import TemplateStructure
@@ -81,11 +81,11 @@ def add_renderer_globals(event):
         event['api'] = api
 
 
-@deprecate("'is_root' is deprecated as of Kotti 1.0.0. "
-           "Use the 'root_only=True' if you were using this as a "
-           "'custom_predicates' predicate.")
 def is_root(context, request):
     return context is request.root
+deprecated('is_root', "'is_root' is deprecated as of Kotti 1.0.0. "
+           "Use the 'root_only=True' if you were using this as a "
+           "'custom_predicates' predicate.")
 
 
 class Slots(object):
@@ -93,12 +93,12 @@ class Slots(object):
         self.context = context
         self.request = request
 
-    def __getattr__(self, name):
+    def __getattr__(self, key):
         for event_type in slot_events:
-            if event_type.name == name:
+            if event_type.name == key:
                 break
         else:
-            raise AttributeError(name)
+            raise AttributeError(key)
         value = []
         event = event_type(self.context, self.request)
         for snippet in objectevent_listeners(event):
@@ -107,7 +107,7 @@ class Slots(object):
                     value.extend(snippet)
                 else:
                     value.append(snippet)
-        setattr(self, name, value)
+        setattr(self, key, value)
         return value
 
 
@@ -139,7 +139,8 @@ class TemplateAPI(object):
         self.slots = Slots(context, request)
         self.__dict__.update(kwargs)
 
-    def is_location(self, context):
+    @staticmethod
+    def is_location(context):
         """Does `context` implement :class:`pyramid.interfaces.ILocation`?
 
         :param context: The context.
@@ -218,7 +219,11 @@ class TemplateAPI(object):
         :result: The root object of the site.
         :rtype: :class:`kotti.resources.Node`
         """
-        return self.lineage[-1]
+
+        if ILocation.providedBy(self.context):
+            return self.lineage[-1]
+        else:
+            return get_root()
 
     @reify
     def navigation_root(self):
@@ -265,7 +270,7 @@ class TemplateAPI(object):
         context is passed to ``has_permission``."""
         if context is None:
             context = self.context
-        return has_permission(permission, context, self.request)
+        return self.request.has_permission(permission, context)
 
     def render_view(self, name='', context=None, request=None, secure=True,
                     bare=True):
@@ -292,7 +297,7 @@ class TemplateAPI(object):
         if hasattr(context, 'values'):
             for child in context.values():
                 if (not permission or
-                        has_permission(permission, child, self.request)):
+                        self.request.has_permission(permission, child)):
                     children.append(child)
         return children
 
@@ -314,28 +319,29 @@ class TemplateAPI(object):
     def locale_name(self):
         return get_locale_name(self.request)
 
-    def format_date(self, d, format=None):
-        if format is None:
-            format = self.S['kotti.date_format']
-        return format_date(d, format=format, locale=self.locale_name)
+    def format_date(self, d, fmt=None):
+        if fmt is None:
+            fmt = self.S['kotti.date_format']
+        return format_date(d, format=fmt, locale=self.locale_name)
 
-    def format_datetime(self, dt, format=None):
-        if format is None:
-            format = self.S['kotti.datetime_format']
+    def format_datetime(self, dt, fmt=None):
+        if fmt is None:
+            fmt = self.S['kotti.datetime_format']
         if not isinstance(dt, datetime):
             dt = datetime.fromtimestamp(dt)
-        return format_datetime(dt, format=format, locale=self.locale_name)
+        return format_datetime(dt, format=fmt, locale=self.locale_name)
 
-    def format_time(self, t, format=None):
-        if format is None:
-            format = self.S['kotti.time_format']
-        return format_time(t, format=format, locale=self.locale_name)
+    def format_time(self, t, fmt=None):
+        if fmt is None:
+            fmt = self.S['kotti.time_format']
+        return format_time(t, format=fmt, locale=self.locale_name)
 
-    def format_currency(self, n, currency, format=None):
+    def format_currency(self, n, currency, fmt=None):
         return format_currency(n, currency,
-                               format=format, locale=self.locale_name)
+                               format=fmt, locale=self.locale_name)
 
-    def get_type(self, name):
+    @staticmethod
+    def get_type(name):
         for class_ in get_settings()['kotti.available_types']:
             if class_.type_info.name == name:
                 return class_
@@ -360,7 +366,8 @@ class TemplateAPI(object):
         return [l for l in CONTROL_PANEL_LINKS
                 if l.visible(self.root, self.request)]
 
-    def sanitize(self, html, sanitizer='default'):
+    @staticmethod
+    def sanitize(html, sanitizer='default'):
         """ Convenience wrapper for :func:`kotti.sanitizers.sanitize`.
 
         :param html: HTML to be sanitized
@@ -401,10 +408,11 @@ class NodesTree(object):
                 self._permission,
             )
             for child in self._item_to_children[self.id]
-            if has_permission(self._permission, child, self._request)
+            if self._request.has_permission(self._permission, child)
         ]
 
     def _flatten(self, item):
+        # noinspection PyProtectedMember
         yield item._node
         for ch in item.children:
             for item in self._flatten(ch):
@@ -413,8 +421,8 @@ class NodesTree(object):
     def tolist(self):
         return list(self._flatten(self))
 
-    def __getattr__(self, name):
-        return getattr(self._node, name)
+    def __getattr__(self, key):
+        return getattr(self._node, key)
 
 
 def nodes_tree(request, context=None, permission='view'):
@@ -422,7 +430,7 @@ def nodes_tree(request, context=None, permission='view'):
     item_to_children = defaultdict(lambda: [])
     for node in DBSession.query(Content).with_polymorphic(Content):
         item_mapping[node.id] = node
-        if has_permission(permission, node, request):
+        if request.has_permission(permission, node):
             item_to_children[node.parent_id].append(node)
 
     for children in item_to_children.values():
@@ -448,6 +456,7 @@ def search_content(search_term, request=None):
 
 def default_search_content(search_term, request=None):
 
+    # noinspection PyUnresolvedReferences
     searchstring = u'%{0}%'.format(search_term)
 
     # generic_filter can be applied to all Node (and subclassed) objects
@@ -472,7 +481,7 @@ def default_search_content(search_term, request=None):
     result_dicts = []
 
     for result in results:
-        if has_permission('view', result, request):
+        if request.has_permission('view', result):
             result_dicts.append(dict(
                 name=result.name,
                 title=result.title,
@@ -493,7 +502,7 @@ def search_content_for_tags(tags, request=None):
     result_dicts = []
 
     for result in content_with_tags(tags):
-        if has_permission('view', result, request):
+        if request.has_permission('view', result):
             result_dicts.append(dict(
                 name=result.name,
                 title=result.title,

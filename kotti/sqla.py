@@ -10,9 +10,13 @@ Inheritance Diagram
 from pyramid.compat import json
 from pyramid.security import ALL_PERMISSIONS
 from pyramid.security import Allow
-from sqlalchemy.types import TypeDecorator, TEXT
-from sqlalchemy.ext.mutable import Mutable
+from sqlalchemy.ext import baked
 from sqlalchemy.ext.declarative import declared_attr
+from sqlalchemy.ext.mutable import Mutable
+from sqlalchemy.types import TypeDecorator, Text
+
+bakery = baked.bakery()
+baked.bake_lazy_loaders()
 
 
 def dump_default(obj):
@@ -34,14 +38,18 @@ def no_autoflush(func):
 class JsonType(TypeDecorator):
     """http://www.sqlalchemy.org/docs/core/types.html#marshal-json-strings
     """
-    impl = TEXT
+    impl = Text
 
-    def process_bind_param(self, value, dialect):
+    # noinspection PyMethodOverriding
+    @staticmethod
+    def process_bind_param(value, dialect):
         if value is not None:
             value = json.dumps(value, default=dump_default)
         return value
 
-    def process_result_value(self, value, dialect):
+    # noinspection PyMethodOverriding
+    @staticmethod
+    def process_result_value(value, dialect):
         if value is not None:
             value = json.loads(value)
         return value

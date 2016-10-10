@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 Populate contains two functions that are called on application startup
 (if you haven't modified kotti.populators).
@@ -5,6 +6,7 @@ Populate contains two functions that are called on application startup
 
 from pyramid.i18n import LocalizerRequestMixin
 from pyramid.threadlocal import get_current_registry
+from six import iteritems
 
 from kotti import get_settings
 from kotti.resources import DBSession
@@ -44,12 +46,12 @@ def populate():
 
     if DBSession.query(Node.id).count() == 0:
         localized_root_attrs = dict(
-            [(k, localizer.translate(v)) for k, v in _ROOT_ATTRS.iteritems()])
+            [(k, localizer.translate(v)) for k, v in iteritems(_ROOT_ATTRS)])
         root = Document(**localized_root_attrs)
         root.__acl__ = SITE_ACL
         DBSession.add(root)
         localized_about_attrs = dict(
-            [(k, localizer.translate(v)) for k, v in _ABOUT_ATTRS.iteritems()])
+            [(k, localizer.translate(v)) for k, v in iteritems(_ABOUT_ATTRS)])
         root['about'] = Document(**localized_about_attrs)
 
         wf = get_workflow(root)
@@ -84,7 +86,7 @@ _ROOT_ATTRS = dict(
         </p>
         <p>
             <a class="btn btn-info"
-               href="http://kotti.readthedocs.org/en/latest/developing/basic/configuration.html">
+               href="https://kotti.readthedocs.io/en/latest/developing/basic/configuration.html">
                Configuration manual
             </a>
         </p>
@@ -111,7 +113,7 @@ _ROOT_ATTRS = dict(
         </p>
         <p>
             <a class="btn btn-info"
-               href="http://kotti.readthedocs.org/en/latest/">
+               href="https://kotti.readthedocs.io/en/latest/">
                Documentation
             </a>
         </p>

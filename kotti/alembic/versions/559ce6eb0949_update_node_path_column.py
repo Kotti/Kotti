@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """Update Node.path column
 
 Revision ID: 559ce6eb0949

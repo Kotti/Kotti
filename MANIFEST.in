@@ -1,7 +1,27 @@
-recursive-include kotti/alembic *
-recursive-include kotti/locale *
-recursive-include kotti/scaffolds *
-recursive-include kotti/static *
-recursive-include kotti/templates *
-recursive-include kotti/tests *
-recursive-include kotti *.zcml
+include *.rst
+include *.txt
+include Dockerfile
+include app.ini
+include development.ini
+include pytest.ini
+include tox.ini
+include .coveragerc
+
+exclude .checkignore
+exclude Makefile
+exclude i18n.sh
+recursive-exclude * *.pyc
+recursive-exclude * __pycache__
+recursive-exclude * ._DS_Store
+recursive-exclude website *
+
+recursive-include kotti *
+
+include docs/Makefile
+include docs/_static/README
+recursive-include docs *.rst
+recursive-include docs *.py
+recursive-include docs *.svg
+recursive-include docs *.txt
+prune docs/_build
+
