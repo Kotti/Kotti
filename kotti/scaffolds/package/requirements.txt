@@ -1,3 +1,12 @@
--e git://github.com/Kotti/Kotti.git#egg=Kotti
+# ``master`` is where development happens:
+# -e git://github.com/Kotti/Kotti.git#egg=kotti
 
-# -r https://raw.githubusercontent.com/Kotti/Kotti/testing/requirements.txt
+# ``testing`` is *always* the latest non final release (alpha, beta, etc.):
+# -e git://github.com/Kotti/Kotti.git@testing#egg=kotti
+
+# ``production`` is *always* the latest final release:
+# -e git://github.com/Kotti/Kotti.git@production#egg=kotti
+
+# You can also install a specific version with its pinned requirements:
+# -r https://raw.githubusercontent.com/Kotti/Kotti/1.3.0-alpha.4/requirements.txt
+# Kotti == 1.3.0-alpha.4

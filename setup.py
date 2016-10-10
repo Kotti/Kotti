@@ -55,6 +55,7 @@ install_requires = [
     'usersettings',
     'waitress',
     'zope.deprecation',
+    'zope.interface',
     'zope.sqlalchemy',
     ]
 
@@ -63,17 +64,20 @@ tests_require = [
     'mock',
     'py>=1.4.29',
     'pyquery',
-    'pyramid_debugtoolbar',
     'pytest>=3.0.0',
     'pytest-cov',
     'pytest-pep8!=1.0.3',
     'pytest-travis-fold',
+    'pytest-virtualenv',
+    'pytest-warnings',
     'pytest-xdist',
     'virtualenv',  # needed for scaffolding tests
     'zope.testbrowser>=5.0.0',
     ]
 
-development_requires = []
+development_requires = [
+    'pyramid_debugtoolbar',
+]
 
 docs_require = [
     'Sphinx',
