@@ -33,7 +33,9 @@ def includeme(config):
 
 # DEPRECATED
 
+# noinspection PyPep8
 from zope.deprecation.deprecation import deprecated
+# noinspection PyPep8
 from kotti.filedepot import StoredFileResponse
 
 

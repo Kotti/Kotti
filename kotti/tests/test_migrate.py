@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from alembic.migration import MigrationContext
 from mock import patch
 

@@ -26,6 +26,7 @@ from kotti import get_settings
 from kotti.message import email_set_password
 from kotti.message import validate_token
 from kotti.security import get_principals
+# noinspection PyProtectedMember
 from kotti.util import _
 from kotti.views.util import template_api
 from kotti.views.users import deferred_email_validator
@@ -42,6 +43,7 @@ def _find_user(login):
     if principal is not None:
         return principal
     else:
+        # noinspection PyBroadException
         try:
             Email().to_python(login)
         except Exception:
@@ -85,7 +87,7 @@ def register(context, request):
     if 'register' in request.POST:
         try:
             appstruct = form.validate(request.POST.items())
-        except ValidationFailure, e:
+        except ValidationFailure as e:
             request.session.flash(_(u"There was an error."), 'error')
             rendered_form = e.render()
         else:
@@ -100,7 +102,7 @@ def register(context, request):
 
             register_roles = settings['kotti.register.role']
             if register_roles:
-                appstruct['roles'] = set(['role:' + register_roles])
+                appstruct['roles'] = {'role:' + register_roles}
 
             appstruct['send_email'] = True
             form = UserAddFormView(context, request)
@@ -283,6 +285,12 @@ def set_password(context, request,
     """ Set password view.  Displays the set password form and handles its form
     submission.
 
+    :param context: Current context
+    :type context: :class:`kotti.resources.Content`
+
+    :param request: Current request
+    :type request: :class:`kotti.request.Request`
+
     :param success_msg: Message to display on successful submission handling
     :type success_msg: str or TranslationString
 
@@ -298,7 +306,7 @@ def set_password(context, request,
     if 'submit' in request.POST:
         try:
             appstruct = form.validate(request.POST.items())
-        except ValidationFailure, e:
+        except ValidationFailure as e:
             rendered_form = e.render()
         else:
             token = appstruct['token']

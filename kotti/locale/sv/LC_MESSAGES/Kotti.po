@@ -1,0 +1,957 @@
+#
+# Swedish translations for PACKAGE package
+# This file is distributed under the same license as the PACKAGE package.
+# Anders Nylund <stokkheim@gmail.com>, 2016.
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE 1.0\n"
+"POT-Creation-Date: 2016-10-10 14:53+0200\n"
+"PO-Revision-Date: 2016-10-05 21:34+0300\n"
+"Last-Translator: Anders Nylund <stokkheim@gmail.com>\n"
+"Language-Team: Swedish\n"
+"Language: sv\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Lingua 4.7\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: kotti/populate.py:66
+msgid "Welcome to Kotti"
+msgstr "Välkommen till Kotti"
+
+#: kotti/populate.py:67
+msgid "Congratulations! You have successfully installed Kotti."
+msgstr "Gratulerar! Du har nu installerat Kotti."
+
+#: kotti/populate.py:68
+#, fuzzy, c-format
+msgid ""
+"\n"
+"<h2>Log in</h2>\n"
+"<p>\n"
+"    You can <a class=\"btn btn-success\" href=\"login\">log in</a> to your site\n"
+"    and start changing its contents.  If you haven't chosen a password for\n"
+"    your admin account yet, it'll likely be <em>qwerty</em>.\n"
+"</p>\n"
+"<p>\n"
+"    Once you're logged in, you'll see the grey editor bar below the top\n"
+"    navigation bar.  It will allow you to switch between editing and viewing the\n"
+"    current page as it will appear to your visitors.\n"
+"</p>\n"
+"<div class=\"row\">\n"
+"    <div class=\"col-md-4\">\n"
+"        <h2>Configure</h2>\n"
+"        <p>\n"
+"            Find out how to configure your Kotti's title and many other\n"
+"            settings using a simple text file in your file system.\n"
+"        </p>\n"
+"        <p>\n"
+"            <a class=\"btn btn-info\"\n"
+"               href=\"https://kotti.readthedocs.io/en/latest/developing/basic/configuration.html\">\n"
+"               Configuration manual\n"
+"            </a>\n"
+"        </p>\n"
+"    </div>\n"
+"    <div class=\"col-md-4\">\n"
+"        <h2>Add-ons</h2>\n"
+"        <p>\n"
+"            A number of add-ons allow you to extend the functionality of your\n"
+"            Kotti site.\n"
+"        </p>\n"
+"        <p>\n"
+"            <a class=\"btn btn-info\"\n"
+"               href=\"http://pypi.python.org/pypi?%3Aaction=search&amp;term=kotti\">\n"
+"                Kotti add-ons\n"
+"            </a>\n"
+"        </p>\n"
+"    </div>\n"
+"    <div class=\"col-md-4\">\n"
+"        <h2>Documentation</h2>\n"
+"        <p>\n"
+"            Wonder what more you can do with Kotti?\n"
+"            What license it has?\n"
+"            Read the manual for more information.\n"
+"        </p>\n"
+"        <p>\n"
+"            <a class=\"btn btn-info\"\n"
+"               href=\"https://kotti.readthedocs.io/en/latest/\">\n"
+"               Documentation\n"
+"            </a>\n"
+"        </p>\n"
+"    </div>\n"
+"</div>\n"
+msgstr ""
+"\n"
+"<h2>Logga in</h2>\n"
+"<p>\n"
+"    Du kan <a class=\"btn btn-success\" href=\"login\">logga in</a> till din site\n"
+"    och börja ändra dess innehåll.  Om du inte har valt ett lösenord för\n"
+"    ditt administratorkonto, så är det sannolikt <em>qwerty</em>.\n"
+"</p>\n"
+"<p>\n"
+"    Så fort du har loggat in kommer du att se en grå administrationsbalk \n"
+"    under toppen. Med hjälp av den kan du redigera siten eller\n"
+"    titta på den som den kommer att se ut för dina besökare.\n"
+"</p>\n"
+"<div class=\"row\">\n"
+"    <div class=\"col-md-4\">\n"
+"        <h2>Konfigurering</h2>\n"
+"        <p>\n"
+"            Lär dig hur du ställer in din sites rubrik och många andra \n"
+"            inställningar genom att redigera en enkel textfil i ditt filsystem.\n"
+"        </p>\n"
+"        <p>\n"
+"            <a class=\"btn btn-info\"\n"
+"               href=\"http://kotti.readthedocs.org/en/latest/developing/basic/configuration.html\">\n"
+"               Konfigurationsmanual\n"
+"            </a>\n"
+"        </p>\n"
+"    </div>\n"
+"    <div class=\"col-md-4\">\n"
+"        <h2>Tillägg</h2>\n"
+"        <p>\n"
+"            Ett antal tillägg som du kan använda för att utöka funktionen i din\n"
+"            Kotti site.\n"
+"        </p>\n"
+"        <p>\n"
+"            <a class=\"btn btn-info\"\n"
+"               href=\"http://pypi.python.org/pypi?%3Aaction=search&amp;term=kotti\">\n"
+"                Kotti tillägg\n"
+"            </a>\n"
+"        </p>\n"
+"    </div>\n"
+"    <div class=\"col-md-4\">\n"
+"        <h2>Dokumentation</h2>\n"
+"        <p>\n"
+"            Undrar du vad mer du kan göra med Kotti?\n"
+"            Vilken licens har den?\n"
+"            Läs manualen för mer information.\n"
+"        </p>\n"
+"        <p>\n"
+"            <a class=\"btn btn-info\"\n"
+"               href=\"http://kotti.readthedocs.org/en/latest/\">\n"
+"               Dokumentation\n"
+"            </a>\n"
+"        </p>\n"
+"    </div>\n"
+"</div>\n"
+
+#: kotti/populate.py:125
+msgid "About"
+msgstr "Om"
+
+#: kotti/populate.py:126
+msgid "Our company is the leading manufacturer of foo widgets used in a wide variety of aviation and and industrial products."
+msgstr "Vårt företag är den ledande tillverkaren av foo grunkor som används i en mängd olika tillämpningar inom flyg och industri."
+
+#: kotti/populate.py:127
+msgid ""
+"\n"
+"<p>\n"
+"  <img alt=\"five colorful Extra EA300 airplanes flying in formation\"\n"
+"   src=\"http://upload.wikimedia.org/wikipedia/commons/thumb/5/5d/Northern_Lights_Formation.jpg/640px-Northern_Lights_Formation.jpg\"\n"
+"   width=\"640\" height=\"376\" />\n"
+"</p>\n"
+"\n"
+"<p>\n"
+"   Our worldwide headquarters:\n"
+"</p>\n"
+"\n"
+"<address>\n"
+"  Foo World<br />\n"
+"  123 Nowhere Street, Suite 777<br />\n"
+"  Omak, WA   98841   USA<br />\n"
+"  +1-509-555-0100<br />\n"
+"  widgets@foowrld.example.com\n"
+"</address>\n"
+"\n"
+"<p><small style=\"font-size: smaller\">\n"
+"<em>Photo credit:</em> \"Northern Lights Formation\" by FlugKerl2.\n"
+"<a href=\"http://commons.wikimedia.org/wiki/File:Northern_Lights_Formation.jpg\">\n"
+"Copyright info</a>.\n"
+"Originally published in the\n"
+"<a href=\"http://en.wikipedia.org/wiki/Extra_EA-300\"> Extra EA-300</a>\n"
+"article.\n"
+"</small></p>\n"
+msgstr ""
+"\n"
+"<p>\n"
+"  <img alt=\"fem färggranna Extra EA300 flygplan flyger i formation\"\n"
+"   src=\"http://upload.wikimedia.org/wikipedia/commons/thumb/5/5d/Northern_Lights_Formation.jpg/640px-Northern_Lights_Formation.jpg\"\n"
+"   width=\"640\" height=\"376\" />\n"
+"</p>\n"
+"\n"
+"<p>\n"
+"   Vårt globala högkvarter:\n"
+"</p>\n"
+"\n"
+"<address>\n"
+"  Foo World<br />\n"
+"  123 Nowhere Street, Suite 777<br />\n"
+"  Omak, WA   98841   USA<br />\n"
+"  +1-509-555-0100<br />\n"
+"  grunkor@foowrld.example.com\n"
+"</address>\n"
+"\n"
+"<p><small style=\"font-size: smaller\">\n"
+"<em>Photo credit:</em> \"Northern Lights Formation\" by FlugKerl2.\n"
+"<a href=\"http://commons.wikimedia.org/wiki/File:Northern_Lights_Formation.jpg\">\n"
+"Copyright info</a>.\n"
+"Originally published in the\n"
+"<a href=\"http://en.wikipedia.org/wiki/Extra_EA-300\"> Extra EA-300</a>\n"
+"article.\n"
+"</small></p>\n"
+
+#: kotti/resources.py:520 kotti/views/edit/actions.py:457
+msgid "Copy"
+msgstr "Kopiera"
+
+#: kotti/resources.py:521 kotti/views/edit/actions.py:458
+msgid "Cut"
+msgstr "Klipp ut"
+
+#: kotti/resources.py:522 kotti/views/edit/actions.py:454
+msgid "Paste"
+msgstr "Klistra in"
+
+#: kotti/resources.py:523 kotti/templates/edit/rename-nodes.pt:8
+#: kotti/templates/edit/rename-nodes.pt:42 kotti/templates/edit/rename.pt:31
+#: kotti/views/edit/actions.py:459
+msgid "Rename"
+msgstr "Döp om"
+
+#: kotti/resources.py:524 kotti/templates/edit/delete-nodes.pt:9
+#: kotti/templates/edit/delete-nodes.pt:49 kotti/templates/edit/delete.pt:24
+#: kotti/templates/site-setup/delete-user.pt:24 kotti/views/users.py:455
+#: kotti/views/edit/actions.py:461
+msgid "Delete"
+msgstr "Radera"
+
+#: kotti/resources.py:535 kotti/templates/view/folder.pt:15
+msgid "Contents"
+msgstr "Innehåll"
+
+#: kotti/resources.py:536 kotti/templates/edit/nav-tree.pt:10
+msgid "Edit"
+msgstr "Redigera"
+
+#: kotti/resources.py:537
+msgid "Share"
+msgstr "Dela"
+
+#: kotti/resources.py:538 kotti/templates/actions-dropdown.pt:3
+msgid "Actions"
+msgstr "Handlingar"
+
+#: kotti/resources.py:541
+msgid "Folder view"
+msgstr "Mapp vy"
+
+#: kotti/resources.py:650 kotti/views/edit/content.py:90
+msgid "Document"
+msgstr "Dokument"
+
+#: kotti/resources.py:785 kotti/views/edit/content.py:70
+#: kotti/views/edit/content.py:118
+msgid "File"
+msgstr "Fil"
+
+#: kotti/security.py:194
+msgid "Viewer"
+msgstr "Läsare"
+
+#: kotti/security.py:195
+msgid "Editor"
+msgstr "Redaktör"
+
+#: kotti/security.py:196
+msgid "Owner"
+msgstr "Ägare"
+
+#: kotti/security.py:197
+msgid "Admin"
+msgstr "Administratör"
+
+#: kotti/templates/add-dropdown.pt:3
+msgid "Add"
+msgstr "Lägg till"
+
+#: kotti/templates/add-dropdown.pt:13
+msgid "Upload Content"
+msgstr "Ladda upp innehåll"
+
+#: kotti/templates/default-view-selector.pt:3
+msgid "Set default view"
+msgstr "Sätt standardvy"
+
+#: kotti/templates/editor-bar.pt:21
+msgid "View"
+msgstr "Visa"
+
+#: kotti/templates/editor-bar.pt:44
+msgid "Navigate"
+msgstr "Navigera"
+
+#: kotti/templates/editor-bar.pt:55
+msgid "Preferences"
+msgstr "Preferenser"
+
+#: kotti/templates/editor-bar.pt:60
+msgid "Site Setup"
+msgstr "Site inställningar"
+
+#: kotti/templates/editor-bar.pt:71
+msgid "Logout"
+msgstr "Logga ut"
+
+#: kotti/templates/email-reset-password.pt:2
+msgid "Reset your password for ${site_title}."
+msgstr "Återställ ditt lösenord för ${site_title}."
+
+#: kotti/templates/email-reset-password.pt:4
+#: kotti/templates/email-set-password.pt:4
+msgid "Hello, ${user_title}!"
+msgstr "Hej, ${user_title}!"
+
+#: kotti/templates/email-reset-password.pt:5
+msgid "Click this link to reset your password at ${site_title}: ${url}"
+msgstr "Klicka den här länken för att återställa ditt lösenord för ${site_title}: ${url}"
+
+#: kotti/templates/email-set-password.pt:2
+msgid "Your registration for ${site_title}"
+msgstr "Din registrering för ${site_title}"
+
+#: kotti/templates/email-set-password.pt:5
+msgid "You are joining ${site_title}."
+msgstr "Du ansluter dig till ${site_title}."
+
+#: kotti/templates/email-set-password.pt:6
+msgid "Click here to set your password and log in: ${url}"
+msgstr "Klicka här för att ställa in ditt lösenord och logga in: ${url}"
+
+#: kotti/templates/forbidden.pt:10
+msgid "Forbidden"
+msgstr "Förbjudet"
+
+#: kotti/templates/login.pt:16
+msgid "Login"
+msgstr "Inloggning"
+
+#: kotti/templates/login.pt:21 kotti/templates/login.pt:59
+msgid "Username or email"
+msgstr "Användarnamn eller epost"
+
+#: kotti/templates/login.pt:26 kotti/views/login.py:259
+#: kotti/views/users.py:221
+msgid "Password"
+msgstr "Lösenord"
+
+#: kotti/templates/login.pt:34
+msgid "Log in"
+msgstr "Logga in"
+
+#: kotti/templates/login.pt:45
+msgid "Forgot your password?"
+msgstr "Har du glömt ditt lösenord?"
+
+#. Used in sentence: "Fill out your username or email and click
+#. ${reset_password} below to receive an email with a link to reset your
+#. password."
+#.
+#: kotti/templates/login.pt:52 kotti/templates/login.pt:67
+msgid "Reset password"
+msgstr "Återställ lösenord"
+
+#. Canonical text for ${reset_password} is: "Reset password"
+#: kotti/templates/login.pt:50
+msgid "Fill out your username or email and click ${reset_password} below to receive an email with a link to reset your password."
+msgstr "Fyll i ditt användarnamn och din epostadress och klicka ${reset_password} nedanom för att få ett epostmeddelande med en länk för att återställa ditt lösenord."
+
+#: kotti/templates/login.pt:78
+msgid "Not registered yet?"
+msgstr "Inte ännu registrerad?"
+
+#: kotti/templates/login.pt:85
+msgid "Register for an account on this site."
+msgstr "Registrera ett konto på den här siten"
+
+#: kotti/templates/workflow-dropdown.pt:14
+msgid "Make ${state}"
+msgstr "Gör ${state}"
+
+#: kotti/templates/edit/breadcrumbs.pt:8
+msgid "You are here:"
+msgstr "Du är här:"
+
+#: kotti/templates/edit/change-state.pt:8
+msgid "Change workflow state"
+msgstr "Ändra 'workflow' inställning"
+
+#: kotti/templates/edit/change-state.pt:12
+msgid "An item's workflow state determines who can see, edit and/or manage it."
+msgstr "Ett dokuments 'workflow' inställning bestämmer vem som kan se, redigera och/eller hantera det."
+
+#: kotti/templates/edit/change-state.pt:18 kotti/templates/edit/contents.pt:34
+#: kotti/templates/edit/delete-nodes.pt:21 kotti/templates/view/folder.pt:20
+#: kotti/views/users.py:205 kotti/views/edit/content.py:35
+msgid "Title"
+msgstr "Titel"
+
+#: kotti/templates/edit/change-state.pt:19 kotti/templates/edit/contents.pt:35
+#: kotti/templates/edit/delete-nodes.pt:22 kotti/templates/edit/share.pt:49
+#: kotti/templates/edit/upload.pt:18 kotti/templates/edit/upload.pt:108
+#: kotti/templates/site-setup/users.pt:69 kotti/templates/view/folder.pt:21
+msgid "Type"
+msgstr "Typ"
+
+#: kotti/templates/edit/change-state.pt:20 kotti/templates/edit/contents.pt:36
+#: kotti/templates/edit/delete-nodes.pt:23
+msgid "State"
+msgstr "Läge"
+
+#: kotti/templates/edit/change-state.pt:21 kotti/templates/edit/contents.pt:38
+#: kotti/templates/edit/delete-nodes.pt:24 kotti/templates/view/folder.pt:22
+msgid "Creation Date"
+msgstr "Skapat"
+
+#: kotti/templates/edit/change-state.pt:22 kotti/templates/edit/contents.pt:39
+#: kotti/templates/edit/delete-nodes.pt:25 kotti/templates/view/folder.pt:23
+msgid "Modification Date"
+msgstr "Ändrat"
+
+#: kotti/templates/edit/change-state.pt:28 kotti/templates/edit/contents.pt:45
+#: kotti/templates/edit/delete-nodes.pt:31
+msgid "Select item"
+msgstr "Välj dokument"
+
+#: kotti/templates/edit/change-state.pt:40
+#: kotti/templates/edit/change-state.pt:48
+msgid "Include children"
+msgstr "Inkludera underdokument"
+
+#: kotti/templates/edit/change-state.pt:41
+msgid "If checked, this will attempt to modify the status of all children in any selected documents and their subdocuments."
+msgstr "Det här kommer, om det är valt, att försöka rekursivt modifiera alla underdokument under valda dokument"
+
+#: kotti/templates/edit/change-state.pt:54
+msgid "Change state to"
+msgstr "Ändra läge till"
+
+#: kotti/templates/edit/change-state.pt:55
+msgid "Select the new state where all chosen items should be set."
+msgstr "Välj nytt läge för alla valda dokument"
+
+#: kotti/templates/edit/change-state.pt:60
+msgid "No change"
+msgstr "Ingen ändring"
+
+#: kotti/templates/edit/change-state.pt:72 kotti/templates/edit/share.pt:85
+#: kotti/templates/site-setup/users.pt:107
+msgid "Apply changes"
+msgstr "Ta ändringarna i bruk"
+
+#: kotti/templates/edit/change-state.pt:74
+#: kotti/templates/edit/delete-nodes.pt:44 kotti/templates/edit/delete.pt:19
+#: kotti/templates/edit/rename-nodes.pt:44 kotti/views/form.py:83
+#: kotti/views/users.py:325 kotti/views/users.py:360 kotti/views/users.py:454
+msgid "Cancel"
+msgstr "Avbryt"
+
+#: kotti/templates/edit/contents.pt:26
+msgid "No content items are contained here."
+msgstr "Här finns inga dokument"
+
+#: kotti/templates/edit/contents.pt:33
+msgid "Select / deselect all"
+msgstr "Välj / väl bort alla"
+
+#: kotti/templates/edit/contents.pt:37
+msgid "Visibility"
+msgstr "Synlighet"
+
+#: kotti/templates/edit/contents.pt:70
+msgid "Visible"
+msgstr "Synliga"
+
+#: kotti/templates/edit/contents.pt:74
+msgid "Hidden"
+msgstr "Dolda"
+
+#: kotti/templates/edit/delete-nodes.pt:13
+msgid "Are you sure you want to delete the following items?"
+msgstr "Är du säker på att du vill radera följande dokument?"
+
+#: kotti/templates/edit/delete.pt:9 kotti/templates/site-setup/delete-user.pt:9
+msgid "Delete ${title}"
+msgstr "Radera ${title}"
+
+#: kotti/templates/edit/delete.pt:13
+msgid "Are you sure you want to delete ${title}?"
+msgstr "Är du säker på att du vill radera ${title}?"
+
+#: kotti/templates/edit/nav-tree-view.pt:8
+msgid "Navigate Site"
+msgstr "Navigera siten"
+
+#: kotti/templates/edit/rename-nodes.pt:13 kotti/templates/edit/rename.pt:11
+msgid "Each content item has a name, which is used to create the url, and a title. Read the user manual about proper formatting of name and title if needed. You can change both below."
+msgstr "Varje dokument har ett namn som används för att skapa ett url och en titel. Läs vid behov om korrekt formattering av namn och titel i användarmanualen. Nedan kan du ändra bägge."
+
+#: kotti/templates/edit/rename-nodes.pt:26
+#: kotti/templates/edit/rename-nodes.pt:28 kotti/templates/edit/rename.pt:19
+msgid "New name"
+msgstr "Nytt namn"
+
+#: kotti/templates/edit/rename-nodes.pt:34
+#: kotti/templates/edit/rename-nodes.pt:36 kotti/templates/edit/rename.pt:25
+msgid "New title"
+msgstr "Ny rubrik"
+
+#: kotti/templates/edit/rename.pt:8
+msgid "Rename ${title}"
+msgstr "Döp om ${title}"
+
+#: kotti/templates/edit/share.pt:8
+msgid "Share ${title}"
+msgstr "Dela ${title}"
+
+#: kotti/templates/edit/share.pt:14 kotti/templates/edit/share.pt:20
+#: kotti/templates/edit/share.pt:27 kotti/templates/site-setup/users.pt:48
+msgid "Search users and groups"
+msgstr "Sök efter användare och grupper"
+
+#: kotti/templates/edit/share.pt:34 kotti/templates/site-setup/users.pt:56
+msgid "Search"
+msgstr "Sök"
+
+#: kotti/templates/edit/share.pt:44
+msgid "Assign local roles"
+msgstr "Tilldela lokala roller"
+
+#: kotti/templates/edit/share.pt:50 kotti/templates/site-setup/users.pt:70
+#: kotti/views/users.py:216
+msgid "Name"
+msgstr "Namn"
+
+#: kotti/templates/edit/share.pt:61 kotti/templates/site-setup/users.pt:81
+#: kotti/views/users.py:322 kotti/views/users.py:516 kotti/views/users.py:551
+msgid "User"
+msgstr "Användare"
+
+#: kotti/templates/edit/share.pt:62 kotti/templates/site-setup/users.pt:82
+#: kotti/views/users.py:197 kotti/views/users.py:357 kotti/views/users.py:516
+#: kotti/views/users.py:551
+msgid "Group"
+msgstr "Grupp"
+
+#: kotti/templates/edit/share.pt:65 kotti/templates/site-setup/users.pt:85
+msgid "Gravatar"
+msgstr "Gravatar"
+
+#: kotti/templates/edit/share.pt:70 kotti/templates/site-setup/users.pt:91
+msgid "Assign role"
+msgstr "Tilldela roll"
+
+#: kotti/templates/edit/upload.pt:10
+msgid "Upload content from local file(s)"
+msgstr "Ladda upp innehåll från lokal fil/filer"
+
+#: kotti/templates/edit/upload.pt:17 kotti/templates/edit/upload.pt:107
+msgid "Filename"
+msgstr "Filnamn"
+
+#: kotti/templates/edit/upload.pt:19 kotti/templates/edit/upload.pt:109
+msgid "Size"
+msgstr "Storlek"
+
+#: kotti/templates/edit/upload.pt:20
+msgid "Status"
+msgstr "Status"
+
+#: kotti/templates/edit/upload.pt:21
+msgid "Progress"
+msgstr "Framsteg"
+
+#: kotti/templates/edit/upload.pt:84
+msgid "Select file(s) to upload..."
+msgstr "Välj fil/filer för uppladdning"
+
+#: kotti/templates/edit/upload.pt:92
+msgid "Upload ${number} files."
+msgstr "Ladda upp ${number} filer."
+
+#: kotti/templates/edit/upload.pt:97
+msgid "Dismiss all errors"
+msgstr "Avfärda alla fel"
+
+#: kotti/templates/http-errors/notfound.pt:6
+msgid "Not Found"
+msgstr "Hittas ej"
+
+#: kotti/templates/http-errors/notfound.pt:7
+msgid "The resource could not be found"
+msgstr "Resursen kan ej hittas"
+
+#: kotti/templates/site-setup/delete-user.pt:15
+msgid "Are you sure you want to delete ${type} ${title}?"
+msgstr "Är du säker på att du vill radera ${type} ${title}?"
+
+#: kotti/templates/site-setup/user.pt:12
+msgid "Back to User Management"
+msgstr "Tillbaka till hantering av användare"
+
+#: kotti/templates/site-setup/user.pt:21 kotti/views/form.py:161
+#, python-format
+msgid "Edit ${title}"
+msgstr "Redigera ${title}"
+
+#: kotti/templates/site-setup/users.pt:12
+msgid "Search user(s) / group(s)"
+msgstr "Sök användare och grupp(er)"
+
+#: kotti/templates/site-setup/users.pt:17
+msgid "Add user"
+msgstr "Lägg till användare"
+
+#: kotti/templates/site-setup/users.pt:22
+msgid "Add group"
+msgstr "Lägg till grupp"
+
+#: kotti/templates/site-setup/users.pt:34
+msgid "Find users or groups"
+msgstr "Hitta användare eller grupper"
+
+#: kotti/templates/site-setup/users.pt:40
+msgid "User- / groupname"
+msgstr "Användare- /gruppnamn"
+
+#: kotti/templates/site-setup/users.pt:50
+msgid "Blank search text finds all."
+msgstr "Tom söktext matchar allt."
+
+#: kotti/templates/site-setup/users.pt:65
+msgid "Assign global roles"
+msgstr "Tilldela globala roller"
+
+#: kotti/templates/site-setup/users.pt:117
+msgid "Add new user"
+msgstr "Lägg till ny användare"
+
+#: kotti/templates/site-setup/users.pt:123
+msgid "Add new group"
+msgstr "Lägg till ny grupp"
+
+#: kotti/templates/view/search-results.pt:9
+msgid "Search Results"
+msgstr "Sökresultat"
+
+#: kotti/templates/view/search.pt:12
+msgid "Search..."
+msgstr "Sök..."
+
+#: kotti/templates/view/tags.pt:7
+msgid "Tagged with:"
+msgstr "Taggad med:"
+
+#: kotti/tests/testing_view.pt:11
+msgid "Welcome, ${user}! You are logged in."
+msgstr "Välkommern, ${user}!. Du är inloggad."
+
+#: kotti/tests/testing_view.pt:15
+msgid "Welcome, you are not logged in."
+msgstr "Välkommen, du är inte inloggad."
+
+#: kotti/views/form.py:82 kotti/views/users.py:453
+msgid "Save"
+msgstr "Spara"
+
+#: kotti/views/form.py:84 kotti/views/users.py:72
+#: kotti/views/edit/actions.py:375 kotti/views/edit/actions.py:419
+msgid "Your changes have been saved."
+msgstr "Dina ändringar har blivit sparade."
+
+#: kotti/views/form.py:179
+msgid "Item was added."
+msgstr "Dokumentet har lagts till."
+
+#: kotti/views/form.py:203
+#, python-format
+msgid "Add ${type} to ${title}."
+msgstr "Lägg till ${type} till ${title}."
+
+#: kotti/views/form.py:207
+#, python-format
+msgid "Add ${type}."
+msgstr "Lägg till ${type}."
+
+#: kotti/views/form.py:277
+#, python-format
+msgid "Maximum file size: ${size}MB"
+msgstr "Maximal filstorlek: ${size}MB"
+
+#: kotti/views/login.py:67 kotti/views/users.py:279
+msgid "Full name"
+msgstr "Fullständigt namn"
+
+#: kotti/views/login.py:70
+msgid "Username"
+msgstr "Användarnamn"
+
+#: kotti/views/login.py:75 kotti/views/login.py:271 kotti/views/users.py:208
+msgid "Email"
+msgstr "Epost"
+
+#: kotti/views/login.py:84
+msgid "Register"
+msgstr "Registrera"
+
+#: kotti/views/login.py:91
+msgid "There was an error."
+msgstr "Ett fel uppstod."
+
+#: kotti/views/login.py:110
+msgid "Congratulations! You are successfully registered. You should be receiving an email with a link to set your password. Doing so will activate your account."
+msgstr "Gratulerar! Du har registrerat dig. Du bör ha fått ett epostmeddelande med en länk för att ställa in ditt lösenord. Genom att göra det aktiverar du ditt konto-"
+
+#: kotti/views/login.py:125
+#, python-format
+msgid "Register - ${title}"
+msgstr "Registrara - ${title}"
+
+#: kotti/views/login.py:156
+#, python-format
+msgid "Welcome, ${user}!"
+msgstr "Välkommen, ${user}!"
+
+#: kotti/views/login.py:181
+msgid "You should be receiving an email with a link to reset your password. Doing so will activate your account."
+msgstr "Du bör ha fått ett epostmeddelande med en länk för att ställa in ditt lösenord. Genom att göra det aktiverar du ditt konto-"
+
+#: kotti/views/login.py:214
+msgid "Login failed."
+msgstr "Inloggningen misslyckades."
+
+#: kotti/views/login.py:224
+msgid "That username or email is not known by this system."
+msgstr "Användarnamnet eller epostadressen är inte bekanta för systemet."
+
+#: kotti/views/login.py:246
+msgid "You have been logged out."
+msgstr "Du har loggats ut."
+
+#: kotti/views/login.py:284
+msgid "You have reset your password."
+msgstr "Du har återställt ditt lösenord."
+
+#: kotti/views/login.py:303
+msgid "Set password"
+msgstr "Ställ in lösenord"
+
+#: kotti/views/login.py:331
+msgid "Your password reset token may have expired."
+msgstr "Lösenordsåterställningen kan vara föråldrad."
+
+#: kotti/views/login.py:338
+#, python-format
+msgid "Reset your password - ${title}."
+msgstr "Återställ ditt lösenord - ${title}."
+
+#: kotti/views/site_setup.py:8 kotti/views/users.py:389
+msgid "User Management"
+msgstr "Hantera användare"
+
+#: kotti/views/users.py:74 kotti/views/users.py:478
+#: kotti/views/edit/actions.py:313 kotti/views/edit/actions.py:379
+#: kotti/views/edit/actions.py:421 kotti/views/edit/actions.py:425
+msgid "No changes were made."
+msgstr "Inga ändringar har gjorts."
+
+#: kotti/views/users.py:107
+msgid "No users or groups were found."
+msgstr "Inga användare eller grupper hittades."
+
+#: kotti/views/users.py:154
+msgid "Invalid value"
+msgstr "Felaktigt värde"
+
+#: kotti/views/users.py:160
+msgid "A user with that name already exists."
+msgstr "En användare med det namnet finns redan."
+
+#: kotti/views/users.py:167
+msgid "A user with that email already exists."
+msgstr "En användare med den epostadressen finns redan."
+
+#: kotti/views/users.py:190
+#, python-format
+msgid "No such group: ${group}"
+msgstr "Ingen sådan grupp: ${group}"
+
+#: kotti/views/users.py:228
+msgid "Active"
+msgstr "Aktiv"
+
+#: kotti/views/users.py:229
+msgid "Untick this to deactivate the account."
+msgstr "Ta bort det här valet för att inaktivera kontot."
+
+#: kotti/views/users.py:235
+msgid "Global roles"
+msgstr "Globala roller"
+
+#: kotti/views/users.py:239
+msgid "Groups"
+msgstr "Grupper"
+
+#: kotti/views/users.py:276
+msgid "Leave this empty and tick the 'Send password registration' box below to have the user set their own password."
+msgstr "Lämna det här tomt och välj 'Sänd länk för lösenordsregistrering' nedan för att låta användaren själv välja lösenord."
+
+#: kotti/views/users.py:324
+msgid "Add User"
+msgstr "Lägg till användare"
+
+#: kotti/views/users.py:334
+msgid "Send password registration link."
+msgstr "Sänd länk för lösenordsregistrering."
+
+#: kotti/views/users.py:349
+#, python-format
+msgid "${title} was added."
+msgstr "${title} lades till."
+
+#: kotti/views/users.py:359
+msgid "Add Group"
+msgstr "Lägg till grupp"
+
+#: kotti/views/users.py:520
+#, python-format
+msgid "Edit ${principal_type} ${title}"
+msgstr "Redigera ${principal_type} ${title}"
+
+#: kotti/views/users.py:548
+msgid "User was not found."
+msgstr "Användaren kunde inte hittas."
+
+#: kotti/views/users.py:558
+#, python-format
+msgid "${principal_type} ${title} was deleted."
+msgstr "${principal_type} ${title} raderades."
+
+#: kotti/views/users.py:566
+#, python-format
+msgid "Delete ${principal_type} ${title}"
+msgstr "Radera ${principal_type} ${title}"
+
+#: kotti/views/users.py:573
+msgid "No name was given."
+msgstr "Inget namn angavs."
+
+#: kotti/views/users.py:602
+#, python-format
+msgid "My preferences - ${title}"
+msgstr "Mina preferenser - ${title}"
+
+#: kotti/views/edit/actions.py:107
+#, python-format
+msgid "${title} was copied."
+msgstr "${title} har kopierats."
+
+#: kotti/views/edit/actions.py:125
+#, python-format
+msgid "${title} was cut."
+msgstr "${title} har klippts ut."
+
+#: kotti/views/edit/actions.py:160
+#, python-format
+msgid "${title} was pasted."
+msgstr "${title} har klistrats in."
+
+#: kotti/views/edit/actions.py:163
+msgid "Could not paste node. It no longer exists."
+msgstr "Kunde inte klistra in noden. Den finns inte längre."
+
+#: kotti/views/edit/actions.py:184
+#, python-format
+msgid "${title} was moved."
+msgstr "${title} har flyttats."
+
+#: kotti/views/edit/actions.py:226
+#, python-format
+msgid "${title} is now visible in the navigation."
+msgstr "${title} är ny synlig i navigationsträdet"
+
+#: kotti/views/edit/actions.py:229
+#, python-format
+msgid "${title} is no longer visible in the navigation."
+msgstr "${title} visas inte längre i navigationsträdet"
+
+#: kotti/views/edit/actions.py:278 kotti/views/edit/actions.py:307
+#, python-format
+msgid "${title} was deleted."
+msgstr "${title} har raderats."
+
+#: kotti/views/edit/actions.py:304
+msgid "Nothing was deleted."
+msgstr "Ingenting raderades."
+
+#: kotti/views/edit/actions.py:340 kotti/views/edit/actions.py:367
+msgid "Name and title are required."
+msgstr "Namn och rubrik krävs"
+
+#: kotti/views/edit/actions.py:344
+msgid "Item was renamed."
+msgstr "Dokumentet har döpts om."
+
+#: kotti/views/edit/actions.py:465
+msgid "Change State"
+msgstr "Ändra läge"
+
+#: kotti/views/edit/actions.py:466
+msgid "Move up"
+msgstr "Flytta upp"
+
+#: kotti/views/edit/actions.py:467
+msgid "Move down"
+msgstr "Flytta ner"
+
+#: kotti/views/edit/actions.py:468
+msgid "Show"
+msgstr "Visa"
+
+#: kotti/views/edit/actions.py:469
+msgid "Hide"
+msgstr "Göm"
+
+#: kotti/views/edit/actions.py:508
+msgid "You have to select items to perform an action."
+msgstr "Du måste välja något att utföra operationen på först"
+
+#: kotti/views/edit/content.py:41
+msgid "Description"
+msgstr "Beskrivning"
+
+#: kotti/views/edit/content.py:47
+msgid "Tags"
+msgstr "Taggar"
+
+#: kotti/views/edit/content.py:56
+msgid "Body"
+msgstr "Brödtext"
+
+#: kotti/views/edit/default_views.py:89
+msgid "Default view"
+msgstr "Standardvy"
+
+#: kotti/views/edit/default_views.py:110
+msgid "Default view has been reset to default."
+msgstr "Standardvyn har återställts till förvald inställning."
+
+#: kotti/views/edit/default_views.py:117
+msgid "Default view has been set."
+msgstr "Standadvyn har ställts in."
+
+#: kotti/views/edit/default_views.py:122
+msgid "Default view could not be set."
+msgstr "Standardvyn kunde inte ställas in."

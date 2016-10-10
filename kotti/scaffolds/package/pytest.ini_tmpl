@@ -1,0 +1,16 @@
+[pytest]
+addopts =
+    --doctest-modules
+    --doctest-glob='*.txt'
+    --capture=no
+    --cov={{package}}
+    --cov-report=term-missing
+    --cov-config .coveragerc
+    --ignore={{package}}/templates/
+    --strict
+    --pep8
+    {{package}}/tests
+python_files = test*py
+markers =
+    user: mark test to be run as the given user
+pep8ignore = E501 E122 E123 E125 E128 E711 E402

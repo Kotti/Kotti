@@ -1,6 +1,7 @@
+# -*- coding: utf-8 -*-
 from pytest import mark
 from pytest import raises
-from pyramid.security import ALL_PERMISSIONS
+from pyramid.security import ALL_PERMISSIONS, Deny, Everyone
 from pyramid.security import Allow
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.exc import SQLAlchemyError
@@ -10,28 +11,33 @@ class TestNode:
     def test_root_acl(self, db_session, root):
 
         # The root object has a persistent ACL set:
-        assert (
-            root.__acl__[1:] == [
-                ('Allow', 'role:owner', u'view'),
-                ('Allow', 'role:owner', u'add'),
-                ('Allow', 'role:owner', u'edit'),
-                ('Allow', 'role:owner', u'delete'),
-                ('Allow', 'role:owner', u'manage'),
-                ('Allow', 'role:owner', u'state_change'),
-                ('Allow', 'role:viewer', u'view'),
-                ('Allow', 'role:editor', u'view'),
-                ('Allow', 'role:editor', u'add'),
-                ('Allow', 'role:editor', u'edit'),
-                ('Allow', 'role:editor', u'delete'),
-                ('Allow', 'role:editor', u'state_change'),
-                ('Allow', 'system.Everyone', u'view'),
-                ('Deny', 'system.Everyone', ALL_PERMISSIONS),
-            ])
+        for ace in (
+            (Allow, 'role:owner', u'view'),
+            (Allow, 'role:owner', u'add'),
+            (Allow, 'role:owner', u'edit'),
+            (Allow, 'role:owner', u'delete'),
+            (Allow, 'role:owner', u'manage'),
+            (Allow, 'role:owner', u'state_change'),
+            (Allow, 'role:viewer', u'view'),
+            (Allow, 'role:editor', u'view'),
+            (Allow, 'role:editor', u'add'),
+            (Allow, 'role:editor', u'edit'),
+            (Allow, 'role:editor', u'delete'),
+            (Allow, 'role:editor', u'state_change'),
+            (Allow, Everyone, u'view'),
+        ):
+            assert ace in root.__acl__[1:-1]
 
         # The first ACE is here to prevent lock-out:
         assert (
             root.__acl__[0] ==
             (Allow, 'role:admin', ALL_PERMISSIONS))
+
+        # The last ACE denies everything for everyone
+        assert (
+            root.__acl__[-1] ==
+            (Deny, Everyone, ALL_PERMISSIONS)
+        )
 
     def test_set_and_get_acl(self, db_session, root):
 

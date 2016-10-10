@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 Form related base views from which you can inherit.
 
@@ -11,7 +12,7 @@ from StringIO import StringIO
 from UserDict import DictMixin
 
 import colander
-import deform
+import deform.widget
 from pyramid.decorator import reify
 from pyramid.httpexceptions import HTTPFound
 from pyramid_deform import CSRFSchema
@@ -20,6 +21,7 @@ from pyramid_deform import FormView
 from kotti import get_settings
 from kotti.fanstatic import tagit
 from kotti.resources import Tag
+# noinspection PyProtectedMember
 from kotti.util import _
 from kotti.util import title_to_name
 from kotti.util import translate
@@ -86,8 +88,8 @@ class BaseFormView(FormView):
     add_template_vars = ()
 
     def __init__(self, context, request, **kwargs):
+        super(BaseFormView, self).__init__(request)
         self.context = context
-        self.request = request
         self.__dict__.update(kwargs)
 
     def __call__(self):
@@ -206,11 +208,17 @@ class AddFormView(BaseFormView):
 
 
 class CommaSeparatedListWidget(deform.widget.Widget):
+
+    def __init__(self, template=None, **kw):
+        super(CommaSeparatedListWidget, self).__init__(**kw)
+        self.template = template
+
     def serialize(self, field, cstruct, readonly=False):
         if cstruct in (colander.null, None):
             cstruct = []
         return field.renderer(self.template, field=field, cstruct=cstruct)
 
+    # noinspection PyMethodOverriding
     @staticmethod
     def deserialize(field, pstruct):
         if pstruct is colander.null:

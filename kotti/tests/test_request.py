@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 class TestExtendingRequest:
 
     def test_it(self):

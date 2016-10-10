@@ -407,7 +407,7 @@ class TestTemplateAPI:
         api = self.make()
         assert u'€13.99' == api.format_currency(13.99, 'EUR')
         assert u'$15,499.12' == api.format_currency(15499.12, 'USD')
-        assert u'€1.00' == api.format_currency(1, format=u'€#,##0',
+        assert u'€1.00' == api.format_currency(1, fmt=u'€#,##0',
                                                currency='EUR')
         assert u'CHF3.14' == api.format_currency(
             decimal.Decimal((0, (3, 1, 4), -2)), 'CHF')
@@ -425,7 +425,7 @@ class TestTemplateAPI:
             api.format_datetime(time.mktime(first.timetuple())) ==
             format_datetime(first, format='medium', locale='en'))
         assert (
-            api.format_datetime(first, format='short') ==
+            api.format_datetime(first, fmt='short') ==
             format_datetime(first, format='short', locale='en'))
         api.locale_name = 'unknown'
         with raises(UnknownLocaleError):
@@ -441,7 +441,7 @@ class TestTemplateAPI:
             api.format_date(first) ==
             format_date(first, format='medium', locale='en'))
         assert (
-            api.format_date(first, format='short') ==
+            api.format_date(first, fmt='short') ==
             format_date(first, format='short', locale='en'))
         api.locale_name = 'unknown'
         with raises(UnknownLocaleError):
@@ -457,7 +457,7 @@ class TestTemplateAPI:
             api.format_time(first) ==
             format_time(first, format='medium', locale='en'))
         assert (
-            api.format_time(first, format='short') ==
+            api.format_time(first, fmt='short') ==
             format_time(first, format='short', locale='en'))
         api.locale_name = 'unknown'
         with raises(UnknownLocaleError):

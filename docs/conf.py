@@ -120,11 +120,11 @@ graphviz_output_format = 'svg'
 
 # -- Options for Intersphinx ---------------------------------------------------
 intersphinx_mapping = {
-    'bleach': ('http://bleach.readthedocs.org/en/latest/', None),
-    'colander': ('http://colander.readthedocs.org/en/latest/', None),
-    'deform': ('http://deform.readthedocs.org/en/latest/', None),
-    'depot': ('http://depot.readthedocs.org/en/latest/', None),
+    'bleach': ('https://bleach.readthedocs.io/en/latest/', None),
+    'colander': ('https://colander.readthedocs.io/en/latest/', None),
+    'deform': ('https://deform.readthedocs.io/en/latest/', None),
+    'depot': ('https://depot.readthedocs.io/en/latest/', None),
     'fanstatic': ('http://www.fanstatic.org/en/latest/', None),
-    'pyramid': ('http://pyramid.readthedocs.org/en/latest/', None),
-    'sqlalchemy': ('http://sqlalchemy.readthedocs.org/en/latest/', None),
+    'pyramid': ('https://pyramid.readthedocs.io/en/latest/', None),
+    'sqlalchemy': ('https://sqlalchemy.readthedocs.io/en/latest/', None),
 }

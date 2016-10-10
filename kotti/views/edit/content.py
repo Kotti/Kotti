@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 Content edit views
 """
@@ -15,7 +16,9 @@ from deform.widget import TextAreaWidget
 from kotti.resources import Document
 from kotti.resources import File
 from kotti.resources import Node
+# noinspection PyProtectedMember
 from kotti.util import _
+# noinspection PyProtectedMember
 from kotti.util import _to_fieldstorage
 from kotti.views.form import get_appstruct
 from kotti.views.form import AddFormView
@@ -59,6 +62,7 @@ class DocumentSchema(ContentSchema):
         )
 
 
+# noinspection PyPep8Naming
 def FileSchema(tmpstore, title_missing=None):
     class FileSchema(ContentSchema):
         file = SchemaNode(
@@ -68,6 +72,7 @@ def FileSchema(tmpstore, title_missing=None):
             validator=validate_file_size_limit,
             )
 
+    # noinspection PyUnusedLocal
     def set_title_missing(node, kw):
         if title_missing is not None:
             node['title'].missing = title_missing
@@ -172,8 +177,11 @@ def includeme(config):
 
 # DEPRECATED
 
+# noinspection PyPep8
 from zope.deprecation import deprecated
+# noinspection PyPep8
 from kotti_image.views.edit import ImageAddForm
+# noinspection PyPep8
 from kotti_image.views.edit import ImageEditForm
 __ = ImageAddForm, ImageEditForm   # pyflakes
 

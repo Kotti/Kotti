@@ -1,16 +1,12 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml"
-      i18n:domain="Kotti"
-      metal:use-macro="api.macro('kotti:templates/view/master.pt')">
-
+<html metal:use-macro="api.macro('kotti:templates/view/master.pt')"
+      i18n:domain="Kotti">
   <div metal:fill-slot="content" class="document-view content">
     <h1>${context.title}</h1>
     <p class="description">
       ${context.description}
     </p>
-
     <div class="body">
-
       <div id="contents-path"
            tal:define="items python: reversed(api.lineage)">
         <tal:repeat tal:repeat="item items">
@@ -24,13 +20,11 @@
           </a>
         </tal:repeat>
       </div>
-
       <form id="form-contents" method="post"
             action="${request.resource_url(context, '@@contents')}">
         <tal:no-content tal:condition="not:children">
           <span class="text-info" i18n:translate="">No content items are contained here.</span>
         </tal:no-content>
-
         <table id="contents-table"
           class="table table-condensed table-striped table-hover"
           tal:condition="children">
@@ -81,26 +75,18 @@
                   </tal:hidden>
                 </tal:visibility>
               </td>
-              <td>
-                ${api.format_datetime(child.creation_date)}
-              </td>
-              <td>
-                ${api.format_datetime(child.modification_date)}
-              </td>
+              <td tal:content="api.format_datetime(child.creation_date) | None"></td>
+              <td tal:content="api.format_datetime(child.modification_date) | None"></td>
             </tr>
           </tbody>
         </table>
-
         <tal:button tal:repeat="button buttons">
-          <button name="${button.name}" type="submit"
-                  class="${button.css_class}"
+          <button name="${button.name}" type="submit" class="${button.css_class}"
                   tal:condition="children or button.no_children">
             ${button.title}
           </button>
         </tal:button>
-
       </form>
     </div>
   </div>
-
 </html>

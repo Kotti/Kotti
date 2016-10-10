@@ -32,7 +32,7 @@ User management
   >>> ctrl(name="query").value = "admin"
   >>> ctrl(name="search").click()
   >>> ctrl(name="role::admin::role:editor").value
-  False
+  []
   >>> ctrl(name="role::admin::role:admin").value
   True
 

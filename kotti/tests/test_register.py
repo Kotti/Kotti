@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from kotti.testing import DummyRequest
 from mock import patch
 from mock import call
@@ -80,7 +81,7 @@ class TestRegister:
         form.assert_has_calls([
             call().add_user_success({
                 'name': u'test',
-                'roles': set([u'role:myrole']),
+                'roles': {u'role:myrole'},
                 'title': u'Test User',
                 'send_email': True,
                 'groups': [u'mygroup'],

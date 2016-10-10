@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 class TestMassageGroups:
 
     def test_massage_groups_in(self):

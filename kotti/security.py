@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from __future__ import with_statement
 from contextlib import contextmanager
 from datetime import datetime
@@ -6,6 +7,7 @@ from UserDict import DictMixin
 import bcrypt
 from pyramid.location import lineage
 from pyramid.security import view_execution_permitted
+from six import string_types
 from sqlalchemy import Boolean, bindparam
 from sqlalchemy import Column
 from sqlalchemy import DateTime
@@ -262,7 +264,7 @@ class PersistentACLMixin(object):
 
 def _cachekey_list_groups_raw(name, context):
     context_id = context is not None and getattr(context, 'id', id(context))
-    return (name, context_id)
+    return name, context_id
 
 
 @request_cache(_cachekey_list_groups_raw)
@@ -297,7 +299,7 @@ def _cachekey_list_groups_ext(name, context=None, _seen=None, _inherited=None):
         raise DontCache
     else:
         context_id = getattr(context, 'id', id(context))
-        return (unicode(name), context_id)
+        return unicode(name), context_id
 
 
 @request_cache(_cachekey_list_groups_ext)
@@ -315,7 +317,7 @@ def list_groups_ext(name, context=None, _seen=None, _inherited=None):
             _inherited.update(principal.groups)
 
     if _seen is None:
-        _seen = set([name])
+        _seen = {name}
 
     # Add local groups:
     if context is not None:
@@ -435,7 +437,7 @@ def map_principals_with_local_roles(context):
 
 
 def is_user(principal):
-    if not isinstance(principal, basestring):
+    if not isinstance(principal, string_types):
         principal = principal.name
     return ':' not in principal
 
@@ -513,7 +515,7 @@ class Principals(DictMixin):
 
         for key, value in kwargs.items():
             col = getattr(self.factory, key)
-            if isinstance(value, basestring) and '*' in value:
+            if isinstance(value, string_types) and '*' in value:
                 value = value.replace('*', '%').lower()
                 filters.append(func.lower(col).like(value))
             else:

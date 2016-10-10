@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 from mock import patch
 from pyramid.security import ALL_PERMISSIONS
 
@@ -60,7 +62,7 @@ class TestWorkflow:
 
         events = []
 
-        listeners[WorkflowTransition].append(lambda event: events.append(event))
+        listeners[WorkflowTransition].append(lambda evt: events.append(evt))
 
         context = Dummy()
         info = Dummy()
@@ -78,8 +80,10 @@ class TestWorkflow:
 
 
 @patch('kotti.workflow.transaction.commit')
-class TestResetWorkflow:
-    def call(self, *args, **kwargs):
+class TestResetWorkflow(object):
+
+    @staticmethod
+    def call(*args, **kwargs):
         from kotti.workflow import reset_workflow
         return reset_workflow(*args, **kwargs)
 
@@ -117,8 +121,10 @@ class TestResetWorkflowCommand:
                 reset_workflow.assert_called_with(purge_existing=True)
 
 
-class TestDefaultWorkflow:
-    def make_document(self, root):
+class TestDefaultWorkflow(object):
+
+    @staticmethod
+    def make_document(root):
         from kotti import DBSession
         from kotti.resources import Document
 
@@ -179,6 +185,14 @@ class TestDefaultWorkflow:
         with patch('kotti.workflow.transaction.commit'):
             reset_workflow(purge_existing=True)
         assert content.state == u'private'
+
+    def test_translate_titles(self, root, dummy_request):
+        from pyramid.i18n import TranslationString
+        from kotti.views.edit import _state_info
+
+        content = self.make_document(root)
+        for state in _state_info(content, dummy_request):
+            assert isinstance(state['title'], TranslationString)
 
 
 class TestContentExtensibleWithWorkflow:

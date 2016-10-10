@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """This module allows add-ons to assign views to slots defined in
 the overall page.  In other systems, these are called portlets or
 viewlets.

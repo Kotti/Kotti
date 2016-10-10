@@ -73,6 +73,9 @@ Small recipe you can use if you want to create a new role:
 
   add_role(u'role:customer', _(u'Customer'))
 
+Practically you can add the code above to any file, as long as it is imported on application startup.
+However, good practice would be to add it to your add on's ``__init__.py`` for small amounts of changes (like in the example) or to a separate file for larger amounts.
+
 Workflows
 ---------
 

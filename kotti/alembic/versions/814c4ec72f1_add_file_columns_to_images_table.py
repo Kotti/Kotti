@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """Add file columns  to images table.
 
 Revision ID: 814c4ec72f1

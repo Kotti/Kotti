@@ -6,7 +6,7 @@ Installation
 Requirements
 ------------
 
-- Python 2.6 or 2.7 (Python 3 support will land in future versions)
+- Python 2.7 (Python 3 will be supported soon)
 - virtualenv_
 - ``build_essential`` and ``python-dev`` (on Debian or Ubuntu) or
 - ``Xcode`` (on OS X) or
@@ -22,6 +22,7 @@ It is recommended to install Kotti inside a virtualenv:
   virtualenv mysite
   cd mysite
   bin/pip install -r https://raw.github.com/Kotti/Kotti/stable/requirements.txt
+  bin/pip install Kotti
 
 This will install the latest released version of Kotti and all its requirements into your virtualenv.
 

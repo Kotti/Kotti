@@ -10,21 +10,19 @@ Inheritance Diagram
 import os
 from os.path import join, dirname
 from unittest import TestCase
-from pytest import mark
+from warnings import catch_warnings
 
+import transaction
 from pyramid import testing
 from pyramid.events import NewResponse
 from pyramid.interfaces import ILocation
 from pyramid.security import ALL_PERMISSIONS
-from zope.deprecation.deprecation import deprecate
+from pytest import mark
 from zope.interface import implementer
-import transaction
-
 
 # re-enable deprecation warnings during test runs
 # however, let the `ImportWarning` produced by Babel's
 # `localedata.py` vs `localedata/` show up once...
-from warnings import catch_warnings
 with catch_warnings():
     from babel import localedata
     import compiler
@@ -49,7 +47,8 @@ class DummyRequest(testing.DummyRequest):
     user = None
     referrer = None
 
-    def is_response(self, ob):
+    @staticmethod
+    def is_response(ob):
         return (hasattr(ob, 'app_iter') and hasattr(ob, 'headerlist') and
                 hasattr(ob, 'status'))
 
@@ -204,7 +203,7 @@ def _zope_testbrowser_pyquery(self):
 
 def setUpFunctional(global_config=None, **settings):
     from kotti import main
-    import wsgi_intercept.zope_testbrowser
+    from zope.testbrowser.wsgi import Browser
     from webtest import TestApp
 
     tearDown()
@@ -221,13 +220,15 @@ def setUpFunctional(global_config=None, **settings):
 
     host, port = BASE_URL.split(':')[-2:]
     app = main({}, **_settings)
-    wsgi_intercept.add_wsgi_intercept(host[2:], int(port), lambda: app)
-    Browser = wsgi_intercept.zope_testbrowser.WSGI_Browser
     Browser.pyquery = property(_zope_testbrowser_pyquery)
 
     return dict(
-        Browser=Browser,
-        browser=Browser(),
+        Browser=lambda: Browser(
+            'http://{}:{}/'.format(host[2:], int(port)),
+            wsgi_app=app),
+        browser=Browser(
+            'http://{}:{}/'.format(host[2:], int(port)),
+            wsgi_app=app),
         test_app=TestApp(app),
         )
 
@@ -248,26 +249,15 @@ class FunctionalTestBase(TestCase):
             status=302,
             )
 
-    @deprecate('login_testbrowser is deprecated as of Kotti 0.7.  Please use '
-               'the `browser` funcarg in conjunction with the `@user` '
-               'decorator.')
-    def login_testbrowser(self, login=u'admin', password=u'secret'):
-        browser = self.Browser()
-        browser.open(BASE_URL + '/edit')
-        browser.getControl("Username or email").value = login
-        browser.getControl("Password").value = password
-        browser.getControl(name="submit").click()
-        return browser
-
 
 @implementer(ILocation)
-class TestingRootFactory(dict):
+class RootFactory(dict):
     __name__ = ''  # root is required to have an empty name!
     __parent__ = None
     __acl__ = [('Allow', 'role:admin', ALL_PERMISSIONS)]
 
     def __init__(self, request):
-        super(TestingRootFactory, self).__init__()
+        super(RootFactory, self).__init__()
 
 
 def dummy_view(context, request):
@@ -283,7 +273,7 @@ def include_testing_view(config):
 
     config.add_view(
         dummy_view,
-        context=TestingRootFactory,
+        context=RootFactory,
         renderer='kotti:tests/testing_view.pt',
         )
 
@@ -291,7 +281,7 @@ def include_testing_view(config):
         dummy_view,
         name='secured',
         permission='view',
-        context=TestingRootFactory,
+        context=RootFactory,
         renderer='kotti:tests/testing_view.pt',
         )
 
@@ -305,7 +295,7 @@ def setUpFunctionalStrippedDownApp(global_config=None, **settings):
         'kotti.use_tables': 'principals',
         'kotti.populators': 'kotti.populate.populate_users',
         'pyramid.includes': 'kotti.testing.include_testing_view',
-        'kotti.root_factory': 'kotti.testing.TestingRootFactory',
+        'kotti.root_factory': 'kotti.testing.RootFactory',
         'kotti.site_title': 'My Stripped Down Kotti',
         }
     _settings.update(settings)
@@ -328,3 +318,8 @@ for item in UnitTestBase, EventTestBase, FunctionalTestBase, _initTestingDB:
     name = getattr(item, '__name__', item)
     deprecated(name, 'Unittest-style tests are deprecated as of Kotti 0.7. '
                'Please use pytest function arguments instead.')
+
+TestingRootFactory = RootFactory
+deprecated('TestingRootFactory',
+           "TestingRootFactory has been renamed to RootFactory and will be no "
+           "longer available starting with Kotti 2.0.0.")

@@ -84,9 +84,9 @@ The rendered docs are built and hosted on readthedocs.org.
 .. _blockdiag: http://blockdiag.com
 .. _GitHub fork-a-repo help: https://help.github.com/articles/fork-a-repo
 .. _Kotti User Manual repo: https://github.com/Kotti/kotti_user_manual
-.. _Kotti User Manual: https://kotti-user-manual.readthedocs.org
+.. _Kotti User Manual: https://kotti-user-manual.readthedocs.io
 .. _Kotti: github.com/Kotti/Kotti
 .. _reStructuredText: http://sphinx-doc.org/rest.html
-.. _Selenium: http://selenium-python.readthedocs.org
-.. _Sphinx tool: http://sphinx.readthedocs.org
-.. _virtualenvwrapper system: http://virtualenvwrapper.readthedocs.org
+.. _Selenium: https://selenium-python.readthedocs.io
+.. _Sphinx tool: https://sphinx.readthedocs.io
+.. _virtualenvwrapper system: https://virtualenvwrapper.readthedocs.io

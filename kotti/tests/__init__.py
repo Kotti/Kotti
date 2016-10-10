@@ -255,11 +255,11 @@ def browser(db_session, request, setup_app):
         pytest marker (or `pytest.mark.user`) can be used to pre-authenticate
         the browser with the given login name: `@user('admin')`.
     """
-    from wsgi_intercept import add_wsgi_intercept, zope_testbrowser
+    from zope.testbrowser.wsgi import Browser
     from kotti.testing import BASE_URL
     host, port = BASE_URL.split(':')[-2:]
-    add_wsgi_intercept(host[2:], int(port), lambda: setup_app)
-    browser = zope_testbrowser.WSGI_Browser(BASE_URL + '/')
+    browser = Browser('http://{}:{}/'.format(host[2:], int(port)),
+                      wsgi_app=setup_app)
     if 'user' in request.keywords:
         # set auth cookie directly on the browser instance...
         from pyramid.security import remember
@@ -360,6 +360,7 @@ def depot_tween(request, config, dummy_request):
     _set_middleware = DepotManager.set_middleware
     TweenFactory(None, config.registry)
 
+    # noinspection PyDecorator
     @classmethod
     def set_middleware_patched(cls, mw):
         pass

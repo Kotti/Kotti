@@ -9,8 +9,16 @@ Inheritance Diagram
 
 import cgi
 import re
-import urllib
-from urlparse import urlparse, urlunparse
+try:
+    # PY2
+    from urllib import unquote
+    from urlparse import urlparse
+    from urlparse import urlunparse
+except ImportError:
+    from urllib.parse import unquote
+    from urllib.parse import urlparse
+    from urllib.parse import urlunparse
+
 
 from docopt import docopt
 from pyramid.i18n import get_localizer
@@ -105,7 +113,7 @@ class LinkBase(object):
 
         If the link name is '', it will be selected for all urls ending in '/'
         """
-        parsed = urlparse(urllib.unquote(request.url))
+        parsed = urlparse(unquote(request.url))
 
         # insert view markers @@ in last component of the path
         path = parsed.path.split('/')
@@ -149,6 +157,7 @@ class LinkRenderer(LinkBase):
     def __call__(self, context, request):
         return TemplateStructure(render_view(context, request, name=self.name))
 
+    # noinspection PyMethodOverriding
     @staticmethod
     def selected(context, request):
         return False
@@ -268,7 +277,7 @@ def extract_from_settings(prefix, settings=None):
     """
       >>> settings = {
       ...     'kotti_twitter.foo_bar': '1', 'kotti.spam_eggs': '2'}
-      >>> print extract_from_settings('kotti_twitter.', settings)
+      >>> print(extract_from_settings('kotti_twitter.', settings))
       {'foo_bar': '1'}
     """
     from kotti import get_settings
