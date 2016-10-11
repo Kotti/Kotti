@@ -6,18 +6,16 @@ import os
 from setuptools import find_packages
 from setuptools import setup
 
-here = os.path.abspath(os.path.dirname(__file__))
 
-def read(*parts):
-    """ Build an absolute path from *parts* and and return the contents of the
-    resulting file.  Assume UTF-8 encoding.
-
-    Copied from
-    https://hynek.me/articles/sharing-your-labor-of-love-pypi-quick-and-dirty/
-    """
-
-    with codecs.open(os.path.join(here, *parts), "rb", "utf-8") as f:
-        return f.read()
+version = '1.3.1.dev0'
+description = "A high-level, Pythonic web application framework based on " \
+              "Pyramid and SQLAlchemy.  It includes an extensible Content " \
+              "Management System called the Kotti CMS."
+author = 'Kotti developers'
+author_email = 'kotti@googlegroups.com'
+url = 'http://kotti.pylonsproject.org/'
+keywords = 'kotti web cms wcms pylons pyramid sqlalchemy bootstrap'
+license = "BSD-derived (http://www.repoze.org/LICENSE.txt)"
 
 
 install_requires = [
@@ -100,9 +98,24 @@ setup_requires = [
     'setuptools_git>=0.3',
 ]
 
+
+here = os.path.abspath(os.path.dirname(__file__))
+
+def read(*parts):
+    """ Build an absolute path from *parts* and and return the contents of the
+    resulting file.  Assume UTF-8 encoding.
+
+    Copied from
+    https://hynek.me/articles/sharing-your-labor-of-love-pypi-quick-and-dirty/
+    """
+
+    with codecs.open(os.path.join(here, *parts), "rb", "utf-8") as f:
+        return f.read()
+
+
 setup(name='Kotti',
-      version='1.3.1.dev0',
-      description="A high-level, Pythonic web application framework based on Pyramid and SQLAlchemy.  It includes an extensible Content Management System called the Kotti CMS.",  # noqa
+      version=version,
+      description=description,
       long_description='\n\n'.join([
           read('README.rst'),
           read('AUTHORS.txt'),
@@ -146,11 +159,11 @@ setup(name='Kotti',
           'Topic :: Software Development',
           'Topic :: Software Development :: Libraries :: Application Frameworks',  # noqa
       ],
-      author='Kotti developers',
-      author_email='kotti@googlegroups.com',
-      url='http://kotti.pylonsproject.org/',
-      keywords='kotti web cms wcms pylons pyramid sqlalchemy bootstrap',
-      license="BSD-derived (http://www.repoze.org/LICENSE.txt)",
+      author=author,
+      author_email=author_email,
+      url=url,
+      keywords=keywords,
+      license=license,
       packages=find_packages(),
       include_package_data=True,
       zip_safe=False,
