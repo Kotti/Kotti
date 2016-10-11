@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
+from __future__ import absolute_import, division, print_function
+
 from mock import patch
-from pytest import raises
 from pyramid.authentication import CallbackAuthenticationPolicy
+from pytest import raises
 
 from kotti.testing import DummyRequest
 

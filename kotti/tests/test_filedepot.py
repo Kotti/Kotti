@@ -1,8 +1,12 @@
 # -*- coding: utf-8 -*-
+from __future__ import absolute_import, division, print_function
+
 import datetime
+
 import pytest
 
-from kotti.filedepot import DBFileStorage, DBStoredFile
+from kotti.filedepot import DBFileStorage
+from kotti.filedepot import DBStoredFile
 from kotti.resources import File
 from kotti.resources import Image
 

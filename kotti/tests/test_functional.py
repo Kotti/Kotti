@@ -1,10 +1,12 @@
-# coding:utf8
+# -*- coding: utf-8 -*-
+from __future__ import absolute_import, division, print_function
 
 import pytest
-from kotti.testing import BASE_URL
-from kotti.testing import user
 from mock import patch
 from webtest.forms import Upload
+
+from kotti.testing import BASE_URL
+from kotti.testing import user
 
 
 class TestLogin:

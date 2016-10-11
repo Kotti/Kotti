@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
+from __future__ import absolute_import, division, print_function
+
 import colander
 import pytest
-from mock import patch
 from mock import Mock
+from mock import patch
 from pytest import raises
 
 from kotti.testing import DummyRequest

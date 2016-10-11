@@ -1,18 +1,19 @@
 # -*- coding: utf-8 -*-
+from __future__ import absolute_import, division, print_function
 
 from StringIO import StringIO
+
+import pytest
 from colander import null
+from mock import MagicMock
 from pyramid.httpexceptions import HTTPMovedPermanently
 
-from mock import MagicMock
-import pytest
-
+from kotti.filedepot import StoredFileResponse
 from kotti.testing import DummyRequest
 from kotti.testing import asset
-from kotti.views.file import inline_view
-from kotti.views.file import attachment_view
 from kotti.views.file import UploadedFileResponse
-from kotti.filedepot import StoredFileResponse
+from kotti.views.file import attachment_view
+from kotti.views.file import inline_view
 
 
 class TestFileViews:
@@ -31,8 +32,6 @@ class TestFileViews:
                               (attachment_view, 'attachment')])
     def test_file_views(self, params, config, filedepot, dummy_request,
                         depot_tween):
-        from kotti.filedepot import TweenFactory
-
         view, disposition = params
         self._create_file(config)
 

@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-
 """ This module contains the tests for the scaffolds.  Each test tries to
 simulate actual usage of the scaffolds as much as possible.  A clean virtualenv
 is created, a package created from a scaffold and the tests of that package are
@@ -10,6 +9,7 @@ are marked with ``slow`` and are not run unless ``py.test`` is invoked with the
 The module name starts with ``test_zzz`` to make the contained tests always the
 last in a complete test run.
 """
+from __future__ import absolute_import, division, print_function
 
 import os
 

@@ -7,8 +7,11 @@ Inheritance Diagram
 .. inheritance-diagram:: kotti.util
 """
 
+from __future__ import absolute_import, division, print_function
+
 import cgi
 import re
+
 try:
     # PY2
     from urllib import unquote

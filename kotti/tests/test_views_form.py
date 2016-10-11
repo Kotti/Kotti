@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
+from __future__ import absolute_import, division, print_function
+
 import colander
-from mock import patch
 from mock import MagicMock
+from mock import patch
 
 from kotti.testing import Dummy
 from kotti.testing import DummyRequest

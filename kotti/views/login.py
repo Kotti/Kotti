@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
-
 """
 Login / logout and forbidden views and forms.
 """
+from __future__ import absolute_import, division, print_function
 
 from datetime import datetime
 
@@ -18,23 +18,22 @@ from pyramid.httpexceptions import HTTPForbidden
 from pyramid.httpexceptions import HTTPFound
 from pyramid.security import forget
 from pyramid.security import remember
+from pyramid.settings import asbool
 from pyramid.url import resource_url
 from pyramid.view import view_config
-from pyramid.settings import asbool
 
 from kotti import get_settings
+from kotti.events import ObjectEvent
+from kotti.events import notify
 from kotti.message import email_set_password
 from kotti.message import validate_token
 from kotti.security import get_principals
-# noinspection PyProtectedMember
 from kotti.util import _
-from kotti.views.util import template_api
-from kotti.views.users import deferred_email_validator
-from kotti.views.users import name_pattern_validator
-from kotti.views.users import name_new_validator
 from kotti.views.users import UserAddFormView
-from kotti.events import ObjectEvent
-from kotti.events import notify
+from kotti.views.users import deferred_email_validator
+from kotti.views.users import name_new_validator
+from kotti.views.users import name_pattern_validator
+from kotti.views.util import template_api
 
 
 def _find_user(login):

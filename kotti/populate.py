@@ -4,16 +4,18 @@ Populate contains two functions that are called on application startup
 (if you haven't modified kotti.populators).
 """
 
+from __future__ import absolute_import, division, print_function
+
 from pyramid.i18n import LocalizerRequestMixin
 from pyramid.threadlocal import get_current_registry
 from six import iteritems
 
 from kotti import get_settings
 from kotti.resources import DBSession
-from kotti.resources import Node
 from kotti.resources import Document
-from kotti.security import get_principals
+from kotti.resources import Node
 from kotti.security import SITE_ACL
+from kotti.security import get_principals
 from kotti.util import _
 from kotti.workflow import get_workflow
 

@@ -38,6 +38,7 @@ inside an ``includeme`` function and not on a module level, to allow
 users of your package to include your slot assignments through the
 ``pyramid.includes`` configuration setting.
 """
+from __future__ import absolute_import, division, print_function
 
 import urllib
 

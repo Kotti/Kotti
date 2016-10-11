@@ -1,12 +1,11 @@
 # -*- coding: utf-8 -*-
-
 """
 Edit views.
 """
+from __future__ import absolute_import, division, print_function
 
 import warnings
 
-# noinspection PyProtectedMember
 from kotti.util import _
 from kotti.views.edit.content import ContentSchema
 from kotti.views.edit.content import DocumentSchema

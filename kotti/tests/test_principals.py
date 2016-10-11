@@ -1,4 +1,7 @@
 # -*- coding: utf-8 -*-
+from __future__ import absolute_import, division, print_function
+
+
 class TestMassageGroups:
 
     def test_massage_groups_in(self):

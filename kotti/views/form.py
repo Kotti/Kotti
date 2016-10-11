@@ -7,6 +7,7 @@ Inheritance Diagram
 
 .. inheritance-diagram:: kotti.views.form
 """
+from __future__ import absolute_import, division, print_function
 
 from StringIO import StringIO
 from UserDict import DictMixin
@@ -21,7 +22,6 @@ from pyramid_deform import FormView
 from kotti import get_settings
 from kotti.fanstatic import tagit
 from kotti.resources import Tag
-# noinspection PyProtectedMember
 from kotti.util import _
 from kotti.util import title_to_name
 from kotti.util import translate

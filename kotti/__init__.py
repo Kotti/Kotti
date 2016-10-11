@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+from __future__ import absolute_import, division, print_function
+
 import pkg_resources
 from pyramid.authentication import AuthTktAuthenticationPolicy
 from pyramid.authorization import ACLAuthorizationPolicy
@@ -7,7 +9,8 @@ from pyramid.events import BeforeRender
 from pyramid.threadlocal import get_current_registry
 from pyramid.util import DottedNameResolver
 from pyramid_beaker import session_factory_from_settings
-from six import binary_type, string_types
+from six import binary_type
+from six import string_types
 from sqlalchemy import MetaData
 from sqlalchemy import engine_from_config
 from sqlalchemy.ext.declarative import declarative_base

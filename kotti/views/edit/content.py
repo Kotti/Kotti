@@ -2,9 +2,11 @@
 """
 Content edit views
 """
+from __future__ import absolute_import, division, print_function
 
 import random
 from StringIO import StringIO
+
 import colander
 from colander import SchemaNode
 from colander import null
@@ -16,16 +18,14 @@ from deform.widget import TextAreaWidget
 from kotti.resources import Document
 from kotti.resources import File
 from kotti.resources import Node
-# noinspection PyProtectedMember
 from kotti.util import _
-# noinspection PyProtectedMember
 from kotti.util import _to_fieldstorage
-from kotti.views.form import get_appstruct
 from kotti.views.form import AddFormView
 from kotti.views.form import EditFormView
 from kotti.views.form import FileUploadTempStore
 from kotti.views.form import ObjectType
 from kotti.views.form import deferred_tag_it_widget
+from kotti.views.form import get_appstruct
 from kotti.views.form import validate_file_size_limit
 
 

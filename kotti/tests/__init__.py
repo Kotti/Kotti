@@ -44,13 +44,13 @@ Fixture dependencies
 
 """
 
-# public pytest fixtures
+from __future__ import absolute_import, division, print_function
 
 import warnings
 from datetime import datetime
 
-from pytest import fixture
 from mock import MagicMock
+from pytest import fixture
 
 from kotti import testing
 

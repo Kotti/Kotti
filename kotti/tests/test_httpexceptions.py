@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-""" Kotti HTTP Exception browser tests """
+from __future__ import absolute_import, division, print_function
 
 import pytest
 

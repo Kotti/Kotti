@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+from __future__ import absolute_import, division, print_function
+
 import hashlib
 import urllib
 from collections import defaultdict
@@ -27,13 +29,13 @@ from kotti.events import objectevent_listeners
 from kotti.interfaces import INavigationRoot
 from kotti.resources import Content
 from kotti.resources import Document
-from kotti.resources import get_root
 from kotti.resources import Tag
 from kotti.resources import TagsToContents
+from kotti.resources import get_root
 from kotti.sanitizers import sanitize
 from kotti.security import view_permitted
-from kotti.util import render_view
 from kotti.util import TemplateStructure
+from kotti.util import render_view
 from kotti.views.site_setup import CONTROL_PANEL_LINKS
 from kotti.views.slots import slot_events
 

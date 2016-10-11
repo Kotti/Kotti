@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
-from webob.multidict import MultiDict
-from pytest import raises
-from pyramid.exceptions import Forbidden
+from __future__ import absolute_import, division, print_function
 
 from kotti.testing import DummyRequest
+from pyramid.exceptions import Forbidden
+from pytest import raises
+from webob.multidict import MultiDict
 
 
 class TestAddableTypes:

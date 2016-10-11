@@ -5,7 +5,7 @@ Created on {{date}}
 :author: {{author}} ({{email}})
 """
 
-from __future__ import absolute_import
+from __future__ import absolute_import, division, print_function
 
 from fanstatic import Group
 from fanstatic import Library

@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
-
 """
 Inheritance Diagram
 -------------------
 
 .. inheritance-diagram:: kotti.testing
 """
+from __future__ import absolute_import, division, print_function
 
 import os
 from os.path import join, dirname

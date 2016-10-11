@@ -1,8 +1,12 @@
 # -*- coding: utf-8 -*-
+from __future__ import absolute_import, division, print_function
+
+from pyramid.security import ALL_PERMISSIONS
+from pyramid.security import Allow
+from pyramid.security import Deny
+from pyramid.security import Everyone
 from pytest import mark
 from pytest import raises
-from pyramid.security import ALL_PERMISSIONS, Deny, Everyone
-from pyramid.security import Allow
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.exc import SQLAlchemyError
 

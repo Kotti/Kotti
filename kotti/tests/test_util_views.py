@@ -1,9 +1,13 @@
-# coding:utf8
-import time
+# -*- coding: utf-8 -*-
+from __future__ import absolute_import, division, print_function
+
 import decimal
-from mock import patch
-from mock import Mock
+import time
+from warnings import filterwarnings
+
 from mock import MagicMock
+from mock import Mock
+from mock import patch
 from pyramid.interfaces import ILocation
 from pyramid.request import Response
 from pytest import raises
@@ -12,9 +16,6 @@ from zope.interface import implementer
 from kotti.testing import Dummy
 from kotti.testing import DummyRequest
 
-
-# filter deprecation warnings for code that is still tested...
-from warnings import filterwarnings
 filterwarnings('ignore', '^kotti.views.slots.register is deprecated')
 
 

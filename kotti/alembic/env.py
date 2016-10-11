@@ -1,7 +1,10 @@
 # -*- coding: utf-8 -*-
-from alembic import context
+from __future__ import absolute_import, division, print_function
+
 import traceback
+
 import transaction
+from alembic import context
 from zope.sqlalchemy import mark_changed
 
 from kotti import DBSession

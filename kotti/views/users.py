@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
-"""User management screens
 """
+User management screens
+"""
+from __future__ import absolute_import, division, print_function
 
 import re
 from urllib import urlencode
@@ -29,7 +31,6 @@ from kotti.security import list_groups_ext
 from kotti.security import list_groups_raw
 from kotti.security import map_principals_with_local_roles
 from kotti.security import set_groups
-# noinspection PyProtectedMember
 from kotti.util import _
 from kotti.views.form import AddFormView
 from kotti.views.form import EditFormView

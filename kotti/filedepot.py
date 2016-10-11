@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+from __future__ import absolute_import, division, print_function
+
 import logging
 import mimetypes
 import uuid
@@ -11,25 +13,26 @@ from depot.manager import DepotManager
 from pyramid import tweens
 from pyramid.httpexceptions import HTTPMovedPermanently
 from pyramid.httpexceptions import HTTPNotFound
-from pyramid.response import _BLOCK_SIZE
 from pyramid.response import FileIter
 from pyramid.response import Response
+from pyramid.response import _BLOCK_SIZE
 from sqlalchemy import Column
 from sqlalchemy import DateTime
-from sqlalchemy import event
 from sqlalchemy import Integer
 from sqlalchemy import LargeBinary
 from sqlalchemy import String
 from sqlalchemy import Unicode
+from sqlalchemy import event
 from sqlalchemy.orm import deferred
 from unidecode import unidecode
 
-from kotti import Base, get_settings
+from kotti import Base
+from kotti import get_settings
 from kotti import DBSession
+from kotti.util import _to_fieldstorage
 from kotti.util import camel_case_to_name
 from kotti.util import command
 from kotti.util import extract_from_settings
-from kotti.util import _to_fieldstorage
 
 _marker = object()
 

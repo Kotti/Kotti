@@ -1,12 +1,14 @@
 # -*- coding: utf-8 -*-
+from __future__ import absolute_import, division, print_function
 
 import json
+
+from pytest import raises
+from zope.testbrowser.browser import LinkNotFoundError
 
 from kotti.testing import BASE_URL
 from kotti.testing import user
 from kotti.views.edit.upload import UploadView
-from pytest import raises
-from zope.testbrowser.browser import LinkNotFoundError
 
 
 def test_upload_anonymous(root, dummy_request, browser):
