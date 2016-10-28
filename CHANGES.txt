@@ -4,7 +4,9 @@ Change History
 1.3.1.dev0 - unreleased
 -----------------------
 
-- No changes yet.
+- Bugfix: when showing addable content in the menu, check if the factory has
+  a defined add_view. This avoids a hard crash with, for example, a content
+  type derived from Content that has no add_view defined.
 
 1.3.0 - 2016-10-10
 ------------------
