@@ -146,6 +146,46 @@ class TestTemplateAPI:
             api.has_permission('drink')
             has_permission.assert_called_with('drink', api.root)
 
+    def test_contenttypefactories_add_links(self, config):
+        from kotti.views.edit.actions import content_type_factories
+        from kotti.resources import Document, File
+        from kotti.views.edit import content
+
+        config.include(content)
+
+        res = content_type_factories(Document(''), DummyRequest())
+        assert res['factories'] == [Document, File]
+
+    def test_contenttypefactories_with_invalid_add_link(self, config):
+        from kotti.resources import Content, Document, File
+        from kotti.resources import default_type_info
+        from kotti.views.edit import content
+        from kotti.views.edit.actions import content_type_factories
+        from sqlalchemy import Column, Integer, ForeignKey
+
+        class TestContent(object):
+            type_info = default_type_info.copy(
+                name=u'TestContent',
+                title=u'Test Content',
+                add_view=None,
+                addable_to=[u'Document'],
+            )
+
+        config.include(content)
+        req = DummyRequest()
+        root = Document('')
+
+        with patch('kotti.views.edit.actions.get_settings') as gs:
+            gs.return_value = {'kotti.available_types':
+                               [TestContent, Document, File]}
+            res = content_type_factories(root, req)
+
+            assert res['factories'] == [Document, File]
+
+            TestContent.type_info.add_view = 'add_document'
+            res = content_type_factories(root, req)
+            assert res['factories'] == [TestContent, Document, File]
+
     def test_edit_links(self, config, db_session):
         from kotti import views
         from kotti.views.edit import actions, content, default_views

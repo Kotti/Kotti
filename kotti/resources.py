@@ -404,6 +404,8 @@ class TypeInfo(object):
         :rtype: Boolean
         """
 
+        if self.add_view is None:
+            return False
         if context.type_info.name in self.addable_to:
             return view_permitted(context, request, self.add_view)
         else:
