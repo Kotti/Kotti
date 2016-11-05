@@ -244,13 +244,20 @@ class FileUploadTempStore(DictMixin):
     def __setitem__(self, name, value):
         value = value.copy()
         fp = value.pop('fp')
-        value['file_contents'] = fp.read()
-        fp.seek(0)
+        if fp is not None:
+            value['file_contents'] = fp.read()
+            fp.seek(0)
+        else:
+            value['file_contents'] = ''
         self.session[name] = value
 
     def __getitem__(self, name):
         value = self.session[name].copy()
-        value['fp'] = StringIO(value.pop('file_contents'))
+        content = value.pop('file_contents')
+        if content:
+            value['fp'] = StringIO(content)
+        else:
+            value['fp'] = None
         return value
 
     def __delitem__(self, name):
@@ -268,6 +275,8 @@ def validate_file_size_limit(node, value):
     You can configure the maximum size by setting the kotti.max_file_size
     option to the maximum number of bytes that you want to allow.
     """
+    if not value['fp']:
+        return
 
     value['fp'].seek(0, 2)
     size = value['fp'].tell()
