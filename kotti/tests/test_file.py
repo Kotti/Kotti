@@ -6,6 +6,7 @@ from StringIO import StringIO
 import pytest
 from colander import null
 from mock import MagicMock
+from mock import patch
 from pyramid.httpexceptions import HTTPMovedPermanently
 
 from kotti.filedepot import StoredFileResponse
@@ -81,16 +82,18 @@ class TestFileEditForm:
         view.context.filename = u'myfile.png'
         view.context.mimetype = u'image/png'
         view.context.size = 777
-        view.edit(title=u'A title',
-                  description=u'A description',
-                  tags=[],
-                  file=null)
-        assert view.context.title == u'A title'
-        assert view.context.description == u'A description'
-        assert view.context.data.file.read() == 'filecontents'
-        assert view.context.filename == u'myfile.png'
-        assert view.context.mimetype == u'image/png'
-        assert view.context.size == 777
+        with patch("kotti.views.edit.content._to_fieldstorage") as tfs:
+            view.edit(title=u'A title',
+                      description=u'A description',
+                      tags=[],
+                      file=null)
+            assert tfs.call_count == 0
+            assert view.context.title == u'A title'
+            assert view.context.description == u'A description'
+            assert view.context.data.file.read() == 'filecontents'
+            assert view.context.filename == u'myfile.png'
+            assert view.context.mimetype == u'image/png'
+            assert view.context.size == 777
 
 
 class TestFileAddForm:
@@ -138,6 +141,21 @@ class TestFileUploadTempStore:
         tmpstore.session['important'] = 3
         del tmpstore['important']
         assert 'important' not in tmpstore.session
+
+    def test_setitem_with_stream(self):
+        ts = self.make_one()
+        ts['a'] = {'fp': StringIO('test'), 'marker': 'yes'}
+        assert ts.session['a'] == {'file_contents': 'test', 'marker': 'yes'}
+        v = ts['a']
+        assert 'fp' in v.keys()
+        assert v['marker'] == 'yes'
+        assert v['fp'].read() == 'test'
+
+    def test_setitem_with_empty(self):
+        ts = self.make_one()
+        ts['a'] = {'fp': None, 'marker': 'yes'}
+        assert ts.session['a'] == {'file_contents': '', 'marker': 'yes'}
+        assert ts['a'] == {'fp': None, 'marker': 'yes'}
 
 
 class TestDepotStore:
