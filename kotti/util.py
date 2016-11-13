@@ -116,13 +116,9 @@ class LinkBase(object):
 
         If the link name is '', it will be selected for all urls ending in '/'
         """
-        if request.view_name:
-            url = '@@'.join([resource_url(context, request),
-                             request.view_name])
-        else:
-            url = resource_url(context, request)
-
-        return url == self.url(context, request)
+        if request.view_name is not None:
+            return request.view_name == self.name
+        return False
 
     def permitted(self, context, request):
         from kotti.security import view_permitted
