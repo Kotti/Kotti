@@ -8,6 +8,10 @@ Change History
   a defined add_view. This avoids a hard crash with, for example, a content
   type derived from Content that has no add_view defined.
 
+- Added "nav_bar" and "edit_bar" slots in view/master.pt and edit/master.pt
+
+- Bugfix: Simplify 404 page, no longer crash when authenticated
+
 1.3.0 - 2016-10-10
 ------------------
 

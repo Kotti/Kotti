@@ -30,9 +30,14 @@
   <body class="${request.user is not None and 'logged-in'}
                view-${request.view_name or 'default'}
                ${api.body_css_class}">
-    <nav tal:replace="api.render_template('kotti:templates/view/nav.pt')" />
-    <div tal:condition="request.user is not None and has_location_context"
-         tal:replace="api.render_template('kotti:templates/editor-bar.pt')" />
+
+    <nav tal:omit-tag="" metal:define-slot="nav-bar">
+      <nav tal:replace="api.render_template('kotti:templates/view/nav.pt')" />
+    </nav>
+    <editbar tal:omit-tag="" metal:define-slot="editor-bar">
+      <div tal:condition="request.user is not None and has_location_context"
+           tal:replace="api.render_template('kotti:templates/editor-bar.pt')" />
+    </editbar>
 
     <div class="container">
       <div tal:replace="api.render_template('kotti:templates/edit/breadcrumbs.pt')" />
