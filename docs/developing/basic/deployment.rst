@@ -94,7 +94,9 @@ Create an ini file in ``/home/kotti/kotti.ini``::
     socket = /home/kotti/<your_domain>.sock
     master = true
     chmod-socket = 666
-    processes = 1
+    processes = 2
+    lazy = true      # needed if want processes > 1
+    lazy-apps = true
 
 Install Supervisor::
 
