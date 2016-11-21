@@ -28,3 +28,5 @@ __pycache__
 
 filestore
 share
+.eggs
+.python-version

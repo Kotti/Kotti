@@ -13,11 +13,10 @@ bin/py.test: .pip.log *.py *.cfg
 	bin/pip install -e ".[development]" --log .pip.log
 
 bin/python:
-	virtualenv-$(version) --no-site-packages --distribute .
+	virtualenv-$(version) .
 	@touch $@
 
 clean:
-	@rm -rfv bin/ include/ lib/ share/ .Python
+	@rm -rfv bin/ include/ lib/ share/ .Python .cache .eggs Kotti.db Kotti.egg-info tox
 
 .PHONY: test clean
-

@@ -77,6 +77,7 @@ tests_require = [
     'pytest-virtualenv',
     'pytest-warnings',
     'pytest-xdist',
+    'tox',
     'virtualenv',  # needed for scaffolding tests
     'zope.testbrowser>=5.0.0',
     ]
@@ -116,11 +117,8 @@ def read(*parts):
 setup(name='Kotti',
       version=version,
       description=description,
-      long_description='\n\n'.join([
-          read('README.rst'),
-          read('AUTHORS.txt'),
-          read('CHANGES.txt'),
-      ]),
+      long_description='\n\n'.join([read('README.rst'), read('AUTHORS.txt'),
+                                    read('CHANGES.txt'), ]),
       classifiers=[
           # 'Development Status :: 3 - Alpha',
           # 'Development Status :: 4 - Beta',
@@ -171,24 +169,25 @@ setup(name='Kotti',
       setup_requires=setup_requires,
       tests_require=tests_require,
       dependency_links=[],
-      entry_points="""\
-      [paste.app_factory]
-      main = kotti:main
-
-      [fanstatic.libraries]
-      kotti = kotti.fanstatic:lib_kotti
-
-      [console_scripts]
-      kotti-migrate = kotti.migrate:kotti_migrate_command
-      kotti-reset-workflow = kotti.workflow:reset_workflow_command
-      kotti-migrate-storage = kotti.filedepot:migrate_storages_command
-
-      [pytest11]
-      kotti = kotti.tests
-
-      [pyramid.scaffold]
-      kotti=kotti.scaffolds:KottiPackageTemplate
-      """,
+      entry_points={
+          'paste.app_factory': [
+              'main = kotti:main',
+          ],
+          'fanstatic.libraries': [
+              'kotti = kotti.fanstatic:lib_kotti',
+          ],
+          'console_scripts': [
+              'kotti-migrate = kotti.migrate:kotti_migrate_command',
+              'kotti-reset-workflow = kotti.workflow:reset_workflow_command',
+              'kotti-migrate-storage = kotti.filedepot:migrate_storages_command',  # noqa
+          ],
+          'pytest11': [
+              'kotti = kotti.tests',
+          ],
+          'pyramid.scaffold': [
+              'kotti=kotti.scaffolds:KottiPackageTemplate',
+          ],
+      },
       extras_require={
           'testing': tests_require,
           'development': development_requires,
