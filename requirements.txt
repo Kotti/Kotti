@@ -8,7 +8,7 @@ Chameleon==2.25
 colander==1.2
 deform==2.0.3
 docopt==0.6.2
-fanstatic==0.16
+fanstatic==1.0a7
 filedepot==0.4.0
 FormEncode==2.0.0a1
 funcsigs==1.0.2
@@ -50,12 +50,12 @@ pyramid-mailer==0.14.1
 pyramid-tm==1.1.0
 pyramid-zcml==1.0.0
 pyramid==1.7.3
-python-editor==1.0.1
+python-editor==1.0.2
 pytz==2016.7
 repoze.lru==0.6
 repoze.sendmail==4.2
 repoze.workflow==1.0b1
-repoze.zcml==0.4
+repoze.zcml==1.0b1
 rfc6266==0.0.4
 six==1.10.0
 SQLAlchemy-Utils==0.32.11

@@ -27,6 +27,7 @@ install_requires = [
     'colander<1.3',  # until https://github.com/Pylons/colander/pull/272 is merged and released  # noqa
     'deform>=2.0a1',  # >=2.0a1 to support Bootstrap 2
     'docopt',
+    'fanstatic>=1.0a7',
     'filedepot',
     'formencode',
     'html2text',
@@ -53,6 +54,7 @@ install_requires = [
     'pyramid_zcml',
     'repoze.lru',
     'repoze.workflow>=1.0b1',
+    'repoze.zcml>=1.0b1',
     'rfc6266',
     'sqlalchemy>=1.0.0',
     'sqlalchemy-utils',
