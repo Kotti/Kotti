@@ -95,13 +95,16 @@ class FileEditForm(EditFormView):
         form.appstruct = get_appstruct(self.context, self.schema)
         if self.context.data is not None:
             form.appstruct.update({'file': {
-                'fp': StringIO(self.context.data.file.read()),
-                'filename': self.context.name,
+                'fp': None,
+                'filename': self.context.data['filename'],  # self.context.name
                 'mimetype': self.context.mimetype,
                 'uid': str(random.randint(1000000000, 9999999999)),
             }})
 
     def schema_factory(self):
+        # File uploads are stored in the session so that you don't need
+        # to upload your file again if validation of another schema node
+        # fails.
         tmpstore = FileUploadTempStore(self.request)
         return FileSchema(tmpstore)
 
@@ -110,7 +113,7 @@ class FileEditForm(EditFormView):
         self.context.title = title
         self.context.description = appstruct['description']
         self.context.tags = appstruct['tags']
-        if appstruct['file']:
+        if appstruct['file'] and appstruct['file']['fp']:
             self.context.data = _to_fieldstorage(**appstruct['file'])
 
 
