@@ -2,7 +2,7 @@
 <html i18n:domain="Kotti"
       metal:use-macro="api.macro('kotti:templates/view/master.pt')">
 
-    <div metal:fill-slot="top_nav">
+    <div metal:fill-slot="nav-bar">
       <nav xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
         xmlns:tal="http://xml.zope.org/namespaces/tal"
         class="navbar navbar-static-top navbar-inverse"
