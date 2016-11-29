@@ -199,6 +199,12 @@ class TestBrowser:
         assert "Welcome, Administrator" in resp.body
 
     @pytest.mark.user('admin')
+    def test_exception_views(self, webtest):
+        app = webtest.app
+        resp = app.get('/this-does-not-exist', status=404)
+        assert "<h1>Not Found</h1>" in resp.body
+
+    @pytest.mark.user('admin')
     def test_content_management(self, webtest):
 
         from kotti.resources import Document

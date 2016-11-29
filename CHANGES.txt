@@ -12,6 +12,11 @@ Change History
   a defined add_view. This avoids a hard crash with, for example, a content
   type derived from Content that has no add_view defined.
 
+- Added ``nav-bar`` slot to ``edit/master.pt``, ``edit-bar`` and ``nav-bar``
+  slots to ``view/master.pt``
+
+- Bugfix: Simplify 404 page, no longer crash when authenticated
+
 - Change: simplify `kotti.util.LinkBase.selected()`: use request.view_name
   instead of deriving the view name from request.url. Also, consider the View
   editor bar entry as selected even when the url doesn't end with a slash '/'
