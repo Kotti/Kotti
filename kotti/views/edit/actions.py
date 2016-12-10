@@ -162,6 +162,7 @@ class NodeActions(object):
             else:
                 self.flash(_(u'Could not paste node. It no longer exists.'),
                            'error')
+        DBSession.flush()
         if not self.request.is_xhr:
             return self.back()
 
