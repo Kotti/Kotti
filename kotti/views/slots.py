@@ -65,7 +65,7 @@ def _render_view_on_slot_event(view_name, event, params):
     context = event.object
     request = event.request
 
-    view_request = Request.blank(
+    view_request = request.blank(
         "{0}/{1}".format(request.path.rstrip('/'), view_name),
         base_url=request.application_url,
         POST=_encode(params))
