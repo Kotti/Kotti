@@ -9,6 +9,9 @@ Change History
   ``kotti.request_factory``. Also added ``blank()`` method to
   ``kotti.testing.DummyRequest``.
 
+- When authenticated, show workflow state in the edit bar. Before it was
+  shown only if the 'edit' permission was available.
+
 - Optimize the File edit form: don't load initial file data to session data
   and don't rewrite the file data after saving the form if that data has not
   been changed through the edit form.
