@@ -224,12 +224,12 @@ class NodeActions(object):
                 child.in_navigation = show
                 mapping = dict(title=child.title)
                 if show:
-                    msg = _(u'${title} is now visible in the navigation.',
-                            mapping=mapping)
+                    mg = _(u'${title} is now visible in the navigation.',
+                           mapping=mapping)
                 else:
-                    msg = _(u'${title} is no longer visible in the navigation.',
-                            mapping=mapping)
-                self.flash(msg, 'success')
+                    mg = _(u'${title} is no longer visible in the navigation.',
+                           mapping=mapping)
+                self.flash(mg, 'success')
         if not self.request.is_xhr:
             return self.back()
 

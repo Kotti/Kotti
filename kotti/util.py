@@ -12,15 +12,15 @@ from __future__ import absolute_import, division, print_function
 import cgi
 import re
 
-try:
-    # PY2
-    from urllib import unquote
-    from urlparse import urlparse
-    from urlparse import urlunparse
-except ImportError:
-    from urllib.parse import unquote
-    from urllib.parse import urlparse
-    from urllib.parse import urlunparse
+# try:
+#     # PY2
+#     from urllib import unquote
+#     from urlparse import urlparse
+#     from urlparse import urlunparse
+# except ImportError:
+#     from urllib.parse import unquote
+#     from urllib.parse import urlparse
+#     from urllib.parse import urlunparse
 
 
 from docopt import docopt
