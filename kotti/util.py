@@ -49,6 +49,23 @@ def translate(*args, **kwargs):
     return localizer.translate(*args, **kwargs)
 
 
+def translate_pluralize(m1, m2, n, **kwargs):
+    """ Translate using pluralizing messages
+
+    :param m1: msgid to translate, singular form
+    :param m2: msgid to translate, plural form
+    :param n: this number decides if plural form is used
+    :param kwargs: any keyword argument is passed to ``localizer.pluralize()``
+    """
+    request = get_current_request()
+    if request is None:
+        localizer = get_localizer_for_locale_name('en')
+    else:
+        localizer = get_localizer(request)
+
+    return localizer.pluralize(m1, m2, n, **kwargs)
+
+
 def get_paste_items(context, request):
     from kotti.resources import Node
 
