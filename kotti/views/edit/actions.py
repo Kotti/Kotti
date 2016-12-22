@@ -19,6 +19,7 @@ from kotti.resources import Node
 from kotti.util import ActionButton
 from kotti.util import _
 from kotti.util import get_paste_items
+from kotti.util import i18n_pluralize
 from kotti.util import title_to_name
 from kotti.views.edit import _state_info
 from kotti.views.edit import _states
@@ -102,10 +103,18 @@ class NodeActions(object):
         """
         ids = self._selected_children()
         self.request.session['kotti.paste'] = (ids, 'copy')
-        for id in ids:
+
+        # TODO: test in interface is this can be empty
+        if ids:
             item = DBSession.query(Node).get(id)
-            self.flash(_(u'${title} was copied.',
-                         mapping=dict(title=item.title)), 'success')
+            msg = i18n_pluralize(
+                _(u'${title} was copied.'),
+                _(u"${number} items were copied."),
+                len(ids),
+                mapping=dict(title=item.title, number=len(ids))
+            )
+            self.flash(msg, 'success')
+
         if not self.request.is_xhr:
             return self.back()
 
@@ -120,10 +129,17 @@ class NodeActions(object):
         """
         ids = self._selected_children()
         self.request.session['kotti.paste'] = (ids, 'cut')
-        for id in ids:
+
+        if ids:
             item = DBSession.query(Node).get(id)
-            self.flash(_(u'${title} was cut.', mapping=dict(title=item.title)),
-                       'success')
+            msg = i18n_pluralize(
+                _(u'${title} was cut.'),
+                _(u"${number} items were cut."),
+                len(ids),
+                mapping=dict(number=len(ids), title=item.title),
+            )
+            self.flash(msg, 'success')
+
         if not self.request.is_xhr:
             return self.back()
 
@@ -137,9 +153,12 @@ class NodeActions(object):
         :rtype: pyramid.httpexceptions.HTTPFound
         """
         ids, action = self.request.session['kotti.paste']
+        pasted = []
+        failures = 0
         for count, id in enumerate(ids):
             item = DBSession.query(Node).get(id)
             if item is not None:
+                pasted.append(item)
                 if action == 'cut':
                     if not self.request.has_permission('edit', item):
                         raise Forbidden()
@@ -157,11 +176,29 @@ class NodeActions(object):
                     name = title_to_name(name, blacklist=self.context.keys())
                     copy.name = name
                     self.context[name] = copy
-                self.flash(_(u'${title} was pasted.',
-                             mapping=dict(title=item.title)), 'success')
             else:
-                self.flash(_(u'Could not paste node. It no longer exists.'),
-                           'error')
+                failures += 1
+
+        if pasted:
+            msg = i18n_pluralize(
+                _(u'${title} was pasted.'),
+                _(u"${number} items were pasted."),
+                len(pasted),
+                mapping={'title': pasted and pasted[0].title or u'',
+                         'number': len(pasted), }
+            )
+            self.flash(msg, 'success')
+
+        if failures:
+            msg = i18n_pluralize(
+                _(u'Could not paste node. It no longer exists.'),
+                _(u"${number} items could not be pasted. They no longer "
+                  u"exist."),
+                failures,
+                mapping={'number': failures}
+            )
+            self.flash(msg, 'error')
+
         DBSession.flush()
         if not self.request.is_xhr:
             return self.back()
@@ -303,11 +340,16 @@ class NodeActions(object):
             ids = self.request.POST.getall('children-to-delete')
             if not ids:
                 self.flash(_(u"Nothing was deleted."), 'info')
+            big = len(ids) > 3
             for id in ids:
                 item = DBSession.query(Node).get(id)
-                self.flash(_(u'${title} was deleted.',
-                             mapping=dict(title=item.title)), 'success')
+                if not big:
+                    self.flash(_(u'${title} was deleted.',
+                                 mapping=dict(title=item.title)), 'success')
                 del self.context[item.name]
+            if big:
+                self.flash(_(u"${number} items were deleted.",
+                             mapping=dict(number=len(ids))), 'success')
             return self.back('@@contents')
 
         if 'cancel' in self.request.POST:
@@ -532,8 +574,8 @@ def move_child_position(context, request):
                     0-based old (i.e. the current index of the child to be
                     moved) and new position (its new index) values.
     :type request:
-    :result: JSON serializable object with a single attribute ("result") that is
-             either "success" or "error".
+    :result: JSON serializable object with a single attribute ("result") that
+             is either "success" or "error".
     :rtype: dict
     """
 
