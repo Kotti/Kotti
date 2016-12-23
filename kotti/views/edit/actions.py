@@ -106,7 +106,7 @@ class NodeActions(object):
 
         # TODO: test in interface is this can be empty
         if ids:
-            item = DBSession.query(Node).get(id)
+            item = DBSession.query(Node).get(ids[0])
             msg = translate_pluralize(
                 _(u'${title} was copied.'),
                 _(u"${number} items were copied."),
@@ -131,7 +131,7 @@ class NodeActions(object):
         self.request.session['kotti.paste'] = (ids, 'cut')
 
         if ids:
-            item = DBSession.query(Node).get(id)
+            item = DBSession.query(Node).get(ids[0])
             msg = translate_pluralize(
                 _(u'${title} was cut.'),
                 _(u"${number} items were cut."),

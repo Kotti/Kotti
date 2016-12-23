@@ -165,10 +165,9 @@ class TestNodeDelete:
         request.POST.add('children-to-delete', id2)
         request.POST.add('children-to-delete', id3)
         NodeActions(root, request).delete_nodes()
-        assert request.session.pop_flash('success') == \
-            [u'${title} was deleted.',
-             u'${title} was deleted.',
-             u'${title} was deleted.']
+        assert request.session.pop_flash('success') == [
+            u'3 items were deleted.'
+        ]
 
 
 class TestNodeMove:
