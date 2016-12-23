@@ -219,8 +219,13 @@ class NodeActions(object):
             index = self.context.children.index(child)
             self.context.children.pop(index)
             self.context.children.insert(index + move, child)
-            self.flash(_(u'${title} was moved.',
-                         mapping=dict(title=child.title)), 'success')
+        msg = translate_pluralize(
+            _(u'${title} was moved.'),
+            _(u'${number} items were moved.'),
+            len(ids),
+            mapping=dict(number=len(ids), title=child.title),
+        )
+        self.flash(msg, 'success')
         if not self.request.is_xhr:
             return self.back()
 
@@ -255,25 +260,36 @@ class NodeActions(object):
         :rtype: pyramid.httpexceptions.HTTPFound
         """
         ids = self._selected_children()
+        dirty = []
         for id in ids:
             child = DBSession.query(Node).get(id)
             if child.in_navigation != show:
                 child.in_navigation = show
-                mapping = dict(title=child.title)
-                if show:
-                    mg = _(u'${title} is now visible in the navigation.',
-                           mapping=mapping)
-                else:
-                    mg = _(u'${title} is no longer visible in the navigation.',
-                           mapping=mapping)
-                self.flash(mg, 'success')
+                dirty.append(child)
+
+        if show and dirty:
+            msg = translate_pluralize(
+                _(u'${title} is now visible in the navigation.'),
+                _(u'${number} items are now visible in the navigation.'),
+                mapping=dict(title=dirty[0].title, number=len(dirty)),
+            )
+            self.flash(msg, 'success')
+
+        if (not show) and dirty:
+            msg = translate_pluralize(
+                _(u'${title} is no longer visible in the navigation.'),
+                _(u'${number} are no longer visible in the navigation.'),
+                mapping=dict(title=dirty[0].title, number=len(dirty)),
+            )
+            self.flash(msg, 'success')
+
         if not self.request.is_xhr:
             return self.back()
 
     @view_config(name='show')
     def show(self):
         """
-        Show nodes view.  Switch the in_navigation attribute of selected nodes
+        Show nodes view. Switch the in_navigation attribute of selected nodes
         to ``True`` and get back to the referrer of the request.
 
         :result: Redirect response to the referrer of the request.
