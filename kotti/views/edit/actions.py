@@ -19,7 +19,7 @@ from kotti.resources import Node
 from kotti.util import ActionButton
 from kotti.util import _
 from kotti.util import get_paste_items
-from kotti.util import i18n_pluralize
+from kotti.util import translate_pluralize
 from kotti.util import title_to_name
 from kotti.views.edit import _state_info
 from kotti.views.edit import _states
@@ -107,7 +107,7 @@ class NodeActions(object):
         # TODO: test in interface is this can be empty
         if ids:
             item = DBSession.query(Node).get(id)
-            msg = i18n_pluralize(
+            msg = translate_pluralize(
                 _(u'${title} was copied.'),
                 _(u"${number} items were copied."),
                 len(ids),
@@ -132,7 +132,7 @@ class NodeActions(object):
 
         if ids:
             item = DBSession.query(Node).get(id)
-            msg = i18n_pluralize(
+            msg = translate_pluralize(
                 _(u'${title} was cut.'),
                 _(u"${number} items were cut."),
                 len(ids),
@@ -180,7 +180,7 @@ class NodeActions(object):
                 failures += 1
 
         if pasted:
-            msg = i18n_pluralize(
+            msg = translate_pluralize(
                 _(u'${title} was pasted.'),
                 _(u"${number} items were pasted."),
                 len(pasted),
@@ -190,7 +190,7 @@ class NodeActions(object):
             self.flash(msg, 'success')
 
         if failures:
-            msg = i18n_pluralize(
+            msg = translate_pluralize(
                 _(u'Could not paste node. It no longer exists.'),
                 _(u"${number} items could not be pasted. They no longer "
                   u"exist."),
@@ -340,16 +340,20 @@ class NodeActions(object):
             ids = self.request.POST.getall('children-to-delete')
             if not ids:
                 self.flash(_(u"Nothing was deleted."), 'info')
-            big = len(ids) > 3
-            for id in ids:
-                item = DBSession.query(Node).get(id)
-                if not big:
-                    self.flash(_(u'${title} was deleted.',
-                                 mapping=dict(title=item.title)), 'success')
-                del self.context[item.name]
-            if big:
-                self.flash(_(u"${number} items were deleted.",
-                             mapping=dict(number=len(ids))), 'success')
+            else:
+                title = ''
+                for id in ids:
+                    item = DBSession.query(Node).get(id)
+                    title = item.title
+                    del self.context[item.name]
+                msg = translate_pluralize(
+                    _(u'${title} was deleted.'),
+                    _(u"${number} items were deleted."),
+                    len(ids),
+                    mapping=dict(title=title, number=len(ids))
+                )
+                self.flash(msg, 'success')
+
             return self.back('@@contents')
 
         if 'cancel' in self.request.POST:

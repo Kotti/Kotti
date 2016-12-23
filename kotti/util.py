@@ -49,8 +49,8 @@ def translate(*args, **kwargs):
     return localizer.translate(*args, **kwargs)
 
 
-def i18n_pluralize(m1, m2, n, **kwargs):
-    """ Translate a string using a pluralizing behavior
+def translate_pluralize(m1, m2, n, **kwargs):
+    """ Translate using pluralizing messages
 
     :param m1: msgid to translate, singular form
     :param m2: msgid to translate, plural form
