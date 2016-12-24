@@ -183,7 +183,7 @@ class TestNodeMove:
         request.session['kotti.selected-children'] = [str(root['child2'].id)]
         NodeActions(root, request).up()
         assert request.session.pop_flash('success') ==\
-            [u'${title} was moved.']
+            [u'Child 2 was moved.']
         assert root['child1'].position > root['child2'].position
 
     def test_move_down(self, root):
@@ -201,7 +201,7 @@ class TestNodeMove:
         request.session['kotti.selected-children'] = ids
         NodeActions(root, request).down()
         assert request.session.pop_flash('success') ==\
-            [u'${title} was moved.', u'${title} was moved.']
+            [u'2 items were moved.']
         assert root['child1'].position > root['child3'].position
         assert root['child2'].position > root['child3'].position
 
@@ -352,13 +352,13 @@ class TestNodeShowHide:
         request.session['kotti.selected-children'] = [str(root['child1'].id)]
         NodeActions(root, request).hide()
         assert request.session.pop_flash('success') ==\
-            [u'${title} is no longer visible in the navigation.']
+            [u'Child 1 is no longer visible in the navigation.']
         assert root['child1'].in_navigation is False
 
         request.session['kotti.selected-children'] = [str(root['child1'].id)]
         NodeActions(root, request).show()
         assert request.session.pop_flash('success') ==\
-            [u'${title} is now visible in the navigation.']
+            [u'Child 1 is now visible in the navigation.']
         assert root['child1'].in_navigation is True
 
 

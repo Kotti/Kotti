@@ -271,6 +271,7 @@ class NodeActions(object):
             msg = translate_pluralize(
                 _(u'${title} is now visible in the navigation.'),
                 _(u'${number} items are now visible in the navigation.'),
+                len(dirty),
                 mapping=dict(title=dirty[0].title, number=len(dirty)),
             )
             self.flash(msg, 'success')
@@ -279,6 +280,7 @@ class NodeActions(object):
             msg = translate_pluralize(
                 _(u'${title} is no longer visible in the navigation.'),
                 _(u'${number} are no longer visible in the navigation.'),
+                len(dirty),
                 mapping=dict(title=dirty[0].title, number=len(dirty)),
             )
             self.flash(msg, 'success')
