@@ -142,6 +142,12 @@ class TestNodeRename:
 
 class TestNodeDelete:
 
+    def make_request(self):
+        request = DummyRequest()
+        request.POST = MultiDict()
+        request.POST.add('delete_nodes', u'delete_nodes')
+        return request
+
     def test_multi_delete(self, root):
         from kotti.resources import Document
         from kotti.resources import File
@@ -151,22 +157,27 @@ class TestNodeDelete:
         root['child2'] = Document(title=u"Child 2")
         root['file1'] = File(title=u"File 1")
 
-        request = DummyRequest()
-        request.POST = MultiDict()
         id1 = str(root['child1'].id)
         id2 = str(root['child2'].id)
         id3 = str(root['file1'].id)
-        request.POST.add('delete_nodes', u'delete_nodes')
+
+        request = self.make_request()
         NodeActions(root, request).delete_nodes()
         assert request.session.pop_flash('info') ==\
             [u'Nothing was deleted.']
 
         request.POST.add('children-to-delete', id1)
+        NodeActions(root, request).delete_nodes()
+        assert (
+            request.session.pop_flash('success') == [u'Child 1 was deleted.'])
+
+        request = self.make_request()
+        request.POST.add('delete_nodes', u'delete_nodes')
         request.POST.add('children-to-delete', id2)
         request.POST.add('children-to-delete', id3)
         NodeActions(root, request).delete_nodes()
         assert request.session.pop_flash('success') == [
-            u'3 items were deleted.'
+            u'2 items were deleted.'
         ]
 
 
@@ -431,7 +442,8 @@ class TestNodeShare:
 
         request.params['apply'] = u''
         share_node(root, request)
-        assert (request.session.pop_flash('info') == [u'No changes were made.'])
+        assert (
+            request.session.pop_flash('info') == [u'No changes were made.'])
         assert list_groups('bob', root) == []
         set_groups('bob', root, ['role:special'])
 
