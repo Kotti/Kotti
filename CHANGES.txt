@@ -29,6 +29,8 @@ Change History
   instead of deriving the view name from request.url. Also, consider the View
   editor bar entry as selected even when the url doesn't end with a slash '/'
 
+- Feature: add Czech translation.
+
 1.3.0 - 2016-10-10
 ------------------
 
