@@ -147,7 +147,7 @@ class NodeActions(object):
     def paste_nodes(self):
         """
         Paste nodes view. Paste formerly copied or cutted nodes into the
-        current context. Note that a cutted node can not be pasted into itself.
+        current context. Note that a cut node can not be pasted into itself.
 
         :result: Redirect response to the referrer of the request.
         :rtype: pyramid.httpexceptions.HTTPFound

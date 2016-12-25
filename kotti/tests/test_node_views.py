@@ -5,6 +5,7 @@ from kotti.testing import DummyRequest
 from pyramid.exceptions import Forbidden
 from pytest import raises
 from webob.multidict import MultiDict
+import pytest
 
 
 class TestAddableTypes:
@@ -127,6 +128,35 @@ class TestNodePaste:
         request.session['kotti.paste'] = ([1], 'copy')
         response = NodeActions(root, request).paste_nodes()
         assert response.status == '302 Found'
+
+    @pytest.mark.parametrize('action', ['copy', 'cut'])
+    def test_paste_messages(self, root, action):
+        from kotti.views.edit.actions import NodeActions
+        from kotti.resources import Document
+
+        request = DummyRequest()
+        root['child1'] = Document(title=u"Child 1", id=100)
+        root['child2'] = Document(title=u"Child 2", id=101)
+
+        request.session['kotti.paste'] = ([100], action)
+        NodeActions(root, request).paste_nodes()
+        assert request.session.pop_flash('success') == ['Child 1 was pasted.']
+
+        request.session['kotti.paste'] = ([100, 101], action)
+        NodeActions(root, request).paste_nodes()
+        assert request.session.pop_flash('success') == ['2 items were pasted.']
+
+        request.session['kotti.paste'] = ([100, 101, 1000], action)
+        NodeActions(root, request).paste_nodes()
+        assert request.session.pop_flash('success') == ['2 items were pasted.']
+        assert request.session.pop_flash('error') == \
+            ['Could not paste node. It no longer exists.']
+
+        request.session['kotti.paste'] = ([1000, 1001], action)
+        NodeActions(root, request).paste_nodes()
+        assert request.session.pop_flash('success') == []
+        assert request.session.pop_flash('error') == \
+            ['2 items could not be pasted. They no longer exist.']
 
 
 class TestNodeRename:
