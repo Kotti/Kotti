@@ -372,6 +372,28 @@ class TestNodeShowHide:
             [u'Child 1 is now visible in the navigation.']
         assert root['child1'].in_navigation is True
 
+    def test_show_hide_multiple(self, root):
+        from kotti.resources import Document
+        from kotti.views.edit.actions import NodeActions
+
+        root['child1'] = Document(title=u"Child 1")
+        root['child2'] = Document(title=u"Child 2")
+
+        ids = [str(root['child1'].id), str(root['child2'].id)]
+
+        request = DummyRequest()
+        request.session['kotti.selected-children'] = ids
+        NodeActions(root, request).hide()
+        assert request.session.pop_flash('success') ==\
+            ['2 items are no longer visible in the navigation.']
+        assert root['child1'].in_navigation is False
+        assert root['child2'].in_navigation is False
+
+        request.session['kotti.selected-children'] = ids
+        NodeActions(root, request).show()
+        assert request.session.pop_flash('success') ==\
+            [u'2 items are now visible in the navigation.']
+
 
 class TestNodeShare:
     def test_roles(self, root):

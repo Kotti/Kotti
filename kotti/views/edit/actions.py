@@ -279,7 +279,7 @@ class NodeActions(object):
         if (not show) and dirty:
             msg = translate_pluralize(
                 _(u'${title} is no longer visible in the navigation.'),
-                _(u'${number} are no longer visible in the navigation.'),
+                _(u'${number} items are no longer visible in the navigation.'),
                 len(dirty),
                 mapping=dict(title=dirty[0].title, number=len(dirty)),
             )
