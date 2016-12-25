@@ -4,6 +4,11 @@ Change History
 1.3.1.dev0 - unreleased
 -----------------------
 
+- Added ``kotti.util.translate_pluralize``, a simple wrapper for
+  ``request.get_localizer().pluralize()``, similar in spirit to
+  ``kotti.util.translate``, a wrapper for
+  ``request.get_localizer().translate()``.
+
 - Avoid spamming success messages on various node actions
   (cut/copy/paste/move/show/hide) by collapsing them to a single success
   message.
