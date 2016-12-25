@@ -182,6 +182,9 @@ class TestNodeDelete:
 
 
 class TestNodeMove:
+    def _ids(self, *args):
+        return [str(c.id) for c in args]
+
     def test_move_up(self, root):
         from kotti.resources import Document
         from kotti.views.edit.actions import NodeActions
@@ -191,11 +194,21 @@ class TestNodeMove:
         assert root['child1'].position < root['child2'].position
 
         request = DummyRequest()
-        request.session['kotti.selected-children'] = [str(root['child2'].id)]
+        request.session['kotti.selected-children'] = self._ids(root['child2'])
         NodeActions(root, request).up()
         assert request.session.pop_flash('success') ==\
             [u'Child 2 was moved.']
         assert root['child1'].position > root['child2'].position
+
+        root['child3'] = Document(title=u"Child 3")     # positions are: 2 1 3
+        request.session['kotti.selected-children'] = self._ids(
+            root['child1'], root['child3'])
+        NodeActions(root, request).up()
+        assert request.session.pop_flash('success') ==\
+            [u'2 items were moved.']
+        assert [(c.title, c.position) for c in root.children] == [
+            (u'Child 1', 0), (u'Child 3', 1), (u'Child 2', 2)
+        ]
 
     def test_move_down(self, root):
         from kotti.resources import Document
@@ -207,8 +220,14 @@ class TestNodeMove:
         assert root['child1'].position < root['child3'].position
         assert root['child2'].position < root['child3'].position
 
+        # positions are: 1 2 3
         request = DummyRequest()
-        ids = [str(root['child1'].id), str(root['child2'].id)]
+        ids = self._ids(root['child1'])
+        request.session['kotti.selected-children'] = ids
+        NodeActions(root, request).down()
+        assert request.session.pop_flash('success') == ['Child 1 was moved.']
+
+        ids = self._ids(root['child2'], root['child1'])
         request.session['kotti.selected-children'] = ids
         NodeActions(root, request).down()
         assert request.session.pop_flash('success') ==\
