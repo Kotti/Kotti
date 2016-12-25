@@ -47,6 +47,48 @@ class TestAddableTypes:
         Document.type_info.addable_to = _saved
 
 
+class TestNodeCopy:
+
+    def test_node_copy_success_messages(self, root):
+        from kotti.resources import Document
+        from kotti.views.edit.actions import NodeActions
+
+        request = DummyRequest()
+
+        child1 = root['child1'] = Document(title=u"Child 1", id=123)
+        child2 = root['child2'] = Document(title=u"Child 2", id=124)
+
+        request.session['kotti.selected-children'] = [child1.id]
+        NodeActions(root, request).copy_node()
+
+        assert request.session.pop_flash('success') == ['Child 1 was copied.']
+
+        request.session['kotti.selected-children'] = [child1.id, child2.id]
+        NodeActions(root, request).copy_node()
+        assert request.session.pop_flash('success') == ['2 items were copied.']
+
+
+class TestNodeCut:
+
+    def test_node_cut_success_messages(self, root):
+        from kotti.resources import Document
+        from kotti.views.edit.actions import NodeActions
+
+        request = DummyRequest()
+
+        child1 = root['child1'] = Document(title=u"Child 1", id=123)
+        child2 = root['child2'] = Document(title=u"Child 2", id=124)
+
+        request.session['kotti.selected-children'] = [child1.id]
+        NodeActions(root, request).cut_nodes()
+
+        assert request.session.pop_flash('success') == ['Child 1 was cut.']
+
+        request.session['kotti.selected-children'] = [child1.id, child2.id]
+        NodeActions(root, request).cut_nodes()
+        assert request.session.pop_flash('success') == ['2 items were cut.']
+
+
 class TestNodePaste:
     def test_get_non_existing_paste_item(self, root):
         from kotti.util import get_paste_items
