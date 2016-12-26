@@ -104,7 +104,6 @@ class NodeActions(object):
         ids = self._selected_children()
         self.request.session['kotti.paste'] = (ids, 'copy')
 
-        # TODO: test in interface is this can be empty
         if ids:
             item = DBSession.query(Node).get(ids[0])
             msg = translate_pluralize(
