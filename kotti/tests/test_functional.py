@@ -539,11 +539,9 @@ class TestBrowser:
         form = self._select_children(resp, 0, 1, 2)
         resp = form.submit('delete_nodes').maybe_follow()
         assert "Are you sure" in resp.body
-        resp = resp.forms['form-delete-nodes'].submit('delete_nodes',
-                                                      status=302).maybe_follow()
-        assert "child, the third was deleted." in resp.body
-        assert "Hello Bob was deleted." in resp.body
-        assert "some.txt was deleted." in resp.body
+        resp = resp.forms['form-delete-nodes'].submit(
+            'delete_nodes', status=302).maybe_follow()
+        assert '3 items were deleted.' in resp.body
         resp = app.get('/forth-child/@@contents')
         assert "Welcome to Kotti" in resp.body
         assert '<i class="glyphicon glyphicon-home"></i>' in resp.body

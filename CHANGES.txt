@@ -4,6 +4,15 @@ Change History
 1.3.1.dev0 - unreleased
 -----------------------
 
+- Added ``kotti.util.translate_pluralize``, a simple wrapper for
+  ``request.get_localizer().pluralize()``, similar in spirit to
+  ``kotti.util.translate``, a wrapper for
+  ``request.get_localizer().translate()``.
+
+- Avoid spamming success messages on various node actions
+  (cut/copy/paste/move/show/hide) by collapsing them to a single success
+  message.
+
 - When rendering slot views, use ``request.blank()`` to create the request.
   This is the proper behaviour, in tune with customizing
   ``kotti.request_factory``. Also added ``blank()`` method to
@@ -28,6 +37,8 @@ Change History
 - Change: simplify `kotti.util.LinkBase.selected()`: use request.view_name
   instead of deriving the view name from request.url. Also, consider the View
   editor bar entry as selected even when the url doesn't end with a slash '/'
+
+- Feature: add Czech translation.
 
 1.3.0 - 2016-10-10
 ------------------

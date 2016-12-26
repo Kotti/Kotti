@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Kotti 1.3.1\n"
-"POT-Creation-Date: 2016-11-28 23:21+0100\n"
+"POT-Creation-Date: 2016-12-25 19:56+0200\n"
 "PO-Revision-Date: 2016-11-29 02:50+0100\n"
 "Last-Translator: Lukas Zdych <lukas.zdych@gmail.com>\n"
 "Language-Team: Czech\n"
@@ -191,28 +191,44 @@ msgstr ""
 "<a href=\"http://en.wikipedia.org/wiki/Extra_EA-300\"> Extra EA-300</a>.\n"
 "</small></p>\n"
 
-#: kotti/resources.py:524 kotti/views/edit/actions.py:457
+#: kotti/security.py:197
+msgid "Viewer"
+msgstr "Může číst"
+
+#: kotti/security.py:198
+msgid "Editor"
+msgstr "Může upravit"
+
+#: kotti/security.py:199
+msgid "Owner"
+msgstr "Vlastník"
+
+#: kotti/security.py:200
+msgid "Admin"
+msgstr "Správce"
+
+#: kotti/resources.py:524 kotti/views/edit/actions.py:522
 msgid "Copy"
 msgstr "Kopírovat"
 
-#: kotti/resources.py:525 kotti/views/edit/actions.py:458
+#: kotti/resources.py:525 kotti/views/edit/actions.py:523
 msgid "Cut"
 msgstr "Vyjmout"
 
-#: kotti/resources.py:526 kotti/views/edit/actions.py:454
+#: kotti/resources.py:526 kotti/views/edit/actions.py:519
 msgid "Paste"
 msgstr "Vložit"
 
-#: kotti/resources.py:527 kotti/templates/edit/rename-nodes.pt:8
-#: kotti/templates/edit/rename-nodes.pt:42 kotti/templates/edit/rename.pt:31
-#: kotti/views/edit/actions.py:459
+#: kotti/resources.py:527 kotti/views/edit/actions.py:524
+#: kotti/templates/edit/rename.pt:31 kotti/templates/edit/rename-nodes.pt:8
+#: kotti/templates/edit/rename-nodes.pt:42
 msgid "Rename"
 msgstr "Přejmenovat"
 
-#: kotti/resources.py:528 kotti/templates/edit/delete-nodes.pt:9
-#: kotti/templates/edit/delete-nodes.pt:49 kotti/templates/edit/delete.pt:24
-#: kotti/templates/site-setup/delete-user.pt:24 kotti/views/users.py:456
-#: kotti/views/edit/actions.py:461
+#: kotti/resources.py:528 kotti/views/users.py:456
+#: kotti/views/edit/actions.py:526 kotti/templates/site-setup/delete-user.pt:24
+#: kotti/templates/edit/delete.pt:24 kotti/templates/edit/delete-nodes.pt:9
+#: kotti/templates/edit/delete-nodes.pt:49
 msgid "Delete"
 msgstr "Odstranit"
 
@@ -245,403 +261,6 @@ msgstr "Dokument"
 msgid "File"
 msgstr "Soubor"
 
-#: kotti/security.py:197
-msgid "Viewer"
-msgstr "Může číst"
-
-#: kotti/security.py:198
-msgid "Editor"
-msgstr "Může upravit"
-
-#: kotti/security.py:199
-msgid "Owner"
-msgstr "Vlastník"
-
-#: kotti/security.py:200
-msgid "Admin"
-msgstr "Správce"
-
-#: kotti/templates/add-dropdown.pt:3
-msgid "Add"
-msgstr "Přidat"
-
-#: kotti/templates/add-dropdown.pt:13
-msgid "Upload Content"
-msgstr "Nahrát Obsah"
-
-#: kotti/templates/default-view-selector.pt:3
-msgid "Set default view"
-msgstr "Nastavit výchozí zobrazení"
-
-#: kotti/templates/editor-bar.pt:21
-msgid "View"
-msgstr "Zobrazení"
-
-#: kotti/templates/editor-bar.pt:44
-msgid "Navigate"
-msgstr "Navigovat"
-
-#: kotti/templates/editor-bar.pt:55
-msgid "Preferences"
-msgstr "Předvolby"
-
-#: kotti/templates/editor-bar.pt:60
-msgid "Site Setup"
-msgstr "Nastavení Stránek"
-
-#: kotti/templates/editor-bar.pt:71
-msgid "Logout"
-msgstr "Odhlasit se"
-
-#: kotti/templates/email-reset-password.pt:2
-msgid "Reset your password for ${site_title}."
-msgstr "Obnovení vašeho hesla pro ${site_title}."
-
-#: kotti/templates/email-reset-password.pt:4
-#: kotti/templates/email-set-password.pt:4
-msgid "Hello, ${user_title}!"
-msgstr "Ahoj, ${user_title}!"
-
-#: kotti/templates/email-reset-password.pt:5
-msgid "Click this link to reset your password at ${site_title}: ${url}"
-msgstr "Klikněte na tento odkaz pro obnovení vašeho hesla pro ${site_title}: ${url}"
-
-#: kotti/templates/email-set-password.pt:2
-msgid "Your registration for ${site_title}"
-msgstr "Vaše registrace pro ${site_title}"
-
-#: kotti/templates/email-set-password.pt:5
-msgid "You are joining ${site_title}."
-msgstr "Registrujete se k ${site_title}"
-
-#: kotti/templates/email-set-password.pt:6
-msgid "Click here to set your password and log in: ${url}"
-msgstr "Klikněte zde pro nastavení vašeho hesla a přihlášení: ${url}"
-
-#: kotti/templates/forbidden.pt:10
-msgid "Forbidden"
-msgstr "Přístup zamítnut"
-
-#: kotti/templates/login.pt:16
-msgid "Login"
-msgstr "Přihlášení"
-
-#: kotti/templates/login.pt:21 kotti/templates/login.pt:59
-msgid "Username or email"
-msgstr "Uživatelské jméno nebo e-mail"
-
-#: kotti/templates/login.pt:26 kotti/views/login.py:258
-#: kotti/views/users.py:222
-msgid "Password"
-msgstr "Heslo"
-
-#: kotti/templates/login.pt:34
-msgid "Log in"
-msgstr "Přihlásit se"
-
-#: kotti/templates/login.pt:45
-msgid "Forgot your password?"
-msgstr "Zapoměli jste vaše heslo?"
-
-#. Used in sentence: "Fill out your username or email and click
-#. ${reset_password} below to receive an email with a link to reset your
-#. password."
-#.
-#: kotti/templates/login.pt:52 kotti/templates/login.pt:67
-msgid "Reset password"
-msgstr "Obnovit heslo"
-
-#. Canonical text for ${reset_password} is: "Reset password"
-#: kotti/templates/login.pt:50
-msgid "Fill out your username or email and click ${reset_password} below to receive an email with a link to reset your password."
-msgstr "Vyplňte vaše uživatelské jméno nebo e-mail a klikněte níže na ${reset_password} pro zaslání emailu s odkazem pro nastavení hesla."
-
-#: kotti/templates/login.pt:78
-msgid "Not registered yet?"
-msgstr "Ještě nemáte účet?"
-
-#: kotti/templates/login.pt:85
-msgid "Register for an account on this site."
-msgstr "Zaregistrujte si uživatelský účet na těchto stránkách."
-
-#: kotti/templates/workflow-dropdown.pt:14
-msgid "Make ${state}"
-msgstr "Změnit na ${state}"
-
-#: kotti/templates/edit/breadcrumbs.pt:8
-msgid "You are here:"
-msgstr "Nacházite se zde:"
-
-#: kotti/templates/edit/change-state.pt:8
-msgid "Change workflow state"
-msgstr "Změnit stav"
-
-#: kotti/templates/edit/change-state.pt:12
-msgid "An item's workflow state determines who can see, edit and/or manage it."
-msgstr "Stav položky určuje kdo jí může vidět, upravit nebo spravovat."
-
-#: kotti/templates/edit/change-state.pt:18 kotti/templates/edit/contents.pt:34
-#: kotti/templates/edit/delete-nodes.pt:21 kotti/templates/view/folder.pt:20
-#: kotti/views/users.py:206 kotti/views/edit/content.py:35
-msgid "Title"
-msgstr "Název"
-
-#: kotti/templates/edit/change-state.pt:19 kotti/templates/edit/contents.pt:35
-#: kotti/templates/edit/delete-nodes.pt:22 kotti/templates/edit/share.pt:49
-#: kotti/templates/edit/upload.pt:18 kotti/templates/edit/upload.pt:108
-#: kotti/templates/site-setup/users.pt:69 kotti/templates/view/folder.pt:21
-msgid "Type"
-msgstr "Typ"
-
-#: kotti/templates/edit/change-state.pt:20 kotti/templates/edit/contents.pt:36
-#: kotti/templates/edit/delete-nodes.pt:23
-msgid "State"
-msgstr "Stav"
-
-#: kotti/templates/edit/change-state.pt:21 kotti/templates/edit/contents.pt:38
-#: kotti/templates/edit/delete-nodes.pt:24 kotti/templates/view/folder.pt:22
-msgid "Creation Date"
-msgstr "Datum vytvoření"
-
-#: kotti/templates/edit/change-state.pt:22 kotti/templates/edit/contents.pt:39
-#: kotti/templates/edit/delete-nodes.pt:25 kotti/templates/view/folder.pt:23
-msgid "Modification Date"
-msgstr "Poslední změna"
-
-#: kotti/templates/edit/change-state.pt:28 kotti/templates/edit/contents.pt:45
-#: kotti/templates/edit/delete-nodes.pt:31
-msgid "Select item"
-msgstr "Vybrat položku"
-
-#: kotti/templates/edit/change-state.pt:40
-#: kotti/templates/edit/change-state.pt:48
-msgid "Include children"
-msgstr "Zahrnout pložky obsahu"
-
-#: kotti/templates/edit/change-state.pt:41
-msgid "If checked, this will attempt to modify the status of all children in any selected documents and their subdocuments."
-msgstr "Je-li tato volba zaškrtnuta, systém se pokusí změnit stav všech vybraných dokumentů a obsahu v nich."
-
-#: kotti/templates/edit/change-state.pt:54
-msgid "Change state to"
-msgstr "Změnit stav na"
-
-#: kotti/templates/edit/change-state.pt:55
-msgid "Select the new state where all chosen items should be set."
-msgstr "Vyberte stav, který má být nastaven pro všechny vybrané položky."
-
-#: kotti/templates/edit/change-state.pt:60
-msgid "No change"
-msgstr "Žádná změna"
-
-#: kotti/templates/edit/change-state.pt:72 kotti/templates/edit/share.pt:85
-#: kotti/templates/site-setup/users.pt:107
-msgid "Apply changes"
-msgstr "Uložit změny"
-
-#: kotti/templates/edit/change-state.pt:74
-#: kotti/templates/edit/delete-nodes.pt:44 kotti/templates/edit/delete.pt:19
-#: kotti/templates/edit/rename-nodes.pt:44 kotti/views/form.py:83
-#: kotti/views/users.py:326 kotti/views/users.py:361 kotti/views/users.py:455
-msgid "Cancel"
-msgstr "Zrušit"
-
-#: kotti/templates/edit/contents.pt:26
-msgid "No content items are contained here."
-msgstr "Tato stránka neobsahuje žádné položky."
-
-#: kotti/templates/edit/contents.pt:33
-msgid "Select / deselect all"
-msgstr "Vybrat vše / zrušit výběr všeho"
-
-#: kotti/templates/edit/contents.pt:37
-msgid "Visibility"
-msgstr "Viditelnost"
-
-#: kotti/templates/edit/contents.pt:70
-msgid "Visible"
-msgstr "Viditelné"
-
-#: kotti/templates/edit/contents.pt:74
-msgid "Hidden"
-msgstr "Skryté"
-
-#: kotti/templates/edit/delete-nodes.pt:13
-msgid "Are you sure you want to delete the following items?"
-msgstr "Jste si jisti, že si přejete odstranit následující položky?"
-
-#: kotti/templates/edit/delete.pt:9 kotti/templates/site-setup/delete-user.pt:9
-msgid "Delete ${title}"
-msgstr "Odstranit ${title}"
-
-#: kotti/templates/edit/delete.pt:13
-msgid "Are you sure you want to delete ${title}?"
-msgstr "Jste si jisti, že si přejete odstranit ${title}?"
-
-#: kotti/templates/edit/nav-tree-view.pt:8
-msgid "Navigate Site"
-msgstr "Procházet Stránky"
-
-#: kotti/templates/edit/rename-nodes.pt:13 kotti/templates/edit/rename.pt:11
-msgid "Each content item has a name, which is used to create the url, and a title. Read the user manual about proper formatting of name and title if needed. You can change both below."
-msgstr "Každý obsah má jméno, které je použito k vytvoření URL a název. Pokud je potřebujete, přečtěte si manuál ohledně správného formátování jmen a názvů. Níže můžete obojí změnit."
-
-#: kotti/templates/edit/rename-nodes.pt:26
-#: kotti/templates/edit/rename-nodes.pt:28 kotti/templates/edit/rename.pt:19
-msgid "New name"
-msgstr "Nový název"
-
-#: kotti/templates/edit/rename-nodes.pt:34
-#: kotti/templates/edit/rename-nodes.pt:36 kotti/templates/edit/rename.pt:25
-msgid "New title"
-msgstr "Nový název"
-
-#: kotti/templates/edit/rename.pt:8
-msgid "Rename ${title}"
-msgstr "Přejmenovat ${title}"
-
-#: kotti/templates/edit/share.pt:8
-msgid "Share ${title}"
-msgstr "Sdílet ${title}"
-
-#: kotti/templates/edit/share.pt:14 kotti/templates/edit/share.pt:20
-#: kotti/templates/edit/share.pt:27 kotti/templates/site-setup/users.pt:48
-msgid "Search users and groups"
-msgstr "Hledat uživatele a skupiny"
-
-#: kotti/templates/edit/share.pt:34 kotti/templates/site-setup/users.pt:56
-msgid "Search"
-msgstr "Hledat"
-
-#: kotti/templates/edit/share.pt:44
-msgid "Assign local roles"
-msgstr "Přiřadit lokální role"
-
-#: kotti/templates/edit/share.pt:50 kotti/templates/site-setup/users.pt:70
-#: kotti/views/users.py:217
-msgid "Name"
-msgstr "Jméno"
-
-#: kotti/templates/edit/share.pt:61 kotti/templates/site-setup/users.pt:81
-#: kotti/views/users.py:323 kotti/views/users.py:517 kotti/views/users.py:552
-msgid "User"
-msgstr "Uživatel"
-
-#: kotti/templates/edit/share.pt:62 kotti/templates/site-setup/users.pt:82
-#: kotti/views/users.py:198 kotti/views/users.py:358 kotti/views/users.py:517
-#: kotti/views/users.py:552
-msgid "Group"
-msgstr "Skupina"
-
-#: kotti/templates/edit/share.pt:65 kotti/templates/site-setup/users.pt:85
-msgid "Gravatar"
-msgstr "Gravatar"
-
-#: kotti/templates/edit/share.pt:70 kotti/templates/site-setup/users.pt:91
-msgid "Assign role"
-msgstr "Přiřadit roli"
-
-#: kotti/templates/edit/upload.pt:10
-msgid "Upload content from local file(s)"
-msgstr "Nahrát soubor(y) z pevného disku"
-
-#: kotti/templates/edit/upload.pt:17 kotti/templates/edit/upload.pt:107
-msgid "Filename"
-msgstr "Název souboru"
-
-#: kotti/templates/edit/upload.pt:19 kotti/templates/edit/upload.pt:109
-msgid "Size"
-msgstr "Velikost"
-
-#: kotti/templates/edit/upload.pt:20
-msgid "Status"
-msgstr "Stav"
-
-#: kotti/templates/edit/upload.pt:21
-msgid "Progress"
-msgstr "Průběh"
-
-#: kotti/templates/edit/upload.pt:84
-msgid "Select file(s) to upload..."
-msgstr "Vybrat soubor(y) k nahrání…"
-
-#: kotti/templates/edit/upload.pt:92
-msgid "Upload ${number} files."
-msgstr "Nahrát ${number} souborů."
-
-#: kotti/templates/edit/upload.pt:97
-msgid "Dismiss all errors"
-msgstr "Skrýt všechny chyby"
-
-#: kotti/templates/http-errors/notfound.pt:6
-msgid "Not Found"
-msgstr "Nenalezeno"
-
-#: kotti/templates/http-errors/notfound.pt:7
-msgid "The resource could not be found"
-msgstr "Stránka nebyla nalezena"
-
-#: kotti/templates/site-setup/delete-user.pt:15
-msgid "Are you sure you want to delete ${type} ${title}?"
-msgstr "Jste si jisti, že si přejete odstranit ${type} ${title}?"
-
-#: kotti/templates/site-setup/user.pt:12
-msgid "Back to User Management"
-msgstr "Zpět na Správu Uživatelů"
-
-#: kotti/templates/site-setup/user.pt:21 kotti/views/form.py:161
-#, python-format
-msgid "Edit ${title}"
-msgstr "Upravit ${title}"
-
-#: kotti/templates/site-setup/users.pt:12
-msgid "Search user(s) / group(s)"
-msgstr "Hledat uživatele / skupiny"
-
-#: kotti/templates/site-setup/users.pt:17
-msgid "Add user"
-msgstr "Přidat uživatele"
-
-#: kotti/templates/site-setup/users.pt:22
-msgid "Add group"
-msgstr "Přidat skupinu"
-
-#: kotti/templates/site-setup/users.pt:34
-msgid "Find users or groups"
-msgstr "Najít uživatele nebo skupiny"
-
-#: kotti/templates/site-setup/users.pt:40
-msgid "User- / groupname"
-msgstr "Uživatel- / název skupiny"
-
-#: kotti/templates/site-setup/users.pt:50
-msgid "Blank search text finds all."
-msgstr "Při zadání prázdného vyhledávacího výrazu bude nalezeno vše."
-
-#: kotti/templates/site-setup/users.pt:65
-msgid "Assign global roles"
-msgstr "Přiřadit globální role"
-
-#: kotti/templates/site-setup/users.pt:117
-msgid "Add new user"
-msgstr "Přidat nového uživatele"
-
-#: kotti/templates/site-setup/users.pt:123
-msgid "Add new group"
-msgstr "Přidat novou skupinu"
-
-#: kotti/templates/view/search-results.pt:9
-msgid "Search Results"
-msgstr "Výsledky Vyhledávání"
-
-#: kotti/templates/view/search.pt:12
-msgid "Search..."
-msgstr "Hledat…"
-
-#: kotti/templates/view/tags.pt:7
-msgid "Tagged with:"
-msgstr "Oštítkováno"
-
 #: kotti/tests/testing_view.pt:11
 msgid "Welcome, ${user}! You are logged in."
 msgstr "Vítejte, ${user}! Jste přihlášeni."
@@ -650,45 +269,158 @@ msgstr "Vítejte, ${user}! Jste přihlášeni."
 msgid "Welcome, you are not logged in."
 msgstr "Vítejte, nejste přihlášeni."
 
-#: kotti/views/form.py:82 kotti/views/users.py:454
-msgid "Save"
-msgstr "Uložit"
+#: kotti/views/site_setup.py:8 kotti/views/users.py:390
+msgid "User Management"
+msgstr "Správa Uživatelů"
 
-#: kotti/views/form.py:84 kotti/views/users.py:73
-#: kotti/views/edit/actions.py:375 kotti/views/edit/actions.py:419
+#: kotti/views/users.py:73 kotti/views/form.py:84
+#: kotti/views/edit/actions.py:440 kotti/views/edit/actions.py:484
 msgid "Your changes have been saved."
 msgstr "Vaše změny byly uloženy."
 
-#: kotti/views/form.py:179
-msgid "Item was added."
-msgstr "Položka byla přidána."
+#: kotti/views/users.py:75 kotti/views/users.py:479
+#: kotti/views/edit/actions.py:378 kotti/views/edit/actions.py:444
+#: kotti/views/edit/actions.py:486 kotti/views/edit/actions.py:490
+msgid "No changes were made."
+msgstr "Nebyly provedeny žádné změny."
 
-#: kotti/views/form.py:203
+#: kotti/views/users.py:108
+msgid "No users or groups were found."
+msgstr "Nebyli nalezeni žádní uživatelé ani skupiny."
+
+#: kotti/views/users.py:155
+msgid "Invalid value"
+msgstr "Neplatná hodnota"
+
+#: kotti/views/users.py:161
+msgid "A user with that name already exists."
+msgstr "Uživatel s tímto jménem již existuje."
+
+#: kotti/views/users.py:168
+msgid "A user with that email already exists."
+msgstr "Uživatel s touto e-mailovou adresou již existuje."
+
+#: kotti/views/users.py:191
 #, python-format
-msgid "Add ${type} to ${title}."
-msgstr "Přidat ${type} do ${title}"
+msgid "No such group: ${group}"
+msgstr "Skupina ${group} neexistuje"
 
-#: kotti/views/form.py:207
-#, python-format
-msgid "Add ${type}."
-msgstr "Přidat ${type}."
+#: kotti/views/users.py:198 kotti/views/users.py:358 kotti/views/users.py:517
+#: kotti/views/users.py:552 kotti/templates/site-setup/users.pt:82
+#: kotti/templates/edit/share.pt:62
+msgid "Group"
+msgstr "Skupina"
 
-#: kotti/views/form.py:286
-#, python-format
-msgid "Maximum file size: ${size}MB"
-msgstr "Maximální velikost souboru: ${size}MB"
+#: kotti/views/users.py:206 kotti/views/edit/content.py:35
+#: kotti/templates/view/folder.pt:20 kotti/templates/edit/contents.pt:34
+#: kotti/templates/edit/change-state.pt:18
+#: kotti/templates/edit/delete-nodes.pt:21
+msgid "Title"
+msgstr "Název"
 
-#: kotti/views/login.py:66 kotti/views/users.py:280
+#: kotti/views/users.py:209 kotti/views/login.py:74 kotti/views/login.py:270
+msgid "Email"
+msgstr "E-mailová adresa"
+
+#: kotti/views/users.py:217 kotti/templates/site-setup/users.pt:70
+#: kotti/templates/edit/share.pt:50
+msgid "Name"
+msgstr "Jméno"
+
+#: kotti/views/users.py:222 kotti/views/login.py:258
+#: kotti/templates/login.pt:26
+msgid "Password"
+msgstr "Heslo"
+
+#: kotti/views/users.py:229
+msgid "Active"
+msgstr "Aktivní"
+
+#: kotti/views/users.py:230
+msgid "Untick this to deactivate the account."
+msgstr "Zde odškrtněte pro deaktivaci účtu."
+
+#: kotti/views/users.py:236
+msgid "Global roles"
+msgstr "Globální role"
+
+#: kotti/views/users.py:240
+msgid "Groups"
+msgstr "Skupiny"
+
+#: kotti/views/users.py:277
+msgid "Leave this empty and tick the 'Send password registration' box below to have the user set their own password."
+msgstr "Ponechte toto prázdné a níže zaškrtněte pole ‘Odeslat registrační heslo’, aby si uživatel nastavil vlastní heslo."
+
+#: kotti/views/users.py:280 kotti/views/login.py:66
 msgid "Full name"
 msgstr "Celé jméno"
+
+#: kotti/views/users.py:323 kotti/views/users.py:517 kotti/views/users.py:552
+#: kotti/templates/site-setup/users.pt:81 kotti/templates/edit/share.pt:61
+msgid "User"
+msgstr "Uživatel"
+
+#: kotti/views/users.py:325
+msgid "Add User"
+msgstr "Přidat Uživatele"
+
+#: kotti/views/users.py:326 kotti/views/users.py:361 kotti/views/users.py:455
+#: kotti/views/form.py:83 kotti/templates/edit/delete.pt:19
+#: kotti/templates/edit/change-state.pt:74
+#: kotti/templates/edit/delete-nodes.pt:44
+#: kotti/templates/edit/rename-nodes.pt:44
+msgid "Cancel"
+msgstr "Zrušit"
+
+#: kotti/views/users.py:335
+msgid "Send password registration link."
+msgstr "Odeslat odkaz pro obnovení hesla."
+
+#: kotti/views/users.py:350
+#, python-format
+msgid "${title} was added."
+msgstr "${title} bylo přidáno."
+
+#: kotti/views/users.py:360
+msgid "Add Group"
+msgstr "Přidat Skupinu"
+
+#: kotti/views/users.py:454 kotti/views/form.py:82
+msgid "Save"
+msgstr "Uložit"
+
+#: kotti/views/users.py:521
+#, python-format
+msgid "Edit ${principal_type} ${title}"
+msgstr "Upravit ${principal_type} ${title}"
+
+#: kotti/views/users.py:549
+msgid "User was not found."
+msgstr "Uživatel nebyl nalezen."
+
+#: kotti/views/users.py:559
+#, python-format
+msgid "${principal_type} ${title} was deleted."
+msgstr "${principal_type} ${title} byl odstraněn."
+
+#: kotti/views/users.py:567
+#, python-format
+msgid "Delete ${principal_type} ${title}"
+msgstr "Odstranit ${principal_type} ${title}"
+
+#: kotti/views/users.py:574
+msgid "No name was given."
+msgstr "Nebylo zadáno jméno."
+
+#: kotti/views/users.py:603
+#, python-format
+msgid "My preferences - ${title}"
+msgstr "Mé předvolby - ${title}"
 
 #: kotti/views/login.py:69
 msgid "Username"
 msgstr "Uživatelské jméno"
-
-#: kotti/views/login.py:74 kotti/views/login.py:270 kotti/views/users.py:209
-msgid "Email"
-msgstr "E-mailová adresa"
 
 #: kotti/views/login.py:83
 msgid "Register"
@@ -745,176 +477,29 @@ msgstr "Vypadá to, že váš token pro obnovu hesla již vypršel."
 msgid "Reset your password - ${title}."
 msgstr "Obnova vašeho hesla - ${title}."
 
-#: kotti/views/site_setup.py:8 kotti/views/users.py:390
-msgid "User Management"
-msgstr "Správa Uživatelů"
-
-#: kotti/views/users.py:75 kotti/views/users.py:479
-#: kotti/views/edit/actions.py:313 kotti/views/edit/actions.py:379
-#: kotti/views/edit/actions.py:421 kotti/views/edit/actions.py:425
-msgid "No changes were made."
-msgstr "Nebyly provedeny žádné změny."
-
-#: kotti/views/users.py:108
-msgid "No users or groups were found."
-msgstr "Nebyli nalezeni žádní uživatelé ani skupiny."
-
-#: kotti/views/users.py:155
-msgid "Invalid value"
-msgstr "Neplatná hodnota"
-
-#: kotti/views/users.py:161
-msgid "A user with that name already exists."
-msgstr "Uživatel s tímto jménem již existuje."
-
-#: kotti/views/users.py:168
-msgid "A user with that email already exists."
-msgstr "Uživatel s touto e-mailovou adresou již existuje."
-
-#: kotti/views/users.py:191
+#: kotti/views/form.py:161 kotti/templates/site-setup/user.pt:21
 #, python-format
-msgid "No such group: ${group}"
-msgstr "Skupina ${group} neexistuje"
+msgid "Edit ${title}"
+msgstr "Upravit ${title}"
 
-#: kotti/views/users.py:229
-msgid "Active"
-msgstr "Aktivní"
+#: kotti/views/form.py:179
+msgid "Item was added."
+msgstr "Položka byla přidána."
 
-#: kotti/views/users.py:230
-msgid "Untick this to deactivate the account."
-msgstr "Zde odškrtněte pro deaktivaci účtu."
-
-#: kotti/views/users.py:236
-msgid "Global roles"
-msgstr "Globální role"
-
-#: kotti/views/users.py:240
-msgid "Groups"
-msgstr "Skupiny"
-
-#: kotti/views/users.py:277
-msgid "Leave this empty and tick the 'Send password registration' box below to have the user set their own password."
-msgstr "Ponechte toto prázdné a níže zaškrtněte pole ‘Odeslat registrační heslo’, aby si uživatel nastavil vlastní heslo."
-
-#: kotti/views/users.py:325
-msgid "Add User"
-msgstr "Přidat Uživatele"
-
-#: kotti/views/users.py:335
-msgid "Send password registration link."
-msgstr "Odeslat odkaz pro obnovení hesla."
-
-#: kotti/views/users.py:350
+#: kotti/views/form.py:203
 #, python-format
-msgid "${title} was added."
-msgstr "${title} bylo přidáno."
+msgid "Add ${type} to ${title}."
+msgstr "Přidat ${type} do ${title}"
 
-#: kotti/views/users.py:360
-msgid "Add Group"
-msgstr "Přidat Skupinu"
-
-#: kotti/views/users.py:521
+#: kotti/views/form.py:207
 #, python-format
-msgid "Edit ${principal_type} ${title}"
-msgstr "Upravit ${principal_type} ${title}"
+msgid "Add ${type}."
+msgstr "Přidat ${type}."
 
-#: kotti/views/users.py:549
-msgid "User was not found."
-msgstr "Uživatel nebyl nalezen."
-
-#: kotti/views/users.py:559
+#: kotti/views/form.py:286
 #, python-format
-msgid "${principal_type} ${title} was deleted."
-msgstr "${principal_type} ${title} byl odstraněn."
-
-#: kotti/views/users.py:567
-#, python-format
-msgid "Delete ${principal_type} ${title}"
-msgstr "Odstranit ${principal_type} ${title}"
-
-#: kotti/views/users.py:574
-msgid "No name was given."
-msgstr "Nebylo zadáno jméno."
-
-#: kotti/views/users.py:603
-#, python-format
-msgid "My preferences - ${title}"
-msgstr "Mé předvolby - ${title}"
-
-#: kotti/views/edit/actions.py:107
-#, python-format
-msgid "${title} was copied."
-msgstr "${title} bylo zkopírováno."
-
-#: kotti/views/edit/actions.py:125
-#, python-format
-msgid "${title} was cut."
-msgstr "${title} bylo vyjmuto."
-
-#: kotti/views/edit/actions.py:160
-#, python-format
-msgid "${title} was pasted."
-msgstr "${title} bylo vloženo."
-
-#: kotti/views/edit/actions.py:163
-msgid "Could not paste node. It no longer exists."
-msgstr "Položku nebylo možné vložit. Položka již neexistuje."
-
-#: kotti/views/edit/actions.py:184
-#, python-format
-msgid "${title} was moved."
-msgstr "${title} bylo přesunuto."
-
-#: kotti/views/edit/actions.py:226
-#, python-format
-msgid "${title} is now visible in the navigation."
-msgstr "${title} je nyní zobrazeno v navigaci."
-
-#: kotti/views/edit/actions.py:229
-#, python-format
-msgid "${title} is no longer visible in the navigation."
-msgstr "${title} již není zobrazeno v navigaci."
-
-#: kotti/views/edit/actions.py:278 kotti/views/edit/actions.py:307
-#, python-format
-msgid "${title} was deleted."
-msgstr "${title} bylo odstraněno."
-
-#: kotti/views/edit/actions.py:304
-msgid "Nothing was deleted."
-msgstr "Žádné položky nebyly odstraněny."
-
-#: kotti/views/edit/actions.py:340 kotti/views/edit/actions.py:367
-msgid "Name and title are required."
-msgstr "Jměno a název jsou povinné."
-
-#: kotti/views/edit/actions.py:344
-msgid "Item was renamed."
-msgstr "Položka byla přejmenována."
-
-#: kotti/views/edit/actions.py:465
-msgid "Change State"
-msgstr "Změnit Stav"
-
-#: kotti/views/edit/actions.py:466
-msgid "Move up"
-msgstr "Posonout nahoru"
-
-#: kotti/views/edit/actions.py:467
-msgid "Move down"
-msgstr "Posunout dolů"
-
-#: kotti/views/edit/actions.py:468
-msgid "Show"
-msgstr "Zobrazit"
-
-#: kotti/views/edit/actions.py:469
-msgid "Hide"
-msgstr "Skrýt"
-
-#: kotti/views/edit/actions.py:508
-msgid "You have to select items to perform an action."
-msgstr "Pro provedení akce je nutné vybrat položky."
+msgid "Maximum file size: ${size}MB"
+msgstr "Maximální velikost souboru: ${size}MB"
 
 #: kotti/views/edit/content.py:41
 msgid "Description"
@@ -927,6 +512,121 @@ msgstr "Značky"
 #: kotti/views/edit/content.py:56
 msgid "Body"
 msgstr "Hlavní text"
+
+#: kotti/views/edit/actions.py:111
+#, python-format
+msgid "${title} was copied."
+msgstr "${title} bylo zkopírováno."
+
+#: kotti/views/edit/actions.py:112
+#, fuzzy, python-format
+msgid "${number} items were copied."
+msgstr "${title} bylo zkopírováno."
+
+#: kotti/views/edit/actions.py:136
+#, python-format
+msgid "${title} was cut."
+msgstr "${title} bylo vyjmuto."
+
+#: kotti/views/edit/actions.py:137
+#, python-format
+msgid "${number} items were cut."
+msgstr ""
+
+#: kotti/views/edit/actions.py:184
+#, python-format
+msgid "${title} was pasted."
+msgstr "${title} bylo vloženo."
+
+#: kotti/views/edit/actions.py:185
+#, fuzzy, python-format
+msgid "${number} items were pasted."
+msgstr "${title} bylo vloženo."
+
+#: kotti/views/edit/actions.py:194
+msgid "Could not paste node. It no longer exists."
+msgstr "Položku nebylo možné vložit. Položka již neexistuje."
+
+#: kotti/views/edit/actions.py:195
+#, fuzzy, python-format
+msgid "${number} items could not be pasted. They no longer exist."
+msgstr "Položku nebylo možné vložit. Položka již neexistuje."
+
+#: kotti/views/edit/actions.py:223
+#, python-format
+msgid "${title} was moved."
+msgstr "${title} bylo přesunuto."
+
+#: kotti/views/edit/actions.py:224
+#, fuzzy, python-format
+msgid "${number} items were moved."
+msgstr "${title} bylo přesunuto."
+
+#: kotti/views/edit/actions.py:272
+#, python-format
+msgid "${title} is now visible in the navigation."
+msgstr "${title} je nyní zobrazeno v navigaci."
+
+#: kotti/views/edit/actions.py:273
+#, fuzzy, python-format
+msgid "${number} items are now visible in the navigation."
+msgstr "${title} je nyní zobrazeno v navigaci."
+
+#: kotti/views/edit/actions.py:281
+#, python-format
+msgid "${title} is no longer visible in the navigation."
+msgstr "${title} již není zobrazeno v navigaci."
+
+#: kotti/views/edit/actions.py:282
+#, fuzzy, python-format
+msgid "${number} items are no longer visible in the navigation."
+msgstr "${title} již není zobrazeno v navigaci."
+
+#: kotti/views/edit/actions.py:334 kotti/views/edit/actions.py:368
+#, python-format
+msgid "${title} was deleted."
+msgstr "${title} bylo odstraněno."
+
+#: kotti/views/edit/actions.py:360
+msgid "Nothing was deleted."
+msgstr "Žádné položky nebyly odstraněny."
+
+#: kotti/views/edit/actions.py:369
+#, fuzzy, python-format
+msgid "${number} items were deleted."
+msgstr "${title} bylo odstraněno."
+
+#: kotti/views/edit/actions.py:405 kotti/views/edit/actions.py:432
+msgid "Name and title are required."
+msgstr "Jměno a název jsou povinné."
+
+#: kotti/views/edit/actions.py:409
+msgid "Item was renamed."
+msgstr "Položka byla přejmenována."
+
+#: kotti/views/edit/actions.py:530
+msgid "Change State"
+msgstr "Změnit Stav"
+
+#: kotti/views/edit/actions.py:531
+msgid "Move up"
+msgstr "Posonout nahoru"
+
+#: kotti/views/edit/actions.py:532
+msgid "Move down"
+msgstr "Posunout dolů"
+
+#: kotti/views/edit/actions.py:533
+msgid "Show"
+msgstr "Zobrazit"
+
+#: kotti/views/edit/actions.py:534
+msgid "Hide"
+msgstr "Skrýt"
+
+#: kotti/views/edit/actions.py:573
+msgid "You have to select items to perform an action."
+msgstr "Pro provedení akce je nutné vybrat položky."
 
 #: kotti/views/edit/default_views.py:89
 msgid "Default view"
@@ -944,11 +644,355 @@ msgstr "Výchozí zobrazení bylo nastaveno."
 msgid "Default view could not be set."
 msgstr "Nebylo možné nastavit výchozí zobrazení."
 
-msgid "Submit"
-msgstr "Předložit"
+#: kotti/templates/default-view-selector.pt:3
+msgid "Set default view"
+msgstr "Nastavit výchozí zobrazení"
 
-msgid "Private"
-msgstr "Soukromé"
+#: kotti/templates/login.pt:16
+msgid "Login"
+msgstr "Přihlášení"
 
-msgid "Public"
-msgstr "Zveřejněno"
+#: kotti/templates/login.pt:21 kotti/templates/login.pt:59
+msgid "Username or email"
+msgstr "Uživatelské jméno nebo e-mail"
+
+#: kotti/templates/login.pt:34
+msgid "Log in"
+msgstr "Přihlásit se"
+
+#: kotti/templates/login.pt:45
+msgid "Forgot your password?"
+msgstr "Zapoměli jste vaše heslo?"
+
+#. Used in sentence: "Fill out your username or email and click
+#. ${reset_password} below to receive an email with a link to reset your
+#. password."
+#.
+#: kotti/templates/login.pt:52 kotti/templates/login.pt:67
+msgid "Reset password"
+msgstr "Obnovit heslo"
+
+#. Canonical text for ${reset_password} is: "Reset password"
+#: kotti/templates/login.pt:50
+msgid "Fill out your username or email and click ${reset_password} below to receive an email with a link to reset your password."
+msgstr "Vyplňte vaše uživatelské jméno nebo e-mail a klikněte níže na ${reset_password} pro zaslání emailu s odkazem pro nastavení hesla."
+
+#: kotti/templates/login.pt:78
+msgid "Not registered yet?"
+msgstr "Ještě nemáte účet?"
+
+#: kotti/templates/login.pt:85
+msgid "Register for an account on this site."
+msgstr "Zaregistrujte si uživatelský účet na těchto stránkách."
+
+#: kotti/templates/workflow-dropdown.pt:14
+msgid "Make ${state}"
+msgstr "Změnit na ${state}"
+
+#: kotti/templates/add-dropdown.pt:3
+msgid "Add"
+msgstr "Přidat"
+
+#: kotti/templates/add-dropdown.pt:13
+msgid "Upload Content"
+msgstr "Nahrát Obsah"
+
+#: kotti/templates/forbidden.pt:10
+msgid "Forbidden"
+msgstr "Přístup zamítnut"
+
+#: kotti/templates/email-reset-password.pt:2
+msgid "Reset your password for ${site_title}."
+msgstr "Obnovení vašeho hesla pro ${site_title}."
+
+#: kotti/templates/email-reset-password.pt:4
+#: kotti/templates/email-set-password.pt:4
+msgid "Hello, ${user_title}!"
+msgstr "Ahoj, ${user_title}!"
+
+#: kotti/templates/email-reset-password.pt:5
+msgid "Click this link to reset your password at ${site_title}: ${url}"
+msgstr "Klikněte na tento odkaz pro obnovení vašeho hesla pro ${site_title}: ${url}"
+
+#: kotti/templates/editor-bar.pt:19
+msgid "View"
+msgstr "Zobrazení"
+
+#: kotti/templates/editor-bar.pt:42
+msgid "Navigate"
+msgstr "Navigovat"
+
+#: kotti/templates/editor-bar.pt:53
+msgid "Preferences"
+msgstr "Předvolby"
+
+#: kotti/templates/editor-bar.pt:58
+msgid "Site Setup"
+msgstr "Nastavení Stránek"
+
+#: kotti/templates/editor-bar.pt:69
+msgid "Logout"
+msgstr "Odhlasit se"
+
+#: kotti/templates/email-set-password.pt:2
+msgid "Your registration for ${site_title}"
+msgstr "Vaše registrace pro ${site_title}"
+
+#: kotti/templates/email-set-password.pt:5
+msgid "You are joining ${site_title}."
+msgstr "Registrujete se k ${site_title}"
+
+#: kotti/templates/email-set-password.pt:6
+msgid "Click here to set your password and log in: ${url}"
+msgstr "Klikněte zde pro nastavení vašeho hesla a přihlášení: ${url}"
+
+#: kotti/templates/http-errors/notfound.pt:26
+msgid "Not Found"
+msgstr "Nenalezeno"
+
+#: kotti/templates/http-errors/notfound.pt:27
+msgid "The resource could not be found"
+msgstr "Stránka nebyla nalezena"
+
+#: kotti/templates/site-setup/users.pt:12
+msgid "Search user(s) / group(s)"
+msgstr "Hledat uživatele / skupiny"
+
+#: kotti/templates/site-setup/users.pt:17
+msgid "Add user"
+msgstr "Přidat uživatele"
+
+#: kotti/templates/site-setup/users.pt:22
+msgid "Add group"
+msgstr "Přidat skupinu"
+
+#: kotti/templates/site-setup/users.pt:34
+msgid "Find users or groups"
+msgstr "Najít uživatele nebo skupiny"
+
+#: kotti/templates/site-setup/users.pt:40
+msgid "User- / groupname"
+msgstr "Uživatel- / název skupiny"
+
+#: kotti/templates/site-setup/users.pt:48 kotti/templates/edit/share.pt:14
+#: kotti/templates/edit/share.pt:20 kotti/templates/edit/share.pt:27
+msgid "Search users and groups"
+msgstr "Hledat uživatele a skupiny"
+
+#: kotti/templates/site-setup/users.pt:50
+msgid "Blank search text finds all."
+msgstr "Při zadání prázdného vyhledávacího výrazu bude nalezeno vše."
+
+#: kotti/templates/site-setup/users.pt:56 kotti/templates/edit/share.pt:34
+msgid "Search"
+msgstr "Hledat"
+
+#: kotti/templates/site-setup/users.pt:65
+msgid "Assign global roles"
+msgstr "Přiřadit globální role"
+
+#: kotti/templates/site-setup/users.pt:69 kotti/templates/view/folder.pt:21
+#: kotti/templates/edit/contents.pt:35 kotti/templates/edit/change-state.pt:19
+#: kotti/templates/edit/delete-nodes.pt:22 kotti/templates/edit/share.pt:49
+#: kotti/templates/edit/upload.pt:18 kotti/templates/edit/upload.pt:108
+msgid "Type"
+msgstr "Typ"
+
+#: kotti/templates/site-setup/users.pt:85 kotti/templates/edit/share.pt:65
+msgid "Gravatar"
+msgstr "Gravatar"
+
+#: kotti/templates/site-setup/users.pt:91 kotti/templates/edit/share.pt:70
+msgid "Assign role"
+msgstr "Přiřadit roli"
+
+#: kotti/templates/site-setup/users.pt:107
+#: kotti/templates/edit/change-state.pt:72 kotti/templates/edit/share.pt:85
+msgid "Apply changes"
+msgstr "Uložit změny"
+
+#: kotti/templates/site-setup/users.pt:117
+msgid "Add new user"
+msgstr "Přidat nového uživatele"
+
+#: kotti/templates/site-setup/users.pt:123
+msgid "Add new group"
+msgstr "Přidat novou skupinu"
+
+#: kotti/templates/site-setup/user.pt:12
+msgid "Back to User Management"
+msgstr "Zpět na Správu Uživatelů"
+
+#: kotti/templates/site-setup/delete-user.pt:9 kotti/templates/edit/delete.pt:9
+msgid "Delete ${title}"
+msgstr "Odstranit ${title}"
+
+#: kotti/templates/site-setup/delete-user.pt:15
+msgid "Are you sure you want to delete ${type} ${title}?"
+msgstr "Jste si jisti, že si přejete odstranit ${type} ${title}?"
+
+#: kotti/templates/view/search.pt:12
+msgid "Search..."
+msgstr "Hledat…"
+
+#: kotti/templates/view/folder.pt:22 kotti/templates/edit/contents.pt:38
+#: kotti/templates/edit/change-state.pt:21
+#: kotti/templates/edit/delete-nodes.pt:24
+msgid "Creation Date"
+msgstr "Datum vytvoření"
+
+#: kotti/templates/view/folder.pt:23 kotti/templates/edit/contents.pt:39
+#: kotti/templates/edit/change-state.pt:22
+#: kotti/templates/edit/delete-nodes.pt:25
+msgid "Modification Date"
+msgstr "Poslední změna"
+
+#: kotti/templates/view/tags.pt:7
+msgid "Tagged with:"
+msgstr "Oštítkováno"
+
+#: kotti/templates/view/search-results.pt:9
+msgid "Search Results"
+msgstr "Výsledky Vyhledávání"
+
+#: kotti/templates/edit/contents.pt:26
+msgid "No content items are contained here."
+msgstr "Tato stránka neobsahuje žádné položky."
+
+#: kotti/templates/edit/contents.pt:33
+msgid "Select / deselect all"
+msgstr "Vybrat vše / zrušit výběr všeho"
+
+#: kotti/templates/edit/contents.pt:36 kotti/templates/edit/change-state.pt:20
+#: kotti/templates/edit/delete-nodes.pt:23
+msgid "State"
+msgstr "Stav"
+
+#: kotti/templates/edit/contents.pt:37
+msgid "Visibility"
+msgstr "Viditelnost"
+
+#: kotti/templates/edit/contents.pt:45 kotti/templates/edit/change-state.pt:28
+#: kotti/templates/edit/delete-nodes.pt:31
+msgid "Select item"
+msgstr "Vybrat položku"
+
+#: kotti/templates/edit/contents.pt:70
+msgid "Visible"
+msgstr "Viditelné"
+
+#: kotti/templates/edit/contents.pt:74
+msgid "Hidden"
+msgstr "Skryté"
+
+#: kotti/templates/edit/delete.pt:13
+msgid "Are you sure you want to delete ${title}?"
+msgstr "Jste si jisti, že si přejete odstranit ${title}?"
+
+#: kotti/templates/edit/change-state.pt:8
+msgid "Change workflow state"
+msgstr "Změnit stav"
+
+#: kotti/templates/edit/change-state.pt:12
+msgid "An item's workflow state determines who can see, edit and/or manage it."
+msgstr "Stav položky určuje kdo jí může vidět, upravit nebo spravovat."
+
+#: kotti/templates/edit/change-state.pt:40
+#: kotti/templates/edit/change-state.pt:48
+msgid "Include children"
+msgstr "Zahrnout pložky obsahu"
+
+#: kotti/templates/edit/change-state.pt:41
+msgid "If checked, this will attempt to modify the status of all children in any selected documents and their subdocuments."
+msgstr "Je-li tato volba zaškrtnuta, systém se pokusí změnit stav všech vybraných dokumentů a obsahu v nich."
+
+#: kotti/templates/edit/change-state.pt:54
+msgid "Change state to"
+msgstr "Změnit stav na"
+
+#: kotti/templates/edit/change-state.pt:55
+msgid "Select the new state where all chosen items should be set."
+msgstr "Vyberte stav, který má být nastaven pro všechny vybrané položky."
+
+#: kotti/templates/edit/change-state.pt:60
+msgid "No change"
+msgstr "Žádná změna"
+
+#: kotti/templates/edit/delete-nodes.pt:13
+msgid "Are you sure you want to delete the following items?"
+msgstr "Jste si jisti, že si přejete odstranit následující položky?"
+
+#: kotti/templates/edit/share.pt:8
+msgid "Share ${title}"
+msgstr "Sdílet ${title}"
+
+#: kotti/templates/edit/share.pt:44
+msgid "Assign local roles"
+msgstr "Přiřadit lokální role"
+
+#: kotti/templates/edit/rename.pt:8
+msgid "Rename ${title}"
+msgstr "Přejmenovat ${title}"
+
+#: kotti/templates/edit/rename.pt:11 kotti/templates/edit/rename-nodes.pt:13
+msgid "Each content item has a name, which is used to create the url, and a title. Read the user manual about proper formatting of name and title if needed. You can change both below."
+msgstr "Každý obsah má jméno, které je použito k vytvoření URL a název. Pokud je potřebujete, přečtěte si manuál ohledně správného formátování jmen a názvů. Níže můžete obojí změnit."
+
+#: kotti/templates/edit/rename.pt:19 kotti/templates/edit/rename-nodes.pt:26
+#: kotti/templates/edit/rename-nodes.pt:28
+msgid "New name"
+msgstr "Nový název"
+
+#: kotti/templates/edit/rename.pt:25 kotti/templates/edit/rename-nodes.pt:34
+#: kotti/templates/edit/rename-nodes.pt:36
+msgid "New title"
+msgstr "Nový název"
+
+#: kotti/templates/edit/breadcrumbs.pt:8
+msgid "You are here:"
+msgstr "Nacházite se zde:"
+
+#: kotti/templates/edit/nav-tree-view.pt:8
+msgid "Navigate Site"
+msgstr "Procházet Stránky"
+
+#: kotti/templates/edit/upload.pt:10
+msgid "Upload content from local file(s)"
+msgstr "Nahrát soubor(y) z pevného disku"
+
+#: kotti/templates/edit/upload.pt:17 kotti/templates/edit/upload.pt:107
+msgid "Filename"
+msgstr "Název souboru"
+
+#: kotti/templates/edit/upload.pt:19 kotti/templates/edit/upload.pt:109
+msgid "Size"
+msgstr "Velikost"
+
+#: kotti/templates/edit/upload.pt:20
+msgid "Status"
+msgstr "Stav"
+
+#: kotti/templates/edit/upload.pt:21
+msgid "Progress"
+msgstr "Průběh"
+
+#: kotti/templates/edit/upload.pt:84
+msgid "Select file(s) to upload..."
+msgstr "Vybrat soubor(y) k nahrání…"
+
+#: kotti/templates/edit/upload.pt:92
+msgid "Upload ${number} files."
+msgstr "Nahrát ${number} souborů."
+
+#: kotti/templates/edit/upload.pt:97
+msgid "Dismiss all errors"
+msgstr "Skrýt všechny chyby"
+
+#~ msgid "Submit"
+#~ msgstr "Předložit"
+
+#~ msgid "Private"
+#~ msgstr "Soukromé"
+
+#~ msgid "Public"
+#~ msgstr "Zveřejněno"
