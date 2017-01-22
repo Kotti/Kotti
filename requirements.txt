@@ -66,7 +66,7 @@ Unidecode==0.4.19
 usersettings==1.0.7
 venusian==1.0
 waitress==1.0.1
-WebOb==1.7.0
+WebOb==1.7.1
 zope.component==4.3.0
 zope.configuration==4.0.3
 zope.deprecation==4.2.0
