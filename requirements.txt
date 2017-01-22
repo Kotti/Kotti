@@ -39,7 +39,7 @@ Mako==1.0.6
 MarkupSafe==0.23
 PasteDeploy==1.5.2
 peppercorn==0.5
-Pillow==3.4.2
+Pillow==4.0.0
 plone.scale==2.1
 polib==1.0.8
 py-bcrypt==0.4
