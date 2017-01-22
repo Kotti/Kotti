@@ -50,7 +50,7 @@ pyramid-mailer==0.15.1
 pyramid-tm==1.1.1
 pyramid-zcml==1.0.0
 pyramid==1.7.3
-python-editor==1.0.1
+python-editor==1.0.3
 pytz==2016.10
 repoze.lru==0.6
 repoze.sendmail==4.3
