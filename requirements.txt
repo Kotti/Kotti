@@ -13,7 +13,7 @@ filedepot==0.4.0
 FormEncode==2.0.0a1
 funcsigs==1.0.2
 html2text==2016.9.19
-html5lib==0.9999999
+html5lib==0.999999999
 iso8601==0.1.11
 js.angular==1.1.4
 js.bootstrap==3.3.4
