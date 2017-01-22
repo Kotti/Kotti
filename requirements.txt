@@ -1,4 +1,4 @@
-alembic==0.8.9
+alembic==0.8.10
 appdirs==1.4.0
 Babel==2.3.4
 Beaker==1.8.1
