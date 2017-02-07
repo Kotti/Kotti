@@ -5,6 +5,7 @@ from kotti.testing import DummyRequest
 from pyramid.exceptions import Forbidden
 from pytest import raises
 from webob.multidict import MultiDict
+import pytest
 
 
 class TestAddableTypes:
@@ -47,6 +48,48 @@ class TestAddableTypes:
         Document.type_info.addable_to = _saved
 
 
+class TestNodeCopy:
+
+    def test_node_copy_success_messages(self, root):
+        from kotti.resources import Document
+        from kotti.views.edit.actions import NodeActions
+
+        request = DummyRequest()
+
+        child1 = root['child1'] = Document(title=u"Child 1", id=123)
+        child2 = root['child2'] = Document(title=u"Child 2", id=124)
+
+        request.session['kotti.selected-children'] = [child1.id]
+        NodeActions(root, request).copy_node()
+
+        assert request.session.pop_flash('success') == ['Child 1 was copied.']
+
+        request.session['kotti.selected-children'] = [child1.id, child2.id]
+        NodeActions(root, request).copy_node()
+        assert request.session.pop_flash('success') == ['2 items were copied.']
+
+
+class TestNodeCut:
+
+    def test_node_cut_success_messages(self, root):
+        from kotti.resources import Document
+        from kotti.views.edit.actions import NodeActions
+
+        request = DummyRequest()
+
+        child1 = root['child1'] = Document(title=u"Child 1", id=123)
+        child2 = root['child2'] = Document(title=u"Child 2", id=124)
+
+        request.session['kotti.selected-children'] = [child1.id]
+        NodeActions(root, request).cut_nodes()
+
+        assert request.session.pop_flash('success') == ['Child 1 was cut.']
+
+        request.session['kotti.selected-children'] = [child1.id, child2.id]
+        NodeActions(root, request).cut_nodes()
+        assert request.session.pop_flash('success') == ['2 items were cut.']
+
+
 class TestNodePaste:
     def test_get_non_existing_paste_item(self, root):
         from kotti.util import get_paste_items
@@ -85,6 +128,35 @@ class TestNodePaste:
         request.session['kotti.paste'] = ([1], 'copy')
         response = NodeActions(root, request).paste_nodes()
         assert response.status == '302 Found'
+
+    @pytest.mark.parametrize('action', ['copy', 'cut'])
+    def test_paste_messages(self, root, action):
+        from kotti.views.edit.actions import NodeActions
+        from kotti.resources import Document
+
+        request = DummyRequest()
+        root['child1'] = Document(title=u"Child 1", id=100)
+        root['child2'] = Document(title=u"Child 2", id=101)
+
+        request.session['kotti.paste'] = ([100], action)
+        NodeActions(root, request).paste_nodes()
+        assert request.session.pop_flash('success') == ['Child 1 was pasted.']
+
+        request.session['kotti.paste'] = ([100, 101], action)
+        NodeActions(root, request).paste_nodes()
+        assert request.session.pop_flash('success') == ['2 items were pasted.']
+
+        request.session['kotti.paste'] = ([100, 101, 1000], action)
+        NodeActions(root, request).paste_nodes()
+        assert request.session.pop_flash('success') == ['2 items were pasted.']
+        assert request.session.pop_flash('error') == \
+            ['Could not paste node. It no longer exists.']
+
+        request.session['kotti.paste'] = ([1000, 1001], action)
+        NodeActions(root, request).paste_nodes()
+        assert request.session.pop_flash('success') == []
+        assert request.session.pop_flash('error') == \
+            ['2 items could not be pasted. They no longer exist.']
 
 
 class TestNodeRename:
@@ -142,6 +214,12 @@ class TestNodeRename:
 
 class TestNodeDelete:
 
+    def make_request(self):
+        request = DummyRequest()
+        request.POST = MultiDict()
+        request.POST.add('delete_nodes', u'delete_nodes')
+        return request
+
     def test_multi_delete(self, root):
         from kotti.resources import Document
         from kotti.resources import File
@@ -151,27 +229,34 @@ class TestNodeDelete:
         root['child2'] = Document(title=u"Child 2")
         root['file1'] = File(title=u"File 1")
 
-        request = DummyRequest()
-        request.POST = MultiDict()
         id1 = str(root['child1'].id)
         id2 = str(root['child2'].id)
         id3 = str(root['file1'].id)
-        request.POST.add('delete_nodes', u'delete_nodes')
+
+        request = self.make_request()
         NodeActions(root, request).delete_nodes()
         assert request.session.pop_flash('info') ==\
             [u'Nothing was deleted.']
 
         request.POST.add('children-to-delete', id1)
+        NodeActions(root, request).delete_nodes()
+        assert (
+            request.session.pop_flash('success') == [u'Child 1 was deleted.'])
+
+        request = self.make_request()
+        request.POST.add('delete_nodes', u'delete_nodes')
         request.POST.add('children-to-delete', id2)
         request.POST.add('children-to-delete', id3)
         NodeActions(root, request).delete_nodes()
-        assert request.session.pop_flash('success') == \
-            [u'${title} was deleted.',
-             u'${title} was deleted.',
-             u'${title} was deleted.']
+        assert request.session.pop_flash('success') == [
+            u'2 items were deleted.'
+        ]
 
 
 class TestNodeMove:
+    def _ids(self, *args):
+        return [str(c.id) for c in args]
+
     def test_move_up(self, root):
         from kotti.resources import Document
         from kotti.views.edit.actions import NodeActions
@@ -181,11 +266,21 @@ class TestNodeMove:
         assert root['child1'].position < root['child2'].position
 
         request = DummyRequest()
-        request.session['kotti.selected-children'] = [str(root['child2'].id)]
+        request.session['kotti.selected-children'] = self._ids(root['child2'])
         NodeActions(root, request).up()
         assert request.session.pop_flash('success') ==\
-            [u'${title} was moved.']
+            [u'Child 2 was moved.']
         assert root['child1'].position > root['child2'].position
+
+        root['child3'] = Document(title=u"Child 3")     # positions are: 2 1 3
+        request.session['kotti.selected-children'] = self._ids(
+            root['child1'], root['child3'])
+        NodeActions(root, request).up()
+        assert request.session.pop_flash('success') ==\
+            [u'2 items were moved.']
+        assert [(c.title, c.position) for c in root.children] == [
+            (u'Child 1', 0), (u'Child 3', 1), (u'Child 2', 2)
+        ]
 
     def test_move_down(self, root):
         from kotti.resources import Document
@@ -197,12 +292,18 @@ class TestNodeMove:
         assert root['child1'].position < root['child3'].position
         assert root['child2'].position < root['child3'].position
 
+        # positions are: 1 2 3
         request = DummyRequest()
-        ids = [str(root['child1'].id), str(root['child2'].id)]
+        ids = self._ids(root['child1'])
+        request.session['kotti.selected-children'] = ids
+        NodeActions(root, request).down()
+        assert request.session.pop_flash('success') == ['Child 1 was moved.']
+
+        ids = self._ids(root['child2'], root['child1'])
         request.session['kotti.selected-children'] = ids
         NodeActions(root, request).down()
         assert request.session.pop_flash('success') ==\
-            [u'${title} was moved.', u'${title} was moved.']
+            [u'2 items were moved.']
         assert root['child1'].position > root['child3'].position
         assert root['child2'].position > root['child3'].position
 
@@ -353,14 +454,36 @@ class TestNodeShowHide:
         request.session['kotti.selected-children'] = [str(root['child1'].id)]
         NodeActions(root, request).hide()
         assert request.session.pop_flash('success') ==\
-            [u'${title} is no longer visible in the navigation.']
+            [u'Child 1 is no longer visible in the navigation.']
         assert root['child1'].in_navigation is False
 
         request.session['kotti.selected-children'] = [str(root['child1'].id)]
         NodeActions(root, request).show()
         assert request.session.pop_flash('success') ==\
-            [u'${title} is now visible in the navigation.']
+            [u'Child 1 is now visible in the navigation.']
         assert root['child1'].in_navigation is True
+
+    def test_show_hide_multiple(self, root):
+        from kotti.resources import Document
+        from kotti.views.edit.actions import NodeActions
+
+        root['child1'] = Document(title=u"Child 1")
+        root['child2'] = Document(title=u"Child 2")
+
+        ids = [str(root['child1'].id), str(root['child2'].id)]
+
+        request = DummyRequest()
+        request.session['kotti.selected-children'] = ids
+        NodeActions(root, request).hide()
+        assert request.session.pop_flash('success') ==\
+            ['2 items are no longer visible in the navigation.']
+        assert root['child1'].in_navigation is False
+        assert root['child2'].in_navigation is False
+
+        request.session['kotti.selected-children'] = ids
+        NodeActions(root, request).show()
+        assert request.session.pop_flash('success') ==\
+            [u'2 items are now visible in the navigation.']
 
 
 class TestNodeShare:
@@ -432,7 +555,8 @@ class TestNodeShare:
 
         request.params['apply'] = u''
         share_node(root, request)
-        assert (request.session.pop_flash('info') == [u'No changes were made.'])
+        assert (
+            request.session.pop_flash('info') == [u'No changes were made.'])
         assert list_groups('bob', root) == []
         set_groups('bob', root, ['role:special'])
 
