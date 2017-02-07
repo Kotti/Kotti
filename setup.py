@@ -87,7 +87,7 @@ tests_require = [
 development_requires = [
     'check-manifest',
     'pipdeptree',
-    'pyramid_debugtoolbar',
+    'pyramid_debugtoolbar<2.5',
 ]
 
 docs_require = [
