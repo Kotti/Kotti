@@ -19,6 +19,7 @@ from kotti.resources import Node
 from kotti.util import ActionButton
 from kotti.util import _
 from kotti.util import get_paste_items
+from kotti.util import translate_pluralize
 from kotti.util import title_to_name
 from kotti.views.edit import _state_info
 from kotti.views.edit import _states
@@ -102,10 +103,17 @@ class NodeActions(object):
         """
         ids = self._selected_children()
         self.request.session['kotti.paste'] = (ids, 'copy')
-        for id in ids:
-            item = DBSession.query(Node).get(id)
-            self.flash(_(u'${title} was copied.',
-                         mapping=dict(title=item.title)), 'success')
+
+        if ids:
+            item = DBSession.query(Node).get(ids[0])
+            msg = translate_pluralize(
+                _(u'${title} was copied.'),
+                _(u"${number} items were copied."),
+                len(ids),
+                mapping=dict(title=item.title, number=len(ids))
+            )
+            self.flash(msg, 'success')
+
         if not self.request.is_xhr:
             return self.back()
 
@@ -120,10 +128,17 @@ class NodeActions(object):
         """
         ids = self._selected_children()
         self.request.session['kotti.paste'] = (ids, 'cut')
-        for id in ids:
-            item = DBSession.query(Node).get(id)
-            self.flash(_(u'${title} was cut.', mapping=dict(title=item.title)),
-                       'success')
+
+        if ids:
+            item = DBSession.query(Node).get(ids[0])
+            msg = translate_pluralize(
+                _(u'${title} was cut.'),
+                _(u"${number} items were cut."),
+                len(ids),
+                mapping=dict(number=len(ids), title=item.title),
+            )
+            self.flash(msg, 'success')
+
         if not self.request.is_xhr:
             return self.back()
 
@@ -131,15 +146,18 @@ class NodeActions(object):
     def paste_nodes(self):
         """
         Paste nodes view. Paste formerly copied or cutted nodes into the
-        current context. Note that a cutted node can not be pasted into itself.
+        current context. Note that a cut node can not be pasted into itself.
 
         :result: Redirect response to the referrer of the request.
         :rtype: pyramid.httpexceptions.HTTPFound
         """
         ids, action = self.request.session['kotti.paste']
+        pasted = []
+        failures = 0
         for count, id in enumerate(ids):
             item = DBSession.query(Node).get(id)
             if item is not None:
+                pasted.append(item)
                 if action == 'cut':
                     if not self.request.has_permission('edit', item):
                         raise Forbidden()
@@ -157,11 +175,29 @@ class NodeActions(object):
                     name = title_to_name(name, blacklist=self.context.keys())
                     copy.name = name
                     self.context[name] = copy
-                self.flash(_(u'${title} was pasted.',
-                             mapping=dict(title=item.title)), 'success')
             else:
-                self.flash(_(u'Could not paste node. It no longer exists.'),
-                           'error')
+                failures += 1
+
+        if pasted:
+            msg = translate_pluralize(
+                _(u'${title} was pasted.'),
+                _(u"${number} items were pasted."),
+                len(pasted),
+                mapping={'title': pasted and pasted[0].title or u'',
+                         'number': len(pasted), }
+            )
+            self.flash(msg, 'success')
+
+        if failures:
+            msg = translate_pluralize(
+                _(u'Could not paste node. It no longer exists.'),
+                _(u"${number} items could not be pasted. They no longer "
+                  u"exist."),
+                failures,
+                mapping={'number': failures}
+            )
+            self.flash(msg, 'error')
+
         DBSession.flush()
         if not self.request.is_xhr:
             return self.back()
@@ -182,8 +218,13 @@ class NodeActions(object):
             index = self.context.children.index(child)
             self.context.children.pop(index)
             self.context.children.insert(index + move, child)
-            self.flash(_(u'${title} was moved.',
-                         mapping=dict(title=child.title)), 'success')
+        msg = translate_pluralize(
+            _(u'${title} was moved.'),
+            _(u'${number} items were moved.'),
+            len(ids),
+            mapping=dict(number=len(ids), title=child.title),
+        )
+        self.flash(msg, 'success')
         if not self.request.is_xhr:
             return self.back()
 
@@ -218,25 +259,38 @@ class NodeActions(object):
         :rtype: pyramid.httpexceptions.HTTPFound
         """
         ids = self._selected_children()
+        dirty = []
         for id in ids:
             child = DBSession.query(Node).get(id)
             if child.in_navigation != show:
                 child.in_navigation = show
-                mapping = dict(title=child.title)
-                if show:
-                    mg = _(u'${title} is now visible in the navigation.',
-                           mapping=mapping)
-                else:
-                    mg = _(u'${title} is no longer visible in the navigation.',
-                           mapping=mapping)
-                self.flash(mg, 'success')
+                dirty.append(child)
+
+        if show and dirty:
+            msg = translate_pluralize(
+                _(u'${title} is now visible in the navigation.'),
+                _(u'${number} items are now visible in the navigation.'),
+                len(dirty),
+                mapping=dict(title=dirty[0].title, number=len(dirty)),
+            )
+            self.flash(msg, 'success')
+
+        if (not show) and dirty:
+            msg = translate_pluralize(
+                _(u'${title} is no longer visible in the navigation.'),
+                _(u'${number} items are no longer visible in the navigation.'),
+                len(dirty),
+                mapping=dict(title=dirty[0].title, number=len(dirty)),
+            )
+            self.flash(msg, 'success')
+
         if not self.request.is_xhr:
             return self.back()
 
     @view_config(name='show')
     def show(self):
         """
-        Show nodes view.  Switch the in_navigation attribute of selected nodes
+        Show nodes view. Switch the in_navigation attribute of selected nodes
         to ``True`` and get back to the referrer of the request.
 
         :result: Redirect response to the referrer of the request.
@@ -303,11 +357,20 @@ class NodeActions(object):
             ids = self.request.POST.getall('children-to-delete')
             if not ids:
                 self.flash(_(u"Nothing was deleted."), 'info')
-            for id in ids:
-                item = DBSession.query(Node).get(id)
-                self.flash(_(u'${title} was deleted.',
-                             mapping=dict(title=item.title)), 'success')
-                del self.context[item.name]
+            else:
+                title = ''
+                for id in ids:
+                    item = DBSession.query(Node).get(id)
+                    title = item.title
+                    del self.context[item.name]
+                msg = translate_pluralize(
+                    _(u'${title} was deleted.'),
+                    _(u"${number} items were deleted."),
+                    len(ids),
+                    mapping=dict(title=title, number=len(ids))
+                )
+                self.flash(msg, 'success')
+
             return self.back('@@contents')
 
         if 'cancel' in self.request.POST:
@@ -532,8 +595,8 @@ def move_child_position(context, request):
                     0-based old (i.e. the current index of the child to be
                     moved) and new position (its new index) values.
     :type request:
-    :result: JSON serializable object with a single attribute ("result") that is
-             either "success" or "error".
+    :result: JSON serializable object with a single attribute ("result") that
+             is either "success" or "error".
     :rtype: dict
     """
 
