@@ -24,7 +24,7 @@ install_requires = [
     'alembic>=0.8.0',
     'bleach',
     'bleach-whitelist',
-    'colander<1.3',  # until https://github.com/Pylons/colander/pull/272 is merged and released  # noqa
+    'colander>=1.3.2',
     'deform>=2.0a1',  # >=2.0a1 to support Bootstrap 2
     'docopt',
     'fanstatic>=1.0a7',
@@ -45,7 +45,9 @@ install_requires = [
     'kotti_image',
     'lingua>=1.3',
     'py_bcrypt',
-    'pyramid>=1.5',  # needed for ``request.has_permission``
+    'pyramid>=1.5<1.8',  # needed for ``request.has_permission``,
+    # pyramid_zcml isn't compatible with pyramid 1.8 yet.
+    # see https://github.com/Pylons/pyramid_zcml/pull/23
     'pyramid_beaker',
     'pyramid_chameleon',
     'pyramid_deform>=0.2a3',  # language and template path config includeme
