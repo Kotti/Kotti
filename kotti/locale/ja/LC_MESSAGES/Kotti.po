@@ -1,16 +1,16 @@
 msgid ""
 msgstr ""
-"POT-Creation-Date: 2016-11-29 02:48+0100\n"
+"POT-Creation-Date: 2017-04-15 15:19+0900\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 
 #: kotti/populate.py:68
 msgid "Welcome to Kotti"
-msgstr ""
+msgstr "Kotti へようこそ"
 
 #: kotti/populate.py:69
 msgid "Congratulations! You have successfully installed Kotti."
-msgstr ""
+msgstr "おめでとうございます！Kotti のインストールに成功しました！"
 
 #: kotti/populate.py:70
 #, c-format
@@ -70,14 +70,64 @@ msgid ""
 "    </div>\n"
 "</div>\n"
 msgstr ""
+"\n"
+"<h2>ログイン</h2>\n"
+"<p>\n"
+"    サイトに <a class=\"btn btn-success\" href=\"login\">ログイン</a> してコンテンツを変更しながら始めます。\n"
+"    admin ユーザーのパスワードを変更していないなら、パスワードは <em>qwerty</em> でログインできるでしょう。\n"
+"</p>\n"
+"<p>\n"
+"    ログインすると、上部のナビゲーションバーの下に灰色のエディターバーがあります。\n"
+"    エディターバーを使って現在のページの編集モードと訪問者に表示される閲覧モードを切り替えます。\n"
+"</p>\n"
+"<div class=\"row\">\n"
+"    <div class=\"col-md-4\">\n"
+"        <h2>設定</h2>\n"
+"        <p>\n"
+"            ファイルシステム上のテキストファイルを使って Kotti のタイトルやその他多くの項目の設定方法を調べます。\n"
+"        </p>\n"
+"        <p>\n"
+"            <a class=\"btn btn-info\"\n"
+"               href=\"https://kotti.readthedocs.io/en/latest/developing/basic/configuration.html\">\n"
+"               設定マニュアル\n"
+"            </a>\n"
+"        </p>\n"
+"    </div>\n"
+"    <div class=\"col-md-4\">\n"
+"        <h2>アドオン</h2>\n"
+"        <p>\n"
+"            Kotti の機能を拡張する数多くのアドオンがあります。\n"
+"        </p>\n"
+"        <p>\n"
+"            <a class=\"btn btn-info\"\n"
+"               href=\"http://pypi.python.org/pypi?%3Aaction=search&amp;term=kotti\">\n"
+"                Kotti アドオン\n"
+"            </a>\n"
+"        </p>\n"
+"    </div>\n"
+"    <div class=\"col-md-4\">\n"
+"        <h2>ドキュメント</h2>\n"
+"        <p>\n"
+"            Kotti で何ができるか知りたくないですか？\n"
+"            どんなラインセンスなんだろう？\n"
+"            詳細はマニュアルを読んでください。\n"
+"        </p>\n"
+"        <p>\n"
+"            <a class=\"btn btn-info\"\n"
+"               href=\"https://kotti.readthedocs.io/en/latest/\">\n"
+"               ドキュメント\n"
+"            </a>\n"
+"        </p>\n"
+"    </div>\n"
+"</div>\n"
 
 #: kotti/populate.py:127
 msgid "About"
-msgstr ""
+msgstr "概要"
 
 #: kotti/populate.py:128
 msgid "Our company is the leading manufacturer of foo widgets used in a wide variety of aviation and and industrial products."
-msgstr ""
+msgstr "当社は航空および工業製品に幅広く利用されている foo ウィジェットの大手製造業者です。"
 
 #: kotti/populate.py:129
 msgid ""
@@ -109,29 +159,54 @@ msgid ""
 "article.\n"
 "</small></p>\n"
 msgstr ""
+"\n"
+"<p>\n"
+"  <img alt=\"five colorful Extra EA300 airplanes flying in formation\"\n"
+"   src=\"http://upload.wikimedia.org/wikipedia/commons/thumb/5/5d/Northern_Lights_Formation.jpg/640px-Northern_Lights_Formation.jpg\"\n"
+"   width=\"640\" height=\"376\" />\n"
+"</p>\n"
+"\n"
+"<p>\n"
+"   本社所在地:\n"
+"</p>\n"
+"\n"
+"<address>\n"
+"  Foo World<br />\n"
+"  123 Nowhere Street, Suite 777<br />\n"
+"  Omak, WA   98841   USA<br />\n"
+"  +1-509-555-0100<br />\n"
+"  widgets@foowrld.example.com\n"
+"</address>\n"
+"\n"
+"<p><small style=\"font-size: smaller\">\n"
+"<em>写真の著作権:</em> FlugKerl2 氏の \"Northern Lights Formation\"\n"
+"<a href=\"http://commons.wikimedia.org/wiki/File:Northern_Lights_Formation.jpg\">\n"
+"著作権に関する情報</a> は\n"
+"<a href=\"http://en.wikipedia.org/wiki/Extra_EA-300\"> Extra EA-300</a> 記事で公開されています。\n"
+"</small></p>\n"
 
-#: kotti/resources.py:524 kotti/views/edit/actions.py:457
+#: kotti/resources.py:524 kotti/views/edit/actions.py:458
 msgid "Copy"
 msgstr "コピー"
 
-#: kotti/resources.py:525 kotti/views/edit/actions.py:458
+#: kotti/resources.py:525 kotti/views/edit/actions.py:459
 msgid "Cut"
 msgstr "切り取り"
 
-#: kotti/resources.py:526 kotti/views/edit/actions.py:454
+#: kotti/resources.py:526 kotti/views/edit/actions.py:455
 msgid "Paste"
 msgstr "貼り付け"
 
 #: kotti/resources.py:527 kotti/templates/edit/rename-nodes.pt:8
 #: kotti/templates/edit/rename-nodes.pt:42 kotti/templates/edit/rename.pt:31
-#: kotti/views/edit/actions.py:459
+#: kotti/views/edit/actions.py:460
 msgid "Rename"
 msgstr "名称変更"
 
 #: kotti/resources.py:528 kotti/templates/edit/delete-nodes.pt:9
 #: kotti/templates/edit/delete-nodes.pt:49 kotti/templates/edit/delete.pt:24
 #: kotti/templates/site-setup/delete-user.pt:24 kotti/views/users.py:456
-#: kotti/views/edit/actions.py:461
+#: kotti/views/edit/actions.py:462
 msgid "Delete"
 msgstr "削除"
 
@@ -192,23 +267,23 @@ msgstr "アップロード"
 msgid "Set default view"
 msgstr "表示方法の設定"
 
-#: kotti/templates/editor-bar.pt:21
+#: kotti/templates/editor-bar.pt:19
 msgid "View"
 msgstr "表示"
 
-#: kotti/templates/editor-bar.pt:44
+#: kotti/templates/editor-bar.pt:42
 msgid "Navigate"
 msgstr "ナビゲート"
 
-#: kotti/templates/editor-bar.pt:55
+#: kotti/templates/editor-bar.pt:53
 msgid "Preferences"
 msgstr "設定"
 
-#: kotti/templates/editor-bar.pt:60
+#: kotti/templates/editor-bar.pt:58
 msgid "Site Setup"
 msgstr "サイト設定"
 
-#: kotti/templates/editor-bar.pt:71
+#: kotti/templates/editor-bar.pt:69
 msgid "Logout"
 msgstr "ログアウト"
 
@@ -272,18 +347,16 @@ msgstr "パスワードをリセット"
 
 #. Canonical text for ${reset_password} is: "Reset password"
 #: kotti/templates/login.pt:50
-#, fuzzy
 msgid "Fill out your username or email and click ${reset_password} below to receive an email with a link to reset your password."
-msgstr "上の入力欄のユーザー名かメールアドレスを埋めて、下にある ${reset_password} をクリックしてください。パスワードをリセットするためのリンクが書かれたメールが送信されます。"
+msgstr "ユーザー名かメールアドレスを入力して、下にある ${reset_password} をクリックしてください。パスワードをリセットするためのリンクが書かれたメールが届きます。"
 
 #: kotti/templates/login.pt:78
 msgid "Not registered yet?"
-msgstr ""
+msgstr "まだ登録していませんか?"
 
 #: kotti/templates/login.pt:85
-#, fuzzy
 msgid "Register for an account on this site."
-msgstr "まだ登録していませんか? このサイトにアカウントを ${register} しましょう。"
+msgstr "このサイトにアカウントを登録しましょう。"
 
 #: kotti/templates/workflow-dropdown.pt:14
 msgid "Make ${state}"
@@ -332,7 +405,7 @@ msgstr "変更日"
 #: kotti/templates/edit/change-state.pt:28 kotti/templates/edit/contents.pt:45
 #: kotti/templates/edit/delete-nodes.pt:31
 msgid "Select item"
-msgstr ""
+msgstr "アイテムを選択する"
 
 #: kotti/templates/edit/change-state.pt:40
 #: kotti/templates/edit/change-state.pt:48
@@ -373,7 +446,7 @@ msgstr "ここにはコンテンツアイテムが含まれていません。"
 
 #: kotti/templates/edit/contents.pt:33
 msgid "Select / deselect all"
-msgstr ""
+msgstr "全選択 / 全解除"
 
 #: kotti/templates/edit/contents.pt:37
 msgid "Visibility"
@@ -436,7 +509,7 @@ msgstr "検索"
 
 #: kotti/templates/edit/share.pt:44
 msgid "Assign local roles"
-msgstr "ローカルロールに割り当て"
+msgstr "ローカルロールを指定する"
 
 #: kotti/templates/edit/share.pt:50 kotti/templates/site-setup/users.pt:70
 #: kotti/views/users.py:217
@@ -459,50 +532,48 @@ msgid "Gravatar"
 msgstr "Gravatar"
 
 #: kotti/templates/edit/share.pt:70 kotti/templates/site-setup/users.pt:91
-#, fuzzy
 msgid "Assign role"
-msgstr "ローカルロールに割り当て"
+msgstr "ロールを指定する"
 
 #: kotti/templates/edit/upload.pt:10
 msgid "Upload content from local file(s)"
-msgstr ""
+msgstr "ローカルファイルからコンテンツをアップロードする"
 
 #: kotti/templates/edit/upload.pt:17 kotti/templates/edit/upload.pt:107
-#, fuzzy
 msgid "Filename"
-msgstr "名称変更"
+msgstr "ファイル名"
 
 #: kotti/templates/edit/upload.pt:19 kotti/templates/edit/upload.pt:109
 msgid "Size"
-msgstr ""
+msgstr "サイズ"
 
 #: kotti/templates/edit/upload.pt:20
 msgid "Status"
-msgstr ""
+msgstr "ステータス"
 
 #: kotti/templates/edit/upload.pt:21
 msgid "Progress"
-msgstr ""
+msgstr "進捗"
 
 #: kotti/templates/edit/upload.pt:84
 msgid "Select file(s) to upload..."
-msgstr ""
+msgstr "アップロードするファイルを選択する ..."
 
 #: kotti/templates/edit/upload.pt:92
 msgid "Upload ${number} files."
-msgstr ""
+msgstr "${number} 個のファイルをアップロードする。"
 
 #: kotti/templates/edit/upload.pt:97
 msgid "Dismiss all errors"
-msgstr ""
+msgstr "全てのエラーを非表示にする"
 
-#: kotti/templates/http-errors/notfound.pt:6
+#: kotti/templates/http-errors/notfound.pt:26
 msgid "Not Found"
-msgstr ""
+msgstr "存在しません"
 
-#: kotti/templates/http-errors/notfound.pt:7
+#: kotti/templates/http-errors/notfound.pt:27
 msgid "The resource could not be found"
-msgstr ""
+msgstr "リソースが見つかりません"
 
 #: kotti/templates/site-setup/delete-user.pt:15
 msgid "Are you sure you want to delete ${type} ${title}?"
@@ -518,7 +589,6 @@ msgid "Edit ${title}"
 msgstr "${title} を編集"
 
 #: kotti/templates/site-setup/users.pt:12
-#, fuzzy
 msgid "Search user(s) / group(s)"
 msgstr "ユーザーとグループを検索"
 
@@ -531,31 +601,26 @@ msgid "Add group"
 msgstr "グループを追加"
 
 #: kotti/templates/site-setup/users.pt:34
-#, fuzzy
 msgid "Find users or groups"
-msgstr "ユーザーとグループを検索"
+msgstr "ユーザーとグループを探す"
 
 #: kotti/templates/site-setup/users.pt:40
 msgid "User- / groupname"
-msgstr ""
+msgstr "ユーザー名 / グループ名"
 
 #: kotti/templates/site-setup/users.pt:50
-#, fuzzy
 msgid "Blank search text finds all."
-msgstr "ユーザーを検索して変更する (空文字列での検索で全部表示) 。"
+msgstr "空白で検索するとすべて表示します。"
 
 #: kotti/templates/site-setup/users.pt:65
-#, fuzzy
 msgid "Assign global roles"
-msgstr "ローカルロールに割り当て"
+msgstr "グローバルロールを指定する"
 
 #: kotti/templates/site-setup/users.pt:117
-#, fuzzy
 msgid "Add new user"
 msgstr "ユーザーを追加"
 
 #: kotti/templates/site-setup/users.pt:123
-#, fuzzy
 msgid "Add new group"
 msgstr "グループを追加"
 
@@ -584,13 +649,13 @@ msgid "Save"
 msgstr "保存"
 
 #: kotti/views/form.py:84 kotti/views/users.py:73
-#: kotti/views/edit/actions.py:375 kotti/views/edit/actions.py:419
+#: kotti/views/edit/actions.py:376 kotti/views/edit/actions.py:420
 msgid "Your changes have been saved."
 msgstr "変更内容を保存しました。"
 
 #: kotti/views/form.py:179
 msgid "Item was added."
-msgstr "${title} を追加しました。"
+msgstr "アイテムを追加しました。"
 
 #: kotti/views/form.py:203
 #, python-format
@@ -662,9 +727,8 @@ msgid "You have reset your password."
 msgstr "パスワードのリセットに成功しました。"
 
 #: kotti/views/login.py:302
-#, fuzzy
 msgid "Set password"
-msgstr "パスワードをリセット"
+msgstr "パスワードを設定"
 
 #: kotti/views/login.py:330
 msgid "Your password reset token may have expired."
@@ -680,8 +744,8 @@ msgid "User Management"
 msgstr "ユーザー管理"
 
 #: kotti/views/users.py:75 kotti/views/users.py:479
-#: kotti/views/edit/actions.py:313 kotti/views/edit/actions.py:379
-#: kotti/views/edit/actions.py:421 kotti/views/edit/actions.py:425
+#: kotti/views/edit/actions.py:314 kotti/views/edit/actions.py:380
+#: kotti/views/edit/actions.py:422 kotti/views/edit/actions.py:426
 msgid "No changes were made."
 msgstr "変更箇所がありませんでした。"
 
@@ -790,59 +854,59 @@ msgstr "${title} を貼り付けました。"
 msgid "Could not paste node. It no longer exists."
 msgstr "ノードを張り付けできません。何も存在していません。"
 
-#: kotti/views/edit/actions.py:184
+#: kotti/views/edit/actions.py:185
 #, python-format
 msgid "${title} was moved."
 msgstr "${title} を移動しました。"
 
-#: kotti/views/edit/actions.py:226
+#: kotti/views/edit/actions.py:227
 #, python-format
 msgid "${title} is now visible in the navigation."
 msgstr "${title} がナビゲーションに表示されるようになりました。"
 
-#: kotti/views/edit/actions.py:229
+#: kotti/views/edit/actions.py:230
 #, python-format
 msgid "${title} is no longer visible in the navigation."
 msgstr "${title} がナビゲーションでは非表示になりました。"
 
-#: kotti/views/edit/actions.py:278 kotti/views/edit/actions.py:307
+#: kotti/views/edit/actions.py:279 kotti/views/edit/actions.py:308
 #, python-format
 msgid "${title} was deleted."
 msgstr "${title} を削除しました。"
 
-#: kotti/views/edit/actions.py:304
+#: kotti/views/edit/actions.py:305
 msgid "Nothing was deleted."
 msgstr "削除対象がありません。"
 
-#: kotti/views/edit/actions.py:340 kotti/views/edit/actions.py:367
+#: kotti/views/edit/actions.py:341 kotti/views/edit/actions.py:368
 msgid "Name and title are required."
 msgstr "名称とタイトルは必須です。"
 
-#: kotti/views/edit/actions.py:344
+#: kotti/views/edit/actions.py:345
 msgid "Item was renamed."
 msgstr "名称変更しました"
 
-#: kotti/views/edit/actions.py:465
+#: kotti/views/edit/actions.py:466
 msgid "Change State"
 msgstr "状態を変更"
 
-#: kotti/views/edit/actions.py:466
+#: kotti/views/edit/actions.py:467
 msgid "Move up"
 msgstr "上に移動する"
 
-#: kotti/views/edit/actions.py:467
+#: kotti/views/edit/actions.py:468
 msgid "Move down"
 msgstr "下に移動する"
 
-#: kotti/views/edit/actions.py:468
+#: kotti/views/edit/actions.py:469
 msgid "Show"
 msgstr "表示中にする"
 
-#: kotti/views/edit/actions.py:469
+#: kotti/views/edit/actions.py:470
 msgid "Hide"
 msgstr "非表示にする"
 
-#: kotti/views/edit/actions.py:508
+#: kotti/views/edit/actions.py:509
 msgid "You have to select items to perform an action."
 msgstr "アクションを適用するアイテムを選択してください。"
 

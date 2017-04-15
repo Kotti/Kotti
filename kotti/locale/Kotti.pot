@@ -1,20 +1,20 @@
 #
 # SOME DESCRIPTIVE TITLE
 # This file is distributed under the same license as the PACKAGE package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, 2016.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2017.
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2016-11-29 02:48+0100\n"
+"POT-Creation-Date: 2017-04-15 15:19+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: \n"
-"Generated-By: Lingua 4.10\n"
+"Generated-By: Lingua 4.13\n"
 
 #: ./kotti/populate.py:68
 msgid "Welcome to Kotti"
@@ -124,21 +124,21 @@ msgid ""
 "</small></p>\n"
 msgstr ""
 
-#: ./kotti/resources.py:524 ./kotti/views/edit/actions.py:457
+#: ./kotti/resources.py:524 ./kotti/views/edit/actions.py:458
 msgid "Copy"
 msgstr ""
 
-#: ./kotti/resources.py:525 ./kotti/views/edit/actions.py:458
+#: ./kotti/resources.py:525 ./kotti/views/edit/actions.py:459
 msgid "Cut"
 msgstr ""
 
-#: ./kotti/resources.py:526 ./kotti/views/edit/actions.py:454
+#: ./kotti/resources.py:526 ./kotti/views/edit/actions.py:455
 msgid "Paste"
 msgstr ""
 
 #: ./kotti/resources.py:527 ./kotti/templates/edit/rename-nodes.pt:8
 #: ./kotti/templates/edit/rename-nodes.pt:42
-#: ./kotti/templates/edit/rename.pt:31 ./kotti/views/edit/actions.py:459
+#: ./kotti/templates/edit/rename.pt:31 ./kotti/views/edit/actions.py:460
 msgid "Rename"
 msgstr ""
 
@@ -146,7 +146,7 @@ msgstr ""
 #: ./kotti/templates/edit/delete-nodes.pt:49
 #: ./kotti/templates/edit/delete.pt:24
 #: ./kotti/templates/site-setup/delete-user.pt:24 ./kotti/views/users.py:456
-#: ./kotti/views/edit/actions.py:461
+#: ./kotti/views/edit/actions.py:462
 msgid "Delete"
 msgstr ""
 
@@ -207,23 +207,23 @@ msgstr ""
 msgid "Set default view"
 msgstr ""
 
-#: ./kotti/templates/editor-bar.pt:21
+#: ./kotti/templates/editor-bar.pt:19
 msgid "View"
 msgstr ""
 
-#: ./kotti/templates/editor-bar.pt:44
+#: ./kotti/templates/editor-bar.pt:42
 msgid "Navigate"
 msgstr ""
 
-#: ./kotti/templates/editor-bar.pt:55
+#: ./kotti/templates/editor-bar.pt:53
 msgid "Preferences"
 msgstr ""
 
-#: ./kotti/templates/editor-bar.pt:60
+#: ./kotti/templates/editor-bar.pt:58
 msgid "Site Setup"
 msgstr ""
 
-#: ./kotti/templates/editor-bar.pt:71
+#: ./kotti/templates/editor-bar.pt:69
 msgid "Logout"
 msgstr ""
 
@@ -530,11 +530,11 @@ msgstr ""
 msgid "Dismiss all errors"
 msgstr ""
 
-#: ./kotti/templates/http-errors/notfound.pt:6
+#: ./kotti/templates/http-errors/notfound.pt:26
 msgid "Not Found"
 msgstr ""
 
-#: ./kotti/templates/http-errors/notfound.pt:7
+#: ./kotti/templates/http-errors/notfound.pt:27
 msgid "The resource could not be found"
 msgstr ""
 
@@ -612,7 +612,7 @@ msgid "Save"
 msgstr ""
 
 #: ./kotti/views/form.py:84 ./kotti/views/users.py:73
-#: ./kotti/views/edit/actions.py:375 ./kotti/views/edit/actions.py:419
+#: ./kotti/views/edit/actions.py:376 ./kotti/views/edit/actions.py:420
 msgid "Your changes have been saved."
 msgstr ""
 
@@ -712,8 +712,8 @@ msgid "User Management"
 msgstr ""
 
 #: ./kotti/views/users.py:75 ./kotti/views/users.py:479
-#: ./kotti/views/edit/actions.py:313 ./kotti/views/edit/actions.py:379
-#: ./kotti/views/edit/actions.py:421 ./kotti/views/edit/actions.py:425
+#: ./kotti/views/edit/actions.py:314 ./kotti/views/edit/actions.py:380
+#: ./kotti/views/edit/actions.py:422 ./kotti/views/edit/actions.py:426
 msgid "No changes were made."
 msgstr ""
 
@@ -824,59 +824,59 @@ msgstr ""
 msgid "Could not paste node. It no longer exists."
 msgstr ""
 
-#: ./kotti/views/edit/actions.py:184
+#: ./kotti/views/edit/actions.py:185
 #, python-format
 msgid "${title} was moved."
 msgstr ""
 
-#: ./kotti/views/edit/actions.py:226
+#: ./kotti/views/edit/actions.py:227
 #, python-format
 msgid "${title} is now visible in the navigation."
 msgstr ""
 
-#: ./kotti/views/edit/actions.py:229
+#: ./kotti/views/edit/actions.py:230
 #, python-format
 msgid "${title} is no longer visible in the navigation."
 msgstr ""
 
-#: ./kotti/views/edit/actions.py:278 ./kotti/views/edit/actions.py:307
+#: ./kotti/views/edit/actions.py:279 ./kotti/views/edit/actions.py:308
 #, python-format
 msgid "${title} was deleted."
 msgstr ""
 
-#: ./kotti/views/edit/actions.py:304
+#: ./kotti/views/edit/actions.py:305
 msgid "Nothing was deleted."
 msgstr ""
 
-#: ./kotti/views/edit/actions.py:340 ./kotti/views/edit/actions.py:367
+#: ./kotti/views/edit/actions.py:341 ./kotti/views/edit/actions.py:368
 msgid "Name and title are required."
 msgstr ""
 
-#: ./kotti/views/edit/actions.py:344
+#: ./kotti/views/edit/actions.py:345
 msgid "Item was renamed."
 msgstr ""
 
-#: ./kotti/views/edit/actions.py:465
+#: ./kotti/views/edit/actions.py:466
 msgid "Change State"
 msgstr ""
 
-#: ./kotti/views/edit/actions.py:466
+#: ./kotti/views/edit/actions.py:467
 msgid "Move up"
 msgstr ""
 
-#: ./kotti/views/edit/actions.py:467
+#: ./kotti/views/edit/actions.py:468
 msgid "Move down"
 msgstr ""
 
-#: ./kotti/views/edit/actions.py:468
+#: ./kotti/views/edit/actions.py:469
 msgid "Show"
 msgstr ""
 
-#: ./kotti/views/edit/actions.py:469
+#: ./kotti/views/edit/actions.py:470
 msgid "Hide"
 msgstr ""
 
-#: ./kotti/views/edit/actions.py:508
+#: ./kotti/views/edit/actions.py:509
 msgid "You have to select items to perform an action."
 msgstr ""
 
