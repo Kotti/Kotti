@@ -10,6 +10,23 @@
     <div tal:replace="api.render_template('kotti:templates/view/tags.pt')" />
     <div class="body" tal:content="structure context.body | None">
     </div>
+    <div tal:condition="context.type_info.default_view_show_children">
+        <h2>Children (${len(context.children_with_permission(request))})</h2>
+        <ul>
+            <li tal:repeat="child context.children_with_permission(request)">
+              <a href="${request.resource_url(child)}"
+                 title="${getattr(child, 'description', None)}">
+                ${child.title}
+              </a>
+              <a
+                 href="${api.url(child, '@@edit')}"
+                 title="Edit" i18n:attributes="title">
+                <i class="glyphicon glyphicon-edit"></i>
+              </a>
+            </li>
+        </ul>
+    </div>
+
   </article>
 
 </html>
