@@ -41,6 +41,10 @@ def initialize_workflow(event):
         wf.initialize(event.object)
 
 
+def check_permission(permission, context, request):
+    return request.has_permission(permission, context)
+
+
 def workflow_callback(context, info):
     wf = info.workflow
     to_state = info.transition.get('to_state')

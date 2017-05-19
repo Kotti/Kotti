@@ -5,6 +5,7 @@ from mock import patch
 from pyramid.security import ALL_PERMISSIONS
 
 from kotti.testing import Dummy
+from kotti.testing import DummyRequest
 
 
 class TestWorkflow:
@@ -212,3 +213,13 @@ class TestContentExtensibleWithWorkflow:
         wf = get_workflow(content)
         wf.transition_to_state(content, None, u'public')
         assert content.state == u'public'
+
+
+class TestCheckPermission:
+
+    def test_check_permission(self, root):
+        from kotti.workflow import check_permission
+
+        with patch('kotti.testing.DummyRequest.has_permission',
+                   return_value=True):
+            assert check_permission('view', root, DummyRequest()) is True
