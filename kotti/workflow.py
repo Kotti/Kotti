@@ -41,7 +41,7 @@ def initialize_workflow(event):
         wf.initialize(event.object)
 
 
-def permission_checker(permission, context, request):
+def check_permission(permission, context, request):
     return request.has_permission(permission, context)
 
 

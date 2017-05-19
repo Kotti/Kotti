@@ -6,7 +6,7 @@ Change History
 
 - Worflow permission_checker attribute is set as
   ``pyramid.security.has_permission``. Since it is deprecated then
-  ``kotti.workflow.permission_checker`` is added. This method calls
+  ``kotti.workflow.check_permission`` is added. This method calls
   ``has_permission`` from request.
 
 - When rendering slot views, use ``request.blank()`` to create the request.

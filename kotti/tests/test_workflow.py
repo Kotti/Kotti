@@ -215,11 +215,11 @@ class TestContentExtensibleWithWorkflow:
         assert content.state == u'public'
 
 
-class TestPermissionChecker:
+class TestCheckPermission:
 
-    def test_permission_checker(self, root):
-        from kotti.workflow import permission_checker
+    def test_check_permission(self, root):
+        from kotti.workflow import check_permission
 
         with patch('kotti.testing.DummyRequest.has_permission',
                    return_value=True):
-            assert permission_checker('view', root, DummyRequest()) is True
+            assert check_permission('view', root, DummyRequest()) is True
