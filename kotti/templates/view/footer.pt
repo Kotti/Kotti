@@ -1,4 +1,5 @@
 <hr />
 <footer>
-  <p class="pull-right">&copy; Aliens 2016</p>
+  <p class="pull-right">&copy; Aliens <tal:current-year define="date import:datetime.date">${date.today().year}</tal:current-year>
+</p>
 </footer>
