@@ -85,7 +85,7 @@ Support
 
 
 .. _repoze.workflow: http://docs.repoze.org/workflow/
-.. _Chameleon: http://chameleon.repoze.org/
+.. _Chameleon: https://chameleon.readthedocs.io/
 .. _Colander: http://docs.pylonsproject.org/projects/colander/en/latest/
 .. _continuous testing: http://travis-ci.org/Kotti/Kotti
 .. _Deform: http://docs.pylonsproject.org/projects/deform/en/latest/
