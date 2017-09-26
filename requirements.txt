@@ -30,7 +30,7 @@ js.jqueryui==1.10.3
 js.jqueryui-tagit==2.0.24.post2
 js.modernizr==2.5.3.1
 js.select2==3.4.1
-js.tinymce==4.2.7
+js.tinymce==4.5.4
 kotti-image==0.1.4
 LEPL==5.1.3
 lingua==4.13
