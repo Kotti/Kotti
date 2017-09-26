@@ -1,6 +1,6 @@
 alembic==0.8.10
 appdirs==1.4.0
-Babel==2.3.4
+Babel==2.5.1
 Beaker==1.8.1
 bleach==1.5.0
 Chameleon==3.0
