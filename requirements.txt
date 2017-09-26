@@ -17,7 +17,7 @@ iso8601==0.1.11
 js.angular==1.1.4
 js.bootstrap==3.3.4
 js.deform==2.0.3
-js.fineuploader==3.3.0
+js.fineuploader==5.14.0
 js.html5shiv==3.7.3
 js.jquery==1.9.1
 js.jquery-form==3.9
