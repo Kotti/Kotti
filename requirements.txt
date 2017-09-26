@@ -1,5 +1,5 @@
 alembic==0.8.10
-appdirs==1.4.0
+appdirs==1.4.3
 Babel==2.3.4
 Beaker==1.8.1
 bleach==1.5.0
