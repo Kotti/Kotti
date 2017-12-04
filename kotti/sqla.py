@@ -1,13 +1,9 @@
-# -*- coding: utf-8 -*-
-
 """
 Inheritance Diagram
 -------------------
 
 .. inheritance-diagram:: kotti.sqla
 """
-from __future__ import absolute_import, division, print_function
-
 from pyramid.compat import json
 from pyramid.security import ALL_PERMISSIONS
 from pyramid.security import Allow

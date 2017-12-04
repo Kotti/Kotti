@@ -1,10 +1,7 @@
-# -*- coding: utf-8 -*-
 """
 Populate contains two functions that are called on application startup
 (if you haven't modified kotti.populators).
 """
-
-from __future__ import absolute_import, division, print_function
 
 from pyramid.i18n import LocalizerRequestMixin
 from pyramid.threadlocal import get_current_registry

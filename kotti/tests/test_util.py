@@ -1,6 +1,3 @@
-# -*- coding: utf-8 -*-
-from __future__ import absolute_import, division, print_function
-
 from mock import Mock
 from mock import patch
 
@@ -82,7 +79,7 @@ class TestTitleToName:
     def test_normal(self):
         self.setUp()
         from kotti.util import title_to_name
-        assert title_to_name(u'Foo Bar') == u'foo-bar'
+        assert title_to_name('Foo Bar') == 'foo-bar'
 
     def test_max_length_40_no_default(self):
         self.setUp()
@@ -92,20 +89,20 @@ class TestTitleToName:
     def test_numbering(self):
         self.setUp()
         from kotti.util import title_to_name
-        assert title_to_name(u'Report Part 1',
-                             blacklist=[]) == u'report-part-1'
-        assert title_to_name(u'Report Part 1',
-                             blacklist=['report-part-1']) == u'report-part-1-1'
-        assert title_to_name(u'Report Part 3',
-                             blacklist=['report-part-3']) == u'report-part-3-1'
+        assert title_to_name('Report Part 1',
+                             blacklist=[]) == 'report-part-1'
+        assert title_to_name('Report Part 1',
+                             blacklist=['report-part-1']) == 'report-part-1-1'
+        assert title_to_name('Report Part 3',
+                             blacklist=['report-part-3']) == 'report-part-3-1'
         assert title_to_name(
-            u'Report Part 3', blacklist=['report-part-3', 'report-part-3-1']
-        ) == u'report-part-3-2'
+            'Report Part 3', blacklist=['report-part-3', 'report-part-3-1']
+        ) == 'report-part-3-2'
 
     def test_disambiguate_name(self):
         from kotti.util import disambiguate_name
-        assert disambiguate_name(u'foo') == u'foo-1'
-        assert disambiguate_name(u'foo-3') == u'foo-4'
+        assert disambiguate_name('foo') == 'foo-1'
+        assert disambiguate_name('foo-3') == 'foo-4'
 
 
 class TestCommand:
@@ -116,12 +113,12 @@ class TestCommand:
         closer = Mock()
         with patch('kotti.util.docopt') as docopt:
             with patch('kotti.util.bootstrap') as bootstrap:
-                docopt.return_value = {'<config_uri>': 'uri'}
+                docopt.return_value = {'<config_uri>': 'app.ini'}
                 bootstrap.return_value = {'closer': closer}
                 assert command(func, 'doc') == 0
-                func.assert_called_with({'<config_uri>': 'uri'})
+                func.assert_called_with({'<config_uri>': 'app.ini'})
                 docopt.assert_called_with('doc')
-                bootstrap.assert_called_with('uri')
+                bootstrap.assert_called_with('app.ini')
                 assert closer.call_count == 1
 
 
@@ -129,8 +126,8 @@ class TestTemplateStructure:
     def test_getattr(self):
         from kotti.util import TemplateStructure
 
-        item = TemplateStructure(u'123')
-        assert item.split('2') == [u'1', u'3']
+        item = TemplateStructure('123')
+        assert item.split('2') == ['1', '3']
 
 
 class TestLink:

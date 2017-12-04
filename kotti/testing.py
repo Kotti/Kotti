@@ -1,14 +1,12 @@
-# -*- coding: utf-8 -*-
 """
 Inheritance Diagram
 -------------------
 
 .. inheritance-diagram:: kotti.testing
 """
-from __future__ import absolute_import, division, print_function
-
 import os
-from os.path import join, dirname
+from os.path import dirname
+from os.path import join
 from unittest import TestCase
 from warnings import catch_warnings
 
@@ -24,9 +22,9 @@ from zope.interface import implementer
 # however, let the `ImportWarning` produced by Babel's
 # `localedata.py` vs `localedata/` show up once...
 with catch_warnings():
-    from babel import localedata
-    import compiler
-    localedata, compiler    # make pyflakes happy... :p
+    pass
+    # import compiler
+    # localedata, compiler    # make pyflakes happy... :p
 
 
 # py.test markers (see http://pytest.org/latest/example/markers.html)
@@ -60,15 +58,16 @@ class DummyRequest(testing.DummyRequest):
         ``request.blank`` is used in Kotti only when assigning slots, where
         the POST parameters are faked as a querystring.
         """
-        import urlparse
+        from urllib.parse import parse_qsl
 
         def _decode(body):
             if not body:
                 return {}
-            return dict([(x, y.decode('utf-8'))
-                         for x, y in urlparse.parse_qsl(body)])
+            return dict([(x, y) for x, y in parse_qsl(body)])
 
-        if POST and isinstance(POST, basestring):
+        if POST and isinstance(POST, bytes):
+            POST = POST.decode()
+        if POST and isinstance(POST, str):
             POST = _decode(POST)
         req = testing.DummyRequest(path=path, environ=environ, headers=headers,
                                    cookies=None, post=POST, **kw)
@@ -161,6 +160,7 @@ def setUp(init_db=True, **kwargs):
     settings['kotti.secret'] = 'secret'
     settings['kotti.secret2'] = 'secret2'
     settings['kotti.populators'] = 'kotti.testing._populator'
+    settings['pyramid_deform.tempdir'] = '/tmp'
     settings.update(kwargs.get('settings', {}))
     settings = _resolve_dotted(settings)
     kwargs['settings'] = settings
@@ -340,8 +340,3 @@ for item in UnitTestBase, EventTestBase, FunctionalTestBase, _initTestingDB:
     name = getattr(item, '__name__', item)
     deprecated(name, 'Unittest-style tests are deprecated as of Kotti 0.7. '
                'Please use pytest function arguments instead.')
-
-TestingRootFactory = RootFactory
-deprecated('TestingRootFactory',
-           "TestingRootFactory has been renamed to RootFactory and will be no "
-           "longer available starting with Kotti 2.0.0.")

@@ -19,21 +19,11 @@ from textwrap import dedent
 
 from pyramid.decorator import reify
 from pyramid.scaffolds import PyramidTemplate
-from usersettings import Settings
+#from usersettings import Settings
 
 
 class KottiTemplate(PyramidTemplate):
     """ Base class for Kotti Templates """
-
-    @reify
-    def _settings(self):  # pragma: no cover
-        s = Settings('org.pylonsproject.kotti.ScaffoldDefaults')
-        s.add_setting("author", unicode, default='')
-        s.add_setting("email", str, default='')
-        s.add_setting("gh_user", str, '')
-        s.load_settings()  # loads anything that might be saved
-
-        return s
 
     def _get(self, key, caption):  # pragma: no cover
 
@@ -41,15 +31,7 @@ class KottiTemplate(PyramidTemplate):
         if env is not None:
             return env
 
-        s = self._settings
-        s[key] = raw_input(u'{0} [{1}]: '.format(caption, s[key])) or s[key]
-
-        try:
-            s.save_settings()
-        except OSError:
-            self.out("Your answers were not saved for later use.")
-
-        return s[key]
+        return input(caption)
 
     def pre(self, command, output_dir, vars):  # pragma: no cover
         """ Overrides :meth:`pyramid.scaffolds.PyramidTemplate.pre`, adding

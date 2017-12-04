@@ -56,7 +56,7 @@ repoze.lru==0.6
 repoze.sendmail==4.3
 repoze.workflow==1.0b1
 repoze.zcml==1.0b1
-rfc6266==0.0.4
+rfc6266-parser==0.0.5.post2
 six==1.10.0
 SQLAlchemy==1.1.5
 SQLAlchemy-Utils==0.32.12

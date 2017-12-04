@@ -1,9 +1,6 @@
-# -*- coding: utf-8 -*-
 """
 Login / logout and forbidden views and forms.
 """
-from __future__ import absolute_import, division, print_function
-
 from datetime import datetime
 
 import colander

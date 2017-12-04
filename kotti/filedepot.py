@@ -1,12 +1,9 @@
-# -*- coding: utf-8 -*-
-from __future__ import absolute_import, division, print_function
-
 import logging
 import mimetypes
 import uuid
 from datetime import datetime
 
-import rfc6266
+import rfc6266_parser
 from depot.fields.sqlalchemy import _SQLAMutationTracker
 from depot.io.interfaces import FileStorage
 from depot.manager import DepotManager
@@ -27,8 +24,8 @@ from sqlalchemy.orm import deferred
 from unidecode import unidecode
 
 from kotti import Base
-from kotti import get_settings
 from kotti import DBSession
+from kotti import get_settings
 from kotti.util import _to_fieldstorage
 from kotti.util import camel_case_to_name
 from kotti.util import command
@@ -437,9 +434,13 @@ class StoredFileResponse(Response):
             self.cache_control.public = True
 
         self.etag = self.generate_etag(f)
-        self.content_disposition = rfc6266.build_header(
+
+        disposition = rfc6266_parser.build_header(
             f.filename, disposition=disposition,
             filename_compat=unidecode(f.filename))
+        if isinstance(disposition, bytes):
+            disposition = disposition.decode('iso-8859-1')
+        self.content_disposition = disposition
 
     @staticmethod
     def _get_type_and_encoding(content_encoding, content_type, f):
@@ -460,9 +461,11 @@ class StoredFileResponse(Response):
         return '"{0}-{1}"'.format(f.last_modified, f.content_length)
 
 
-def uploaded_file_response(self, uploaded_file, disposition='inline'):
+def uploaded_file_response(self, uploaded_file, disposition='inline',
+                           cache_max_age=604800):
     return StoredFileResponse(uploaded_file.file, self,
-                              disposition=disposition)
+                              disposition=disposition,
+                              cache_max_age=cache_max_age)
 
 
 def uploaded_file_url(self, uploaded_file, disposition='inline'):
@@ -573,7 +576,7 @@ def adjust_for_engine(conn, branch):
     def patched_processed_result_value(self, value, dialect):
         if not value:
             return None
-        return self._upload_type.decode(unicode(value))
+        return self._upload_type.decode(value)
 
     if conn.engine.dialect.name == 'sqlite':  # pragma: no cover
         from depot.fields.sqlalchemy import UploadedFileField

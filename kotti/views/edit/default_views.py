@@ -1,9 +1,6 @@
-# -*- coding: utf-8 -*-
 """
 :summary: Default view selctor views
 """
-from __future__ import absolute_import, division, print_function
-
 import warnings
 
 from pyramid.compat import map_

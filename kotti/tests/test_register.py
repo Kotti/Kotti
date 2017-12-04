@@ -1,8 +1,4 @@
-# -*- coding: utf-8 -*-
-from __future__ import absolute_import, division, print_function
-
-from mock import call
-from mock import patch
+import mock  # must not ``from mock import call``, causes memory error.
 
 from kotti.testing import DummyRequest
 
@@ -20,7 +16,7 @@ class TestRegister:
         from kotti.views.login import register
 
         request = DummyRequest()
-        request.POST['register'] = u'register'
+        request.POST['register'] = 'register'
         res = register(root, request)
         assert 'There was a problem with your submission' in res['form']
 
@@ -29,35 +25,35 @@ class TestRegister:
         from pyramid.httpexceptions import HTTPFound
 
         request = DummyRequest()
-        request.POST['title'] = u'Test User'
-        request.POST['name'] = u'test'
-        request.POST['email'] = u'test@example.com'
-        request.POST['register'] = u'register',
+        request.POST['title'] = 'Test User'
+        request.POST['name'] = 'test'
+        request.POST['email'] = 'test@example.com'
+        request.POST['register'] = 'register',
 
-        with patch('kotti.views.login.UserAddFormView') as form:
-            with patch('kotti.views.login.get_principals'):
+        with mock.patch('kotti.views.login.UserAddFormView') as form:
+            with mock.patch('kotti.views.login.get_principals'):
                 res = register(root, request)
-                form.assert_has_calls([call().add_user_success({
-                    'name': u'test',
-                    'roles': u'',
-                    'title': u'Test User',
+                form.assert_has_calls([mock.call().add_user_success({
+                    'name': 'test',
+                    'roles': '',
+                    'title': 'Test User',
                     'send_email': True,
-                    'groups': u'',
-                    'email': u'test@example.com'})]
+                    'groups': '',
+                    'email': 'test@example.com'})]
                 )
         assert(isinstance(res, HTTPFound))
 
     def test_register_event(self, root):
         from kotti.views.login import register
         request = DummyRequest()
-        request.POST['title'] = u'Test User'
-        request.POST['name'] = u'test'
-        request.POST['email'] = u'test@example.com'
-        request.POST['register'] = u'register',
+        request.POST['title'] = 'Test User'
+        request.POST['name'] = 'test'
+        request.POST['email'] = 'test@example.com'
+        request.POST['register'] = 'register',
 
-        with patch('kotti.views.login.UserAddFormView'):
-            with patch('kotti.views.login.get_principals'):
-                with patch('kotti.views.login.notify') as notify:
+        with mock.patch('kotti.views.login.UserAddFormView'):
+            with mock.patch('kotti.views.login.get_principals'):
+                with mock.patch('kotti.views.login.notify') as notify:
                     register(root, request)
         assert(notify.call_count == 1)
 
@@ -66,14 +62,14 @@ class TestRegister:
         from pyramid.httpexceptions import HTTPFound
 
         request = DummyRequest()
-        request.POST['title'] = u'Test User'
-        request.POST['name'] = u'test'
-        request.POST['email'] = u'test@example.com'
-        request.POST['register'] = u'register',
+        request.POST['title'] = 'Test User'
+        request.POST['name'] = 'test'
+        request.POST['email'] = 'test@example.com'
+        request.POST['register'] = 'register',
 
-        with patch('kotti.views.login.UserAddFormView') as form:
-            with patch('kotti.views.login.get_principals'):
-                with patch('kotti.views.login.get_settings') as get_settings:
+        with mock.patch('kotti.views.login.UserAddFormView') as form:
+            with mock.patch('kotti.views.login.get_principals'):
+                with mock.patch('kotti.views.login.get_settings') as get_settings:
                     get_settings.return_value = {
                         'kotti.register.group': 'mygroup',
                         'kotti.register.role': 'myrole',
@@ -82,13 +78,13 @@ class TestRegister:
                     res = register(root, request)
 
         form.assert_has_calls([
-            call().add_user_success({
-                'name': u'test',
-                'roles': {u'role:myrole'},
-                'title': u'Test User',
+            mock.call().add_user_success({
+                'name': 'test',
+                'roles': {'role:myrole'},
+                'title': 'Test User',
                 'send_email': True,
-                'groups': [u'mygroup'],
-                'email': u'test@example.com',
+                'groups': ['mygroup'],
+                'email': 'test@example.com',
                 })])
         assert(isinstance(res, HTTPFound))
 

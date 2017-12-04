@@ -38,7 +38,7 @@ class CustomContent(Content):
         """ Constructor
 
         :param custom_attribute: A very custom attribute
-        :type custom_attribute: unicode
+        :type custom_attribute: str
 
         :param **kwargs: Arguments that are passed to the base class(es)
         :type **kwargs: see :class:`kotti.resources.Content`

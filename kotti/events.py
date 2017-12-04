@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-# -*- coding: utf-8 -*-
 """This module includes a simple events system that allows users to
 subscribe to specific events, and more particularly to *object events*
 of specific object types.
@@ -13,24 +11,17 @@ Inheritance Diagram
 
 """
 
-from __future__ import absolute_import, division, print_function
-
-from collections import defaultdict
+from collections import OrderedDict
 from datetime import datetime
-
-try:  # pragma: no cover
-    from collections import OrderedDict
-except ImportError:  # pragma: no cover
-    from ordereddict import OrderedDict
 
 import sqlalchemy.event
 import venusian
+from pyramid.location import lineage
+from pyramid.threadlocal import get_current_request
 from sqlalchemy.orm import load_only
 from sqlalchemy.orm import mapper
 from sqlalchemy_utils.functions import has_changes
-from pyramid.location import lineage
-from pyramid.threadlocal import get_current_request
-from zope.deprecation.deprecation import deprecated
+from zope.deprecation import deprecated
 
 from kotti import DBSession
 from kotti import get_settings
@@ -39,10 +30,10 @@ from kotti.resources import LocalGroup
 from kotti.resources import Node
 from kotti.resources import Tag
 from kotti.resources import TagsToContents
+from kotti.security import Principal
 from kotti.security import get_principals
 from kotti.security import list_groups
 from kotti.security import list_groups_raw
-from kotti.security import Principal
 from kotti.security import set_groups
 from kotti.sqla import no_autoflush
 
@@ -93,12 +84,45 @@ class UserDeleted(ObjectEvent):
     """This event is emitted when an user object is deleted from the DB."""
 
 
-class DispatcherDict(defaultdict, OrderedDict):
-    """Base class for dispatchers"""
+class DispatcherDict(OrderedDict):
+    # Source: http://stackoverflow.com/a/6190500/562769
+    def __init__(self, *a, **kw):
+        OrderedDict.__init__(self, *a, **kw)
+        self.default_factory = list
 
-    def __init__(self, *args, **kwargs):
-        defaultdict.__init__(self, list)
-        OrderedDict.__init__(self, *args, **kwargs)
+    def __getitem__(self, key):
+        try:
+            return OrderedDict.__getitem__(self, key)
+        except KeyError:
+            return self.__missing__(key)
+
+    def __missing__(self, key):
+        if self.default_factory is None:
+            raise KeyError(key)
+        self[key] = value = self.default_factory()
+        return value
+
+    def __reduce__(self):
+        if self.default_factory is None:
+            args = tuple()
+        else:
+            args = self.default_factory,
+        return type(self), args, None, None, self.items()
+
+    def copy(self):
+        return self.__copy__()
+
+    def __copy__(self):
+        return type(self)(self.default_factory, self)
+
+    def __deepcopy__(self, memo):
+        import copy
+        return type(self)(self.default_factory,
+                          copy.deepcopy(self.items()))
+
+    def __repr__(self):
+        return 'OrderedDefaultDict(%s, %s)' % (self.default_factory,
+                                               OrderedDict.__repr__(self))
 
 
 class Dispatcher(DispatcherDict):
@@ -233,7 +257,6 @@ def set_owner(event):
     if request is not None and isinstance(obj, Node):
         userid = request.authenticated_userid
         if userid is not None:
-            userid = unicode(userid)
             # Set owner metadata:
             if obj.owner is None:
                 obj.owner = userid

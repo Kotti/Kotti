@@ -1,6 +1,3 @@
-# -*- coding: utf-8 -*-
-from __future__ import absolute_import, division, print_function
-
 import transaction
 from pyramid.security import DENY_ALL
 from repoze.workflow import get_workflow as base_get_workflow

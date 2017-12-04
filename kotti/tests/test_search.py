@@ -1,22 +1,19 @@
-# -*- coding: utf-8 -*-
-from __future__ import absolute_import, division, print_function
-
 from kotti.testing import DummyRequest
 
 
 def _create_contents(root):
     from kotti.resources import Content, File
     doc1 = root['doc1'] = Content(
-        title=u'First Document',
-        description=u'I am the first.')
+        title='First Document',
+        description='I am the first.')
     doc11 = root['doc1']['doc11'] = Content(
-        title=u'Second Document',
-        description=u'And I am the second.')
+        title='Second Document',
+        description='And I am the second.')
     doc12 = root['doc1']['doc12'] = Content(
-        title=u'Third Document')
+        title='Third Document')
     file1 = root['doc1']['file1'] = File(
-        title=u'First File',
-        description=u'this is a file')
+        title='First File',
+        description='this is a file')
     return doc1, doc11, doc12, file1
 
 
@@ -26,20 +23,20 @@ def _create_contents_with_tags(root=None):
     if root is None:
         root = get_root()
 
-    animals = root['animals'] = Content(title=u'Animals')
-    cat = root['animals']['cat'] = Content(title=u'Cat')
-    dog = root['animals']['dog'] = Content(title=u'Dog')
-    monkey = root['animals']['monkey'] = Content(title=u'Monkey')
-    gorilla = root['animals']['gorilla'] = Content(title=u'Gorilla')
+    animals = root['animals'] = Content(title='Animals')
+    cat = root['animals']['cat'] = Content(title='Cat')
+    dog = root['animals']['dog'] = Content(title='Dog')
+    monkey = root['animals']['monkey'] = Content(title='Monkey')
+    gorilla = root['animals']['gorilla'] = Content(title='Gorilla')
     monkey_file = root['animals']['monkey_file'] = File(
-        title=u'Monkey File',
-        description=u'A Rhesus Macaque and a Green Monkey walk into a bar...')
+        title='Monkey File',
+        description='A Rhesus Macaque and a Green Monkey walk into a bar...')
 
-    root[u'animals'][u'cat'].tags = [u'Animals', u'Cat']
-    root[u'animals'][u'dog'].tags = [u'Animals', u'Dog']
-    root[u'animals'][u'monkey'].tags = [u'Animals', u'Monkey', u'Primate']
-    root[u'animals'][u'monkey_file'].tags = [u'Animals', u'Monkey', u'Primate']
-    root[u'animals'][u'gorilla'].tags = [u'Animals', u'Gorilla', u'Primate']
+    root['animals']['cat'].tags = ['Animals', 'Cat']
+    root['animals']['dog'].tags = ['Animals', 'Dog']
+    root['animals']['monkey'].tags = ['Animals', 'Monkey', 'Primate']
+    root['animals']['monkey_file'].tags = ['Animals', 'Monkey', 'Primate']
+    root['animals']['gorilla'].tags = ['Animals', 'Gorilla', 'Primate']
 
     return animals, cat, dog, monkey, gorilla, monkey_file
 
@@ -47,7 +44,7 @@ def _create_contents_with_tags(root=None):
 def test_search_empty_content(db_session):
     from kotti.views.util import search_content
     request = DummyRequest()
-    results = search_content(u'teststring', request)
+    results = search_content('teststring', request)
     assert results == []
 
 
@@ -58,15 +55,15 @@ def test_search_content(root):
 
     request = DummyRequest()
     doc1, doc11, doc12, file1 = _create_contents(root)
-    results = search_content(u'First Document', request)
+    results = search_content('First Document', request)
     assert len(results) == 1
-    assert results[0]['name'] == u'doc1'
-    assert results[0]['title'] == u'First Document'
-    results = search_content(u'Document', request)
+    assert results[0]['name'] == 'doc1'
+    assert results[0]['title'] == 'First Document'
+    results = search_content('Document', request)
     # The frontpage contains 'Documentation' in its body!
     assert len(results) == 4
-    assert results[1]['name'] == u'doc11'
-    assert results[1]['title'] == u'Second Document'
+    assert results[1]['name'] == 'doc11'
+    assert results[1]['title'] == 'Second Document'
     assert results[1]['path'] == '/doc1/doc11/'
     assert results[1]['path'][-1] == '/'
 
@@ -75,11 +72,11 @@ def test_search_content(root):
 
     tags = DBSession.query(Tag).all()
     assert len(tags) == 6
-    results = search_content(u'Animals', request)
+    results = search_content('Animals', request)
     assert len(results) == 6
-    results = search_content(u'Cat', request)
+    results = search_content('Cat', request)
     assert len(results) == 1
-    results = search_content(u'Primate', request)
+    results = search_content('Primate', request)
     assert len(results) == 3
 
     # Tags were included in general search by modifying the pre-existing
@@ -98,7 +95,7 @@ def test_search_content(root):
     # Note: this ordering is done to have some method, but it does not
     #       necessarily constitute a specification.
     #
-    results = search_content(u'Animals', request)
+    results = search_content('Animals', request)
     assert len(results) == 6
     assert results[0]['name'] == 'animals'
 
@@ -107,7 +104,7 @@ def test_search_file_description(root):
     from kotti.views.util import search_content
     request = DummyRequest()
     doc1, doc11, doc12, file1 = _create_contents(root)
-    results = search_content(u'this is a file', request)
+    results = search_content('this is a file', request)
     assert len(results) == 1
     assert results[0]['name'] == 'file1'
     assert results[0]['title'] == 'First File'
@@ -119,7 +116,7 @@ def test_search_content_without_permission(config, root):
     request = DummyRequest()
     _create_contents(root)
     config.testing_securitypolicy(permissive=False)
-    results = search_content(u'Document', request)
+    results = search_content('Document', request)
     assert len(results) == 0
 
 
@@ -130,20 +127,20 @@ def test_search_functional(webtest, root):
     resp = webtest.app.get('/')
 
     search_form = resp.forms['form-search']
-    search_form['search-term'] = u'First Document'
+    search_form['search-term'] = 'First Document'
     resp = search_form.submit()
-    assert 'I am the first' in resp.body
-    assert 'And I am the second' not in resp.body
+    assert 'I am the first' in resp.text
+    assert 'And I am the second' not in resp.text
 
     search_form = resp.forms['form-search']
-    search_form['search-term'] = u'Document'
+    search_form['search-term'] = 'Document'
     resp = search_form.submit()
-    assert 'I am the first' in resp.body
-    assert 'And I am the second' in resp.body
+    assert 'I am the first' in resp.text
+    assert 'And I am the second' in resp.text
 
     search_form = resp.forms['form-search']
-    search_form['search-term'] = u'is a file'
+    search_form['search-term'] = 'is a file'
     resp = search_form.submit()
-    assert 'And I am the second' not in resp.body
-    assert 'Third' not in resp.body
-    assert 'First File' in resp.body
+    assert 'And I am the second' not in resp.text
+    assert 'Third' not in resp.text
+    assert 'First File' in resp.text

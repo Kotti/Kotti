@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 The :mod:`~kotti.resources` module contains all the classes for Kotti's
 persistence layer, which is based on SQLAlchemy.
@@ -8,15 +7,13 @@ Inheritance Diagram
 
 .. inheritance-diagram:: kotti.resources
 """
-
-from __future__ import absolute_import, division, print_function
-
+import abc
 import os
 import warnings
-from UserDict import DictMixin
-from cStringIO import StringIO
+from collections import MutableMapping
 from copy import copy
 from fnmatch import fnmatch
+from io import BytesIO
 
 from depot.fields.sqlalchemy import UploadedFileField
 from depot.fields.sqlalchemy import _SQLAMutationTracker
@@ -34,7 +31,7 @@ from sqlalchemy import UniqueConstraint
 from sqlalchemy import bindparam
 from sqlalchemy import event
 from sqlalchemy.ext.associationproxy import association_proxy
-from sqlalchemy.ext.declarative import declared_attr
+from sqlalchemy.ext.declarative import DeclarativeMeta, declared_attr
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.ext.orderinglist import ordering_list
 from sqlalchemy.orm import backref
@@ -75,18 +72,24 @@ from kotti.util import camel_case_to_name
 from kotti.util import get_paste_items
 
 
-class ContainerMixin(object, DictMixin):
+class ContainerMixin(MutableMapping):
     """ Containers form the API of a Node that's used for subitem
     access and in traversal.
     """
 
+    def __iter__(self):
+        return iter(self.children)
+
+    def __len__(self):
+        return len(self.keys())
+
     def __setitem__(self, key, node):
-        node.name = unicode(key)
+        node.name = key
         self.children.append(node)
         self.children.reorder()
 
     def __delitem__(self, key):
-        node = self[unicode(key)]
+        node = self[key]
         self.children.remove(node)
         DBSession.delete(node)
 
@@ -98,13 +101,17 @@ class ContainerMixin(object, DictMixin):
 
         return [child.name for child in self.children]
 
+    def values(self):
+        return self.children
+
     def __getitem__(self, path):
         db_session = DBSession()
         db_session._autoflush()
 
-        if not hasattr(path, '__iter__'):
+        # if not hasattr(path, '__iter__'):
+        if isinstance(path, str):
             path = (path,)
-        path = [unicode(p) for p in path]
+        path = [p for p in path]
 
         # Optimization: don't query children if self._children already there:
         if '_children' in self.__dict__:
@@ -218,8 +225,12 @@ class LocalGroup(Base):
             resource_path(self.node))
 
 
+class NodeMeta(DeclarativeMeta, abc.ABCMeta):
+    """ """
+
+
 @implementer(INode)
-class Node(Base, ContainerMixin, PersistentACLMixin):
+class Node(Base, ContainerMixin, PersistentACLMixin, metaclass=NodeMeta):
     """Basic node in the persistance hierarchy.
     """
 
@@ -276,6 +287,8 @@ class Node(Base, ContainerMixin, PersistentACLMixin):
         lazy='joined',
         )
 
+    __hash__ = Base.__hash__
+
     def __init__(self, name=None, parent=None, title=u"", annotations=None,
                  **kwargs):
         """Constructor"""
@@ -313,6 +326,10 @@ class Node(Base, ContainerMixin, PersistentACLMixin):
 
     copy_properties_blacklist = (
         'id', 'parent', 'parent_id', '_children', 'local_groups', '_tags')
+
+    def clear(self):
+
+        DBSession.query(Node).filter(Node.parent == self).delete()
 
     def copy(self, **kwargs):
         """
@@ -419,7 +436,7 @@ class TypeInfo(object):
         :type name: str
 
         :param title: Title for the view for display in the UI.
-        :type title: unicode or TranslationString
+        :type title: str or TranslationString
         """
         self.selectable_default_views.append((name, title))
 
@@ -504,7 +521,7 @@ class TagsToContents(Base):
         Find or create a tag with the given title.
 
         :param title: Title of the tag to find or create.
-        :type title: unicode
+        :type title: str
         :result:
         :rtype: :class:`~kotti.resources.TagsToContents`
         """
@@ -719,7 +736,8 @@ class SaveDataMixin(object):
         """
 
         if isinstance(value, bytes):
-            value = _to_fieldstorage(fp=StringIO(value),
+            fp = BytesIO(value)
+            value = _to_fieldstorage(fp=fp,
                                      filename=target.filename,
                                      mimetype=target.mimetype,
                                      size=len(value))

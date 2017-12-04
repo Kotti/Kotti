@@ -1,18 +1,14 @@
-# -*- coding: utf-8 -*-
-
 """
 For a high level introduction and available configuration options
 see :ref:`sanitizers`.
 """
-from __future__ import absolute_import, division, print_function
-
 from bleach import clean
-from bleach_whitelist import all_styles
-from bleach_whitelist import generally_xss_safe
-from bleach_whitelist import markdown_attrs
-from bleach_whitelist import markdown_tags
-from bleach_whitelist import print_attrs
-from bleach_whitelist import print_tags
+from bleach_whitelist.bleach_whitelist import all_styles
+from bleach_whitelist.bleach_whitelist import generally_xss_safe
+from bleach_whitelist.bleach_whitelist import markdown_attrs
+from bleach_whitelist.bleach_whitelist import markdown_tags
+from bleach_whitelist.bleach_whitelist import print_attrs
+from bleach_whitelist.bleach_whitelist import print_tags
 from pyramid.util import DottedNameResolver
 from six import string_types
 
@@ -32,7 +28,7 @@ def sanitize(html, sanitizer):
     :type sanitizer: str
 
     :result: sanitized HTML
-    :rtype: unicode
+    :rtype: str
     """
 
     sanitized = get_settings()['kotti.sanitizers'][sanitizer](html)
@@ -49,7 +45,7 @@ def xss_protection(html):
     :type html: basestring
 
     :result: sanitized HTML
-    :rtype: unicode
+    :rtype: str
     """
 
     sanitized = clean(
@@ -73,12 +69,12 @@ def minimal_html(html):
     :type html: basestring
 
     :result: sanitized HTML
-    :rtype: unicode
+    :rtype: str
     """
 
     attributes = dict(zip(
-        markdown_attrs.keys() + print_attrs.keys(),
-        markdown_attrs.values() + print_attrs.values()))
+        list(markdown_attrs.keys()) + list(print_attrs.keys()),
+        list(markdown_attrs.values()) + list(print_attrs.values())))
 
     sanitized = clean(
         html,
@@ -97,7 +93,7 @@ def no_html(html):
     :type html: basestring
 
     :result: plain text
-    :rtype: unicode
+    :rtype: str
     """
 
     sanitized = clean(

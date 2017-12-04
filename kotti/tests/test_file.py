@@ -1,7 +1,4 @@
-# -*- coding: utf-8 -*-
-from __future__ import absolute_import, division, print_function
-
-from StringIO import StringIO
+from io import BytesIO
 
 import pytest
 from colander import null
@@ -12,7 +9,6 @@ from pyramid.httpexceptions import HTTPMovedPermanently
 from kotti.filedepot import StoredFileResponse
 from kotti.testing import DummyRequest
 from kotti.testing import asset
-from kotti.views.file import UploadedFileResponse
 from kotti.views.file import attachment_view
 from kotti.views.file import inline_view
 
@@ -43,9 +39,9 @@ class TestFileViews:
         assert res.content_disposition.startswith(
             '{0}; filename=my'.format(disposition))
 
-        assert res.app_iter.file.read() == asset('logo.png').read()
-        res.app_iter.file.seek(0)
-        assert res.body == asset('logo.png').read()
+        data = asset('logo.png').read()
+        assert res.body == data
+        assert b''.join(res.app_iter) == data
 
 
 class TestFileEditForm:
@@ -61,7 +57,7 @@ class TestFileEditForm:
             title=u'A title', description=u'A description',
             tags=[u"A tag"],
             file=dict(
-                fp=StringIO('filecontents'),
+                fp=BytesIO(b'filecontents'),
                 filename=u'myfile.png',
                 mimetype=u'image/png',
                 size=10,
@@ -70,15 +66,15 @@ class TestFileEditForm:
             )
         assert view.context.title == u'A title'
         assert view.context.description == u'A description'
-        assert view.context.data.file.read() == 'filecontents'
+        assert view.context.data.file.read() == b'filecontents'
         assert view.context.filename == u'myfile.png'
         assert view.context.mimetype == u'image/png'
-        assert view.context.size == len('filecontents')
+        assert view.context.size == len(b'filecontents')
         assert view.context.tags == [u"A tag"]
 
     def test_edit_without_file(self, filedepot):
         view = self.make_one()
-        view.context.data = 'filecontents'
+        view.context.data = b'filecontents'
         view.context.filename = u'myfile.png'
         view.context.mimetype = u'image/png'
         view.context.size = 777
@@ -90,7 +86,7 @@ class TestFileEditForm:
             assert tfs.call_count == 0
             assert view.context.title == u'A title'
             assert view.context.description == u'A description'
-            assert view.context.data.file.read() == 'filecontents'
+            assert view.context.data.file.read() == b'filecontents'
             assert view.context.filename == u'myfile.png'
             assert view.context.mimetype == u'image/png'
             assert view.context.size == 777
@@ -108,7 +104,7 @@ class TestFileAddForm:
             description=u'A description',
             tags=[],
             file=dict(
-                fp=StringIO('filecontents'),
+                fp=BytesIO(b'filecontents'),
                 filename=u'myfile.png',
                 mimetype=u'image/png',
                 size=None,
@@ -119,10 +115,10 @@ class TestFileAddForm:
         assert file.title == u'A title'
         assert file.description == u'A description'
         assert file.tags == []
-        assert file.data.file.read() == 'filecontents'
+        assert file.data.file.read() == b'filecontents'
         assert file.filename == u'myfile.png'
         assert file.mimetype == u'image/png'
-        assert file.size == len('filecontents')
+        assert file.size == len(b'filecontents')
 
 
 class TestFileUploadTempStore:
@@ -144,17 +140,17 @@ class TestFileUploadTempStore:
 
     def test_setitem_with_stream(self):
         ts = self.make_one()
-        ts['a'] = {'fp': StringIO('test'), 'marker': 'yes'}
-        assert ts.session['a'] == {'file_contents': 'test', 'marker': 'yes'}
+        ts['a'] = {'fp': BytesIO(b'test'), 'marker': 'yes'}
+        assert ts.session['a'] == {'file_contents': b'test', 'marker': 'yes'}
         v = ts['a']
         assert 'fp' in v.keys()
         assert v['marker'] == 'yes'
-        assert v['fp'].read() == 'test'
+        assert v['fp'].read() == b'test'
 
     def test_setitem_with_empty(self):
         ts = self.make_one()
         ts['a'] = {'fp': None, 'marker': 'yes'}
-        assert ts.session['a'] == {'file_contents': '', 'marker': 'yes'}
+        assert ts.session['a'] == {'file_contents': b'', 'marker': 'yes'}
         assert ts['a'] == {'fp': None, 'marker': 'yes'}
 
 
@@ -188,72 +184,79 @@ class TestDepotStore:
     @pytest.mark.parametrize("factory", [File, Image])
     def test_session_rollback(self, factory, db_session, filedepot, image_asset,
                               app):
-        from depot.manager import DepotManager
+        storage = filedepot.get()
 
         f = factory(data=image_asset.read(), name=u'content', title=u'content')
         id = f.data['file_id']
 
         db_session.add(f)
         db_session.flush()
-        assert id in DepotManager.get()._storage.keys()
+        storage.get(id)
 
         db_session.rollback()
-        assert id not in DepotManager.get()._storage.keys()
-        assert DepotManager.get().delete.called
+        with pytest.raises(IOError):
+            storage.get(id)
+        assert storage.delete.called
 
     @pytest.mark.parametrize("factory", [File, Image])
     def test_delete(self, factory, db_session, root, filedepot, image_asset,
                     app):
-        from depot.manager import DepotManager
+
+        storage = filedepot.get()
 
         f = factory(data=image_asset, name=u'content', title=u'content')
         id = f.data['file_id']
         root[str(id)] = f
         db_session.flush()
 
-        assert id in DepotManager.get()._storage.keys()
+        storage.get(id)
 
         del root[str(id)]
         import transaction
         transaction.commit()
 
-        assert DepotManager.get().delete.called
-        assert id not in DepotManager.get()._storage.keys()
+        with pytest.raises(IOError):
+            storage.get(id)
+        assert storage.delete.called
 
 
 class TestUploadedFileResponse:
     def _create_file(self,
-                     data="file contents",
-                     filename=u"myfüle.png",
-                     mimetype=u"image/png"):
+                     data=b'file contents',
+                     filename='myfüle.png',
+                     mimetype='image/png'):
         from kotti.resources import File
         return File(data, filename, mimetype)
 
-    def test_as_body(self, filedepot, image_asset):
+    def test_as_body(self, filedepot, image_asset, dummy_request):
         data = image_asset.read()
         f = self._create_file(data)
-        resp = UploadedFileResponse(f.data, DummyRequest())
+        # resp = UploadedFileResponse(f.data, DummyRequest())
+        resp = dummy_request.uploaded_file_response(f.data)
         assert resp.body == data
 
-    def test_as_app_iter(self, filedepot, image_asset):
+    def test_as_app_iter(self, filedepot, image_asset, dummy_request):
         from pyramid.response import FileIter
         data = image_asset.read()
         f = self._create_file(data)
-        resp = UploadedFileResponse(f.data, DummyRequest())
+        # resp = UploadedFileResponse(f.data, DummyRequest())
+        resp = dummy_request.uploaded_file_response(f.data)
         assert isinstance(resp.app_iter, FileIter)
-        assert ''.join(resp.app_iter) == data
+        assert b''.join(resp.app_iter) == data
 
-    def test_unknown_filename(self, filedepot, image_asset2):
+    def test_unknown_filename(self, filedepot, image_asset2, dummy_request):
         f = self._create_file(b'foo', u"file.bar", None)
-        resp = UploadedFileResponse(f.data, DummyRequest())
+        # resp = UploadedFileResponse(f.data, DummyRequest())
+        resp = dummy_request.uploaded_file_response(f.data)
         assert resp.headers['Content-Type'] == 'application/octet-stream'
 
-    def test_guess_content_type(self, filedepot, image_asset):
+    def test_guess_content_type(self, filedepot, image_asset, dummy_request):
         f = self._create_file(image_asset.read(), u"file.png", None)
-        resp = UploadedFileResponse(f.data, DummyRequest())
+        # resp = UploadedFileResponse(f.data, DummyRequest())
+        resp = dummy_request.uploaded_file_response(f.data)
         assert resp.headers['Content-Type'] == 'image/png'
 
-    def test_caching(self, filedepot, monkeypatch):
+    def test_caching(self, filedepot, monkeypatch, dummy_request):
         import datetime
         import webob.response
 
@@ -267,13 +270,14 @@ class TestUploadedFileResponse:
 
         monkeypatch.setattr(webob.response, 'datetime', mockdatetime)
 
-        resp = UploadedFileResponse(f.data, DummyRequest(), cache_max_age=10)
+        # resp = UploadedFileResponse(f.data, DummyRequest(), cache_max_age=10)
+        resp = dummy_request.uploaded_file_response(f.data, cache_max_age=10)
 
         # this is set by filedepot fixture
         assert resp.headers['Last-Modified'] == 'Sun, 30 Dec 2012 00:00:00 GMT'
         assert resp.headers['Expires'] == 'Mon, 31 Dec 2012 13:00:10 GMT'
 
-    def test_redirect(self, filedepot):
+    def test_redirect(self, filedepot, dummy_request):
 
         class PublicFile(object):
             public_url = 'http://example.com'
@@ -282,7 +286,8 @@ class TestUploadedFileResponse:
             file = PublicFile()
 
         with pytest.raises(HTTPMovedPermanently) as e:
-            UploadedFileResponse(PublicData(), DummyRequest())
+            # UploadedFileResponse(PublicData(), DummyRequest())
+            dummy_request.uploaded_file_response(PublicData())
 
         response = e.value
         assert response.headers['Location'] == 'http://example.com'
@@ -290,37 +295,37 @@ class TestUploadedFileResponse:
 
 class TestStoredFileResponse:
     def _create_file(self,
-                     data="file contents",
+                     data=b"file contents",
                      filename=u"myfüle.png",
                      mimetype=u"image/png"):
         from kotti.resources import File
         return File(data, filename, mimetype)
 
-    def test_as_body(self, filedepot, image_asset):
+    def test_as_body(self, filedepot, image_asset, dummy_request):
         data = image_asset.read()
         f = self._create_file(data)
-        resp = StoredFileResponse(f.data.file, DummyRequest())
+        resp = StoredFileResponse(f.data.file, dummy_request)
         assert resp.body == data
 
-    def test_as_app_iter(self, filedepot, image_asset):
+    def test_as_app_iter(self, filedepot, image_asset, dummy_request):
         from pyramid.response import FileIter
         data = image_asset.read()
         f = self._create_file(data)
-        resp = StoredFileResponse(f.data.file, DummyRequest())
+        resp = StoredFileResponse(f.data.file, dummy_request)
         assert isinstance(resp.app_iter, FileIter)
-        assert ''.join(resp.app_iter) == data
+        assert b''.join(resp.app_iter) == data
 
-    def test_unknown_filename(self, filedepot, image_asset2):
+    def test_unknown_filename(self, filedepot, image_asset2, dummy_request):
         f = self._create_file(b'foo', u"file.bar", None)
-        resp = StoredFileResponse(f.data.file, DummyRequest())
+        resp = StoredFileResponse(f.data.file, dummy_request)
         assert resp.headers['Content-Type'] == 'application/octet-stream'
 
-    def test_guess_content_type(self, filedepot, image_asset):
+    def test_guess_content_type(self, filedepot, image_asset, dummy_request):
         f = self._create_file(image_asset.read(), u"file.png", None)
-        resp = StoredFileResponse(f.data.file, DummyRequest())
+        resp = StoredFileResponse(f.data.file, dummy_request)
         assert resp.headers['Content-Type'] == 'image/png'
 
-    def test_caching(self, filedepot, monkeypatch):
+    def test_caching(self, filedepot, monkeypatch, dummy_request):
         import datetime
         import webob.response
 
@@ -334,18 +339,21 @@ class TestStoredFileResponse:
 
         monkeypatch.setattr(webob.response, 'datetime', mockdatetime)
 
-        resp = StoredFileResponse(f.data.file, DummyRequest(), cache_max_age=10)
+        resp = dummy_request.uploaded_file_response(f.data)
+        assert resp.headers['Expires'] == 'Mon, 07 Jan 2013 13:00:00 GMT'
+
+        resp = dummy_request.uploaded_file_response(f.data, cache_max_age=10)
+        assert resp.headers['Expires'] == 'Mon, 31 Dec 2012 13:00:10 GMT'
 
         # this is set by filedepot fixture
         assert resp.headers['Last-Modified'] == 'Sun, 30 Dec 2012 00:00:00 GMT'
-        assert resp.headers['Expires'] == 'Mon, 31 Dec 2012 13:00:10 GMT'
 
-    def test_redirect(self, filedepot):
+    def test_redirect(self, filedepot, dummy_request):
         class PublicFile(object):
             public_url = 'http://example.com'
 
         with pytest.raises(HTTPMovedPermanently) as e:
-            StoredFileResponse(PublicFile(), DummyRequest())
+            StoredFileResponse(PublicFile(), dummy_request)
 
         response = e.value
         assert response.headers['Location'] == 'http://example.com'

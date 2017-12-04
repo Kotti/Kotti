@@ -1,11 +1,8 @@
-# -*- coding: utf-8 -*-
 """
 User management screens
 """
-from __future__ import absolute_import, division, print_function
-
 import re
-from urllib import urlencode
+from urllib.parse import urlencode
 
 import colander
 from deform import Button
@@ -47,7 +44,7 @@ def roles_form_handler(context, request, available_role_names, groups_lister):
             if name.startswith('orig-role::'):
                 # orig-role::* is hidden checkboxes that allow us to
                 # see what checkboxes were in the form originally
-                token, principal_name, role_name = unicode(name).split(u'::')
+                token, principal_name, role_name = name.split('::')
                 if role_name not in available_role_names:
                     raise Forbidden()
                 new_value = bool(request.params.get(
@@ -131,7 +128,7 @@ def share_node(context, request):
     seen = set([entry[0].name for entry in existing])
 
     # Allow search to take place and add some entries:
-    entries = existing + search_principals(request, context, ignore=seen)
+    entries = list(existing) + search_principals(request, context, ignore=seen)
     available_roles = [ROLES[role_name] for role_name in SHARING_ROLES]
 
     return {
@@ -145,10 +142,11 @@ def name_pattern_validator(node, value):
         >>> name_pattern_validator(None, u'bob')
         >>> name_pattern_validator(None, u'b ob')
         Traceback (most recent call last):
-        Invalid: <unprintable Invalid object>
+         ...
+        colander.Invalid: <unprintable Invalid object>
         >>> name_pattern_validator(None, u'b:ob')
         Traceback (most recent call last):
-        Invalid: <unprintable Invalid object>
+        colander.Invalid: <unprintable Invalid object>
     """
     valid_pattern = re.compile(r"^[a-zA-Z0-9_\-\.]+$")
     if not valid_pattern.match(value):

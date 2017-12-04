@@ -1,13 +1,10 @@
-# -*- coding: utf-8 -*-
-
 import codecs
 import os
 
 from setuptools import find_packages
 from setuptools import setup
 
-
-version = '1.3.1.dev0'
+version = '2.0.0.dev0'
 description = "A high-level, Pythonic web application framework based on " \
               "Pyramid and SQLAlchemy.  It includes an extensible Content " \
               "Management System called the Kotti CMS."
@@ -25,11 +22,11 @@ install_requires = [
     'bleach',
     'bleach-whitelist',
     'colander>=1.3.2',
-    'deform>=2.0a1',  # >=2.0a1 to support Bootstrap 2
+    'deform>=2.0.0',  # >=2.0a1 to support Bootstrap 2
     'docopt',
     'fanstatic>=1.0a7',
     'filedepot',
-    'formencode',
+    'formencode>=2.0.0a',
     'html2text',
     'js.angular',
     'js.bootstrap>=3.0.0',
@@ -45,15 +42,13 @@ install_requires = [
     'kotti_image',
     'lingua>=1.3',
     'py_bcrypt',
-    'pyramid>=1.5<1.8',  # needed for ``request.has_permission``,
-    # pyramid_zcml isn't compatible with pyramid 1.8 yet.
-    # see https://github.com/Pylons/pyramid_zcml/pull/23
+    'pyramid>=1.9',  # needed for ``request.has_permission``,
     'pyramid_beaker',
     'pyramid_chameleon',
     'pyramid_deform>=0.2a3',  # language and template path config includeme
     'pyramid_mailer',
     'pyramid_tm',
-    'pyramid_zcml',
+    'pyramid_zcml>=1.1.0',  # py3 compat
     'repoze.lru',
     'repoze.workflow>=1.0b1',
     'repoze.zcml>=1.0b1',
@@ -79,7 +74,6 @@ tests_require = [
     'pytest-pep8!=1.0.3',
     'pytest-travis-fold',
     'pytest-virtualenv',
-    'pytest-warnings',
     'pytest-xdist',
     'tox',
     'virtualenv',  # needed for scaffolding tests
@@ -89,7 +83,7 @@ tests_require = [
 development_requires = [
     'check-manifest',
     'pipdeptree',
-    'pyramid_debugtoolbar<2.5',
+    'pyramid_debugtoolbar',
 ]
 
 docs_require = [
@@ -144,13 +138,13 @@ setup(name='Kotti',
           'Operating System :: Unix',
           # 'Programming Language :: JavaScript',
           'Programming Language :: Python',
-          'Programming Language :: Python :: 2',
-          'Programming Language :: Python :: 2.7',
-          # 'Programming Language :: Python :: 3',
+          # 'Programming Language :: Python :: 2',
+          # 'Programming Language :: Python :: 2.7',
+          'Programming Language :: Python :: 3',
           # 'Programming Language :: Python :: 3.3',
           # 'Programming Language :: Python :: 3.4',
           # 'Programming Language :: Python :: 3.5',
-          # 'Programming Language :: Python :: 3.6',
+          'Programming Language :: Python :: 3.6',
           'Programming Language :: SQL',
           'Topic :: Internet',
           'Topic :: Internet :: WWW/HTTP',

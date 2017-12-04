@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """
 Inheritance Diagram
 -------------------
@@ -7,16 +5,14 @@ Inheritance Diagram
 .. inheritance-diagram:: kotti.util
 """
 
-from __future__ import absolute_import, division, print_function
-
 import cgi
 import re
 
 from docopt import docopt
-from pyramid.i18n import get_localizer
-from pyramid.i18n import get_locale_name
-from pyramid.i18n import make_localizer
 from pyramid.i18n import TranslationStringFactory
+from pyramid.i18n import get_locale_name
+from pyramid.i18n import get_localizer
+from pyramid.i18n import make_localizer
 from pyramid.interfaces import ITranslationDirectories
 from pyramid.location import inside
 from pyramid.paster import bootstrap
@@ -27,7 +23,6 @@ from pyramid.threadlocal import get_current_request
 from pyramid.url import resource_url
 from pyramid.view import render_view_to_response
 from repoze.lru import LRUCache
-from zope.deprecation import deprecated
 
 from kotti import DBSession
 
@@ -121,15 +116,6 @@ class LinkBase(object):
             else:
                 return True
         return False
-
-    @property
-    def path(self):  # BBB
-        return self.name
-    path = deprecated(
-        path,
-        "The 'path' attribute has been deprecated as of Kotti 1.0.0.  Please "
-        "use 'name' instead.",
-        )
 
 
 class LinkRenderer(LinkBase):
@@ -285,7 +271,7 @@ def disambiguate_name(name):
         except ValueError:
             parts.append(u'1')
         else:
-            parts[-1] = unicode(index + 1)
+            parts[-1] = str(index + 1)
     else:
         parts.append(u'1')
     return u'-'.join(parts)
@@ -306,7 +292,7 @@ def title_to_name(title, blacklist=(), max_length=None):
         locale_name = 'en'
     from kotti import get_settings
     urlnormalizer = get_settings()['kotti.url_normalizer'][0]
-    name = unicode(urlnormalizer(title, locale_name, max_length=max_length))
+    name = urlnormalizer(title, locale_name, max_length=max_length)
     if name not in blacklist:
         return name
     name += u'-1'
@@ -344,13 +330,6 @@ def command(func, doc):
     finally:
         pyramid_env['closer']()
     return 0
-
-
-ViewLink = Link
-deprecated(
-    'ViewLink',
-    "kotti.util.ViewLink has been renamed to Link as of Kotti 1.0.0."
-    )
 
 
 def _to_fieldstorage(fp, filename, mimetype, size, **_kwds):

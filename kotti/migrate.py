@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """This module aims to make it easier to run the Alembic migration
 scripts of Kotti and Kotti add-ons by providing a uniform access.
 
@@ -39,8 +38,6 @@ adding their Alembic 'script directory' location to the
 ``kotti-migrate`` commands 'list_all', 'upgrade_all' and
 'stamp_heads' will then include the add-on.
 """
-from __future__ import absolute_import, division, print_function
-
 import os
 
 import pkg_resources
@@ -54,7 +51,6 @@ from kotti import DBSession
 from kotti import conf_defaults
 from kotti import get_settings
 from kotti.util import command
-
 
 KOTTI_SCRIPT_DIR = pkg_resources.resource_filename('kotti', 'alembic')
 DEFAULT_LOCATION = 'kotti:alembic'

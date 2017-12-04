@@ -1,6 +1,3 @@
-# -*- coding: utf-8 -*-
-from __future__ import absolute_import, division, print_function
-
 import colander
 from mock import MagicMock
 from mock import patch
@@ -136,4 +133,4 @@ class TestAddFormView:
         view = self.make()
         title_to_name.return_value = 'cafe'
         assert view.find_name({'title': 'Bar'}) == 'cafe'
-        title_to_name.assert_called_with('Bar', blacklist=[])
+        title_to_name.assert_called_with('Bar', blacklist={}.keys())

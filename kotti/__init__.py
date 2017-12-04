@@ -1,6 +1,3 @@
-# -*- coding: utf-8 -*-
-from __future__ import absolute_import, division, print_function
-
 import pkg_resources
 from pyramid.authentication import AuthTktAuthenticationPolicy
 from pyramid.authorization import ACLAuthorizationPolicy
@@ -203,7 +200,7 @@ def base_configure(global_config, **settings):
 
     for key, value in settings.items():
         if key.startswith('kotti') and isinstance(value, binary_type):
-            settings[key] = unicode(value, 'utf8')
+            settings[key] = value.decode('utf8')
 
     # will be removed in 2.0
     import kotti_image

@@ -1,15 +1,11 @@
-# -*- coding: utf-8 -*-
 """
 Action views
 """
-from __future__ import absolute_import, division, print_function
-
 from pyramid.exceptions import Forbidden
 from pyramid.httpexceptions import HTTPFound
 from pyramid.url import resource_url
 from pyramid.view import view_config
 from pyramid.view import view_defaults
-from zope.deprecation import deprecated
 
 from kotti import DBSession
 from kotti import get_settings
@@ -23,7 +19,6 @@ from kotti.util import title_to_name
 from kotti.views.edit import _state_info
 from kotti.views.edit import _states
 from kotti.views.form import EditFormView
-from kotti.views.navigation import render_tree_navigation
 from kotti.views.util import nodes_tree
 from kotti.workflow import get_workflow
 
@@ -616,14 +611,3 @@ def includeme(config):
     with warnings.catch_warnings():
         warnings.simplefilter("ignore")
         config.scan(__name__)
-
-
-# BBB starts here --- --- --- --- --- ---
-
-render_tree_navigation = render_tree_navigation
-
-deprecated(
-    'render_tree_navigation',
-    'render_tree_navigation has been moved to kotti.views.navigation as of '
-    'Kotti 0.9.  Import from there instead.'
-)

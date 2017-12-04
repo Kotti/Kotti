@@ -1,10 +1,8 @@
-# -*- coding: utf-8 -*-
-from __future__ import absolute_import, division, print_function
-
-from kotti.testing import DummyRequest
 from pyramid.exceptions import Forbidden
 from pytest import raises
 from webob.multidict import MultiDict
+
+from kotti.testing import DummyRequest
 
 
 class TestAddableTypes:
@@ -375,12 +373,12 @@ class TestNodeShare:
             [r.name for r in share_node(root, request)['available_roles']] ==
             SHARING_ROLES)
 
-    def test_search(self, extra_principals, root):
+    def test_search(self, extra_principals, root, dummy_request, db_session):
         from kotti.security import get_principals
         from kotti.security import set_groups
         from kotti.views.users import share_node
 
-        request = DummyRequest()
+        request = dummy_request
         P = get_principals()
 
         # Search for "Bob", which will return both the user and the
@@ -397,6 +395,7 @@ class TestNodeShare:
         # We make Bob an Editor in this context, and Bob's Group
         # becomes global Admin:
         set_groups(u'bob', root, [u'role:editor'])
+        db_session.flush()
         P[u'group:bobsgroup'].groups = [u'role:admin']
         entries = share_node(root, request)['entries']
         assert len(entries) == 2
@@ -418,6 +417,7 @@ class TestNodeShare:
         # It does not, however, include entries that have local group
         # assignments only:
         set_groups(u'frank', root, [u'group:franksgroup'])
+        db_session.flush()
         request.params['query'] = u'Weeee'
         entries = share_node(root, request)['entries']
         assert len(entries) == 1

@@ -1,9 +1,6 @@
-# -*- coding: utf-8 -*-
-from __future__ import absolute_import, division, print_function
-
 import hashlib
 import time
-import urllib
+from urllib.parse import urlencode
 
 from html2text import HTML2Text
 from pyramid.renderers import render
@@ -26,8 +23,8 @@ def make_token(user, seconds=None):
     secret = get_settings()['kotti.secret2']
     if seconds is None:
         seconds = time.time()
-    token = '{0}:{1}:{2}'.format(user.name, secret, seconds)
-    return '{0}:{1}'.format(hashlib.sha224(token).hexdigest(), seconds)
+    token = '{}:{}:{}'.format(user.name, secret, seconds)
+    return '{}:{}'.format(hashlib.sha224(token.encode('utf8')).hexdigest(), seconds)
 
 
 def validate_token(user, token, valid_hrs=24):
@@ -107,13 +104,13 @@ def email_set_password(user, request,
                        add_query=None):
     site_title = get_settings()['kotti.site_title']
     token = make_token(user)
-    user.confirm_token = unicode(token)
+    user.confirm_token = token
     set_password_query = {'token': token, 'email': user.email}
     if add_query:
         set_password_query.update(add_query)
     url = '{0}/@@set-password?{1}'.format(
         request.application_url,
-        urllib.urlencode(set_password_query))
+        urlencode(set_password_query))
     variables = dict(
         user_title=user.title,
         site_title=site_title,

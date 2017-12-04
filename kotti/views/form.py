@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Form related base views from which you can inherit.
 
@@ -7,10 +6,9 @@ Inheritance Diagram
 
 .. inheritance-diagram:: kotti.views.form
 """
-from __future__ import absolute_import, division, print_function
 
-from StringIO import StringIO
-from UserDict import DictMixin
+from collections import MutableMapping
+from io import BytesIO
 
 import colander
 import deform.widget
@@ -226,7 +224,7 @@ class CommaSeparatedListWidget(deform.widget.Widget):
         return [item.strip() for item in pstruct.split(',') if item]
 
 
-class FileUploadTempStore(DictMixin):
+class FileUploadTempStore(MutableMapping):
     """
     A temporary storage for file file uploads
 
@@ -238,30 +236,36 @@ class FileUploadTempStore(DictMixin):
     def __init__(self, request):
         self.session = request.session
 
+    def __iter__(self):
+        return iter(self.session)
+
+    def __len__(self):
+        return len(self.session)
+
     def keys(self):
         return [k for k in self.session.keys() if not k.startswith('_')]
 
-    def __setitem__(self, name, value):
+    def __setitem__(self, key, value):
         value = value.copy()
         fp = value.pop('fp')
         if fp is not None:
             value['file_contents'] = fp.read()
             fp.seek(0)
         else:
-            value['file_contents'] = ''
-        self.session[name] = value
+            value['file_contents'] = b''
+        self.session[key] = value
 
-    def __getitem__(self, name):
-        value = self.session[name].copy()
+    def __getitem__(self, key):
+        value = self.session[key].copy()
         content = value.pop('file_contents')
         if content:
-            value['fp'] = StringIO(content)
+            value['fp'] = BytesIO(content)
         else:
             value['fp'] = None
         return value
 
-    def __delitem__(self, name):
-        del self.session[name]
+    def __delitem__(self, key):
+        del self.session[key]
 
     @staticmethod
     def preview_url(name):
@@ -275,12 +279,13 @@ def validate_file_size_limit(node, value):
     You can configure the maximum size by setting the kotti.max_file_size
     option to the maximum number of bytes that you want to allow.
     """
-    if not value['fp']:
+    fp = getattr(value, 'fp', None)
+    if not fp:
         return
 
-    value['fp'].seek(0, 2)
-    size = value['fp'].tell()
-    value['fp'].seek(0)
+    fp.seek(0, 2)
+    size = fp.tell()
+    fp.seek(0)
     max_size = get_settings()['kotti.max_file_size']
     if size > int(max_size) * 1024 * 1024:
         msg = _('Maximum file size: ${size}MB', mapping={'size': max_size})

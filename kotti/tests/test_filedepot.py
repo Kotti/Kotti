@@ -1,6 +1,3 @@
-# -*- coding: utf-8 -*-
-from __future__ import absolute_import, division, print_function
-
 import datetime
 
 import pytest
@@ -15,27 +12,27 @@ class TestDBStoredFile:
 
     def test_storedfile_interface(self, db_session, events, setup_app):
         f = DBStoredFile('fileid', filename=u'f.jpg', content_type='image/jpeg',
-                         content_length=1000, data='content')
+                         content_length=1000, data=b'content')
 
         assert f.close() is None
         assert f.closed() is False
         assert f.seekable() is True
         assert f.writable() is False
 
-        assert f.read() == 'content'
-        assert f.read() == ''
+        assert f.read() == b'content'
+        assert f.read() == b''
         f.seek(0)
-        assert f.read() == 'content'
+        assert f.read() == b'content'
         f.seek(0)
-        assert f.read(-1) == 'content'
+        assert f.read(-1) == b'content'
         f.seek(0)
-        assert f.read(2) == 'co'
-        assert f.read(4) == 'nten'
+        assert f.read(2) == b'co'
+        assert f.read(4) == b'nten'
         assert f.tell() == 6
         f.seek(0)
         f.seek(100)
         assert f.tell() == 100
-        assert f.read() == ''
+        assert f.read() == b''
 
         assert f.content_length == 1000
         assert f.content_type == 'image/jpeg'
@@ -50,16 +47,16 @@ class TestDBStoredFile:
         assert f.content_length == 0
 
     def test_content_length(self, db_session, events, setup_app):
-        f = DBStoredFile('fileid', data="content")
+        f = DBStoredFile('fileid', data=b"content")
         db_session.add(f)
         db_session.flush()
 
         assert f.content_length == 7
 
-        f.data = 'content changed'
+        f.data = b'content changed'
         db_session.flush()
 
-        assert f.content_length == len('content changed')
+        assert f.content_length == len(b'content changed')
 
     def test_last_modified(self, monkeypatch, db_session, events, setup_app):
         from kotti import filedepot
@@ -73,14 +70,14 @@ class TestDBStoredFile:
 
         monkeypatch.setattr(filedepot, 'datetime', mockdatetime)
 
-        f = DBStoredFile('fileid', data="content")
+        f = DBStoredFile('fileid', data=b"content")
         db_session.add(f)
         db_session.flush()
 
         assert f.last_modified == now
 
         f.last_modified = None
-        f.data = 'content changed'
+        f.data = b'content changed'
         db_session.flush()
 
         assert f.last_modified == now
@@ -89,7 +86,7 @@ class TestDBStoredFile:
 class TestDBFileStorage:
 
     def make_one(self,
-                 content='content here',
+                 content=b'content here',
                  filename=u'f.jpg',
                  content_type='image/jpg'):
 
@@ -102,7 +99,7 @@ class TestDBFileStorage:
         assert len(file_id) == 36
 
         fs = db_session.query(DBStoredFile).filter_by(file_id=file_id).one()
-        assert fs.data == "content here"
+        assert fs.data == b"content here"
 
     def test_list(self):
         with pytest.raises(NotImplementedError):
@@ -118,10 +115,10 @@ class TestDBFileStorage:
             DBFileStorage().get("1")
 
         file_id = self.make_one()
-        assert DBFileStorage().get(file_id).data == "content here"
+        assert DBFileStorage().get(file_id).data == b"content here"
 
     def test_delete(self, db_session):
-        file_id = DBFileStorage().create('content here', u'f.jpg', 'image/jpg')
+        file_id = DBFileStorage().create(b'content here', 'f.jpg', 'image/jpg')
         fs = DBFileStorage().get(file_id)
 
         db_session.add(fs)
@@ -135,16 +132,16 @@ class TestDBFileStorage:
     def test_replace(self, db_session):
         file_id = self.make_one()
 
-        DBFileStorage().replace(file_id, 'second content', u'f2.jpg', 'doc')
+        DBFileStorage().replace(file_id, b'second content', u'f2.jpg', 'doc')
         fs = DBFileStorage().get(file_id)
         assert fs.filename == u'f2.jpg'
         assert fs.content_type == 'doc'
-        assert fs.read() == 'second content'
+        assert fs.read() == b'second content'
 
-        DBFileStorage().replace(fs, 'third content', u'f3.jpg', 'xls')
+        DBFileStorage().replace(fs, b'third content', u'f3.jpg', 'xls')
         assert fs.filename == u'f3.jpg'
         assert fs.content_type == 'xls'
-        assert fs.read() == 'third content'
+        assert fs.read() == b'third content'
 
     def test_session_integration(self, db_session):
         from depot.manager import DepotManager
@@ -153,7 +150,7 @@ class TestDBFileStorage:
         DepotManager._depots = {'default': DBFileStorage()}
 
         file_id = DepotManager.get().create(
-            'content here', u'f.jpg', 'image/jpg')
+            b'content here', u'f.jpg', 'image/jpg')
         fs = DepotManager.get().get(file_id)
 
         db_session.add(fs)
@@ -172,16 +169,16 @@ class TestMigrateBetweenStorage:
 
     def _create_content(self, db_session, root, image1, image2):
         data = [
-            ('f1...', u'file1.jpg', 'image/jpeg'),
-            ('f2...', u'file2.png', 'image/png'),
+            (b'f1...', 'file1.jpg', 'image/jpeg'),
+            (b'f2...', 'file2.png', 'image/png'),
         ]
         for row in data:
             f = File(data=row[0], filename=row[1], mimetype=row[2])
             root[row[1]] = f
 
         data = [
-            (image2, u'image1.jpg', 'image/jpeg'),
-            (image1, u'image2.png', 'image/png'),
+            (image2, 'image1.jpg', 'image/jpeg'),
+            (image1, 'image2.png', 'image/png'),
         ]
         for row in data:
             f = Image(data=row[0], filename=row[1], mimetype=row[2])
@@ -236,11 +233,11 @@ class TestMigrateBetweenStorage:
         root = db_session.query(Node).filter_by(parent=None).one()
         f1 = root['file1.jpg']
         assert f1.data.file_id in folders
-        assert f1.data.file.read() == 'f1...'
+        assert f1.data.file.read() == b'f1...'
 
         f2 = root['file2.png']
         assert f2.data.file_id in folders
-        assert f2.data.file.read() == 'f2...'
+        assert f2.data.file.read() == b'f2...'
 
         i1 = root['image1.jpg']
         assert i1.data.file_id in folders
@@ -275,7 +272,7 @@ class TestTween:
         assert resp.content_type == 'text/html'
         assert resp.etag is None
         assert resp.cache_control.max_age == 0
-        assert '<img src="http://localhost/img/image" />' in resp.body
+        assert '<img src="http://localhost/img/image" />' in resp.text
 
         # the attachments (created by the filters) are served by the
         # FiledepotServeApp
@@ -283,12 +280,12 @@ class TestTween:
 
         assert resp.etag is not None
         assert resp.cache_control.max_age == 604800
-        assert resp.body.startswith('\x89PNG')
+        assert resp.body.startswith(b'\x89PNG')
 
         resp = webtest.app.get(img.data['thumb_256x256_url'])
         assert resp.etag is not None
         assert resp.cache_control.max_age == 604800
-        assert resp.body.startswith('\x89PNG')
+        assert resp.body.startswith(b'\x89PNG')
 
         # test 404
         resp = webtest.app.get('/depot/non_existing/fileid', status=404)
