@@ -52,7 +52,7 @@ install_requires = [
     'repoze.lru',
     'repoze.workflow>=1.0b1',
     'repoze.zcml>=1.0b1',
-    'rfc6266',
+    'rfc6266-parser',
     'sqlalchemy>=1.0.0',
     'sqlalchemy-utils',
     'transaction>=1.1.0',
