@@ -11,15 +11,14 @@ because they are not directly touched during testsuite runs, but only within
 subprocesses which seems to be not recorded by coverage.
 """
 
-from __future__ import absolute_import, division, print_function
-
 import datetime
 import os
 from textwrap import dedent
 
-from pyramid.decorator import reify
 from pyramid.scaffolds import PyramidTemplate
-#from usersettings import Settings
+
+
+# from usersettings import Settings
 
 
 class KottiTemplate(PyramidTemplate):

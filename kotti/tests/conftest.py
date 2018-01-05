@@ -36,5 +36,5 @@ def extra_principals(db_session):
     P['frank'] = dict(name='frank', title='Frank')
     P['group:bobsgroup'] = dict(name='group:bobsgroup', title="Bob's Group")
     P['group:franksgroup'] = dict(name='group:franksgroup',
-                                   title="Frank's Group")
+                                  title="Frank's Group")
     return P
