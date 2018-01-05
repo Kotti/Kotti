@@ -31,6 +31,9 @@ Change History
 
 - Feature: add Czech translation.
 
+- remove pytest-warnings from test dependencies (already integrated in
+  modern pytest versions)
+
 1.3.0 - 2016-10-10
 ------------------
 

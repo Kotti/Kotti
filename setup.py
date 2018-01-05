@@ -79,7 +79,6 @@ tests_require = [
     'pytest-pep8!=1.0.3',
     'pytest-travis-fold',
     'pytest-virtualenv',
-    'pytest-warnings',
     'pytest-xdist',
     'tox',
     'virtualenv',  # needed for scaffolding tests
