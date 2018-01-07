@@ -5,6 +5,19 @@ from pytest import raises
 from kotti.testing import DummyRequest
 
 
+class HasPermissionTests:
+
+    def test_has_permission(self):
+        import mock
+        from kotti.security import has_permission
+        permission = 'edit'
+        context = object()
+        request = mock.MagicMock()
+        has_permission(permission, context, request)
+        assert request.has_permission.assert_called_once_with(
+            permission, context=context) is None
+
+
 class TestGroups:
     def test_root_default(self, db_session, root):
         from kotti.security import list_groups

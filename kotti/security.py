@@ -28,6 +28,13 @@ from kotti.util import _
 from kotti.util import request_cache
 
 
+def has_permission(permission, context, request):
+    """ Default permission checker """
+    return request.has_permission(
+        permission,
+        context=context)
+
+
 def get_principals():
     return get_settings()['kotti.principals_factory'][0]()
 
