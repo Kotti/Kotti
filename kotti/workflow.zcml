@@ -15,7 +15,7 @@
   <workflow name="simple" initial_state="private"
             type="security" state_attr="state"
             content_types="kotti.interfaces.IDefaultWorkflow"
-            permission_checker="pyramid.security.has_permission">
+            permission_checker="kotti.security.has_permission">
 
     <state name="private" title="Private" i18n:attributes="title"
            callback="kotti.workflow.workflow_callback">

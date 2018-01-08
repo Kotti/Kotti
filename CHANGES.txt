@@ -5,6 +5,8 @@ Change History
 
 - **Python 3 compatibility**
 
+- avoid deprecation warning ``pyramid.security.has_permission``
+
 1.3.1.dev0 - unreleased
 -----------------------
 
