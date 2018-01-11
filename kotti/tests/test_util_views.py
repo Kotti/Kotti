@@ -224,7 +224,7 @@ class TestTemplateAPI:
         from kotti.resources import default_actions, Document
         from kotti.util import Link
 
-        default_actions.append(Link('test', u'Test'))
+        default_actions.append(Link('test', 'Test'))
         assert Document().type_info.edit_links[-1].children[-1].name == 'test'
 
     def test_find_edit_view_not_permitted(self, db_session):
@@ -400,20 +400,20 @@ class TestTemplateAPI:
     #     from kotti.views.slots import register, RenderAboveContent
 
     #     def render_something(context, request):
-    #         return u"Hello, %s!" % context.title
+    #         return "Hello, %s!" % context.title
     #     register(RenderAboveContent, None, render_something)
 
     #     api = self.make()
-    #     assert (api.slots.abovecontent == [u'Hello, %s!' %api.context.title])
+    #     assert (api.slots.abovecontent == ['Hello, %s!' %api.context.title])
 
     #     # Slot renderers may also return lists:
     #     def render_a_list(context, request):
-    #         return [u"a", u"list"]
+    #         return ["a", "list"]
     #     register(RenderAboveContent, None, render_a_list)
     #     api = self.make()
     #     assert (
     #         api.slots.abovecontent ==
-    #         [u'Hello, %s!' % api.context.title, u'a', u'list']
+    #         ['Hello, %s!' % api.context.title, 'a', 'list']
     #         )
 
     #     with raises(AttributeError):
@@ -442,11 +442,11 @@ class TestTemplateAPI:
 
     def test_format_currency(self, db_session):
         api = self.make()
-        assert u'€13.99' == api.format_currency(13.99, 'EUR')
-        assert u'$15,499.12' == api.format_currency(15499.12, 'USD')
-        assert u'€1.00' == api.format_currency(
-            1, fmt=u'€#,##0', currency='EUR')
-        assert u'CHF3.14' == api.format_currency(
+        assert '€13.99' == api.format_currency(13.99, 'EUR')
+        assert '$15,499.12' == api.format_currency(15499.12, 'USD')
+        assert '€1.00' == api.format_currency(
+            1, fmt='€#,##0', currency='EUR')
+        assert 'CHF3.14' == api.format_currency(
             decimal.Decimal((0, (3, 1, 4), -2)), 'CHF')
 
     def test_format_datetime(self, db_session):
@@ -505,7 +505,7 @@ class TestTemplateAPI:
             return Response('first')
 
         def second_view(context, request):
-            return Response(u'second')
+            return Response('second')
 
         config.add_view(first_view, name='')
         config.add_view(second_view, name='second')

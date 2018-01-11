@@ -207,7 +207,7 @@ class TestApp:
         with patch('kotti.resources.initialize_sql'):
             with patch('kotti.filedepot.TweenFactory'):
                 main({}, **settings)
-        assert search_content(u"Nuno") == u"Not found. Sorry!"
+        assert search_content('Nuno') == 'Not found. Sorry!'
 
     def test_stamp_heads(self, db_session, connection):
         from kotti import main

@@ -82,7 +82,7 @@ class Principal(Base):
         )
 
     def __init__(self, name, password=None, active=True, confirm_token=None,
-                 title=u"", email=None, groups=None):
+                 title="", email=None, groups=None):
         self.name = name
         if password is not None:
             password = get_principals().hash_password(password)
@@ -98,7 +98,7 @@ class Principal(Base):
         self.last_login_date = None
 
     def __repr__(self):  # pragma: no cover
-        return u'<Principal {0!r}>'.format(self.name)
+        return '<Principal {0!r}>'.format(self.name)
 
 
 class AbstractPrincipals(object):
@@ -143,19 +143,19 @@ class AbstractPrincipals(object):
 
         This example would return all principals with the id 'bob':
 
-          get_principals().search(name=u'bob')
+          get_principals().search(name='bob')
 
         Here, we ask for all principals that have 'bob' in either
         their 'name' or their 'title'.  We pass '*bob*' instead of
         'bob' to indicate that we want case-insensitive substring
         matching:
 
-          get_principals().search(name=u'*bob*', title=u'*bob*')
+          get_principals().search(name='*bob*', title='*bob*')
 
         This call should fail with AttributeError unless there's a
         'foo' attribute on principal objects that supports search:
 
-          get_principals().search(name=u'bob', foo=u'bar')
+          get_principals().search(name='bob', foo='bar')
         """
 
     def hash_password(self, password):
@@ -169,15 +169,15 @@ class AbstractPrincipals(object):
         """
 
 ROLES = {
-    u'role:viewer': Principal(u'role:viewer', title=_(u'Viewer')),
-    u'role:editor': Principal(u'role:editor', title=_(u'Editor')),
-    u'role:owner': Principal(u'role:owner', title=_(u'Owner')),
-    u'role:admin': Principal(u'role:admin', title=_(u'Admin')),
+    'role:viewer': Principal('role:viewer', title=_('Viewer')),
+    'role:editor': Principal('role:editor', title=_('Editor')),
+    'role:owner': Principal('role:owner', title=_('Owner')),
+    'role:admin': Principal('role:admin', title=_('Admin')),
     }
 _DEFAULT_ROLES = ROLES.copy()
 
 # These roles are visible in the sharing tab
-SHARING_ROLES = [u'role:viewer', u'role:editor', u'role:owner']
+SHARING_ROLES = ['role:viewer', 'role:editor', 'role:owner']
 USER_MANAGEMENT_ROLES = SHARING_ROLES + ['role:admin']
 _DEFAULT_SHARING_ROLES = SHARING_ROLES[:]
 _DEFAULT_USER_MANAGEMENT_ROLES = USER_MANAGEMENT_ROLES[:]

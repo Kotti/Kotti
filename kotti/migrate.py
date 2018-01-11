@@ -141,7 +141,7 @@ def upgrade(location=DEFAULT_LOCATION, revision=None):
 
     if revision is None:
         revision = pkg_env.script_dir.get_current_head()
-    print(u'Upgrading {0}:'.format(pkg_env.location))
+    print('Upgrading {0}:'.format(pkg_env.location))
 
     def upgrade(heads, context):
         # alembic supports multiple heads, we don't.
@@ -149,10 +149,10 @@ def upgrade(location=DEFAULT_LOCATION, revision=None):
         rev = heads[0] if heads else None
 
         if rev == revision:
-            print(u'  - already up to date.')
+            print('  - already up to date.')
             return []
 
-        print(u'  - upgrading from {0} to {1}...'.format(rev, revision))
+        print('  - upgrading from {0} to {1}...'.format(rev, revision))
 
         return context.script._upgrade_revs(revision, rev)
 
@@ -172,10 +172,10 @@ def upgrade_all():
 def list_all():
     pkg_envs = [PackageEnvironment(l) for l in get_locations()]
     for pkg_env in pkg_envs:
-        print(u'{0}:'.format(pkg_env.pkg_name))
+        print('{0}:'.format(pkg_env.pkg_name))
 
         for script in pkg_env.script_dir.walk_revisions():
-            print(u"  - {0} -> {1}: {2}".format(
+            print("  - {0} -> {1}: {2}".format(
                 script.down_revision,
                 script.revision,
                 script.doc,
@@ -183,7 +183,7 @@ def list_all():
 
         def current_revision(rev, context):
             rev = rev[0] if rev else None
-            print(u"  - current revision: {0}".format(rev))
+            print("  - current revision: {0}".format(rev))
             return []
         pkg_env.run_env(current_revision)
         print()

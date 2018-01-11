@@ -28,7 +28,7 @@ class CustomContentViews(BaseView):
         """
 
         return {
-            'foo': _(u'bar'),
+            'foo': _('bar'),
         }
 
     @view_config(name='alternative-view', permission='view',
@@ -45,5 +45,5 @@ class CustomContentViews(BaseView):
         css_and_js.need()
 
         return {
-            'foo': _(u'bar'),
+            'foo': _('bar'),
         }

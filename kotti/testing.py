@@ -111,7 +111,7 @@ def login_view(request):
 
 
 def dummy_search(search_term, request):
-    return u"Not found. Sorry!"
+    return "Not found. Sorry!"
 
 
 def testing_db_url():
@@ -264,7 +264,7 @@ class FunctionalTestBase(TestCase):
     def tearDown(self):
         tearDown()
 
-    def login(self, login=u'admin', password=u'secret'):
+    def login(self, login='admin', password='secret'):
         return self.test_app.post(
             '/@@login',
             {'login': login, 'password': password, 'submit': 'submit'},

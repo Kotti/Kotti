@@ -62,7 +62,7 @@ class KottiTemplate(PyramidTemplate):
 
         separator = "=" * 79
         msg = dedent(
-            u"""
+            """
             {0}
             Welcome to Kotti!
 

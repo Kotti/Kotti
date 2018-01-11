@@ -35,7 +35,7 @@ class TestSendEmail:
 
         assert self.mailer.send.called
         message = self.mailer.send.call_args[0][0]
-        assert [u'"John Doe" <joedoe@foo.com>'] == message.recipients
+        assert ['"John Doe" <joedoe@foo.com>'] == message.recipients
         assert 'Reset your password' in message.subject
 
     def test_send_email_without_template_vars(self, dummy_request):
@@ -68,7 +68,7 @@ class TestSendSetPassword:
     def test_email_set_password_basic(self, db_session):
         from kotti.message import email_set_password
 
-        user = Dummy(name='joe', email='joe@bar.com', title=u'Joe')
+        user = Dummy(name='joe', email='joe@bar.com', title='Joe')
         email_set_password(user, DummyRequest())
 
         assert hasattr(user, 'confirm_token')

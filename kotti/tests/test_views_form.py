@@ -105,7 +105,7 @@ class TestAddFormView:
         view = self.make()
         view.add = MagicMock()
         view.find_name = lambda appstruct: 'somename'
-        view.request.resource_url = lambda context: u''
+        view.request.resource_url = lambda context: ''
         view.save_success({'three': 3})
         view.add.assert_called_with(three=3)
         assert view.add.return_value == view.context['somename']
@@ -114,7 +114,7 @@ class TestAddFormView:
         view = self.make()
         view.add = MagicMock()
         view.find_name = lambda appstruct: 'somename'
-        view.request.resource_url = lambda context: u'MagicMock'
+        view.request.resource_url = lambda context: 'MagicMock'
         result = view.save_success({'three': 3})
         assert result.status == '302 Found'
         assert result.location == 'MagicMock'

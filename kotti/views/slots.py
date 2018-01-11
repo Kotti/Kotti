@@ -53,7 +53,7 @@ REQUEST_ATTRS_TO_COPY = ('context', 'registry', 'user', 'cookies', 'session')
 
 def _encode(params):
     if not params:
-        return u''
+        return ''
     return urlencode(
         dict((k, v.encode('utf-8')) for k, v in params.items()))
 
@@ -108,31 +108,31 @@ def assign_slot(view_name, slot, params=None):
 
 
 class RenderLeftSlot(ObjectEvent):
-    name = u'left'
+    name = 'left'
 
 
 class RenderRightSlot(ObjectEvent):
-    name = u'right'
+    name = 'right'
 
 
 class RenderAboveContent(ObjectEvent):
-    name = u'abovecontent'
+    name = 'abovecontent'
 
 
 class RenderBelowContent(ObjectEvent):
-    name = u'belowcontent'
+    name = 'belowcontent'
 
 
 class RenderInHead(ObjectEvent):
-    name = u'inhead'
+    name = 'inhead'
 
 
 class RenderBeforeBodyEnd(ObjectEvent):
-    name = u'beforebodyend'
+    name = 'beforebodyend'
 
 
 class RenderEditInHead(ObjectEvent):
-    name = u'edit_inhead'
+    name = 'edit_inhead'
 
 slot_events = [
     RenderLeftSlot, RenderRightSlot, RenderAboveContent, RenderBelowContent,

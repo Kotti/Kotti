@@ -506,7 +506,7 @@ class TweenFactory(object):
         DepotManager.set_middleware(self)
 
     def url_for(self, path):
-        return u'/'.join((self.mountpoint, path))
+        return '/'.join((self.mountpoint, path))
 
     def __call__(self, request):
         """

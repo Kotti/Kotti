@@ -25,12 +25,12 @@ class CustomContent(Content):
     custom_attribute = Column(Unicode(1000))
 
     type_info = Content.type_info.copy(
-        name=u'CustomContent',
-        title=_(u'CustomContent'),
-        add_view=u'add_custom_content',
-        addable_to=[u'Document'],
+        name='CustomContent',
+        title=_('CustomContent'),
+        add_view='add_custom_content',
+        addable_to=['Document'],
         selectable_default_views=[
-            ("alternative-view", _(u"Alternative view")),
+            ("alternative-view", _("Alternative view")),
         ],
     )
 

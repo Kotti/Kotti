@@ -115,5 +115,5 @@ def email_set_password(user, request,
         user_title=user.title,
         site_title=site_title,
         url=url)
-    recipients = [u'"{0}" <{1}>'.format(user.title, user.email)]  # XXX naive?
+    recipients = ['"{0}" <{1}>'.format(user.title, user.email)]  # XXX naive?
     send_email(request, recipients, template_name, variables)

@@ -60,15 +60,15 @@ class UserSelfRegistered(ObjectEvent):
 class RegisterSchema(colander.Schema):
     title = colander.SchemaNode(
         colander.String(),
-        title=_(u'Full name'))
+        title=_('Full name'))
     name = colander.SchemaNode(
         colander.String(),
-        title=_(u'Username'),
+        title=_('Username'),
         validator=colander.All(name_pattern_validator, name_new_validator)
     )
     email = colander.SchemaNode(
         colander.String(),
-        title=_(u'Email'),
+        title=_('Email'),
         validator=deferred_email_validator,
     )
 
@@ -77,20 +77,20 @@ class RegisterSchema(colander.Schema):
              if_setting_has_value=('kotti.register', True))
 def register(context, request):
     schema = RegisterSchema().bind(request=request)
-    form = Form(schema, buttons=(Button('register', _(u'Register')),))
+    form = Form(schema, buttons=(Button('register', _('Register')),))
     rendered_form = None
 
     if 'register' in request.POST:
         try:
             appstruct = form.validate(request.POST.items())
         except ValidationFailure as e:
-            request.session.flash(_(u"There was an error."), 'error')
+            request.session.flash(_("There was an error."), 'error')
             rendered_form = e.render()
         else:
             settings = get_settings()
 
-            appstruct['groups'] = u''
-            appstruct['roles'] = u''
+            appstruct['groups'] = ''
+            appstruct['roles'] = ''
 
             register_groups = settings['kotti.register.group']
             if register_groups:
@@ -118,7 +118,7 @@ def register(context, request):
 
     api = template_api(
         context, request,
-        page_title=_(u"Register - ${title}",
+        page_title=_("Register - ${title}",
                      mapping=dict(title=context.title)),
     )
 
@@ -149,7 +149,7 @@ def login_success_callback(request, user, came_from):
 
     headers = remember(request, user.name)
     request.session.flash(
-        _(u"Welcome, ${user}!",
+        _("Welcome, ${user}!",
           mapping=dict(user=user.title or user.name)), 'success')
     user.last_login_date = datetime.now()
     return HTTPFound(location=came_from, headers=headers)
@@ -175,8 +175,8 @@ def reset_password_callback(request, user):
         user, request,
         template_name='kotti:templates/email-reset-password.pt')
     request.session.flash(_(
-        u"You should be receiving an email with a link to reset your "
-        u"password. Doing so will activate your account."), 'success')
+        "You should be receiving an email with a link to reset your "
+        "password. Doing so will activate your account."), 'success')
 
     return HTTPFound(location=request.url)
 
@@ -196,7 +196,7 @@ def login(context, request):
 
     came_from = request.params.get(
         'came_from', request.resource_url(context))
-    login, password = u'', u''
+    login, password = '', ''
 
     if 'submit' in request.POST:
         login = request.params['login'].lower()
@@ -207,7 +207,7 @@ def login(context, request):
                 principals.validate_password(password, user.password)):
             return get_settings()['kotti.login_success_callback'][0](
                 request, user, came_from)
-        request.session.flash(_(u"Login failed."), 'error')
+        request.session.flash(_("Login failed."), 'error')
 
     if 'reset-password' in request.POST:
         login = request.params['login']
@@ -217,7 +217,7 @@ def login(context, request):
                 request, user)
         else:
             request.session.flash(
-                _(u"That username or email is not known by this system."),
+                _("That username or email is not known by this system."),
                 'error')
 
     return {
@@ -239,7 +239,7 @@ def logout(context, request):
     """
 
     headers = forget(request)
-    request.session.flash(_(u"You have been logged out."), 'info')
+    request.session.flash(_("You have been logged out."), 'info')
     location = request.params.get('came_from', request.application_url)
     return HTTPFound(location=location, headers=headers)
 
@@ -252,7 +252,7 @@ class SetPasswordSchema(colander.MappingSchema):
     #: colander.String
     password = colander.SchemaNode(
         colander.String(),
-        title=_(u'Password'),
+        title=_('Password'),
         validator=colander.Length(min=5),
         widget=CheckedPasswordWidget(),
         )
@@ -264,7 +264,7 @@ class SetPasswordSchema(colander.MappingSchema):
     #: colander.String
     email = colander.SchemaNode(
         colander.String(),
-        title=_(u'Email'),
+        title=_('Email'),
         widget=HiddenWidget(),
         )
     #: colander.String
@@ -277,7 +277,7 @@ class SetPasswordSchema(colander.MappingSchema):
 
 @view_config(name='set-password', renderer='kotti:templates/edit/simpleform.pt')
 def set_password(context, request,
-                 success_msg=_(u"You have reset your password.")):
+                 success_msg=_("You have reset your password.")):
     """ Set password view.  Displays the set password form and handles its form
     submission.
 
@@ -296,7 +296,7 @@ def set_password(context, request,
     """
 
     form = Form(SetPasswordSchema(),
-                buttons=(Button('submit', _(u'Set password')),))
+                buttons=(Button('submit', _('Set password')),))
     rendered_form = None
 
     if 'submit' in request.POST:
@@ -324,14 +324,14 @@ def set_password(context, request,
                 return HTTPFound(location=location, headers=headers)
             else:
                 request.session.flash(
-                    _(u"Your password reset token may have expired."), 'error')
+                    _("Your password reset token may have expired."), 'error')
 
     if rendered_form is None:
         rendered_form = form.render(request.params)
 
     api = template_api(
         context, request,
-        page_title=_(u"Reset your password - ${title}.",
+        page_title=_("Reset your password - ${title}.",
                      mapping=dict(title=context.title)),
         )
 

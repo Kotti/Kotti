@@ -51,14 +51,14 @@ class DocumentSchema(ContentSchema):
             # theme='advanced', width=790, height=500
             height=500,
         ),
-        missing=u"",
+        missing="",
         )
 
 
 class DocumentAddForm(AddFormView):
     schema_factory = DocumentSchema
     add = Document
-    item_type = _(u"Document")
+    item_type = _("Document")
 
 
 class DocumentEditForm(EditFormView):
@@ -84,7 +84,7 @@ def FileSchema(tmpstore, title_missing=None):
 
 
 class FileAddForm(AddFormView):
-    item_type = _(u"File")
+    item_type = _("File")
     item_class = File  # specific to this class
 
     def schema_factory(self):

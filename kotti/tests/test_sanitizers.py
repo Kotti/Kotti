@@ -69,8 +69,8 @@ def test_default_config(unresolved_settings):
     assert 'kotti.sanitizers' in unresolved_settings
     assert 'kotti.sanitize_on_write' in unresolved_settings
 
-    assert unresolved_settings[u'kotti.sanitizers'] == 'xss_protection:kotti.sanitizers.xss_protection minimal_html:kotti.sanitizers.minimal_html no_html:kotti.sanitizers.no_html'  # noqa
-    assert unresolved_settings[u'kotti.sanitize_on_write'] == 'kotti.resources.Document.body:xss_protection kotti.resources.Content.title:no_html kotti.resources.Content.description:no_html'  # noqa
+    assert unresolved_settings['kotti.sanitizers'] == 'xss_protection:kotti.sanitizers.xss_protection minimal_html:kotti.sanitizers.minimal_html no_html:kotti.sanitizers.no_html'  # noqa
+    assert unresolved_settings['kotti.sanitize_on_write'] == 'kotti.resources.Document.body:xss_protection kotti.resources.Content.title:no_html kotti.resources.Content.description:no_html'  # noqa
 
 
 def test_setup_sanitizers(unresolved_settings):

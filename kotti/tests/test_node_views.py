@@ -69,7 +69,7 @@ class TestNodePaste:
         from kotti.views.edit.actions import NodeActions
 
         request = DummyRequest()
-        request.params['paste'] = u'on'
+        request.params['paste'] = 'on'
         config.testing_securitypolicy(permissive=False)
 
         # We need to have the 'edit' permission on the original object
@@ -98,44 +98,44 @@ class TestNodeRename:
         from kotti.resources import Document
         from kotti.views.edit.actions import NodeActions
 
-        child = root['child'] = Document(title=u"Child")
+        child = root['child'] = Document(title="Child")
         request = DummyRequest()
-        request.params['rename'] = u'on'
-        request.params['name'] = u''
-        request.params['title'] = u'foo'
+        request.params['rename'] = 'on'
+        request.params['name'] = ''
+        request.params['title'] = 'foo'
         NodeActions(child, request).rename_node()
         assert (request.session.pop_flash('error') ==
-                [u'Name and title are required.'])
+                ['Name and title are required.'])
 
     def test_multi_rename(self, root):
         from kotti.resources import Document
         from kotti.views.edit.actions import NodeActions
         self.setUp()
-        root['child1'] = Document(title=u"Child 1")
-        root['child2'] = Document(title=u"Child 2")
+        root['child1'] = Document(title="Child 1")
+        root['child2'] = Document(title="Child 2")
         request = DummyRequest()
         request.POST = MultiDict()
         id1 = str(root['child1'].id)
         id2 = str(root['child2'].id)
         request.POST.add('children-to-rename', id1)
         request.POST.add('children-to-rename', id2)
-        request.POST.add(id1 + '-name', u'')
-        request.POST.add(id1 + '-title', u'Unhappy Child')
-        request.POST.add(id2 + '-name', u'happy-child')
-        request.POST.add(id2 + '-title', u'')
-        request.POST.add('rename_nodes', u'rename_nodes')
+        request.POST.add(id1 + '-name', '')
+        request.POST.add(id1 + '-title', 'Unhappy Child')
+        request.POST.add(id2 + '-name', 'happy-child')
+        request.POST.add(id2 + '-title', '')
+        request.POST.add('rename_nodes', 'rename_nodes')
         NodeActions(root, request).rename_nodes()
         assert request.session.pop_flash('error') ==\
-            [u'Name and title are required.']
+            ['Name and title are required.']
 
-        request.POST.add(id1 + '-name', u'unhappy-child')
-        request.POST.add(id1 + '-title', u'Unhappy Child')
-        request.POST.add(id2 + '-name', u'happy-child')
-        request.POST.add(id2 + '-title', u'Happy Child')
-        request.POST.add('rename_nodes', u'rename_nodes')
+        request.POST.add(id1 + '-name', 'unhappy-child')
+        request.POST.add(id1 + '-title', 'Unhappy Child')
+        request.POST.add(id2 + '-name', 'happy-child')
+        request.POST.add(id2 + '-title', 'Happy Child')
+        request.POST.add('rename_nodes', 'rename_nodes')
         NodeActions(root, request).rename_nodes()
         assert request.session.pop_flash('success') ==\
-            [u'Your changes have been saved.']
+            ['Your changes have been saved.']
 
 
 class TestNodeDelete:
@@ -145,28 +145,28 @@ class TestNodeDelete:
         from kotti.resources import File
         from kotti.views.edit.actions import NodeActions
 
-        root['child1'] = Document(title=u"Child 1")
-        root['child2'] = Document(title=u"Child 2")
-        root['file1'] = File(title=u"File 1")
+        root['child1'] = Document(title="Child 1")
+        root['child2'] = Document(title="Child 2")
+        root['file1'] = File(title="File 1")
 
         request = DummyRequest()
         request.POST = MultiDict()
         id1 = str(root['child1'].id)
         id2 = str(root['child2'].id)
         id3 = str(root['file1'].id)
-        request.POST.add('delete_nodes', u'delete_nodes')
+        request.POST.add('delete_nodes', 'delete_nodes')
         NodeActions(root, request).delete_nodes()
         assert request.session.pop_flash('info') ==\
-            [u'Nothing was deleted.']
+            ['Nothing was deleted.']
 
         request.POST.add('children-to-delete', id1)
         request.POST.add('children-to-delete', id2)
         request.POST.add('children-to-delete', id3)
         NodeActions(root, request).delete_nodes()
         assert request.session.pop_flash('success') == \
-            [u'${title} was deleted.',
-             u'${title} was deleted.',
-             u'${title} was deleted.']
+            ['${title} was deleted.',
+             '${title} was deleted.',
+             '${title} was deleted.']
 
 
 class TestNodeMove:
@@ -174,24 +174,24 @@ class TestNodeMove:
         from kotti.resources import Document
         from kotti.views.edit.actions import NodeActions
 
-        root['child1'] = Document(title=u"Child 1")
-        root['child2'] = Document(title=u"Child 2")
+        root['child1'] = Document(title="Child 1")
+        root['child2'] = Document(title="Child 2")
         assert root['child1'].position < root['child2'].position
 
         request = DummyRequest()
         request.session['kotti.selected-children'] = [str(root['child2'].id)]
         NodeActions(root, request).up()
         assert request.session.pop_flash('success') ==\
-            [u'${title} was moved.']
+            ['${title} was moved.']
         assert root['child1'].position > root['child2'].position
 
     def test_move_down(self, root):
         from kotti.resources import Document
         from kotti.views.edit.actions import NodeActions
 
-        root['child1'] = Document(title=u"Child 1")
-        root['child2'] = Document(title=u"Child 2")
-        root['child3'] = Document(title=u"Child 3")
+        root['child1'] = Document(title="Child 1")
+        root['child2'] = Document(title="Child 2")
+        root['child3'] = Document(title="Child 3")
         assert root['child1'].position < root['child3'].position
         assert root['child2'].position < root['child3'].position
 
@@ -200,7 +200,7 @@ class TestNodeMove:
         request.session['kotti.selected-children'] = ids
         NodeActions(root, request).down()
         assert request.session.pop_flash('success') ==\
-            [u'${title} was moved.', u'${title} was moved.']
+            ['${title} was moved.', '${title} was moved.']
         assert root['child1'].position > root['child3'].position
         assert root['child2'].position > root['child3'].position
 
@@ -213,15 +213,15 @@ class TestNodeMove:
         from kotti.views.edit.actions import move_child_position
 
         # Create some documents
-        root['child1'] = Document(title=u"Child 1")
-        root['child2'] = Document(title=u"Child 2")
-        root['child3'] = Document(title=u"Child 3")
-        root['child4'] = Document(title=u"Child 4")
-        root['child5'] = Document(title=u"Child 5")
+        root['child1'] = Document(title="Child 1")
+        root['child2'] = Document(title="Child 2")
+        root['child3'] = Document(title="Child 3")
+        root['child4'] = Document(title="Child 4")
+        root['child5'] = Document(title="Child 5")
 
         assert [c.position for c in root._children] == [0, 1, 2, 3, 4]
         assert [c.name for c in root._children] == [
-            u'child1', u'child2', u'child3', u'child4', u'child5']
+            'child1', 'child2', 'child3', 'child4', 'child5']
 
         request = DummyRequest()
 
@@ -233,7 +233,7 @@ class TestNodeMove:
         assert result['result'] == 'success'
         assert [c.position for c in root._children] == [0, 1, 2, 3, 4]
         assert [c.name for c in root._children] == [
-            u'child2', u'child3', u'child4', u'child1', u'child5']
+            'child2', 'child3', 'child4', 'child1', 'child5']
 
         # Move up
         request.POST = {'from': '4', 'to': '0'}
@@ -243,7 +243,7 @@ class TestNodeMove:
         assert result['result'] == 'success'
         assert [c.position for c in root._children] == [0, 1, 2, 3, 4]
         assert [c.name for c in root._children] == [
-            u'child5', u'child2', u'child3', u'child4', u'child1']
+            'child5', 'child2', 'child3', 'child4', 'child1']
 
         # Invalid param value
         request.POST = {'from': 'a', 'to': '3'}
@@ -280,15 +280,15 @@ class TestNodeMove:
         from kotti.views.edit.actions import move_child_position
 
         # Create some documents
-        root['child1'] = Document(title=u"Child 1")
-        root['child2'] = Document(title=u"Child 2")
-        root['child3'] = Document(title=u"Child 3")
-        root['child4'] = Document(title=u"Child 4")
-        root['child5'] = Document(title=u"Child 5")
+        root['child1'] = Document(title="Child 1")
+        root['child2'] = Document(title="Child 2")
+        root['child3'] = Document(title="Child 3")
+        root['child4'] = Document(title="Child 4")
+        root['child5'] = Document(title="Child 5")
 
         assert [c.position for c in root._children] == [0, 1, 2, 3, 4]
         assert [c.name for c in root._children] == [
-            u'child1', u'child2', u'child3', u'child4', u'child5']
+            'child1', 'child2', 'child3', 'child4', 'child5']
 
         request = DummyRequest()
 
@@ -300,7 +300,7 @@ class TestNodeMove:
         assert result['result'] == 'success'
         assert [c.position for c in root._children] == [0, 1, 2, 3, 4]
         assert [c.name for c in root._children] == [
-            u'child2', u'child3', u'child4', u'child1', u'child5']
+            'child2', 'child3', 'child4', 'child1', 'child5']
 
         # Move up
         request.json_body = {'from': '4', 'to': '0'}
@@ -310,7 +310,7 @@ class TestNodeMove:
         assert result['result'] == 'success'
         assert [c.position for c in root._children] == [0, 1, 2, 3, 4]
         assert [c.name for c in root._children] == [
-            u'child5', u'child2', u'child3', u'child4', u'child1']
+            'child5', 'child2', 'child3', 'child4', 'child1']
 
         # Invalid param value
         request.json_body = {'from': 'a', 'to': '3'}
@@ -344,20 +344,20 @@ class TestNodeShowHide:
         from kotti.resources import Document
         from kotti.views.edit.actions import NodeActions
 
-        root['child1'] = Document(title=u"Child 1")
+        root['child1'] = Document(title="Child 1")
         assert root['child1'].in_navigation is True
 
         request = DummyRequest()
         request.session['kotti.selected-children'] = [str(root['child1'].id)]
         NodeActions(root, request).hide()
         assert request.session.pop_flash('success') ==\
-            [u'${title} is no longer visible in the navigation.']
+            ['${title} is no longer visible in the navigation.']
         assert root['child1'].in_navigation is False
 
         request.session['kotti.selected-children'] = [str(root['child1'].id)]
         NodeActions(root, request).show()
         assert request.session.pop_flash('success') ==\
-            [u'${title} is now visible in the navigation.']
+            ['${title} is now visible in the navigation.']
         assert root['child1'].in_navigation is True
 
 
@@ -383,8 +383,8 @@ class TestNodeShare:
 
         # Search for "Bob", which will return both the user and the
         # group, both of which have no roles:
-        request.params['search'] = u''
-        request.params['query'] = u'Bob'
+        request.params['search'] = ''
+        request.params['query'] = 'Bob'
         entries = share_node(root, request)['entries']
         assert len(entries) == 2
         assert entries[0][0] == P['bob']
@@ -394,31 +394,31 @@ class TestNodeShare:
 
         # We make Bob an Editor in this context, and Bob's Group
         # becomes global Admin:
-        set_groups(u'bob', root, [u'role:editor'])
+        set_groups('bob', root, ['role:editor'])
         db_session.flush()
-        P[u'group:bobsgroup'].groups = [u'role:admin']
+        P['group:bobsgroup'].groups = ['role:admin']
         entries = share_node(root, request)['entries']
         assert len(entries) == 2
         assert entries[0][0] == P['bob']
-        assert entries[0][1] == ([u'role:editor'], [])
+        assert entries[0][1] == (['role:editor'], [])
         assert entries[1][0] == P['group:bobsgroup']
-        assert entries[1][1] == ([u'role:admin'], [u'role:admin'])
+        assert entries[1][1] == (['role:admin'], ['role:admin'])
 
         # A search that doesn't return any items will still include
         # entries with existing local roles:
-        request.params['query'] = u'Weeee'
+        request.params['query'] = 'Weeee'
         entries = share_node(root, request)['entries']
         assert len(entries) == 1
-        assert entries[0][0] == P[u'bob']
-        assert entries[0][1] == ([u'role:editor'], [])
+        assert entries[0][0] == P['bob']
+        assert entries[0][1] == (['role:editor'], [])
         assert (request.session.pop_flash('info') ==
-                [u'No users or groups were found.'])
+                ['No users or groups were found.'])
 
         # It does not, however, include entries that have local group
         # assignments only:
-        set_groups(u'frank', root, [u'group:franksgroup'])
+        set_groups('frank', root, ['group:franksgroup'])
         db_session.flush()
-        request.params['query'] = u'Weeee'
+        request.params['query'] = 'Weeee'
         entries = share_node(root, request)['entries']
         assert len(entries) == 1
         assert entries[0][0] == P['bob']
@@ -430,20 +430,20 @@ class TestNodeShare:
 
         request = DummyRequest()
 
-        request.params['apply'] = u''
+        request.params['apply'] = ''
         share_node(root, request)
-        assert (request.session.pop_flash('info') == [u'No changes were made.'])
+        assert (request.session.pop_flash('info') == ['No changes were made.'])
         assert list_groups('bob', root) == []
         set_groups('bob', root, ['role:special'])
 
-        request.params['role::bob::role:owner'] = u'1'
-        request.params['role::bob::role:editor'] = u'1'
-        request.params['orig-role::bob::role:owner'] = u''
-        request.params['orig-role::bob::role:editor'] = u''
+        request.params['role::bob::role:owner'] = '1'
+        request.params['role::bob::role:editor'] = '1'
+        request.params['orig-role::bob::role:owner'] = ''
+        request.params['orig-role::bob::role:editor'] = ''
 
         share_node(root, request)
         assert (request.session.pop_flash('success') ==
-                [u'Your changes have been saved.'])
+                ['Your changes have been saved.'])
         assert (
             set(list_groups('bob', root)) ==
             {'role:owner', 'role:editor', 'role:special'}
@@ -451,8 +451,8 @@ class TestNodeShare:
 
         # We cannot set a role that's not displayed, even if we forged
         # the request:
-        request.params['role::bob::role:admin'] = u'1'
-        request.params['orig-role::bob::role:admin'] = u''
+        request.params['role::bob::role:admin'] = '1'
+        request.params['orig-role::bob::role:admin'] = ''
         with raises(Forbidden):
             share_node(root, request)
         assert (

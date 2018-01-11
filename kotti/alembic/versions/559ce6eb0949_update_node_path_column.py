@@ -34,5 +34,5 @@ def downgrade():
 
     for node in DBSession.query(Node).with_polymorphic([Node]):
         # remove trailing '/' from all nodes but root
-        if node.path != u'/':
+        if node.path != '/':
             node.path = node.path[:-1]

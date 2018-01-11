@@ -42,14 +42,13 @@ Fixture dependencies
 
 """
 
-from __future__ import absolute_import, division, print_function
-
 import warnings
 from datetime import datetime
 
 from depot.io.memory import MemoryFileStorage
 from mock import MagicMock
-from pytest import fixture, yield_fixture
+from pytest import fixture
+from pytest import yield_fixture
 
 from kotti import testing
 
@@ -114,7 +113,7 @@ def settings(unresolved_settings):
 
 
 @yield_fixture
-def config(request, settings):
+def config(settings):
     """ returns a Pyramid `Configurator` object initialized
         with Kotti's default (test) settings.
     """
@@ -176,12 +175,12 @@ def content(connection, settings):
     # tests, and because the 'content' fixture does not depend on
     # 'event' and therefore the event handlers aren't fired for root
     # otherwise:
-    get_root().path = u'/'
+    get_root().path = '/'
     commit()
 
 
 @yield_fixture
-def db_session(config, content, connection, request):
+def db_session(config, content, connection):
     """ returns a db session object and sets up a db transaction
         savepoint, which will be rolled back after the test.
     """
@@ -224,7 +223,7 @@ def dummy_mailer(monkeypatch):
 
 
 @yield_fixture
-def events(config, request):
+def events(config):
     """ sets up Kotti's default event handlers.
     """
     from kotti.events import clear
@@ -308,7 +307,7 @@ class TestStorage(MemoryFileStorage):
 
 
 @yield_fixture
-def depot_tween(request, config, dummy_request):
+def depot_tween(config, dummy_request):
     """ Sets up the Depot tween and patches Depot's ``set_middleware`` to
     suppress exceptions on subsequent calls. Yields the ``DepotManager``. """
 
@@ -336,7 +335,7 @@ def depot_tween(request, config, dummy_request):
 
 
 @yield_fixture
-def mock_filedepot(request, depot_tween):
+def mock_filedepot(depot_tween):
     """ Configures a mock depot store for :class:`depot.manager.DepotManager`
 
     This filedepot is not integrated with dbsession.
@@ -355,7 +354,7 @@ def mock_filedepot(request, depot_tween):
 
 
 @yield_fixture
-def filedepot(db_session, request, depot_tween):
+def filedepot(db_session, depot_tween):
     """ Configures a dbsession integrated mock depot store for
     :class:`depot.manager.DepotManager`
     """
@@ -373,7 +372,7 @@ def filedepot(db_session, request, depot_tween):
 
 
 @yield_fixture
-def no_filedepots(db_session, request, depot_tween):
+def no_filedepots(db_session, depot_tween):
     """ A filedepot fixture to empty and then restore DepotManager configuration
     """
     from depot.manager import DepotManager

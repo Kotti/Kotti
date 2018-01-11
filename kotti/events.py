@@ -261,8 +261,8 @@ def set_owner(event):
             if obj.owner is None:
                 obj.owner = userid
             # Add owner role for userid if it's not inherited already:
-            if u'role:owner' not in list_groups(userid, obj):
-                groups = list_groups_raw(userid, obj) | {u'role:owner'}
+            if 'role:owner' not in list_groups(userid, obj):
+                groups = list_groups_raw(userid, obj) | {'role:owner'}
                 set_groups(userid, obj, groups)
 
 
@@ -365,19 +365,19 @@ def _set_path_for_new_name(target, value, oldvalue, initiator):
         # Our name is about to be set to 'None', so skip.
         return
 
-    if target.__parent__ is None and value != u'':
+    if target.__parent__ is None and value != '':
         # Our parent hasn't been set yet.  Skip, unless we're the root
         # object (which always has an empty string as name).
         return
 
     old_path = target.path
     line = tuple(reversed(tuple(lineage(target))))
-    target_path = u'/'.join(node.__name__ for node in line[:-1])
-    if target.__parent__ is None and value == u'':
+    target_path = '/'.join(node.__name__ for node in line[:-1])
+    if target.__parent__ is None and value == '':
         # We're a new root object
-        target_path = u'/'
+        target_path = '/'
     else:
-        target_path += u'/{0}/'.format(value)
+        target_path += '/{0}/'.format(value)
     target.path = target_path
     # We need to set the name to value here so that the subsequent
     # UPDATE in _update_children_paths will include the new 'name'
@@ -394,8 +394,8 @@ def _set_path_for_new_name(target, value, oldvalue, initiator):
         _update_children_paths(old_path, target_path)
     else:
         for child in _all_children(target):
-            child.path = u'{0}{1}/'.format(child.__parent__.path,
-                                           child.__name__)
+            child.path = '{0}{1}/'.format(child.__parent__.path,
+                                          child.__name__)
 
 
 def _all_children(item, _all=None):
@@ -421,7 +421,7 @@ def _set_path_for_new_parent(target, value, oldvalue, initiator):
         # The object's name is still 'None', so skip.
         return
 
-    if value.__parent__ is None and value.__name__ != u'':
+    if value.__parent__ is None and value.__name__ != '':
         # Our parent doesn't have a parent, and it's not root either.
         return
 
@@ -432,8 +432,8 @@ def _set_path_for_new_parent(target, value, oldvalue, initiator):
         # If any of our parents don't have a name yet, skip
         return
 
-    target_path = u'/'.join(node.__name__ for node in line)
-    target_path += u'/{0}/'.format(target.__name__)
+    target_path = '/'.join(node.__name__ for node in line)
+    target_path += '/{0}/'.format(target.__name__)
     target.path = target_path
 
     if old_path and target.id is not None:
@@ -443,8 +443,8 @@ def _set_path_for_new_parent(target, value, oldvalue, initiator):
         # children.  This is the case when we create an object with
         # children before we assign the object itself to a parent.
         for child in _all_children(target):
-            child.path = u'{0}{1}/'.format(child.__parent__.path,
-                                           child.__name__)
+            child.path = '{0}{1}/'.format(child.__parent__.path,
+                                          child.__name__)
 
 
 class subscribe(object):

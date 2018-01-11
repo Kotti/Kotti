@@ -11,7 +11,7 @@ from kotti.resources import Image
 class TestDBStoredFile:
 
     def test_storedfile_interface(self, db_session, events, setup_app):
-        f = DBStoredFile('fileid', filename=u'f.jpg', content_type='image/jpeg',
+        f = DBStoredFile('fileid', filename='f.jpg', content_type='image/jpeg',
                          content_length=1000, data=b'content')
 
         assert f.close() is None
@@ -37,8 +37,8 @@ class TestDBStoredFile:
         assert f.content_length == 1000
         assert f.content_type == 'image/jpeg'
         assert f.file_id == 'fileid'
-        assert f.filename == u'f.jpg'
-        assert f.name == u"f.jpg"
+        assert f.filename == 'f.jpg'
+        assert f.name == "f.jpg"
         assert f.public_url is None
 
         f.data = None
@@ -87,7 +87,7 @@ class TestDBFileStorage:
 
     def make_one(self,
                  content=b'content here',
-                 filename=u'f.jpg',
+                 filename='f.jpg',
                  content_type='image/jpg'):
 
         file_id = DBFileStorage().create(
@@ -132,14 +132,14 @@ class TestDBFileStorage:
     def test_replace(self, db_session):
         file_id = self.make_one()
 
-        DBFileStorage().replace(file_id, b'second content', u'f2.jpg', 'doc')
+        DBFileStorage().replace(file_id, b'second content', 'f2.jpg', 'doc')
         fs = DBFileStorage().get(file_id)
-        assert fs.filename == u'f2.jpg'
+        assert fs.filename == 'f2.jpg'
         assert fs.content_type == 'doc'
         assert fs.read() == b'second content'
 
-        DBFileStorage().replace(fs, b'third content', u'f3.jpg', 'xls')
-        assert fs.filename == u'f3.jpg'
+        DBFileStorage().replace(fs, b'third content', 'f3.jpg', 'xls')
+        assert fs.filename == 'f3.jpg'
         assert fs.content_type == 'xls'
         assert fs.read() == b'third content'
 
@@ -150,7 +150,7 @@ class TestDBFileStorage:
         DepotManager._depots = {'default': DBFileStorage()}
 
         file_id = DepotManager.get().create(
-            b'content here', u'f.jpg', 'image/jpg')
+            b'content here', 'f.jpg', 'image/jpg')
         fs = DepotManager.get().get(file_id)
 
         db_session.add(fs)

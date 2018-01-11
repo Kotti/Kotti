@@ -41,7 +41,7 @@ class TestUserManagement:
         P['group:bobsgroup'].groups = ['role:admin']
         entries = UsersManage(root, request)()['entries']
         # assert entries[0][1] == (['group:bobsgroup', 'role:admin'], ['role:admin'])
-        assert {entries[0][1][0]} == {'group:bobsgroup', 'role:admin'}
+        assert set(entries[0][1][0]) == {'group:bobsgroup', 'role:admin'}
         assert entries[0][1][1] == ['role:admin']
         assert entries[1][1] == (['role:admin'], [])
 
@@ -101,13 +101,14 @@ class TestUserDelete:
         request.params['name'] = 'john'
         request.params['delete'] = 'delete'
         user_delete(root, request)
-        assert request.session.pop_flash('error') == [u"User was not found."]
+        assert request.session.pop_flash('error') == ["User was not found."]
         assert 'bob' in get_principals().keys()
 
         request.params['name'] = 'bob'
         request.params['delete'] = 'delete'
         user_delete(root, request)
         with pytest.raises(KeyError):
+            # noinspection PyStatementEffect
             get_principals()['bob']
 
     def test_deleted_group_removed_in_usergroups(self, events, extra_principals,
@@ -125,6 +126,7 @@ class TestUserDelete:
         user_delete(root, request)
         db_session.expire(bob)
         with pytest.raises(KeyError):
+            # noinspection PyStatementEffect
             get_principals()['group:bobsgroup']
         assert bob.groups == []
 
@@ -291,16 +293,16 @@ class TestUserManageForm:
         user = Mock()
         request = DummyRequest()
         view = UserManageFormView(user, request)
-        appstruct = {'password': u'foo'}
+        appstruct = {'password': 'foo'}
         view.save_success(appstruct)
-        assert user.password.startswith(u'$2a$10$')
+        assert user.password.startswith('$2a$10$')
 
     def test_hashed_password_empty(self, root):
         from kotti.views.users import UserManageFormView
 
-        user = Mock(password=u'before')
+        user = Mock(password='before')
         request = DummyRequest()
         view = UserManageFormView(user, request)
-        appstruct = {'password': u''}
+        appstruct = {'password': ''}
         view.save_success(appstruct)
-        assert user.password == u"before"
+        assert user.password == "before"

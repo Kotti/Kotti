@@ -64,17 +64,17 @@ class TestTitleToName:
     def test_max_length_40(self):
         self.setUp()
         from kotti.util import title_to_name
-        assert len(title_to_name(u'a' * 50)) == 50
+        assert len(title_to_name('a' * 50)) == 50
 
     def test_max_length_250(self):
         self.setUp()
         from kotti.util import title_to_name
-        assert len(title_to_name(u'a' * 250)) == 240
+        assert len(title_to_name('a' * 250)) == 240
 
     def test_max_length_255(self):
         self.setUp()
         from kotti.util import title_to_name
-        assert len(title_to_name(u'a' * 255)) == 240
+        assert len(title_to_name('a' * 255)) == 240
 
     def test_normal(self):
         self.setUp()
@@ -84,7 +84,7 @@ class TestTitleToName:
     def test_max_length_40_no_default(self):
         self.setUp()
         from kotti.util import title_to_name
-        assert len(title_to_name(u'a' * 50, max_length=40)) == 40
+        assert len(title_to_name('a' * 50, max_length=40)) == 40
 
     def test_numbering(self):
         self.setUp()

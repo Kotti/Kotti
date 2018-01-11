@@ -20,7 +20,7 @@ class CustomContentSchema(ContentSchema):
 
     custom_attribute = colander.SchemaNode(
         colander.String(),
-        title=_(u"Custom attribute"))
+        title=_("Custom attribute"))
 
 
 @view_config(name=CustomContent.type_info.add_view,
@@ -31,7 +31,7 @@ class CustomContentAddForm(AddFormView):
 
     schema_factory = CustomContentSchema
     add = CustomContent
-    item_type = _(u"CustomContent")
+    item_type = _("CustomContent")
 
 
 @view_config(name='edit', context=CustomContent, permission='edit',

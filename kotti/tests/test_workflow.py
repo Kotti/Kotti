@@ -135,16 +135,16 @@ class TestDefaultWorkflow(object):
         from kotti.workflow import get_workflow
 
         wf = get_workflow(root)
-        assert wf.name == u'simple'
-        assert root.state == u'public'
+        assert wf.name == 'simple'
+        assert root.state == 'public'
 
     def test_workflow_new_content(self, root, workflow, events):
         from kotti.workflow import get_workflow
 
         content = self.make_document(root)
         wf = get_workflow(content)
-        assert wf.name == u'simple'
-        assert content.state == u'private'
+        assert wf.name == 'simple'
+        assert content.state == 'private'
         assert content.__acl__[0] == (
             'Allow', 'role:admin', ALL_PERMISSIONS)
         assert content.__acl__[-1] == (
@@ -154,8 +154,8 @@ class TestDefaultWorkflow(object):
         from kotti.workflow import get_workflow
         content = self.make_document(root)
         wf = get_workflow(content)
-        wf.transition_to_state(content, None, u'public')
-        assert content.state == u'public'
+        wf.transition_to_state(content, None, 'public')
+        assert content.state == 'public'
 
     def test_reset_workflow(self, root, workflow, events):
         from kotti.workflow import get_workflow
@@ -163,13 +163,13 @@ class TestDefaultWorkflow(object):
 
         content = self.make_document(root)
         wf = get_workflow(content)
-        wf.transition_to_state(content, None, u'public')
-        assert content.state == u'public'
+        wf.transition_to_state(content, None, 'public')
+        assert content.state == 'public'
         save_acl = content.__acl__
         content.__acl__ = []
         with patch('kotti.workflow.transaction.commit'):
             reset_workflow()
-        assert content.state == u'public'
+        assert content.state == 'public'
         assert len(content.__acl__) == len(save_acl)
 
     def test_reset_workflow_purge_existing(self, root, workflow, events):
@@ -178,11 +178,11 @@ class TestDefaultWorkflow(object):
 
         content = self.make_document(root)
         wf = get_workflow(content)
-        wf.transition_to_state(content, None, u'public')
-        assert content.state == u'public'
+        wf.transition_to_state(content, None, 'public')
+        assert content.state == 'public'
         with patch('kotti.workflow.transaction.commit'):
             reset_workflow(purge_existing=True)
-        assert content.state == u'private'
+        assert content.state == 'private'
 
     def test_translate_titles(self, root, dummy_request):
         from pyramid.i18n import TranslationString
@@ -207,5 +207,5 @@ class TestContentExtensibleWithWorkflow:
 
         interface.directlyProvides(content, IDefaultWorkflow)
         wf = get_workflow(content)
-        wf.transition_to_state(content, None, u'public')
-        assert content.state == u'public'
+        wf.transition_to_state(content, None, 'public')
+        assert content.state == 'public'

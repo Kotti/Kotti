@@ -43,7 +43,7 @@ class SettingHasValuePredicate(object):
             raise ValueError("Only boolean values supported")
 
     def text(self):
-        return u'if_setting_has_value = {0} == {1}'.format(
+        return 'if_setting_has_value = {0} == {1}'.format(
             self.name, self.value)
 
     phash = text
@@ -57,7 +57,7 @@ class RootOnlyPredicate(object):
         self.val = val
 
     def text(self):
-        return u'root_only = {0}'.format(self.val)
+        return 'root_only = {0}'.format(self.val)
 
     phash = text
 
@@ -184,9 +184,9 @@ class TemplateAPI(object):
 
         view_title = self.request.view_name.replace('_', ' ').title()
         if view_title:
-            view_title += u' '
+            view_title += ' '
         view_title += self.context.title
-        return u'{0} - {1}'.format(view_title, self.site_title)
+        return '{0} - {1}'.format(view_title, self.site_title)
 
     def url(self, context=None, *elements, **kwargs):
         """
@@ -305,7 +305,7 @@ class TemplateAPI(object):
             email = user.name
         h = hashlib.md5(email.encode('utf8')).hexdigest()
         query = {'default': default_image, 'size': str(size)}
-        url = u'https://secure.gravatar.com/avatar/{0}?{1}'.format(
+        url = 'https://secure.gravatar.com/avatar/{0}?{1}'.format(
             h, urlencode(query))
         return url
 
@@ -343,9 +343,9 @@ class TemplateAPI(object):
     def find_edit_view(self, item):
         view_name = self.request.view_name
         if not view_permitted(item, self.request, view_name):
-            view_name = u'edit'
+            view_name = 'edit'
         if not view_permitted(item, self.request, view_name):
-            view_name = u''
+            view_name = ''
         return view_name
 
     @reify
@@ -451,7 +451,7 @@ def search_content(search_term, request=None):
 def default_search_content(search_term, request=None):
 
     # noinspection PyUnresolvedReferences
-    searchstring = u'%{0}%'.format(search_term)
+    searchstring = '%{0}%'.format(search_term)
 
     # generic_filter can be applied to all Node (and subclassed) objects
     generic_filter = or_(Content.name.like(searchstring),

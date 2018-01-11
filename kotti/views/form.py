@@ -77,9 +77,9 @@ class BaseFormView(FormView):
 
     form_class = Form
     buttons = (
-        deform.Button('save', _(u'Save')),
-        deform.Button('cancel', _(u'Cancel')))
-    success_message = _(u"Your changes have been saved.")
+        deform.Button('save', _('Save')),
+        deform.Button('cancel', _('Cancel')))
+    success_message = _("Your changes have been saved.")
     success_url = None
     schema_factory = None
     use_csrf_token = True
@@ -129,9 +129,9 @@ class EditFormView(BaseFormView):
         class DocumentSchema(ContentSchema):
             body = colander.SchemaNode(
                 colander.String(),
-                title=u'Body',
+                title='Body',
                 widget=RichTextWidget(),
-                missing=u'',
+                missing='',
                 )
 
         class DocumentEditForm(EditFormView):
@@ -156,7 +156,7 @@ class EditFormView(BaseFormView):
 
     @reify
     def first_heading(self):
-        return _(u'Edit ${title}',
+        return _('Edit ${title}',
                  mapping=dict(title=self.context.title)
                  )
 
@@ -171,10 +171,10 @@ class AddFormView(BaseFormView):
         class DocumentAddForm(AddFormView):
             schema_factory = DocumentSchema
             add = Document
-            item_type = u'Document'
+            item_type = 'Document'
     """
 
-    success_message = _(u"Item was added.")
+    success_message = _("Item was added.")
     item_type = None
     add_template_vars = ('first_heading',)
 
@@ -198,11 +198,11 @@ class AddFormView(BaseFormView):
         context_title = getattr(self.request.context, 'title', None)
         type_title = self.item_type or self.add.type_info.title
         if context_title:
-            return _(u'Add ${type} to ${title}.',
+            return _('Add ${type} to ${title}.',
                      mapping=dict(type=translate(type_title),
                                   title=context_title))
         else:
-            return _(u'Add ${type}.', mapping=dict(type=translate(type_title)))
+            return _('Add ${type}.', mapping=dict(type=translate(type_title)))
 
 
 class CommaSeparatedListWidget(deform.widget.Widget):

@@ -220,7 +220,7 @@ class LocalGroup(Base):
         return self.__class__(**kwargs)
 
     def __repr__(self):
-        return u'<{0} {1} => {2} at {3}>'.format(
+        return '<{0} {1} => {2} at {3}>'.format(
             self.__class__.__name__, self.principal_name, self.group_name,
             resource_path(self.node))
 
@@ -289,7 +289,7 @@ class Node(Base, ContainerMixin, PersistentACLMixin, metaclass=NodeMeta):
 
     __hash__ = Base.__hash__
 
-    def __init__(self, name=None, parent=None, title=u"", annotations=None,
+    def __init__(self, name=None, parent=None, title="", annotations=None,
                  **kwargs):
         """Constructor"""
 
@@ -315,7 +315,7 @@ class Node(Base, ContainerMixin, PersistentACLMixin, metaclass=NodeMeta):
         self.parent = value
 
     def __repr__(self):
-        return u'<{0} {1} at {2}>'.format(
+        return '<{0} {1} at {2}>'.format(
             self.__class__.__name__, self.id, resource_path(self))
 
     def __eq__(self, other):
@@ -477,7 +477,7 @@ class Tag(Base):
     title = Column(Unicode(100), unique=True, nullable=False)
 
     def __repr__(self):
-        return u"<Tag ('{0}')>".format(self.title)
+        return "<Tag ('{0}')>".format(self.title)
 
     @property
     def items(self):
@@ -538,28 +538,28 @@ def _not_root(context, request):
 
 
 default_actions = [
-    Link('copy', title=_(u'Copy')),
-    Link('cut', title=_(u'Cut'), predicate=_not_root),
-    Link('paste', title=_(u'Paste'), predicate=get_paste_items),
-    Link('rename', title=_(u'Rename'), predicate=_not_root),
-    Link('delete', title=_(u'Delete'), predicate=_not_root),
+    Link('copy', title=_('Copy')),
+    Link('cut', title=_('Cut'), predicate=_not_root),
+    Link('paste', title=_('Paste'), predicate=get_paste_items),
+    Link('rename', title=_('Rename'), predicate=_not_root),
+    Link('delete', title=_('Delete'), predicate=_not_root),
     LinkRenderer('default-view-selector'),
 ]
 
 
 default_type_info = TypeInfo(
-    name=u'Content',
-    title=u'type_info title missing',   # BBB
+    name='Content',
+    title='type_info title missing',   # BBB
     add_view=None,
     addable_to=[],
     edit_links=[
-        Link('contents', title=_(u'Contents')),
-        Link('edit', title=_(u'Edit')),
-        Link('share', title=_(u'Share')),
-        LinkParent(title=_(u'Actions'), children=default_actions),
+        Link('contents', title=_('Contents')),
+        Link('edit', title=_('Edit')),
+        Link('share', title=_('Share')),
+        LinkParent(title=_('Actions'), children=default_actions),
         ],
     selectable_default_views=[
-        ("folder_view", _(u"Folder view")),
+        ("folder_view", _("Folder view")),
         ],
     )
 
@@ -621,8 +621,8 @@ class Content(Node):
     #: type_info is a class attribute (:class:`TypeInfo`)
     type_info = default_type_info
 
-    def __init__(self, name=None, parent=None, title=u"", annotations=None,
-                 default_view=None, description=u"", language=None,
+    def __init__(self, name=None, parent=None, title="", annotations=None,
+                 default_view=None, description="", language=None,
                  owner=None, creation_date=None, modification_date=None,
                  in_navigation=True, tags=None, **kwargs):
 
@@ -667,13 +667,13 @@ class Document(Content):
     #: type_info is a class attribute
     #: (:class:`~kotti.resources.TypeInfo`)
     type_info = Content.type_info.copy(
-        name=u'Document',
-        title=_(u'Document'),
-        add_view=u'add_document',
-        addable_to=[u'Document'],
+        name='Document',
+        title=_('Document'),
+        add_view='add_document',
+        addable_to=['Document'],
         )
 
-    def __init__(self, body=u"", mime_type='text/html', **kwargs):
+    def __init__(self, body="", mime_type='text/html', **kwargs):
 
         super(Document, self).__init__(**kwargs)
 
@@ -768,7 +768,7 @@ class SaveDataMixin(object):
         """
 
         if not cls.type_info.is_uploadable_mimetype(fs.type):
-            raise ValueError(u"Unsupported MIME type: {0}".format(fs.type))
+            raise ValueError("Unsupported MIME type: {0}".format(fs.type))
 
         return cls(data=fs)
 
@@ -803,10 +803,10 @@ class File(SaveDataMixin, Content):
     id = Column(ForeignKey(Content.id), primary_key=True)
 
     type_info = Content.type_info.copy(
-        name=u'File',
-        title=_(u'File'),
-        add_view=u'add_file',
-        addable_to=[u'Document'],
+        name='File',
+        title=_('File'),
+        add_view='add_file',
+        addable_to=['Document'],
         selectable_default_views=[],
         uploadable_mimetypes=['*', ],
         )
@@ -874,7 +874,7 @@ def _adjust_for_engine(engine):
         # the maximum default size for column indexes
         Node.__table__.indexes = set(
             index for index in Node.__table__.indexes
-            if index.name != u"ix_nodes_path")
+            if index.name != "ix_nodes_path")
 
 
 def initialize_sql(engine, drop_all=False):

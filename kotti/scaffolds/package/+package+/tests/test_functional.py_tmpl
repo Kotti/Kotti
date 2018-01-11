@@ -38,13 +38,13 @@ def test_edit(webtest, root):
 
     from {{package}}.resources import CustomContent
 
-    root['cc'] = CustomContent(title=u'Content Title')
+    root['cc'] = CustomContent(title='Content Title')
 
     resp = webtest.get('/cc/@@edit')
     form = resp.forms['deform']
-    assert form['title'].value == u'Content Title'
-    assert form['custom_attribute'].value == u''
-    form['custom_attribute'] = u'Bazinga'
+    assert form['title'].value == 'Content Title'
+    assert form['custom_attribute'].value == ''
+    form['custom_attribute'] = 'Bazinga'
     resp = form.submit('save').maybe_follow()
-    assert u'Your changes have been saved.' in resp.body
-    assert u'Bazinga' in resp.body
+    assert 'Your changes have been saved.' in resp.body
+    assert 'Bazinga' in resp.body
