@@ -57,36 +57,27 @@ class TestUploadFile:
         assert browser.contents == b'ABC'
 
     @user('admin')
-    def test_tempstorage(self, app, filedepot):
+    def test_tempstorage(self, app, filedepot, browser):
+
         # 1. upload a file
-        # browser.open(BASE_URL + '/@@add_file')
-        resp = app.get(BASE_URL + '/@@add_file')
-        resp = self.add_file2(resp, contents=b'DEF')
+        browser.open(BASE_URL + '/@@add_file')
+        self.add_file(browser, contents=b'DEF')
+
         # 2. edit the uploaded file, blanking out the title field
-        # browser.getLink("Edit").click()
-        resp = resp.click('Edit')
-        form = resp.forms['deform']
-        # browser.getControl("Title").value = ''  # the error
-        form['title'] = ''
-        # browser.getControl('save').click()
-        resp = form.submit().maybe_follow()
-        # assert "Your changes have been saved" not in browser.contents
-        assert "Your changes have been saved" not in resp.html
+        browser.getLink("Edit").click()
+        browser.getControl("Title").value = ''  # the error
+        browser.getControl('save').click()
+        assert "Your changes have been saved" not in browser.contents
+
         # 3. fill out the title field again
-        form = resp.forms['deform']
-        # browser.getControl("Title").value = 'A title'
-        form['title'] = 'A title'
-        # browser.getControl('save').click()
-        resp = form.submit().maybe_follow()
-        # assert "Your changes have been saved" in browser.contents
-        assert "Your changes have been saved" in resp.html
+        browser.getControl("Title").value = 'A title'
+        browser.getControl('save').click()
+        assert "Your changes have been saved" in browser.contents
+
         # 4. view / download the file
-        # browser.getLink("View").click()
-        resp = resp.click('View')
-        # browser.getLink("Download file").click()
-        resp = resp.click('Download file')
-        # assert browser.contents == b'DEF'
-        assert resp.body == b'DEF'
+        browser.getLink("View").click()
+        browser.getLink("Download file").click()
+        assert browser.contents == b'DEF'
 
     @user('admin')
     def test_edit_uploaded_file(self, browser, filedepot):
