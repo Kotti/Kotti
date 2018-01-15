@@ -633,7 +633,6 @@ class TestBrowser:
         resp = resp.click("Second Child", index=0)
         assert resp.request.path == '/second-child-1/'
 
-
     def test_user_management(self, webtest, settings, dummy_mailer):
         from kotti import get_settings
         get_settings()['kotti.site_title'] = 'Website des Kottbusser Tors'
