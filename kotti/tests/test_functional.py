@@ -566,25 +566,30 @@ class TestBrowser:
         assert '<i class="glyphicon glyphicon-folder-open"></i>' in resp.text
         assert '<i class="glyphicon glyphicon-folder-close"></i>' not in resp.text  # noqa
 
-        # Contents view change state actions
+        # Contents view change state actions (workflow)
         resp = resp.click("Second Child")
         resp = resp.click("Contents")
         assert '/second-child-1/third-child/@@workflow-change?new_state=public' in resp.text  # noqa
+
         resp = app.get('/second-child-1/third-child/@@workflow-change?new_state=public').maybe_follow()  # noqa
         assert '/second-child-1/third-child/@@workflow-change?new_state=private' in resp.text  # noqa
+
         resp = app.get('/second-child-1/third-child/@@contents')
         form = self._select_children(resp, 0, 1, 2)
         resp = form.submit('change_state').maybe_follow()
         assert 'Change workflow state' in resp.text
+
         resp = resp.forms['form-change-state'].submit('cancel').maybe_follow()
         assert 'No changes were made.' in resp.text
         assert resp.request.path == '/second-child-1/third-child/@@contents'
+
         form = self._select_children(resp, 0, 1, 2)
         resp = form.submit('change_state').maybe_follow()
         form = resp.forms['form-change-state']
         form['children-to-change-state'] = []
         resp = form.submit('change_state').maybe_follow()
         assert 'No changes were made.' in resp.text
+
         form = self._select_children(resp, 0, 1, 2)
         resp = form.submit('change_state').maybe_follow()
         form = resp.forms['form-change-state']
@@ -597,15 +602,18 @@ class TestBrowser:
 
         resp = resp.click('My Third Child')
         assert '/second-child-1/third-child/child-one/@@workflow-change?new_state=public' in resp.text  # noqa
+
         app.get('/second-child-1/third-child/child-one/@@workflow-change?new_state=public')  # noqa
         resp = app.get('/second-child-1/third-child/@@contents')
         assert '/second-child-1/third-child/child-one/@@workflow-change?new_state=private' in resp.text  # noqa
+
         resp = resp.click('First Child', index=1)
         resp = resp.click('Document', index=0)
         form = resp.forms['deform']
         form['title'] = 'Sub child'
         resp = form.submit('save').maybe_follow()
         assert '/second-child-1/third-child/child-one/sub-child/@@workflow-change?new_state=public' in resp.text  # noqa
+
         resp = resp.click("Second Child", index=0)
         resp = resp.click("Contents")
         form = self._select_children(resp, 0, 1, 2)
@@ -616,6 +624,7 @@ class TestBrowser:
         resp = form.submit('change_state').maybe_follow()
         assert 'Your changes have been saved.' in resp.text
         assert '/second-child-1/third-child/@@workflow-change?new_state=private' in resp.text
+
         resp = app.get('/second-child-1/third-child/child-one/sub-child/')
         assert '/second-child-1/third-child/child-one/sub-child/@@workflow-change?new_state=private' in resp.text
 
@@ -623,6 +632,7 @@ class TestBrowser:
         resp = resp.click("Navigate")
         resp = resp.click("Second Child", index=0)
         assert resp.request.path == '/second-child-1/'
+
 
     def test_user_management(self, webtest, settings, dummy_mailer):
         from kotti import get_settings
