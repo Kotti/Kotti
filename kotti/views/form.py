@@ -273,13 +273,15 @@ class FileUploadTempStore(MutableMapping):
 
 
 def validate_file_size_limit(node, value):
-    """
-    File size limit validator.
+    """ File size limit validator.
 
     You can configure the maximum size by setting the kotti.max_file_size
     option to the maximum number of bytes that you want to allow.
     """
-    fp = value.get('fp', None)
+    try:
+        fp = value.get('fp', None)
+    except AttributeError:
+        fp = getattr(value, 'fp', None)
     if not fp:
         return
 
@@ -290,5 +292,5 @@ def validate_file_size_limit(node, value):
     max_mb = get_settings()['kotti.max_file_size']
     max_size = int(max_mb) * 1024 * 1024
     if size > max_size:
-        msg = _('Maximum file size: ${size}MB', mapping={'size': max_size})
+        msg = _('Maximum file size: ${size}MB', mapping={'size': max_mb})
         raise colander.Invalid(node, msg)
