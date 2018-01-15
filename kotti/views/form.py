@@ -279,14 +279,16 @@ def validate_file_size_limit(node, value):
     You can configure the maximum size by setting the kotti.max_file_size
     option to the maximum number of bytes that you want to allow.
     """
-    fp = getattr(value, 'fp', None)
+    fp = value.get('fp', None)
     if not fp:
         return
 
     fp.seek(0, 2)
     size = fp.tell()
     fp.seek(0)
-    max_size = get_settings()['kotti.max_file_size']
-    if size > int(max_size) * 1024 * 1024:
+    # unit for ``kotti.max_file_size`` is MB
+    max_mb = get_settings()['kotti.max_file_size']
+    max_size = int(max_mb) * 1024 * 1024
+    if size > max_size:
         msg = _('Maximum file size: ${size}MB', mapping={'size': max_size})
         raise colander.Invalid(node, msg)

@@ -249,6 +249,7 @@ class TestBrowser:
         form['title'] = "First Child"
         resp = form.submit('save').maybe_follow()
         assert "Your changes have been saved" in resp.text
+
         resp = resp.click('Edit')
         form = resp.forms['deform']
         assert form['title'].value == "First Child"
@@ -332,7 +333,7 @@ class TestBrowser:
         resp = resp.click('File', index=0)
         form = resp.forms['deform']
         form['title'] = "Huge file"
-        form['description'] = "An uge file"
+        form['description'] = "A huge file"
         form['upload'] = Upload('huge.txt',
                                 b'*' * (1024 * 1024 * 1024), 'text/plain')
         resp = form.submit('save')
@@ -543,7 +544,7 @@ class TestBrowser:
         resp = resp.click('File', index=0)
         form = resp.forms['deform']
         form['description'] = 'A file'
-        form['upload'] = Upload('some.txt', 'something', 'text/plain')
+        form['upload'] = Upload('some.txt', b'something', 'text/plain')
         form.submit('save').maybe_follow()
         resp = app.get('/forth-child/@@contents')
         form = self._select_children(resp, 0, 1, 2)
