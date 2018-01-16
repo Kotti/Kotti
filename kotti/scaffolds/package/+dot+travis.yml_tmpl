@@ -20,7 +20,7 @@ before_script:
   - psql -c 'create database {{package}}_testing;' -U postgres
   - mysql -e 'create database {{package}}_testing;'
 script:
-  - py.test -rw --runslow --tb=native --cov={{package}} --cov-report=term-missing
+  - py.test -rw --tb=native --cov={{package}} --cov-report=term-missing
 # after_success:
 #   - coveralls
 #   - codecov

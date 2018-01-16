@@ -21,7 +21,7 @@ before_script:
   - psql -c 'create database kotti_testing;' -U postgres
   - mysql -e 'create database kotti_testing;'
 script:
-  - py.test -rw --runslow --tb=native --cov=kotti --cov-report=term-missing
+  - py.test -rw --tb=native --cov=kotti --cov-report=term-missing
 after_success:
   - coveralls
   - codecov
