@@ -19,10 +19,12 @@ install_requires = [
     'Babel',
     'Chameleon>=2.7.4',  # Fixes error when raising HTTPFound
     'alembic>=0.8.0',
-    'bleach',
+    'bleach>=2.1.2',  # html5lib 1.0 support
     'bleach-whitelist',
     'colander>=1.3.2',
-    'deform>=2.0.0',  # >=2.0a1 to support Bootstrap 2
+    'deform==2.0.5.dev0',  # fixes file upload on py3
+    'iso8601==0.1.11',  # deform requirement.  isn't picked up with ``dependency_links``  # noqa
+    # 'deform>=2.0.5dev',  # fixes file upload on py3
     'docopt',
     'fanstatic>=1.0a7',
     'filedepot',
@@ -64,6 +66,11 @@ install_requires = [
     'zope.sqlalchemy',
     ]
 
+dependency_links = [
+    # until deform 2.0.5 is released.  see https://github.com/Pylons/deform/pull/360  # noqa
+    'https://github.com/disko/deform/archive/fix-fileupload-py3.zip#egg=deform-2.0.5.dev0',  # noqa
+]
+
 tests_require = [
     'WebTest',
     'mock',
@@ -99,6 +106,7 @@ setup_requires = [
 
 
 here = os.path.abspath(os.path.dirname(__file__))
+
 
 def read(*parts):
     """ Build an absolute path from *parts* and and return the contents of the
@@ -143,7 +151,7 @@ setup(name='Kotti',
           'Programming Language :: Python :: 3',
           # 'Programming Language :: Python :: 3.3',
           # 'Programming Language :: Python :: 3.4',
-          # 'Programming Language :: Python :: 3.5',
+          'Programming Language :: Python :: 3.5',
           'Programming Language :: Python :: 3.6',
           'Programming Language :: SQL',
           'Topic :: Internet',
@@ -166,7 +174,7 @@ setup(name='Kotti',
       install_requires=install_requires,
       setup_requires=setup_requires,
       tests_require=tests_require,
-      dependency_links=[],
+      dependency_links=dependency_links,
       entry_points={
           'paste.app_factory': [
               'main = kotti:main',
