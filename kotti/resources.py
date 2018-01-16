@@ -681,6 +681,7 @@ class Document(Content):
         self.mime_type = mime_type
 
 
+# noinspection PyMethodParameters
 class SaveDataMixin(object):
     """ The classmethods must not be implemented on a class that inherits
         from ``Base`` with ``SQLAlchemy>=1.0``, otherwise that class cannot be
@@ -829,6 +830,7 @@ class DefaultRootCache(object):
     """ Default implementation for :func:`~kotti.resources.get_root` """
     _id = None
 
+    # noinspection PyComparisonWithNone,PyPep8
     @reify
     def root_id(self):
         """ Query for the one node without a parent and return its id.
@@ -863,6 +865,7 @@ class DefaultRootCache(object):
         """
 
         return self.get_root()
+
 
 default_get_root = DefaultRootCache()
 

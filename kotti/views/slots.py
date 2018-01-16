@@ -134,6 +134,7 @@ class RenderBeforeBodyEnd(ObjectEvent):
 class RenderEditInHead(ObjectEvent):
     name = 'edit_inhead'
 
+
 slot_events = [
     RenderLeftSlot, RenderRightSlot, RenderAboveContent, RenderBelowContent,
     RenderInHead, RenderBeforeBodyEnd, RenderEditInHead, ]

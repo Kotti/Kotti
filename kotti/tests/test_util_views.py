@@ -60,6 +60,7 @@ class TestTemplateAPI:
 
         api = self.make()
         api.context.title = "Hello, world!"
+        # noinspection PyPropertyAccess
         api.site_title = "Wasnhierlos"
         assert api.page_title == "Hello, world! - Wasnhierlos"
 
@@ -464,6 +465,7 @@ class TestTemplateAPI:
         assert (
             api.format_datetime(first, fmt='short') ==
             format_datetime(first, format='short', locale='en'))
+        # noinspection PyPropertyAccess
         api.locale_name = 'unknown'
         with raises(UnknownLocaleError):
             api.format_datetime(first)
@@ -480,6 +482,7 @@ class TestTemplateAPI:
         assert (
             api.format_date(first, fmt='short') ==
             format_date(first, format='short', locale='en'))
+        # noinspection PyPropertyAccess
         api.locale_name = 'unknown'
         with raises(UnknownLocaleError):
             api.format_date(first)
@@ -496,6 +499,7 @@ class TestTemplateAPI:
         assert (
             api.format_time(first, fmt='short') ==
             format_time(first, format='short', locale='en'))
+        # noinspection PyPropertyAccess
         api.locale_name = 'unknown'
         with raises(UnknownLocaleError):
             api.format_time(first)

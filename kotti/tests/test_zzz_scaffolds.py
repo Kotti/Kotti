@@ -30,7 +30,8 @@ def test_scaffold_kotti_addon(virtualenv, travis):
         pkg = [p for p in working_set if p.project_name == 'Kotti'][0]
         d = {'python': virtualenv.python, 'src_dir': pkg.location, }
 
-        virtualenv.run('pip install --process-dependency-links -e %(src_dir)s[testing]' % d)
+        virtualenv.run('pip install --process-dependency-links '
+                       '-e %(src_dir)s[testing]' % d)
         # if 'Kotti' in [p for p in virtualenv.installed_packages()]:
         #     virtualenv.run('pip uninstall -y Kotti')
         # virtualenv.run('cd %(src_dir)s; %(python)s setup.py develop' % d)

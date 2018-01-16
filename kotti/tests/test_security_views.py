@@ -40,7 +40,7 @@ class TestUserManagement:
         P['bob'].groups = ['group:bobsgroup']
         P['group:bobsgroup'].groups = ['role:admin']
         entries = UsersManage(root, request)()['entries']
-        # assert entries[0][1] == (['group:bobsgroup', 'role:admin'], ['role:admin'])
+        # assert entries[0][1] == (['group:bobsgroup', 'role:admin'], ['role:admin'])  # noqa
         assert set(entries[0][1][0]) == {'group:bobsgroup', 'role:admin'}
         assert entries[0][1][1] == ['role:admin']
         assert entries[1][1] == (['role:admin'], [])
@@ -163,6 +163,7 @@ class TestUserDelete:
         assert root['content_1'].owner is None
 
 
+# noinspection PyAttributeOutsideInit
 class TestSetPassword:
     def setup_method(self, method):
         Form_patcher = patch('kotti.views.login.Form')

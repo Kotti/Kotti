@@ -35,6 +35,7 @@ BASE_URL = 'http://localhost:6543'
 
 
 class Dummy(dict):
+    # noinspection PyMissingConstructor
     def __init__(self, **kwargs):
         self.__dict__.update(kwargs)
 
@@ -50,6 +51,7 @@ class DummyRequest(testing.DummyRequest):
         return (hasattr(ob, 'app_iter') and hasattr(ob, 'headerlist') and
                 hasattr(ob, 'status'))
 
+    # noinspection PyPep8Naming
     @classmethod
     def blank(cls,
               path, environ=None, base_url=None, headers=None, POST=None,
@@ -118,7 +120,7 @@ def testing_db_url():
     return os.environ.get('KOTTI_TEST_DB_STRING', 'sqlite://')
 
 
-def _initTestingDB():
+def _init_testing_db():
     from sqlalchemy import create_engine
     from kotti import get_settings
     from kotti.resources import initialize_sql
@@ -149,6 +151,7 @@ def _turn_warnings_into_errors():  # pragma: no cover
     filterwarnings("error")
 
 
+# noinspection PyPep8Naming
 def setUp(init_db=True, **kwargs):
     # _turn_warnings_into_errors()
 
@@ -168,12 +171,13 @@ def setUp(init_db=True, **kwargs):
     config.add_default_renderers()
 
     if init_db:
-        _initTestingDB()
+        _init_testing_db()
 
     transaction.begin()
     return config
 
 
+# noinspection PyPep8Naming
 def tearDown():
     from depot.manager import DepotManager
     from kotti import events
@@ -223,6 +227,7 @@ def _zope_testbrowser_pyquery(self):
         self.contents.replace('xmlns="http://www.w3.org/1999/xhtml', ''))
 
 
+# noinspection PyPep8Naming
 def setUpFunctional(global_config=None, **settings):
     from kotti import main
     from zope.testbrowser.wsgi import Browser
@@ -308,6 +313,7 @@ def include_testing_view(config):
         )
 
 
+# noinspection PyPep8Naming
 def setUpFunctionalStrippedDownApp(global_config=None, **settings):
     # An app that doesn't use Nodes at all
     _settings = {
@@ -325,6 +331,7 @@ def setUpFunctionalStrippedDownApp(global_config=None, **settings):
     return setUpFunctional(global_config, **_settings)
 
 
+# noinspection PyPep8Naming
 def registerDummyMailer():
     from pyramid_mailer.mailer import DummyMailer
     from kotti.message import _inject_mailer
@@ -336,7 +343,7 @@ def registerDummyMailer():
 
 # set up deprecation warnings
 from zope.deprecation.deprecation import deprecated  # noqa
-for item in UnitTestBase, EventTestBase, FunctionalTestBase, _initTestingDB:
+for item in UnitTestBase, EventTestBase, FunctionalTestBase, _init_testing_db:
     name = getattr(item, '__name__', item)
     deprecated(name, 'Unittest-style tests are deprecated as of Kotti 0.7. '
                'Please use pytest function arguments instead.')

@@ -168,6 +168,7 @@ class AbstractPrincipals(object):
         """Returns True if the clear text password matches the hash.
         """
 
+
 ROLES = {
     'role:viewer': Principal('role:viewer', title=_('Viewer')),
     'role:editor': Principal('role:editor', title=_('Editor')),

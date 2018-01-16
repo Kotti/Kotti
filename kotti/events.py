@@ -75,6 +75,8 @@ class ObjectAfterDelete(ObjectEvent):
 
     .. deprecated:: 0.9
     """
+
+
 deprecated('ObjectAfterDelete',
            "The ObjectAfterDelete event is deprecated and will be no longer "
            "available starting with Kotti 0.10.")
@@ -204,6 +206,7 @@ def clear():
     listeners.clear()
     objectevent_listeners.clear()
     listeners[ObjectEvent].append(objectevent_listeners)
+
 
 listeners = Dispatcher()
 notify = listeners.__call__
@@ -447,6 +450,7 @@ def _set_path_for_new_parent(target, value, oldvalue, initiator):
                                           child.__name__)
 
 
+# noinspection PyPep8Naming
 class subscribe(object):
     """Function decorator to attach the decorated function as a handler for a
     Kotti event.  Example::

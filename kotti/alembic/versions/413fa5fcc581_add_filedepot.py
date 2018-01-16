@@ -7,16 +7,16 @@ Create Date: 2014-12-07 05:10:04.294222
 
 """
 
-# revision identifiers, used by Alembic.
-revision = '413fa5fcc581'
-down_revision = '559ce6eb0949'
-
 import logging
 import sys
 import time
 
 import sqlalchemy as sa
 from alembic import op
+
+# revision identifiers, used by Alembic.
+revision = '413fa5fcc581'
+down_revision = '559ce6eb0949'
 
 log = logging.getLogger('kotti')
 log.addHandler(logging.StreamHandler(sys.stdout))
@@ -39,6 +39,7 @@ def upgrade():
     def process(thing):
         id, data, filename, mimetype = thing
         uploaded_file = UploadedFile({'depot_name': dn, 'files': []})
+        # noinspection PyProtectedMember
         uploaded_file._thaw()
         uploaded_file.process_content(
             data, filename=filename, content_type=mimetype)

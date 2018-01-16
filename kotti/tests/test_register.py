@@ -69,7 +69,7 @@ class TestRegister:
 
         with mock.patch('kotti.views.login.UserAddFormView') as form:
             with mock.patch('kotti.views.login.get_principals'):
-                with mock.patch('kotti.views.login.get_settings') as get_settings:
+                with mock.patch('kotti.views.login.get_settings') as get_settings:  # noqa
                     get_settings.return_value = {
                         'kotti.register.group': 'mygroup',
                         'kotti.register.role': 'myrole',

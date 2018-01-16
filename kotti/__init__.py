@@ -52,6 +52,7 @@ def beaker_session_factory(**settings):
 def none_factory(**kwargs):  # pragma: no cover
     return None
 
+
 # All of these can be set by passing them in the Paste Deploy settings:
 conf_defaults = {
     'kotti.alembic_dirs': 'kotti:alembic',

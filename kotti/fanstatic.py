@@ -97,6 +97,7 @@ class NeededGroup(object):
         # for `view_needed` and `edit_needed` (see below)
         Group(self.resources).need()
 
+
 view_needed_css = NeededGroup([
     view_css,
     ])

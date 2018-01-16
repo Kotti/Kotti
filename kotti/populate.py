@@ -40,6 +40,7 @@ def populate():
     """
     lrm = LocalizerRequestMixin()
     lrm.registry = get_current_registry()
+    # noinspection PyPropertyAccess
     lrm.locale_name = get_settings()['pyramid.default_locale_name']
     localizer = lrm.localizer
 
@@ -59,6 +60,7 @@ def populate():
             wf.transition_to_state(root, None, 'public')
 
     populate_users()
+
 
 _ROOT_ATTRS = dict(
     name='',  # (at the time of writing) root must have empty name!

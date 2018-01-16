@@ -188,6 +188,7 @@ class ActionButton(Link):
 class DontCache(Exception):
     pass
 
+
 _CACHE_ATTR = 'kotti_cache'
 
 
@@ -232,6 +233,7 @@ def request_cache(compute_key):
 
 class LRUCacheSetItem(LRUCache):
     __setitem__ = LRUCache.put
+
 
 _lru_cache = LRUCacheSetItem(1000)
 

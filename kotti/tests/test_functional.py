@@ -623,10 +623,10 @@ class TestBrowser:
         form['to-state'] = 'public'
         resp = form.submit('change_state').maybe_follow()
         assert 'Your changes have been saved.' in resp.text
-        assert '/second-child-1/third-child/@@workflow-change?new_state=private' in resp.text
+        assert '/second-child-1/third-child/@@workflow-change?new_state=private' in resp.text  # noqa
 
         resp = app.get('/second-child-1/third-child/child-one/sub-child/')
-        assert '/second-child-1/third-child/child-one/sub-child/@@workflow-change?new_state=private' in resp.text
+        assert '/second-child-1/third-child/child-one/sub-child/@@workflow-change?new_state=private' in resp.text  # noqa
 
         # Navigation
         resp = resp.click("Navigate")

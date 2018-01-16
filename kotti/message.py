@@ -24,7 +24,8 @@ def make_token(user, seconds=None):
     if seconds is None:
         seconds = time.time()
     token = '{}:{}:{}'.format(user.name, secret, seconds)
-    return '{}:{}'.format(hashlib.sha224(token.encode('utf8')).hexdigest(), seconds)
+    return '{}:{}'.format(hashlib.sha224(token.encode('utf8')).hexdigest(),
+                          seconds)
 
 
 def validate_token(user, token, valid_hrs=24):

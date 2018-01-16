@@ -10,6 +10,7 @@ from kotti.testing import DummyRequest
 filterwarnings('ignore', '^send_set_password is deprecated')
 
 
+# noinspection PyAttributeOutsideInit
 class TestSendEmail:
     def setup_method(self, method):
         get_mailer_patcher = patch('kotti.message.get_mailer')

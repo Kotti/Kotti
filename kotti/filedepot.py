@@ -357,7 +357,9 @@ def migrate_storages_command():  # pragma: no cover
     __doc__ = """ Migrate blobs between two configured filedepot storages
 
     Usage:
-      kotti-migrate-storage <config_uri> --from-storage <name> --to-storage <name>
+      kotti-migrate-storage <config_uri> \
+          --from-storage <name> \
+          --to-storage <name>
 
     Options:
       -h --help                 Show this screen.
