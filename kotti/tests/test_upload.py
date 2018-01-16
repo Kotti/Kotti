@@ -43,7 +43,10 @@ def test_upload_authenticated_text(root, dummy_request, browser):
 
     # get possible content types for text/plain
     browser.open('{0}/content_types?mimetype=text/plain'.format(BASE_URL))
-    j = json.loads(browser.contents)
+    c = browser.contents
+    if isinstance(c, bytes):
+        c = c.decode()
+    j = json.loads(c)
     assert 'content_types' in j
 
     # only files are allowed
