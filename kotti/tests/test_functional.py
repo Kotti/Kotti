@@ -764,7 +764,8 @@ class TestBrowser:
         assert "Hello, Bob Dabolina!" in email.body
         assert "You are joining Website des Kottbusser Tors." in email.body
         assert "Click here to set your password and log in:" in email.body
-        assert "@@set-password?token=" in email.body
+        assert "@@set-password?" in email.body
+        assert "?token=" in email.body or "&token=" in email.body
 
         # We'll use that link to set our password:
         resp.click("Logout").maybe_follow()
