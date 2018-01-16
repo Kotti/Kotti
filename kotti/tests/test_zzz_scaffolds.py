@@ -24,17 +24,17 @@ def test_scaffold_kotti_addon(virtualenv, travis):
     with travis.folding_output():
 
         for pkgname in ('pip', 'wheel', 'setuptools', 'setuptools-git',
-                        'psycopg2', 'oursql', ):
+                        'psycopg2', 'mysqlclient', ):
             virtualenv.run('pip install -U ' + pkgname)
 
         pkg = [p for p in working_set if p.project_name == 'Kotti'][0]
         d = {'python': virtualenv.python, 'src_dir': pkg.location, }
 
-        virtualenv.run('pip install -r %(src_dir)s/requirements.txt' % d)
-        if 'Kotti' in [p for p in virtualenv.installed_packages()]:
-            virtualenv.run('pip uninstall -y Kotti')
-        virtualenv.run('cd %(src_dir)s; %(python)s setup.py develop' % d)
-        virtualenv.run('cd %(src_dir)s; %(python)s setup.py dev' % d)
+        virtualenv.run('pip install --process-dependency-links -e %(src_dir)s[testing]' % d)
+        # if 'Kotti' in [p for p in virtualenv.installed_packages()]:
+        #     virtualenv.run('pip uninstall -y Kotti')
+        # virtualenv.run('cd %(src_dir)s; %(python)s setup.py develop' % d)
+        # virtualenv.run('cd %(src_dir)s; %(python)s setup.py dev' % d)
 
     # create and develop an addon with the scaffold and run the generated tests
     with travis.folding_output():
