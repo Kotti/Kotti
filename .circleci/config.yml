@@ -44,7 +44,7 @@ jobs:
           path: test-reports
           destination: test-reports
 
-  python3.6-postgresql:
+  python3.6-postgresql10.1:
     <<: *py36sqlite
     docker:
       - image: circleci/python:3.6.4
@@ -56,13 +56,13 @@ jobs:
           POSTGRES_DB: kotti
           POSTGRES_PASSWORD: ""
 
-  python3.6-mysql:
+  python3.6-mysql5.6:
     <<: *py36sqlite
     docker:
       - image: circleci/python:3.6.4
         environment:
           KOTTI_TEST_DB_STRING: mysql+mysqldb://root@127.0.0.1:3306/kotti
-      - image: circleci/mysql:8-ram
+      - image: circleci/mysql:5.6-ram
         environment:
           MYSQL_USER: kotti
           MYSQL_DATABASE: kotti
@@ -72,7 +72,7 @@ jobs:
     docker:
       - image: circleci/python:3.5.4
 
-  python3.5-postgresql:
+  python3.5-postgresql10.1:
     <<: *py36sqlite
     docker:
       - image: circleci/python:3.5.4
@@ -84,13 +84,13 @@ jobs:
           POSTGRES_DB: kotti
           POSTGRES_PASSWORD: ""
 
-  python3.5-mysql:
+  python3.5-mysql5.6:
     <<: *py36sqlite
     docker:
       - image: circleci/python:3.5.4
         environment:
           KOTTI_TEST_DB_STRING: mysql+mysqldb://root@127.0.0.1:3306/kotti
-      - image: circleci/mysql:8-ram
+      - image: circleci/mysql:5.6-ram
         environment:
           MYSQL_USER: root
           MYSQL_DATABASE: kotti
@@ -100,8 +100,8 @@ workflows:
   test:
     jobs:
       - python3.6-sqlite
-      - python3.6-postgresql
-      - python3.6-mysql
+      - python3.6-postgresql10.1
+      - python3.6-mysql5.6
       - python3.5-sqlite
-      - python3.5-postgresql
-      - python3.5-mysql
+      - python3.5-postgresql10.1
+      - python3.5-mysql5.6
