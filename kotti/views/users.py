@@ -122,9 +122,9 @@ def share_node(context, request):
 
     def with_roles(entry):
         all_groups = entry[1][0]
-        return [g for g in all_groups if g.startswith('role:')]
+        return len([g for g in all_groups if g.startswith('role:')]) > 0
 
-    existing = filter(with_roles, existing)
+    existing = [e for e in filter(with_roles, existing)]
     seen = set([entry[0].name for entry in existing])
 
     # Allow search to take place and add some entries:

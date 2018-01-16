@@ -373,12 +373,13 @@ class TestNodeShare:
             [r.name for r in share_node(root, request)['available_roles']] ==
             SHARING_ROLES)
 
-    def test_search(self, extra_principals, root, dummy_request, db_session):
+    def test_search(self, extra_principals, root, db_session):
         from kotti.security import get_principals
         from kotti.security import set_groups
+        from kotti.testing import DummyRequest
         from kotti.views.users import share_node
 
-        request = dummy_request
+        request = DummyRequest()
         P = get_principals()
 
         # Search for "Bob", which will return both the user and the
@@ -397,6 +398,7 @@ class TestNodeShare:
         set_groups('bob', root, ['role:editor'])
         db_session.flush()
         P['group:bobsgroup'].groups = ['role:admin']
+        db_session.flush()
         entries = share_node(root, request)['entries']
         assert len(entries) == 2
         assert entries[0][0] == P['bob']
@@ -417,7 +419,6 @@ class TestNodeShare:
         # It does not, however, include entries that have local group
         # assignments only:
         set_groups('frank', root, ['group:franksgroup'])
-        db_session.flush()
         request.params['query'] = 'Weeee'
         entries = share_node(root, request)['entries']
         assert len(entries) == 1
