@@ -61,7 +61,35 @@ jobs:
     docker:
       - image: circleci/python:3.6.4
         environment:
-          KOTTI_TEST_DB_STRING: mysql+mysqldb://kotti@localhost/kotti
+          KOTTI_TEST_DB_STRING: mysql+mysqldb://kotti@127.0.0.1:3306/kotti
+      - image: circleci/mysql:8-ram
+        environment:
+          MYSQL_USER: kotti
+          MYSQL_DATABASE: kotti
+
+  python3.5-sqlite:
+    <<: *py36sqlite
+    docker:
+      - image: circleci/python:3.5.4
+
+  python3.5-postgresql:
+    <<: *py36sqlite
+    docker:
+      - image: circleci/python:3.5.4
+        environment:
+          KOTTI_TEST_DB_STRING: postgresql://kotti@localhost/kotti?sslmode=disable
+      - image: circleci/postgres:10.1
+        environment:
+          POSTGRES_USER: kotti
+          POSTGRES_DB: kotti
+          POSTGRES_PASSWORD: ""
+
+  python3.5-mysql:
+    <<: *py36sqlite
+    docker:
+      - image: circleci/python:3.5.4
+        environment:
+          KOTTI_TEST_DB_STRING: mysql+mysqldb://kotti@127.0.0.1:3306/kotti
       - image: circleci/mysql:8-ram
         environment:
           MYSQL_USER: kotti
