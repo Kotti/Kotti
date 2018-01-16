@@ -83,7 +83,6 @@ tests_require = [
     'pytest-virtualenv',
     'pytest-xdist',
     'tox',
-    'virtualenv',  # needed for scaffolding tests
     'zope.testbrowser>=5.0.0',
     ]
 
@@ -189,9 +188,6 @@ setup(name='Kotti',
           ],
           'pytest11': [
               'kotti = kotti.tests',
-          ],
-          'pyramid.scaffold': [
-              'kotti=kotti.scaffolds:KottiPackageTemplate',
           ],
       },
       extras_require={

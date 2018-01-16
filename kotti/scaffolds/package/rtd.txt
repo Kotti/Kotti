@@ -1,6 +1,0 @@
-repoze.sphinx.autointerface
-setuptools-git  # needed to make "python setup.py install" on rtd.
-pytest  # needed for testing apidocs
-
-# include requirements.txt
--r requirements.txt
