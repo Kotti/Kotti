@@ -8,31 +8,21 @@ dependencies:
     - pip install tox tox-pyenv
     - pyenv local 3.6.4 3.5.4
 jobs:
-  build:
+  python3.6-sqlite: &py36sqlite
     docker:
-      # specify the version you desire here
-      # use `-browsers` prefix for selenium tests, e.g. `3.6.1-browsers`
+      # specify the version you desire here. use `-browsers` prefix for selenium tests, e.g. `3.6.1-browsers`
       - image: circleci/python:3.6.4
-
-      # Specify service dependencies here if necessary
-      # CircleCI maintains a library of pre-built images
-      # documented at https://circleci.com/docs/2.0/circleci-images/
-      - image: circleci/postgres:10.1
-      # - image: circleci/postgres:9.6
-      - image: circleci/mysql:8
 
     working_directory: ~/kotti
 
     steps:
       - checkout
-
-      # Download and cache dependencies
       - restore_cache:
+          # Download and cache dependencies
           keys:
-          - v1-dependencies-{{ checksum "setup.py" }}
-          # fallback to using the latest cache if no exact match is found
-          - v1-dependencies-
-
+            - v1-dependencies-{{ checksum "setup.py" }}
+            # fallback to using the latest cache if no exact match is found
+            - v1-dependencies-
       - run:
           name: install dependencies
           command: |
@@ -40,20 +30,47 @@ jobs:
             . venv/bin/activate
             pip install -U pip wheel setuptools setuptools-git
             pip install psycopg2 mysqlclient python-coveralls codecov
-            pip install --process-dependency-links -e .[testing]
-
       - save_cache:
           paths:
             - ./venv
           key: v1-dependencies-{{ checksum "setup.py" }}
-
-      # run tests!
       - run:
           name: run tests
           command: |
             . venv/bin/activate
+            pip install --process-dependency-links -e .[testing]
             py.test
-
       - store_artifacts:
           path: test-reports
           destination: test-reports
+
+  python3.6-postgresql:
+    <<: *py36sqlite
+    docker:
+      - image: circleci/python:3.6.4
+        environment:
+          KOTTI_TEST_DB_STRING: postgresql://kotti@localhost/kotti?sslmode=disable
+      - image: circleci/postgres:10.1
+        environment:
+          POSTGRES_USER: kotti
+          POSTGRES_DB: kotti
+          POSTGRES_PASSWORD: ""
+
+  python3.6-mysql:
+    <<: *py36sqlite
+    docker:
+      - image: circleci/python:3.6.4
+        environment:
+          KOTTI_TEST_DB_STRING: mysql+mysqldb://kotti@localhost/kotti
+      - image: circleci/mysql:8-ram
+        environment:
+          MYSQL_USER: kotti
+          MYSQL_DATABASE: kotti
+
+workflows:
+  version: 2
+  test:
+    jobs:
+      - python3.6-sqlite
+      - python3.6-postgresql
+      - python3.6-mysql
