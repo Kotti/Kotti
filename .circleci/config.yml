@@ -102,3 +102,6 @@ workflows:
       - python3.6-sqlite
       - python3.6-postgresql
       - python3.6-mysql
+      - python3.5-sqlite
+      - python3.5-postgresql
+      - python3.5-mysql
