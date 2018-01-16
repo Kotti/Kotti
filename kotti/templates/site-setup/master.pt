@@ -4,6 +4,6 @@
 
     <div metal:fill-slot="editor-bar"
          tal:condition="request.user is not None"
-         tal:replace="api.render_template('kotti:templates/editor-bar.pt', disable_context_links=True)" />
+         tal:replace="api.render_template('kotti:templates/editor-bar.pt', disable_context_links=True)"></div>
 
 </html>

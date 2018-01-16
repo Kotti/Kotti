@@ -59,8 +59,7 @@
               </td>
               <td>
                 <ul style="list-style-type: none; padding: 0; margin: 0;">
-                  <div tal:replace="api.render_view(
-                    'workflow-dropdown', context=child)" />
+                  <div tal:replace="api.render_view('workflow-dropdown', context=child)"></div>
                 </ul>
               </td>
               <td>

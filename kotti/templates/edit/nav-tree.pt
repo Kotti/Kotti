@@ -11,8 +11,6 @@
       <i class="glyphicon glyphicon-edit"></i>
     </a>
     <em>(${child.type_info.title})</em>
-    <ul tal:replace="api.render_template(
-                         'kotti:templates/edit/nav-tree.pt',
-                         tree=child)" />
+    <ul tal:replace="api.render_template('kotti:templates/edit/nav-tree.pt', tree=child)"></ul>
   </li>
 </ul>
