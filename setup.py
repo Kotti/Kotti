@@ -24,7 +24,7 @@ install_requires = [
     'colander>=1.3.2',
     'deform==2.0.5.dev0',  # fixes file upload on py3
     'iso8601==0.1.11',  # deform requirement.  isn't picked up with ``dependency_links``  # noqa
-    # 'deform>=2.0.5dev',  # fixes file upload on py3
+    # 'deform>=2.0.5',  # fixes file upload on py3 - uncomment after 2.0.5 is released  # noqa
     'docopt',
     'fanstatic>=1.0a7',
     'filedepot',
@@ -68,7 +68,7 @@ install_requires = [
 
 dependency_links = [
     # until deform 2.0.5 is released.  see https://github.com/Pylons/deform/pull/360  # noqa
-    'https://github.com/disko/deform/archive/fix-fileupload-py3.zip#egg=deform-2.0.5.dev0',  # noqa
+    'https://github.com/disko/deform/archive/2.0.5.dev0.zip#egg=deform-2.0.5.dev0',  # noqa
 ]
 
 tests_require = [
