@@ -1,9 +1,16 @@
+build:
+  environment:
+    python: 3.6.3
+  tests:
+    override:
+      - py.test
+      
 checks:
-    python:
-        code_rating: true
-        duplicate_code: true
+  python:
+    code_rating: true
+    duplicate_code: true
 
 filter:
-    excluded_paths:
-        - kotti/tests/
-        - kotti/alembic/
+  excluded_paths:
+    - kotti/tests/
+    - kotti/alembic/
