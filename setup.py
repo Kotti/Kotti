@@ -25,9 +25,9 @@ install_requires = [
     'bleach',
     'bleach-whitelist',
     'colander>=1.3.2',
-    'deform>=2.0a1',  # >=2.0a1 to support Bootstrap 2
+    'deform>=2.0.3',  # >=2.0a1 to support Bootstrap 2
     'docopt',
-    'fanstatic>=1.0a7',
+    'fanstatic>=1.0.0',
     'filedepot',
     'formencode',
     'html2text',
@@ -45,15 +45,13 @@ install_requires = [
     'kotti_image',
     'lingua>=1.3',
     'py_bcrypt',
-    'pyramid>=1.5<1.8',  # needed for ``request.has_permission``,
-    # pyramid_zcml isn't compatible with pyramid 1.8 yet.
-    # see https://github.com/Pylons/pyramid_zcml/pull/23
+    'pyramid>=1.8',  # needed for ``request.has_permission``,
     'pyramid_beaker',
     'pyramid_chameleon',
     'pyramid_deform>=0.2a3',  # language and template path config includeme
     'pyramid_mailer',
     'pyramid_tm',
-    'pyramid_zcml',
+    'pyramid_zcml>=1.1.0',
     'repoze.lru',
     'repoze.workflow>=1.0b1',
     'repoze.zcml>=1.0b1',
@@ -88,7 +86,7 @@ tests_require = [
 development_requires = [
     'check-manifest',
     'pipdeptree',
-    'pyramid_debugtoolbar<2.5',
+    'pyramid_debugtoolbar',
 ]
 
 docs_require = [
