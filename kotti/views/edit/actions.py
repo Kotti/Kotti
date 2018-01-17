@@ -2,11 +2,12 @@
 """
 Action views
 """
+from __future__ import absolute_import, division, print_function
 
+from pyramid.exceptions import Forbidden
 from pyramid.httpexceptions import HTTPFound
 from pyramid.url import resource_url
 from pyramid.view import view_config
-from pyramid.exceptions import Forbidden
 from pyramid.view import view_defaults
 from zope.deprecation import deprecated
 
@@ -15,9 +16,8 @@ from kotti import get_settings
 from kotti.fanstatic import contents_view_js
 from kotti.interfaces import IContent
 from kotti.resources import Node
-# noinspection PyProtectedMember
-from kotti.util import _
 from kotti.util import ActionButton
+from kotti.util import _
 from kotti.util import get_paste_items
 from kotti.util import title_to_name
 from kotti.views.edit import _state_info
@@ -162,6 +162,7 @@ class NodeActions(object):
             else:
                 self.flash(_(u'Could not paste node. It no longer exists.'),
                            'error')
+        DBSession.flush()
         if not self.request.is_xhr:
             return self.back()
 
@@ -223,12 +224,12 @@ class NodeActions(object):
                 child.in_navigation = show
                 mapping = dict(title=child.title)
                 if show:
-                    msg = _(u'${title} is now visible in the navigation.',
-                            mapping=mapping)
+                    mg = _(u'${title} is now visible in the navigation.',
+                           mapping=mapping)
                 else:
-                    msg = _(u'${title} is no longer visible in the navigation.',
-                            mapping=mapping)
-                self.flash(msg, 'success')
+                    mg = _(u'${title} is no longer visible in the navigation.',
+                           mapping=mapping)
+                self.flash(mg, 'success')
         if not self.request.is_xhr:
             return self.back()
 

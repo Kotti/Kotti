@@ -1,15 +1,17 @@
 # -*- coding: utf-8 -*-
+from __future__ import absolute_import, division, print_function
+
 import datetime
 import time
 
-from mock import patch
-from mock import MagicMock
 import pytest
+from mock import MagicMock
+from mock import patch
 
 from kotti.resources import File
 from kotti.resources import Image
-from kotti.testing import asset
 from kotti.testing import Dummy
+from kotti.testing import asset
 from kotti.views.cache import set_max_age
 
 

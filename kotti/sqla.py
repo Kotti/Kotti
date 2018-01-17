@@ -6,6 +6,7 @@ Inheritance Diagram
 
 .. inheritance-diagram:: kotti.sqla
 """
+from __future__ import absolute_import, division, print_function
 
 from pyramid.compat import json
 from pyramid.security import ALL_PERMISSIONS
@@ -13,7 +14,8 @@ from pyramid.security import Allow
 from sqlalchemy.ext import baked
 from sqlalchemy.ext.declarative import declared_attr
 from sqlalchemy.ext.mutable import Mutable
-from sqlalchemy.types import TypeDecorator, Text
+from sqlalchemy.types import Text
+from sqlalchemy.types import TypeDecorator
 
 bakery = baked.bakery()
 baked.bake_lazy_loaders()

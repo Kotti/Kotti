@@ -33,13 +33,15 @@ request.path          Pyramid traverser (rps) Kotti traverser (rps)
 
 """
 
+from __future__ import absolute_import, division, print_function
+
 from pyramid.compat import decode_path_info
 from pyramid.compat import is_nonstr_iter
 from pyramid.exceptions import URLDecodeError
 from pyramid.interfaces import ITraverser
 from pyramid.interfaces import VH_ROOT_KEY
-from pyramid.traversal import empty
 from pyramid.traversal import ResourceTreeTraverser
+from pyramid.traversal import empty
 from pyramid.traversal import slash
 from pyramid.traversal import split_path_info
 from sqlalchemy import or_

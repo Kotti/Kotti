@@ -1,9 +1,8 @@
 # -*- coding: utf-8 -*-
-"""
-"""
+from __future__ import absolute_import, division, print_function
 
-from zope.interface import Interface
 from pyramid.interfaces import ILocation
+from zope.interface import Interface
 
 
 class INode(ILocation):

@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 """This module includes a simple events system that allows users to
 subscribe to specific events, and more particularly to *object events*
 of specific object types.
@@ -12,16 +13,19 @@ Inheritance Diagram
 
 """
 
+from __future__ import absolute_import, division, print_function
+
 from collections import defaultdict
 from datetime import datetime
+
 try:  # pragma: no cover
     from collections import OrderedDict
 except ImportError:  # pragma: no cover
     from ordereddict import OrderedDict
 
 import sqlalchemy.event
-from sqlalchemy.orm import load_only
 import venusian
+from sqlalchemy.orm import load_only
 from sqlalchemy.orm import mapper
 from sqlalchemy_utils.functions import has_changes
 from pyramid.location import lineage
@@ -431,14 +435,14 @@ class subscribe(object):
         @subscribe()
         def on_all_events(event):
             # this will be executed on *every* event
-            print "Some kind of event occured"
+            print("Some kind of event occured")
 
         @subscribe(ObjectInsert)
         def on_insert(event):
             # this will be executed on every object insert
             context = event.object
             request = event.request
-            print "Object insert"
+            print("Object insert")
 
         @subscribe(ObjectInsert, Document)
         def on_document_insert(event):
@@ -446,7 +450,7 @@ class subscribe(object):
             # is an instance of Document
             context = event.object
             request = event.request
-            print "Document insert"
+            print("Document insert")
 
     """
 

@@ -1,9 +1,13 @@
-# coding:utf8
-import time
+# -*- coding: utf-8 -*-
+from __future__ import absolute_import, division, print_function
+
 import decimal
-from mock import patch
-from mock import Mock
+import time
+from warnings import filterwarnings
+
 from mock import MagicMock
+from mock import Mock
+from mock import patch
 from pyramid.interfaces import ILocation
 from pyramid.request import Response
 from pytest import raises
@@ -12,9 +16,6 @@ from zope.interface import implementer
 from kotti.testing import Dummy
 from kotti.testing import DummyRequest
 
-
-# filter deprecation warnings for code that is still tested...
-from warnings import filterwarnings
 filterwarnings('ignore', '^kotti.views.slots.register is deprecated')
 
 
@@ -144,6 +145,45 @@ class TestTemplateAPI:
             api = self.make()
             api.has_permission('drink')
             has_permission.assert_called_with('drink', api.root)
+
+    def test_contenttypefactories_add_links(self, config):
+        from kotti.views.edit.actions import content_type_factories
+        from kotti.resources import Document, File
+        from kotti.views.edit import content
+
+        config.include(content)
+
+        res = content_type_factories(Document(''), DummyRequest())
+        assert res['factories'] == [Document, File]
+
+    def test_contenttypefactories_with_invalid_add_link(self, config):
+        from kotti.resources import Document, File
+        from kotti.resources import default_type_info
+        from kotti.views.edit import content
+        from kotti.views.edit.actions import content_type_factories
+
+        class TestContent(object):
+            type_info = default_type_info.copy(
+                name=u'TestContent',
+                title=u'Test Content',
+                add_view=None,
+                addable_to=[u'Document'],
+            )
+
+        config.include(content)
+        req = DummyRequest()
+        root = Document('')
+
+        with patch('kotti.views.edit.actions.get_settings') as gs:
+            gs.return_value = {'kotti.available_types':
+                               [TestContent, Document, File]}
+            res = content_type_factories(root, req)
+
+            assert res['factories'] == [Document, File]
+
+            TestContent.type_info.add_view = 'add_document'
+            res = content_type_factories(root, req)
+            assert res['factories'] == [TestContent, Document, File]
 
     def test_edit_links(self, config, db_session):
         from kotti import views
@@ -367,7 +407,7 @@ class TestTemplateAPI:
     #     register(RenderAboveContent, None, render_something)
 
     #     api = self.make()
-    #     assert (api.slots.abovecontent == [u'Hello, %s!' % api.context.title])
+    #     assert (api.slots.abovecontent == [u'Hello, %s!' %api.context.title])
 
     #     # Slot renderers may also return lists:
     #     def render_a_list(context, request):
@@ -407,8 +447,8 @@ class TestTemplateAPI:
         api = self.make()
         assert u'€13.99' == api.format_currency(13.99, 'EUR')
         assert u'$15,499.12' == api.format_currency(15499.12, 'USD')
-        assert u'€1.00' == api.format_currency(1, fmt=u'€#,##0',
-                                               currency='EUR')
+        assert u'€1.00' == api.format_currency(
+            1, fmt=u'€#,##0', currency='EUR')
         assert u'CHF3.14' == api.format_currency(
             decimal.Decimal((0, (3, 1, 4), -2)), 'CHF')
 
@@ -570,10 +610,12 @@ class TestLocalNavigationSlot:
         from kotti.views.navigation import local_navigation
         a, aa, ab, ac, aca, acb = create_contents(root)
 
-        with patch('kotti.testing.DummyRequest.has_permission', return_value=True):
+        with patch('kotti.testing.DummyRequest.has_permission',
+                   return_value=True):
             assert local_navigation(ac, DummyRequest())['parent'] is not None
 
-        with patch('kotti.testing.DummyRequest.has_permission', return_value=False):
+        with patch('kotti.testing.DummyRequest.has_permission',
+                   return_value=False):
             assert local_navigation(ac, DummyRequest())['parent'] is None
 
     def test_in_navigation(self, config, root):

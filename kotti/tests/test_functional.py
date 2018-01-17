@@ -1,10 +1,12 @@
-# coding:utf8
+# -*- coding: utf-8 -*-
+from __future__ import absolute_import, division, print_function
 
 import pytest
-from kotti.testing import BASE_URL
-from kotti.testing import user
 from mock import patch
 from webtest.forms import Upload
+
+from kotti.testing import BASE_URL
+from kotti.testing import user
 
 
 class TestLogin:
@@ -195,6 +197,12 @@ class TestBrowser:
         form['password'] = 'secret'
         resp = form.submit('submit').maybe_follow()
         assert "Welcome, Administrator" in resp.body
+
+    @pytest.mark.user('admin')
+    def test_exception_views(self, webtest):
+        app = webtest.app
+        resp = app.get('/this-does-not-exist', status=404)
+        assert "<h1>Not Found</h1>" in resp.body
 
     @pytest.mark.user('admin')
     def test_content_management(self, webtest):

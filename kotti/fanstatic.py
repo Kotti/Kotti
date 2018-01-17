@@ -1,15 +1,15 @@
 # -*- coding: utf-8 -*-
 
-from __future__ import absolute_import
+from __future__ import absolute_import, division, print_function
 
 from fanstatic import Group
 from fanstatic import Library
 from fanstatic import Resource
 from js.angular import angular
-from js.bootstrap import bootstrap_js
 from js.bootstrap import bootstrap_css
-from js.html5shiv import html5shiv
+from js.bootstrap import bootstrap_js
 from js.fineuploader import fineuploader
+from js.html5shiv import html5shiv
 from js.jquery import jquery
 from js.jquery_form import jquery_form
 from js.jquery_tablednd import jquery_tablednd

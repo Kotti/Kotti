@@ -2,6 +2,26 @@
 <html i18n:domain="Kotti"
       metal:use-macro="api.macro('kotti:templates/view/master.pt')">
 
+    <div metal:fill-slot="nav-bar">
+      <nav class="navbar navbar-static-top navbar-inverse"
+        role="navigation"
+        id="navbar-view">
+        <div class="container-fluid">
+          <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-view-collapse">
+              <span class="sr-only">Toggle navigation</span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="${request.application_url}/">
+              ${api.site_title}
+            </a>
+          </div>
+        </div>
+      </nav>
+    </div>
+
     <div metal:fill-slot="content" class="notfound">
       <h1 i18n:translate="">Not Found</h1>
       <p i18n:translate="">The resource could not be found</p>

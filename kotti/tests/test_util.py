@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+from __future__ import absolute_import, division, print_function
+
 from mock import Mock
 from mock import patch
 
@@ -114,12 +116,12 @@ class TestCommand:
         closer = Mock()
         with patch('kotti.util.docopt') as docopt:
             with patch('kotti.util.bootstrap') as bootstrap:
-                docopt.return_value = {'<config_uri>': 'uri'}
+                docopt.return_value = {'<config_uri>': 'app.ini'}
                 bootstrap.return_value = {'closer': closer}
                 assert command(func, 'doc') == 0
-                func.assert_called_with({'<config_uri>': 'uri'})
+                func.assert_called_with({'<config_uri>': 'app.ini'})
                 docopt.assert_called_with('doc')
-                bootstrap.assert_called_with('uri')
+                bootstrap.assert_called_with('app.ini')
                 assert closer.call_count == 1
 
 
@@ -138,44 +140,15 @@ class TestLink:
         from kotti.testing import DummyRequest
 
         req = DummyRequest()
-        req.url = "http://example.com/@@manage"
+        req.view_name = "manage"
 
         assert Link('manage').selected(Mock(__name__=None), req)
 
-        req.url = "http://example.com/@@manage_cats"
+        req.view_name = 'manage_cats'
         assert not Link('manage').selected(Mock(__name__=None), req)
 
-    def test_link_selected_no_view_markers(self):
-        from kotti.util import Link
-        from kotti.testing import DummyRequest
-        from mock import Mock
-
-        req = DummyRequest()
-        root = Mock(__name__=None)
-        manage = Mock(__name__='manage',
-                      __parent__=Mock(__name__=None))
-
-        req.url = "http://example.com/manage"
-        assert Link('manage').selected(root, req)
-
-        req.url = "http://example.com/manage/"
-        assert not Link('manage').selected(root, req)
-
-        req.url = "http://example.com/"
-        assert Link('').selected(root, req)
-
-        req.url = "http://example.com/manage/"
-        link = Link('')
-        assert link.selected(manage, req)
-
-        req.url = "http://example.com/manage"
-        assert not link.selected(manage, req)
-
-        req.url = "http://example.com/"
-        assert link.selected(root, req)
-
-        req.url = "http://example.com"
-        assert link.selected(root, req)
+        req.view_name = ''
+        assert Link('').selected(Mock(__name__=None), req)
 
     def test_link_target(self):
         from kotti.util import Link

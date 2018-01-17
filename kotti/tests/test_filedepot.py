@@ -1,8 +1,12 @@
 # -*- coding: utf-8 -*-
+from __future__ import absolute_import, division, print_function
+
 import datetime
+
 import pytest
 
-from kotti.filedepot import DBFileStorage, DBStoredFile
+from kotti.filedepot import DBFileStorage
+from kotti.filedepot import DBStoredFile
 from kotti.resources import File
 from kotti.resources import Image
 
@@ -275,13 +279,13 @@ class TestTween:
 
         # the attachments (created by the filters) are served by the
         # FiledepotServeApp
-        resp = webtest.app.get(img.data['thumb_128x128_url'])
+        resp = webtest.app.get(img.data[u'thumb_128x128_url'])
 
         assert resp.etag is not None
         assert resp.cache_control.max_age == 604800
         assert resp.body.startswith('\x89PNG')
 
-        resp = webtest.app.get(img.data['thumb_256x256_url'])
+        resp = webtest.app.get(img.data[u'thumb_256x256_url'])
         assert resp.etag is not None
         assert resp.cache_control.max_age == 604800
         assert resp.body.startswith('\x89PNG')
@@ -290,6 +294,6 @@ class TestTween:
         resp = webtest.app.get('/depot/non_existing/fileid', status=404)
         assert resp.status_code == 404
 
-        resp = webtest.app.get(img.data['thumb_256x256_url'] + 'not',
+        resp = webtest.app.get(img.data[u'thumb_256x256_url'] + 'not',
                                status=404)
         assert resp.status_code == 404

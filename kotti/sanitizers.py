@@ -4,6 +4,7 @@
 For a high level introduction and available configuration options
 see :ref:`sanitizers`.
 """
+from __future__ import absolute_import, division, print_function
 
 from bleach import clean
 from bleach_whitelist import all_styles
@@ -16,9 +17,9 @@ from pyramid.util import DottedNameResolver
 from six import string_types
 
 from kotti import get_settings
-from kotti.events import objectevent_listeners
 from kotti.events import ObjectInsert
 from kotti.events import ObjectUpdate
+from kotti.events import objectevent_listeners
 
 
 def sanitize(html, sanitizer):

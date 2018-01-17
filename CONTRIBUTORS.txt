@@ -105,3 +105,4 @@ Contributors
 - Davide Moro, 2015/04/02
 - Matt Russell, 2015/09/27
 - Sebastian Braß, 2015/10/28
+- Lukas Zdych, 2016/12/01

@@ -1,8 +1,14 @@
 # -*- coding: utf-8 -*-
+from __future__ import absolute_import, division, print_function
+
+from mock import Mock
+from mock import patch
+from pyramid.security import ALL_PERMISSIONS
+from pyramid.security import Allow
+from pyramid.security import Deny
+from pyramid.security import Everyone
 from pytest import mark
 from pytest import raises
-from pyramid.security import ALL_PERMISSIONS, Deny, Everyone
-from pyramid.security import Allow
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.exc import SQLAlchemyError
 
@@ -471,3 +477,12 @@ class TestTypeInfo:
         from kotti.resources import TypeInfo
         type_info = TypeInfo(add_permission='customadd')
         assert type_info.add_permission == 'customadd'
+
+    def test_type_info_unaddable(self):
+        from kotti.resources import TypeInfo
+        type_info = TypeInfo(add_view=None, addable_to=['Document'])
+        context = Mock(type_info=Mock())
+        context.type_info.name = 'Document'
+        with patch('kotti.resources.view_permitted') as vp:
+            res = type_info.addable(context, None)
+            assert vp.call_count == 0

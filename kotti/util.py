@@ -7,18 +7,10 @@ Inheritance Diagram
 .. inheritance-diagram:: kotti.util
 """
 
+from __future__ import absolute_import, division, print_function
+
 import cgi
 import re
-try:
-    # PY2
-    from urllib import unquote
-    from urlparse import urlparse
-    from urlparse import urlunparse
-except ImportError:
-    from urllib.parse import unquote
-    from urllib.parse import urlparse
-    from urllib.parse import urlunparse
-
 
 from docopt import docopt
 from pyramid.i18n import get_localizer
@@ -113,16 +105,9 @@ class LinkBase(object):
 
         If the link name is '', it will be selected for all urls ending in '/'
         """
-        parsed = urlparse(unquote(request.url))
-
-        # insert view markers @@ in last component of the path
-        path = parsed.path.split('/')
-        if '@@' not in path[-1]:
-            path[-1] = '@@' + path[-1]
-        path = '/'.join(path)
-        url = urlunparse((parsed[0], parsed[1], path, '', '', ''))
-
-        return url == self.url(context, request)
+        if request.view_name is not None:
+            return request.view_name == self.name
+        return False
 
     def permitted(self, context, request):
         from kotti.security import view_permitted
@@ -194,7 +179,10 @@ class Link(LinkBase):
         self.target = target
 
     def url(self, context, request):
-        return resource_url(context, request) + '@@' + self.name
+        if self.name:
+            return resource_url(context, request) + '@@' + self.name
+        else:
+            return resource_url(context, request)
 
     def __eq__(self, other):
         return isinstance(other, Link) and repr(self) == repr(other)

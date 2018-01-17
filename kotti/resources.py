@@ -9,6 +9,8 @@ Inheritance Diagram
 .. inheritance-diagram:: kotti.resources
 """
 
+from __future__ import absolute_import, division, print_function
+
 import os
 import warnings
 from UserDict import DictMixin
@@ -402,6 +404,8 @@ class TypeInfo(object):
         :rtype: Boolean
         """
 
+        if self.add_view is None:
+            return False
         if context.type_info.name in self.addable_to:
             return view_permitted(context, request, self.add_view)
         else:

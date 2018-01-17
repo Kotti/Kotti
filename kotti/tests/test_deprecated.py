@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
+from __future__ import absolute_import, division, print_function
 
 import warnings
 
-from pyramid.i18n import TranslationString
 from pytest import raises
 
 
