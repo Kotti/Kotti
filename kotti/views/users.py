@@ -1,6 +1,4 @@
-"""
-User management screens
-"""
+""" User management screens """
 import re
 from urllib.parse import urlencode
 

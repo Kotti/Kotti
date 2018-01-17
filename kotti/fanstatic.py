@@ -98,30 +98,10 @@ class NeededGroup(object):
         Group(self.resources).need()
 
 
-view_needed_css = NeededGroup([
-    view_css,
-    ])
-view_needed_js = NeededGroup([
-    jquery,
-    bootstrap_js,
-    html5shiv,
-    ])
-view_needed = NeededGroup([
-    view_needed_css,
-    view_needed_js,
-    ])
+view_needed_css = NeededGroup([view_css, ])
+view_needed_js = NeededGroup([jquery, bootstrap_js, html5shiv, ])
+view_needed = NeededGroup([view_needed_css, view_needed_js, ])
 
-edit_needed_css = NeededGroup([
-    edit_css,
-    jqueryui_bootstrap_theme,
-    ])
-edit_needed_js = NeededGroup([
-    jquery,
-    bootstrap_js,
-    html5shiv,
-    jquery_form,
-    ])
-edit_needed = NeededGroup([
-    edit_needed_css,
-    edit_needed_js,
-    ])
+edit_needed_css = NeededGroup([edit_css, jqueryui_bootstrap_theme, ])
+edit_needed_js = NeededGroup([jquery, bootstrap_js, html5shiv, jquery_form, ])
+edit_needed = NeededGroup([edit_needed_css, edit_needed_js, ])

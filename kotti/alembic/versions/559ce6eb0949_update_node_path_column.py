@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """Update Node.path column
 
 Revision ID: 559ce6eb0949
@@ -21,10 +20,13 @@ def upgrade():
     conn = get_bind()
 
     if conn.engine.dialect.name == 'mysql':
-        update = "update nodes set path = concat(path, '/') where path not \
-like '%/'"
+        update = "UPDATE nodes " \
+                 "SET path = concat(path, '/') " \
+                 "WHERE path NOT LIKE '%/'"
     else:
-        update = "update nodes set path = path || '/' where path not like '%/'"
+        update = "UPDATE nodes " \
+                 "SET path = path || '/' " \
+                 "WHERE path NOT LIKE '%/'"
     DBSession.execute(update)
 
 

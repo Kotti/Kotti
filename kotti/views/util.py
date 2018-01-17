@@ -504,3 +504,14 @@ def search_content_for_tags(tags, request=None):
                 path=request.resource_path(result)))
 
     return result_dicts
+
+
+def includeme(config):
+    """ Pyramid includeme hook.
+
+    :param config: app config
+    :type config: :class:`pyramid.config.Configurator`
+    """
+
+    config.add_view_predicate('root_only', RootOnlyPredicate)
+    config.add_view_predicate('if_setting_has_value', SettingHasValuePredicate)

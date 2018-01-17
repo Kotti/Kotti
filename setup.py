@@ -97,6 +97,8 @@ docs_require = [
     'docutils',
     'repoze.sphinx.autointerface',
     'sphinx_rtd_theme',
+    'setuptools-git',  # needed to make "python setup.py install" on rtd.
+    'pytest',  # needed for kotti.testing apidocs
     ]
 
 setup_requires = [

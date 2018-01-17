@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """Add Node.path column
 
 Revision ID: 1063d7178fa

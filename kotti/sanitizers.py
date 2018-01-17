@@ -1,5 +1,4 @@
-"""
-For a high level introduction and available configuration options
+""" For a high level introduction and available configuration options
 see :ref:`sanitizers`.
 """
 from bleach import clean

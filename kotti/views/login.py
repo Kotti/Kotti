@@ -50,11 +50,12 @@ def _find_user(login):
 
 
 class UserSelfRegistered(ObjectEvent):
-    """ This event is emitted just after user self registered. Intended use
-        is to allow addons to do some preparation for such user - create custom
-        contents, nodes etc.
-        Event handler object parameter is a Principal object
-    """
+    """ This event is emitted just after user self registered.
+
+    Intended use is to allow addons to do some preparation for such a user
+    (create custom contents, nodes etc.
+
+    Event handler object parameter is a Principal object. """
 
 
 class RegisterSchema(colander.Schema):
@@ -183,9 +184,8 @@ def reset_password_callback(request, user):
 
 @view_config(name='login', renderer='kotti:templates/login.pt')
 def login(context, request):
-    """
-    Login view.  Renders either the login or password forgot form templates or
-    handles their form submission and redirects to came_from on success.
+    """ Login view.  Renders either the login or password forgot form templates
+    or handles their form submission and redirects to came_from on success.
 
     :result: Either a redirect response or a dictionary passed to the template
              for rendering
@@ -231,8 +231,7 @@ def login(context, request):
 
 @view_config(name='logout')
 def logout(context, request):
-    """
-    Logout view.  Always redirects the user to where he came from.
+    """ Logout view.  Always redirects the user to where he came from.
 
     :result: Redirect to came_from
     :rtype: pyramid.httpexceptions.HTTPFound
@@ -245,9 +244,7 @@ def logout(context, request):
 
 
 class SetPasswordSchema(colander.MappingSchema):
-    """
-    Schema for the set password form
-    """
+    """ Schema for the set password form """
 
     #: colander.String
     password = colander.SchemaNode(
@@ -359,9 +356,8 @@ def forbidden_redirect(context, request):
 
 @view_config(context=HTTPForbidden)
 def forbidden_view(request):
-    """
-    Forbidden view.  Raises 403 for requests not originating from a web browser
-    like device.
+    """ Forbidden view.  Raises 403 for requests not originating from a web
+    browser like device.
 
     :result: 403
     :rtype: pyramid.httpexceptions.HTTPForbidden
@@ -372,8 +368,7 @@ def forbidden_view(request):
 
 @view_config(name='forbidden', renderer='kotti:templates/forbidden.pt')
 def forbidden_view_html(request):
-    """
-    Forbidden view for browsers.
+    """ Forbidden view for browsers.
 
     :result: empty dictionary passed to the template for rendering
     :rtype: dict

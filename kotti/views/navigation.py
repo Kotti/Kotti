@@ -1,6 +1,4 @@
-"""
-This module contains navigation related views.
-"""
+""" This module contains navigation related views. """
 from pyramid.view import view_config
 
 from kotti.interfaces import INavigationRoot
@@ -27,8 +25,7 @@ def render_tree_navigation(context, request):
     }
 
 
-@view_config(name='local-navigation',
-             context=INode,
+@view_config(name='local-navigation', context=INode,
              renderer='kotti:templates/view/nav-local.pt')
 def local_navigation(context, request):
 

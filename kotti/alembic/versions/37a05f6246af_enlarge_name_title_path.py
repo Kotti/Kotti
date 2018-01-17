@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """Enlarged name title
 
 Revision ID: 37a05f6246af

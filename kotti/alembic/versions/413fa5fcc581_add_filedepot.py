@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """Migrate binary file storage to filedepot
 
 Revision ID: 413fa5fcc581
