@@ -6,18 +6,16 @@ import os
 from setuptools import find_packages
 from setuptools import setup
 
-here = os.path.abspath(os.path.dirname(__file__))
 
-def read(*parts):
-    """ Build an absolute path from *parts* and and return the contents of the
-    resulting file.  Assume UTF-8 encoding.
-
-    Copied from
-    https://hynek.me/articles/sharing-your-labor-of-love-pypi-quick-and-dirty/
-    """
-
-    with codecs.open(os.path.join(here, *parts), "rb", "utf-8") as f:
-        return f.read()
+version = '1.3.1'
+description = "A high-level, Pythonic web application framework based on " \
+              "Pyramid and SQLAlchemy.  It includes an extensible Content " \
+              "Management System called the Kotti CMS."
+author = 'Kotti developers'
+author_email = 'kotti@googlegroups.com'
+url = 'http://kotti.pylonsproject.org/'
+keywords = 'kotti web cms wcms pylons pyramid sqlalchemy bootstrap'
+license = "BSD-derived (http://www.repoze.org/LICENSE.txt)"
 
 
 install_requires = [
@@ -26,9 +24,10 @@ install_requires = [
     'alembic>=0.8.0',
     'bleach',
     'bleach-whitelist',
-    'colander<1.3',  # until https://github.com/Pylons/colander/pull/272 is merged and released  # noqa
-    'deform>=2.0a1',  # >=2.0a1 to support Bootstrap 2
+    'colander>=1.3.2',
+    'deform>=2.0.3',  # >=2.0a1 to support Bootstrap 2
     'docopt',
+    'fanstatic>=1.0.0',
     'filedepot',
     'formencode',
     'html2text',
@@ -46,15 +45,16 @@ install_requires = [
     'kotti_image',
     'lingua>=1.3',
     'py_bcrypt',
-    'pyramid>=1.5',  # needed for ``request.has_permission``
+    'pyramid>=1.8',  # needed for ``request.has_permission``,
     'pyramid_beaker',
     'pyramid_chameleon',
     'pyramid_deform>=0.2a3',  # language and template path config includeme
     'pyramid_mailer',
     'pyramid_tm',
-    'pyramid_zcml',
+    'pyramid_zcml>=1.1.0',
     'repoze.lru',
     'repoze.workflow>=1.0b1',
+    'repoze.zcml>=1.0b1',
     'rfc6266',
     'sqlalchemy>=1.0.0',
     'sqlalchemy-utils',
@@ -77,8 +77,8 @@ tests_require = [
     'pytest-pep8!=1.0.3',
     'pytest-travis-fold',
     'pytest-virtualenv',
-    'pytest-warnings',
     'pytest-xdist',
+    'tox',
     'virtualenv',  # needed for scaffolding tests
     'zope.testbrowser>=5.0.0',
     ]
@@ -100,14 +100,26 @@ setup_requires = [
     'setuptools_git>=0.3',
 ]
 
+
+here = os.path.abspath(os.path.dirname(__file__))
+
+def read(*parts):
+    """ Build an absolute path from *parts* and and return the contents of the
+    resulting file.  Assume UTF-8 encoding.
+
+    Copied from
+    https://hynek.me/articles/sharing-your-labor-of-love-pypi-quick-and-dirty/
+    """
+
+    with codecs.open(os.path.join(here, *parts), "rb", "utf-8") as f:
+        return f.read()
+
+
 setup(name='Kotti',
-      version='1.3.0',
-      description="A high-level, Pythonic web application framework based on Pyramid and SQLAlchemy.  It includes an extensible Content Management System called the Kotti CMS.",  # noqa
-      long_description='\n\n'.join([
-          read('README.rst'),
-          read('AUTHORS.txt'),
-          read('CHANGES.txt'),
-      ]),
+      version=version,
+      description=description,
+      long_description='\n\n'.join([read('README.rst'), read('AUTHORS.txt'),
+                                    read('CHANGES.txt'), ]),
       classifiers=[
           # 'Development Status :: 3 - Alpha',
           # 'Development Status :: 4 - Beta',
@@ -146,11 +158,11 @@ setup(name='Kotti',
           'Topic :: Software Development',
           'Topic :: Software Development :: Libraries :: Application Frameworks',  # noqa
       ],
-      author='Kotti developers',
-      author_email='kotti@googlegroups.com',
-      url='http://kotti.pylonsproject.org/',
-      keywords='kotti web cms wcms pylons pyramid sqlalchemy bootstrap',
-      license="BSD-derived (http://www.repoze.org/LICENSE.txt)",
+      author=author,
+      author_email=author_email,
+      url=url,
+      keywords=keywords,
+      license=license,
       packages=find_packages(),
       include_package_data=True,
       zip_safe=False,
@@ -158,24 +170,25 @@ setup(name='Kotti',
       setup_requires=setup_requires,
       tests_require=tests_require,
       dependency_links=[],
-      entry_points="""\
-      [paste.app_factory]
-      main = kotti:main
-
-      [fanstatic.libraries]
-      kotti = kotti.fanstatic:lib_kotti
-
-      [console_scripts]
-      kotti-migrate = kotti.migrate:kotti_migrate_command
-      kotti-reset-workflow = kotti.workflow:reset_workflow_command
-      kotti-migrate-storage = kotti.filedepot:migrate_storages_command
-
-      [pytest11]
-      kotti = kotti.tests
-
-      [pyramid.scaffold]
-      kotti=kotti.scaffolds:KottiPackageTemplate
-      """,
+      entry_points={
+          'paste.app_factory': [
+              'main = kotti:main',
+          ],
+          'fanstatic.libraries': [
+              'kotti = kotti.fanstatic:lib_kotti',
+          ],
+          'console_scripts': [
+              'kotti-migrate = kotti.migrate:kotti_migrate_command',
+              'kotti-reset-workflow = kotti.workflow:reset_workflow_command',
+              'kotti-migrate-storage = kotti.filedepot:migrate_storages_command',  # noqa
+          ],
+          'pytest11': [
+              'kotti = kotti.tests',
+          ],
+          'pyramid.scaffold': [
+              'kotti=kotti.scaffolds:KottiPackageTemplate',
+          ],
+      },
       extras_require={
           'testing': tests_require,
           'development': development_requires,

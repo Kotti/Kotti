@@ -27,9 +27,14 @@
   </head>
 
   <body class="view-${request.view_name or 'default'} ${api.body_css_class} logged-in">
-    <nav tal:replace="api.render_template('kotti:templates/view/nav.pt')" />
-    <metal:editorbar define-slot="editor-bar" tal:condition="request.user is not None"
-                     tal:replace="api.render_template('kotti:templates/editor-bar.pt')" />
+
+    <nav tal:omit-tag="" metal:define-slot="nav-bar">
+      <nav tal:replace="api.render_template('kotti:templates/view/nav.pt')" ></nav>
+    </nav>
+    <editbar tal:omit-tag="" metal:define-slot="editor-bar">
+      <div tal:condition="request.user is not None"
+        tal:replace="api.render_template('kotti:templates/editor-bar.pt')" ></div>
+    </editbar>
 
     <div class="container">
       <div class="row">

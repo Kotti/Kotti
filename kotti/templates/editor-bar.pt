@@ -13,11 +13,9 @@
     </div>
     <div class="collapse navbar-collapse" id="navbar-edit">
       <ul class="nav navbar-nav navbar-left">
-        <tal:condition tal:condition="api.has_permission('edit')">
-          <li tal:replace="api.render_view('workflow-dropdown')" />
-        </tal:condition>
+        <li tal:replace="api.render_view('workflow-dropdown')" />
 
-        <li class="${api.url() == request.url and 'active' or None}">
+        <li class="${api.url() == (request.url.endswith('/') and request.url or request.url + '/') and 'active' or None}">
           <a href="${api.url()}" i18n:translate="">View</a>
         </li>
 

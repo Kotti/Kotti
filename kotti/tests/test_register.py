@@ -1,7 +1,10 @@
 # -*- coding: utf-8 -*-
-from kotti.testing import DummyRequest
-from mock import patch
+from __future__ import absolute_import, division, print_function
+
 from mock import call
+from mock import patch
+
+from kotti.testing import DummyRequest
 
 
 class TestRegister:

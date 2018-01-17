@@ -6,18 +6,17 @@ test: bin/py.test
 	bin/py.test -q -n4
 
 bin/py.test: .pip.log *.py *.cfg
-	bin/python setup.py dev
+	bin/pip install -e ".[testing]"
 	@touch $@
 
-.pip.log: bin/python requirements.txt
-	bin/pip install -r requirements.txt --log .pip.log
+.pip.log: bin/python
+	bin/pip install -e ".[development]" --log .pip.log
 
 bin/python:
-	virtualenv-$(version) --no-site-packages --distribute .
+	virtualenv-$(version) .
 	@touch $@
 
 clean:
-	@rm -rfv bin/ include/ lib/
+	@rm -rfv bin/ include/ lib/ share/ .Python .cache .eggs Kotti.db Kotti.egg-info tox
 
 .PHONY: test clean
-

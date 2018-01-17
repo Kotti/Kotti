@@ -17,7 +17,7 @@ except IOError:
 version = '0.1dev'
 
 install_requires = [
-    'Kotti>=1.3.0-dev',
+    'Kotti>=1.3.0',
     'kotti_tinymce',
 ]
 

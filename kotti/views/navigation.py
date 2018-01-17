@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
-
 """
 This module contains navigation related views.
 """
+from __future__ import absolute_import, division, print_function
 
 from pyramid.view import view_config
 

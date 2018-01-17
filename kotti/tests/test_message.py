@@ -1,4 +1,7 @@
 # -*- coding: utf-8 -*-
+from __future__ import absolute_import, division, print_function
+
+from warnings import filterwarnings
 
 from mock import patch
 from pytest import raises
@@ -8,7 +11,6 @@ from kotti.testing import DummyRequest
 
 
 # filter deprecation warnings for code that is still tested...
-from warnings import filterwarnings
 filterwarnings('ignore', '^send_set_password is deprecated')
 
 

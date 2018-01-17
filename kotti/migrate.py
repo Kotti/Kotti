@@ -39,20 +39,20 @@ adding their Alembic 'script directory' location to the
 ``kotti-migrate`` commands 'list_all', 'upgrade_all' and
 'stamp_heads' will then include the add-on.
 """
-from __future__ import absolute_import
+from __future__ import absolute_import, division, print_function
 
 import os
-import pkg_resources
 
+import pkg_resources
 from alembic.config import Config
 from alembic.environment import EnvironmentContext
 from alembic.script import ScriptDirectory
 from alembic.util import load_python_file
 from zope.sqlalchemy import mark_changed
 
+from kotti import DBSession
 from kotti import conf_defaults
 from kotti import get_settings
-from kotti import DBSession
 from kotti.util import command
 
 

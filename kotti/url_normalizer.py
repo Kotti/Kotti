@@ -1,11 +1,12 @@
 # -*- coding: utf-8 -*-
+from __future__ import absolute_import, division, print_function
+
 import re
-from unidecode import unidecode
 
 from pyramid.settings import asbool
+from unidecode import unidecode
 
 from kotti import get_settings
-
 
 # Define and compile static regexes
 FILENAME_REGEX = re.compile(r"^(.+)\.(\w{,4})$", re.U)

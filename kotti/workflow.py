@@ -1,12 +1,14 @@
 # -*- coding: utf-8 -*-
+from __future__ import absolute_import, division, print_function
+
+import transaction
 from pyramid.security import DENY_ALL
 from repoze.workflow import get_workflow as base_get_workflow
-import transaction
 
-from kotti import TRUE_VALUES
 from kotti import DBSession
-from kotti.events import notify
+from kotti import TRUE_VALUES
 from kotti.events import ObjectEvent
+from kotti.events import notify
 from kotti.resources import Content
 from kotti.util import command
 

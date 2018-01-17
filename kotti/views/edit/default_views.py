@@ -2,6 +2,7 @@
 """
 :summary: Default view selctor views
 """
+from __future__ import absolute_import, division, print_function
 
 import warnings
 
@@ -14,7 +15,6 @@ from pyramid.view import view_config
 from pyramid.view import view_defaults
 from zope.interface import providedBy
 
-# noinspection PyProtectedMember
 from kotti.util import _
 
 

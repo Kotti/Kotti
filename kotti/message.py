@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+from __future__ import absolute_import, division, print_function
+
 import hashlib
 import time
 import urllib
@@ -9,7 +11,6 @@ from pyramid_mailer.mailer import Mailer
 from pyramid_mailer.message import Message
 
 from kotti import get_settings
-
 
 _inject_mailer = []
 

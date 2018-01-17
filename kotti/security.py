@@ -1,19 +1,22 @@
 # -*- coding: utf-8 -*-
+from __future__ import absolute_import, division, print_function
 from __future__ import with_statement
+
+from UserDict import DictMixin
 from contextlib import contextmanager
 from datetime import datetime
-from UserDict import DictMixin
 
 import bcrypt
 from pyramid.location import lineage
 from pyramid.security import view_execution_permitted
 from six import string_types
-from sqlalchemy import Boolean, bindparam
+from sqlalchemy import Boolean
 from sqlalchemy import Column
 from sqlalchemy import DateTime
-from sqlalchemy import func
 from sqlalchemy import Integer
 from sqlalchemy import Unicode
+from sqlalchemy import bindparam
+from sqlalchemy import func
 from sqlalchemy.orm.exc import NoResultFound
 from sqlalchemy.sql.expression import and_
 from sqlalchemy.sql.expression import or_
@@ -22,12 +25,12 @@ from zope.deprecation.deprecation import deprecated
 from kotti import Base
 from kotti import DBSession
 from kotti import get_settings
-from kotti.sqla import bakery
 from kotti.sqla import JsonType
 from kotti.sqla import MutationList
+from kotti.sqla import bakery
+from kotti.util import DontCache
 from kotti.util import _
 from kotti.util import request_cache
-from kotti.util import DontCache
 
 
 def get_principals():

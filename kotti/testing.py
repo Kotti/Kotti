@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
-
 """
 Inheritance Diagram
 -------------------
 
 .. inheritance-diagram:: kotti.testing
 """
+from __future__ import absolute_import, division, print_function
 
 import os
 from os.path import join, dirname
@@ -51,6 +51,28 @@ class DummyRequest(testing.DummyRequest):
     def is_response(ob):
         return (hasattr(ob, 'app_iter') and hasattr(ob, 'headerlist') and
                 hasattr(ob, 'status'))
+
+    @classmethod
+    def blank(cls,
+              path, environ=None, base_url=None, headers=None, POST=None,
+              **kw):
+        """
+        ``request.blank`` is used in Kotti only when assigning slots, where
+        the POST parameters are faked as a querystring.
+        """
+        import urlparse
+
+        def _decode(body):
+            if not body:
+                return {}
+            return dict([(x, y.decode('utf-8'))
+                         for x, y in urlparse.parse_qsl(body)])
+
+        if POST and isinstance(POST, basestring):
+            POST = _decode(POST)
+        req = testing.DummyRequest(path=path, environ=environ, headers=headers,
+                                   cookies=None, post=POST, **kw)
+        return req
 
 
 def asset(name):

@@ -38,6 +38,7 @@ inside an ``includeme`` function and not on a module level, to allow
 users of your package to include your slot assignments through the
 ``pyramid.includes`` configuration setting.
 """
+from __future__ import absolute_import, division, print_function
 
 import urllib
 
@@ -64,14 +65,14 @@ def _render_view_on_slot_event(view_name, event, params):
     context = event.object
     request = event.request
 
-    view_request = Request.blank(
+    view_request = request.__class__.blank(
         "{0}/{1}".format(request.path.rstrip('/'), view_name),
         base_url=request.application_url,
-        POST=_encode(params))
+        POST=_encode(params)
+    )
 
-    post_items = request.POST.items()
-    if post_items:
-        view_request.POST.extend(post_items)
+    if request.POST:
+        view_request.POST.update(request.POST)
 
     # This is quite brittle:
     for name in REQUEST_ATTRS_TO_COPY:
