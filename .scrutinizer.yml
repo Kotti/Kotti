@@ -5,12 +5,15 @@ build:
     before:
       - pip install -U pip wheel setuptools
       - pip install psycopg2 mysqlclient python-coveralls codecov
-      - wget https://github.com/disko/deform/archive/2.0.5.dev0.zip#egg=deform-2.0.5.dev0
-      - pip install 2.0.5.dev0.zip
+      - wget https://github.com/disko/deform/archive/2.0.5.dev0.zip#egg=deform-2.0.5.dev0 && pip install 2.0.5.dev0.zip
       - pip install -e .[testing]
   tests:
     override:
-      - pytest
+      - command: pytest
+        coverage:
+          file: '.coverage'
+          config_file: '.coveragerc'
+          format: 'py-cc'
 
 checks:
   python:
