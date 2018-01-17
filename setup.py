@@ -41,7 +41,6 @@ install_requires = [
     'js.jquery_timepicker_addon',
     'js.jqueryui>=1.8.24',
     'js.jqueryui_tagit',
-    'kotti_image',
     'lingua>=1.3',
     'py_bcrypt',
     'pyramid>=1.9',  # needed for ``request.has_permission``,
@@ -74,6 +73,7 @@ dependency_links = [
 tests_require = [
     'WebTest',
     'mock',
+    'Pillow',  # thumbnail filter in depot tween tests
     'py>=1.4.29',
     'pyquery',
     'pytest>=3.0.0',

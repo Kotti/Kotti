@@ -203,10 +203,6 @@ def base_configure(global_config, **settings):
         if key.startswith('kotti') and isinstance(value, binary_type):
             settings[key] = value.decode('utf8')
 
-    # will be removed in 2.0
-    import kotti_image
-    kotti_image.kotti_configure(settings)
-
     # Allow extending packages to change 'settings' w/ Python:
     k = 'kotti.configurators'
     for func in _resolve_dotted(settings, keys=(k,))[k]:

@@ -6,7 +6,6 @@ from mock import MagicMock
 from mock import patch
 
 from kotti.resources import File
-from kotti.resources import Image
 from kotti.testing import Dummy
 from kotti.testing import asset
 from kotti.views.cache import set_max_age
@@ -22,14 +21,16 @@ def delta(date_string):
     return parse_expires(date_string) - now
 
 
+# noinspection PyUnusedLocal
 @pytest.fixture
 def cachetest_content(root, filedepot):
     image = asset('sendeschluss.jpg')
     root['textfile'] = File(b"file contents", 'mytext.txt', 'text/plain')
-    root['image'] = Image(image.read(), 'sendeschluss.jpg', 'image/jpeg')
+    root['image'] = File(image.read(), 'sendeschluss.jpg', 'image/jpeg')
 
 
 class TestSetMaxAge:
+    # noinspection PyUnresolvedReferences
     def test_preserve_existing_headers(self):
         response = Dummy(headers={
             "cache-control": "max-age=17,s-max-age=42,foo,bar=42"})

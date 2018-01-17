@@ -224,11 +224,9 @@ class TestBrowser:
 
         from kotti.resources import Document
         from kotti.resources import File
-        from kotti_image.resources import Image
 
         save_addable_document = Document.type_info.addable_to
         save_addable_file = File.type_info.addable_to
-        save_addable_image = Image.type_info.addable_to
 
         app = webtest.app
         resp = app.get('/')
@@ -310,13 +308,11 @@ class TestBrowser:
         try:
             Document.type_info.addable_to = ()
             File.type_info.addable_to = ()
-            Image.type_info.addable_to = ()
             with pytest.raises(IndexError):
                 resp.click(href='add_')
         finally:
             Document.type_info.addable_to = save_addable_document
             File.type_info.addable_to = save_addable_file
-            Image.type_info.addable_to = save_addable_image
 
         # Add a file
         resp = app.get('/')

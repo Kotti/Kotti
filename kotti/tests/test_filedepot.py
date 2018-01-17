@@ -5,7 +5,6 @@ import pytest
 from kotti.filedepot import DBFileStorage
 from kotti.filedepot import DBStoredFile
 from kotti.resources import File
-from kotti.resources import Image
 
 
 class TestDBStoredFile:
@@ -181,7 +180,7 @@ class TestMigrateBetweenStorage:
             (image1, 'image2.png', 'image/png'),
         ]
         for row in data:
-            f = Image(data=row[0], filename=row[1], mimetype=row[2])
+            f = File(data=row[0], filename=row[1], mimetype=row[2])
             root[row[1]] = f
 
         db_session.flush()
@@ -217,12 +216,12 @@ class TestMigrateBetweenStorage:
         image2 = image_asset2.read()
         self._create_content(db_session, root, image1, image2)
 
-        assert db_session.query(DBStoredFile).count() == 8
+        assert db_session.query(DBStoredFile).count() == 4
 
         migrate_storage('dbfiles', 'localfs')
 
         folders = os.listdir(tmp_location)
-        assert len(folders) == 8
+        assert len(folders) == 4
 
         db_session.flush()
 
@@ -259,10 +258,11 @@ class TestTween:
     @pytest.mark.user('admin')
     def test_tween(self, webtest, filedepot, root, image_asset, db_session):
 
-        from kotti.resources import Image, get_root
+        from kotti.resources import File
+        from kotti.resources import get_root
 
         # create an image resource
-        img = root['img'] = Image(data=image_asset.read(), title='Image')
+        root['img'] = File(data=image_asset.read(), title='Image')
         db_session.flush()
         root = get_root()
         img = root['img']
@@ -272,25 +272,8 @@ class TestTween:
         assert resp.content_type == 'text/html'
         assert resp.etag is None
         assert resp.cache_control.max_age == 0
-        assert '<img src="http://localhost/img/image" />' in resp.text
-
-        # the attachments (created by the filters) are served by the
-        # FiledepotServeApp
-        resp = webtest.app.get(img.data['thumb_128x128_url'])
-
-        assert resp.etag is not None
-        assert resp.cache_control.max_age == 604800
-        assert resp.body.startswith(b'\x89PNG')
-
-        resp = webtest.app.get(img.data['thumb_256x256_url'])
-        assert resp.etag is not None
-        assert resp.cache_control.max_age == 604800
-        assert resp.body.startswith(b'\x89PNG')
+        assert '<a href="http://localhost/img/@@attachment-view">' in resp.text
 
         # test 404
         resp = webtest.app.get('/depot/non_existing/fileid', status=404)
-        assert resp.status_code == 404
-
-        resp = webtest.app.get(img.data['thumb_256x256_url'] + 'not',
-                               status=404)
         assert resp.status_code == 404

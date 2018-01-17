@@ -156,9 +156,9 @@ class TestFileUploadTempStore:
 
 class TestDepotStore:
 
-    from kotti.resources import File, Image
+    from kotti.resources import File
 
-    @pytest.mark.parametrize("factory", [File, Image])
+    @pytest.mark.parametrize("factory", [File, ])
     def test_create(self, factory, filedepot, image_asset, app):
         data = image_asset.read()
         f = factory(data)
@@ -168,7 +168,7 @@ class TestDepotStore:
             assert len(f.data['files']) == 4
         assert f.data.file.read() == data
 
-    @pytest.mark.parametrize("factory", [File, Image])
+    @pytest.mark.parametrize("factory", [File, ])
     def test_edit_content(self, factory, filedepot, image_asset, image_asset2,
                           app, db_session):
         data = image_asset.read()
@@ -181,7 +181,7 @@ class TestDepotStore:
 
         assert f.data.file.read() == data2
 
-    @pytest.mark.parametrize("factory", [File, Image])
+    @pytest.mark.parametrize("factory", [File, ])
     def test_session_rollback(self, factory, db_session, filedepot, image_asset,
                               app):
         storage = filedepot.get()
@@ -198,7 +198,7 @@ class TestDepotStore:
             storage.get(id)
         assert storage.delete.called
 
-    @pytest.mark.parametrize("factory", [File, Image])
+    @pytest.mark.parametrize("factory", [File, ])
     def test_delete(self, factory, db_session, root, filedepot, image_asset,
                     app):
 

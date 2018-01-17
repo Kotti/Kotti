@@ -1,11 +1,36 @@
 Change History
 ==============
+
 2.0.0.dev0 - unreleased
 -----------------------
 
+Backward Incompatibilities
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 - **Python 3 compatibility**
 
-- avoid deprecation warning ``pyramid.security.has_permission``
+  Kotti now runs on Python >= 3.5.
+
+  Python 2.x support was dropped entirely and won't come back until
+  somebody implements it or is willing to pay for it.
+
+- Everything marked as deprecated in Kotti 1.x was removed.
+
+- Scaffolding support via ``pcreate`` was dropped as it's deprecated by Pyramid
+  now.  An alternate solution (cookiecutter template) will be available in the
+  future.
+
+New Features
+~~~~~~~~~~~~
+
+- **Python 3 compatibility**
+
+- Extensive testing and code analysis on Circle CI, Travis CI and Scrutinizer.
+
+Fixes
+~~~~~
+
+- Avoid deprecation warning ``pyramid.security.has_permission``
 
 1.3.1.dev0 - unreleased
 -----------------------

@@ -909,14 +909,3 @@ def initialize_sql(engine, drop_all=False):
     commit()
 
     return DBSession
-
-
-# DEPRECATED
-
-from zope.deprecation.deprecation import deprecated
-from kotti_image.resources import Image
-
-__ = Image
-deprecated('Image',
-           'Image was outfactored to the kotti_image package.  '
-           'Please import from there.')
