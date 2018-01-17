@@ -1,16 +1,17 @@
 # Python CircleCI 2.0 configuration file
-#
 # Check https://circleci.com/docs/2.0/language-python/ for more details
-#
+
 version: 2
+
 dependencies:
   override:
     - pip install tox tox-pyenv
     - pyenv local 3.6.4 3.5.4
+
 jobs:
   python3.6-sqlite: &py36sqlite
     docker:
-      # specify the version you desire here. use `-browsers` prefix for selenium tests, e.g. `3.6.1-browsers`
+      # specify the version you desire here. use `-browsers` prefix for selenium tests, e.g. `3.6.4-browsers`
       - image: circleci/python:3.6.4
 
     working_directory: ~/kotti
@@ -18,8 +19,8 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-          # Download and cache dependencies
           keys:
+            # Download and cache dependencies
             - v1-dependencies-{{ checksum "setup.py" }}
             # fallback to using the latest cache if no exact match is found
             - v1-dependencies-
@@ -30,6 +31,7 @@ jobs:
             . venv/bin/activate
             pip install -U pip wheel setuptools setuptools-git
             pip install psycopg2 mysqlclient python-coveralls codecov
+            pip install --process-dependency-links -e .[testing]
       - save_cache:
           paths:
             - ./venv
@@ -38,7 +40,6 @@ jobs:
           name: run tests
           command: |
             . venv/bin/activate
-            pip install --process-dependency-links -e .[testing]
             py.test --junitxml=test-reports/junit
       - store_test_results:
           path: test-reports
@@ -49,24 +50,26 @@ jobs:
     <<: *py36sqlite
     docker:
       - image: circleci/python:3.6.4
-        environment:
+        environment: &pgenv
           KOTTI_TEST_DB_STRING: postgresql://kotti@localhost/kotti?sslmode=disable
-      - image: circleci/postgres:10.1
-        environment:
           POSTGRES_USER: kotti
           POSTGRES_DB: kotti
           POSTGRES_PASSWORD: ""
+      - image: circleci/postgres:10.1
+        environment:
+          <<: *pgenv
 
   python3.6-mysql5.6:
     <<: *py36sqlite
     docker:
       - image: circleci/python:3.6.4
-        environment:
+        environment: &mysqlenv
           KOTTI_TEST_DB_STRING: mysql+mysqldb://root@127.0.0.1:3306/kotti
-      - image: circleci/mysql:5.6-ram
-        environment:
           MYSQL_USER: kotti
           MYSQL_DATABASE: kotti
+      - image: circleci/mysql:5.6-ram
+        environment:
+          <<: *mysqlenv
 
   python3.5-sqlite:
     <<: *py36sqlite
@@ -78,23 +81,20 @@ jobs:
     docker:
       - image: circleci/python:3.5.4
         environment:
-          KOTTI_TEST_DB_STRING: postgresql://kotti@localhost/kotti?sslmode=disable
+          <<: *pgenv
       - image: circleci/postgres:10.1
         environment:
-          POSTGRES_USER: kotti
-          POSTGRES_DB: kotti
-          POSTGRES_PASSWORD: ""
+          <<: *pgenv
 
   python3.5-mysql5.6:
     <<: *py36sqlite
     docker:
       - image: circleci/python:3.5.4
         environment:
-          KOTTI_TEST_DB_STRING: mysql+mysqldb://root@127.0.0.1:3306/kotti
+          <<: *mysqlenv
       - image: circleci/mysql:5.6-ram
         environment:
-          MYSQL_USER: root
-          MYSQL_DATABASE: kotti
+          <<: *mysqlenv
 
 workflows:
   version: 2
