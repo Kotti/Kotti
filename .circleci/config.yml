@@ -39,10 +39,11 @@ jobs:
           command: |
             . venv/bin/activate
             pip install --process-dependency-links -e .[testing]
-            py.test
+            py.test --junitxml=test-reports/junit
+      - store_test_results:
+          path: test-reports
       - store_artifacts:
           path: test-reports
-          destination: test-reports
 
   python3.6-postgresql10.1:
     <<: *py36sqlite
