@@ -31,7 +31,7 @@ jobs:
             . venv/bin/activate
             pip install -U pip wheel setuptools setuptools-git
             pip install psycopg2 mysqlclient python-coveralls codecov
-            pip install --process-dependency-links -e .[testing]
+            pip install -e .[testing]
       - save_cache:
           paths:
             - ./venv
