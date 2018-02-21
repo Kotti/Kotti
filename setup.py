@@ -64,11 +64,6 @@ install_requires = [
     'zope.sqlalchemy',
     ]
 
-dependency_links = [
-    # until deform 2.0.5 is released.  see https://github.com/Pylons/deform/pull/360  # noqa
-    'https://github.com/disko/deform/archive/2.0.5.dev0.zip#egg=deform-2.0.5.dev0',  # noqa
-]
-
 tests_require = [
     'WebTest',
     'mock',
@@ -173,7 +168,6 @@ setup(name='Kotti',
       install_requires=install_requires,
       setup_requires=setup_requires,
       tests_require=tests_require,
-      dependency_links=dependency_links,
       entry_points={
           'paste.app_factory': [
               'main = kotti:main',
