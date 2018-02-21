@@ -14,7 +14,6 @@ env:
   - KOTTI_TEST_DB_STRING=mysql+mysqldb://root@localhost:3306/kotti_testing
   - KOTTI_TEST_DB_STRING=sqlite://
 install:
-  - curl -o deform-2.0.5.dev0.zip https://xo7.de/deform-2.0.5.dev0.zip && pip install deform-2.0.5.dev0.zip
   - travis_retry pip install -U pip wheel setuptools
   - travis_retry pip install psycopg2 mysqlclient python-coveralls codecov
   - travis_retry pip install --process-dependency-links -e ".[testing]"

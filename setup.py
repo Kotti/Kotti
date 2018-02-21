@@ -22,9 +22,7 @@ install_requires = [
     'bleach>=2.1.2',  # html5lib 1.0 support
     'bleach-whitelist',
     'colander>=1.3.2',
-    'deform==2.0.5.dev0',  # fixes file upload on py3
-    'iso8601==0.1.11',  # deform requirement.  isn't picked up with ``dependency_links``  # noqa
-    # 'deform>=2.0.5',  # fixes file upload on py3 - uncomment after 2.0.5 is released  # noqa
+    'deform>=2.0.5',  # fixes file upload on py3 - uncomment after 2.0.5 is released  # noqa
     'docopt',
     'fanstatic>=1.0a7',
     'filedepot',
