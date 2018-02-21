@@ -1,9 +1,18 @@
 from collections import MutableMapping
 from contextlib import contextmanager
 from datetime import datetime
+from typing import Dict
+from typing import Iterable
+from typing import Iterator
+from typing import List
+from typing import Optional
+from typing import Set
+from typing import Tuple
+from typing import Union
 
 import bcrypt
 from pyramid.location import lineage
+from pyramid.security import PermitsResult
 from pyramid.security import view_execution_permitted
 from six import string_types
 from sqlalchemy import Boolean
@@ -14,6 +23,7 @@ from sqlalchemy import Unicode
 from sqlalchemy import bindparam
 from sqlalchemy import func
 from sqlalchemy.orm.exc import NoResultFound
+from sqlalchemy.orm.query import Query
 from sqlalchemy.sql.expression import and_
 from sqlalchemy.sql.expression import or_
 
@@ -28,19 +38,19 @@ from kotti.util import _
 from kotti.util import request_cache
 
 
-def has_permission(permission, context, request):
+def has_permission(permission: str,
+                   context: 'Node',
+                   request: 'Request') -> PermitsResult:
     """ Default permission checker """
-    return request.has_permission(
-        permission,
-        context=context)
+    return request.has_permission(permission, context=context)
 
 
-def get_principals():
+def get_principals() -> 'Principals':
     return get_settings()['kotti.principals_factory'][0]()
 
 
 # @request_cache(lambda request: None)
-def get_user(request):
+def get_user(request: 'Request') -> Optional['Principal']:
     userid = request.unauthenticated_userid
     return get_principals().get(userid)
 
@@ -81,8 +91,14 @@ class Principal(Base):
         order_by=name,
         )
 
-    def __init__(self, name, password=None, active=True, confirm_token=None,
-                 title="", email=None, groups=None):
+    def __init__(self,
+                 name: str,
+                 password: Optional[str] = None,
+                 active: Optional[bool] = True,
+                 confirm_token: Optional[str] = None,
+                 title: Optional[str] = '',
+                 email: Optional[str] = None,
+                 groups: Optional[List[str]] = None):
         self.name = name
         if password is not None:
             password = get_principals().hash_password(password)
@@ -117,11 +133,12 @@ class AbstractPrincipals(object):
     Use the 'kotti.principals' settings variable to override Kotti's
     default Principals implementation with your own.
     """
-    def __getitem__(self, name):
+    def __getitem__(self, name: str):
         """Return the Principal object with the id 'name'.
         """
 
-    def __setitem__(self, name, principal):
+    def __setitem__(self, name: str,
+                    principal: Union[Principal, dict]):
         """Add a given Principal object to the database.
 
         'name' is expected to the the same as 'principal.name'.
@@ -129,15 +146,15 @@ class AbstractPrincipals(object):
         'principal' may also be a dict of attributes.
         """
 
-    def __delitem__(self, name):
+    def __delitem__(self, name: str) -> None:
         """Remove the principal with the given name from the database.
         """
 
-    def keys(self):
+    def keys(self) -> List[str]:
         """Return a list of principal ids that are in the database.
         """
 
-    def search(self, **kwargs):
+    def search(self, **kwargs) -> List[Principal]:
         """Return an iterable with principal objects that correspond
         to the search arguments passed in.
 
@@ -158,13 +175,13 @@ class AbstractPrincipals(object):
           get_principals().search(name='bob', foo='bar')
         """
 
-    def hash_password(self, password):
+    def hash_password(self, password: str) -> str:
         """Return a hash of the given password.
 
         This is what's stored in the database as 'principal.password'.
         """
 
-    def validate_password(self, clear, hashed):
+    def validate_password(self, clear: str, hashed: str) -> bool:
         """Returns True if the clear text password matches the hash.
         """
 
@@ -194,54 +211,55 @@ SITE_ACL = [
     ]
 
 
-def set_roles(roles_dict):
+def set_roles(roles_dict: Dict[str, Principal]) -> None:
     ROLES.clear()
     ROLES.update(roles_dict)
 
 
-def set_sharing_roles(role_names):
+def set_sharing_roles(role_names: List[str]) -> None:
     SHARING_ROLES[:] = role_names
 
 
-def set_user_management_roles(role_names):
+def set_user_management_roles(role_names: List[str]) -> None:
     USER_MANAGEMENT_ROLES[:] = role_names
 
 
-def reset_roles():
+def reset_roles() -> None:
     ROLES.clear()
     ROLES.update(_DEFAULT_ROLES)
 
 
-def reset_sharing_roles():
+def reset_sharing_roles() -> None:
     SHARING_ROLES[:] = _DEFAULT_SHARING_ROLES
 
 
-def reset_user_management_roles():
+def reset_user_management_roles() -> None:
     USER_MANAGEMENT_ROLES[:] = _DEFAULT_USER_MANAGEMENT_ROLES
 
 
-def reset():
+def reset() -> None:
     reset_roles()
     reset_sharing_roles()
     reset_user_management_roles()
 
 
 class PersistentACLMixin(object):
-    def _get_acl(self):
+    def _get_acl(self) -> MutationList:
         if self._acl is None:
             raise AttributeError('__acl__')
         return self._acl
 
-    def _set_acl(self, value):
+    def _set_acl(self, value) -> None:
         self._acl = value
 
-    def _del_acl(self):
+    def _del_acl(self) -> None:
         self._acl = None
 
     __acl__ = property(_get_acl, _set_acl, _del_acl)
 
 
-def _cachekey_list_groups_raw(name, context):
+def _cachekey_list_groups_raw(name: str,
+                              context: 'Node') -> Tuple[str, Union[int, 'NoneType']]:  # noqa
     context_id = context is not None and getattr(context, 'id', id(context))
     return name, context_id
 
@@ -264,7 +282,7 @@ def list_groups_raw(name, context):
     return set()
 
 
-def list_groups(name, context=None):
+def list_groups(name: str, context: Optional['Node'] = None) -> List[str]:
     """List groups for principal with a given ``name``.
 
     The optional ``context`` argument may be passed to check the list
@@ -273,7 +291,10 @@ def list_groups(name, context=None):
     return list_groups_ext(name, context)[0]
 
 
-def _cachekey_list_groups_ext(name, context=None, _seen=None, _inherited=None):
+def _cachekey_list_groups_ext(name: str,
+                              context: Optional['Node'] = None,
+                              _seen: Optional[Set[str]] = None,
+                              _inherited: Optional[Set[str]] = None) -> Tuple[str, Union[int, 'NoneType']]:  # noqa
     if _seen is not None or _inherited is not None:
         raise DontCache
     else:
@@ -319,14 +340,15 @@ def list_groups_ext(name, context=None, _seen=None, _inherited=None):
     return list(groups), list(_inherited)
 
 
-def set_groups(name, context, groups_to_set=()):
+def set_groups(name: str,
+               context: 'Node',
+               groups_to_set: Iterable[str] = ()) -> None:
     """Set the list of groups for principal with given ``name`` and in
     given ``context``.
     """
 
     from kotti.resources import LocalGroup
 
-    name = name
     context.local_groups = [
         # keep groups for "other" principals
         lg for lg in context.local_groups
@@ -338,9 +360,10 @@ def set_groups(name, context, groups_to_set=()):
     ]
 
 
-def list_groups_callback(name, request):
+def list_groups_callback(name: str,
+                         request: 'Request') -> Optional[List[str]]:
     """ List the groups for the principal identified by ``name``.  Consider
-    ``authz_context`` to support assigment of local roles to groups. """
+    ``authz_context`` to support assignment of local roles to groups. """
     if not is_user(name):
         return None  # Disallow logging in with groups
     if name in get_principals():
@@ -354,7 +377,7 @@ def list_groups_callback(name, request):
 
 
 @contextmanager
-def authz_context(context, request):
+def authz_context(context: object, request: 'Request'):
     before = request.environ.pop('authz_context', None)
     request.environ['authz_context'] = context
     try:
@@ -366,7 +389,7 @@ def authz_context(context, request):
 
 
 @contextmanager
-def request_method(request, method):
+def request_method(request: 'Request', method: str):
     before = request.method
     request.method = method
     try:
@@ -375,13 +398,17 @@ def request_method(request, method):
         request.method = before
 
 
-def view_permitted(context, request, name='', method='GET'):
+def view_permitted(context: object,
+                   request: 'Request',
+                   name: Optional[str] = '',
+                   method: Optional[str] = 'GET') -> PermitsResult:
     with authz_context(context, request):
         with request_method(request, method):
             return view_execution_permitted(context, request, name)
 
 
-def principals_with_local_roles(context, inherit=True):
+def principals_with_local_roles(context: 'Node',
+                                inherit: Optional[bool] = True) -> List[str]:
     """Return a list of principal names that have local roles in the
     context.
     """
@@ -401,7 +428,7 @@ def principals_with_local_roles(context, inherit=True):
     return list(principals)
 
 
-def map_principals_with_local_roles(context):
+def map_principals_with_local_roles(context: 'Node'):
     principals = get_principals()
     value = []
     for principal_name in principals_with_local_roles(context):
@@ -415,7 +442,7 @@ def map_principals_with_local_roles(context):
     return sorted(value, key=lambda t: t[0].name)
 
 
-def is_user(principal):
+def is_user(principal: Union[Principal, str]) -> bool:
     if not isinstance(principal, string_types):
         principal = principal.name
     return ':' not in principal
@@ -432,7 +459,7 @@ class Principals(MutableMapping):
     factory = Principal
 
     @classmethod
-    def _principal_by_name(cls, name):
+    def _principal_by_name(cls, name: str) -> Principal:
         query = bakery(lambda session: session.query(cls.factory).filter(
             cls.factory.name == bindparam('name')))
         return query(DBSession()).params(name=name).one()
@@ -452,13 +479,15 @@ class Principals(MutableMapping):
         except NoResultFound:
             raise KeyError(name)
 
-    def __setitem__(self, name, principal):
+    def __setitem__(self,
+                    name: str,
+                    principal: Union[Principal, dict]) -> None:
         name = name
         if isinstance(principal, dict):
             principal = self.factory(**principal)
         DBSession.add(principal)
 
-    def __delitem__(self, name):
+    def __delitem__(self, name: str) -> None:
         name = name
         try:
             principal = self._principal_by_name(name)
@@ -466,21 +495,23 @@ class Principals(MutableMapping):
         except NoResultFound:
             raise KeyError(name)
 
-    def __iter__(self):
+    def __iter__(self) -> Iterator[str]:
         for k in self.keys():
             yield k
 
     def __len__(self):
         return len(self.keys())
 
-    def iterkeys(self):
+    def iterkeys(self) -> Iterator[str]:
         for (principal_name,) in DBSession.query(self.factory.name):
             yield principal_name
 
-    def keys(self):
+    def keys(self) -> List[str]:
         return list(self.iterkeys())
 
-    def search(self, match='any', **kwargs):
+    def search(self,
+               match: Optional[str] = 'any',
+               **kwargs) -> Query:
         """ Search the principal database.
 
         :param match: ``any`` to return all principals matching any search
@@ -521,17 +552,19 @@ class Principals(MutableMapping):
 
     log_rounds = 10
 
-    def hash_password(self, password, hashed=None):
+    def hash_password(self,
+                      password: str,
+                      hashed: Optional[str] = None) -> str:
         if hashed is None:
             hashed = bcrypt.gensalt(self.log_rounds)
         return bcrypt.hashpw(password.encode('utf-8'), hashed.encode('utf-8'))
 
-    def validate_password(self, clear, hashed):
+    def validate_password(self, clear: str, hashed: str) -> bool:
         try:
             return self.hash_password(clear, hashed) == hashed
         except ValueError:
             return False
 
 
-def principals_factory():
+def principals_factory() -> Principals:
     return Principals()

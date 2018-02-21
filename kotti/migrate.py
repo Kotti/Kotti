@@ -52,62 +52,66 @@ from kotti import conf_defaults
 from kotti import get_settings
 from kotti.util import command
 
+from typing import Callable, List
 KOTTI_SCRIPT_DIR = pkg_resources.resource_filename('kotti', 'alembic')
 DEFAULT_LOCATION = 'kotti:alembic'
 
 
 class ScriptDirectoryWithDefaultEnvPy(ScriptDirectory):
     @property
-    def env_py_location(self):
+    def env_py_location(self) -> str:
         loc = super(ScriptDirectoryWithDefaultEnvPy, self).env_py_location
         if not os.path.exists(loc):
             loc = os.path.join(KOTTI_SCRIPT_DIR, 'env.py')
         return loc
 
-    def run_env(self):
+    def run_env(self) -> None:
         dir_, filename = self.env_py_location.rsplit(os.path.sep, 1)
         load_python_file(dir_, filename)
 
 
 class PackageEnvironment(object):
-    def __init__(self, location):
+    def __init__(self,
+                 location: str) -> None:
         self.location = location
         self.config = self._make_config(location)
         self.script_dir = self._make_script_dir(self.config)
 
     @property
-    def pkg_name(self):
+    def pkg_name(self) -> str:
         return self.location.split(':')[0]
 
     @property
-    def version_table(self):
+    def version_table(self) -> str:
         return '{0}_alembic_version'.format(self.pkg_name)
 
-    def run_env(self, fn, **kw):
+    def run_env(self,
+                fn: Callable, **kw) -> None:
         with EnvironmentContext(self.config, self.script_dir, fn=fn,
                                 version_table=self.version_table, **kw):
             self.script_dir.run_env()
 
     @staticmethod
-    def _make_config(location):
+    def _make_config(location: str) -> Config:
         cfg = Config()
         cfg.set_main_option("script_location", location)
         cfg.set_main_option("sqlalchemy.url", get_settings()['sqlalchemy.url'])
         return cfg
 
     @staticmethod
-    def _make_script_dir(alembic_cfg):
+    def _make_script_dir(alembic_cfg: Config) -> ScriptDirectoryWithDefaultEnvPy:
         script_dir = ScriptDirectory.from_config(alembic_cfg)
         script_dir.__class__ = ScriptDirectoryWithDefaultEnvPy  # O_o
         return script_dir
 
 
-def get_locations():
+def get_locations() -> List[str]:
     conf_str = get_settings()['kotti.alembic_dirs']
     return [l.strip() for l in conf_str.split() if l.strip()]
 
 
-def stamp_head(location=DEFAULT_LOCATION, revision=None):
+def stamp_head(location: str = DEFAULT_LOCATION,
+               revision: None = None) -> None:
 
     env = PackageEnvironment(location)
 
@@ -126,12 +130,13 @@ def stamp_head(location=DEFAULT_LOCATION, revision=None):
     env.run_env(do_stamp)
 
 
-def stamp_heads():
+def stamp_heads() -> None:
     for location in get_locations():
         stamp_head(location)
 
 
-def upgrade(location=DEFAULT_LOCATION, revision=None):
+def upgrade(location=DEFAULT_LOCATION,
+            revision=None):
     # We don't want to fire any kind of events during a migration,
     # because "migrations are a low-level thing".
     from kotti import events

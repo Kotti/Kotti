@@ -7,16 +7,25 @@ Inheritance Diagram
 
 .. inheritance-diagram:: kotti.resources
 """
+import datetime
+from cgi import FieldStorage
+from collections import MutableMapping
+from typing import Any
+from typing import Iterable
+from typing import List
+from typing import Optional
+from typing import Union
+
 import abc
 import os
 import warnings
-from collections import MutableMapping
 from copy import copy
-from fnmatch import fnmatch
-from io import BytesIO
-
 from depot.fields.sqlalchemy import UploadedFileField
 from depot.fields.sqlalchemy import _SQLAMutationTracker
+from depot.fields.upload import UploadedFile
+from fnmatch import fnmatch
+from io import BufferedReader
+from io import BytesIO
 from pyramid.decorator import reify
 from pyramid.traversal import resource_path
 from sqlalchemy import Boolean
@@ -30,17 +39,23 @@ from sqlalchemy import UnicodeText
 from sqlalchemy import UniqueConstraint
 from sqlalchemy import bindparam
 from sqlalchemy import event
+from sqlalchemy.engine.base import Engine
 from sqlalchemy.ext.associationproxy import association_proxy
-from sqlalchemy.ext.declarative import DeclarativeMeta, declared_attr
+from sqlalchemy.ext.declarative import DeclarativeMeta
+from sqlalchemy.ext.declarative import declared_attr
 from sqlalchemy.ext.hybrid import hybrid_property
+from sqlalchemy.ext.orderinglist import OrderingList
 from sqlalchemy.ext.orderinglist import ordering_list
 from sqlalchemy.orm import backref
 from sqlalchemy.orm import object_mapper
 from sqlalchemy.orm import relation
+from sqlalchemy.orm.attributes import Event
 from sqlalchemy.orm.exc import NoResultFound
+from sqlalchemy.orm.scoping import scoped_session
 from sqlalchemy.sql import and_
 from sqlalchemy.sql import select
 from sqlalchemy.util import classproperty
+from sqlalchemy.util.langhelpers import _symbol
 from transaction import commit
 from zope.interface import implementer
 
@@ -56,6 +71,7 @@ from kotti.interfaces import IDocument
 from kotti.interfaces import IFile
 from kotti.interfaces import INode
 from kotti.migrate import stamp_heads
+from kotti.request import Request
 from kotti.security import PersistentACLMixin
 from kotti.security import view_permitted
 from kotti.sqla import ACLType
@@ -83,17 +99,17 @@ class ContainerMixin(MutableMapping):
     def __len__(self):
         return len(self.keys())
 
-    def __setitem__(self, key, node):
+    def __setitem__(self, key: str, node: 'Node') -> None:
         node.name = key
         self.children.append(node)
         self.children.reorder()
 
-    def __delitem__(self, key):
+    def __delitem__(self, key: str) -> None:
         node = self[key]
         self.children.remove(node)
         DBSession.delete(node)
 
-    def keys(self):
+    def keys(self) -> List[str]:
         """
         :result: children names
         :rtype: list
@@ -101,10 +117,10 @@ class ContainerMixin(MutableMapping):
 
         return [child.name for child in self.children]
 
-    def values(self):
+    def values(self) -> OrderingList:
         return self.children
 
-    def __getitem__(self, path):
+    def __getitem__(self, path: Union[str, Iterable[str]]) -> 'Node':
         db_session = DBSession()
         db_session._autoflush()
 
@@ -162,7 +178,9 @@ class ContainerMixin(MutableMapping):
 
         return self._children
 
-    def children_with_permission(self, request, permission='view'):
+    def children_with_permission(self,
+                                 request: Request,
+                                 permission: str = 'view') -> 'List[Node]':
         """ Return only those children for which the user initiating the
         request has the asked permission.
 
@@ -207,12 +225,12 @@ class LocalGroup(Base):
     #: (:class:`sqlalchemy.types.Unicode`)
     group_name = Column(Unicode(100))
 
-    def __init__(self, node, principal_name, group_name):
+    def __init__(self, node: 'Node', principal_name: str, group_name: str):
         self.node = node
         self.principal_name = principal_name
         self.group_name = group_name
 
-    def copy(self, **kwargs):
+    def copy(self, **kwargs) -> 'LocalGroup':
         kwargs.setdefault('node', self.node)
         kwargs.setdefault('principal_name', self.principal_name)
         kwargs.setdefault('group_name', self.group_name)
@@ -285,11 +303,15 @@ class Node(Base, ContainerMixin, PersistentACLMixin, metaclass=NodeMeta):
         backref=backref('node'),
         cascade='all',
         lazy='joined',
-        )
+    )
 
     __hash__ = Base.__hash__
 
-    def __init__(self, name=None, parent=None, title="", annotations=None,
+    def __init__(self,
+                 name: str = None,
+                 parent: 'Node' = None,
+                 title: str = '',
+                 annotations: dict = None,
                  **kwargs):
         """Constructor"""
 
@@ -314,24 +336,24 @@ class Node(Base, ContainerMixin, PersistentACLMixin, metaclass=NodeMeta):
     def __parent__(self, value):
         self.parent = value
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return '<{0} {1} at {2}>'.format(
             self.__class__.__name__, self.id, resource_path(self))
 
-    def __eq__(self, other):
+    def __eq__(self, other: Any) -> bool:
         return isinstance(other, Node) and self.id == other.id
 
-    def __ne__(self, other):
+    def __ne__(self, other: Any) -> bool:
         return not self == other
 
     copy_properties_blacklist = (
         'id', 'parent', 'parent_id', '_children', 'local_groups', '_tags')
 
-    def clear(self):
+    def clear(self) -> None:
 
         DBSession.query(Node).filter(Node.parent == self).delete()
 
-    def copy(self, **kwargs):
+    def copy(self, **kwargs) -> 'Node':
         """
         :result: A copy of the current instance
         :rtype: :class:`~kotti.resources.Node`
@@ -372,7 +394,7 @@ class TypeInfo(object):
     edit_links = ()
     action_links = ()  # BBB
 
-    def __init__(self, **kwargs):
+    def __init__(self, **kwargs) -> None:
         if 'action_links' in kwargs:
             msg = ("'action_links' is deprecated as of Kotti 1.0.0.  "
                    "'edit_links' includes 'action_links' and should "
@@ -392,7 +414,7 @@ class TypeInfo(object):
 
         self.__dict__.update(kwargs)
 
-    def copy(self, **kwargs):
+    def copy(self, **kwargs) -> 'TypeInfo':
         """
 
         :result: a copy of the current TypeInfo instance
@@ -405,7 +427,9 @@ class TypeInfo(object):
 
         return TypeInfo(**d)
 
-    def addable(self, context, request):
+    def addable(self,
+                context: 'Content',
+                request: Optional[Request]) -> bool:
         """
 
         :param context:
@@ -424,11 +448,11 @@ class TypeInfo(object):
         if self.add_view is None:
             return False
         if context.type_info.name in self.addable_to:
-            return view_permitted(context, request, self.add_view)
+            return bool(view_permitted(context, request, self.add_view))
         else:
             return False
 
-    def add_selectable_default_view(self, name, title):
+    def add_selectable_default_view(self, name: str, title: str) -> None:
         """Add a view to the list of default views selectable by the
         user in the UI.
 
@@ -440,7 +464,7 @@ class TypeInfo(object):
         """
         self.selectable_default_views.append((name, title))
 
-    def is_uploadable_mimetype(self, mimetype):
+    def is_uploadable_mimetype(self, mimetype: str) -> int:
         """ Check if uploads of the given MIME type are allowed.
 
         :param mimetype: MIME type
@@ -476,11 +500,11 @@ class Tag(Base):
     #: :class:`sqlalchemy.types.Unicode`
     title = Column(Unicode(100), unique=True, nullable=False)
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return "<Tag ('{0}')>".format(self.title)
 
     @property
-    def items(self):
+    def items(self) -> List[Node]:
         """
 
         :result:
@@ -516,7 +540,7 @@ class TagsToContents(Base):
     title = association_proxy('tag', 'title')
 
     @classmethod
-    def _tag_find_or_create(cls, title):
+    def _tag_find_or_create(cls, title: str) -> 'TagsToContents':
         """
         Find or create a tag with the given title.
 
@@ -533,7 +557,8 @@ class TagsToContents(Base):
         return cls(tag=tag)
 
 
-def _not_root(context, request):
+# noinspection PyUnusedLocal
+def _not_root(context: Node, request: Request) -> bool:
     return context is not get_root()
 
 
@@ -621,10 +646,20 @@ class Content(Node):
     #: type_info is a class attribute (:class:`TypeInfo`)
     type_info = default_type_info
 
-    def __init__(self, name=None, parent=None, title="", annotations=None,
-                 default_view=None, description="", language=None,
-                 owner=None, creation_date=None, modification_date=None,
-                 in_navigation=True, tags=None, **kwargs):
+    def __init__(self,
+                 name: Optional[str] = None,
+                 parent: Optional[Node] = None,
+                 title: Optional[str] = '',
+                 annotations: Optional[dict] = None,
+                 default_view: Optional[str] = None,
+                 description: Optional[str] = '',
+                 language: Optional[str] = None,
+                 owner: Optional[str] = None,
+                 creation_date: Optional[datetime.datetime] = None,
+                 modification_date: Optional[datetime.datetime] = None,
+                 in_navigation: Optional[bool] = True,
+                 tags: Optional[List[str]] = None,
+                 **kwargs):
 
         super(Content, self).__init__(
             name, parent, title, annotations, **kwargs)
@@ -639,7 +674,7 @@ class Content(Node):
         self.modification_date = modification_date
         self.tags = tags or []
 
-    def copy(self, **kwargs):
+    def copy(self, **kwargs) -> 'Content':
         # Same as `Node.copy` with additional tag support.
         kwargs['tags'] = self.tags
         return super(Content, self).copy(**kwargs)
@@ -673,7 +708,10 @@ class Document(Content):
         addable_to=['Document'],
         )
 
-    def __init__(self, body="", mime_type='text/html', **kwargs):
+    def __init__(self,
+                 body: Optional[str] = '',
+                 mime_type: Optional[str] = 'text/html',
+                 **kwargs):
 
         super(Document, self).__init__(**kwargs)
 
@@ -704,15 +742,13 @@ class SaveDataMixin(object):
     #: Filedepot mapped blob
     #: (:class:`depot.fileds.sqlalchemy.UploadedFileField`)
     @declared_attr
-    def data(cls):
-
+    def data(cls) -> Column:
         return cls.__table__.c.get('data',
                                    Column(UploadedFileField(cls.data_filters)))
-
     data_filters = ()
 
     @classmethod
-    def __declare_last__(cls):
+    def __declare_last__(cls) -> None:
         """ Unconfigure the event set in _SQLAMutationTracker,
         we have _save_data """
 
@@ -726,7 +762,10 @@ class SaveDataMixin(object):
         event.listen(cls.data, 'set', cls._save_data, retval=True)
 
     @staticmethod
-    def _save_data(target, value, oldvalue, initiator):
+    def _save_data(target: 'File',
+                   value: Optional[Union[FieldStorage, bytes, UploadedFile, BufferedReader]],  # noqa
+                   oldvalue: Optional[Union[UploadedFile, _symbol]],
+                   initiator: Event) -> Optional[UploadedFile]:
         """ Refresh metadata and save the binary data to the data field.
 
         :param target: The File instance
@@ -773,8 +812,12 @@ class SaveDataMixin(object):
 
         return cls(data=fs)
 
-    def __init__(self, data=None, filename=None, mimetype=None, size=None,
-                 **kwargs):
+    def __init__(self,
+                 data: Optional[Union[bytes, BufferedReader, FieldStorage]]=None,  # noqa
+                 filename: Optional[str] = None,
+                 mimetype: Optional[str] = None,
+                 size: Optional[int] = None,
+                 **kwargs) -> None:
 
         super(SaveDataMixin, self).__init__(**kwargs)
 
@@ -783,7 +826,7 @@ class SaveDataMixin(object):
         self.size = size
         self.data = data
 
-    def copy(self, **kwargs):
+    def copy(self, **kwargs) -> 'File':
         """ Same as `Content.copy` with additional data support.  ``data`` needs
         some special attention, because we don't want the same depot file to be
         assigned to multiple content nodes.
@@ -813,7 +856,7 @@ class File(SaveDataMixin, Content):
         )
 
 
-def get_root(request=None):
+def get_root(request: Optional[Request] = None) -> Node:
     """Call the function defined by the ``kotti.root_factory`` setting and
        return its result.
 
@@ -832,7 +875,7 @@ class DefaultRootCache(object):
 
     # noinspection PyComparisonWithNone,PyPep8
     @reify
-    def root_id(self):
+    def root_id(self) -> int:
         """ Query for the one node without a parent and return its id.
         :result: The root node's id.
         :rtype: int
@@ -844,7 +887,7 @@ class DefaultRootCache(object):
 
         return query(DBSession()).one().id
 
-    def get_root(self):
+    def get_root(self) -> Node:
         """ Query for the root node by its id.  This enables SQLAlchemy's
         session cache (query is executed only once per session).
         :result: The root node.
@@ -853,7 +896,7 @@ class DefaultRootCache(object):
 
         return Node.query.get(self.root_id)
 
-    def __call__(self, request=None):
+    def __call__(self, request: Optional[Request] = None) -> Node:
         """ Default implementation for :func:`~kotti.resources.get_root`
         :param request: Current request (optional)
         :type request: :class:`kotti.request.Request`
@@ -870,7 +913,7 @@ class DefaultRootCache(object):
 default_get_root = DefaultRootCache()
 
 
-def _adjust_for_engine(engine):
+def _adjust_for_engine(engine: Engine) -> None:
     if engine.dialect.name == 'mysql':  # pragma: no cover
         # We disable the Node.path index for Mysql; in some conditions
         # the index can't be created for columns even with 767 bytes,
@@ -880,7 +923,7 @@ def _adjust_for_engine(engine):
             if index.name != "ix_nodes_path")
 
 
-def initialize_sql(engine, drop_all=False):
+def initialize_sql(engine: Engine, drop_all: bool = False) -> scoped_session:
     DBSession.registry.clear()
     DBSession.configure(bind=engine)
     metadata.bind = engine

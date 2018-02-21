@@ -1,15 +1,26 @@
 import logging
 import mimetypes
 import uuid
+from cgi import FieldStorage
 from datetime import datetime
+from typing import Callable
+from typing import Dict
+from typing import List
+from typing import Optional
+from typing import Tuple
+from typing import Union
 
 import rfc6266_parser
 from depot.fields.sqlalchemy import _SQLAMutationTracker
+from depot.fields.upload import UploadedFile
 from depot.io.interfaces import FileStorage
+from depot.io.memory import MemoryStoredFile
 from depot.manager import DepotManager
 from pyramid import tweens
+from pyramid.config import Configurator
 from pyramid.httpexceptions import HTTPMovedPermanently
 from pyramid.httpexceptions import HTTPNotFound
+from pyramid.registry import Registry
 from pyramid.response import FileIter
 from pyramid.response import Response
 from pyramid.response import _BLOCK_SIZE
@@ -20,12 +31,19 @@ from sqlalchemy import LargeBinary
 from sqlalchemy import String
 from sqlalchemy import Unicode
 from sqlalchemy import event
+from sqlalchemy.engine.base import Connection
 from sqlalchemy.orm import deferred
+from sqlalchemy.orm.attributes import Event
+from sqlalchemy.util.langhelpers import _symbol
 from unidecode import unidecode
 
 from kotti import Base
 from kotti import DBSession
 from kotti import get_settings
+from kotti.events import ObjectInsert
+from kotti.events import ObjectUpdate
+from kotti.request import Request
+from kotti.testing import DummyRequest
 from kotti.util import _to_fieldstorage
 from kotti.util import camel_case_to_name
 from kotti.util import command
@@ -82,7 +100,8 @@ class DBStoredFile(Base):
         for k, v in kwds.items():
             setattr(self, k, v)
 
-    def read(self, n=-1):
+    def read(self,
+             n: int = -1) -> bytes:
         """Reads ``n`` bytes from the file.
 
         If ``n`` is not specified or is ``-1`` the whole
@@ -103,31 +122,31 @@ class DBStoredFile(Base):
         return result
 
     @staticmethod
-    def close(*args, **kwargs):
+    def close(*args, **kwargs) -> None:
         """Implement :meth:`StoredFile.close`.
         :class:`DBStoredFile` never closes.
         """
         return
 
     @staticmethod
-    def closed():
+    def closed() -> bool:
         """Implement :meth:`StoredFile.closed`.
         """
         return False
 
     @staticmethod
-    def writable():
+    def writable() -> bool:
         """Implement :meth:`StoredFile.writable`.
         """
         return False
 
     @staticmethod
-    def seekable():
+    def seekable() -> bool:
         """Implement :meth:`StoredFile.seekable`.
         """
         return True
 
-    def seek(self, offset, whence=0):
+    def seek(self, offset: int, whence: int = 0) -> None:
         """ Change stream position.
 
         Change the stream position to the given byte offset. The offset is
@@ -149,7 +168,7 @@ class DBStoredFile(Base):
         else:
             raise ValueError('whence must be 0, 1 or 2')
 
-    def tell(self):
+    def tell(self) -> int:
         """ Returns current position of file cursor
 
         :result: Current file cursor position.
@@ -158,7 +177,7 @@ class DBStoredFile(Base):
         return self._cursor
 
     @property
-    def name(self):
+    def name(self) -> str:
         """Implement :meth:`StoredFile.name`.
 
         :result: the filename of the saved file
@@ -167,7 +186,7 @@ class DBStoredFile(Base):
         return self.filename
 
     @classmethod
-    def __declare_last__(cls):
+    def __declare_last__(cls) -> None:
         """ Executed by SQLAlchemy as part of mapper configuration
 
         When the data changes, we want to reset the cursor position of target
@@ -176,12 +195,15 @@ class DBStoredFile(Base):
         event.listen(DBStoredFile.data, 'set', handle_change_data)
 
 
-def handle_change_data(target, value, oldvalue, initiator):
+def handle_change_data(target: DBStoredFile,
+                       value: Optional[bytes],
+                       oldvalue: Union[bytes, _symbol],
+                       initiator: Event) -> None:
     target._cursor = 0
     target._data = _marker
 
 
-def set_metadata(event):
+def set_metadata(event: Union[ObjectUpdate, ObjectInsert]) -> None:
     """Set DBStoredFile metadata based on data
 
     :param event: event that trigerred this handler.
@@ -200,7 +222,7 @@ class DBFileStorage(FileStorage):
 
     # noinspection PyMethodOverriding
     @staticmethod
-    def get(file_id):
+    def get(file_id: str) -> DBStoredFile:
         """Returns the file given by the file_id
 
         :param file_id: the unique id associated to the file
@@ -214,7 +236,10 @@ class DBFileStorage(FileStorage):
             raise IOError
         return f
 
-    def create(self, content, filename=None, content_type=None):
+    def create(self,
+               content: Union[bytes, FieldStorage],
+               filename: Optional[str] = None,
+               content_type: Optional[str] = None) -> str:
         """Saves a new file and returns the file id
 
         :param content: can either be ``bytes``, another ``file object``
@@ -245,7 +270,11 @@ class DBFileStorage(FileStorage):
         DBSession.add(fstore)
         return new_file_id
 
-    def replace(self, file_or_id, content, filename=None, content_type=None):
+    def replace(self,
+                file_or_id: Union[DBStoredFile, str],
+                content: bytes,
+                filename: Optional[str] = None,
+                content_type: Optional[str] = None) -> None:
         """Replaces an existing file, an ``IOError`` is raised if the file
         didn't already exist.
 
@@ -286,7 +315,8 @@ class DBFileStorage(FileStorage):
 
         fstore.data = content
 
-    def delete(self, file_or_id):
+    def delete(self,
+               file_or_id: str) -> None:
         """Deletes a file. If the file didn't exist it will just do nothing.
 
         :param file_or_id: can be either ``DBStoredFile`` or a ``file_id``
@@ -296,7 +326,8 @@ class DBFileStorage(FileStorage):
 
         DBSession.query(DBStoredFile).filter_by(file_id=file_id).delete()
 
-    def exists(self, file_or_id):
+    def exists(self,
+               file_or_id: str) -> bool:
         """Returns if a file or its ID still exist.
 
         :return: Returns if a file or its ID still exist.
@@ -309,17 +340,18 @@ class DBFileStorage(FileStorage):
             DBSession.query(DBStoredFile).filter_by(file_id=file_id).count())
 
     @staticmethod
-    def list(*args):
+    def list(*args) -> None:
         raise NotImplementedError("list() method is unimplemented.")
 
     @staticmethod
-    def _get_file_id(file_or_id):
+    def _get_file_id(file_or_id: Union[DBStoredFile, str]) -> str:
         if hasattr(file_or_id, 'file_id'):
             return file_or_id.file_id
         return file_or_id
 
 
-def migrate_storage(from_storage, to_storage):
+def migrate_storage(from_storage: str,
+                    to_storage: str) -> None:
 
     log = logging.getLogger(__name__)
 
@@ -381,9 +413,13 @@ class StoredFileResponse(Response):
     Code adapted from :class:`pyramid.response.FileResponse`.
     """
 
-    def __init__(self, f, request, disposition='attachment',
-                 cache_max_age=604800, content_type=None,
-                 content_encoding=None):
+    def __init__(self,
+                 f: MemoryStoredFile,
+                 request: Union[DummyRequest, Request],
+                 disposition: str = 'attachment',
+                 cache_max_age: int = 604800,
+                 content_type: None = None,
+                 content_encoding: None = None) -> None:
         """
         :param f: the ``UploadedFile`` file field value.
         :type f: :class:`depot.io.interfaces.StoredFile`
@@ -445,7 +481,9 @@ class StoredFileResponse(Response):
         self.content_disposition = disposition
 
     @staticmethod
-    def _get_type_and_encoding(content_encoding, content_type, f):
+    def _get_type_and_encoding(content_encoding: None,
+                               content_type: None,
+                               f: MemoryStoredFile) -> Tuple['NoneType', str]:
         content_type = content_type or getattr(f, 'content_type', None)
         if content_type is None:
             content_type, content_encoding = \
@@ -459,12 +497,14 @@ class StoredFileResponse(Response):
         return content_encoding, content_type
 
     @staticmethod
-    def generate_etag(f):
+    def generate_etag(f: MemoryStoredFile) -> str:
         return '"{0}-{1}"'.format(f.last_modified, f.content_length)
 
 
-def uploaded_file_response(self, uploaded_file, disposition='inline',
-                           cache_max_age=604800):
+def uploaded_file_response(self: Union[DummyRequest, Request],
+                           uploaded_file: UploadedFile,
+                           disposition: str = 'inline',
+                           cache_max_age: int = 604800) -> StoredFileResponse:
     return StoredFileResponse(uploaded_file.file, self,
                               disposition=disposition,
                               cache_max_age=cache_max_age)
@@ -492,7 +532,9 @@ class TweenFactory(object):
     object instead of the WSGI environment.
     """
 
-    def __init__(self, handler, registry):
+    def __init__(self,
+                 handler: Optional[Callable],
+                 registry: Registry) -> None:
         """
         :param handler: Downstream tween or main Pyramid request handler (Kotti)
         :type handler: function
@@ -510,7 +552,8 @@ class TweenFactory(object):
     def url_for(self, path):
         return '/'.join((self.mountpoint, path))
 
-    def __call__(self, request):
+    def __call__(self,
+                 request: Request) -> Response:
         """
         :param request: Current request
         :type request: :class:`kotti.request.Request`
@@ -563,7 +606,8 @@ class TweenFactory(object):
         return response
 
 
-def adjust_for_engine(conn, branch):
+def adjust_for_engine(conn: Connection,
+                      branch: bool) -> None:
     # adjust for engine type
 
     if conn.engine.dialect.name == 'mysql':  # pragma: no cover
@@ -585,7 +629,8 @@ def adjust_for_engine(conn, branch):
         UploadedFileField.process_result_value = patched_processed_result_value
 
 
-def extract_depot_settings(prefix="kotti.depot.", settings=None):
+def extract_depot_settings(prefix: Optional[str]="kotti.depot.",
+                           settings: Optional[Dict[str, str]]=None) -> List[Dict[str, str]]:  # noqa
     """ Merges items from a dictionary that have keys that start with `prefix`
     to a list of dictionaries.
 
@@ -625,7 +670,7 @@ def extract_depot_settings(prefix="kotti.depot.", settings=None):
     return result
 
 
-def configure_filedepot(settings):
+def configure_filedepot(settings: Dict[str, str]) -> None:
 
     config = extract_depot_settings('kotti.depot.', settings)
     for conf in config:
@@ -634,7 +679,7 @@ def configure_filedepot(settings):
             DepotManager.configure(name, conf, prefix='')
 
 
-def includeme(config):
+def includeme(config: Configurator) -> None:
     """ Pyramid includeme hook.
 
     :param config: app config

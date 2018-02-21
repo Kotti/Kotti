@@ -124,11 +124,10 @@ def read(*parts):
 setup(name='Kotti',
       version=version,
       description=description,
-      long_description='\n\n'.join([read('README.rst'), read('AUTHORS.txt'),
+      long_description='\n\n'.join([read('README.rst'),
+                                    read('AUTHORS.txt'),
                                     read('CHANGES.txt'), ]),
       classifiers=[
-          # 'Development Status :: 3 - Alpha',
-          # 'Development Status :: 4 - Beta',
           'Development Status :: 5 - Production/Stable',
           'Environment :: Web Environment',
           'Framework :: Pylons',

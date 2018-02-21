@@ -1,8 +1,14 @@
+from typing import Optional
+from typing import Union
+
 import pyramid.request
 from pyramid.decorator import reify
 from pyramid.interfaces import IRequest
+from pyramid.security import Allowed
+from pyramid.security import Denied
 from zope.interface import implementer
 
+from kotti.security import Principal
 from kotti.security import get_user
 
 
@@ -16,7 +22,7 @@ class Request(pyramid.request.Request):
     """
 
     @reify
-    def user(self):
+    def user(self) -> Optional[Principal]:
         """ Add the authenticated user to the request object.
 
         :result: the currently authenticated user
@@ -26,7 +32,9 @@ class Request(pyramid.request.Request):
         """
         return get_user(self)
 
-    def has_permission(self, permission, context=None):
+    def has_permission(self,
+                       permission: str,
+                       context: object = None) -> Union[Allowed, Denied]:
         """ Check if the current request has the given permission on the
         current or explicitly passed context.  This is different from
         :meth:`pyramid.request.Request.has_permission`` in that a context other

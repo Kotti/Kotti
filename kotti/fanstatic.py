@@ -1,3 +1,7 @@
+from typing import List
+from typing import Optional
+from typing import Union
+
 from fanstatic import Group
 from fanstatic import Library
 from fanstatic import Resource
@@ -11,7 +15,6 @@ from js.jquery_form import jquery_form
 from js.jquery_tablednd import jquery_tablednd
 from js.jqueryui import bootstrap as jqueryui_bootstrap_theme
 from js.jqueryui_tagit import tagit as ui_tagit
-
 
 # This is needed until ``kotti.views.form.deferred_tag_it_widget`` is converted
 # to a class with a ``requirements`` attribute (that would be auto_needed by
@@ -62,7 +65,8 @@ class NeededGroup(object):
     """A collection of fanstatic resources that supports
        dynamic appending of resources after initialization"""
 
-    def __init__(self, resources=None):
+    def __init__(self,
+                 resources: Optional[List[Union[Resource, 'NeededGroup']]]=None):  # noqa
 
         if resources is None:
             resources = []
@@ -77,7 +81,7 @@ class NeededGroup(object):
         for resource in resources:
             self.add(resource)
 
-    def add(self, resource):
+    def add(self, resource: Union['NeededGroup', Resource]):
         """resource may be a:
 
             - :class:`fanstatic.Resource` object or

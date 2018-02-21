@@ -1,6 +1,9 @@
 """ For a high level introduction and available configuration options
 see :ref:`sanitizers`.
 """
+from typing import Dict
+from typing import Union
+
 from bleach import clean
 from bleach_whitelist.bleach_whitelist import all_styles
 from bleach_whitelist.bleach_whitelist import generally_xss_safe
@@ -8,6 +11,7 @@ from bleach_whitelist.bleach_whitelist import markdown_attrs
 from bleach_whitelist.bleach_whitelist import markdown_tags
 from bleach_whitelist.bleach_whitelist import print_attrs
 from bleach_whitelist.bleach_whitelist import print_tags
+from pyramid.config import Configurator
 from pyramid.util import DottedNameResolver
 from six import string_types
 
@@ -17,7 +21,7 @@ from kotti.events import ObjectUpdate
 from kotti.events import objectevent_listeners
 
 
-def sanitize(html, sanitizer):
+def sanitize(html: str, sanitizer: str) -> str:
     """ Sanitize HTML
 
     :param html: HTML to be sanitized
@@ -35,7 +39,7 @@ def sanitize(html, sanitizer):
     return sanitized
 
 
-def xss_protection(html):
+def xss_protection(html: str) -> str:
     """ Sanitizer that removes tags that are not considered XSS safe.  See
     ``bleach_whitelist.generally_xss_unsafe`` for a complete list of tags that
     are removed.  Attributes and styles are left untouched.
@@ -57,7 +61,7 @@ def xss_protection(html):
     return sanitized
 
 
-def minimal_html(html):
+def minimal_html(html: str) -> str:
     """ Sanitizer that only leaves a basic set of tags and attributes.  See
     ``bleach_whitelist.markdown_tags``, ``bleach_whitelist.print_tags``,
     ``bleach_whitelist.markdown_attrs``, ``bleach_whitelist.print_attrs`` for a
@@ -85,7 +89,7 @@ def minimal_html(html):
     return sanitized
 
 
-def no_html(html):
+def no_html(html: str) -> str:
     """ Sanitizer that removes **all** tags.
 
     :param html: HTML to be sanitized
@@ -105,7 +109,7 @@ def no_html(html):
     return sanitized
 
 
-def _setup_sanitizers(settings):
+def _setup_sanitizers(settings: Dict[str, Union[str, bool]]) -> None:
 
     # step 1: resolve sanitizer functions and make ``kotti.sanitizers`` a
     # dictionary containing resolved functions
@@ -146,7 +150,7 @@ def _setup_listeners(settings):
             _create_handler(attributename, sanitizers))
 
 
-def includeme(config):
+def includeme(config: Configurator) -> None:
     """ Pyramid includeme hook.
 
     :param config: app config
