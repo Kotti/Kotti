@@ -28,6 +28,7 @@ install_requires = [
     'filedepot',
     'formencode>=2.0.0a',
     'html2text',
+    'iso8601==0.1.11',  # deform requirement.  isn't picked up automatically for some reason # noqa
     'js.angular',
     'js.bootstrap>=3.0.0',
     'js.deform>=2.0a2-2',
