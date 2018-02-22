@@ -34,7 +34,7 @@ install_requires = [
     'js.deform>=2.0a2-2',
     'js.fineuploader',
     'js.html5shiv',
-    'js.jquery',
+    'js.jquery<2.0.0.dev',
     'js.jquery_form',
     'js.jquery_tablednd',
     'js.jquery_timepicker_addon',
