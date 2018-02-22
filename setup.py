@@ -24,7 +24,7 @@ install_requires = [
     'colander>=1.3.2',
     'deform>=2.0.5',  # fixes file upload on py3 - uncomment after 2.0.5 is released  # noqa
     'docopt',
-    'fanstatic>=1.0a7',
+    'fanstatic>=1.0.0',
     'filedepot',
     'formencode>=2.0.0a',
     'html2text',
@@ -42,7 +42,7 @@ install_requires = [
     'js.jqueryui_tagit',
     'lingua>=1.3',
     'py_bcrypt',
-    'pyramid>=1.9',  # needed for ``request.has_permission``,
+    'pyramid>=1.9',
     'pyramid_beaker',
     'pyramid_chameleon',
     'pyramid_deform>=0.2a3',  # language and template path config includeme
