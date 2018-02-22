@@ -6,7 +6,7 @@ Installation
 Requirements
 ------------
 
-- Python 2.7 (Python 3 will be supported soon)
+- Python >= 3.5
 - virtualenv_
 - ``build_essential`` and ``python-dev`` (on Debian or Ubuntu) or
 - ``Xcode`` (on OS X) or
@@ -21,7 +21,6 @@ It is recommended to install Kotti inside a virtualenv:
 
   virtualenv mysite
   cd mysite
-  bin/pip install -r https://raw.github.com/Kotti/Kotti/stable/requirements.txt
   bin/pip install Kotti
 
 This will install the latest released version of Kotti and all its requirements into your virtualenv.
@@ -55,22 +54,9 @@ See the Pyramid documentation for a variety of server and server configuration o
 
 The pserve command above uses SQLite as the default database.
 On first run, Kotti will create a SQLite database called Kotti.db in your mysite directory.
-Kotti includes support for PostgreSQL, MySQL and SQLite (tested regularly), and
-`other SQL databases`_.
+Kotti includes support for PostgreSQL, MySQL and SQLite (tested regularly), and `other SQL databases`_.
 The default use of SQLite makes initial development easy.
 Although SQLite may prove to be adequate for some deployments, Kotti is flexible for installation of your choice of database during development or at deployment.
-
-Installation using Docker (experimental)
-----------------------------------------
-
-This assumes that you already have Docker_ installed:
-
-.. parsed-literal::
-
-  docker pull kotti/kotti
-  docker run -i -t -p 5000:5000 kotti/kotti
-
-This should get you a running Kotti instance on port 5000.
 
 .. _other SQL databases: http://www.sqlalchemy.org/docs/core/engines.html#supported-databases
 .. _virtualenv: http://pypi.python.org/pypi/virtualenv
