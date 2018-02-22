@@ -1,11 +1,9 @@
 <!--
     This template is used for XHR requests and when content is rendered inline.
 -->
-<html tal:omit-tag=""
-      metal:define-macro="main">
+<html tal:omit-tag="" metal:define-macro="main">
 
-  <div tal:replace="api.render_template('kotti:templates/messages.pt')"
-       tal:condition="request.is_xhr" />
+  <div tal:replace="api.render_template('kotti:templates/messages.pt')" tal:condition="request.is_xhr"></div>
 
   <div metal:define-slot="content">
     <h1>${context.title}</h1>

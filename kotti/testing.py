@@ -1,14 +1,12 @@
-# -*- coding: utf-8 -*-
 """
 Inheritance Diagram
 -------------------
 
 .. inheritance-diagram:: kotti.testing
 """
-from __future__ import absolute_import, division, print_function
-
 import os
-from os.path import join, dirname
+from os.path import dirname
+from os.path import join
 from unittest import TestCase
 from warnings import catch_warnings
 
@@ -24,9 +22,9 @@ from zope.interface import implementer
 # however, let the `ImportWarning` produced by Babel's
 # `localedata.py` vs `localedata/` show up once...
 with catch_warnings():
-    from babel import localedata
-    import compiler
-    localedata, compiler    # make pyflakes happy... :p
+    pass
+    # import compiler
+    # localedata, compiler    # make pyflakes happy... :p
 
 
 # py.test markers (see http://pytest.org/latest/example/markers.html)
@@ -37,6 +35,7 @@ BASE_URL = 'http://localhost:6543'
 
 
 class Dummy(dict):
+    # noinspection PyMissingConstructor
     def __init__(self, **kwargs):
         self.__dict__.update(kwargs)
 
@@ -52,6 +51,7 @@ class DummyRequest(testing.DummyRequest):
         return (hasattr(ob, 'app_iter') and hasattr(ob, 'headerlist') and
                 hasattr(ob, 'status'))
 
+    # noinspection PyPep8Naming
     @classmethod
     def blank(cls,
               path, environ=None, base_url=None, headers=None, POST=None,
@@ -60,15 +60,16 @@ class DummyRequest(testing.DummyRequest):
         ``request.blank`` is used in Kotti only when assigning slots, where
         the POST parameters are faked as a querystring.
         """
-        import urlparse
+        from urllib.parse import parse_qsl
 
         def _decode(body):
             if not body:
                 return {}
-            return dict([(x, y.decode('utf-8'))
-                         for x, y in urlparse.parse_qsl(body)])
+            return dict([(x, y) for x, y in parse_qsl(body)])
 
-        if POST and isinstance(POST, basestring):
+        if POST and isinstance(POST, bytes):
+            POST = POST.decode()
+        if POST and isinstance(POST, str):
             POST = _decode(POST)
         req = testing.DummyRequest(path=path, environ=environ, headers=headers,
                                    cookies=None, post=POST, **kw)
@@ -112,14 +113,14 @@ def login_view(request):
 
 
 def dummy_search(search_term, request):
-    return u"Not found. Sorry!"
+    return "Not found. Sorry!"
 
 
 def testing_db_url():
     return os.environ.get('KOTTI_TEST_DB_STRING', 'sqlite://')
 
 
-def _initTestingDB():
+def _init_testing_db():
     from sqlalchemy import create_engine
     from kotti import get_settings
     from kotti.resources import initialize_sql
@@ -150,6 +151,7 @@ def _turn_warnings_into_errors():  # pragma: no cover
     filterwarnings("error")
 
 
+# noinspection PyPep8Naming
 def setUp(init_db=True, **kwargs):
     # _turn_warnings_into_errors()
 
@@ -161,6 +163,7 @@ def setUp(init_db=True, **kwargs):
     settings['kotti.secret'] = 'secret'
     settings['kotti.secret2'] = 'secret2'
     settings['kotti.populators'] = 'kotti.testing._populator'
+    settings['pyramid_deform.tempdir'] = '/tmp'
     settings.update(kwargs.get('settings', {}))
     settings = _resolve_dotted(settings)
     kwargs['settings'] = settings
@@ -168,12 +171,13 @@ def setUp(init_db=True, **kwargs):
     config.add_default_renderers()
 
     if init_db:
-        _initTestingDB()
+        _init_testing_db()
 
     transaction.begin()
     return config
 
 
+# noinspection PyPep8Naming
 def tearDown():
     from depot.manager import DepotManager
     from kotti import events
@@ -223,6 +227,7 @@ def _zope_testbrowser_pyquery(self):
         self.contents.replace('xmlns="http://www.w3.org/1999/xhtml', ''))
 
 
+# noinspection PyPep8Naming
 def setUpFunctional(global_config=None, **settings):
     from kotti import main
     from zope.testbrowser.wsgi import Browser
@@ -264,7 +269,7 @@ class FunctionalTestBase(TestCase):
     def tearDown(self):
         tearDown()
 
-    def login(self, login=u'admin', password=u'secret'):
+    def login(self, login='admin', password='secret'):
         return self.test_app.post(
             '/@@login',
             {'login': login, 'password': password, 'submit': 'submit'},
@@ -308,6 +313,7 @@ def include_testing_view(config):
         )
 
 
+# noinspection PyPep8Naming
 def setUpFunctionalStrippedDownApp(global_config=None, **settings):
     # An app that doesn't use Nodes at all
     _settings = {
@@ -325,6 +331,7 @@ def setUpFunctionalStrippedDownApp(global_config=None, **settings):
     return setUpFunctional(global_config, **_settings)
 
 
+# noinspection PyPep8Naming
 def registerDummyMailer():
     from pyramid_mailer.mailer import DummyMailer
     from kotti.message import _inject_mailer
@@ -336,12 +343,7 @@ def registerDummyMailer():
 
 # set up deprecation warnings
 from zope.deprecation.deprecation import deprecated  # noqa
-for item in UnitTestBase, EventTestBase, FunctionalTestBase, _initTestingDB:
+for item in UnitTestBase, EventTestBase, FunctionalTestBase, _init_testing_db:
     name = getattr(item, '__name__', item)
     deprecated(name, 'Unittest-style tests are deprecated as of Kotti 0.7. '
                'Please use pytest function arguments instead.')
-
-TestingRootFactory = RootFactory
-deprecated('TestingRootFactory',
-           "TestingRootFactory has been renamed to RootFactory and will be no "
-           "longer available starting with Kotti 2.0.0.")

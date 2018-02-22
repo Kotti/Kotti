@@ -1,6 +1,3 @@
-# -*- coding: utf-8 -*-
-from __future__ import absolute_import, division, print_function
-
 from mock import Mock
 from mock import patch
 
@@ -67,45 +64,45 @@ class TestTitleToName:
     def test_max_length_40(self):
         self.setUp()
         from kotti.util import title_to_name
-        assert len(title_to_name(u'a' * 50)) == 50
+        assert len(title_to_name('a' * 50)) == 50
 
     def test_max_length_250(self):
         self.setUp()
         from kotti.util import title_to_name
-        assert len(title_to_name(u'a' * 250)) == 240
+        assert len(title_to_name('a' * 250)) == 240
 
     def test_max_length_255(self):
         self.setUp()
         from kotti.util import title_to_name
-        assert len(title_to_name(u'a' * 255)) == 240
+        assert len(title_to_name('a' * 255)) == 240
 
     def test_normal(self):
         self.setUp()
         from kotti.util import title_to_name
-        assert title_to_name(u'Foo Bar') == u'foo-bar'
+        assert title_to_name('Foo Bar') == 'foo-bar'
 
     def test_max_length_40_no_default(self):
         self.setUp()
         from kotti.util import title_to_name
-        assert len(title_to_name(u'a' * 50, max_length=40)) == 40
+        assert len(title_to_name('a' * 50, max_length=40)) == 40
 
     def test_numbering(self):
         self.setUp()
         from kotti.util import title_to_name
-        assert title_to_name(u'Report Part 1',
-                             blacklist=[]) == u'report-part-1'
-        assert title_to_name(u'Report Part 1',
-                             blacklist=['report-part-1']) == u'report-part-1-1'
-        assert title_to_name(u'Report Part 3',
-                             blacklist=['report-part-3']) == u'report-part-3-1'
+        assert title_to_name('Report Part 1',
+                             blacklist=[]) == 'report-part-1'
+        assert title_to_name('Report Part 1',
+                             blacklist=['report-part-1']) == 'report-part-1-1'
+        assert title_to_name('Report Part 3',
+                             blacklist=['report-part-3']) == 'report-part-3-1'
         assert title_to_name(
-            u'Report Part 3', blacklist=['report-part-3', 'report-part-3-1']
-        ) == u'report-part-3-2'
+            'Report Part 3', blacklist=['report-part-3', 'report-part-3-1']
+        ) == 'report-part-3-2'
 
     def test_disambiguate_name(self):
         from kotti.util import disambiguate_name
-        assert disambiguate_name(u'foo') == u'foo-1'
-        assert disambiguate_name(u'foo-3') == u'foo-4'
+        assert disambiguate_name('foo') == 'foo-1'
+        assert disambiguate_name('foo-3') == 'foo-4'
 
 
 class TestCommand:
@@ -129,8 +126,8 @@ class TestTemplateStructure:
     def test_getattr(self):
         from kotti.util import TemplateStructure
 
-        item = TemplateStructure(u'123')
-        assert item.split('2') == [u'1', u'3']
+        item = TemplateStructure('123')
+        assert item.split('2') == ['1', '3']
 
 
 class TestLink:

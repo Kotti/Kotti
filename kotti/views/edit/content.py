@@ -1,11 +1,4 @@
-# -*- coding: utf-8 -*-
-"""
-Content edit views
-"""
-from __future__ import absolute_import, division, print_function
-
 import random
-from StringIO import StringIO
 
 import colander
 from colander import SchemaNode
@@ -32,7 +25,7 @@ from kotti.views.form import validate_file_size_limit
 class ContentSchema(colander.MappingSchema):
     title = colander.SchemaNode(
         colander.String(),
-        title=_(u'Title'),
+        title=_('Title'),
         validator=colander.Length(
             max=Node.title.property.columns[0].type.length),
         )
@@ -40,7 +33,7 @@ class ContentSchema(colander.MappingSchema):
         colander.String(),
         title=_('Description'),
         widget=TextAreaWidget(cols=40, rows=5),
-        missing=u"",
+        missing='',
         )
     tags = colander.SchemaNode(
         ObjectType(),
@@ -53,13 +46,23 @@ class ContentSchema(colander.MappingSchema):
 class DocumentSchema(ContentSchema):
     body = colander.SchemaNode(
         colander.String(),
-        title=_(u'Body'),
+        title=_('Body'),
         widget=RichTextWidget(
             # theme='advanced', width=790, height=500
             height=500,
         ),
-        missing=u"",
+        missing="",
         )
+
+
+class DocumentAddForm(AddFormView):
+    schema_factory = DocumentSchema
+    add = Document
+    item_type = _("Document")
+
+
+class DocumentEditForm(EditFormView):
+    schema_factory = DocumentSchema
 
 
 # noinspection PyPep8Naming
@@ -67,7 +70,7 @@ def FileSchema(tmpstore, title_missing=None):
     class FileSchema(ContentSchema):
         file = SchemaNode(
             FileData(),
-            title=_(u'File'),
+            title=_('File'),
             widget=FileUploadWidget(tmpstore),
             validator=validate_file_size_limit,
             )
@@ -80,14 +83,28 @@ def FileSchema(tmpstore, title_missing=None):
     return FileSchema(after_bind=set_title_missing)
 
 
-class DocumentEditForm(EditFormView):
-    schema_factory = DocumentSchema
+class FileAddForm(AddFormView):
+    item_type = _("File")
+    item_class = File  # specific to this class
 
+    def schema_factory(self):
+        tmpstore = FileUploadTempStore(self.request)
+        return FileSchema(tmpstore, title_missing=null)
 
-class DocumentAddForm(AddFormView):
-    schema_factory = DocumentSchema
-    add = Document
-    item_type = _(u"Document")
+    def save_success(self, appstruct):
+        if not appstruct['title']:
+            appstruct['title'] = appstruct['file']['filename']
+        return super(FileAddForm, self).save_success(appstruct)
+
+    def add(self, **appstruct):
+        filename = appstruct['file']['filename']
+        item = self.item_class(
+            title=appstruct['title'] or filename,
+            description=appstruct['description'],
+            tags=appstruct['tags'],
+            data=_to_fieldstorage(**appstruct['file']),
+        )
+        return item
 
 
 class FileEditForm(EditFormView):
@@ -115,30 +132,6 @@ class FileEditForm(EditFormView):
         self.context.tags = appstruct['tags']
         if appstruct['file'] and appstruct['file']['fp']:
             self.context.data = _to_fieldstorage(**appstruct['file'])
-
-
-class FileAddForm(AddFormView):
-    item_type = _(u"File")
-    item_class = File  # specific to this class
-
-    def schema_factory(self):
-        tmpstore = FileUploadTempStore(self.request)
-        return FileSchema(tmpstore, title_missing=null)
-
-    def save_success(self, appstruct):
-        if not appstruct['title']:
-            appstruct['title'] = appstruct['file']['filename']
-        return super(FileAddForm, self).save_success(appstruct)
-
-    def add(self, **appstruct):
-        filename = appstruct['file']['filename']
-        item = self.item_class(
-            title=appstruct['title'] or filename,
-            description=appstruct['description'],
-            tags=appstruct['tags'],
-            data=_to_fieldstorage(**appstruct['file']),
-        )
-        return item
 
 
 def includeme(config):
@@ -177,17 +170,3 @@ def includeme(config):
         permission=File.type_info.add_permission,
         renderer='kotti:templates/edit/node.pt',
         )
-
-# DEPRECATED
-
-# noinspection PyPep8
-from zope.deprecation import deprecated
-# noinspection PyPep8
-from kotti_image.views.edit import ImageAddForm
-# noinspection PyPep8
-from kotti_image.views.edit import ImageEditForm
-__ = ImageAddForm, ImageEditForm   # pyflakes
-
-deprecated(('ImageAddForm', 'ImageEditForm'),
-           'Image was outfactored to the kotti_image package.  '
-           'Please import from there.')

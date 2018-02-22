@@ -1,10 +1,7 @@
-# -*- coding: utf-8 -*-
-from __future__ import absolute_import, division, print_function
-
 import hashlib
-import urllib
 from collections import defaultdict
 from datetime import datetime
+from urllib.parse import urlencode
 
 from babel.dates import format_date
 from babel.dates import format_datetime
@@ -21,13 +18,12 @@ from pyramid.settings import asbool
 from sqlalchemy import and_
 from sqlalchemy import not_
 from sqlalchemy import or_
-from zope.deprecation import deprecated
 
 from kotti import DBSession
 from kotti import get_settings
 from kotti.events import objectevent_listeners
 from kotti.interfaces import INavigationRoot
-from kotti.resources import Content
+from kotti.resources import Content, Node
 from kotti.resources import Document
 from kotti.resources import Tag
 from kotti.resources import TagsToContents
@@ -47,7 +43,7 @@ class SettingHasValuePredicate(object):
             raise ValueError("Only boolean values supported")
 
     def text(self):
-        return u'if_setting_has_value = {0} == {1}'.format(
+        return 'if_setting_has_value = {0} == {1}'.format(
             self.name, self.value)
 
     phash = text
@@ -61,7 +57,7 @@ class RootOnlyPredicate(object):
         self.val = val
 
     def text(self):
-        return u'root_only = {0}'.format(self.val)
+        return 'root_only = {0}'.format(self.val)
 
     phash = text
 
@@ -81,13 +77,6 @@ def add_renderer_globals(event):
         if api is None and request is not None:
             api = template_api(event['context'], event['request'])
         event['api'] = api
-
-
-def is_root(context, request):
-    return context is request.root
-deprecated('is_root', "'is_root' is deprecated as of Kotti 1.0.0. "
-           "Use the 'root_only=True' if you were using this as a "
-           "'custom_predicates' predicate.")
 
 
 class Slots(object):
@@ -175,7 +164,7 @@ class TemplateAPI(object):
 
         :result: Value of the ``kotti.site_title`` setting (if specified) or
                  the root item's ``title`` attribute.
-        :rtype: unicode
+        :rtype: str
         """
         value = get_settings().get('kotti.site_title')
         if not value:
@@ -190,14 +179,14 @@ class TemplateAPI(object):
 
         :result: '[Human readable view title ]``context.title`` -
                  :meth:`~TemplateAPI.site_title`''
-        :rtype: unicode
+        :rtype: str
         """
 
         view_title = self.request.view_name.replace('_', ' ').title()
         if view_title:
-            view_title += u' '
+            view_title += ' '
         view_title += self.context.title
-        return u'{0} - {1}'.format(view_title, self.site_title)
+        return '{0} - {1}'.format(view_title, self.site_title)
 
     def url(self, context=None, *elements, **kwargs):
         """
@@ -293,15 +282,18 @@ class TemplateAPI(object):
         return TemplateStructure(render(renderer, kwargs, self.request))
 
     def list_children(self, context=None, permission='view'):
+
         if context is None:
             context = self.context
-        children = []
-        if hasattr(context, 'values'):
-            for child in context.values():
+
+        if isinstance(context, Node):
+            if permission is None:
+                return context.children
+            return context.children_with_permission(self.request, permission)
+
+        return [c for c in getattr(context, 'values', lambda: [])()
                 if (not permission or
-                        self.request.has_permission(permission, child)):
-                    children.append(child)
-        return children
+                    self.request.has_permission(permission, c))]
 
     inside = staticmethod(inside)
 
@@ -311,10 +303,10 @@ class TemplateAPI(object):
         email = user.email
         if not email:
             email = user.name
-        h = hashlib.md5(email).hexdigest()
+        h = hashlib.md5(email.encode('utf8')).hexdigest()
         query = {'default': default_image, 'size': str(size)}
-        url = u'https://secure.gravatar.com/avatar/{0}?{1}'.format(
-            h, urllib.urlencode(query))
+        url = 'https://secure.gravatar.com/avatar/{0}?{1}'.format(
+            h, urlencode(query))
         return url
 
     @reify
@@ -351,9 +343,9 @@ class TemplateAPI(object):
     def find_edit_view(self, item):
         view_name = self.request.view_name
         if not view_permitted(item, self.request, view_name):
-            view_name = u'edit'
+            view_name = 'edit'
         if not view_permitted(item, self.request, view_name):
-            view_name = u''
+            view_name = ''
         return view_name
 
     @reify
@@ -373,13 +365,13 @@ class TemplateAPI(object):
         """ Convenience wrapper for :func:`kotti.sanitizers.sanitize`.
 
         :param html: HTML to be sanitized
-        :type html: unicode
+        :type html: str
 
         :param sanitizer: name of the sanitizer to use.
         :type sanitizer: str
 
         :result: sanitized HTML
-        :rtype: unicode
+        :rtype: str
         """
 
         return sanitize(html, sanitizer)
@@ -459,7 +451,7 @@ def search_content(search_term, request=None):
 def default_search_content(search_term, request=None):
 
     # noinspection PyUnresolvedReferences
-    searchstring = u'%{0}%'.format(search_term)
+    searchstring = '%{0}%'.format(search_term)
 
     # generic_filter can be applied to all Node (and subclassed) objects
     generic_filter = or_(Content.name.like(searchstring),
@@ -514,13 +506,12 @@ def search_content_for_tags(tags, request=None):
     return result_dicts
 
 
-from kotti.util import get_localizer_for_locale_name  # noqa
-from kotti.util import translate  # noqa
+def includeme(config):
+    """ Pyramid includeme hook.
 
-for obj in (render_view, get_localizer_for_locale_name, translate,
-            TemplateStructure):
-    name = obj.__name__
-    deprecated(
-        name,
-        "kotti.views.util.{0} has been moved to the kotti.util module "
-        "as of Kotti 1.0.0.  Use kotti.util.{0} instead".format(name))
+    :param config: app config
+    :type config: :class:`pyramid.config.Configurator`
+    """
+
+    config.add_view_predicate('root_only', RootOnlyPredicate)
+    config.add_view_predicate('if_setting_has_value', SettingHasValuePredicate)

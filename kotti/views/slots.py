@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """This module allows add-ons to assign views to slots defined in
 the overall page.  In other systems, these are called portlets or
 viewlets.
@@ -38,14 +37,12 @@ inside an ``includeme`` function and not on a module level, to allow
 users of your package to include your slot assignments through the
 ``pyramid.includes`` configuration setting.
 """
-from __future__ import absolute_import, division, print_function
 
-import urllib
+from urllib.parse import urlencode
 
 from pyramid.exceptions import PredicateMismatch
 from pyramid.httpexceptions import HTTPException
 from pyramid.httpexceptions import HTTPForbidden
-from pyramid.request import Request
 from pyramid.view import render_view
 
 from kotti.events import ObjectEvent
@@ -56,8 +53,8 @@ REQUEST_ATTRS_TO_COPY = ('context', 'registry', 'user', 'cookies', 'session')
 
 def _encode(params):
     if not params:
-        return u''
-    return urllib.urlencode(
+        return ''
+    return urlencode(
         dict((k, v.encode('utf-8')) for k, v in params.items()))
 
 
@@ -111,31 +108,32 @@ def assign_slot(view_name, slot, params=None):
 
 
 class RenderLeftSlot(ObjectEvent):
-    name = u'left'
+    name = 'left'
 
 
 class RenderRightSlot(ObjectEvent):
-    name = u'right'
+    name = 'right'
 
 
 class RenderAboveContent(ObjectEvent):
-    name = u'abovecontent'
+    name = 'abovecontent'
 
 
 class RenderBelowContent(ObjectEvent):
-    name = u'belowcontent'
+    name = 'belowcontent'
 
 
 class RenderInHead(ObjectEvent):
-    name = u'inhead'
+    name = 'inhead'
 
 
 class RenderBeforeBodyEnd(ObjectEvent):
-    name = u'beforebodyend'
+    name = 'beforebodyend'
 
 
 class RenderEditInHead(ObjectEvent):
-    name = u'edit_inhead'
+    name = 'edit_inhead'
+
 
 slot_events = [
     RenderLeftSlot, RenderRightSlot, RenderAboveContent, RenderBelowContent,

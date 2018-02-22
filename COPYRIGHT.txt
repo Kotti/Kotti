@@ -1,2 +1,2 @@
-Copyright (c) 2010-2017 Daniel Nouri and Contributors.
+Copyright (c) 2010-2018 Daniel Nouri, Andreas Kaiser and Contributors.
 All Rights Reserved

@@ -1,6 +1,3 @@
-# -*- coding: utf-8 -*-
-from __future__ import absolute_import, division, print_function
-
 import re
 
 from pyramid.settings import asbool
@@ -52,15 +49,15 @@ def url_normalizer(text, locale=None, max_length=MAX_URL_LENGTH):
         base = m.groups()[0]
         ext = m.groups()[1]
 
-    base = base.replace(u' ', '-')
-    base = IGNORE_REGEX.sub(u'', base)
-    base = URL_DANGEROUS_CHARS_REGEX.sub(u'-', base)
-    base = EXTRA_DASHES_REGEX.sub(u'', base)
-    base = MULTIPLE_DASHES_REGEX.sub(u'-', base)
+    base = base.replace(' ', '-')
+    base = IGNORE_REGEX.sub('', base)
+    base = URL_DANGEROUS_CHARS_REGEX.sub('-', base)
+    base = EXTRA_DASHES_REGEX.sub('', base)
+    base = MULTIPLE_DASHES_REGEX.sub('-', base)
 
     base = crop_name(base, maxLength=max_length)
 
     if ext != '':
-        base = base + u'.' + ext
+        base = base + '.' + ext
 
     return base

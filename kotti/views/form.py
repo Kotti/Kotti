@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Form related base views from which you can inherit.
 
@@ -7,10 +6,9 @@ Inheritance Diagram
 
 .. inheritance-diagram:: kotti.views.form
 """
-from __future__ import absolute_import, division, print_function
 
-from StringIO import StringIO
-from UserDict import DictMixin
+from collections import MutableMapping
+from io import BytesIO
 
 import colander
 import deform.widget
@@ -39,8 +37,7 @@ def get_appstruct(context, schema):
 
 
 class ObjectType(colander.SchemaType):
-    """ A type leaving the value untouched.
-    """
+    """ A type leaving the value untouched. """
 
     @staticmethod
     def serialize(node, value):
@@ -62,9 +59,7 @@ def deferred_tag_it_widget(node, kw):
 
 
 class Form(deform.Form):
-    """
-    A deform Form that allows 'appstruct' to be set on the instance.
-    """
+    """ A deform Form that allows 'appstruct' to be set on the instance. """
 
     def render(self, appstruct=None, readonly=False):
         if appstruct is None:
@@ -73,15 +68,13 @@ class Form(deform.Form):
 
 
 class BaseFormView(FormView):
-    """
-    A basic view for forms with save and cancel buttons.
-    """
+    """ A basic view for forms with save and cancel buttons. """
 
     form_class = Form
     buttons = (
-        deform.Button('save', _(u'Save')),
-        deform.Button('cancel', _(u'Cancel')))
-    success_message = _(u"Your changes have been saved.")
+        deform.Button('save', _('Save')),
+        deform.Button('cancel', _('Cancel')))
+    success_message = _("Your changes have been saved.")
     success_url = None
     schema_factory = None
     use_csrf_token = True
@@ -115,8 +108,7 @@ class BaseFormView(FormView):
 
 
 class EditFormView(BaseFormView):
-    """
-    A base form for content editing purposes.
+    """ A base form for content editing purposes.
 
     Set `self.schema_factory` to the context's schema.  Values of
     fields in this schema will be set as attributes on the context.
@@ -131,9 +123,9 @@ class EditFormView(BaseFormView):
         class DocumentSchema(ContentSchema):
             body = colander.SchemaNode(
                 colander.String(),
-                title=u'Body',
+                title='Body',
                 widget=RichTextWidget(),
-                missing=u'',
+                missing='',
                 )
 
         class DocumentEditForm(EditFormView):
@@ -158,14 +150,13 @@ class EditFormView(BaseFormView):
 
     @reify
     def first_heading(self):
-        return _(u'Edit ${title}',
+        return _('Edit ${title}',
                  mapping=dict(title=self.context.title)
                  )
 
 
 class AddFormView(BaseFormView):
-    """
-    A base form for content adding purposes.
+    """ A base form for content adding purposes.
 
     Set `self.schema_factory` as with EditFormView.  Also set
     `item_type` to your model class.  An example::
@@ -173,10 +164,10 @@ class AddFormView(BaseFormView):
         class DocumentAddForm(AddFormView):
             schema_factory = DocumentSchema
             add = Document
-            item_type = u'Document'
+            item_type = 'Document'
     """
 
-    success_message = _(u"Item was added.")
+    success_message = _("Item was added.")
     item_type = None
     add_template_vars = ('first_heading',)
 
@@ -200,11 +191,11 @@ class AddFormView(BaseFormView):
         context_title = getattr(self.request.context, 'title', None)
         type_title = self.item_type or self.add.type_info.title
         if context_title:
-            return _(u'Add ${type} to ${title}.',
+            return _('Add ${type} to ${title}.',
                      mapping=dict(type=translate(type_title),
                                   title=context_title))
         else:
-            return _(u'Add ${type}.', mapping=dict(type=translate(type_title)))
+            return _('Add ${type}.', mapping=dict(type=translate(type_title)))
 
 
 class CommaSeparatedListWidget(deform.widget.Widget):
@@ -226,42 +217,45 @@ class CommaSeparatedListWidget(deform.widget.Widget):
         return [item.strip() for item in pstruct.split(',') if item]
 
 
-class FileUploadTempStore(DictMixin):
-    """
-    A temporary storage for file file uploads
+class FileUploadTempStore(MutableMapping):
+    """ A temporary storage for file file uploads
 
-    File uploads are stored in the session so that you don't need
-    to upload your file again if validation of another schema node
-    fails.
-    """
+    File uploads are stored in the session so that you don't need to upload
+    your file again if validation of another schema node fails. """
 
     def __init__(self, request):
         self.session = request.session
 
+    def __iter__(self):
+        return iter(self.session)
+
+    def __len__(self):
+        return len(self.session)
+
     def keys(self):
         return [k for k in self.session.keys() if not k.startswith('_')]
 
-    def __setitem__(self, name, value):
+    def __setitem__(self, key, value):
         value = value.copy()
         fp = value.pop('fp')
         if fp is not None:
             value['file_contents'] = fp.read()
             fp.seek(0)
         else:
-            value['file_contents'] = ''
-        self.session[name] = value
+            value['file_contents'] = b''
+        self.session[key] = value
 
-    def __getitem__(self, name):
-        value = self.session[name].copy()
+    def __getitem__(self, key):
+        value = self.session[key].copy()
         content = value.pop('file_contents')
         if content:
-            value['fp'] = StringIO(content)
+            value['fp'] = BytesIO(content)
         else:
             value['fp'] = None
         return value
 
-    def __delitem__(self, name):
-        del self.session[name]
+    def __delitem__(self, key):
+        del self.session[key]
 
     @staticmethod
     def preview_url(name):
@@ -269,19 +263,24 @@ class FileUploadTempStore(DictMixin):
 
 
 def validate_file_size_limit(node, value):
-    """
-    File size limit validator.
+    """ File size limit validator.
 
     You can configure the maximum size by setting the kotti.max_file_size
     option to the maximum number of bytes that you want to allow.
     """
-    if not value['fp']:
+    try:
+        fp = value.get('fp', None)
+    except AttributeError:
+        fp = getattr(value, 'fp', None)
+    if not fp:
         return
 
-    value['fp'].seek(0, 2)
-    size = value['fp'].tell()
-    value['fp'].seek(0)
-    max_size = get_settings()['kotti.max_file_size']
-    if size > int(max_size) * 1024 * 1024:
-        msg = _('Maximum file size: ${size}MB', mapping={'size': max_size})
+    fp.seek(0, 2)
+    size = fp.tell()
+    fp.seek(0)
+    # unit for ``kotti.max_file_size`` is MB
+    max_mb = get_settings()['kotti.max_file_size']
+    max_size = int(max_mb) * 1024 * 1024
+    if size > max_size:
+        msg = _('Maximum file size: ${size}MB', mapping={'size': max_mb})
         raise colander.Invalid(node, msg)

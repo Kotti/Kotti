@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """Enlarged name title
 
 Revision ID: 37a05f6246af
@@ -7,12 +6,12 @@ Create Date: 2015-05-15 17:12:07.631190
 
 """
 
+import sqlalchemy as sa
+from alembic import op
+
 # revision identifiers, used by Alembic.
 revision = '37a05f6246af'
 down_revision = '413fa5fcc581'
-
-from alembic import op
-import sqlalchemy as sa
 
 
 def upgrade():

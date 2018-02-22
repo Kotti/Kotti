@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """Add file columns  to images table.
 
 Revision ID: 814c4ec72f1
@@ -7,16 +6,16 @@ Create Date: 2015-12-14 17:37:36.723844
 
 """
 
-# revision identifiers, used by Alembic.
+import sqlalchemy as sa
+from alembic import op
 from depot.fields.sqlalchemy import UploadedFileField
+
+from kotti import DBSession
+
+# revision identifiers, used by Alembic.
 
 revision = '814c4ec72f1'
 down_revision = '4a3de0d0804a'
-
-from alembic import op
-import sqlalchemy as sa
-
-from kotti import DBSession
 
 
 def upgrade():
@@ -43,7 +42,6 @@ def upgrade():
 
 
 def downgrade():
-    from kotti.resources import Image
     DBSession.execute("""
         INSERT INTO files (id, filename, mimetype, size, data)
         SELECT id, filename, mimetype, size, data

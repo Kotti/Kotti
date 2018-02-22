@@ -1,13 +1,18 @@
-# -*- coding: utf-8 -*-
-from __future__ import absolute_import, division, print_function
-from __future__ import with_statement
-
-from UserDict import DictMixin
+from collections import MutableMapping
 from contextlib import contextmanager
 from datetime import datetime
+from typing import Dict
+from typing import Iterable
+from typing import Iterator
+from typing import List
+from typing import Optional
+from typing import Set
+from typing import Tuple
+from typing import Union
 
 import bcrypt
 from pyramid.location import lineage
+from pyramid.security import PermitsResult
 from pyramid.security import view_execution_permitted
 from six import string_types
 from sqlalchemy import Boolean
@@ -18,9 +23,9 @@ from sqlalchemy import Unicode
 from sqlalchemy import bindparam
 from sqlalchemy import func
 from sqlalchemy.orm.exc import NoResultFound
+from sqlalchemy.orm.query import Query
 from sqlalchemy.sql.expression import and_
 from sqlalchemy.sql.expression import or_
-from zope.deprecation.deprecation import deprecated
 
 from kotti import Base
 from kotti import DBSession
@@ -33,41 +38,21 @@ from kotti.util import _
 from kotti.util import request_cache
 
 
-def get_principals():
+def has_permission(permission: str,
+                   context: 'Node',
+                   request: 'Request') -> PermitsResult:
+    """ Default permission checker """
+    return request.has_permission(permission, context=context)
+
+
+def get_principals() -> 'Principals':
     return get_settings()['kotti.principals_factory'][0]()
 
 
-@request_cache(lambda request: None)
-def get_user(request):
+# @request_cache(lambda request: None)
+def get_user(request: 'Request') -> Optional['Principal']:
     userid = request.unauthenticated_userid
     return get_principals().get(userid)
-
-
-def has_permission(permission, context, request):
-    """ Check if the current request has a permission on the given context.
-
-    .. deprecated:: 0.9
-
-    :param permission: permission to check for
-    :type permission: str
-
-    :param context: context that should be checked for the given permission
-    :type context: :class:``kotti.resources.Node``
-
-    :param request: current request
-    :type request: :class:`kotti.request.Request`
-
-    :result: ``True`` if request has the permission, ``False`` else
-    :rtype: bool
-    """
-
-    return request.has_permission(permission, context)
-
-
-deprecated(u'has_permission',
-           u"kotti.security.has_permission is deprecated as of Kotti 1.0 and "
-           u"will be no longer available starting with Kotti 2.0.  "
-           u"Please use the has_permission method of request instead.")
 
 
 class Principal(Base):
@@ -106,8 +91,14 @@ class Principal(Base):
         order_by=name,
         )
 
-    def __init__(self, name, password=None, active=True, confirm_token=None,
-                 title=u"", email=None, groups=None):
+    def __init__(self,
+                 name: str,
+                 password: Optional[str] = None,
+                 active: Optional[bool] = True,
+                 confirm_token: Optional[str] = None,
+                 title: Optional[str] = '',
+                 email: Optional[str] = None,
+                 groups: Optional[List[str]] = None):
         self.name = name
         if password is not None:
             password = get_principals().hash_password(password)
@@ -123,7 +114,7 @@ class Principal(Base):
         self.last_login_date = None
 
     def __repr__(self):  # pragma: no cover
-        return u'<Principal {0!r}>'.format(self.name)
+        return '<Principal {0!r}>'.format(self.name)
 
 
 class AbstractPrincipals(object):
@@ -142,11 +133,12 @@ class AbstractPrincipals(object):
     Use the 'kotti.principals' settings variable to override Kotti's
     default Principals implementation with your own.
     """
-    def __getitem__(self, name):
+    def __getitem__(self, name: str):
         """Return the Principal object with the id 'name'.
         """
 
-    def __setitem__(self, name, principal):
+    def __setitem__(self, name: str,
+                    principal: Union[Principal, dict]):
         """Add a given Principal object to the database.
 
         'name' is expected to the the same as 'principal.name'.
@@ -154,55 +146,56 @@ class AbstractPrincipals(object):
         'principal' may also be a dict of attributes.
         """
 
-    def __delitem__(self, name):
+    def __delitem__(self, name: str) -> None:
         """Remove the principal with the given name from the database.
         """
 
-    def keys(self):
+    def keys(self) -> List[str]:
         """Return a list of principal ids that are in the database.
         """
 
-    def search(self, **kwargs):
+    def search(self, **kwargs) -> List[Principal]:
         """Return an iterable with principal objects that correspond
         to the search arguments passed in.
 
         This example would return all principals with the id 'bob':
 
-          get_principals().search(name=u'bob')
+          get_principals().search(name='bob')
 
         Here, we ask for all principals that have 'bob' in either
         their 'name' or their 'title'.  We pass '*bob*' instead of
         'bob' to indicate that we want case-insensitive substring
         matching:
 
-          get_principals().search(name=u'*bob*', title=u'*bob*')
+          get_principals().search(name='*bob*', title='*bob*')
 
         This call should fail with AttributeError unless there's a
         'foo' attribute on principal objects that supports search:
 
-          get_principals().search(name=u'bob', foo=u'bar')
+          get_principals().search(name='bob', foo='bar')
         """
 
-    def hash_password(self, password):
+    def hash_password(self, password: str) -> str:
         """Return a hash of the given password.
 
         This is what's stored in the database as 'principal.password'.
         """
 
-    def validate_password(self, clear, hashed):
+    def validate_password(self, clear: str, hashed: str) -> bool:
         """Returns True if the clear text password matches the hash.
         """
 
+
 ROLES = {
-    u'role:viewer': Principal(u'role:viewer', title=_(u'Viewer')),
-    u'role:editor': Principal(u'role:editor', title=_(u'Editor')),
-    u'role:owner': Principal(u'role:owner', title=_(u'Owner')),
-    u'role:admin': Principal(u'role:admin', title=_(u'Admin')),
+    'role:viewer': Principal('role:viewer', title=_('Viewer')),
+    'role:editor': Principal('role:editor', title=_('Editor')),
+    'role:owner': Principal('role:owner', title=_('Owner')),
+    'role:admin': Principal('role:admin', title=_('Admin')),
     }
 _DEFAULT_ROLES = ROLES.copy()
 
 # These roles are visible in the sharing tab
-SHARING_ROLES = [u'role:viewer', u'role:editor', u'role:owner']
+SHARING_ROLES = ['role:viewer', 'role:editor', 'role:owner']
 USER_MANAGEMENT_ROLES = SHARING_ROLES + ['role:admin']
 _DEFAULT_SHARING_ROLES = SHARING_ROLES[:]
 _DEFAULT_USER_MANAGEMENT_ROLES = USER_MANAGEMENT_ROLES[:]
@@ -218,54 +211,55 @@ SITE_ACL = [
     ]
 
 
-def set_roles(roles_dict):
+def set_roles(roles_dict: Dict[str, Principal]) -> None:
     ROLES.clear()
     ROLES.update(roles_dict)
 
 
-def set_sharing_roles(role_names):
+def set_sharing_roles(role_names: List[str]) -> None:
     SHARING_ROLES[:] = role_names
 
 
-def set_user_management_roles(role_names):
+def set_user_management_roles(role_names: List[str]) -> None:
     USER_MANAGEMENT_ROLES[:] = role_names
 
 
-def reset_roles():
+def reset_roles() -> None:
     ROLES.clear()
     ROLES.update(_DEFAULT_ROLES)
 
 
-def reset_sharing_roles():
+def reset_sharing_roles() -> None:
     SHARING_ROLES[:] = _DEFAULT_SHARING_ROLES
 
 
-def reset_user_management_roles():
+def reset_user_management_roles() -> None:
     USER_MANAGEMENT_ROLES[:] = _DEFAULT_USER_MANAGEMENT_ROLES
 
 
-def reset():
+def reset() -> None:
     reset_roles()
     reset_sharing_roles()
     reset_user_management_roles()
 
 
 class PersistentACLMixin(object):
-    def _get_acl(self):
+    def _get_acl(self) -> MutationList:
         if self._acl is None:
             raise AttributeError('__acl__')
         return self._acl
 
-    def _set_acl(self, value):
+    def _set_acl(self, value) -> None:
         self._acl = value
 
-    def _del_acl(self):
+    def _del_acl(self) -> None:
         self._acl = None
 
     __acl__ = property(_get_acl, _set_acl, _del_acl)
 
 
-def _cachekey_list_groups_raw(name, context):
+def _cachekey_list_groups_raw(name: str,
+                              context: 'Node') -> Tuple[str, Union[int, 'NoneType']]:  # noqa
     context_id = context is not None and getattr(context, 'id', id(context))
     return name, context_id
 
@@ -288,7 +282,7 @@ def list_groups_raw(name, context):
     return set()
 
 
-def list_groups(name, context=None):
+def list_groups(name: str, context: Optional['Node'] = None) -> List[str]:
     """List groups for principal with a given ``name``.
 
     The optional ``context`` argument may be passed to check the list
@@ -297,17 +291,20 @@ def list_groups(name, context=None):
     return list_groups_ext(name, context)[0]
 
 
-def _cachekey_list_groups_ext(name, context=None, _seen=None, _inherited=None):
+def _cachekey_list_groups_ext(name: str,
+                              context: Optional['Node'] = None,
+                              _seen: Optional[Set[str]] = None,
+                              _inherited: Optional[Set[str]] = None) -> Tuple[str, Union[int, 'NoneType']]:  # noqa
     if _seen is not None or _inherited is not None:
         raise DontCache
     else:
         context_id = getattr(context, 'id', id(context))
-        return unicode(name), context_id
+        return name, context_id
 
 
 @request_cache(_cachekey_list_groups_ext)
 def list_groups_ext(name, context=None, _seen=None, _inherited=None):
-    name = unicode(name)
+    name = name
     groups = set()
     recursing = _inherited is not None
     _inherited = _inherited or set()
@@ -343,28 +340,30 @@ def list_groups_ext(name, context=None, _seen=None, _inherited=None):
     return list(groups), list(_inherited)
 
 
-def set_groups(name, context, groups_to_set=()):
+def set_groups(name: str,
+               context: 'Node',
+               groups_to_set: Iterable[str] = ()) -> None:
     """Set the list of groups for principal with given ``name`` and in
     given ``context``.
     """
 
     from kotti.resources import LocalGroup
 
-    name = unicode(name)
     context.local_groups = [
         # keep groups for "other" principals
         lg for lg in context.local_groups
         if lg.principal_name != name
     ] + [
         # reset groups for given principal
-        LocalGroup(context, name, unicode(group_name))
+        LocalGroup(context, name, group_name)
         for group_name in groups_to_set
     ]
 
 
-def list_groups_callback(name, request):
+def list_groups_callback(name: str,
+                         request: 'Request') -> Optional[List[str]]:
     """ List the groups for the principal identified by ``name``.  Consider
-    ``authz_context`` to support assigment of local roles to groups. """
+    ``authz_context`` to support assignment of local roles to groups. """
     if not is_user(name):
         return None  # Disallow logging in with groups
     if name in get_principals():
@@ -378,7 +377,7 @@ def list_groups_callback(name, request):
 
 
 @contextmanager
-def authz_context(context, request):
+def authz_context(context: object, request: 'Request'):
     before = request.environ.pop('authz_context', None)
     request.environ['authz_context'] = context
     try:
@@ -390,7 +389,7 @@ def authz_context(context, request):
 
 
 @contextmanager
-def request_method(request, method):
+def request_method(request: 'Request', method: str):
     before = request.method
     request.method = method
     try:
@@ -399,13 +398,17 @@ def request_method(request, method):
         request.method = before
 
 
-def view_permitted(context, request, name='', method='GET'):
+def view_permitted(context: object,
+                   request: 'Request',
+                   name: Optional[str] = '',
+                   method: Optional[str] = 'GET') -> PermitsResult:
     with authz_context(context, request):
         with request_method(request, method):
             return view_execution_permitted(context, request, name)
 
 
-def principals_with_local_roles(context, inherit=True):
+def principals_with_local_roles(context: 'Node',
+                                inherit: Optional[bool] = True) -> List[str]:
     """Return a list of principal names that have local roles in the
     context.
     """
@@ -425,7 +428,7 @@ def principals_with_local_roles(context, inherit=True):
     return list(principals)
 
 
-def map_principals_with_local_roles(context):
+def map_principals_with_local_roles(context: 'Node'):
     principals = get_principals()
     value = []
     for principal_name in principals_with_local_roles(context):
@@ -439,13 +442,13 @@ def map_principals_with_local_roles(context):
     return sorted(value, key=lambda t: t[0].name)
 
 
-def is_user(principal):
+def is_user(principal: Union[Principal, str]) -> bool:
     if not isinstance(principal, string_types):
         principal = principal.name
     return ':' not in principal
 
 
-class Principals(DictMixin):
+class Principals(MutableMapping):
     """Kotti's default principal database.
 
     Look at 'AbstractPrincipals' for documentation.
@@ -456,14 +459,15 @@ class Principals(DictMixin):
     factory = Principal
 
     @classmethod
-    def _principal_by_name(cls, name):
+    def _principal_by_name(cls, name: str) -> Principal:
         query = bakery(lambda session: session.query(cls.factory).filter(
             cls.factory.name == bindparam('name')))
         return query(DBSession()).params(name=name).one()
 
-    @request_cache(lambda self, name: unicode(name))
+    @request_cache(lambda self, name: name)
     def __getitem__(self, name):
-        name = unicode(name)
+        if name is None or not isinstance(name, str):
+            raise KeyError(name)
         # avoid calls to the DB for roles
         # (they're not stored in the ``principals`` table)
         if name.startswith('role:'):
@@ -475,28 +479,39 @@ class Principals(DictMixin):
         except NoResultFound:
             raise KeyError(name)
 
-    def __setitem__(self, name, principal):
-        name = unicode(name)
+    def __setitem__(self,
+                    name: str,
+                    principal: Union[Principal, dict]) -> None:
+        name = name
         if isinstance(principal, dict):
             principal = self.factory(**principal)
         DBSession.add(principal)
 
-    def __delitem__(self, name):
-        name = unicode(name)
+    def __delitem__(self, name: str) -> None:
+        name = name
         try:
             principal = self._principal_by_name(name)
             DBSession.delete(principal)
         except NoResultFound:
             raise KeyError(name)
 
-    def iterkeys(self):
+    def __iter__(self) -> Iterator[str]:
+        for k in self.keys():
+            yield k
+
+    def __len__(self):
+        return len(self.keys())
+
+    def iterkeys(self) -> Iterator[str]:
         for (principal_name,) in DBSession.query(self.factory.name):
             yield principal_name
 
-    def keys(self):
+    def keys(self) -> List[str]:
         return list(self.iterkeys())
 
-    def search(self, match='any', **kwargs):
+    def search(self,
+               match: Optional[str] = 'any',
+               **kwargs) -> Query:
         """ Search the principal database.
 
         :param match: ``any`` to return all principals matching any search
@@ -537,18 +552,19 @@ class Principals(DictMixin):
 
     log_rounds = 10
 
-    def hash_password(self, password, hashed=None):
+    def hash_password(self,
+                      password: str,
+                      hashed: Optional[str] = None) -> str:
         if hashed is None:
             hashed = bcrypt.gensalt(self.log_rounds)
-        return unicode(
-            bcrypt.hashpw(password.encode('utf-8'), hashed.encode('utf-8')))
+        return bcrypt.hashpw(password.encode('utf-8'), hashed.encode('utf-8'))
 
-    def validate_password(self, clear, hashed):
+    def validate_password(self, clear: str, hashed: str) -> bool:
         try:
             return self.hash_password(clear, hashed) == hashed
         except ValueError:
             return False
 
 
-def principals_factory():
+def principals_factory() -> Principals:
     return Principals()

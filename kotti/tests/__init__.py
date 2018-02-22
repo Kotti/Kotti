@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """
 
 Fixture dependencies
@@ -44,13 +42,13 @@ Fixture dependencies
 
 """
 
-from __future__ import absolute_import, division, print_function
-
 import warnings
 from datetime import datetime
 
+from depot.io.memory import MemoryFileStorage
 from mock import MagicMock
 from pytest import fixture
+from pytest import yield_fixture
 
 from kotti import testing
 
@@ -69,15 +67,12 @@ def image_asset2():
     return testing.asset('logo.png')
 
 
-@fixture
+@yield_fixture
 def allwarnings(request):
     save_filters = warnings.filters[:]
     warnings.filters[:] = []
-
-    def restore():
-        warnings.filters[:] = save_filters
-
-    request.addfinalizer(restore)
+    yield
+    warnings.filters[:] = save_filters
 
 
 @fixture(scope='session')
@@ -117,8 +112,8 @@ def settings(unresolved_settings):
     return _resolve_dotted(unresolved_settings)
 
 
-@fixture
-def config(request, settings):
+@yield_fixture
+def config(settings):
     """ returns a Pyramid `Configurator` object initialized
         with Kotti's default (test) settings.
     """
@@ -127,9 +122,9 @@ def config(request, settings):
     config = testing.setUp(settings=settings)
     config.include('pyramid_chameleon')
     config.add_default_renderers()
-    request.addfinalizer(security.reset)
-    request.addfinalizer(testing.tearDown)
-    return config
+    yield config
+    security.reset()
+    testing.tearDown()
 
 
 @fixture(scope='session')
@@ -180,22 +175,22 @@ def content(connection, settings):
     # tests, and because the 'content' fixture does not depend on
     # 'event' and therefore the event handlers aren't fired for root
     # otherwise:
-    get_root().path = u'/'
+    get_root().path = '/'
     commit()
 
 
-@fixture
-def db_session(config, content, connection, request):
+@yield_fixture
+def db_session(config, content, connection):
     """ returns a db session object and sets up a db transaction
         savepoint, which will be rolled back after the test.
     """
 
-    from transaction import abort
+    import transaction
     trans = connection.begin()          # begin a non-orm transaction
-    request.addfinalizer(trans.rollback)
-    request.addfinalizer(abort)
     from kotti import DBSession
-    return DBSession()
+    yield DBSession()
+    trans.rollback()
+    transaction.abort()
 
 
 @fixture
@@ -227,14 +222,14 @@ def dummy_mailer(monkeypatch):
     return mailer
 
 
-@fixture
-def events(config, request):
+@yield_fixture
+def events(config):
     """ sets up Kotti's default event handlers.
     """
     from kotti.events import clear
     config.include('kotti.events')
-    request.addfinalizer(clear)
-    return config
+    yield config
+    clear()
 
 
 @fixture
@@ -304,50 +299,17 @@ def workflow(config):
     xmlconfig.file('workflow.zcml', kotti, execute=True)
 
 
-class TestStorage:
-    def __init__(self):
-        self._storage = {}
-        self._storage.setdefault(0)
-
-    def get(self, id):
-        info = self._storage[int(id)]
-
-        from StringIO import StringIO
-
-        f = MagicMock(wraps=StringIO(info['content']))
-        f.seek(0)
-        f.public_url = None
-        f.filename = info['filename']
-        f.content_type = info['content_type']
-        f.content_length = len(info['content'])
-        # needed to make JSON serializable, Mock objects are not
+class TestStorage(MemoryFileStorage):
+    def get(self, file_or_id):
+        f = super(TestStorage, self).get(file_or_id)
         f.last_modified = datetime(2012, 12, 30)
-
         return f
 
-    def create(self, content, filename=None, content_type=None):
-        _id = max(self._storage) + 1
-        filename = filename or getattr(content, 'filename', None)
-        content_type = content_type or getattr(content, 'type', None)
 
-        if hasattr(content, 'file') and hasattr(content.file, 'read'):
-            content = content.file.read()
-        elif hasattr(content, 'read'):
-            content = content.read()
-
-        self._storage[_id] = {'content': content,
-                              'filename': filename,
-                              'content_type': content_type}
-        return _id
-
-    def delete(self, id):
-        del self._storage[int(id)]
-
-
-@fixture
-def depot_tween(request, config, dummy_request):
+@yield_fixture
+def depot_tween(config, dummy_request):
     """ Sets up the Depot tween and patches Depot's ``set_middleware`` to
-    suppress exceptions on subsequent calls """
+    suppress exceptions on subsequent calls. Yields the ``DepotManager``. """
 
     from depot.manager import DepotManager
     from kotti.filedepot import TweenFactory
@@ -367,14 +329,13 @@ def depot_tween(request, config, dummy_request):
 
     DepotManager.set_middleware = set_middleware_patched
 
-    def restore():
-        DepotManager.set_middleware = _set_middleware
+    yield DepotManager
 
-    request.addfinalizer(restore)
+    DepotManager.set_middleware = _set_middleware
 
 
-@fixture
-def mock_filedepot(request, depot_tween):
+@yield_fixture
+def mock_filedepot(depot_tween):
     """ Configures a mock depot store for :class:`depot.manager.DepotManager`
 
     This filedepot is not integrated with dbsession.
@@ -387,14 +348,13 @@ def mock_filedepot(request, depot_tween):
     }
     DepotManager._default_depot = 'mockdepot'
 
-    def restore():
-        DepotManager._clear()
+    yield DepotManager
 
-    request.addfinalizer(restore)
+    DepotManager._clear()
 
 
-@fixture
-def filedepot(db_session, request, depot_tween):
+@yield_fixture
+def filedepot(db_session, depot_tween):
     """ Configures a dbsession integrated mock depot store for
     :class:`depot.manager.DepotManager`
     """
@@ -405,15 +365,14 @@ def filedepot(db_session, request, depot_tween):
     }
     DepotManager._default_depot = 'filedepot'
 
-    def restore():
-        db_session.rollback()
-        DepotManager._clear()
+    yield DepotManager
 
-    request.addfinalizer(restore)
+    db_session.rollback()
+    DepotManager._clear()
 
 
-@fixture
-def no_filedepots(db_session, request, depot_tween):
+@yield_fixture
+def no_filedepots(db_session, depot_tween):
     """ A filedepot fixture to empty and then restore DepotManager configuration
     """
     from depot.manager import DepotManager
@@ -421,8 +380,7 @@ def no_filedepots(db_session, request, depot_tween):
     DepotManager._depots = {}
     DepotManager._default_depot = None
 
-    def restore():
-        db_session.rollback()
-        DepotManager._clear()
+    yield DepotManager
 
-    request.addfinalizer(restore)
+    db_session.rollback()
+    DepotManager._clear()

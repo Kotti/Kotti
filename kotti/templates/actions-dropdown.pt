@@ -9,6 +9,6 @@
         ${link.title}
       </a>
     </li>
-    <li tal:replace="api.render_view('default-view-selector')" />
+    <li tal:replace="api.render_view('default-view-selector')"></li>
   </ul>
 </li>

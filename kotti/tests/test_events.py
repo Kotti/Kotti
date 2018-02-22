@@ -1,6 +1,3 @@
-# -*- coding: utf-8 -*-
-from __future__ import absolute_import, division, print_function
-
 import warnings
 
 from pytest import mark
@@ -22,19 +19,19 @@ class TestEvents:
         from kotti.security import list_groups_raw
         from kotti.util import clear_cache
 
-        child = root[u'child'] = Content()
+        child = root['child'] = Content()
         db_session.flush()
-        assert child.owner == u'bob'
-        assert list_groups(u'bob', child) == [u'role:owner']
+        assert child.owner == 'bob'
+        assert list_groups('bob', child) == ['role:owner']
 
         clear_cache()
 
         # The event listener does not set the role again for subitems:
-        grandchild = child[u'grandchild'] = Content()
+        grandchild = child['grandchild'] = Content()
         db_session.flush()
-        assert grandchild.owner == u'bob'
-        assert list_groups(u'bob', grandchild) == [u'role:owner']
-        assert len(list_groups_raw(u'bob', grandchild)) == 0
+        assert grandchild.owner == 'bob'
+        assert list_groups('bob', grandchild) == ['role:owner']
+        assert len(list_groups_raw('bob', grandchild)) == 0
 
     def test_sqlalchemy_events(self, root, db_session, events):
         from kotti import events
@@ -71,12 +68,12 @@ class TestEvents:
         with warnings.catch_warnings(record=True):
             lis[(events.ObjectAfterDelete, None)].append(after_delete)
 
-        child = root[u'child'] = Content()
+        child = root['child'] = Content()
         db_session.flush()
         assert lengths() == (1, 0, 0, 0)
         assert insert_events[0].object == child
 
-        child.title = u"Bar"
+        child.title = 'Bar'
         db_session.flush()
         assert lengths() == (1, 1, 0, 0)
         assert update_events[0].object == child
@@ -142,8 +139,8 @@ class TestEvents:
         from kotti.resources import Document
 
         # create 2 documents
-        d1 = root['d1'] = Document(title=u'One')
-        d2 = root['d2'] = Document(title=u'Two')
+        d1 = root['d1'] = Document(title='One')
+        d2 = root['d2'] = Document(title='Two')
         assert d1.position == 0
         assert d2.position == 1
         db_session.flush()
@@ -161,8 +158,8 @@ class TestEvents:
         assert d2.modification_date == md2
 
         # changing anything else should update modification_date
-        d1.title = u'Eins'
-        d2.title = u'Zwei'
+        d1.title = 'Eins'
+        d2.title = 'Zwei'
         db_session.flush()
         assert d1.modification_date != md1
         assert d2.modification_date != md2

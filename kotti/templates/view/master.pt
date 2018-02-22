@@ -2,9 +2,7 @@
       xmlns:metal="http://xml.zope.org/namespaces/metal"
       xmlns:tal="http://xml.zope.org/namespaces/tal"
       xmlns:i18n="http://xml.zope.org/namespaces/i18n"
-      tal:define="page_slots api.slots;
-                  dummy api.view_needed;
-                  has_location_context api.is_location(context);"
+      tal:define="page_slots api.slots; dummy api.view_needed; has_location_context api.is_location(context);"
       metal:define-macro="main">
 
   <head>
@@ -32,15 +30,15 @@
                ${api.body_css_class}">
 
     <nav tal:omit-tag="" metal:define-slot="nav-bar">
-      <nav tal:replace="api.render_template('kotti:templates/view/nav.pt')" />
+      <nav tal:replace="api.render_template('kotti:templates/view/nav.pt')"></nav>
     </nav>
     <editbar tal:omit-tag="" metal:define-slot="editor-bar">
       <div tal:condition="request.user is not None and has_location_context"
-           tal:replace="api.render_template('kotti:templates/editor-bar.pt')" />
+           tal:replace="api.render_template('kotti:templates/editor-bar.pt')"></div>
     </editbar>
 
     <div class="container">
-      <div tal:replace="api.render_template('kotti:templates/edit/breadcrumbs.pt')" />
+      <div tal:replace="api.render_template('kotti:templates/edit/breadcrumbs.pt')"></div>
 
       <div class="row"
            tal:define="n_slots_left has_location_context and int(bool(page_slots.left)) * 3 or 0;
@@ -56,7 +54,7 @@
                tal:content="api.render_template('kotti:templates/render_content_slot.pt', slot=page_slots.abovecontent)">
           </div>
 
-          <div tal:replace="api.render_template('kotti:templates/messages.pt')" />
+          <div tal:replace="api.render_template('kotti:templates/messages.pt')"></div>
 
           <div class="inner-content">
             <div metal:define-slot="content">

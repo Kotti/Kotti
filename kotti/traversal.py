@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """ This module contains Kotti's node tree traverser.
 
 In Kotti versions < 1.3.0, Pyramid's default traverser
@@ -32,8 +31,6 @@ request.path          Pyramid traverser (rps) Kotti traverser (rps)
 ===================== ======================= =====================
 
 """
-
-from __future__ import absolute_import, division, print_function
 
 from pyramid.compat import decode_path_info
 from pyramid.compat import is_nonstr_iter

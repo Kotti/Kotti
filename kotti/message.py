@@ -1,16 +1,18 @@
-# -*- coding: utf-8 -*-
-from __future__ import absolute_import, division, print_function
+import time
+from typing import Dict
+from typing import List
+from typing import Optional
+from urllib.parse import urlencode
 
 import hashlib
-import time
-import urllib
-
 from html2text import HTML2Text
 from pyramid.renderers import render
 from pyramid_mailer.mailer import Mailer
 from pyramid_mailer.message import Message
 
 from kotti import get_settings
+from kotti.request import Request
+from kotti.security import Principal
 
 _inject_mailer = []
 
@@ -22,15 +24,18 @@ def get_mailer():
     return Mailer.from_settings(get_settings())  # pragma: no cover
 
 
-def make_token(user, seconds=None):
+def make_token(user: Principal, seconds: Optional[float]=None) -> str:
     secret = get_settings()['kotti.secret2']
     if seconds is None:
         seconds = time.time()
-    token = '{0}:{1}:{2}'.format(user.name, secret, seconds)
-    return '{0}:{1}'.format(hashlib.sha224(token).hexdigest(), seconds)
+    token = '{}:{}:{}'.format(user.name, secret, seconds)
+    return '{}:{}'.format(hashlib.sha224(token.encode('utf8')).hexdigest(),
+                          seconds)
 
 
-def validate_token(user, token, valid_hrs=24):
+def validate_token(user: Principal,
+                   token: str,
+                   valid_hrs: int=24) -> bool:
     """
         >>> from kotti.testing import setUp, tearDown
         >>> ignore = setUp()
@@ -64,7 +69,10 @@ def validate_token(user, token, valid_hrs=24):
     return False
 
 
-def send_email(request, recipients, template_name, template_vars=None):
+def send_email(request: Request,
+               recipients: List[str],
+               template_name: str,
+               template_vars: Optional[Dict[str, str]]=None) -> None:
     """ General email sender.
 
     :param request: current request.
@@ -102,21 +110,22 @@ def send_email(request, recipients, template_name, template_vars=None):
     mailer.send(message)
 
 
-def email_set_password(user, request,
-                       template_name='kotti:templates/email-set-password.pt',
-                       add_query=None):
+def email_set_password(user: Principal,
+                       request: Request,
+                       template_name: Optional[str]='kotti:templates/email-set-password.pt',  # noqa
+                       add_query: Optional[Dict[str, str]]=None) -> None:
     site_title = get_settings()['kotti.site_title']
     token = make_token(user)
-    user.confirm_token = unicode(token)
+    user.confirm_token = token
     set_password_query = {'token': token, 'email': user.email}
     if add_query:
         set_password_query.update(add_query)
     url = '{0}/@@set-password?{1}'.format(
         request.application_url,
-        urllib.urlencode(set_password_query))
+        urlencode(set_password_query))
     variables = dict(
         user_title=user.title,
         site_title=site_title,
         url=url)
-    recipients = [u'"{0}" <{1}>'.format(user.title, user.email)]  # XXX naive?
+    recipients = ['"{0}" <{1}>'.format(user.title, user.email)]  # XXX naive?
     send_email(request, recipients, template_name, variables)

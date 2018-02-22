@@ -1,6 +1,3 @@
-# -*- coding: utf-8 -*-
-from __future__ import absolute_import, division, print_function
-
 from mock import Mock
 from mock import patch
 from pyramid.security import ALL_PERMISSIONS
@@ -18,19 +15,19 @@ class TestNode:
 
         # The root object has a persistent ACL set:
         for ace in (
-            (Allow, 'role:owner', u'view'),
-            (Allow, 'role:owner', u'add'),
-            (Allow, 'role:owner', u'edit'),
-            (Allow, 'role:owner', u'delete'),
-            (Allow, 'role:owner', u'manage'),
-            (Allow, 'role:owner', u'state_change'),
-            (Allow, 'role:viewer', u'view'),
-            (Allow, 'role:editor', u'view'),
-            (Allow, 'role:editor', u'add'),
-            (Allow, 'role:editor', u'edit'),
-            (Allow, 'role:editor', u'delete'),
-            (Allow, 'role:editor', u'state_change'),
-            (Allow, Everyone, u'view'),
+            (Allow, 'role:owner', 'view'),
+            (Allow, 'role:owner', 'add'),
+            (Allow, 'role:owner', 'edit'),
+            (Allow, 'role:owner', 'delete'),
+            (Allow, 'role:owner', 'manage'),
+            (Allow, 'role:owner', 'state_change'),
+            (Allow, 'role:viewer', 'view'),
+            (Allow, 'role:editor', 'view'),
+            (Allow, 'role:editor', 'add'),
+            (Allow, 'role:editor', 'edit'),
+            (Allow, 'role:editor', 'delete'),
+            (Allow, 'role:editor', 'state_change'),
+            (Allow, Everyone, 'view'),
         ):
             assert ace in root.__acl__[1:-1]
 
@@ -110,8 +107,8 @@ class TestNode:
         from kotti.resources import Node
 
         # Try to add two children with the same name to the root node:
-        db_session.add(Node(name=u'child1', parent=root))
-        db_session.add(Node(name=u'child1', parent=root))
+        db_session.add(Node(name='child1', parent=root))
+        db_session.add(Node(name='child1', parent=root))
         with raises(IntegrityError):
             db_session.flush()
 
@@ -121,59 +118,62 @@ class TestNode:
         # Test some of Node's container methods:
         assert root.keys() == []
 
-        child1 = Node(name=u'child1', parent=root)
+        child1 = Node(name='child1', parent=root)
         db_session.add(child1)
-        assert root.keys() == [u'child1']
-        assert root[u'child1'] == child1
+        assert root.keys() == ['child1']
+        assert root['child1'] == child1
 
-        del root[u'child1']
+        del root['child1']
         assert root.keys() == []
 
         # When we delete a parent node, all its child nodes will be
         # released as well:
-        root[u'child2'] = Node()
-        root[u'child2'][u'subchild'] = Node()
+        root['child2'] = Node()
+        root['child2']['subchild'] = Node()
         assert (
             db_session.query(Node).filter(
-                Node.name == u'subchild').count() == 1)
-        del root[u'child2']
+                Node.name == 'subchild').count() == 1)
+        del root['child2']
         assert (
             db_session.query(Node).filter(
-                Node.name == u'subchild').count() == 0)
+                Node.name == 'subchild').count() == 0)
 
         # We can pass a tuple as the key to more efficiently reach
         # down to child objects:
-        root[u'child3'] = Node()
-        subchild33 = Node(name=u'subchild33', parent=root[u'child3'])
+        root['child3'] = Node()
+        subchild33 = Node(name='subchild33', parent=root['child3'])
         db_session.add(subchild33)
         del root.__dict__['_children']  # force a different code path
-        assert root[u'child3', u'subchild33'] is root[u'child3'][u'subchild33']
-        assert root[(u'child3', u'subchild33')] is subchild33
-        assert root[(u'child3', u'subchild33')] is subchild33
+        assert root['child3', 'subchild33'] is root['child3']['subchild33']
+        assert root[('child3', 'subchild33')] is subchild33
+        assert root[('child3', 'subchild33')] is subchild33
         with raises(KeyError):
-            root[u'child3', u'bad-name']
+            # noinspection PyStatementEffect
+            root['child3', 'bad-name']
+        # noinspection PyStatementEffect
         root.children  # force a different code path
         with raises(KeyError):
-            root[u'child3', u'bad-name']
-        del root[u'child3']
+            # noinspection PyStatementEffect
+            root['child3', 'bad-name']
+        del root['child3']
 
         # Overwriting an existing Node is an error; first delete manually!
-        child4 = Node(name=u'child4', parent=root)
+        child4 = Node(name='child4', parent=root)
         db_session.add(child4)
-        assert root.keys() == [u'child4']
+        assert root.keys() == ['child4']
 
-        child44 = Node(name=u'child4')
+        child44 = Node(name='child4')
         db_session.add(child44)
 
         with raises(SQLAlchemyError):
-            root[u'child4'] = child44
+            root['child4'] = child44
             db_session.flush()
 
     def test_node_copy_name(self, db_session, root):
 
-        copy_of_root = root.copy(name=u'copy_of_root')
-        assert copy_of_root.name == u'copy_of_root'
-        assert root.name == u''
+        copy_of_root = root.copy(name='copy_of_root')
+        assert copy_of_root.name == 'copy_of_root'
+        assert root.name == ''
 
     def test_node_copy_variants(self, db_session, root):
         from kotti.resources import Node
@@ -192,7 +192,7 @@ class TestNode:
         # attempt to put the new node into the db already, e.g. when
         # the copy is already being back-referenced by some other
         # object in the db.
-        child1.copy(parent=child2, name=u'child3')
+        child1.copy(parent=child2, name='child3')
 
         assert [child.name for child in child2.children] == [
             'child1', 'child2', 'child3']
@@ -212,7 +212,7 @@ class TestNode:
         from kotti.resources import LocalGroup
 
         child1 = root['child1'] = Node()
-        local_group1 = LocalGroup(child1, u'joe', u'role:admin')
+        local_group1 = LocalGroup(child1, 'joe', 'role:admin')
         db_session.add(local_group1)
         db_session.flush()
 
@@ -224,14 +224,14 @@ class TestNode:
         from kotti.resources import Node
 
         child = root['child'] = Node()
-        assert db_session.query(Node).filter(Node.name == u'child').all() == [
+        assert db_session.query(Node).filter(Node.name == 'child').all() == [
             child]
         root.clear()
-        assert db_session.query(Node).filter(Node.name == u'child').all() == []
+        assert db_session.query(Node).filter(Node.name == 'child').all() == []
 
     def test_annotations_mutable(self, db_session, root):
 
-        root.annotations['foo'] = u'bar'
+        root.annotations['foo'] = 'bar'
         assert root in db_session.dirty
         del root.annotations['foo']
 
@@ -241,12 +241,12 @@ class TestNode:
         db_session.flush()
         db_session.expire_all()
 
-        root.annotations['foo']['bar'] = u'baz'
+        root.annotations['foo']['bar'] = 'baz'
         assert root in db_session.dirty
         db_session.flush()
         db_session.expire_all()
 
-        assert root.annotations['foo']['bar'] == u'baz'
+        assert root.annotations['foo']['bar'] == 'baz'
 
     def test_annotations_coerce_fail(self, db_session, root):
 
@@ -260,7 +260,7 @@ class TestPath:
 
         assert root.path == "/"
         child = root['child-1'] = Node()
-        assert child.path == u'/child-1/'
+        assert child.path == '/child-1/'
         subchild = root['child-1']['subchild'] = Node()
         assert subchild.path == '/child-1/subchild/'
 
@@ -290,7 +290,7 @@ class TestPath:
         child = root['child-1'] = Node()
         subchild = child['subchild'] = Node()
 
-        subchild.name = u'renamed'
+        subchild.name = 'renamed'
         assert subchild.path == '/child-1/renamed/'
 
     @mark.parametrize("flush", [True, False])
@@ -303,9 +303,9 @@ class TestPath:
         if flush:
             db_session.flush()
 
-        child2.name = u'renamed'
+        child2.name = 'renamed'
         assert subchild.path == '/child-1/renamed/subchild/'
-        child1.name = u'renamed-1'
+        child1.name = 'renamed-1'
         assert child2.path == '/renamed-1/renamed/'
         assert subchild.path == '/renamed-1/renamed/subchild/'
         assert child1.path == '/renamed-1/'
@@ -334,18 +334,18 @@ class TestPath:
     def test_children_append(self, db_session, root, events):
         from kotti.resources import Node
 
-        child = Node(u'child-1')
+        child = Node('child-1')
         root.children.append(child)
         assert child.path == '/child-1/'
 
-        child2 = Node(u'child-2')
+        child2 = Node('child-2')
         child.children.append(child2)
         assert child2.path == '/child-1/child-2/'
 
     def test_replace_root(self, db_session, root, events):
         from kotti.resources import Node
         db_session.delete(root)
-        new_root = Node(u'')
+        new_root = Node('')
         db_session.add(new_root)
         assert new_root.path == '/'
 
@@ -356,20 +356,20 @@ class TestPath:
         subchild = child2['subchild'] = Node()
 
         assert db_session.query(Node).filter(
-            Node.path.startswith(u'/')).count() == 4
+            Node.path.startswith('/')).count() == 4
 
         assert db_session.query(Node).filter(
-            Node.path.startswith(u'/child-1/')).count() == 3
+            Node.path.startswith('/child-1/')).count() == 3
 
         objs = db_session.query(Node).filter(
-            Node.path.startswith(u'/child-1/child-2/')).all()
+            Node.path.startswith('/child-1/child-2/')).all()
 
         assert len(objs) == 2
         assert subchild in objs
         assert child2 in objs
 
         db_session.query(Node).filter(
-            Node.path.startswith(u'/child-1/child-3/')).count() == 0
+            Node.path.startswith('/child-1/child-3/')).count() == 0
 
     def test_add_child_to_unnamed_parent(self, db_session, root, events):
         from kotti.resources import Node
@@ -378,9 +378,9 @@ class TestPath:
         child2 = child1['child-2'] = Node()
         assert child2.__parent__.__parent__ is parent
         root['parent'] = parent
-        assert parent.path == u'/parent/'
-        assert child1.path == u'/parent/child-1/'
-        assert child2.path == u'/parent/child-1/child-2/'
+        assert parent.path == '/parent/'
+        assert child1.path == '/parent/child-1/'
+        assert child2.path == '/parent/child-1/child-2/'
 
     def test_add_child_to_unrooted_parent(self, db_session, root, events):
         from kotti.resources import Node
@@ -388,9 +388,9 @@ class TestPath:
         child1 = parent['child-1'] = Node()
         child2 = child1['child-2'] = Node()
         root['parent'] = parent
-        assert parent.path == u'/parent/'
-        assert child1.path == u'/parent/child-1/'
-        assert child2.path == u'/parent/child-1/child-2/'
+        assert parent.path == '/parent/'
+        assert child1.path == '/parent/child-1/'
+        assert child2.path == '/parent/child-1/child-2/'
 
     def test_node_lineage_not_loaded_new_name(self, db_session, root, events):
 
@@ -405,7 +405,7 @@ class TestPath:
 
         child2 = db_session.query(Node).get(child2_id)
         child3 = Node('child-3', parent=child2)
-        assert child3.path == u'/parent/child-1/child-2/child-3/'
+        assert child3.path == '/parent/child-1/child-2/child-3/'
 
     def test_node_lineage_not_loaded_new_parent(self, db_session, root, events):
 
@@ -427,14 +427,14 @@ class TestPath:
         child1_id = child1.id
         db_session.expunge_all()
 
-        child2 = Node(name=u'child-2')
-        child3 = Node(name=u'child-3')
+        child2 = Node(name='child-2')
+        child3 = Node(name='child-3')
 
         child1 = db_session.query(Node).get(child1_id)
         child3.parent = child2
         child2.parent = child1
 
-        assert child3.path == u"/parent/child-1/child-2/child-3/"
+        assert child3.path == "/parent/child-1/child-2/child-3/"
 
 
 class TestLocalGroup:
@@ -459,9 +459,9 @@ class TestTypeInfo:
         from kotti.resources import TypeInfo
 
         type_info = TypeInfo(selectable_default_views=[])
-        type_info.add_selectable_default_view('foo', u'Fannick')
+        type_info.add_selectable_default_view('foo', 'Fannick')
         assert type_info.selectable_default_views == [
-            ('foo', u'Fannick'),
+            ('foo', 'Fannick'),
             ]
 
         Document.type_info.add_selectable_default_view('one', 'two')

@@ -1,6 +1,3 @@
-# -*- coding: utf-8 -*-
-from __future__ import absolute_import, division, print_function
-
 import datetime
 import time
 
@@ -9,7 +6,6 @@ from mock import MagicMock
 from mock import patch
 
 from kotti.resources import File
-from kotti.resources import Image
 from kotti.testing import Dummy
 from kotti.testing import asset
 from kotti.views.cache import set_max_age
@@ -25,14 +21,16 @@ def delta(date_string):
     return parse_expires(date_string) - now
 
 
+# noinspection PyUnusedLocal
 @pytest.fixture
 def cachetest_content(root, filedepot):
     image = asset('sendeschluss.jpg')
-    root['textfile'] = File("file contents", u"mytext.txt", u"text/plain")
-    root['image'] = Image(image.read(), u"sendeschluss.jpg", u"image/jpeg")
+    root['textfile'] = File(b"file contents", 'mytext.txt', 'text/plain')
+    root['image'] = File(image.read(), 'sendeschluss.jpg', 'image/jpeg')
 
 
 class TestSetMaxAge:
+    # noinspection PyUnresolvedReferences
     def test_preserve_existing_headers(self):
         response = Dummy(headers={
             "cache-control": "max-age=17,s-max-age=42,foo,bar=42"})
@@ -158,12 +156,12 @@ class TestBrowser:
 
         # media content
         resp = webtest.app.get('/textfile/inline-view')
-        resp.headers.get('X-Caching-Policy') == 'No Cache'
+        assert resp.headers.get('X-Caching-Policy') == 'No Cache'
         assert resp.headers.get('Cache-Control') == 'max-age=0,public'
         d = delta(resp.headers.get('Expires'))
         assert (d.days, d.seconds) <= (0, 0)
         resp = webtest.app.get('/image/inline-view')
-        resp.headers.get('X-Caching-Policy') == 'No Cache'
+        assert resp.headers.get('X-Caching-Policy') == 'No Cache'
         assert resp.headers.get('Cache-Control') == 'max-age=0,public'
         d = delta(resp.headers.get('Expires'))
         assert (d.days, d.seconds) <= (0, 0)

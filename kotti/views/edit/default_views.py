@@ -1,9 +1,6 @@
-# -*- coding: utf-8 -*-
 """
 :summary: Default view selctor views
 """
-from __future__ import absolute_import, division, print_function
-
 import warnings
 
 from pyramid.compat import map_
@@ -79,7 +76,7 @@ class DefaultViewSelection(object):
                 })
             else:
                 warnings.warn(
-                    u"No view called '{0}' is registered for {1!r}.".format(
+                    "No view called '{0}' is registered for {1!r}.".format(
                         name, self.context))
 
         return {
