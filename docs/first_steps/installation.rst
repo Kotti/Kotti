@@ -7,7 +7,6 @@ Requirements
 ------------
 
 - Python >= 3.5
-- virtualenv_
 - ``build_essential`` and ``python-dev`` (on Debian or Ubuntu) or
 - ``Xcode`` (on OS X) or
 - equivalent build toolchain for your OS.
@@ -19,7 +18,7 @@ It is recommended to install Kotti inside a virtualenv:
 
 .. parsed-literal::
 
-  virtualenv mysite
+  python3 -m venv mysite
   cd mysite
   bin/pip install Kotti
 
