@@ -1,6 +1,3 @@
-# -*- coding: utf-8 -*-
-from __future__ import absolute_import, division, print_function
-
 import warnings
 
 from pyramid.httpexceptions import HTTPNotFound
@@ -27,7 +24,7 @@ def view_content_default(context, request):
     response = render_view_to_response(context, request, name=view_name)
     if response is None:  # pragma: no cover
         warnings.warn(
-            u'Failed to look up default view called {0!r} for {1!r}.'.format(
+            'Failed to look up default view called {0!r} for {1!r}.'.format(
                 view_name, context))
         raise HTTPNotFound()
     return response
@@ -43,8 +40,8 @@ def view_node(context, request):  # pragma: no cover
              renderer='kotti:templates/view/search-results.pt')
 def search_results(context, request):
     results = []
-    if u'search-term' in request.POST:
-        search_term = request.POST[u'search-term']
+    if 'search-term' in request.POST:
+        search_term = request.POST['search-term']
         results = search_content(search_term, request)
     return {'results': results}
 
@@ -54,11 +51,11 @@ def search_results(context, request):
              renderer='kotti:templates/view/search-results.pt')
 def search_results_for_tag(context, request):
     results = []
-    if u'tag' in request.GET:
+    if 'tag' in request.GET:
         # Single tag searching only, is allowed in default Kotti. Add-ons can
         # utilize search_content_for_tags(tags) to enable multiple tags
         # searching, but here it is called with a single tag.
-        tags = [request.GET[u'tag'].strip()]
+        tags = [request.GET['tag'].strip()]
         results = search_content_for_tags(tags, request)
     return {'results': results}
 

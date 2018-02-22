@@ -1,6 +1,3 @@
-# -*- coding: utf-8 -*-
-from __future__ import absolute_import, division, print_function
-
 import pkg_resources
 from pyramid.authentication import AuthTktAuthenticationPolicy
 from pyramid.authorization import ACLAuthorizationPolicy
@@ -54,6 +51,7 @@ def beaker_session_factory(**settings):
 
 def none_factory(**kwargs):  # pragma: no cover
     return None
+
 
 # All of these can be set by passing them in the Paste Deploy settings:
 conf_defaults = {
@@ -203,11 +201,7 @@ def base_configure(global_config, **settings):
 
     for key, value in settings.items():
         if key.startswith('kotti') and isinstance(value, binary_type):
-            settings[key] = unicode(value, 'utf8')
-
-    # will be removed in 2.0
-    import kotti_image
-    kotti_image.kotti_configure(settings)
+            settings[key] = value.decode('utf8')
 
     # Allow extending packages to change 'settings' w/ Python:
     k = 'kotti.configurators'

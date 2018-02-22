@@ -1,7 +1,0 @@
-[egg_info]
-tag_build = dev
-tag_svn_revision = true
-
-[aliases]
-dev = develop easy_install kotti[testing] kotti[development]
-docs = develop easy_install kotti[docs]

@@ -1,10 +1,7 @@
-# -*- coding: utf-8 -*-
 """
 Populate contains two functions that are called on application startup
 (if you haven't modified kotti.populators).
 """
-
-from __future__ import absolute_import, division, print_function
 
 from pyramid.i18n import LocalizerRequestMixin
 from pyramid.threadlocal import get_current_registry
@@ -27,12 +24,12 @@ def populate_users():
     """
 
     principals = get_principals()
-    if u'admin' not in principals:
-        principals[u'admin'] = {
-            'name': u'admin',
+    if 'admin' not in principals:
+        principals['admin'] = {
+            'name': 'admin',
             'password': get_settings()['kotti.secret'],
-            'title': u"Administrator",
-            'groups': [u'role:admin'],
+            'title': 'Administrator',
+            'groups': ['role:admin'],
         }
 
 
@@ -43,6 +40,7 @@ def populate():
     """
     lrm = LocalizerRequestMixin()
     lrm.registry = get_current_registry()
+    # noinspection PyPropertyAccess
     lrm.locale_name = get_settings()['pyramid.default_locale_name']
     localizer = lrm.localizer
 
@@ -59,15 +57,16 @@ def populate():
         wf = get_workflow(root)
         if wf is not None:
             DBSession.flush()  # Initializes workflow
-            wf.transition_to_state(root, None, u'public')
+            wf.transition_to_state(root, None, 'public')
 
     populate_users()
 
+
 _ROOT_ATTRS = dict(
-    name=u'',  # (at the time of writing) root must have empty name!
-    title=_(u'Welcome to Kotti'),
-    description=_(u'Congratulations! You have successfully installed Kotti.'),
-    body=_(u"""
+    name='',  # (at the time of writing) root must have empty name!
+    title=_('Welcome to Kotti'),
+    description=_('Congratulations! You have successfully installed Kotti.'),
+    body=_("""
 <h2>Log in</h2>
 <p>
     You can <a class="btn btn-success" href="login">log in</a> to your site
@@ -124,9 +123,9 @@ _ROOT_ATTRS = dict(
 """))
 
 _ABOUT_ATTRS = dict(
-    title=_(u'About'),
-    description=_(u'Our company is the leading manufacturer of foo widgets used in a wide variety of aviation and and industrial products.'),  # noqa
-    body=_(u"""
+    title=_('About'),
+    description=_('Our company is the leading manufacturer of foo widgets used in a wide variety of aviation and and industrial products.'),  # noqa
+    body=_("""
 <p>
   <img alt="five colorful Extra EA300 airplanes flying in formation"
    src="http://upload.wikimedia.org/wikipedia/commons/thumb/5/5d/Northern_Lights_Formation.jpg/640px-Northern_Lights_Formation.jpg"

@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-# -*- coding: utf-8 -*-
 """This module includes a simple events system that allows users to
 subscribe to specific events, and more particularly to *object events*
 of specific object types.
@@ -13,24 +11,17 @@ Inheritance Diagram
 
 """
 
-from __future__ import absolute_import, division, print_function
-
-from collections import defaultdict
+from collections import OrderedDict
 from datetime import datetime
-
-try:  # pragma: no cover
-    from collections import OrderedDict
-except ImportError:  # pragma: no cover
-    from ordereddict import OrderedDict
 
 import sqlalchemy.event
 import venusian
+from pyramid.location import lineage
+from pyramid.threadlocal import get_current_request
 from sqlalchemy.orm import load_only
 from sqlalchemy.orm import mapper
 from sqlalchemy_utils.functions import has_changes
-from pyramid.location import lineage
-from pyramid.threadlocal import get_current_request
-from zope.deprecation.deprecation import deprecated
+from zope.deprecation import deprecated
 
 from kotti import DBSession
 from kotti import get_settings
@@ -39,10 +30,10 @@ from kotti.resources import LocalGroup
 from kotti.resources import Node
 from kotti.resources import Tag
 from kotti.resources import TagsToContents
+from kotti.security import Principal
 from kotti.security import get_principals
 from kotti.security import list_groups
 from kotti.security import list_groups_raw
-from kotti.security import Principal
 from kotti.security import set_groups
 from kotti.sqla import no_autoflush
 
@@ -84,6 +75,8 @@ class ObjectAfterDelete(ObjectEvent):
 
     .. deprecated:: 0.9
     """
+
+
 deprecated('ObjectAfterDelete',
            "The ObjectAfterDelete event is deprecated and will be no longer "
            "available starting with Kotti 0.10.")
@@ -93,12 +86,45 @@ class UserDeleted(ObjectEvent):
     """This event is emitted when an user object is deleted from the DB."""
 
 
-class DispatcherDict(defaultdict, OrderedDict):
-    """Base class for dispatchers"""
+class DispatcherDict(OrderedDict):
+    # Source: http://stackoverflow.com/a/6190500/562769
+    def __init__(self, *a, **kw):
+        OrderedDict.__init__(self, *a, **kw)
+        self.default_factory = list
 
-    def __init__(self, *args, **kwargs):
-        defaultdict.__init__(self, list)
-        OrderedDict.__init__(self, *args, **kwargs)
+    def __getitem__(self, key):
+        try:
+            return OrderedDict.__getitem__(self, key)
+        except KeyError:
+            return self.__missing__(key)
+
+    def __missing__(self, key):
+        if self.default_factory is None:
+            raise KeyError(key)
+        self[key] = value = self.default_factory()
+        return value
+
+    def __reduce__(self):
+        if self.default_factory is None:
+            args = tuple()
+        else:
+            args = self.default_factory,
+        return type(self), args, None, None, self.items()
+
+    def copy(self):
+        return self.__copy__()
+
+    def __copy__(self):
+        return type(self)(self.default_factory, self)
+
+    def __deepcopy__(self, memo):
+        import copy
+        return type(self)(self.default_factory,
+                          copy.deepcopy(self.items()))
+
+    def __repr__(self):
+        return 'OrderedDefaultDict(%s, %s)' % (self.default_factory,
+                                               OrderedDict.__repr__(self))
 
 
 class Dispatcher(DispatcherDict):
@@ -181,6 +207,7 @@ def clear():
     objectevent_listeners.clear()
     listeners[ObjectEvent].append(objectevent_listeners)
 
+
 listeners = Dispatcher()
 notify = listeners.__call__
 objectevent_listeners = ObjectEventDispatcher()
@@ -233,13 +260,12 @@ def set_owner(event):
     if request is not None and isinstance(obj, Node):
         userid = request.authenticated_userid
         if userid is not None:
-            userid = unicode(userid)
             # Set owner metadata:
             if obj.owner is None:
                 obj.owner = userid
             # Add owner role for userid if it's not inherited already:
-            if u'role:owner' not in list_groups(userid, obj):
-                groups = list_groups_raw(userid, obj) | {u'role:owner'}
+            if 'role:owner' not in list_groups(userid, obj):
+                groups = list_groups_raw(userid, obj) | {'role:owner'}
                 set_groups(userid, obj, groups)
 
 
@@ -342,19 +368,19 @@ def _set_path_for_new_name(target, value, oldvalue, initiator):
         # Our name is about to be set to 'None', so skip.
         return
 
-    if target.__parent__ is None and value != u'':
+    if target.__parent__ is None and value != '':
         # Our parent hasn't been set yet.  Skip, unless we're the root
         # object (which always has an empty string as name).
         return
 
     old_path = target.path
     line = tuple(reversed(tuple(lineage(target))))
-    target_path = u'/'.join(node.__name__ for node in line[:-1])
-    if target.__parent__ is None and value == u'':
+    target_path = '/'.join(node.__name__ for node in line[:-1])
+    if target.__parent__ is None and value == '':
         # We're a new root object
-        target_path = u'/'
+        target_path = '/'
     else:
-        target_path += u'/{0}/'.format(value)
+        target_path += '/{0}/'.format(value)
     target.path = target_path
     # We need to set the name to value here so that the subsequent
     # UPDATE in _update_children_paths will include the new 'name'
@@ -371,8 +397,8 @@ def _set_path_for_new_name(target, value, oldvalue, initiator):
         _update_children_paths(old_path, target_path)
     else:
         for child in _all_children(target):
-            child.path = u'{0}{1}/'.format(child.__parent__.path,
-                                           child.__name__)
+            child.path = '{0}{1}/'.format(child.__parent__.path,
+                                          child.__name__)
 
 
 def _all_children(item, _all=None):
@@ -398,7 +424,7 @@ def _set_path_for_new_parent(target, value, oldvalue, initiator):
         # The object's name is still 'None', so skip.
         return
 
-    if value.__parent__ is None and value.__name__ != u'':
+    if value.__parent__ is None and value.__name__ != '':
         # Our parent doesn't have a parent, and it's not root either.
         return
 
@@ -409,8 +435,8 @@ def _set_path_for_new_parent(target, value, oldvalue, initiator):
         # If any of our parents don't have a name yet, skip
         return
 
-    target_path = u'/'.join(node.__name__ for node in line)
-    target_path += u'/{0}/'.format(target.__name__)
+    target_path = '/'.join(node.__name__ for node in line)
+    target_path += '/{0}/'.format(target.__name__)
     target.path = target_path
 
     if old_path and target.id is not None:
@@ -420,10 +446,11 @@ def _set_path_for_new_parent(target, value, oldvalue, initiator):
         # children.  This is the case when we create an object with
         # children before we assign the object itself to a parent.
         for child in _all_children(target):
-            child.path = u'{0}{1}/'.format(child.__parent__.path,
-                                           child.__name__)
+            child.path = '{0}{1}/'.format(child.__parent__.path,
+                                          child.__name__)
 
 
+# noinspection PyPep8Naming
 class subscribe(object):
     """Function decorator to attach the decorated function as a handler for a
     Kotti event.  Example::

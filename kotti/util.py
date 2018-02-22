@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """
 Inheritance Diagram
 -------------------
@@ -7,16 +5,14 @@ Inheritance Diagram
 .. inheritance-diagram:: kotti.util
 """
 
-from __future__ import absolute_import, division, print_function
-
 import cgi
 import re
 
 from docopt import docopt
-from pyramid.i18n import get_localizer
-from pyramid.i18n import get_locale_name
-from pyramid.i18n import make_localizer
 from pyramid.i18n import TranslationStringFactory
+from pyramid.i18n import get_locale_name
+from pyramid.i18n import get_localizer
+from pyramid.i18n import make_localizer
 from pyramid.interfaces import ITranslationDirectories
 from pyramid.location import inside
 from pyramid.paster import bootstrap
@@ -27,7 +23,6 @@ from pyramid.threadlocal import get_current_request
 from pyramid.url import resource_url
 from pyramid.view import render_view_to_response
 from repoze.lru import LRUCache
-from zope.deprecation import deprecated
 
 from kotti import DBSession
 
@@ -122,15 +117,6 @@ class LinkBase(object):
                 return True
         return False
 
-    @property
-    def path(self):  # BBB
-        return self.name
-    path = deprecated(
-        path,
-        "The 'path' attribute has been deprecated as of Kotti 1.0.0.  Please "
-        "use 'name' instead.",
-        )
-
 
 class LinkRenderer(LinkBase):
     """A menu link that renders a view to render the link.
@@ -188,12 +174,12 @@ class Link(LinkBase):
         return isinstance(other, Link) and repr(self) == repr(other)
 
     def __repr__(self):
-        return u'Link({0}, {1})'.format(self.name, self.title)
+        return 'Link({0}, {1})'.format(self.name, self.title)
 
 
 class ActionButton(Link):
     def __init__(self, path, title=None, no_children=False,
-                 css_class=u"btn btn-default"):
+                 css_class='btn btn-default'):
         super(ActionButton, self).__init__(path, title)
         self.no_children = no_children
         self.css_class = css_class
@@ -201,6 +187,7 @@ class ActionButton(Link):
 
 class DontCache(Exception):
     pass
+
 
 _CACHE_ATTR = 'kotti_cache'
 
@@ -228,7 +215,7 @@ def cache(compute_key, container_factory):
                 key = compute_key(*args, **kwargs)
             except DontCache:
                 return func(*args, **kwargs)
-            key = u'{0}.{1}:{2}'.format(func.__module__, func.__name__, key)
+            key = '{0}.{1}:{2}'.format(func.__module__, func.__name__, key)
             cached_value = cache.get(key, marker)
             if cached_value is marker:
                 cached_value = cache[key] = func(*args, **kwargs)
@@ -246,6 +233,7 @@ def request_cache(compute_key):
 
 class LRUCacheSetItem(LRUCache):
     __setitem__ = LRUCache.put
+
 
 _lru_cache = LRUCacheSetItem(1000)
 
@@ -278,17 +266,17 @@ def extract_from_settings(prefix, settings=None):
 
 
 def disambiguate_name(name):
-    parts = name.split(u'-')
+    parts = name.split('-')
     if len(parts) > 1:
         try:
             index = int(parts[-1])
         except ValueError:
-            parts.append(u'1')
+            parts.append('1')
         else:
-            parts[-1] = unicode(index + 1)
+            parts[-1] = str(index + 1)
     else:
-        parts.append(u'1')
-    return u'-'.join(parts)
+        parts.append('1')
+    return '-'.join(parts)
 
 
 def title_to_name(title, blacklist=(), max_length=None):
@@ -306,10 +294,10 @@ def title_to_name(title, blacklist=(), max_length=None):
         locale_name = 'en'
     from kotti import get_settings
     urlnormalizer = get_settings()['kotti.url_normalizer'][0]
-    name = unicode(urlnormalizer(title, locale_name, max_length=max_length))
+    name = urlnormalizer(title, locale_name, max_length=max_length)
     if name not in blacklist:
         return name
-    name += u'-1'
+    name += '-1'
     while name in blacklist:
         name = disambiguate_name(name)
     return name
@@ -344,13 +332,6 @@ def command(func, doc):
     finally:
         pyramid_env['closer']()
     return 0
-
-
-ViewLink = Link
-deprecated(
-    'ViewLink',
-    "kotti.util.ViewLink has been renamed to Link as of Kotti 1.0.0."
-    )
 
 
 def _to_fieldstorage(fp, filename, mimetype, size, **_kwds):

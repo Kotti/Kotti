@@ -28,7 +28,7 @@
           <a href="${api.url(item)}" title="${item.description}">${item.title}</a>
         </li>
       </ul>
-      <div tal:replace="api.render_template('kotti:templates/view/search.pt')" />
+      <div tal:replace="api.render_template('kotti:templates/view/search.pt')"></div>
     </div>
   </div>
 </nav>

@@ -1,0 +1,106 @@
+# Python CircleCI 2.0 configuration file
+# Check https://circleci.com/docs/2.0/language-python/ for more details
+
+version: 2
+
+dependencies:
+  override:
+    - pip install tox tox-pyenv
+    - pyenv local 3.6.4 3.5.4
+
+jobs:
+  python3.6-sqlite: &py36sqlite
+    docker:
+      # specify the version you desire here. use `-browsers` prefix for selenium tests, e.g. `3.6.4-browsers`
+      - image: circleci/python:3.6.4
+
+    working_directory: ~/kotti
+
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            # Download and cache dependencies
+            - v2-dependencies-{{ checksum "setup.py" }}
+      - run:
+          name: install dependencies
+          command: |
+            python3 -m venv venv
+            . venv/bin/activate
+            pip install -U pip wheel setuptools setuptools-git
+            pip install psycopg2 mysqlclient python-coveralls codecov
+            pip install -e .[testing]
+      - save_cache:
+          paths:
+            - ./venv
+          key: v2-dependencies-{{ checksum "setup.py" }}
+      - run:
+          name: run tests
+          command: |
+            . venv/bin/activate
+            py.test --junitxml=test-reports/junit
+      - store_test_results:
+          path: test-reports
+      - store_artifacts:
+          path: test-reports
+
+  python3.6-postgresql10.1:
+    <<: *py36sqlite
+    docker:
+      - image: circleci/python:3.6.4
+        environment: &pgenv
+          KOTTI_TEST_DB_STRING: postgresql://kotti@localhost/kotti?sslmode=disable
+          POSTGRES_USER: kotti
+          POSTGRES_DB: kotti
+          POSTGRES_PASSWORD: ""
+      - image: circleci/postgres:10.1
+        environment:
+          <<: *pgenv
+
+  python3.6-mysql5.6:
+    <<: *py36sqlite
+    docker:
+      - image: circleci/python:3.6.4
+        environment: &mysqlenv
+          KOTTI_TEST_DB_STRING: mysql+mysqldb://root@127.0.0.1:3306/kotti
+          MYSQL_USER: kotti
+          MYSQL_DATABASE: kotti
+      - image: circleci/mysql:5.6-ram
+        environment:
+          <<: *mysqlenv
+
+  python3.5-sqlite:
+    <<: *py36sqlite
+    docker:
+      - image: circleci/python:3.5.4
+
+  python3.5-postgresql10.1:
+    <<: *py36sqlite
+    docker:
+      - image: circleci/python:3.5.4
+        environment:
+          <<: *pgenv
+      - image: circleci/postgres:10.1
+        environment:
+          <<: *pgenv
+
+  python3.5-mysql5.6:
+    <<: *py36sqlite
+    docker:
+      - image: circleci/python:3.5.4
+        environment:
+          <<: *mysqlenv
+      - image: circleci/mysql:5.6-ram
+        environment:
+          <<: *mysqlenv
+
+workflows:
+  version: 2
+  test:
+    jobs:
+      - python3.6-sqlite
+      - python3.6-postgresql10.1
+      - python3.6-mysql5.6
+      - python3.5-sqlite
+      - python3.5-postgresql10.1
+      - python3.5-mysql5.6

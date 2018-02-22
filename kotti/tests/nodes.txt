@@ -16,16 +16,16 @@ may be accessed through the ``node.__parent__`` property.
   >>> root = get_root()
   >>> root.__parent__ is None
   True
-  >>> root.title = u'A new title'
+  >>> root.title = 'A new title'
 
 Let us add three documents to our root:
 
 .. code-block:: python
 
-  >>> from kotti.resources import Document  
-  >>> root['first'] = Document(title=u'First page')
-  >>> root['second'] = Document(title=u'Second page')
-  >>> root['third'] = Document(title=u'Third page')
+  >>> from kotti.resources import Document
+  >>> root['first'] = Document(title='First page')
+  >>> root['second'] = Document(title='Second page')
+  >>> root['third'] = Document(title='Third page')
 
 Note how the keys in the dict correspond to the ``name`` of child
 nodes:
@@ -34,7 +34,7 @@ nodes:
 
   >>> first = root['first']
   >>> first.name
-  u'first'
+  'first'
   >>> first.__parent__ == root
   True
   >>> third = root['third']
@@ -52,9 +52,9 @@ The lists of keys and values are ordered:
 .. code-block:: python
 
   >>> root.keys()
-  [u'first', u'third']
+  ['first', 'third']
   >>> first.keys()
-  [u'copy-of-second']
+  ['copy-of-second']
   >>> root.values()
   [<Document ... at /first>, <Document ... at /third>]
 
@@ -84,9 +84,9 @@ You can move a node by setting its ``__parent__``:
   <Document ... at />
   >>> third.__parent__ = first
   >>> root.keys()
-  [u'first']
+  ['first']
   >>> first.keys()
-  [u'copy-of-second', u'third']
+  ['copy-of-second', 'third']
 
 # start of teardown
 

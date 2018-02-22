@@ -1,6 +1,3 @@
-# -*- coding: utf-8 -*-
-from __future__ import absolute_import, division, print_function
-
 from pyramid.view import view_config
 
 from kotti.interfaces import IFile
@@ -30,26 +27,3 @@ def includeme(config):
     """
 
     config.scan(__name__)
-
-
-# DEPRECATED
-
-# noinspection PyPep8
-from zope.deprecation.deprecation import deprecated
-# noinspection PyPep8
-from kotti.filedepot import StoredFileResponse
-
-
-class UploadedFileResponse(StoredFileResponse):
-    def __init__(self, data, request, disposition='attachment',
-                 cache_max_age=None, content_type=None,
-                 content_encoding=None):
-        super(UploadedFileResponse, self).__init__(
-            data.file, request, disposition=disposition,
-            cache_max_age=cache_max_age, content_type=content_type,
-            content_encoding=content_encoding)
-
-deprecated('UploadedFileResponse',
-           'UploadedFileResponse is deprecated and will be removed in '
-           'Kotti 2.0.0.  Use "request.uploaded_file_response(context.data)" '
-           'instead.')

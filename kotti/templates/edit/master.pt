@@ -2,9 +2,7 @@
       xmlns:metal="http://xml.zope.org/namespaces/metal"
       xmlns:tal="http://xml.zope.org/namespaces/tal"
       xmlns:i18n="http://xml.zope.org/namespaces/i18n"
-      tal:define="page_slots api.slots;
-                  dummy api.edit_needed;
-                  has_location_context api.is_location(context);"
+      tal:define="page_slots api.slots; dummy api.edit_needed; has_location_context api.is_location(context);"
       metal:define-macro="main">
   <head>
     <meta charset="utf-8" />
@@ -39,8 +37,8 @@
     <div class="container">
       <div class="row">
         <div class="col-md-12">
-          <div tal:replace="api.render_template('kotti:templates/edit/breadcrumbs.pt')" />
-          <div tal:replace="api.render_template('kotti:templates/messages.pt')" />
+          <div tal:replace="api.render_template('kotti:templates/edit/breadcrumbs.pt')"></div>
+          <div tal:replace="api.render_template('kotti:templates/messages.pt')"></div>
           <div class="inner-content">
             <metal:content define-slot="content">
               <h1>${context.title}</h1>

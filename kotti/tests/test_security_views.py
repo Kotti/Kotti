@@ -1,6 +1,3 @@
-# -*- coding: utf-8 -*-
-from __future__ import absolute_import, division, print_function
-
 import colander
 import pytest
 from mock import Mock
@@ -27,24 +24,25 @@ class TestUserManagement:
         request = DummyRequest()
         P = get_principals()
 
-        request.params['search'] = u''
-        request.params['query'] = u'Joe'
+        request.params['search'] = ''
+        request.params['query'] = 'Joe'
         entries = UsersManage(root, request)()['entries']
         assert len(entries) == 0
         assert (request.session.pop_flash('info') ==
-                [u'No users or groups were found.'])
-        request.params['query'] = u'Bob'
+                ['No users or groups were found.'])
+        request.params['query'] = 'Bob'
         entries = UsersManage(root, request)()['entries']
         assert entries[0][0] == P['bob']
         assert entries[0][1] == ([], [])
         assert entries[1][0] == P['group:bobsgroup']
         assert entries[1][1] == ([], [])
 
-        P[u'bob'].groups = [u'group:bobsgroup']
-        P[u'group:bobsgroup'].groups = [u'role:admin']
+        P['bob'].groups = ['group:bobsgroup']
+        P['group:bobsgroup'].groups = ['role:admin']
         entries = UsersManage(root, request)()['entries']
-        assert (entries[0][1] ==
-                (['group:bobsgroup', 'role:admin'], ['role:admin']))
+        # assert entries[0][1] == (['group:bobsgroup', 'role:admin'], ['role:admin'])  # noqa
+        assert set(entries[0][1][0]) == {'group:bobsgroup', 'role:admin'}
+        assert entries[0][1][1] == ['role:admin']
         assert entries[1][1] == (['role:admin'], [])
 
     def test_apply(self, extra_principals, root):
@@ -54,31 +52,29 @@ class TestUserManagement:
 
         request = DummyRequest()
 
-        bob = get_principals()[u'bob']
+        bob = get_principals()['bob']
 
-        request.params['apply'] = u''
+        request.params['apply'] = ''
         UsersManage(root, request)()
-        assert (request.session.pop_flash('info') == [u'No changes were made.'])
+        assert (request.session.pop_flash('info') == ['No changes were made.'])
         assert list_groups('bob') == []
-        bob.groups = [u'role:special']
+        bob.groups = ['role:special']
 
-        request.params['role::bob::role:owner'] = u'1'
-        request.params['role::bob::role:editor'] = u'1'
-        request.params['orig-role::bob::role:owner'] = u''
-        request.params['orig-role::bob::role:editor'] = u''
+        request.params['role::bob::role:owner'] = '1'
+        request.params['role::bob::role:editor'] = '1'
+        request.params['orig-role::bob::role:owner'] = ''
+        request.params['orig-role::bob::role:editor'] = ''
 
         UsersManage(root, request)()
         assert (request.session.pop_flash('success') ==
-                [u'Your changes have been saved.'])
-        assert (
-            set(list_groups('bob')) ==
-            {'role:owner', 'role:editor', 'role:special'}
-            )
+                ['Your changes have been saved.'])
+        assert (set(list_groups('bob')) == {'role:owner', 'role:editor',
+                                            'role:special'})
 
     def test_group_validator(self, db_session):
         from kotti.views.users import group_validator
         with raises(colander.Invalid):
-            group_validator(None, u'this-group-never-exists')
+            group_validator(None, 'this-group-never-exists')
 
 
 class TestUserDelete:
@@ -87,32 +83,33 @@ class TestUserDelete:
         from kotti.views.users import user_delete
 
         request = DummyRequest()
-        bob = get_principals()[u'bob']
+        bob = get_principals()['bob']
 
-        request.params['name'] = u''
+        request.params['name'] = ''
         user_delete(root, request)
-        assert request.session.pop_flash('error') == [u'No name was given.']
-        assert u'bob' in get_principals().keys()
+        assert request.session.pop_flash('error') == ['No name was given.']
+        assert 'bob' in get_principals().keys()
 
-        request.params['name'] = u'bob'
+        request.params['name'] = 'bob'
         result = user_delete(root, request)
-        assert u'api' in result
-        api = result[u'api']
+        assert 'api' in result
+        api = result['api']
         assert api.principal == bob
-        assert api.principal_type == u'User'
-        assert u'bob' in get_principals().keys()
+        assert api.principal_type == 'User'
+        assert 'bob' in get_principals().keys()
 
-        request.params['name'] = u'john'
-        request.params['delete'] = u'delete'
+        request.params['name'] = 'john'
+        request.params['delete'] = 'delete'
         user_delete(root, request)
-        assert request.session.pop_flash('error') == [u"User was not found."]
-        assert u'bob' in get_principals().keys()
+        assert request.session.pop_flash('error') == ["User was not found."]
+        assert 'bob' in get_principals().keys()
 
-        request.params['name'] = u'bob'
-        request.params['delete'] = u'delete'
+        request.params['name'] = 'bob'
+        request.params['delete'] = 'delete'
         user_delete(root, request)
         with pytest.raises(KeyError):
-            get_principals()[u'bob']
+            # noinspection PyStatementEffect
+            get_principals()['bob']
 
     def test_deleted_group_removed_in_usergroups(self, events, extra_principals,
                                                  root, db_session):
@@ -120,16 +117,17 @@ class TestUserDelete:
         from kotti.views.users import user_delete
 
         request = DummyRequest()
-        bob = get_principals()[u'bob']
-        bob.groups = [u'group:bobsgroup']
-        assert bob.groups == [u'group:bobsgroup']
+        bob = get_principals()['bob']
+        bob.groups = ['group:bobsgroup']
+        assert bob.groups == ['group:bobsgroup']
 
-        request.params['name'] = u'group:bobsgroup'
-        request.params['delete'] = u'delete'
+        request.params['name'] = 'group:bobsgroup'
+        request.params['delete'] = 'delete'
         user_delete(root, request)
         db_session.expire(bob)
         with pytest.raises(KeyError):
-            get_principals()[u'group:bobsgroup']
+            # noinspection PyStatementEffect
+            get_principals()['group:bobsgroup']
         assert bob.groups == []
 
     def test_deleted_group_removed_from_localgroups(self, events,
@@ -139,13 +137,13 @@ class TestUserDelete:
         from kotti.views.users import user_delete
 
         request = DummyRequest()
-        set_groups(u'group:bobsgroup', root, ['role:admin'])
+        set_groups('group:bobsgroup', root, ['role:admin'])
         local_group = LocalGroup.query.first()
-        assert local_group.principal_name == u'group:bobsgroup'
+        assert local_group.principal_name == 'group:bobsgroup'
         assert local_group.node == root
 
-        request.params['name'] = u'group:bobsgroup'
-        request.params['delete'] = u'delete'
+        request.params['name'] = 'group:bobsgroup'
+        request.params['delete'] = 'delete'
         user_delete(root, request)
         assert LocalGroup.query.first() is None
 
@@ -155,16 +153,17 @@ class TestUserDelete:
 
         request = DummyRequest()
 
-        root[u'content_1'] = Content()
-        root[u'content_1'].owner = u'bob'
-        assert root[u'content_1'].owner == u'bob'
+        root['content_1'] = Content()
+        root['content_1'].owner = 'bob'
+        assert root['content_1'].owner == 'bob'
 
-        request.params['name'] = u'bob'
-        request.params['delete'] = u'delete'
+        request.params['name'] = 'bob'
+        request.params['delete'] = 'delete'
         user_delete(root, request)
-        assert root[u'content_1'].owner is None
+        assert root['content_1'].owner is None
 
 
+# noinspection PyAttributeOutsideInit
 class TestSetPassword:
     def setup_method(self, method):
         Form_patcher = patch('kotti.views.login.Form')
@@ -295,16 +294,16 @@ class TestUserManageForm:
         user = Mock()
         request = DummyRequest()
         view = UserManageFormView(user, request)
-        appstruct = {'password': u'foo'}
+        appstruct = {'password': 'foo'}
         view.save_success(appstruct)
-        assert user.password.startswith(u'$2a$10$')
+        assert user.password.startswith('$2a$10$')
 
     def test_hashed_password_empty(self, root):
         from kotti.views.users import UserManageFormView
 
-        user = Mock(password=u'before')
+        user = Mock(password='before')
         request = DummyRequest()
         view = UserManageFormView(user, request)
-        appstruct = {'password': u''}
+        appstruct = {'password': ''}
         view.save_success(appstruct)
-        assert user.password == u"before"
+        assert user.password == "before"

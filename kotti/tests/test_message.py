@@ -1,6 +1,3 @@
-# -*- coding: utf-8 -*-
-from __future__ import absolute_import, division, print_function
-
 from warnings import filterwarnings
 
 from mock import patch
@@ -9,11 +6,11 @@ from pytest import raises
 from kotti.testing import Dummy
 from kotti.testing import DummyRequest
 
-
 # filter deprecation warnings for code that is still tested...
 filterwarnings('ignore', '^send_set_password is deprecated')
 
 
+# noinspection PyAttributeOutsideInit
 class TestSendEmail:
     def setup_method(self, method):
         get_mailer_patcher = patch('kotti.message.get_mailer')
@@ -30,23 +27,23 @@ class TestSendEmail:
         from kotti.message import send_email
 
         send_email(dummy_request,
-                   [u'"John Doe" <joedoe@foo.com>'],
+                   ['"John Doe" <joedoe@foo.com>'],
                    'kotti:templates/email-reset-password.pt',
-                   {'site_title': u'My site',
-                    'user_title': u'John Doe',
-                    'url': u'http://foo.com'}
+                   {'site_title': 'My site',
+                    'user_title': 'John Doe',
+                    'url': 'http://foo.com'}
                    )
 
         assert self.mailer.send.called
         message = self.mailer.send.call_args[0][0]
-        assert [u'"John Doe" <joedoe@foo.com>'] == message.recipients
+        assert ['"John Doe" <joedoe@foo.com>'] == message.recipients
         assert 'Reset your password' in message.subject
 
     def test_send_email_without_template_vars(self, dummy_request):
         from kotti.message import send_email
         with raises(NameError):
             send_email(dummy_request,
-                       [u'"John Doe" <joedoe@foo.com>'],
+                       ['"John Doe" <joedoe@foo.com>'],
                        'kotti:templates/email-reset-password.pt')
 
 
@@ -72,7 +69,7 @@ class TestSendSetPassword:
     def test_email_set_password_basic(self, db_session):
         from kotti.message import email_set_password
 
-        user = Dummy(name=u'joe', email='joe@bar.com', title=u'Joe')
+        user = Dummy(name='joe', email='joe@bar.com', title='Joe')
         email_set_password(user, DummyRequest())
 
         assert hasattr(user, 'confirm_token')
@@ -85,7 +82,7 @@ class TestSendSetPassword:
     def test_email_set_password_add_query(self, db_session):
         from kotti.message import email_set_password
 
-        user = Dummy(name=u'joe', email='joe@bar.com', title=u'Joe')
+        user = Dummy(name='joe', email='joe@bar.com', title='Joe')
         email_set_password(
             user, DummyRequest(), add_query={'another': 'param'})
 
@@ -116,7 +113,7 @@ class TestEmailSetPassword:
     def test_email_set_password_basic(self, db_session):
         from kotti.message import email_set_password
 
-        user = Dummy(name=u'joe', email='joe@bar.com', title=u'Joe')
+        user = Dummy(name='joe', email='joe@bar.com', title='Joe')
         email_set_password(user, DummyRequest())
 
         assert hasattr(user, 'confirm_token')
@@ -132,7 +129,7 @@ class TestEmailSetPassword:
     def test_email_set_password_other_template(self, db_session):
         from kotti.message import email_set_password
 
-        user = Dummy(name=u'joe', email='joe@bar.com', title=u'Joe')
+        user = Dummy(name='joe', email='joe@bar.com', title='Joe')
         email_set_password(
             user, DummyRequest(),
             template_name='kotti:templates/email-reset-password.pt')
@@ -144,7 +141,7 @@ class TestEmailSetPassword:
     def test_email_set_password_add_query(self, db_session):
         from kotti.message import email_set_password
 
-        user = Dummy(name=u'joe', email='joe@bar.com', title=u'Joe')
+        user = Dummy(name='joe', email='joe@bar.com', title='Joe')
         email_set_password(
             user, DummyRequest(), add_query={'another': 'param'})
 

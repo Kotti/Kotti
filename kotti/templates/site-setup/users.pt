@@ -115,13 +115,13 @@
       <div class="tab-pane ${active_tab == 'add_user' and 'active'}"
            id="add-user-tab">
         <h2 i18n:translate="">Add new user</h2>
-        <form tal:replace="structure user_addform" />
+        <form tal:replace="structure user_addform"></form>
       </div>
 
       <div class="tab-pane ${active_tab == 'add_group' and 'active'}"
            id="add-group-tab">
         <h2 i18n:translate="">Add new group</h2>
-        <form tal:replace="structure group_addform" />
+        <form tal:replace="structure group_addform"></form>
       </div>
     </div>
 

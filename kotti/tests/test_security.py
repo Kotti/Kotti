@@ -1,11 +1,21 @@
-# -*- coding: utf-8 -*-
-from __future__ import absolute_import, division, print_function
-
 from mock import patch
 from pyramid.authentication import CallbackAuthenticationPolicy
 from pytest import raises
 
 from kotti.testing import DummyRequest
+
+
+class HasPermissionTests:
+
+    def test_has_permission(self):
+        import mock
+        from kotti.security import has_permission
+        permission = 'edit'
+        context = object()
+        request = mock.MagicMock()
+        has_permission(permission, context, request)
+        assert request.has_permission.assert_called_once_with(
+            permission, context=context) is None
 
 
 class TestGroups:
@@ -14,7 +24,7 @@ class TestGroups:
         from kotti.security import list_groups_raw
 
         assert list_groups('admin', root) == ['role:admin']
-        assert list_groups_raw(u'admin', root) == set([])
+        assert list_groups_raw('admin', root) == set([])
 
     def test_empty(self, db_session, root):
         from kotti.security import list_groups
@@ -28,12 +38,12 @@ class TestGroups:
 
         set_groups('bob', root, ['role:editor'])
         assert list_groups('bob', root) == ['role:editor']
-        assert list_groups_raw(u'bob', root) == {'role:editor'}
+        assert list_groups_raw('bob', root) == {'role:editor'}
 
     def test_not_a_node(self):
         from kotti.security import list_groups_raw
 
-        assert list_groups_raw(u'bob', object()) == set()
+        assert list_groups_raw('bob', object()) == set()
 
     def test_overwrite_and_delete(self, db_session, root):
         from kotti.resources import get_root
@@ -43,11 +53,11 @@ class TestGroups:
 
         set_groups('bob', root, ['role:editor'])
         assert list_groups('bob', root) == ['role:editor']
-        assert list_groups_raw(u'bob', root) == {'role:editor'}
+        assert list_groups_raw('bob', root) == {'role:editor'}
 
         set_groups('bob', root, ['role:admin'])
         assert list_groups('bob', root) == ['role:admin']
-        assert list_groups_raw(u'bob', root) == {'role:admin'}
+        assert list_groups_raw('bob', root) == {'role:admin'}
 
         set_groups('bob', root)
         assert list_groups('bob', root) == []
@@ -59,7 +69,7 @@ class TestGroups:
         from kotti.security import list_groups_raw
         from kotti.security import set_groups
 
-        child = root[u'child'] = Node()
+        child = root['child'] = Node()
         db_session.flush()
 
         assert list_groups('bob', child) == []
@@ -74,15 +84,15 @@ class TestGroups:
             )
 
         # We can ask to list only those groups that are defined locally:
-        assert list_groups_raw(u'bob', child) == {'group:somegroup'}
+        assert list_groups_raw('bob', child) == {'group:somegroup'}
 
     @staticmethod
     def add_some_groups(db_session, root):
         from kotti.resources import Node
         from kotti.security import set_groups
 
-        child = root[u'child'] = Node()
-        grandchild = child[u'grandchild'] = Node()
+        child = root['child'] = Node()
+        grandchild = child['grandchild'] = Node()
         db_session.flush()
 
         # root:
@@ -116,8 +126,8 @@ class TestGroups:
         from kotti.security import list_groups_ext
 
         self.add_some_groups(db_session, root)
-        child = root[u'child']
-        grandchild = child[u'grandchild']
+        child = root['child']
+        grandchild = child['grandchild']
 
         # Check bob's groups on every level:
         assert list_groups('bob', root) == ['group:bobsgroup']
@@ -163,7 +173,7 @@ class TestGroups:
         from kotti.security import list_groups_callback
         from kotti.security import set_groups
 
-        child = root[u'child'] = Node()
+        child = root['child'] = Node()
         db_session.flush()
 
         request = DummyRequest()
@@ -177,7 +187,7 @@ class TestGroups:
             ['system.Everyone']
             )
 
-        get_principals()[u'bob'] = dict(name=u'bob')
+        get_principals()['bob'] = dict(name='bob')
         assert (
             auth.effective_principals(request) ==
             ['system.Everyone', 'system.Authenticated', 'bob']
@@ -194,7 +204,7 @@ class TestGroups:
             )
 
         # define that bob belongs to franksgroup in the user db:
-        get_principals()[u'bob'].groups = [u'group:franksgroup']
+        get_principals()['bob'].groups = ['group:franksgroup']
         set_groups('group:franksgroup', child, ['group:anothergroup'])
         assert (
             set(auth.effective_principals(request)) == {'system.Everyone',
@@ -207,10 +217,10 @@ class TestGroups:
 
         # And lastly test that circular group defintions are not a
         # problem here either:
-        get_principals()[u'group:franksgroup'] = dict(
-            name=u'group:franksgroup',
-            title=u"Frank's group",
-            groups=[u'group:funnygroup', u'group:bobsgroup'],
+        get_principals()['group:franksgroup'] = dict(
+            name='group:franksgroup',
+            title="Frank's group",
+            groups=['group:funnygroup', 'group:bobsgroup'],
             )
         assert (
             set(auth.effective_principals(request)) == {'system.Everyone',
@@ -228,12 +238,12 @@ class TestGroups:
 
         # Although group definitions are also in the user database,
         # we're not allowed to authenticate with a group id:
-        get_principals()[u'bob'] = dict(name=u'bob')
-        get_principals()[u'group:bobsgroup'] = dict(name=u'group:bobsgroup')
+        get_principals()['bob'] = dict(name='bob')
+        get_principals()['group:bobsgroup'] = dict(name='group:bobsgroup')
 
         request = DummyRequest()
-        assert list_groups_callback(u'bob', request) == []
-        assert list_groups_callback(u'group:bobsgroup', request) is None
+        assert list_groups_callback('bob', request) == []
+        assert list_groups_callback('group:bobsgroup', request) is None
 
     def test_principals_with_local_roles(self, db_session, root):
         from kotti.resources import Node
@@ -241,7 +251,7 @@ class TestGroups:
         from kotti.security import principals_with_local_roles
         from kotti.security import set_groups
 
-        child = root[u'child'] = Node()
+        child = root['child'] = Node()
         db_session.flush()
 
         assert principals_with_local_roles(root) == []
@@ -271,7 +281,7 @@ class TestGroups:
         from kotti.security import set_groups
 
         self.test_principals_with_local_roles(db_session, root)
-        child = root[u'child']
+        child = root['child']
         assert (
             set(principals_with_local_roles(child)) ==
             {'bob', 'group:bobsgroup', 'group:franksgroup'}
@@ -283,7 +293,7 @@ class TestGroups:
         db_session.flush()
         assert (
             set(principals_with_local_roles(child2)) ==
-            {u'bob', u'group:franksgroup'})
+            {'bob', 'group:franksgroup'})
         assert len(principals_with_local_roles(child)) == 3
 
         # When we now change the local roles of 'child', the copy is
@@ -297,14 +307,14 @@ class TestGroups:
         from kotti.security import map_principals_with_local_roles
 
         self.test_principals_with_local_roles(db_session, root)
-        child = root[u'child']
+        child = root['child']
         P = get_principals()
 
         # No users are defined in P, thus we get the empty list:
         assert map_principals_with_local_roles(root) == []
 
-        P['bob'] = {'name': u'bob'}
-        P['group:bobsgroup'] = {'name': u'group:bobsgroup'}
+        P['bob'] = {'name': 'bob'}
+        P['group:bobsgroup'] = {'name': 'group:bobsgroup'}
 
         value = map_principals_with_local_roles(root)
         assert len(value) == 1
@@ -326,7 +336,7 @@ class TestGroups:
         from kotti.resources import Node
         from kotti.security import set_groups
 
-        child = root[u'child'] = Node()
+        child = root['child'] = Node()
         db_session.flush()
 
         # We set a local group on child and delete child.  We then
@@ -335,7 +345,7 @@ class TestGroups:
         assert db_session.query(LocalGroup).count() == 0
         set_groups('group:bobsgroup', child, ['role:editor'])
         assert db_session.query(LocalGroup).count() == 1
-        del root[u'child']
+        del root['child']
         db_session.flush()
         assert db_session.query(LocalGroup).count() == 0
 
@@ -347,67 +357,67 @@ class TestPrincipals:
 
     def make_bob(self):
         users = self.get_principals()
-        users[u'bob'] = dict(
-            name=u'bob',
-            password=u'secret',
-            email=u'bob@dabolina.com',
-            title=u'Bob Dabolina',
-            groups=[u'group:bobsgroup'],
+        users['bob'] = dict(
+            name='bob',
+            password='secret',
+            email='bob@dabolina.com',
+            title='Bob Dabolina',
+            groups=['group:bobsgroup'],
             )
-        return users[u'bob']
+        return users['bob']
 
     def _assert_is_bob(self, bob):
-        assert bob.name == u'bob'
-        assert bob.title == u'Bob Dabolina'
-        assert bob.groups == [u'group:bobsgroup']
+        assert bob.name == 'bob'
+        assert bob.title == 'Bob Dabolina'
+        assert bob.groups == ['group:bobsgroup']
 
     def test_hash_password_non_ascii(self, db_session):
-        self.get_principals().hash_password(u'\xd6TEst')
+        self.get_principals().hash_password('\xd6TEst')
 
     def test_default_admin(self, db_session):
-        admin = self.get_principals()[u'admin']
+        admin = self.get_principals()['admin']
         assert self.get_principals().validate_password(
-            u'secret', admin.password)
-        assert admin.groups == [u'role:admin']
+            'secret', admin.password)
+        assert admin.groups == ['role:admin']
 
     def test_users_empty(self, db_session):
         users = self.get_principals()
         with raises(KeyError):
-            users[u'bob']
+            users['bob']
         with raises(KeyError):
-            del users[u'bob']
-        assert users.keys() == [u'admin']
+            del users['bob']
+        assert users.keys() == ['admin']
 
     def test_users_add_and_remove(self, db_session):
         self.make_bob()
         users = self.get_principals()
-        self._assert_is_bob(users[u'bob'])
-        assert set(users.keys()) == {u'admin', u'bob'}
+        self._assert_is_bob(users['bob'])
+        assert set(users.keys()) == {'admin', 'bob'}
 
         del users['bob']
         with raises(KeyError):
-            users[u'bob']
+            users['bob']
         with raises(KeyError):
-            del users[u'bob']
+            del users['bob']
 
     def test_users_search(self, db_session):
         users = self.get_principals()
-        assert list(users.search(name=u"*Bob*")) == []
+        assert list(users.search(name="*Bob*")) == []
         self.make_bob()
-        [bob] = list(users.search(name=u"bob"))
+        [bob] = list(users.search(name="bob"))
         self._assert_is_bob(bob)
-        [bob] = list(users.search(name=u"*Bob*"))
+        [bob] = list(users.search(name="*Bob*"))
         self._assert_is_bob(bob)
-        [bob] = list(users.search(name=u"*Bob*", title=u"*Frank*"))
+        [bob] = list(users.search(name="*Bob*", title="*Frank*"))
         self._assert_is_bob(bob)
         with raises(AttributeError):
-            users.search(name=u"bob", foo=u"bar")
+            users.search(name="bob", foo="bar")
         assert list(users.search()) == []
         # search on a non string attribute
         assert bob in list(users.search(active=True))
         # test operator
-        assert len(list(users.search(name=u'bob', active=True))) == 2
-        assert len(list(users.search(match=u'all', name=u'bob',
+        assert len(list(users.search(name='bob', active=True))) == 2
+        assert len(list(users.search(match='all', name='bob',
                                      active=True))) == 1
 
     def test_groups_from_users(self, db_session, root):
@@ -416,7 +426,7 @@ class TestPrincipals:
         from kotti.security import set_groups
 
         self.make_bob()
-        child = root[u'child'] = Node()
+        child = root['child'] = Node()
         db_session.flush()
 
         assert list_groups('bob', root) == ['group:bobsgroup']
@@ -434,30 +444,30 @@ class TestPrincipals:
 
         bob = self.make_bob()
         assert is_user(bob) is True
-        bob.name = u'group:bobsgroup'
+        bob.name = 'group:bobsgroup'
         assert is_user(bob) is False
 
     def test_hash_and_validate_password(self, db_session):
-        password = u"secret"
+        password = "secret"
         principals = self.get_principals()
         hashed = principals.hash_password(password)
         assert principals.validate_password(password, hashed)
-        assert principals.validate_password(u"foo", hashed) is False
+        assert principals.validate_password("foo", hashed) is False
 
     def test_bobs_hashed_password(self, db_session):
         bob = self.make_bob()
         principals = self.get_principals()
-        assert principals.validate_password(u"secret", bob.password)
+        assert principals.validate_password("secret", bob.password)
 
         # When we set the 'password' attribute directly, we have to do
         # the hashing ourselves.  This won't work:
-        bob.password = u'anothersecret'
+        bob.password = 'anothersecret'
         assert principals.validate_password(
-            u"anothersecret", bob.password) is False
+            "anothersecret", bob.password) is False
 
         # This will:
-        bob.password = principals.hash_password(u"anothersecret")
-        assert principals.validate_password(u"anothersecret", bob.password)
+        bob.password = principals.hash_password("anothersecret")
+        assert principals.validate_password("anothersecret", bob.password)
 
     def test_active(self, db_session):
         bob = self.make_bob()
@@ -470,15 +480,15 @@ class TestPrincipals:
 
         request = DummyRequest()
         self.make_bob()
-        request.params['reset-password'] = u'on'
-        request.params['login'] = u'bob'
-        request.params['password'] = u'secret'
+        request.params['reset-password'] = 'on'
+        request.params['login'] = 'bob'
+        request.params['password'] = 'secret'
         with patch(
                 'kotti.views.login.email_set_password') as email_set_password:
             login(None, request)
         assert (request.session.pop_flash('success') == [
-            u"You should be receiving an email with a link to reset your "
-            u"password. Doing so will activate your account."])
+            "You should be receiving an email with a link to reset your "
+            "password. Doing so will activate your account."])
         assert email_set_password.call_count == 1
 
     def test_reset_password_inactive_user(self, db_session):
@@ -486,14 +496,14 @@ class TestPrincipals:
 
         request = DummyRequest()
         self.make_bob().active = False
-        request.params['reset-password'] = u'on'
-        request.params['login'] = u'bob'
-        request.params['password'] = u'secret'
+        request.params['reset-password'] = 'on'
+        request.params['login'] = 'bob'
+        request.params['password'] = 'secret'
         with patch(
                 'kotti.views.login.email_set_password') as email_set_password:
             login(None, request)
         assert (request.session.pop_flash('error') ==
-                [u"That username or email is not known by this system."])
+                ["That username or email is not known by this system."])
         assert email_set_password.call_count == 0
 
     def test_login(self, db_session):
@@ -507,13 +517,13 @@ class TestPrincipals:
         assert request.session.pop_flash('error') == []
 
         # Attempt to log in before Bob exists:
-        request.params['submit'] = u'on'
-        request.params['login'] = u'bob'
-        request.params['password'] = u'secret'
+        request.params['submit'] = 'on'
+        request.params['login'] = 'bob'
+        request.params['password'] = 'secret'
         result = login(None, request)
         assert isinstance(result, dict)
         assert request.session.pop_flash('success') == []
-        assert (request.session.pop_flash('error') == [u'Login failed.'])
+        assert (request.session.pop_flash('error') == ['Login failed.'])
 
         # Make Bob and do it again:
         bob = self.make_bob()
@@ -522,46 +532,46 @@ class TestPrincipals:
         assert result.status == '302 Found'
         assert (
             [request.session.pop_flash('success')[0].interpolate()] ==
-            [u'Welcome, Bob Dabolina!'])
+            ['Welcome, Bob Dabolina!'])
         last_login_date = bob.last_login_date
         assert last_login_date is not None
         assert request.session.pop_flash('error') == []
 
         # Log in with email:
-        request.params['login'] = u'bob@dabolina.com'
+        request.params['login'] = 'bob@dabolina.com'
         result = login(None, request)
         assert result.status == '302 Found'
         assert (
             [request.session.pop_flash('success')[0].interpolate()] ==
-            [u'Welcome, Bob Dabolina!'])
+            ['Welcome, Bob Dabolina!'])
         assert last_login_date < bob.last_login_date
 
         # Deactive Bob, logging in is no longer possible:
         bob.active = False
         result = login(None, request)
         assert isinstance(result, dict)
-        assert (request.session.pop_flash('error') == [u'Login failed.'])
+        assert (request.session.pop_flash('error') == ['Login failed.'])
 
         # If Bob has a 'confirm_token' set, logging in is still possible:
         bob.active = True
-        bob.confirm_token = u'token'
+        bob.confirm_token = 'token'
         result = login(None, request)
         assert result.status == '302 Found'
         assert (
             [request.session.pop_flash('success')[0].interpolate()] ==
-            [u'Welcome, Bob Dabolina!'])
+            ['Welcome, Bob Dabolina!'])
 
     def test_login_with_email_remembers(self, db_session):
         from kotti.views.login import login
         request = DummyRequest()
 
         self.make_bob()
-        request.params['submit'] = u'on'
-        request.params['login'] = u'bob@dabolina.com'
-        request.params['password'] = u'secret'
+        request.params['submit'] = 'on'
+        request.params['login'] = 'bob@dabolina.com'
+        request.params['password'] = 'secret'
         with patch('kotti.views.login.remember') as remember:
             login(None, request)
-            remember.assert_called_with(request, u'bob')
+            remember.assert_called_with(request, 'bob')
 
 
 class TestAuthzContextManager:
