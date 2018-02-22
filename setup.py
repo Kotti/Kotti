@@ -28,13 +28,13 @@ install_requires = [
     'filedepot',
     'formencode>=2.0.0a',
     'html2text',
-    'iso8601==0.1.11',  # deform requirement.  isn't picked up automatically for some reason # noqa
+    'iso8601==0.1.11',  # rq.filter: !=0.1.12
     'js.angular',
     'js.bootstrap>=3.0.0',
     'js.deform>=2.0a2-2',
     'js.fineuploader',
     'js.html5shiv',
-    'js.jquery<2.0.0.dev',
+    'js.jquery<2.0.0.dev',  # rq.filter: <2.0
     'js.jquery_form',
     'js.jquery_tablednd',
     'js.jquery_timepicker_addon',

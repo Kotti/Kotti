@@ -10,7 +10,7 @@ bin/pytest: .pip.log *.py *.cfg
 	bin/pip install -e ".[development]" --log .pip.log
 
 bin/python:
-	virtualenv --clear .
+	python -m venv .
 	@touch $@
 
 clean:
