@@ -11,14 +11,12 @@ Backward Incompatibilities
 
   Kotti now runs on Python >= 3.5.
 
-  Python 2.x support was dropped entirely and won't come back until
-  somebody implements it or is willing to pay for it.
+  Python 2.x support was dropped entirely and won't come back until somebody implements it or is willing to pay for it.
 
 - Everything marked as deprecated in Kotti 1.x was removed.
 
-- Scaffolding support via ``pcreate`` was dropped as it's deprecated by Pyramid
-  now.  An alternate solution (cookiecutter template) will be available in the
-  future.
+- Scaffolding support via ``pcreate`` was dropped as it's deprecated by Pyramid now.
+  An alternate solution (cookiecutter template) might become available again in the future.
 
 New Features
 ~~~~~~~~~~~~
