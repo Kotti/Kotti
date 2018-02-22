@@ -131,8 +131,8 @@ Contributions are always welcome, read our `contribution guidelines`_ and visit 
 .. _codacy: https://www.codacy.com/public/disko/Kotti
 .. _high quality coding standards: https://www.codacy.com/public/disko/Kotti
 
-.. |codeclimate| image:: https://img.shields.io/codeclimate/github/Kotti/Kotti.svg?style=flat-square
-.. _codeclimate: https://codeclimate.com/github/Kotti/Kotti
+.. |codeclimate| image:: https://api.codeclimate.com/v1/badges/3a4a61548fcc195e4ba1/maintainability
+.. _codeclimate: https://codeclimate.com/github/Kotti/Kotti/maintainability
 
 .. |circleci| image:: https://circleci.com/gh/Kotti/Kotti/tree/master.svg?style=svg
 .. _circleci: https://circleci.com/gh/Kotti/Kotti/tree/master
