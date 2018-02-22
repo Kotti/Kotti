@@ -1,8 +1,10 @@
 Change History
 ==============
 
-2.0.0.dev0 - unreleased
------------------------
+2.0.0a1 - 2018-02-22
+--------------------
+
+**This is a alpha release.  Blindly upgrading your production environments will make the universe collapse!**
 
 Backward Incompatibilities
 ~~~~~~~~~~~~~~~~~~~~~~~~~~

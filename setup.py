@@ -4,11 +4,11 @@ import os
 from setuptools import find_packages
 from setuptools import setup
 
-version = '2.0.0.dev0'
+version = '2.0.0a1'
 description = "A high-level, Pythonic web application framework based on " \
               "Pyramid and SQLAlchemy.  It includes an extensible Content " \
               "Management System called the Kotti CMS."
-author = 'Kotti developers'
+author = 'Kotti Developers'
 author_email = 'kotti@googlegroups.com'
 url = 'http://kotti.pylonsproject.org/'
 keywords = 'kotti web cms wcms pylons pyramid sqlalchemy bootstrap'
