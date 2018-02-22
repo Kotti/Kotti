@@ -21,9 +21,7 @@ jobs:
       - restore_cache:
           keys:
             # Download and cache dependencies
-            - v2-0-0-dev-dependencies-{{ checksum "setup.py" }}
-            # fallback to using the latest cache if no exact match is found
-            - v2-0-0-dev-dependencies-
+            - v2-dependencies-{{ checksum "setup.py" }}
       - run:
           name: install dependencies
           command: |
@@ -35,7 +33,7 @@ jobs:
       - save_cache:
           paths:
             - ./venv
-          key: v2-0-0-dev-dependencies-{{ checksum "setup.py" }}
+          key: v2-dependencies-{{ checksum "setup.py" }}
       - run:
           name: run tests
           command: |
