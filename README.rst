@@ -40,7 +40,7 @@ thus hopefully keeping the learning curve flat for the developer.
 Kotti CMS
 =========
 
-You can **try out the Kotti CMS** on `Kotti's demo page`_.
+.. You can **try out the Kotti CMS** on `Kotti's demo page`_.
 
 Kotti CMS is a content management system that's heavily inspired by Plone_.
 Its **main features** are:

@@ -1,6 +1,11 @@
 Change History
 ==============
 
+2.0.0b1 - 2018-03-19
+--------------------
+
+- Remove links to the demo site, which has been down for too long.
+
 2.0.0a1 - 2018-02-22
 --------------------
 

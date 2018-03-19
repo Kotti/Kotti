@@ -17,7 +17,7 @@ Built on top of a number of *best-of-breed* software components, most notably Py
 Features
 --------
 
-You can **try out the default installation** on `Kotti's demo page`_.
+.. You can **try out the default installation** on `Kotti's demo page`_.
 
 The Kotti CMS is a content management system that's heavily inspired by Plone_.
 Its **main features** are:
