@@ -30,3 +30,6 @@ filestore
 share
 .eggs
 .python-version
+.long-description.html
+pyvenv.cfg
+.pytest_cache/v/pep8/mtimes
