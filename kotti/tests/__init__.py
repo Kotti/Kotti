@@ -153,7 +153,7 @@ def connection(custom_settings):
     return connection
 
 
-@fixture(scope='session')
+@fixture
 def content(connection, settings):
     """ sets up some default content using Kotti's testing populator.
     """
