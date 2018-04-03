@@ -39,6 +39,7 @@
 
     <form action="${request.url}" method="post" tal:condition="entries"
           id="form-share-assign">
+      <input type="hidden" name="csrf_token" value="${csrf_token}">
 
       <fieldset>
         <legend i18n:translate="">Assign local roles</legend>

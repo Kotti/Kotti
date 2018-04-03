@@ -1,10 +1,15 @@
 Change History
 ==============
 
-2.0.0b2.dev0 - unreleased
+2.0.0b3.dev0 - unreleased
 -------------------------
 
 - No changes yet.
+
+2.0.0b2 - 2018-04-03
+--------------------
+
+- Fix CSRF issue in ``@@share`` view (#551).
 
 2.0.0b1 - 2018-03-19
 --------------------

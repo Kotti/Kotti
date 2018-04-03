@@ -9,7 +9,7 @@ from deform.widget import CheckboxChoiceWidget
 from deform.widget import CheckedPasswordWidget
 from deform.widget import SequenceWidget
 from pyramid.exceptions import Forbidden
-from pyramid.httpexceptions import HTTPFound
+from pyramid.httpexceptions import HTTPFound, HTTPBadRequest
 from pyramid.view import view_config
 from pyramid_deform import FormView
 from six import string_types
@@ -109,6 +109,9 @@ def search_principals(request, context=None, ignore=None, extra=()):
              renderer='kotti:templates/edit/share.pt')
 def share_node(context, request):
     # Allow roles_form_handler to do processing on 'apply':
+    if 'apply' in request.POST:
+        if request.params.get('csrf_token') != request.session.get_csrf_token():
+            raise HTTPBadRequest('Invalid CSRF token')
     changed = roles_form_handler(
         context, request, SHARING_ROLES, list_groups_raw)
     if changed:
@@ -132,6 +135,7 @@ def share_node(context, request):
     return {
         'entries': entries,
         'available_roles': available_roles,
+        'csrf_token': request.session.get_csrf_token()
         }
 
 

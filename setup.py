@@ -4,7 +4,7 @@ import os
 from setuptools import find_packages
 from setuptools import setup
 
-version = '2.0.0b2.dev0'
+version = '2.0.0b3.dev0'
 description = "A high-level, Pythonic web application framework based on " \
               "Pyramid and SQLAlchemy.  It includes an extensible Content " \
               "Management System called the Kotti CMS."
@@ -31,7 +31,7 @@ install_requires = [
     'iso8601==0.1.11',  # rq.filter: !=0.1.12
     'js.angular',
     'js.bootstrap>=3.0.0',
-    'js.deform>=2.0a2-2',
+    'js.deform>=2.0.3',
     'js.fineuploader',
     'js.html5shiv',
     'js.jquery<2.0.0.dev',  # rq.filter: <2.0
@@ -84,6 +84,7 @@ development_requires = [
     'check-manifest',
     'pipdeptree',
     'pyramid_debugtoolbar',
+    'kotti-tinymce>=0.7.0',
 ]
 
 docs_require = [
