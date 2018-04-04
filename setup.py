@@ -7,7 +7,7 @@ from setuptools import find_packages
 from setuptools import setup
 
 
-version = '1.3.1'
+version = '1.3.2.dev0'
 description = "A high-level, Pythonic web application framework based on " \
               "Pyramid and SQLAlchemy.  It includes an extensible Content " \
               "Management System called the Kotti CMS."
@@ -31,12 +31,13 @@ install_requires = [
     'filedepot',
     'formencode',
     'html2text',
+    'iso8601<=0.1.11',
     'js.angular',
     'js.bootstrap>=3.0.0',
     'js.deform>=2.0a2-2',
     'js.fineuploader',
     'js.html5shiv',
-    'js.jquery',
+    'js.jquery<2.0.0',
     'js.jquery_form',
     'js.jquery_tablednd',
     'js.jquery_timepicker_addon',

@@ -3,6 +3,7 @@ from __future__ import absolute_import, division, print_function
 
 from kotti.testing import DummyRequest
 from pyramid.exceptions import Forbidden
+from pyramid.httpexceptions import HTTPBadRequest
 from pytest import raises
 from webob.multidict import MultiDict
 
@@ -431,6 +432,7 @@ class TestNodeShare:
         request = DummyRequest()
 
         request.params['apply'] = u''
+        request.params['csrf_token'] = request.session.get_csrf_token()
         share_node(root, request)
         assert (request.session.pop_flash('info') == [u'No changes were made.'])
         assert list_groups('bob', root) == []
@@ -459,3 +461,19 @@ class TestNodeShare:
             set(list_groups('bob', root)) ==
             {'role:owner', 'role:editor', 'role:special'}
             )
+
+    def test_csrf(self, extra_principals, root, dummy_request):
+        """ Test if a CSRF token is present and checked on submission """
+        from kotti.views.users import share_node
+
+        result = share_node(root, dummy_request)
+        assert 'csrf_token' in result
+
+        dummy_request.params['apply'] = u''
+
+        with raises(HTTPBadRequest):
+            share_node(root, dummy_request)
+
+        dummy_request.params['csrf_token'] = dummy_request.session.get_csrf_token()  # noqa
+        result = share_node(root, dummy_request)
+        assert result['csrf_token'] == dummy_request.session.get_csrf_token()
