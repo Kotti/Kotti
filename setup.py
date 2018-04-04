@@ -7,7 +7,7 @@ from setuptools import find_packages
 from setuptools import setup
 
 
-version = '1.3.2.dev0'
+version = '1.3.2'
 description = "A high-level, Pythonic web application framework based on " \
               "Pyramid and SQLAlchemy.  It includes an extensible Content " \
               "Management System called the Kotti CMS."
