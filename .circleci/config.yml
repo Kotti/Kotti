@@ -28,7 +28,7 @@ jobs:
             python3 -m venv venv
             . venv/bin/activate
             pip install -U pip wheel setuptools setuptools-git
-            pip install psycopg2 mysqlclient python-coveralls codecov
+            pip install psycopg2-binary mysqlclient python-coveralls codecov
             pip install -e .[testing]
       - save_cache:
           paths:
