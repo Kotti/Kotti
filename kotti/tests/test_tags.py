@@ -206,7 +206,7 @@ class TestTags:
         assert [res.name for res in result] == ['folder_1']
         result = Content.query.join(TagsToContents).join(Tag).filter(
             Tag.title == 'third tag').all()
-        assert [res.name for res in result] == ['content_1', 'content_2']
+        assert sorted(res.name for res in result) == sorted(['content_1', 'content_2'])
 
         # The same tests again, using content_with_tags():
         #
