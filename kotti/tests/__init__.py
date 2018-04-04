@@ -167,6 +167,7 @@ def content(connection, settings):
     DBSession().close()
 
     metadata.drop_all(connection.engine)
+    transaction.begin()
     metadata.create_all(connection.engine)
     # to create the default content with the correct workflow state
     # the workflow must be initialized first;  please note that these
