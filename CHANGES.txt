@@ -1,7 +1,7 @@
 Change History
 ==============
 
-2.0.0b2 - 2018-04-03
+2.0.0b2 - 2018-04-04
 --------------------
 
 - Fix CSRF issue in ``@@share`` view (#551).
@@ -41,6 +41,11 @@ Fixes
 ~~~~~
 
 - Avoid deprecation warning ``pyramid.security.has_permission``
+
+1.3.2 - 2018-04-04
+------------------
+
+**This release fixes a CSRF (Cross Site Request Forgery) security vulnerablity which was reported in #551. You should upgrade your installations ASAP.**
 
 1.3.1 - 2018-01-17
 ------------------

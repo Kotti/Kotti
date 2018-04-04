@@ -49,7 +49,7 @@ pyramid-deform==0.2
 pyramid-mailer==0.15.1
 pyramid-tm==2.2
 pyramid-zcml==1.1.0
-python-dateutil==2.6.1
+python-dateutil==2.7.0
 python-editor==1.0.3
 pytz==2018.3
 repoze.lru==0.7

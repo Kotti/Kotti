@@ -153,14 +153,21 @@ def connection(custom_settings):
     return connection
 
 
-@fixture(scope='session')
+@fixture
 def content(connection, settings):
     """ sets up some default content using Kotti's testing populator.
     """
-    from transaction import commit
+    import transaction
+    from kotti import DBSession
     from kotti import metadata
     from kotti.resources import get_root
+
+    if connection.in_transaction():
+        transaction.abort()
+    DBSession().close()
+
     metadata.drop_all(connection.engine)
+    transaction.begin()
     metadata.create_all(connection.engine)
     # to create the default content with the correct workflow state
     # the workflow must be initialized first;  please note that these
@@ -176,7 +183,7 @@ def content(connection, settings):
     # 'event' and therefore the event handlers aren't fired for root
     # otherwise:
     get_root().path = '/'
-    commit()
+    transaction.commit()
 
 
 @yield_fixture

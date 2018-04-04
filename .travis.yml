@@ -15,7 +15,7 @@ env:
   - KOTTI_TEST_DB_STRING=sqlite://
 install:
   - travis_retry pip install -U pip wheel setuptools
-  - travis_retry pip install psycopg2 mysqlclient python-coveralls codecov
+  - travis_retry pip install psycopg2-binary mysqlclient python-coveralls codecov
   - travis_retry pip install -e ".[testing]"
 before_script:
   - psql -c 'create database kotti_testing;' -U postgres

@@ -206,7 +206,7 @@ class TestTags:
         assert [res.name for res in result] == ['folder_1']
         result = Content.query.join(TagsToContents).join(Tag).filter(
             Tag.title == 'third tag').all()
-        assert [res.name for res in result] == ['content_1', 'content_2']
+        assert sorted(res.name for res in result) == sorted(['content_1', 'content_2'])
 
         # The same tests again, using content_with_tags():
         #
@@ -222,11 +222,11 @@ class TestTags:
         # part to avoid establishing a specification.
         #
         result = content_with_tags(['first tag'])
-        assert [res.name for res in result] == ['folder_1', 'content_2']
+        assert sorted([res.name for res in result]) == sorted(['folder_1', 'content_2'])
         result = content_with_tags(['second tag'])
-        assert [res.name for res in result] == ['folder_1']
+        assert sorted([res.name for res in result]) == sorted(['folder_1'])
         result = content_with_tags(['third tag'])
-        assert [res.name for res in result] == ['content_1', 'content_2']
+        assert sorted([res.name for res in result]) == sorted(['content_1', 'content_2'])
 
 
 class TestCommaSeparatedListWidget:
