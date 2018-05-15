@@ -4,7 +4,8 @@ Change History
 2.0.0b3.dev0 - unreleased
 -------------------------
 
-- No changes yet.
+- Update documentation (kotti-cookiecutter is the new scaffolding template).
+  See https://github.com/Kotti/kotti-cookiecutter
 
 2.0.0b2 - 2018-04-04
 --------------------
