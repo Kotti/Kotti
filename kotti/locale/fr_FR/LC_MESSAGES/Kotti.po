@@ -9,7 +9,7 @@ msgstr ""
 "Language-Team: \n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: fr_FR\n"
-"X-Generator: Poedit 2.1.1\n"
+"X-Generator: Poedit 2.2\n"
 
 #: kotti/security.py:173
 msgid "Viewer"
@@ -335,7 +335,7 @@ msgstr "Indiquez votre identifiant ou votre adresse e-mail ci-dessous et cliquez
 
 #: kotti/templates/login.pt:78
 msgid "Not registered yet?"
-msgstr ""
+msgstr "Pas de compte ?"
 
 #: kotti/templates/login.pt:85
 msgid "Register for an account on this site."
@@ -368,7 +368,7 @@ msgstr "Bonjour, ${user_title} !"
 
 #: kotti/templates/email-reset-password.pt:5
 msgid "Click this link to reset your password at ${site_title}: ${url}"
-msgstr "Cliquez sur ce lien afin de réinitialiser votre mot de passe sur ${title} : ${url}"
+msgstr "Cliquez sur ce lien afin de réinitialiser votre mot de passe sur ${site_title} : ${url}"
 
 #: kotti/templates/email-set-password.pt:2
 msgid "Your registration for ${site_title}"
