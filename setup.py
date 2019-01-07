@@ -72,7 +72,7 @@ tests_require = [
     'pyquery',
     'pytest>=4.1.0',
     'pytest-cov',
-    'pytest-pep8>=1.0.8',
+    'pytest-pep8>=1.0.6',
     'pytest-travis-fold',
     'pytest-virtualenv',
     'pytest-xdist',
