@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """Add Node.path column
 
 Revision ID: 1063d7178fa
@@ -31,8 +30,8 @@ def upgrade():
 
     for node in DBSession.query(Node).with_polymorphic([Node]):
         reversed_lineage = reversed(tuple(lineage(node)))
-        node.path = u'/'.join(
-            node.__name__ for node in reversed_lineage) or u'/'
+        node.path = '/'.join(
+            node.__name__ for node in reversed_lineage) or '/'
 
 
 def downgrade():

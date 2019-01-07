@@ -21,7 +21,7 @@
     <h1 i18n:translate="">
       Edit <em i18n:name="title">${api.principal.title}</em>
     </h1>
-    <form tal:replace="structure form" />
+    <form tal:replace="structure form"></form>
 
   </div>
 

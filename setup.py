@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 import codecs
 import os
 
@@ -10,7 +8,7 @@ version = '2.0.0'
 description = "A high-level, Pythonic web application framework based on " \
               "Pyramid and SQLAlchemy.  It includes an extensible Content " \
               "Management System called the Kotti CMS."
-author = 'Kotti developers'
+author = 'Kotti Developers'
 author_email = 'kotti@googlegroups.com'
 url = 'http://kotti.pylonsproject.org/'
 keywords = 'kotti web cms wcms pylons pyramid sqlalchemy bootstrap'
@@ -21,41 +19,40 @@ install_requires = [
     'Babel',
     'Chameleon>=2.7.4',  # Fixes error when raising HTTPFound
     'alembic>=0.8.0',
-    'bleach',
+    'bleach>=2.1.2',  # html5lib 1.0 support
     'bleach-whitelist',
     'colander>=1.3.2',
-    'deform>=2.0.3',  # >=2.0a1 to support Bootstrap 2
+    'deform>=2.0.5',  # fixes file upload on py3 - uncomment after 2.0.5 is released  # noqa
     'docopt',
     'fanstatic>=1.0.0',
     'filedepot',
-    'formencode',
+    'formencode>=2.0.0a',
     'html2text',
-    'iso8601<=0.1.11',
+    'iso8601==0.1.11',  # rq.filter: !=0.1.12
     'js.angular',
     'js.bootstrap>=3.0.0',
-    'js.deform>=2.0a2-2',
+    'js.deform>=2.0.3',
     'js.fineuploader',
     'js.html5shiv',
-    'js.jquery<2.0.0',
+    'js.jquery<2.0.0.dev',  # rq.filter: <2.0
     'js.jquery_form',
     'js.jquery_tablednd',
     'js.jquery_timepicker_addon',
     'js.jqueryui>=1.8.24',
     'js.jqueryui_tagit',
-    'kotti_image',
     'lingua>=1.3',
     'py_bcrypt',
-    'pyramid>=1.8',  # needed for ``request.has_permission``,
+    'pyramid>=1.9',
     'pyramid_beaker',
     'pyramid_chameleon',
     'pyramid_deform>=0.2a3',  # language and template path config includeme
     'pyramid_mailer',
     'pyramid_tm',
-    'pyramid_zcml>=1.1.0',
+    'pyramid_zcml>=1.1.0',  # py3 compat
     'repoze.lru',
     'repoze.workflow>=1.0b1',
     'repoze.zcml>=1.0b1',
-    'rfc6266',
+    'rfc6266-parser',
     'sqlalchemy>=1.0.0',
     'sqlalchemy-utils',
     'transaction>=1.1.0',
@@ -70,6 +67,7 @@ install_requires = [
 tests_require = [
     'WebTest',
     'mock',
+    'Pillow',  # thumbnail filter in depot tween tests
     'py>=1.4.29',
     'pyquery',
     'pytest>=4.1.0',
@@ -79,7 +77,6 @@ tests_require = [
     'pytest-virtualenv',
     'pytest-xdist',
     'tox',
-    'virtualenv',  # needed for scaffolding tests
     'zope.testbrowser>=5.0.0',
     ]
 
@@ -87,6 +84,7 @@ development_requires = [
     'check-manifest',
     'pipdeptree',
     'pyramid_debugtoolbar',
+    'kotti-tinymce>=0.7.0',
 ]
 
 docs_require = [
@@ -94,6 +92,8 @@ docs_require = [
     'docutils',
     'repoze.sphinx.autointerface',
     'sphinx_rtd_theme',
+    'setuptools-git',  # needed to make "python setup.py install" on rtd.
+    'pytest',  # needed for kotti.testing apidocs
     ]
 
 setup_requires = [
@@ -102,6 +102,7 @@ setup_requires = [
 
 
 here = os.path.abspath(os.path.dirname(__file__))
+
 
 def read(*parts):
     """ Build an absolute path from *parts* and and return the contents of the
@@ -118,11 +119,10 @@ def read(*parts):
 setup(name='Kotti',
       version=version,
       description=description,
-      long_description='\n\n'.join([read('README.rst'), read('AUTHORS.txt'),
+      long_description='\n\n'.join([read('README.rst'),
+                                    read('AUTHORS.txt'),
                                     read('CHANGES.txt'), ]),
       classifiers=[
-          # 'Development Status :: 3 - Alpha',
-          # 'Development Status :: 4 - Beta',
           'Development Status :: 5 - Production/Stable',
           'Environment :: Web Environment',
           'Framework :: Pylons',
@@ -141,13 +141,13 @@ setup(name='Kotti',
           'Operating System :: Unix',
           # 'Programming Language :: JavaScript',
           'Programming Language :: Python',
-          'Programming Language :: Python :: 2',
-          'Programming Language :: Python :: 2.7',
-          # 'Programming Language :: Python :: 3',
-          # 'Programming Language :: Python :: 3.3',
-          # 'Programming Language :: Python :: 3.4',
-          # 'Programming Language :: Python :: 3.5',
-          # 'Programming Language :: Python :: 3.6',
+          'Programming Language :: Python :: 3',
+          'Programming Language :: Python :: 3 :: Only',
+          'Programming Language :: Python :: 3.5',
+          'Programming Language :: Python :: 3.6',
+          'Programming Language :: Python :: Implementation',
+          'Programming Language :: Python :: Implementation :: CPython',
+          # 'Programming Language :: Python :: Implementation :: PyPy',
           'Programming Language :: SQL',
           'Topic :: Internet',
           'Topic :: Internet :: WWW/HTTP',
@@ -169,7 +169,6 @@ setup(name='Kotti',
       install_requires=install_requires,
       setup_requires=setup_requires,
       tests_require=tests_require,
-      dependency_links=[],
       entry_points={
           'paste.app_factory': [
               'main = kotti:main',

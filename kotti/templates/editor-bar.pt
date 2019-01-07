@@ -13,7 +13,7 @@
     </div>
     <div class="collapse navbar-collapse" id="navbar-edit">
       <ul class="nav navbar-nav navbar-left">
-        <li tal:replace="api.render_view('workflow-dropdown')" />
+        <li tal:replace="api.render_view('workflow-dropdown')"></li>
 
         <li class="${api.url() == (request.url.endswith('/') and request.url or request.url + '/') and 'active' or None}">
           <a href="${api.url()}" i18n:translate="">View</a>
@@ -27,11 +27,11 @@
 
         <tal:condition tal:condition="not disable_context_links">
           <tal:condition tal:condition="api.has_permission('edit')">
-            <ul tal:replace="api.render_view('actions-dropdown')" />
+            <ul tal:replace="api.render_view('actions-dropdown')"></ul>
           </tal:condition>
           <tal:condition tal:condition="api.has_permission('add')">
             <li class="divider-vertical"></li>
-            <ul tal:replace="api.render_view('add-dropdown')" />
+            <ul tal:replace="api.render_view('add-dropdown')"></ul>
           </tal:condition>
         </tal:condition>
       </ul>

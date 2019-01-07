@@ -1,0 +1,25 @@
+build:
+  environment:
+    python: 3.6.3
+  dependencies:
+    before:
+      - pip install -U pip wheel setuptools
+      - pip install psycopg2 mysqlclient python-coveralls codecov
+      - pip install -e .[testing]
+  tests:
+    override:
+      - command: pytest
+        coverage:
+          file: '.coverage'
+          config_file: '.coveragerc'
+          format: 'py-cc'
+
+checks:
+  python:
+    code_rating: true
+    duplicate_code: true
+
+filter:
+  excluded_paths:
+    - kotti/tests/
+    - kotti/alembic/

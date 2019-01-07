@@ -17,31 +17,24 @@ Built on top of a number of *best-of-breed* software components, most notably Py
 Features
 --------
 
-You can **try out the default installation** on `Kotti's demo page`_.
+.. You can **try out the default installation** on `Kotti's demo page`_.
 
 The Kotti CMS is a content management system that's heavily inspired by Plone_.
 Its **main features** are:
 
-- **User-friendliness**: editors can edit content where it appears;
-  thus the edit interface is contextual and intuitive
+- **User-friendliness**: editors can edit content where it appears; thus the edit interface is contextual and intuitive
 
 - **WYSIWYG editor**: includes a rich text editor
 
-- **Responsive design**: Kotti builds on `Twitter Bootstrap`_, which
-  looks good both on desktop and mobile
+- **Responsive design**: Kotti builds on `Twitter Bootstrap`_, which looks good both on desktop and mobile
 
-- **Templating**: easily extend the CMS with your own look & feel with
-  little programming required (see :ref:`static-resource-management`)
+- **Templating**: easily extend the CMS with your own look & feel with little programming required (see :ref:`static-resource-management`)
 
-- **Add-ons**: install a variety of add-ons and customize them as well
-  as many aspects of the built-in CMS by use of an INI configuration
-  file (see :ref:`configuration`)
+- **Add-ons**: install a variety of add-ons and customize them as well as many aspects of the built-in CMS by use of an INI configuration file (see :ref:`configuration`)
 
-- **Security**: the advanced user and permissions management is
-  intuitive and scales to fit the requirements of large organizations
+- **Security**: the advanced user and permissions management is intuitive and scales to fit the requirements of large organizations
 
-- **Internationalized**: the user interface is fully translatable,
-  Unicode is used everywhere to store data (see :ref:`translations`)
+- **Internationalized**: the user interface is fully translatable, Unicode is used everywhere to store data (see :ref:`translations`)
 
 .. _Kotti's demo page: http://kottidemo.danielnouri.org/
 .. _Plone: http://plone.org/

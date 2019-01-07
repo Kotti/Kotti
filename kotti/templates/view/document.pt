@@ -7,7 +7,7 @@
     <p class="lead">
       ${context.description}
     </p>
-    <div tal:replace="api.render_template('kotti:templates/view/tags.pt')" />
+    <div tal:replace="api.render_template('kotti:templates/view/tags.pt')"></div>
     <div class="body" tal:content="structure context.body | None">
     </div>
   </article>

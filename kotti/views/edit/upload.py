@@ -1,9 +1,6 @@
-# -*- coding: utf-8 -*-
 """
 Created on 2013-02-23
 """
-from __future__ import absolute_import, division, print_function
-
 import json
 from cgi import FieldStorage
 from logging import getLogger

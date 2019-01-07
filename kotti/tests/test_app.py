@@ -1,6 +1,3 @@
-# -*- coding: utf-8 -*-
-from __future__ import absolute_import, division, print_function
-
 from warnings import filterwarnings
 
 from mock import Mock
@@ -149,16 +146,16 @@ class TestApp:
         from kotti import main
 
         settings = self.required_settings()
-        settings['kotti.site_title'] = 'K\xc3\xb6tti'  # Kötti
-        settings['kotti_foo.site_title'] = 'K\xc3\xb6tti'
-        settings['foo.site_title'] = 'K\xc3\xb6tti'
+        settings['kotti.site_title'] = b'K\xc3\xb6tti'  # Kötti
+        settings['kotti_foo.site_title'] = b'K\xc3\xb6tti'
+        settings['foo.site_title'] = b'K\xc3\xb6tti'
 
         with patch('kotti.resources.initialize_sql'):
             with patch('kotti.filedepot.TweenFactory'):
                 main({}, **settings)
-        assert get_settings()['kotti.site_title'] == u'K\xf6tti'
-        assert get_settings()['kotti_foo.site_title'] == u'K\xf6tti'
-        assert get_settings()['foo.site_title'] == 'K\xc3\xb6tti'
+        assert get_settings()['kotti.site_title'] == 'Kötti'
+        assert get_settings()['kotti_foo.site_title'] == 'Kötti'
+        assert get_settings()['foo.site_title'] == b'K\xc3\xb6tti'
 
     def test_default_filedepot(self, db_session):
         from kotti import main
@@ -210,7 +207,7 @@ class TestApp:
         with patch('kotti.resources.initialize_sql'):
             with patch('kotti.filedepot.TweenFactory'):
                 main({}, **settings)
-        assert search_content(u"Nuno") == u"Not found. Sorry!"
+        assert search_content('Nuno') == 'Not found. Sorry!'
 
     def test_stamp_heads(self, db_session, connection):
         from kotti import main

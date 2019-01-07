@@ -11,7 +11,7 @@
     <p class="lead">
       ${context.description}
     </p>
-    <div tal:replace="api.render_template('kotti:templates/view/tags.pt')" />
+    <div tal:replace="api.render_template('kotti:templates/view/tags.pt')"></div>
     <h2 i18n:translate="">Contents</h2>
     <div class="body">
       <table class="table table-condensed">

@@ -1,6 +1,3 @@
-# -*- coding: utf-8 -*-
-from __future__ import absolute_import, division, print_function
-
 import traceback
 
 import transaction
@@ -13,10 +10,9 @@ from kotti import metadata
 
 def run_migrations_online():
     if DBSession.bind is None:
-        raise ValueError(
-            "\nYou must run Kotti's migration using the 'kotti-migrate' script"
-            "\nand not through 'alembic' directly."
-            )
+        raise ValueError("You must run Kotti's migration using the "
+                         "'kotti-migrate' script and not through 'alembic' "
+                         "directly.")
 
     transaction.begin()
     connection = DBSession.connection()
@@ -45,9 +41,7 @@ except (AttributeError, NameError):
     pass
 else:
     if offline_mode:  # pragma: no cover
-        raise ValueError(
-            "\nNo support for Alembic's offline mode at this point."
-            "\nYou may want to write your own env.py script to use "
-            "\n'offline mode'."
-            )
+        raise ValueError("No support for Alembic's offline mode at this point. "
+                         "You may want to write your own env.py script to use "
+                         "'offline mode'.")
     run_migrations_online()

@@ -1,6 +1,3 @@
-# -*- coding: utf-8 -*-
-from __future__ import absolute_import, division, print_function
-
 import colander
 from mock import MagicMock
 from mock import patch
@@ -108,7 +105,7 @@ class TestAddFormView:
         view = self.make()
         view.add = MagicMock()
         view.find_name = lambda appstruct: 'somename'
-        view.request.resource_url = lambda context: u''
+        view.request.resource_url = lambda context: ''
         view.save_success({'three': 3})
         view.add.assert_called_with(three=3)
         assert view.add.return_value == view.context['somename']
@@ -117,7 +114,7 @@ class TestAddFormView:
         view = self.make()
         view.add = MagicMock()
         view.find_name = lambda appstruct: 'somename'
-        view.request.resource_url = lambda context: u'MagicMock'
+        view.request.resource_url = lambda context: 'MagicMock'
         result = view.save_success({'three': 3})
         assert result.status == '302 Found'
         assert result.location == 'MagicMock'
@@ -136,4 +133,4 @@ class TestAddFormView:
         view = self.make()
         title_to_name.return_value = 'cafe'
         assert view.find_name({'title': 'Bar'}) == 'cafe'
-        title_to_name.assert_called_with('Bar', blacklist=[])
+        title_to_name.assert_called_with('Bar', blacklist={}.keys())

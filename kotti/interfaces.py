@@ -1,6 +1,3 @@
-# -*- coding: utf-8 -*-
-from __future__ import absolute_import, division, print_function
-
 from pyramid.interfaces import ILocation
 from zope.interface import Interface
 
@@ -46,13 +43,3 @@ class INavigationRoot(Interface):
         The root item for the navigation will be ``/a/b`` for everey context in
         or below ``/a/b`` and ``/a`` for every other item.
         """
-
-
-# DEPRECATED
-
-from kotti_image.interfaces import IImage
-from zope.deprecation.deprecation import deprecated
-__ = IImage  # pyflakes
-deprecated('IImage',
-           'Image was outfactored to the kotti_image package.  '
-           'Please import from there.')
