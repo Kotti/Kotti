@@ -1,11 +1,8 @@
 
-version = 2.7
-python = python$(version)
+test: bin/pytest
+	bin/pytest
 
-test: bin/py.test
-	bin/py.test -q -n4
-
-bin/py.test: .pip.log *.py *.cfg
+bin/pytest: .pip.log *.py *.cfg
 	bin/pip install -e ".[testing]"
 	@touch $@
 
@@ -13,10 +10,10 @@ bin/py.test: .pip.log *.py *.cfg
 	bin/pip install -e ".[development]" --log .pip.log
 
 bin/python:
-	virtualenv-$(version) .
+	python -m venv .
 	@touch $@
 
 clean:
-	@rm -rfv bin/ include/ lib/ share/ .Python .cache .eggs Kotti.db Kotti.egg-info tox
+	@rm -rfv bin/ include/ lib/ share/ .Python .cache .eggs Kotti.db Kotti.egg-info .tox
 
 .PHONY: test clean

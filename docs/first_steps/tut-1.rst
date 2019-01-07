@@ -28,16 +28,21 @@ We will create the add-on as ``mysite/kotti_mysite``.
 Creating the Add-On Package
 ---------------------------
 
-To create our add-on, we use the standard Pyramid tool ``pcreate``, with
-``kotti_addon``, a scaffold that was installed as part of Kotti.
+To create our add-on, we use the standard Python tool called
+cookiecutter_, using the ``kotti-cookiecutter`` scaffolding.
 
 .. code-block:: bash
 
-  bin/pcreate -s kotti kotti_mysite
+  pip install cookiecutter
+  cookiecutter https://github.com/Kotti/kotti-cookiecutter
 
-The script will ask a number of questions.
-It is safe to accept the defaults.
+The script will ask a number of questions: provide a project name (e.g., ``Kotti mysite``) and accept the defaults.
 When finished, observe that a new directory called ``kotti_mysite`` was added to the current working directory, as ``mysite/kotti_mysite``.
+
+See kotti-cookiecutter_ for further info about scaffolding options.
+
+.. _cookiecutter: https://github.com/audreyr/cookiecutter
+.. _kotti-cookiecutter: https://github.com/Kotti/kotti-cookiecutter
 
 Installing Our New Add-On
 -------------------------

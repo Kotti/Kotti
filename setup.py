@@ -6,8 +6,7 @@ import os
 from setuptools import find_packages
 from setuptools import setup
 
-
-version = '1.3.2'
+version = '2.0.0'
 description = "A high-level, Pythonic web application framework based on " \
               "Pyramid and SQLAlchemy.  It includes an extensible Content " \
               "Management System called the Kotti CMS."
@@ -73,9 +72,9 @@ tests_require = [
     'mock',
     'py>=1.4.29',
     'pyquery',
-    'pytest>=3.0.0',
+    'pytest>=4.1.0',
     'pytest-cov',
-    'pytest-pep8!=1.0.3',
+    'pytest-pep8>=1.0.6',
     'pytest-travis-fold',
     'pytest-virtualenv',
     'pytest-xdist',
@@ -185,9 +184,6 @@ setup(name='Kotti',
           ],
           'pytest11': [
               'kotti = kotti.tests',
-          ],
-          'pyramid.scaffold': [
-              'kotti=kotti.scaffolds:KottiPackageTemplate',
           ],
       },
       extras_require={

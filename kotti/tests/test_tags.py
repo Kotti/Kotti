@@ -208,8 +208,8 @@ class TestTags:
             Tag.title == u'second tag').all()
         assert [res.name for res in result] == [u'folder_1']
         result = Content.query.join(TagsToContents).join(Tag).filter(
-            Tag.title == u'third tag').all()
-        assert [res.name for res in result] == [u'content_1', u'content_2']
+            Tag.title == 'third tag').all()
+        assert sorted(res.name for res in result) == sorted(['content_1', 'content_2'])
 
         # The same tests again, using content_with_tags():
         #
@@ -224,12 +224,12 @@ class TestTags:
         # add-ons for searching, we do not support multiple tags searching, in
         # part to avoid establishing a specification.
         #
-        result = content_with_tags([u'first tag'])
-        assert [res.name for res in result] == [u'folder_1', u'content_2']
-        result = content_with_tags([u'second tag'])
-        assert [res.name for res in result] == [u'folder_1']
-        result = content_with_tags([u'third tag'])
-        assert [res.name for res in result] == [u'content_1', u'content_2']
+        result = content_with_tags(['first tag'])
+        assert sorted([res.name for res in result]) == sorted(['folder_1', 'content_2'])
+        result = content_with_tags(['second tag'])
+        assert sorted([res.name for res in result]) == sorted(['folder_1'])
+        result = content_with_tags(['third tag'])
+        assert sorted([res.name for res in result]) == sorted(['content_1', 'content_2'])
 
 
 class TestCommaSeparatedListWidget:

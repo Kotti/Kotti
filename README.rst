@@ -3,15 +3,11 @@ Kotti
 =====
 
 |pypi|_
-|downloads_month|_
 |license|_
 |build_status_stable|_
 
 .. |pypi| image:: https://img.shields.io/pypi/v/Kotti.svg?style=flat-square
 .. _pypi: https://pypi.python.org/pypi/Kotti/
-
-.. |downloads_month| image:: https://img.shields.io/pypi/dm/Kotti.svg?style=flat-square
-.. _downloads_month: https://pypi.python.org/pypi/Kotti/
 
 .. |license| image:: https://img.shields.io/pypi/l/Kotti.svg?style=flat-square
 .. _license: http://www.repoze.org/LICENSE.txt

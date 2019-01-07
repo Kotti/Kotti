@@ -188,7 +188,7 @@ def content(connection, settings):
     # tests, and because the 'content' fixture does not depend on
     # 'event' and therefore the event handlers aren't fired for root
     # otherwise:
-    get_root().path = u'/'
+    get_root().path = '/'
     transaction.commit()
 
 
@@ -215,11 +215,12 @@ def dummy_request(config, request, monkeypatch):
 
     from kotti.testing import DummyRequest
 
-    if 'user' in request.keywords:
+    marker = request.node.get_closest_marker("user")
+    if marker:
         monkeypatch.setattr(
             DummyRequest,
             "authenticated_userid",
-            request.keywords['user'].args[0])
+            marker.args[0])
 
     config.manager.get()['request'] = dummy_request = DummyRequest()
 
@@ -268,11 +269,12 @@ def browser(db_session, request, setup_app):
     host, port = BASE_URL.split(':')[-2:]
     browser = Browser('http://{}:{}/'.format(host[2:], int(port)),
                       wsgi_app=setup_app)
-    if 'user' in request.keywords:
+    marker = request.node.get_closest_marker("user")
+    if marker:
         # set auth cookie directly on the browser instance...
         from pyramid.security import remember
         from pyramid.testing import DummyRequest
-        login = request.keywords['user'].args[0]
+        login = marker.args[0]
         environ = dict(HTTP_HOST=host[2:])
         for _, value in remember(DummyRequest(environ=environ), login):
             cookie, _ = value.split(';', 1)
@@ -294,8 +296,9 @@ def root(db_session):
 @fixture
 def webtest(app, monkeypatch, request, filedepot, dummy_mailer):
     from webtest import TestApp
-    if 'user' in request.keywords:
-        login = request.keywords['user'].args[0]
+    marker = request.node.get_closest_marker("user")
+    if marker:
+        login = marker.args[0]
         monkeypatch.setattr(
             "pyramid.authentication."
             "AuthTktAuthenticationPolicy.unauthenticated_userid",
