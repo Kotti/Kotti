@@ -8,8 +8,8 @@ Change History
   See https://github.com/Kotti/kotti-cookiecutter
 
 - Require pytest >= 4.1.0, use ``request.node.get_closest_marker`` instead of
-  deprecated ``request.keywords``.
-  
+  deprecated ``request.keywords``. 
+
 2.0.0b2 - 2018-04-04
 --------------------
 
