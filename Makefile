@@ -1,6 +1,6 @@
 
 test: bin/pytest
-	bin/pytest -q -n4
+	bin/pytest
 
 bin/pytest: .pip.log *.py *.cfg
 	bin/pip install -e ".[testing]"

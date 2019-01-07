@@ -9,6 +9,7 @@
 /.installed.cfg
 /.pip.log
 /.tox
+.pytest_cache
 /Kotti.db*
 /Kotti.egg-info/
 /bin/
@@ -33,3 +34,5 @@ share
 .long-description.html
 pyvenv.cfg
 .pytest_cache/v/pep8/mtimes
+
+*.DS_Store
