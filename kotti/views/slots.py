@@ -48,14 +48,13 @@ from pyramid.view import render_view
 from kotti.events import ObjectEvent
 from kotti.events import objectevent_listeners
 
-REQUEST_ATTRS_TO_COPY = ('context', 'registry', 'user', 'cookies', 'session')
+REQUEST_ATTRS_TO_COPY = ("context", "registry", "user", "cookies", "session")
 
 
 def _encode(params):
     if not params:
-        return ''
-    return urlencode(
-        dict((k, v.encode('utf-8')) for k, v in params.items()))
+        return ""
+    return urlencode(dict((k, v.encode("utf-8")) for k, v in params.items()))
 
 
 def _render_view_on_slot_event(view_name, event, params):
@@ -63,9 +62,9 @@ def _render_view_on_slot_event(view_name, event, params):
     request = event.request
 
     view_request = request.__class__.blank(
-        "{0}/{1}".format(request.path.rstrip('/'), view_name),
+        "{0}/{1}".format(request.path.rstrip("/"), view_name),
         base_url=request.application_url,
-        POST=_encode(params)
+        POST=_encode(params),
     )
 
     if request.POST:
@@ -74,7 +73,7 @@ def _render_view_on_slot_event(view_name, event, params):
     # This is quite brittle:
     for name in REQUEST_ATTRS_TO_COPY:
         setattr(view_request, name, getattr(request, name))
-    setattr(view_request, 'kotti_slot', event.name)
+    setattr(view_request, "kotti_slot", event.name)
 
     try:
         result = render_view(context, view_request, view_name)
@@ -82,7 +81,7 @@ def _render_view_on_slot_event(view_name, event, params):
         return None
     if isinstance(context, HTTPException):
         return None
-    return result.decode('utf-8')
+    return result.decode("utf-8")
 
 
 def assign_slot(view_name, slot, params=None):
@@ -104,37 +103,44 @@ def assign_slot(view_name, slot, params=None):
     if not event:
         raise KeyError("Unknown slot '{0}'".format(slot))
     objectevent_listeners[(event[0], None)].append(
-        lambda ev: _render_view_on_slot_event(view_name, ev, params))
+        lambda ev: _render_view_on_slot_event(view_name, ev, params)
+    )
 
 
 class RenderLeftSlot(ObjectEvent):
-    name = 'left'
+    name = "left"
 
 
 class RenderRightSlot(ObjectEvent):
-    name = 'right'
+    name = "right"
 
 
 class RenderAboveContent(ObjectEvent):
-    name = 'abovecontent'
+    name = "abovecontent"
 
 
 class RenderBelowContent(ObjectEvent):
-    name = 'belowcontent'
+    name = "belowcontent"
 
 
 class RenderInHead(ObjectEvent):
-    name = 'inhead'
+    name = "inhead"
 
 
 class RenderBeforeBodyEnd(ObjectEvent):
-    name = 'beforebodyend'
+    name = "beforebodyend"
 
 
 class RenderEditInHead(ObjectEvent):
-    name = 'edit_inhead'
+    name = "edit_inhead"
 
 
 slot_events = [
-    RenderLeftSlot, RenderRightSlot, RenderAboveContent, RenderBelowContent,
-    RenderInHead, RenderBeforeBodyEnd, RenderEditInHead, ]
+    RenderLeftSlot,
+    RenderRightSlot,
+    RenderAboveContent,
+    RenderBelowContent,
+    RenderInHead,
+    RenderBeforeBodyEnd,
+    RenderEditInHead,
+]

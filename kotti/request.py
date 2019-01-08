@@ -32,9 +32,9 @@ class Request(pyramid.request.Request):
         """
         return get_user(self)
 
-    def has_permission(self,
-                       permission: str,
-                       context: object = None) -> Union[Allowed, Denied]:
+    def has_permission(
+        self, permission: str, context: object = None
+    ) -> Union[Allowed, Denied]:
         """ Check if the current request has the given permission on the
         current or explicitly passed context.  This is different from
         :meth:`pyramid.request.Request.has_permission`` in that a context other

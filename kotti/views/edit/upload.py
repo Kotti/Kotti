@@ -16,10 +16,8 @@ from kotti.views.edit.actions import content_type_factories
 log = getLogger(__name__)
 
 
-@view_defaults(name="upload", context="kotti.resources.Content",
-               permission="edit")
+@view_defaults(name="upload", context="kotti.resources.Content", permission="edit")
 class UploadView(object):
-
     def __init__(self, context, request):
         """ Constructor.
 
@@ -33,10 +31,9 @@ class UploadView(object):
 
         self.context = context
         self.request = request
-        self.factories = content_type_factories(context, request)['factories']
+        self.factories = content_type_factories(context, request)["factories"]
 
-    @view_config(request_method="GET",
-                 renderer="kotti:templates/edit/upload.pt")
+    @view_config(request_method="GET", renderer="kotti:templates/edit/upload.pt")
     def form(self):
         """ The upload form.
 
@@ -78,11 +75,14 @@ class UploadView(object):
             if match_score:
                 factories.append((match_score, factory))
 
-        return [f[1] for f in sorted(
-            factories, key=lambda factory: -factory[0])]
+        return [f[1] for f in sorted(factories, key=lambda factory: -factory[0])]
 
-    @view_config(name="content_types", request_method="GET",
-                 accept="application/json", renderer="json")
+    @view_config(
+        name="content_types",
+        request_method="GET",
+        accept="application/json",
+        renderer="json",
+    )
     def content_types(self):
         """ Return a list of content type names and title for those types that
             can be created from files of the MIME type given as GET parameter.
@@ -92,12 +92,14 @@ class UploadView(object):
         :rtype: dict
         """
 
-        mimetype = self.request.GET['mimetype']
+        mimetype = self.request.GET["mimetype"]
 
-        result = {"content_types": [{
-            'name': f.type_info.name,
-            'title': f.type_info.title,
-        } for f in self.possible_factories(mimetype)]}
+        result = {
+            "content_types": [
+                {"name": f.type_info.name, "title": f.type_info.title}
+                for f in self.possible_factories(mimetype)
+            ]
+        }
 
         return result
 
@@ -133,30 +135,24 @@ class UploadView(object):
         :rtype: dict
         """
 
-        fs = self.request.POST['qqfile']
+        fs = self.request.POST["qqfile"]
         # We can fail hard, as somebody is trying to cheat on us if that fails.
         assert isinstance(fs, FieldStorage)
 
         try:
-            factory = self.factory_by_name(self.request.POST['content_type'])
+            factory = self.factory_by_name(self.request.POST["content_type"])
         except KeyError as e:
-            result = {
-                'success': False,
-                'error': e.message,
-            }
+            result = {"success": False, "error": e.message}
         else:
             name = title_to_name(fs.filename, blacklist=self.context.keys())
             self.context[name] = node = factory.from_field_storage(fs)
             node.title = fs.filename
 
-            result = {
-                "success": True,
-                "url": self.request.resource_url(node),
-            }
+            result = {"success": True, "url": self.request.resource_url(node)}
 
         # FineUploader expects JSON with Content-Type 'text/plain'
         response = Response(json.dumps(result))
-        response.content_type = 'text/plain'
+        response.content_type = "text/plain"
 
         return response
 

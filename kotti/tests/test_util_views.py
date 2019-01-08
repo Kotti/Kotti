@@ -13,7 +13,7 @@ from zope.interface import implementer
 from kotti.testing import Dummy
 from kotti.testing import DummyRequest
 
-filterwarnings('ignore', '^kotti.views.slots.register is deprecated')
+filterwarnings("ignore", "^kotti.views.slots.register is deprecated")
 
 
 def create_contents(root):
@@ -27,12 +27,12 @@ def create_contents(root):
     #               |
     #               \ --> acb
 
-    a = root['a'] = Content()
-    aa = root['a']['aa'] = Content()
-    ab = root['a']['ab'] = Content()
-    ac = root['a']['ac'] = Content()
-    aca = ac['aca'] = Content()
-    acb = ac['acb'] = Content()
+    a = root["a"] = Content()
+    aa = root["a"]["aa"] = Content()
+    ab = root["a"]["ab"] = Content()
+    ac = root["a"]["ac"] = Content()
+    aca = ac["aca"] = Content()
+    acb = ac["acb"] = Content()
     return a, aa, ab, ac, aca, acb
 
 
@@ -42,7 +42,6 @@ class MockContext(object):
 
 
 class TestTemplateAPI:
-
     def make(self, context=None, request=None, id=1, **kwargs):
         from kotti.resources import get_root
         from kotti.views.util import TemplateAPI
@@ -65,10 +64,12 @@ class TestTemplateAPI:
         assert api.page_title == "Hello, world! - Wasnhierlos"
 
     def test_site_title(self, db_session):
-        with patch('kotti.views.util.get_settings',
-                   return_value={'kotti.site_title': 'This is it.'}):
+        with patch(
+            "kotti.views.util.get_settings",
+            return_value={"kotti.site_title": "This is it."},
+        ):
             api = self.make()
-            assert api.site_title == 'This is it.'
+            assert api.site_title == "This is it."
 
     def test_list_children(self, db_session):
         api = self.make()  # the default context is root
@@ -77,25 +78,22 @@ class TestTemplateAPI:
 
         # Now try it on a little graph:
         a, aa, ab, ac, aca, acb = create_contents(root)
-        with patch('kotti.testing.DummyRequest.has_permission',
-                   return_value=True):
+        with patch("kotti.testing.DummyRequest.has_permission", return_value=True):
             assert api.list_children() == [a]
             assert api.list_children(root) == [a]
             assert api.list_children(a) == [aa, ab, ac]
             assert api.list_children(aca) == []
 
         # Try permissions
-        with patch('kotti.testing.DummyRequest.has_permission') \
-                as has_permission:
+        with patch("kotti.testing.DummyRequest.has_permission") as has_permission:
             has_permission.return_value = False
             assert api.list_children(root) == []
-            has_permission.assert_called_once_with('view', a)
+            has_permission.assert_called_once_with("view", a)
 
-        with patch('kotti.testing.DummyRequest.has_permission') \
-                as has_permission:
+        with patch("kotti.testing.DummyRequest.has_permission") as has_permission:
             has_permission.return_value = False
-            assert api.list_children(root, permission='edit') == []
-            has_permission.assert_called_once_with('edit', a)
+            assert api.list_children(root, permission="edit") == []
+            has_permission.assert_called_once_with("edit", a)
 
     def test_root(self, db_session):
         api = self.make()
@@ -138,11 +136,10 @@ class TestTemplateAPI:
         assert breadcrumbs == [a, ac, acb]
 
     def test_has_permission(self, db_session):
-        with patch('kotti.testing.DummyRequest.has_permission') \
-                as has_permission:
+        with patch("kotti.testing.DummyRequest.has_permission") as has_permission:
             api = self.make()
-            api.has_permission('drink')
-            has_permission.assert_called_with('drink', api.root)
+            api.has_permission("drink")
+            has_permission.assert_called_with("drink", api.root)
 
     def test_contenttypefactories_add_links(self, config):
         from kotti.views.edit.actions import content_type_factories
@@ -151,8 +148,8 @@ class TestTemplateAPI:
 
         config.include(content)
 
-        res = content_type_factories(Document(''), DummyRequest())
-        assert res['factories'] == [Document, File]
+        res = content_type_factories(Document(""), DummyRequest())
+        assert res["factories"] == [Document, File]
 
     def test_contenttypefactories_with_invalid_add_link(self, config):
         from kotti.resources import Document, File
@@ -162,26 +159,25 @@ class TestTemplateAPI:
 
         class TestContent(object):
             type_info = default_type_info.copy(
-                name='TestContent',
-                title='Test Content',
+                name="TestContent",
+                title="Test Content",
                 add_view=None,
-                addable_to=['Document'],
+                addable_to=["Document"],
             )
 
         config.include(content)
         req = DummyRequest()
-        root = Document('')
+        root = Document("")
 
-        with patch('kotti.views.edit.actions.get_settings') as gs:
-            gs.return_value = {'kotti.available_types':
-                               [TestContent, Document, File]}
+        with patch("kotti.views.edit.actions.get_settings") as gs:
+            gs.return_value = {"kotti.available_types": [TestContent, Document, File]}
             res = content_type_factories(root, req)
 
-            assert res['factories'] == [Document, File]
+            assert res["factories"] == [Document, File]
 
-            TestContent.type_info.add_view = 'add_document'
+            TestContent.type_info.add_view = "add_document"
             res = content_type_factories(root, req)
-            assert res['factories'] == [TestContent, Document, File]
+            assert res["factories"] == [TestContent, Document, File]
 
     def test_edit_links(self, config, db_session):
         from kotti import views
@@ -196,11 +192,11 @@ class TestTemplateAPI:
         config.include(default_views)
         config.include(users)
 
-        assert (api.edit_links[:3] == [
-            Link('contents', 'Contents'),
-            Link('edit', 'Edit'),
-            Link('share', 'Share'),
-            ])
+        assert api.edit_links[:3] == [
+            Link("contents", "Contents"),
+            Link("edit", "Edit"),
+            Link("share", "Share"),
+        ]
 
         # Edit links are controlled through
         # 'root.type_info.edit_links' and the permissions that guard
@@ -211,13 +207,12 @@ class TestTemplateAPI:
             def permitted(self, context, request):
                 return self.permit
 
-        open_link = MyLink('open')
-        secure_link = MyLink('secure')
+        open_link = MyLink("open")
+        secure_link = MyLink("secure")
         secure_link.permit = False
 
         root = api.root
-        root.type_info = root.type_info.copy(
-            edit_links=[open_link, secure_link])
+        root.type_info = root.type_info.copy(edit_links=[open_link, secure_link])
         api = self.make()
         assert api.edit_links == [open_link]
 
@@ -225,46 +220,46 @@ class TestTemplateAPI:
         from kotti.resources import default_actions, Document
         from kotti.util import Link
 
-        default_actions.append(Link('test', 'Test'))
-        assert Document().type_info.edit_links[-1].children[-1].name == 'test'
+        default_actions.append(Link("test", "Test"))
+        assert Document().type_info.edit_links[-1].children[-1].name == "test"
 
     def test_find_edit_view_not_permitted(self, db_session):
-        with patch('kotti.views.util.view_permitted', return_value=False):
+        with patch("kotti.views.util.view_permitted", return_value=False):
             api = self.make()
-            api.request.view_name = 'edit'
-            assert api.find_edit_view(api.context) == ''
+            api.request.view_name = "edit"
+            assert api.find_edit_view(api.context) == ""
 
     def test_find_edit_view(self, db_session):
-        with patch('kotti.views.util.view_permitted', return_value=True):
+        with patch("kotti.views.util.view_permitted", return_value=True):
             api = self.make()
-            api.request.view_name = 'share'
-            assert api.find_edit_view(api.context) == 'share'
+            api.request.view_name = "share"
+            assert api.find_edit_view(api.context) == "share"
 
     def test_macro(self, db_session):
-        with patch('kotti.views.util.get_renderer') as get_renderer:
+        with patch("kotti.views.util.get_renderer") as get_renderer:
             get_renderer().implementation().macros = MagicMock()
             api = self.make()
-            macro = api.macro('mypackage:mytemplate.pt')
-            get_renderer.assert_called_with('mypackage:mytemplate.pt')
-            assert get_renderer().implementation().macros['main'] == macro
+            macro = api.macro("mypackage:mytemplate.pt")
+            get_renderer.assert_called_with("mypackage:mytemplate.pt")
+            assert get_renderer().implementation().macros["main"] == macro
 
     def test_macro_bare_with_master(self, db_session):
         # getting EDIT_MASTER when bare=True will return BARE_MASTER
-        with patch('kotti.views.util.get_renderer') as get_renderer:
+        with patch("kotti.views.util.get_renderer") as get_renderer:
             get_renderer().implementation().macros = MagicMock()
             api = self.make(bare=True)
             macro = api.macro(api.EDIT_MASTER)
             get_renderer.assert_called_with(api.BARE_MASTER)
-            assert get_renderer().implementation().macros['main'] == macro
+            assert get_renderer().implementation().macros["main"] == macro
 
     def test_macro_bare_without_master(self, db_session):
         # getting other templates when bare=True
-        with patch('kotti.views.util.get_renderer') as get_renderer:
+        with patch("kotti.views.util.get_renderer") as get_renderer:
             get_renderer().implementation().macros = MagicMock()
             api = self.make(bare=True)
-            macro = api.macro('mypackage:mytemplate.pt')
-            get_renderer.assert_called_with('mypackage:mytemplate.pt')
-            assert get_renderer().implementation().macros['main'] == macro
+            macro = api.macro("mypackage:mytemplate.pt")
+            get_renderer.assert_called_with("mypackage:mytemplate.pt")
+            assert get_renderer().implementation().macros["main"] == macro
 
     def test_url_without_context(self, db_session):
         context, request = MockContext(), MagicMock()
@@ -281,9 +276,8 @@ class TestTemplateAPI:
     def test_url_with_context_and_elements(self, db_session):
         context, request = MockContext(), MagicMock()
         api = self.make(request=request)
-        api.url(context, 'first', second='second')
-        request.resource_url.assert_called_with(
-            context, 'first', second='second')
+        api.url(context, "first", second="second")
+        request.resource_url.assert_called_with(context, "first", second="second")
 
     def test_bare(self, db_session):
         # By default, no "bare" templates are used:
@@ -308,43 +302,44 @@ class TestTemplateAPI:
         from kotti.views.slots import assign_slot
 
         def foo(context, request):
-            greeting = request.POST['greeting']
+            greeting = request.POST["greeting"]
             return Response("{} world!".format(greeting))
-        config.add_view(foo, name='foo')
-        assign_slot('foo', 'left', params=dict(greeting="Y\u0153"))
+
+        config.add_view(foo, name="foo")
+        assign_slot("foo", "left", params=dict(greeting="Y\u0153"))
 
         api = self.make()
         assert api.slots.left == ["Y\u0153 world!"]
 
-    def test_assign_to_slot_predicate_mismatch(self, config, db_session,
-                                               events):
+    def test_assign_to_slot_predicate_mismatch(self, config, db_session, events):
         from kotti.views.slots import assign_slot
 
         def special(context, request):
             return Response("Hello world!")
-        assign_slot('special', 'right')
 
-        config.add_view(special, name='special', request_method="GET")
+        assign_slot("special", "right")
+
+        config.add_view(special, name="special", request_method="GET")
         api = self.make()
         assert api.slots.right == []
 
-        config.add_view(special, name='special')
+        config.add_view(special, name="special")
         api = self.make()
         assert api.slots.right == ["Hello world!"]
 
-    def test_assign_to_slot_forbidden(self, config, db_session,
-                                      events):
+    def test_assign_to_slot_forbidden(self, config, db_session, events):
         from kotti.views.slots import assign_slot
         from pyramid.exceptions import HTTPForbidden
 
         def special(context, request):
             return Response("Hello world!")
-        assign_slot('special', 'right')
 
-        config.add_view(special, name='special', permission='admin')
+        assign_slot("special", "right")
+
+        config.add_view(special, name="special", permission="admin")
         # the slot rendering must not fail if a HTTPForbidden exception
         api = self.make()
-        with patch('kotti.views.slots.render_view') as render_view:
+        with patch("kotti.views.slots.render_view") as render_view:
             render_view.side_effect = HTTPForbidden()
             assert api.slots.right == []
 
@@ -352,19 +347,20 @@ class TestTemplateAPI:
         from kotti.views.slots import assign_slot
 
         with raises(KeyError):
-            assign_slot('viewname', 'noslotlikethis')
+            assign_slot("viewname", "noslotlikethis")
 
     def test_slot_request_has_attributes(self, config, db_session, events):
         from kotti.views.slots import assign_slot
 
         def my_viewlet(request):
-            assert hasattr(request, 'registry')
-            assert hasattr(request, 'context')
-            assert hasattr(request, 'user')
+            assert hasattr(request, "registry")
+            assert hasattr(request, "context")
+            assert hasattr(request, "user")
             return Response("Hello world!")
-        assign_slot('my-viewlet', 'right')
 
-        config.add_view(my_viewlet, name='my-viewlet')
+        assign_slot("my-viewlet", "right")
+
+        config.add_view(my_viewlet, name="my-viewlet")
         api = self.make()
         assert api.slots.right == ["Hello world!"]
 
@@ -372,13 +368,14 @@ class TestTemplateAPI:
         from kotti.views.slots import assign_slot
 
         def foo(context, request):
-            bar = request.POST['bar']
+            bar = request.POST["bar"]
             return Response("{} world!".format(bar))
-        config.add_view(foo, name='foo')
-        assign_slot('foo', 'left', params=dict(greeting="Y\u0153"))
+
+        config.add_view(foo, name="foo")
+        assign_slot("foo", "left", params=dict(greeting="Y\u0153"))
 
         request = DummyRequest()
-        request.params['bar'] = 'Hello'
+        request.params["bar"] = "Hello"
         api = self.make(request=request)
         assert api.slots.left == ["Hello world!"]
 
@@ -388,9 +385,10 @@ class TestTemplateAPI:
         def foo(context, request):
             slot = request.kotti_slot
             return Response("I'm in slot {}.".format(slot))
-        config.add_view(foo, name='foo')
-        assign_slot('foo', 'beforebodyend')
-        assign_slot('foo', 'right')
+
+        config.add_view(foo, name="foo")
+        assign_slot("foo", "beforebodyend")
+        assign_slot("foo", "right")
 
         request = DummyRequest()
         api = self.make(request=request)
@@ -429,8 +427,8 @@ class TestTemplateAPI:
             called.append(True)
             return Response("")
 
-        config.add_view(foo, name='foo')
-        assign_slot('foo', 'abovecontent')
+        config.add_view(foo, name="foo")
+        assign_slot("foo", "abovecontent")
 
         api = self.make()
         api.slots.belowcontent
@@ -443,30 +441,31 @@ class TestTemplateAPI:
 
     def test_format_currency(self, db_session):
         api = self.make()
-        assert '€13.99' == api.format_currency(13.99, 'EUR')
-        assert '$15,499.12' == api.format_currency(15499.12, 'USD')
-        assert '€1.00' == api.format_currency(
-            1, fmt='€#,##0', currency='EUR')
-        assert 'CHF3.14' == api.format_currency(
-            decimal.Decimal((0, (3, 1, 4), -2)), 'CHF')
+        assert "€13.99" == api.format_currency(13.99, "EUR")
+        assert "$15,499.12" == api.format_currency(15499.12, "USD")
+        assert "€1.00" == api.format_currency(1, fmt="€#,##0", currency="EUR")
+        assert "CHF3.14" == api.format_currency(
+            decimal.Decimal((0, (3, 1, 4), -2)), "CHF"
+        )
 
     def test_format_datetime(self, db_session):
         import datetime
         from babel.dates import format_datetime
         from babel.core import UnknownLocaleError
+
         api = self.make()
         first = datetime.datetime(2012, 1, 1)
-        assert (
-            api.format_datetime(first) ==
-            format_datetime(first, format='medium', locale='en'))
-        assert (
-            api.format_datetime(time.mktime(first.timetuple())) ==
-            format_datetime(first, format='medium', locale='en'))
-        assert (
-            api.format_datetime(first, fmt='short') ==
-            format_datetime(first, format='short', locale='en'))
+        assert api.format_datetime(first) == format_datetime(
+            first, format="medium", locale="en"
+        )
+        assert api.format_datetime(time.mktime(first.timetuple())) == format_datetime(
+            first, format="medium", locale="en"
+        )
+        assert api.format_datetime(first, fmt="short") == format_datetime(
+            first, format="short", locale="en"
+        )
         # noinspection PyPropertyAccess
-        api.locale_name = 'unknown'
+        api.locale_name = "unknown"
         with raises(UnknownLocaleError):
             api.format_datetime(first)
 
@@ -474,16 +473,17 @@ class TestTemplateAPI:
         import datetime
         from babel.dates import format_date
         from babel.core import UnknownLocaleError
+
         api = self.make()
         first = datetime.date(2012, 1, 1)
-        assert (
-            api.format_date(first) ==
-            format_date(first, format='medium', locale='en'))
-        assert (
-            api.format_date(first, fmt='short') ==
-            format_date(first, format='short', locale='en'))
+        assert api.format_date(first) == format_date(
+            first, format="medium", locale="en"
+        )
+        assert api.format_date(first, fmt="short") == format_date(
+            first, format="short", locale="en"
+        )
         # noinspection PyPropertyAccess
-        api.locale_name = 'unknown'
+        api.locale_name = "unknown"
         with raises(UnknownLocaleError):
             api.format_date(first)
 
@@ -491,108 +491,109 @@ class TestTemplateAPI:
         import datetime
         from babel.dates import format_time
         from babel.core import UnknownLocaleError
+
         api = self.make()
         first = datetime.time(23, 59)
-        assert (
-            api.format_time(first) ==
-            format_time(first, format='medium', locale='en'))
-        assert (
-            api.format_time(first, fmt='short') ==
-            format_time(first, format='short', locale='en'))
+        assert api.format_time(first) == format_time(
+            first, format="medium", locale="en"
+        )
+        assert api.format_time(first, fmt="short") == format_time(
+            first, format="short", locale="en"
+        )
         # noinspection PyPropertyAccess
-        api.locale_name = 'unknown'
+        api.locale_name = "unknown"
         with raises(UnknownLocaleError):
             api.format_time(first)
 
     def test_render_view(self, config, db_session):
         def first_view(context, request):
-            return Response('first')
+            return Response("first")
 
         def second_view(context, request):
-            return Response('second')
+            return Response("second")
 
-        config.add_view(first_view, name='')
-        config.add_view(second_view, name='second')
+        config.add_view(first_view, name="")
+        config.add_view(second_view, name="second")
         api = self.make()
-        assert api.render_view().__unicode__() == 'first'
-        assert api.render_view('second').__unicode__() == 'second'
-        assert api.render_view(
-            context=api.context, request=api.request).__unicode__() == 'first'
+        assert api.render_view().__unicode__() == "first"
+        assert api.render_view("second").__unicode__() == "second"
+        assert (
+            api.render_view(context=api.context, request=api.request).__unicode__()
+            == "first"
+        )
 
     def test_render_template(self, config, db_session):
         renderer = MagicMock()
-        config.testing_add_renderer('my-rendererer', renderer)
+        config.testing_add_renderer("my-rendererer", renderer)
         api = self.make()
-        api.render_template('my-rendererer', some='variable')
-        assert renderer.call_args[0][0] == {'some': 'variable'}
+        api.render_template("my-rendererer", some="variable")
+        assert renderer.call_args[0][0] == {"some": "variable"}
 
     def test_get_type(self, db_session):
         from kotti.resources import Document
+
         api = self.make()
-        assert api.get_type('Document') == Document
-        assert api.get_type('NoExist') is None
+        assert api.get_type("Document") == Document
+        assert api.get_type("NoExist") is None
 
     def test_avatar_url(self, db_session):
         api = self.make()
-        user = Dummy(email='daniel.nouri@gmail.com')
+        user = Dummy(email="daniel.nouri@gmail.com")
         result = api.avatar_url(user)
-        assert result.startswith('https://secure.gravatar.com/avatar/'
-                                 'd3aeefdd7afe103ab70875172135cab7')
+        assert result.startswith(
+            "https://secure.gravatar.com/avatar/" "d3aeefdd7afe103ab70875172135cab7"
+        )
 
     def test_avatar_url_request_user(self, db_session):
         api = self.make()
-        api.request.user = Dummy(email='daniel.nouri@gmail.com')
+        api.request.user = Dummy(email="daniel.nouri@gmail.com")
         result = api.avatar_url()
-        assert result.startswith('https://secure.gravatar.com/avatar/'
-                                 'd3aeefdd7afe103ab70875172135cab7')
+        assert result.startswith(
+            "https://secure.gravatar.com/avatar/" "d3aeefdd7afe103ab70875172135cab7"
+        )
 
 
 class TestViewUtil:
     def test_add_renderer_globals_json(self):
         from kotti.views.util import add_renderer_globals
 
-        event = {'renderer_name': 'json'}
+        event = {"renderer_name": "json"}
         add_renderer_globals(event)
-        assert list(event.keys()) == ['renderer_name']
+        assert list(event.keys()) == ["renderer_name"]
 
     def test_add_renderer_globals_request_has_template_api(self):
         from kotti.views.util import add_renderer_globals
 
         request = DummyRequest()
         request.template_api = template_api = object()
-        event = {'request': request, 'renderer_name': 'foo'}
+        event = {"request": request, "renderer_name": "foo"}
         add_renderer_globals(event)
-        assert event['api'] is template_api
+        assert event["api"] is template_api
 
     def test_add_renderer_globals(self, db_session):
         from kotti.views.util import add_renderer_globals
 
         request = DummyRequest()
-        event = {
-            'request': request,
-            'context': object(),
-            'renderer_name': 'foo', }
+        event = {"request": request, "context": object(), "renderer_name": "foo"}
         add_renderer_globals(event)
-        assert 'api' in event
+        assert "api" in event
 
     def test_add_renderer_globals_event_has_no_renderer_name(self, db_session):
         from kotti.views.util import add_renderer_globals
 
         request = DummyRequest()
-        event = {
-            'request': request,
-            'context': object(),
-            }
+        event = {"request": request, "context": object()}
         add_renderer_globals(event)
-        assert 'api' in event
+        assert "api" in event
 
 
 class TestLocalNavigationSlot:
     def test_it(self, config, root):
-        config.testing_add_renderer('kotti:templates/view/nav-local.pt')
+        config.testing_add_renderer("kotti:templates/view/nav-local.pt")
         from zope.interface import alsoProvides
         from kotti.interfaces import INavigationRoot
         from kotti.views.navigation import local_navigation
+
         a, aa, ab, ac, aca, acb = create_contents(root)
 
         ret = local_navigation(ac, DummyRequest())
@@ -601,34 +602,34 @@ class TestLocalNavigationSlot:
         ret = local_navigation(acb, DummyRequest())
         assert ret == dict(parent=ac, children=[aca, acb])
 
-        assert local_navigation(a.__parent__, DummyRequest())['parent'] is None
+        assert local_navigation(a.__parent__, DummyRequest())["parent"] is None
 
         alsoProvides(ac, INavigationRoot)
-        assert local_navigation(ac, DummyRequest())['parent'] is None
+        assert local_navigation(ac, DummyRequest())["parent"] is None
 
     def test_no_permission(self, config, root):
-        config.testing_add_renderer('kotti:templates/view/nav-local.pt')
+        config.testing_add_renderer("kotti:templates/view/nav-local.pt")
         from kotti.views.navigation import local_navigation
+
         a, aa, ab, ac, aca, acb = create_contents(root)
 
-        with patch('kotti.testing.DummyRequest.has_permission',
-                   return_value=True):
-            assert local_navigation(ac, DummyRequest())['parent'] is not None
+        with patch("kotti.testing.DummyRequest.has_permission", return_value=True):
+            assert local_navigation(ac, DummyRequest())["parent"] is not None
 
-        with patch('kotti.testing.DummyRequest.has_permission',
-                   return_value=False):
-            assert local_navigation(ac, DummyRequest())['parent'] is None
+        with patch("kotti.testing.DummyRequest.has_permission", return_value=False):
+            assert local_navigation(ac, DummyRequest())["parent"] is None
 
     def test_in_navigation(self, config, root):
-        config.testing_add_renderer('kotti:templates/view/nav-local.pt')
+        config.testing_add_renderer("kotti:templates/view/nav-local.pt")
         from kotti.views.navigation import local_navigation
+
         a, aa, ab, ac, aca, acb = create_contents(root)
 
-        assert local_navigation(a, DummyRequest())['parent'] is not None
+        assert local_navigation(a, DummyRequest())["parent"] is not None
         aa.in_navigation = False
         ab.in_navigation = False
         ac.in_navigation = False
-        assert local_navigation(a, DummyRequest())['parent'] is None
+        assert local_navigation(a, DummyRequest())["parent"] is None
 
 
 class TestNodesTree:
@@ -640,8 +641,7 @@ class TestNodesTree:
         tree = nodes_tree(DummyRequest())
         assert tree.id == a.__parent__.id
         assert [ch.name for ch in tree.children] == [a.name]
-        assert [ch.id for ch in tree.children[0].children] == [
-            aa.id, ab.id, ac.id]
+        assert [ch.id for ch in tree.children[0].children] == [aa.id, ab.id, ac.id]
 
     def test_ordering(self, root):
         from kotti.views.util import nodes_tree
@@ -649,10 +649,8 @@ class TestNodesTree:
         a, aa, ab, ac, aca, acb = create_contents(root)
         a.children.insert(1, a.children.pop(0))
         tree = nodes_tree(DummyRequest())
-        assert [ch.position for ch in tree.children[0].children] == [
-            0, 1, 2]
-        assert [ch.id for ch in tree.children[0].children] == [
-            ab.id, aa.id, ac.id]
+        assert [ch.position for ch in tree.children[0].children] == [0, 1, 2]
+        assert [ch.id for ch in tree.children[0].children] == [ab.id, aa.id, ac.id]
 
     def test_tolist(self, root):
         from kotti.views.util import nodes_tree
@@ -669,19 +667,19 @@ class TestSettingHasValuePredicate:
     def test_basic(self):
         from kotti.views.util import SettingHasValuePredicate
 
-        predicate = SettingHasValuePredicate(('mysetting', True), None)
+        predicate = SettingHasValuePredicate(("mysetting", True), None)
         request = Mock()
-        request.registry.settings = {'mysetting': 'True'}
+        request.registry.settings = {"mysetting": "True"}
         assert predicate(None, request) is True
 
-        request.registry.settings = {'mysetting': '0'}
+        request.registry.settings = {"mysetting": "0"}
         assert predicate(None, request) is False
 
     def test_bool_value_assertion(self):
         from kotti.views.util import SettingHasValuePredicate
 
         with raises(ValueError):
-            SettingHasValuePredicate(('mysetting', 'hello'), None)
+            SettingHasValuePredicate(("mysetting", "hello"), None)
 
 
 class TestRootOnlyPredicate:

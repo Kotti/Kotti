@@ -25,34 +25,30 @@ from kotti.views.form import validate_file_size_limit
 class ContentSchema(colander.MappingSchema):
     title = colander.SchemaNode(
         colander.String(),
-        title=_('Title'),
-        validator=colander.Length(
-            max=Node.title.property.columns[0].type.length),
-        )
+        title=_("Title"),
+        validator=colander.Length(max=Node.title.property.columns[0].type.length),
+    )
     description = colander.SchemaNode(
         colander.String(),
-        title=_('Description'),
+        title=_("Description"),
         widget=TextAreaWidget(cols=40, rows=5),
-        missing='',
-        )
+        missing="",
+    )
     tags = colander.SchemaNode(
-        ObjectType(),
-        title=_('Tags'),
-        widget=deferred_tag_it_widget,
-        missing=[],
-        )
+        ObjectType(), title=_("Tags"), widget=deferred_tag_it_widget, missing=[]
+    )
 
 
 class DocumentSchema(ContentSchema):
     body = colander.SchemaNode(
         colander.String(),
-        title=_('Body'),
+        title=_("Body"),
         widget=RichTextWidget(
             # theme='advanced', width=790, height=500
-            height=500,
+            height=500
         ),
         missing="",
-        )
+    )
 
 
 class DocumentAddForm(AddFormView):
@@ -70,15 +66,15 @@ def FileSchema(tmpstore, title_missing=None):
     class FileSchema(ContentSchema):
         file = SchemaNode(
             FileData(),
-            title=_('File'),
+            title=_("File"),
             widget=FileUploadWidget(tmpstore),
             validator=validate_file_size_limit,
-            )
+        )
 
     # noinspection PyUnusedLocal
     def set_title_missing(node, kw):
         if title_missing is not None:
-            node['title'].missing = title_missing
+            node["title"].missing = title_missing
 
     return FileSchema(after_bind=set_title_missing)
 
@@ -92,17 +88,17 @@ class FileAddForm(AddFormView):
         return FileSchema(tmpstore, title_missing=null)
 
     def save_success(self, appstruct):
-        if not appstruct['title']:
-            appstruct['title'] = appstruct['file']['filename']
+        if not appstruct["title"]:
+            appstruct["title"] = appstruct["file"]["filename"]
         return super(FileAddForm, self).save_success(appstruct)
 
     def add(self, **appstruct):
-        filename = appstruct['file']['filename']
+        filename = appstruct["file"]["filename"]
         item = self.item_class(
-            title=appstruct['title'] or filename,
-            description=appstruct['description'],
-            tags=appstruct['tags'],
-            data=_to_fieldstorage(**appstruct['file']),
+            title=appstruct["title"] or filename,
+            description=appstruct["description"],
+            tags=appstruct["tags"],
+            data=_to_fieldstorage(**appstruct["file"]),
         )
         return item
 
@@ -111,12 +107,16 @@ class FileEditForm(EditFormView):
     def before(self, form):
         form.appstruct = get_appstruct(self.context, self.schema)
         if self.context.data is not None:
-            form.appstruct.update({'file': {
-                'fp': None,
-                'filename': self.context.data['filename'],  # self.context.name
-                'mimetype': self.context.mimetype,
-                'uid': str(random.randint(1000000000, 9999999999)),
-            }})
+            form.appstruct.update(
+                {
+                    "file": {
+                        "fp": None,
+                        "filename": self.context.data["filename"],  # self.context.name
+                        "mimetype": self.context.mimetype,
+                        "uid": str(random.randint(1000000000, 9999999999)),
+                    }
+                }
+            )
 
     def schema_factory(self):
         # File uploads are stored in the session so that you don't need
@@ -126,12 +126,12 @@ class FileEditForm(EditFormView):
         return FileSchema(tmpstore)
 
     def edit(self, **appstruct):
-        title = appstruct['title']
+        title = appstruct["title"]
         self.context.title = title
-        self.context.description = appstruct['description']
-        self.context.tags = appstruct['tags']
-        if appstruct['file'] and appstruct['file']['fp']:
-            self.context.data = _to_fieldstorage(**appstruct['file'])
+        self.context.description = appstruct["description"]
+        self.context.tags = appstruct["tags"]
+        if appstruct["file"] and appstruct["file"]["fp"]:
+            self.context.data = _to_fieldstorage(**appstruct["file"])
 
 
 def includeme(config):
@@ -144,29 +144,29 @@ def includeme(config):
     config.add_view(
         DocumentEditForm,
         context=Document,
-        name='edit',
-        permission='edit',
-        renderer='kotti:templates/edit/node.pt',
-        )
+        name="edit",
+        permission="edit",
+        renderer="kotti:templates/edit/node.pt",
+    )
 
     config.add_view(
         DocumentAddForm,
         name=Document.type_info.add_view,
         permission=Document.type_info.add_permission,
-        renderer='kotti:templates/edit/node.pt',
-        )
+        renderer="kotti:templates/edit/node.pt",
+    )
 
     config.add_view(
         FileEditForm,
         context=File,
-        name='edit',
-        permission='edit',
-        renderer='kotti:templates/edit/node.pt',
-        )
+        name="edit",
+        permission="edit",
+        renderer="kotti:templates/edit/node.pt",
+    )
 
     config.add_view(
         FileAddForm,
         name=File.type_info.add_view,
         permission=File.type_info.add_permission,
-        renderer='kotti:templates/edit/node.pt',
-        )
+        renderer="kotti:templates/edit/node.pt",
+    )

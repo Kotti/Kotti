@@ -18,12 +18,14 @@ def _translate_titles(info):
     for d in info:
         d = d.copy()
         try:
-            d['title'] = eval(d['title']) if 'title' in d else d['name']
-            warnings.warn('_() in workflow.zcml is deprecated. '
-                          'Support will be removed in Kotti 2.0.0.',
-                          DeprecationWarning)
+            d["title"] = eval(d["title"]) if "title" in d else d["name"]
+            warnings.warn(
+                "_() in workflow.zcml is deprecated. "
+                "Support will be removed in Kotti 2.0.0.",
+                DeprecationWarning,
+            )
         except (NameError, SyntaxError):
-            d['title'] = _(d['title']) if 'title' in d else d['name']
+            d["title"] = _(d["title"]) if "title" in d else d["name"]
         result.append(d)
     return result
 
@@ -38,7 +40,7 @@ def _state_info(context, request):
 
 def _states(context, request):
     state_info = _state_info(context, request)
-    return dict([(i['name'], i) for i in state_info])
+    return dict([(i["name"], i) for i in state_info])
 
 
 # noinspection PyUnusedLocal

@@ -15,9 +15,9 @@ def test_needed_group():
     with raises(ValueError):
         NeededGroupFactory(["foo", "bar"])
 
-    needed = NeededGroup([deform_js, ])
+    needed = NeededGroup([deform_js])
 
-    assert needed.resources == [deform_js, ]
+    assert needed.resources == [deform_js]
 
     needed.add(contents_view_js)
 

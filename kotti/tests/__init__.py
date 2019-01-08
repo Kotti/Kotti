@@ -57,14 +57,14 @@ from kotti import testing
 def image_asset():
     """ Return an image file """
 
-    return testing.asset('sendeschluss.jpg')
+    return testing.asset("sendeschluss.jpg")
 
 
 @fixture
 def image_asset2():
     """ Return another image file """
 
-    return testing.asset('logo.png')
+    return testing.asset("logo.png")
 
 
 @yield_fixture
@@ -75,7 +75,7 @@ def allwarnings(request):
     warnings.filters[:] = save_filters
 
 
-@fixture(scope='session')
+@fixture(scope="session")
 def custom_settings():
     """ This is a dummy fixture meant to be overriden in add on package's
     ``conftest.py``.  It can be used to inject arbitrary settings for third
@@ -93,22 +93,24 @@ def custom_settings():
     return {}
 
 
-@fixture(scope='session')
+@fixture(scope="session")
 def unresolved_settings(custom_settings):
     from kotti import conf_defaults
     from kotti.testing import testing_db_url
+
     settings = conf_defaults.copy()
-    settings['kotti.secret'] = 'secret'
-    settings['kotti.secret2'] = 'secret2'
-    settings['kotti.populators'] = 'kotti.testing._populator'
-    settings['sqlalchemy.url'] = testing_db_url()
+    settings["kotti.secret"] = "secret"
+    settings["kotti.secret2"] = "secret2"
+    settings["kotti.populators"] = "kotti.testing._populator"
+    settings["sqlalchemy.url"] = testing_db_url()
     settings.update(custom_settings)
     return settings
 
 
-@fixture(scope='session')
+@fixture(scope="session")
 def settings(unresolved_settings):
     from kotti import _resolve_dotted
+
     return _resolve_dotted(unresolved_settings)
 
 
@@ -119,15 +121,16 @@ def config(settings):
     """
     from pyramid import testing
     from kotti import security
+
     config = testing.setUp(settings=settings)
-    config.include('pyramid_chameleon')
+    config.include("pyramid_chameleon")
     config.add_default_renderers()
     yield config
     security.reset()
     testing.tearDown()
 
 
-@fixture(scope='session')
+@fixture(scope="session")
 def connection(custom_settings):
     """ sets up a SQLAlchemy engine and returns a connection to the database.
     The connection string used for testing can be specified via the
@@ -144,6 +147,7 @@ def connection(custom_settings):
     from kotti import metadata
     from kotti.resources import _adjust_for_engine
     from kotti.testing import testing_db_url
+
     engine = create_engine(testing_db_url())
     _adjust_for_engine(engine)
     connection = engine.connect()
@@ -174,15 +178,16 @@ def content(connection, settings):
     # settings won't persist, though;  use the `workflow` fixture if needed
     from zope.configuration import xmlconfig
     import kotti
-    xmlconfig.file('workflow.zcml', kotti, execute=True)
-    for populate in settings['kotti.populators']:
+
+    xmlconfig.file("workflow.zcml", kotti, execute=True)
+    for populate in settings["kotti.populators"]:
         populate()
 
     # We set the path here since it's required for some integration
     # tests, and because the 'content' fixture does not depend on
     # 'event' and therefore the event handlers aren't fired for root
     # otherwise:
-    get_root().path = '/'
+    get_root().path = "/"
     transaction.commit()
 
 
@@ -193,8 +198,10 @@ def db_session(config, content, connection):
     """
 
     import transaction
-    trans = connection.begin()          # begin a non-orm transaction
+
+    trans = connection.begin()  # begin a non-orm transaction
     from kotti import DBSession
+
     yield DBSession()
     trans.rollback()
     transaction.abort()
@@ -211,12 +218,9 @@ def dummy_request(config, request, monkeypatch):
 
     marker = request.node.get_closest_marker("user")
     if marker:
-        monkeypatch.setattr(
-            DummyRequest,
-            "authenticated_userid",
-            marker.args[0])
+        monkeypatch.setattr(DummyRequest, "authenticated_userid", marker.args[0])
 
-    config.manager.get()['request'] = dummy_request = DummyRequest()
+    config.manager.get()["request"] = dummy_request = DummyRequest()
 
     return dummy_request
 
@@ -226,7 +230,7 @@ def dummy_mailer(monkeypatch):
     from pyramid_mailer.mailer import DummyMailer
 
     mailer = DummyMailer()
-    monkeypatch.setattr('kotti.message.get_mailer', lambda: mailer)
+    monkeypatch.setattr("kotti.message.get_mailer", lambda: mailer)
     return mailer
 
 
@@ -235,7 +239,8 @@ def events(config):
     """ sets up Kotti's default event handlers.
     """
     from kotti.events import clear
-    config.include('kotti.events')
+
+    config.include("kotti.events")
     yield config
     clear()
 
@@ -243,6 +248,7 @@ def events(config):
 @fixture
 def setup_app(unresolved_settings, filedepot):
     from kotti import base_configure
+
     config = base_configure({}, **unresolved_settings)
     return config.make_wsgi_app()
 
@@ -260,22 +266,23 @@ def browser(db_session, request, setup_app):
     """
     from zope.testbrowser.wsgi import Browser
     from kotti.testing import BASE_URL
-    host, port = BASE_URL.split(':')[-2:]
-    browser = Browser('http://{}:{}/'.format(host[2:], int(port)),
-                      wsgi_app=setup_app)
+
+    host, port = BASE_URL.split(":")[-2:]
+    browser = Browser("http://{}:{}/".format(host[2:], int(port)), wsgi_app=setup_app)
     marker = request.node.get_closest_marker("user")
     if marker:
         # set auth cookie directly on the browser instance...
         from pyramid.security import remember
         from pyramid.testing import DummyRequest
+
         login = marker.args[0]
         environ = dict(HTTP_HOST=host[2:])
         for _, value in remember(DummyRequest(environ=environ), login):
-            cookie, _ = value.split(';', 1)
-            name, value = cookie.split('=')
+            cookie, _ = value.split(";", 1)
+            name, value = cookie.split("=")
             if name in browser.cookies:
                 del browser.cookies[name]
-            browser.cookies.create(name, value.strip('"'), path='/')
+            browser.cookies.create(name, value.strip('"'), path="/")
     return browser
 
 
@@ -284,19 +291,22 @@ def root(db_session):
     """ returns Kotti's 'root' node.
     """
     from kotti.resources import get_root
+
     return get_root()
 
 
 @fixture
 def webtest(app, monkeypatch, request, filedepot, dummy_mailer):
     from webtest import TestApp
+
     marker = request.node.get_closest_marker("user")
     if marker:
         login = marker.args[0]
         monkeypatch.setattr(
             "pyramid.authentication."
             "AuthTktAuthenticationPolicy.unauthenticated_userid",
-            lambda self, req: login)
+            lambda self, req: login,
+        )
     return TestApp(app)
 
 
@@ -306,7 +316,8 @@ def workflow(config):
     """
     from zope.configuration import xmlconfig
     import kotti
-    xmlconfig.file('workflow.zcml', kotti, execute=True)
+
+    xmlconfig.file("workflow.zcml", kotti, execute=True)
 
 
 class TestStorage(MemoryFileStorage):
@@ -353,10 +364,8 @@ def mock_filedepot(depot_tween):
     """
     from depot.manager import DepotManager
 
-    DepotManager._depots = {
-        'mockdepot': MagicMock(wraps=TestStorage())
-    }
-    DepotManager._default_depot = 'mockdepot'
+    DepotManager._depots = {"mockdepot": MagicMock(wraps=TestStorage())}
+    DepotManager._default_depot = "mockdepot"
 
     yield DepotManager
 
@@ -370,10 +379,8 @@ def filedepot(db_session, depot_tween):
     """
     from depot.manager import DepotManager
 
-    DepotManager._depots = {
-        'filedepot': MagicMock(wraps=TestStorage())
-    }
-    DepotManager._default_depot = 'filedepot'
+    DepotManager._depots = {"filedepot": MagicMock(wraps=TestStorage())}
+    DepotManager._default_depot = "filedepot"
 
     yield DepotManager
 

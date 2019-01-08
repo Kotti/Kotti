@@ -3,15 +3,15 @@ import pytest
 
 def test_404_anon(webtest, root):
 
-    resp = webtest.app.get('/non-existent', status=404)
-    assert 'Not Found' in resp.text
+    resp = webtest.app.get("/non-existent", status=404)
+    assert "Not Found" in resp.text
 
 
-@pytest.mark.user('admin')
+@pytest.mark.user("admin")
 def test_404_anon(webtest, root):
 
-    resp = webtest.app.get('/non-existent', status=404)
-    assert 'Not Found' in resp.text
+    resp = webtest.app.get("/non-existent", status=404)
+    assert "Not Found" in resp.text
 
 
 def test_404_api_root(db_session, dummy_request):
