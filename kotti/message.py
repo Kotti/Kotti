@@ -24,18 +24,15 @@ def get_mailer():
     return Mailer.from_settings(get_settings())  # pragma: no cover
 
 
-def make_token(user: Principal, seconds: Optional[float]=None) -> str:
-    secret = get_settings()['kotti.secret2']
+def make_token(user: Principal, seconds: Optional[float] = None) -> str:
+    secret = get_settings()["kotti.secret2"]
     if seconds is None:
         seconds = time.time()
-    token = '{}:{}:{}'.format(user.name, secret, seconds)
-    return '{}:{}'.format(hashlib.sha224(token.encode('utf8')).hexdigest(),
-                          seconds)
+    token = "{}:{}:{}".format(user.name, secret, seconds)
+    return "{}:{}".format(hashlib.sha224(token.encode("utf8")).hexdigest(), seconds)
 
 
-def validate_token(user: Principal,
-                   token: str,
-                   valid_hrs: int=24) -> bool:
+def validate_token(user: Principal, token: str, valid_hrs: int = 24) -> bool:
     """
         >>> from kotti.testing import setUp, tearDown
         >>> ignore = setUp()
@@ -60,19 +57,23 @@ def validate_token(user: Principal,
         >>> tearDown()
     """
     try:
-        seconds = float(token.split(':')[1])
+        seconds = float(token.split(":")[1])
     except (IndexError, ValueError):
         return False
-    if token == make_token(user, seconds) \
-            and time.time() - seconds < 60 * 60 * valid_hrs:
+    if (
+        token == make_token(user, seconds)
+        and time.time() - seconds < 60 * 60 * valid_hrs
+    ):
         return True
     return False
 
 
-def send_email(request: Request,
-               recipients: List[str],
-               template_name: str,
-               template_vars: Optional[Dict[str, str]]=None) -> None:
+def send_email(
+    request: Request,
+    recipients: List[str],
+    template_name: str,
+    template_vars: Optional[Dict[str, str]] = None,
+) -> None:
     """ General email sender.
 
     :param request: current request.
@@ -94,38 +95,34 @@ def send_email(request: Request,
         template_vars = {}
 
     text = render(template_name, template_vars, request)
-    subject, htmlbody = text.strip().split('\n', 1)
-    subject = subject.replace('Subject:', '', 1).strip()
+    subject, htmlbody = text.strip().split("\n", 1)
+    subject = subject.replace("Subject:", "", 1).strip()
     html2text = HTML2Text()
     html2text.body_width = 0
     textbody = html2text.handle(htmlbody).strip()
 
     message = Message(
-        recipients=recipients,
-        subject=subject,
-        body=textbody,
-        html=htmlbody,
-        )
+        recipients=recipients, subject=subject, body=textbody, html=htmlbody
+    )
     mailer = get_mailer()
     mailer.send(message)
 
 
-def email_set_password(user: Principal,
-                       request: Request,
-                       template_name: Optional[str]='kotti:templates/email-set-password.pt',  # noqa
-                       add_query: Optional[Dict[str, str]]=None) -> None:
-    site_title = get_settings()['kotti.site_title']
+def email_set_password(
+    user: Principal,
+    request: Request,
+    template_name: Optional[str] = "kotti:templates/email-set-password.pt",  # noqa
+    add_query: Optional[Dict[str, str]] = None,
+) -> None:
+    site_title = get_settings()["kotti.site_title"]
     token = make_token(user)
     user.confirm_token = token
-    set_password_query = {'token': token, 'email': user.email}
+    set_password_query = {"token": token, "email": user.email}
     if add_query:
         set_password_query.update(add_query)
-    url = '{0}/@@set-password?{1}'.format(
-        request.application_url,
-        urlencode(set_password_query))
-    variables = dict(
-        user_title=user.title,
-        site_title=site_title,
-        url=url)
+    url = "{0}/@@set-password?{1}".format(
+        request.application_url, urlencode(set_password_query)
+    )
+    variables = dict(user_title=user.title, site_title=site_title, url=url)
     recipients = ['"{0}" <{1}>'.format(user.title, user.email)]  # XXX naive?
     send_email(request, recipients, template_name, variables)

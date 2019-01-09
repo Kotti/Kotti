@@ -30,12 +30,14 @@ def no_autoflush(func):
     def wrapper(*args, **kwargs):
         with DBSession.no_autoflush:
             return func(*args, **kwargs)
+
     return wrapper
 
 
 class JsonType(TypeDecorator):
     """http://www.sqlalchemy.org/docs/core/types.html#marshal-json-strings
     """
+
     impl = Text
 
     # noinspection PyMethodOverriding
@@ -54,8 +56,8 @@ class JsonType(TypeDecorator):
 
 
 class ACLType(JsonType):
-    ALL_PERMISSIONS_SERIALIZED = '__ALL_PERMISSIONS__'
-    DEFAULT_ACE = (Allow, 'role:admin', ALL_PERMISSIONS)
+    ALL_PERMISSIONS_SERIALIZED = "__ALL_PERMISSIONS__"
+    DEFAULT_ACE = (Allow, "role:admin", ALL_PERMISSIONS)
 
     def process_bind_param(self, value, dialect):
         if value is not None:
@@ -77,6 +79,7 @@ class ACLType(JsonType):
 class MutationDict(Mutable):
     """http://www.sqlalchemy.org/docs/orm/extensions/mutable.html
     """
+
     _wraps = dict
 
     def __init__(self, data):
@@ -93,9 +96,14 @@ class MutationDict(Mutable):
             return value
 
     def __json__(self, request=None):
-        return dict([(key, value.__json__(request))
-                     if hasattr(value, '__json__') else (key, value)
-                     for key, value in self._d.items()])
+        return dict(
+            [
+                (key, value.__json__(request))
+                if hasattr(value, "__json__")
+                else (key, value)
+                for key, value in self._d.items()
+            ]
+        )
 
 
 class MutationList(Mutable):
@@ -119,8 +127,10 @@ class MutationList(Mutable):
         return other + self._d
 
     def __json__(self, request=None):
-        return [item.__json__(request) if hasattr(item, '__json__') else item
-                for item in self._d]
+        return [
+            item.__json__(request) if hasattr(item, "__json__") else item
+            for item in self._d
+        ]
 
 
 def _make_mutable_method_wrapper(wrapper_class, methodname, mutates):
@@ -130,49 +140,49 @@ def _make_mutable_method_wrapper(wrapper_class, methodname, mutates):
         if mutates:
             self.changed()
         return value
+
     replacer.__name__ = methodname
     return replacer
 
 
 for wrapper_class in (MutationDict, MutationList):
     for methodname, mutates in (
-            ('__iter__', False),
-            ('__len__', False),
-            ('__eq__', False),
-            ('__add__', False),
-            ('__getitem__', False),
-            ('__getslice__', False),
-            ('__repr__', False),
-            ('get', False),
-            ('keys', False),
-
-            ('__setitem__', True),
-            ('__delitem__', True),
-            ('__setslice__', True),
-            ('__delslice__', True),
-            ('append', True),
-            ('clear', True),
-            ('extend', True),
-            ('insert', True),
-            ('pop', True),
-            ('setdefault', True),
-            ('update', True),
-            ('remove', True),
-            ):
+        ("__iter__", False),
+        ("__len__", False),
+        ("__eq__", False),
+        ("__add__", False),
+        ("__getitem__", False),
+        ("__getslice__", False),
+        ("__repr__", False),
+        ("get", False),
+        ("keys", False),
+        ("__setitem__", True),
+        ("__delitem__", True),
+        ("__setslice__", True),
+        ("__delslice__", True),
+        ("append", True),
+        ("clear", True),
+        ("extend", True),
+        ("insert", True),
+        ("pop", True),
+        ("setdefault", True),
+        ("update", True),
+        ("remove", True),
+    ):
         # Only wrap methods that do exist on the wrapped type!
         if getattr(wrapper_class._wraps, methodname, False):
             setattr(
-                wrapper_class, methodname,
-                _make_mutable_method_wrapper(
-                    wrapper_class, methodname, mutates),
-                )
+                wrapper_class,
+                methodname,
+                _make_mutable_method_wrapper(wrapper_class, methodname, mutates),
+            )
 
 
 class NestedMixin(object):
     __parent__ = None
 
     def __init__(self, *args, **kwargs):
-        self.__parent__ = kwargs.pop('__parent__', None)
+        self.__parent__ = kwargs.pop("__parent__", None)
         super(NestedMixin, self).__init__(*args, **kwargs)
 
     def __getitem__(self, key):
@@ -209,14 +219,12 @@ class NestedMutationList(NestedMixin, MutationList):
     pass
 
 
-MUTATION_WRAPPERS = {
-    dict: NestedMutationDict,
-    list: NestedMutationList,
-    }
+MUTATION_WRAPPERS = {dict: NestedMutationDict, list: NestedMutationList}
 
 
 class Base(object):
     @declared_attr
     def __tablename__(cls):
         from kotti.util import camel_case_to_name  # prevent circ import
-        return '{0}s'.format(camel_case_to_name(cls.__name__))
+
+        return "{0}s".format(camel_case_to_name(cls.__name__))

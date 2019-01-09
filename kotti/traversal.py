@@ -69,10 +69,10 @@ class NodeTreeTraverser(ResourceTreeTraverser):
         environ = request.environ
         matchdict = request.matchdict
         if matchdict is not None:
-            path = matchdict.get('traverse', slash) or slash
+            path = matchdict.get("traverse", slash) or slash
             if is_nonstr_iter(path):
-                path = '/' + slash.join(path) or slash
-            subpath = matchdict.get('subpath', ())
+                path = "/" + slash.join(path) or slash
+            subpath = matchdict.get("subpath", ())
             if not is_nonstr_iter(subpath):
                 subpath = split_path_info(subpath)
         else:
@@ -82,8 +82,7 @@ class NodeTreeTraverser(ResourceTreeTraverser):
             except KeyError:
                 path = slash
             except UnicodeDecodeError as e:
-                raise URLDecodeError(e.encoding, e.object, e.start, e.end,
-                                     e.reason)
+                raise URLDecodeError(e.encoding, e.object, e.start, e.end, e.reason)
         if VH_ROOT_KEY in environ:
             vroot_path = decode_path_info(environ[VH_ROOT_KEY])
             vroot_tuple = split_path_info(vroot_path)
@@ -112,13 +111,14 @@ class NodeTreeTraverser(ResourceTreeTraverser):
         vs = self.VIEW_SELECTOR
         lvs = len(vs)
         result = {
-            'context': root,
-            'view_name': empty,
-            'subpath': subpath,
-            'traversed': (),
-            'virtual_root': root,
-            'virtual_root_path': vroot_tuple,
-            'root': root}
+            "context": root,
+            "view_name": empty,
+            "subpath": subpath,
+            "traversed": (),
+            "virtual_root": root,
+            "virtual_root_path": vroot_tuple,
+            "root": root,
+        }
 
         if vpath == slash:
             return result
@@ -129,24 +129,26 @@ class NodeTreeTraverser(ResourceTreeTraverser):
                 view_name = vpath_tuple[0]
                 if view_name[:lvs] == vs:
                     view_name = view_name[lvs:]
-                result['view_name'] = view_name
-                result['subpath'] = vpath_tuple[1:]
+                result["view_name"] = view_name
+                result["subpath"] = vpath_tuple[1:]
                 return result
-            traversed = vpath_tuple[:len(traversed_nodes)]
-            subpath = list(vpath_tuple[len(traversed_nodes):])
+            traversed = vpath_tuple[: len(traversed_nodes)]
+            subpath = list(vpath_tuple[len(traversed_nodes) :])
             if subpath:
                 view_name = subpath.pop(0)
                 if view_name[:lvs] == vs:
                     view_name = view_name[lvs:]
             else:
                 view_name = empty
-            return {'context': traversed_nodes[-1],
-                    'view_name': view_name,
-                    'subpath': subpath,
-                    'traversed': traversed,
-                    'virtual_root': root,
-                    'virtual_root_path': vroot_tuple,
-                    'root': root}
+            return {
+                "context": traversed_nodes[-1],
+                "view_name": view_name,
+                "subpath": subpath,
+                "traversed": traversed,
+                "virtual_root": root,
+                "virtual_root_path": vroot_tuple,
+                "root": root,
+            }
 
     @staticmethod
     def traverse(root, vpath_tuple):
@@ -165,17 +167,17 @@ class NodeTreeTraverser(ResourceTreeTraverser):
         """
 
         conditions = [
-            (Node.path == root.path + '/'.join(vpath_tuple[:idx + 1]) + '/')
-            for idx, item in enumerate(vpath_tuple)]
-        nodes = DBSession().query(Node)\
-            .order_by(Node.path)\
-            .filter(or_(*conditions))\
-            .all()
+            (Node.path == root.path + "/".join(vpath_tuple[: idx + 1]) + "/")
+            for idx, item in enumerate(vpath_tuple)
+        ]
+        nodes = (
+            DBSession().query(Node).order_by(Node.path).filter(or_(*conditions)).all()
+        )
         for i, node in enumerate(nodes):
             if i == 0:
-                setattr(node, 'parent', root)
+                setattr(node, "parent", root)
             else:
-                setattr(node, 'parent', nodes[i - 1])
+                setattr(node, "parent", nodes[i - 1])
 
         return nodes
 
@@ -192,7 +194,7 @@ class NodeTreeTraverser(ResourceTreeTraverser):
         recursion maassacre we have right now.
         """
 
-        raise NotImplementedError('Use the traverse method instead.')
+        raise NotImplementedError("Use the traverse method instead.")
 
         """
         # needed until we find out how to pass an empty array of type String

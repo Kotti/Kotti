@@ -43,8 +43,7 @@ class SettingHasValuePredicate(object):
             raise ValueError("Only boolean values supported")
 
     def text(self):
-        return 'if_setting_has_value = {0} == {1}'.format(
-            self.name, self.value)
+        return "if_setting_has_value = {0} == {1}".format(self.name, self.value)
 
     phash = text
 
@@ -57,7 +56,7 @@ class RootOnlyPredicate(object):
         self.val = val
 
     def text(self):
-        return 'root_only = {0}'.format(self.val)
+        return "root_only = {0}".format(self.val)
 
     phash = text
 
@@ -66,17 +65,16 @@ class RootOnlyPredicate(object):
 
 
 def template_api(context, request, **kwargs):
-    return get_settings()['kotti.templates.api'][0](
-        context, request, **kwargs)
+    return get_settings()["kotti.templates.api"][0](context, request, **kwargs)
 
 
 def add_renderer_globals(event):
-    if event.get('renderer_name') != 'json':
-        request = event['request']
-        api = getattr(request, 'template_api', None)
+    if event.get("renderer_name") != "json":
+        request = event["request"]
+        api = getattr(request, "template_api", None)
         if api is None and request is not None:
-            api = template_api(event['context'], event['request'])
-        event['api'] = api
+            api = template_api(event["context"], event["request"])
+        event["api"] = api
 
 
 class Slots(object):
@@ -110,17 +108,17 @@ class TemplateAPI(object):
 
     # Instead of overriding these, consider using the
     # ``kotti.overrides`` variable.
-    BARE_MASTER = 'kotti:templates/master-bare.pt'
-    VIEW_MASTER = 'kotti:templates/view/master.pt'
-    EDIT_MASTER = 'kotti:templates/edit/master.pt'
-    SITE_SETUP_MASTER = 'kotti:templates/site-setup/master.pt'
+    BARE_MASTER = "kotti:templates/master-bare.pt"
+    VIEW_MASTER = "kotti:templates/view/master.pt"
+    EDIT_MASTER = "kotti:templates/edit/master.pt"
+    SITE_SETUP_MASTER = "kotti:templates/site-setup/master.pt"
 
-    body_css_class = ''
+    body_css_class = ""
 
     def __init__(self, context, request, bare=None, **kwargs):
         self.context, self.request = context, request
 
-        if getattr(request, 'template_api', None) is None:
+        if getattr(request, "template_api", None) is None:
             request.template_api = self
 
         self.S = get_settings()
@@ -144,17 +142,20 @@ class TemplateAPI(object):
 
     @reify
     def edit_needed(self):
-        if 'kotti.fanstatic.edit_needed' in self.S:
-            return [r.need() for r in self.S['kotti.fanstatic.edit_needed']]
+        if "kotti.fanstatic.edit_needed" in self.S:
+            return [r.need() for r in self.S["kotti.fanstatic.edit_needed"]]
 
     @reify
     def view_needed(self):
-        if 'kotti.fanstatic.view_needed' in self.S:
-            return [r.need() for r in self.S['kotti.fanstatic.view_needed']]
+        if "kotti.fanstatic.view_needed" in self.S:
+            return [r.need() for r in self.S["kotti.fanstatic.view_needed"]]
 
-    def macro(self, asset_spec, macro_name='main'):
+    def macro(self, asset_spec, macro_name="main"):
         if self.bare and asset_spec in (
-                self.VIEW_MASTER, self.EDIT_MASTER, self.SITE_SETUP_MASTER):
+            self.VIEW_MASTER,
+            self.EDIT_MASTER,
+            self.SITE_SETUP_MASTER,
+        ):
             asset_spec = self.BARE_MASTER
         return get_renderer(asset_spec).implementation().macros[macro_name]
 
@@ -166,7 +167,7 @@ class TemplateAPI(object):
                  the root item's ``title`` attribute.
         :rtype: str
         """
-        value = get_settings().get('kotti.site_title')
+        value = get_settings().get("kotti.site_title")
         if not value:
             value = self.root.title
         return value
@@ -182,11 +183,11 @@ class TemplateAPI(object):
         :rtype: str
         """
 
-        view_title = self.request.view_name.replace('_', ' ').title()
+        view_title = self.request.view_name.replace("_", " ").title()
         if view_title:
-            view_title += ' '
+            view_title += " "
         view_title += self.context.title
-        return '{0} - {1}'.format(view_title, self.site_title)
+        return "{0} - {1}".format(view_title, self.site_title)
 
     def url(self, context=None, *elements, **kwargs):
         """
@@ -252,7 +253,7 @@ class TemplateAPI(object):
         breadcrumbs = self.lineage
         if self.root != self.navigation_root:
             index = breadcrumbs.index(self.navigation_root)
-            breadcrumbs = breadcrumbs[:index + 1]
+            breadcrumbs = breadcrumbs[: index + 1]
         return reversed(breadcrumbs)
 
     def has_permission(self, permission, context=None):
@@ -263,8 +264,7 @@ class TemplateAPI(object):
             context = self.context
         return self.request.has_permission(permission, context)
 
-    def render_view(self, name='', context=None, request=None, secure=True,
-                    bare=True):
+    def render_view(self, name="", context=None, request=None, secure=True, bare=True):
         if context is None:
             context = self.context
         if request is None:
@@ -281,7 +281,7 @@ class TemplateAPI(object):
     def render_template(self, renderer, **kwargs):
         return TemplateStructure(render(renderer, kwargs, self.request))
 
-    def list_children(self, context=None, permission='view'):
+    def list_children(self, context=None, permission="view"):
 
         if context is None:
             context = self.context
@@ -291,22 +291,23 @@ class TemplateAPI(object):
                 return context.children
             return context.children_with_permission(self.request, permission)
 
-        return [c for c in getattr(context, 'values', lambda: [])()
-                if (not permission or
-                    self.request.has_permission(permission, c))]
+        return [
+            c
+            for c in getattr(context, "values", lambda: [])()
+            if (not permission or self.request.has_permission(permission, c))
+        ]
 
     inside = staticmethod(inside)
 
-    def avatar_url(self, user=None, size="14", default_image='identicon'):
+    def avatar_url(self, user=None, size="14", default_image="identicon"):
         if user is None:
             user = self.request.user
         email = user.email
         if not email:
             email = user.name
-        h = hashlib.md5(email.encode('utf8')).hexdigest()
-        query = {'default': default_image, 'size': str(size)}
-        url = 'https://secure.gravatar.com/avatar/{0}?{1}'.format(
-            h, urlencode(query))
+        h = hashlib.md5(email.encode("utf8")).hexdigest()
+        query = {"default": default_image, "size": str(size)}
+        url = "https://secure.gravatar.com/avatar/{0}?{1}".format(h, urlencode(query))
         return url
 
     @reify
@@ -315,53 +316,54 @@ class TemplateAPI(object):
 
     def format_date(self, d, fmt=None):
         if fmt is None:
-            fmt = self.S['kotti.date_format']
+            fmt = self.S["kotti.date_format"]
         return format_date(d, format=fmt, locale=self.locale_name)
 
     def format_datetime(self, dt, fmt=None):
         if fmt is None:
-            fmt = self.S['kotti.datetime_format']
+            fmt = self.S["kotti.datetime_format"]
         if not isinstance(dt, datetime):
             dt = datetime.fromtimestamp(dt)
         return format_datetime(dt, format=fmt, locale=self.locale_name)
 
     def format_time(self, t, fmt=None):
         if fmt is None:
-            fmt = self.S['kotti.time_format']
+            fmt = self.S["kotti.time_format"]
         return format_time(t, format=fmt, locale=self.locale_name)
 
     def format_currency(self, n, currency, fmt=None):
-        return format_currency(n, currency,
-                               format=fmt, locale=self.locale_name)
+        return format_currency(n, currency, format=fmt, locale=self.locale_name)
 
     @staticmethod
     def get_type(name):
-        for class_ in get_settings()['kotti.available_types']:
+        for class_ in get_settings()["kotti.available_types"]:
             if class_.type_info.name == name:
                 return class_
 
     def find_edit_view(self, item):
         view_name = self.request.view_name
         if not view_permitted(item, self.request, view_name):
-            view_name = 'edit'
+            view_name = "edit"
         if not view_permitted(item, self.request, view_name):
-            view_name = ''
+            view_name = ""
         return view_name
 
     @reify
     def edit_links(self):
-        if not hasattr(self.context, 'type_info'):
+        if not hasattr(self.context, "type_info"):
             return []
-        return [l for l in self.context.type_info.edit_links
-                if l.visible(self.context, self.request)]
+        return [
+            l
+            for l in self.context.type_info.edit_links
+            if l.visible(self.context, self.request)
+        ]
 
     @reify
     def site_setup_links(self):
-        return [l for l in CONTROL_PANEL_LINKS
-                if l.visible(self.root, self.request)]
+        return [l for l in CONTROL_PANEL_LINKS if l.visible(self.root, self.request)]
 
     @staticmethod
-    def sanitize(html, sanitizer='default'):
+    def sanitize(html, sanitizer="default"):
         """ Convenience wrapper for :func:`kotti.sanitizers.sanitize`.
 
         :param html: HTML to be sanitized
@@ -378,8 +380,7 @@ class TemplateAPI(object):
 
 
 class NodesTree(object):
-    def __init__(self, node, request, item_mapping, item_to_children,
-                 permission):
+    def __init__(self, node, request, item_mapping, item_to_children, permission):
         self._node = node
         self._request = request
         self._item_mapping = item_mapping
@@ -419,7 +420,7 @@ class NodesTree(object):
         return getattr(self._node, key)
 
 
-def nodes_tree(request, context=None, permission='view'):
+def nodes_tree(request, context=None, permission="view"):
     item_mapping = {}
     item_to_children = defaultdict(lambda: [])
     for node in DBSession.query(Content).with_polymorphic(Content):
@@ -435,60 +436,67 @@ def nodes_tree(request, context=None, permission='view'):
     else:
         node = context
 
-    return NodesTree(
-        node,
-        request,
-        item_mapping,
-        item_to_children,
-        permission,
-    )
+    return NodesTree(node, request, item_mapping, item_to_children, permission)
 
 
 def search_content(search_term, request=None):
-    return get_settings()['kotti.search_content'][0](search_term, request)
+    return get_settings()["kotti.search_content"][0](search_term, request)
 
 
 def default_search_content(search_term, request=None):
 
     # noinspection PyUnresolvedReferences
-    searchstring = '%{0}%'.format(search_term)
+    searchstring = "%{0}%".format(search_term)
 
     # generic_filter can be applied to all Node (and subclassed) objects
-    generic_filter = or_(Content.name.like(searchstring),
-                         Content.title.like(searchstring),
-                         Content.description.like(searchstring))
+    generic_filter = or_(
+        Content.name.like(searchstring),
+        Content.title.like(searchstring),
+        Content.description.like(searchstring),
+    )
 
-    results = DBSession.query(Content).filter(generic_filter).\
-        order_by(Content.title.asc()).all()
+    results = (
+        DBSession.query(Content)
+        .filter(generic_filter)
+        .order_by(Content.title.asc())
+        .all()
+    )
 
     # specific result contain objects matching additional criteria
     # but must not match the generic criteria (because these objects
     # are already in the generic_results)
     document_results = DBSession.query(Document).filter(
-        and_(Document.body.like(searchstring),
-             not_(generic_filter)))
+        and_(Document.body.like(searchstring), not_(generic_filter))
+    )
 
-    for results_set in [content_with_tags([searchstring]),
-                        document_results.all()]:
+    for results_set in [content_with_tags([searchstring]), document_results.all()]:
         [results.append(c) for c in results_set if c not in results]
 
     result_dicts = []
 
     for result in results:
-        if request.has_permission('view', result):
-            result_dicts.append(dict(
-                name=result.name,
-                title=result.title,
-                description=result.description,
-                path=request.resource_path(result)))
+        if request.has_permission("view", result):
+            result_dicts.append(
+                dict(
+                    name=result.name,
+                    title=result.title,
+                    description=result.description,
+                    path=request.resource_path(result),
+                )
+            )
 
     return result_dicts
 
 
 def content_with_tags(tag_terms):
 
-    return DBSession.query(Content).join(TagsToContents).join(Tag).filter(
-        or_(*[Tag.title.like(tag_term) for tag_term in tag_terms])).all()
+    return (
+        DBSession.query(Content)
+        .join(TagsToContents)
+        .join(Tag)
+        .filter(or_(*[Tag.title.like(tag_term) for tag_term in tag_terms]))
+        .all()
+    )
 
 
 def search_content_for_tags(tags, request=None):
@@ -496,12 +504,15 @@ def search_content_for_tags(tags, request=None):
     result_dicts = []
 
     for result in content_with_tags(tags):
-        if request.has_permission('view', result):
-            result_dicts.append(dict(
-                name=result.name,
-                title=result.title,
-                description=result.description,
-                path=request.resource_path(result)))
+        if request.has_permission("view", result):
+            result_dicts.append(
+                dict(
+                    name=result.name,
+                    title=result.title,
+                    description=result.description,
+                    path=request.resource_path(result),
+                )
+            )
 
     return result_dicts
 
@@ -513,5 +524,5 @@ def includeme(config):
     :type config: :class:`pyramid.config.Configurator`
     """
 
-    config.add_view_predicate('root_only', RootOnlyPredicate)
-    config.add_view_predicate('if_setting_has_value', SettingHasValuePredicate)
+    config.add_view_predicate("root_only", RootOnlyPredicate)
+    config.add_view_predicate("if_setting_has_value", SettingHasValuePredicate)
