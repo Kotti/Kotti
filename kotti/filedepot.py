@@ -43,7 +43,6 @@ from kotti import get_settings
 from kotti.events import ObjectInsert
 from kotti.events import ObjectUpdate
 from kotti.request import Request
-from kotti.testing import DummyRequest
 from kotti.util import _to_fieldstorage
 from kotti.util import camel_case_to_name
 from kotti.util import command
@@ -202,6 +201,7 @@ class DBStoredFile(Base):
         event.listen(DBStoredFile.data, "set", handle_change_data)
 
 
+# noinspection PyUnusedLocal
 def handle_change_data(
     target: DBStoredFile,
     value: Optional[bytes],
@@ -359,6 +359,7 @@ class DBFileStorage(FileStorage):
         return file_or_id
 
 
+# noinspection PyUnusedLocal
 def migrate_storage(from_storage: str, to_storage: str) -> None:
 
     log = logging.getLogger(__name__)
@@ -425,7 +426,7 @@ class StoredFileResponse(Response):
     def __init__(
         self,
         f: MemoryStoredFile,
-        request: Union[DummyRequest, Request],
+        request: Request,
         disposition: str = "attachment",
         cache_max_age: int = 604800,
         content_type: None = None,
@@ -518,7 +519,7 @@ class StoredFileResponse(Response):
 
 
 def uploaded_file_response(
-    self: Union[DummyRequest, Request],
+    self: Request,
     uploaded_file: UploadedFile,
     disposition: str = "inline",
     cache_max_age: int = 604800,
@@ -623,6 +624,7 @@ class TweenFactory(object):
         return response
 
 
+# noinspection PyUnusedLocal
 def adjust_for_engine(conn: Connection, branch: bool) -> None:
     # adjust for engine type
 
@@ -636,6 +638,7 @@ def adjust_for_engine(conn: Connection, branch: bool) -> None:
     # can be saved corectly by
     # :class:`depot.fields.sqlalchemy.upload.UploadedFile`
 
+    # noinspection PyUnusedLocal
     def patched_processed_result_value(self, value, dialect):
         if not value:
             return None
