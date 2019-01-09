@@ -26,7 +26,7 @@ from repoze.lru import LRUCache
 
 from kotti import DBSession
 
-_ = TranslationStringFactory('Kotti')
+_ = TranslationStringFactory("Kotti")
 
 
 def get_localizer_for_locale_name(locale_name):
@@ -38,7 +38,7 @@ def get_localizer_for_locale_name(locale_name):
 def translate(*args, **kwargs):
     request = get_current_request()
     if request is None:
-        localizer = get_localizer_for_locale_name('en')
+        localizer = get_localizer_for_locale_name("en")
     else:
         localizer = get_localizer(request)
     return localizer.translate(*args, **kwargs)
@@ -48,14 +48,14 @@ def get_paste_items(context, request):
     from kotti.resources import Node
 
     items = []
-    info = request.session.get('kotti.paste')
+    info = request.session.get("kotti.paste")
     if info:
         ids, action = info
         for id in ids:
             item = DBSession.query(Node).get(id)
             if item is None or not item.type_info.addable(context, request):
                 continue
-            if action == 'cut' and inside(context, item):
+            if action == "cut" and inside(context, item):
                 continue
             if context == item:
                 continue
@@ -63,7 +63,7 @@ def get_paste_items(context, request):
     return items
 
 
-def render_view(context, request, name='', secure=True):
+def render_view(context, request, name="", secure=True):
     from kotti.security import authz_context
 
     with authz_context(context, request):
@@ -78,6 +78,7 @@ class TemplateStructure(object):
 
     def __html__(self):
         return self.html
+
     __unicode__ = __html__
 
     def __getattr__(self, key):
@@ -91,8 +92,8 @@ class LinkBase(object):
                 self.template,
                 dict(link=self, context=context, request=request),
                 request,
-                )
             )
+        )
 
     def selected(self, context, request):
         """ Returns True if the Link's url, based on its name,
@@ -106,6 +107,7 @@ class LinkBase(object):
 
     def permitted(self, context, request):
         from kotti.security import view_permitted
+
         return view_permitted(context, request, self.name)
 
     def visible(self, context, request):
@@ -121,6 +123,7 @@ class LinkBase(object):
 class LinkRenderer(LinkBase):
     """A menu link that renders a view to render the link.
     """
+
     def __init__(self, name, predicate=None):
         self.name = name
         self.predicate = predicate
@@ -137,7 +140,8 @@ class LinkRenderer(LinkBase):
 class LinkParent(LinkBase):
     """A menu link that renders sublinks in a dropdown.
     """
-    template = 'kotti:templates/edit/el-parent.pt'
+
+    template = "kotti:templates/edit/el-parent.pt"
 
     def __init__(self, title, children):
         self.title = title
@@ -154,19 +158,19 @@ class LinkParent(LinkBase):
 
 
 class Link(LinkBase):
-    template = 'kotti:templates/edit/el-link.pt'
+    template = "kotti:templates/edit/el-link.pt"
 
     def __init__(self, name, title=None, predicate=None, target=None):
         self.name = name
         if title is None:
-            title = name.replace('-', ' ').replace('_', ' ').title()
+            title = name.replace("-", " ").replace("_", " ").title()
         self.title = title
         self.predicate = predicate
         self.target = target
 
     def url(self, context, request):
         if self.name:
-            return resource_url(context, request) + '@@' + self.name
+            return resource_url(context, request) + "@@" + self.name
         else:
             return resource_url(context, request)
 
@@ -174,12 +178,13 @@ class Link(LinkBase):
         return isinstance(other, Link) and repr(self) == repr(other)
 
     def __repr__(self):
-        return 'Link({0}, {1})'.format(self.name, self.title)
+        return "Link({0}, {1})".format(self.name, self.title)
 
 
 class ActionButton(Link):
-    def __init__(self, path, title=None, no_children=False,
-                 css_class='btn btn-default'):
+    def __init__(
+        self, path, title=None, no_children=False, css_class="btn btn-default"
+    ):
         super(ActionButton, self).__init__(path, title)
         self.no_children = no_children
         self.css_class = css_class
@@ -189,7 +194,7 @@ class DontCache(Exception):
     pass
 
 
-_CACHE_ATTR = 'kotti_cache'
+_CACHE_ATTR = "kotti_cache"
 
 
 def request_container():
@@ -215,15 +220,17 @@ def cache(compute_key, container_factory):
                 key = compute_key(*args, **kwargs)
             except DontCache:
                 return func(*args, **kwargs)
-            key = '{0}.{1}:{2}'.format(func.__module__, func.__name__, key)
+            key = "{0}.{1}:{2}".format(func.__module__, func.__name__, key)
             cached_value = cache.get(key, marker)
             if cached_value is marker:
                 cached_value = cache[key] = func(*args, **kwargs)
             else:
                 pass
             return cached_value
+
         replacement.__doc__ = func.__doc__
         return replacement
+
     return decorator
 
 
@@ -257,26 +264,27 @@ def extract_from_settings(prefix, settings=None):
       {'foo_bar': '1'}
     """
     from kotti import get_settings
+
     settings = settings if settings is not None else get_settings()
     extracted = {}
     for key, value in settings.items():
         if key.startswith(prefix):
-            extracted[key[len(prefix):]] = value
+            extracted[key[len(prefix) :]] = value
     return extracted
 
 
 def disambiguate_name(name):
-    parts = name.split('-')
+    parts = name.split("-")
     if len(parts) > 1:
         try:
             index = int(parts[-1])
         except ValueError:
-            parts.append('1')
+            parts.append("1")
         else:
             parts[-1] = str(index + 1)
     else:
-        parts.append('1')
-    return '-'.join(parts)
+        parts.append("1")
+    return "-".join(parts)
 
 
 def title_to_name(title, blacklist=(), max_length=None):
@@ -285,19 +293,21 @@ def title_to_name(title, blacklist=(), max_length=None):
     """
     if max_length is None:
         from kotti.resources import Node
+
         # See #428, #427 and #31
         max_length = Node.name.property.columns[0].type.length - 10
     request = get_current_request()
     if request is not None:
         locale_name = get_locale_name(request)
     else:
-        locale_name = 'en'
+        locale_name = "en"
     from kotti import get_settings
-    urlnormalizer = get_settings()['kotti.url_normalizer'][0]
+
+    urlnormalizer = get_settings()["kotti.url_normalizer"][0]
     name = urlnormalizer(title, locale_name, max_length=max_length)
     if name not in blacklist:
         return name
-    name += '-1'
+    name += "-1"
     while name in blacklist:
         name = disambiguate_name(name)
     return name
@@ -316,21 +326,20 @@ def camel_case_to_name(text):
       >>> camel_case_to_name('f')
       'f'
     """
-    return re.sub(
-        r'((?<=[a-z])[A-Z]|(?<!\A)[A-Z](?=[a-z]))', r'_\1', text).lower()
+    return re.sub(r"((?<=[a-z])[A-Z]|(?<!\A)[A-Z](?=[a-z]))", r"_\1", text).lower()
 
 
 def command(func, doc):
     args = docopt(doc)
     # establish config file uri
-    config_uri = args['<config_uri>']
+    config_uri = args["<config_uri>"]
     pyramid_env = bootstrap(config_uri)
     # Setup logging to allow log output from command methods
     setup_logging(config_uri)
     try:
         func(args)
     finally:
-        pyramid_env['closer']()
+        pyramid_env["closer"]()
     return 0
 
 

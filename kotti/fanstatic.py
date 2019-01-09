@@ -26,25 +26,19 @@ lib_kotti = Library("kotti", "static")
 contents_view_js = Resource(
     lib_kotti,
     "contents.js",
-    depends=[jquery_tablednd, ],
+    depends=[jquery_tablednd],
     minified="contents.min.js",
-    bottom=True)
+    bottom=True,
+)
 base_css = Resource(
     lib_kotti,
     "base.css",
     depends=[bootstrap_css],
     minified="base.min.css",
-    dont_bundle=True)
-edit_css = Resource(
-    lib_kotti,
-    "edit.css",
-    depends=[base_css],
-    minified="edit.min.css")
-view_css = Resource(
-    lib_kotti,
-    "view.css",
-    depends=[base_css],
-    minified="view.min.css")
+    dont_bundle=True,
+)
+edit_css = Resource(lib_kotti, "edit.css", depends=[base_css], minified="edit.min.css")
+view_css = Resource(lib_kotti, "view.css", depends=[base_css], minified="view.min.css")
 
 # Resources for content upload views
 upload_js = Resource(
@@ -52,12 +46,11 @@ upload_js = Resource(
     "upload.js",
     depends=[angular, fineuploader],
     # minified="upload.min.js", needs special minifying
-    bottom=True)
+    bottom=True,
+)
 upload_css = Resource(
-    lib_kotti,
-    "upload.css",
-    depends=[base_css],
-    minified="upload.min.css")
+    lib_kotti, "upload.css", depends=[base_css], minified="upload.min.css"
+)
 upload = Group([upload_js, upload_css])
 
 
@@ -65,8 +58,9 @@ class NeededGroup(object):
     """A collection of fanstatic resources that supports
        dynamic appending of resources after initialization"""
 
-    def __init__(self,
-                 resources: Optional[List[Union[Resource, 'NeededGroup']]]=None):  # noqa
+    def __init__(
+        self, resources: Optional[List[Union[Resource, "NeededGroup"]]] = None
+    ):  # noqa
 
         if resources is None:
             resources = []
@@ -74,14 +68,15 @@ class NeededGroup(object):
         if not isinstance(resources, list):
             raise ValueError(
                 "resources must be a list of fanstatic.Resource "
-                "and/or fanstatic.Group objects")
+                "and/or fanstatic.Group objects"
+            )
 
         self.resources = []
 
         for resource in resources:
             self.add(resource)
 
-    def add(self, resource: Union['NeededGroup', Resource]):
+    def add(self, resource: Union["NeededGroup", Resource]):
         """resource may be a:
 
             - :class:`fanstatic.Resource` object or
@@ -94,7 +89,8 @@ class NeededGroup(object):
         else:
             raise ValueError(
                 "resource must be a NeededGroup,"
-                "fanstatic.Resource or fanstatic.Group object")
+                "fanstatic.Resource or fanstatic.Group object"
+            )
 
     def need(self):  # pragma: no cover
         # this is tested in fanstatic itself; we should add browser tests
@@ -102,10 +98,10 @@ class NeededGroup(object):
         Group(self.resources).need()
 
 
-view_needed_css = NeededGroup([view_css, ])
-view_needed_js = NeededGroup([jquery, bootstrap_js, html5shiv, ])
-view_needed = NeededGroup([view_needed_css, view_needed_js, ])
+view_needed_css = NeededGroup([view_css])
+view_needed_js = NeededGroup([jquery, bootstrap_js, html5shiv])
+view_needed = NeededGroup([view_needed_css, view_needed_js])
 
-edit_needed_css = NeededGroup([edit_css, jqueryui_bootstrap_theme, ])
-edit_needed_js = NeededGroup([jquery, bootstrap_js, html5shiv, jquery_form, ])
-edit_needed = NeededGroup([edit_needed_css, edit_needed_js, ])
+edit_needed_css = NeededGroup([edit_css, jqueryui_bootstrap_theme])
+edit_needed_js = NeededGroup([jquery, bootstrap_js, html5shiv, jquery_form])
+edit_needed = NeededGroup([edit_needed_css, edit_needed_js])

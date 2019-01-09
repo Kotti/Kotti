@@ -9,7 +9,7 @@ from sqlalchemy.orm.exc import DetachedInstanceError
 from kotti import get_settings
 from kotti.security import get_user
 
-CACHE_POLICY_HEADER = 'x-caching-policy'
+CACHE_POLICY_HEADER = "x-caching-policy"
 
 logger = getLogger(__name__)
 
@@ -30,13 +30,13 @@ def set_max_age(response, delta, cache_ctrl=None):
         seconds = 0
     now = datetime.datetime.utcnow()
 
-    cache_ctrl.setdefault('max-age', seconds)
+    cache_ctrl.setdefault("max-age", seconds)
 
     # Preserve an existing cache-control header:
-    existing = response.headers.get('cache-control')
+    existing = response.headers.get("cache-control")
     if existing:
-        for e in [e.strip() for e in existing.split(',')]:
-            kv = e.split('=')
+        for e in [e.strip() for e in existing.split(",")]:
+            kv = e.split("=")
             if len(kv) == 2:
                 cache_ctrl.setdefault(kv[0], kv[1])
             else:
@@ -48,30 +48,26 @@ def set_max_age(response, delta, cache_ctrl=None):
         if value is None:
             cache_control_header.append(key)
         else:
-            cache_control_header.append('{0}={1}'.format(key, value))
-    cache_control_header = ','.join(cache_control_header)
-    response.headers['cache-control'] = cache_control_header
+            cache_control_header.append("{0}={1}".format(key, value))
+    cache_control_header = ",".join(cache_control_header)
+    response.headers["cache-control"] = cache_control_header
 
-    response.headers['expires'] = (now + delta).strftime(
-        "%a, %d %b %Y %H:%M:%S GMT")
+    response.headers["expires"] = (now + delta).strftime("%a, %d %b %Y %H:%M:%S GMT")
 
 
 # This is our mapping of caching policies (X-Caching-Policy) to
 # functions that set the response headers accordingly:
 caching_policies = {
-    'Cache HTML':
-    lambda response: set_max_age(response, datetime.timedelta(days=-1),
-                                 cache_ctrl={'s-maxage': '3600'}),
-
-    'Cache Media Content':
-    lambda response: set_max_age(response, datetime.timedelta(hours=4)),
-
-    'Cache Resource':
-    lambda response: set_max_age(response, datetime.timedelta(days=32),
-                                 cache_ctrl={'public': None}),
-
-    'No Cache':
-    lambda response: set_max_age(response, datetime.timedelta(days=-1)),
+    "Cache HTML": lambda response: set_max_age(
+        response, datetime.timedelta(days=-1), cache_ctrl={"s-maxage": "3600"}
+    ),
+    "Cache Media Content": lambda response: set_max_age(
+        response, datetime.timedelta(hours=4)
+    ),
+    "Cache Resource": lambda response: set_max_age(
+        response, datetime.timedelta(days=32), cache_ctrl={"public": None}
+    ),
+    "No Cache": lambda response: set_max_age(response, datetime.timedelta(days=-1)),
 }
 
 
@@ -83,21 +79,20 @@ def _safe_get_user(request):
 
 
 def default_caching_policy_chooser(context, request, response):
-    if request.method != 'GET' or response.status_int != 200:
+    if request.method != "GET" or response.status_int != 200:
         return None
     elif isinstance(response, FileResponse):
-        return 'Cache Resource'
+        return "Cache Resource"
     elif _safe_get_user(request) is not None:
-        return 'No Cache'
-    elif response.headers['content-type'].startswith('text/html'):
-        return 'Cache HTML'
+        return "No Cache"
+    elif response.headers["content-type"].startswith("text/html"):
+        return "Cache HTML"
     else:
-        return 'Cache Media Content'
+        return "Cache Media Content"
 
 
 def caching_policy_chooser(context, request, response):
-    return get_settings()['kotti.caching_policy_chooser'][0](
-        context, request, response)
+    return get_settings()["kotti.caching_policy_chooser"][0](context, request, response)
 
 
 @subscriber(NewResponse)
@@ -106,7 +101,7 @@ def set_cache_headers(event):
 
     # this can happen if a Pyramid tween will shortcut the normal tween
     # chain processing and return its own response early
-    if not hasattr(event.request, 'context'):
+    if not hasattr(event.request, "context"):
         return
 
     context = event.request.context
@@ -121,8 +116,7 @@ def set_cache_headers(event):
         except:
             # We don't want to screw up the response if the
             # caching_policy_chooser raises an exception.
-            logger.exception("{0} raised an exception.".format(
-                caching_policy_chooser))
+            logger.exception("{0} raised an exception.".format(caching_policy_chooser))
     if caching_policy is not None:
         response.headers[CACHE_POLICY_HEADER] = caching_policy
 

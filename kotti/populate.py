@@ -24,12 +24,12 @@ def populate_users():
     """
 
     principals = get_principals()
-    if 'admin' not in principals:
-        principals['admin'] = {
-            'name': 'admin',
-            'password': get_settings()['kotti.secret'],
-            'title': 'Administrator',
-            'groups': ['role:admin'],
+    if "admin" not in principals:
+        principals["admin"] = {
+            "name": "admin",
+            "password": get_settings()["kotti.secret"],
+            "title": "Administrator",
+            "groups": ["role:admin"],
         }
 
 
@@ -41,32 +41,35 @@ def populate():
     lrm = LocalizerRequestMixin()
     lrm.registry = get_current_registry()
     # noinspection PyPropertyAccess
-    lrm.locale_name = get_settings()['pyramid.default_locale_name']
+    lrm.locale_name = get_settings()["pyramid.default_locale_name"]
     localizer = lrm.localizer
 
     if DBSession.query(Node.id).count() == 0:
         localized_root_attrs = dict(
-            [(k, localizer.translate(v)) for k, v in iteritems(_ROOT_ATTRS)])
+            [(k, localizer.translate(v)) for k, v in iteritems(_ROOT_ATTRS)]
+        )
         root = Document(**localized_root_attrs)
         root.__acl__ = SITE_ACL
         DBSession.add(root)
         localized_about_attrs = dict(
-            [(k, localizer.translate(v)) for k, v in iteritems(_ABOUT_ATTRS)])
-        root['about'] = Document(**localized_about_attrs)
+            [(k, localizer.translate(v)) for k, v in iteritems(_ABOUT_ATTRS)]
+        )
+        root["about"] = Document(**localized_about_attrs)
 
         wf = get_workflow(root)
         if wf is not None:
             DBSession.flush()  # Initializes workflow
-            wf.transition_to_state(root, None, 'public')
+            wf.transition_to_state(root, None, "public")
 
     populate_users()
 
 
 _ROOT_ATTRS = dict(
-    name='',  # (at the time of writing) root must have empty name!
-    title=_('Welcome to Kotti'),
-    description=_('Congratulations! You have successfully installed Kotti.'),
-    body=_("""
+    name="",  # (at the time of writing) root must have empty name!
+    title=_("Welcome to Kotti"),
+    description=_("Congratulations! You have successfully installed Kotti."),
+    body=_(
+        """
 <h2>Log in</h2>
 <p>
     You can <a class="btn btn-success" href="login">log in</a> to your site
@@ -120,12 +123,17 @@ _ROOT_ATTRS = dict(
         </p>
     </div>
 </div>
-"""))
+"""
+    ),
+)
 
 _ABOUT_ATTRS = dict(
-    title=_('About'),
-    description=_('Our company is the leading manufacturer of foo widgets used in a wide variety of aviation and and industrial products.'),  # noqa
-    body=_("""
+    title=_("About"),
+    description=_(
+        "Our company is the leading manufacturer of foo widgets used in a wide variety of aviation and and industrial products."
+    ),  # noqa
+    body=_(
+        """
 <p>
   <img alt="five colorful Extra EA300 airplanes flying in formation"
    src="http://upload.wikimedia.org/wikipedia/commons/thumb/5/5d/Northern_Lights_Formation.jpg/640px-Northern_Lights_Formation.jpg"
@@ -152,4 +160,6 @@ Originally published in the
 <a href="http://en.wikipedia.org/wiki/Extra_EA-300"> Extra EA-300</a>
 article.
 </small></p>
-"""))
+"""
+    ),
+)

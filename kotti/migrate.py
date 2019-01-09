@@ -53,8 +53,9 @@ from kotti import get_settings
 from kotti.util import command
 
 from typing import Callable, List
-KOTTI_SCRIPT_DIR = pkg_resources.resource_filename('kotti', 'alembic')
-DEFAULT_LOCATION = 'kotti:alembic'
+
+KOTTI_SCRIPT_DIR = pkg_resources.resource_filename("kotti", "alembic")
+DEFAULT_LOCATION = "kotti:alembic"
 
 
 class ScriptDirectoryWithDefaultEnvPy(ScriptDirectory):
@@ -62,7 +63,7 @@ class ScriptDirectoryWithDefaultEnvPy(ScriptDirectory):
     def env_py_location(self) -> str:
         loc = super(ScriptDirectoryWithDefaultEnvPy, self).env_py_location
         if not os.path.exists(loc):
-            loc = os.path.join(KOTTI_SCRIPT_DIR, 'env.py')
+            loc = os.path.join(KOTTI_SCRIPT_DIR, "env.py")
         return loc
 
     def run_env(self) -> None:
@@ -71,31 +72,30 @@ class ScriptDirectoryWithDefaultEnvPy(ScriptDirectory):
 
 
 class PackageEnvironment(object):
-    def __init__(self,
-                 location: str) -> None:
+    def __init__(self, location: str) -> None:
         self.location = location
         self.config = self._make_config(location)
         self.script_dir = self._make_script_dir(self.config)
 
     @property
     def pkg_name(self) -> str:
-        return self.location.split(':')[0]
+        return self.location.split(":")[0]
 
     @property
     def version_table(self) -> str:
-        return '{0}_alembic_version'.format(self.pkg_name)
+        return "{0}_alembic_version".format(self.pkg_name)
 
-    def run_env(self,
-                fn: Callable, **kw) -> None:
-        with EnvironmentContext(self.config, self.script_dir, fn=fn,
-                                version_table=self.version_table, **kw):
+    def run_env(self, fn: Callable, **kw) -> None:
+        with EnvironmentContext(
+            self.config, self.script_dir, fn=fn, version_table=self.version_table, **kw
+        ):
             self.script_dir.run_env()
 
     @staticmethod
     def _make_config(location: str) -> Config:
         cfg = Config()
         cfg.set_main_option("script_location", location)
-        cfg.set_main_option("sqlalchemy.url", get_settings()['sqlalchemy.url'])
+        cfg.set_main_option("sqlalchemy.url", get_settings()["sqlalchemy.url"])
         return cfg
 
     @staticmethod
@@ -106,12 +106,11 @@ class PackageEnvironment(object):
 
 
 def get_locations() -> List[str]:
-    conf_str = get_settings()['kotti.alembic_dirs']
+    conf_str = get_settings()["kotti.alembic_dirs"]
     return [l.strip() for l in conf_str.split() if l.strip()]
 
 
-def stamp_head(location: str = DEFAULT_LOCATION,
-               revision: None = None) -> None:
+def stamp_head(location: str = DEFAULT_LOCATION, revision: None = None) -> None:
 
     env = PackageEnvironment(location)
 
@@ -119,7 +118,7 @@ def stamp_head(location: str = DEFAULT_LOCATION,
 
         if revision is None:
             revision = context.script.get_current_head()
-        elif revision == 'None':
+        elif revision == "None":
             revision = None
 
         context.stamp(env.script_dir, revision)
@@ -135,18 +134,18 @@ def stamp_heads() -> None:
         stamp_head(location)
 
 
-def upgrade(location=DEFAULT_LOCATION,
-            revision=None):
+def upgrade(location=DEFAULT_LOCATION, revision=None):
     # We don't want to fire any kind of events during a migration,
     # because "migrations are a low-level thing".
     from kotti import events
+
     events.clear()
 
     pkg_env = PackageEnvironment(location)
 
     if revision is None:
         revision = pkg_env.script_dir.get_current_head()
-    print('Upgrading {0}:'.format(pkg_env.location))
+    print("Upgrading {0}:".format(pkg_env.location))
 
     def upgrade(heads, context):
         # alembic supports multiple heads, we don't.
@@ -154,18 +153,14 @@ def upgrade(location=DEFAULT_LOCATION,
         rev = heads[0] if heads else None
 
         if rev == revision:
-            print('  - already up to date.')
+            print("  - already up to date.")
             return []
 
-        print('  - upgrading from {0} to {1}...'.format(rev, revision))
+        print("  - upgrading from {0} to {1}...".format(rev, revision))
 
         return context.script._upgrade_revs(revision, rev)
 
-    pkg_env.run_env(
-        upgrade,
-        starting_rev=None,
-        destination_rev=revision,
-        )
+    pkg_env.run_env(upgrade, starting_rev=None, destination_rev=revision)
     print()
 
 
@@ -177,19 +172,20 @@ def upgrade_all():
 def list_all():
     pkg_envs = [PackageEnvironment(l) for l in get_locations()]
     for pkg_env in pkg_envs:
-        print('{0}:'.format(pkg_env.pkg_name))
+        print("{0}:".format(pkg_env.pkg_name))
 
         for script in pkg_env.script_dir.walk_revisions():
-            print("  - {0} -> {1}: {2}".format(
-                script.down_revision,
-                script.revision,
-                script.doc,
-                ))
+            print(
+                "  - {0} -> {1}: {2}".format(
+                    script.down_revision, script.revision, script.doc
+                )
+            )
 
         def current_revision(rev, context):
             rev = rev[0] if rev else None
             print("  - current revision: {0}".format(rev))
             return []
+
         pkg_env.run_env(current_revision)
         print()
 
@@ -235,24 +231,24 @@ def kotti_migrate_command():
     # 'includeme' function).
     save_conf_defaults = conf_defaults.copy()
 
-    os.environ['KOTTI_DISABLE_POPULATORS'] = '1'
-    conf_defaults['kotti.root_factory'] = [lambda req: None]
+    os.environ["KOTTI_DISABLE_POPULATORS"] = "1"
+    conf_defaults["kotti.root_factory"] = [lambda req: None]
 
     def callback(arguments):
         args = ()
-        args_with_location = (arguments['--scripts'] or DEFAULT_LOCATION,)
-        if arguments['list_all']:
+        args_with_location = (arguments["--scripts"] or DEFAULT_LOCATION,)
+        if arguments["list_all"]:
             func = list_all
-        elif arguments['upgrade']:
+        elif arguments["upgrade"]:
             func = upgrade
-            args = args_with_location + (arguments['--rev'],)
-        elif arguments['upgrade_all']:
+            args = args_with_location + (arguments["--rev"],)
+        elif arguments["upgrade_all"]:
             func = upgrade_all
-        elif arguments['stamp_head']:
+        elif arguments["stamp_head"]:
             func = stamp_head
-            args = args_with_location + (arguments['--rev'],)
+            args = args_with_location + (arguments["--rev"],)
         else:
-            raise ValueError('Unknown command')
+            raise ValueError("Unknown command")
         func(*args)
 
     try:
@@ -260,4 +256,4 @@ def kotti_migrate_command():
     finally:
         conf_defaults.clear()
         conf_defaults.update(save_conf_defaults)
-        del os.environ['KOTTI_DISABLE_POPULATORS']
+        del os.environ["KOTTI_DISABLE_POPULATORS"]

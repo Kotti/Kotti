@@ -25,9 +25,9 @@ def includeme(config):
     :type config: :class:`pyramid.config.Configurator`
     """
 
-    config.add_static_view('static-kotti', 'kotti:static')
+    config.add_static_view("static-kotti", "kotti:static")
 
-    config.include('pyramid_deform')
-    config.include('js.deform')
+    config.include("pyramid_deform")
+    config.include("js.deform")
 
-    config.include('kotti.views.util')
+    config.include("kotti.views.util")

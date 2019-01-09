@@ -16,7 +16,7 @@ class WorkflowTransition(ObjectEvent):
         self.info = info
 
 
-def get_workflow(context, name='security'):
+def get_workflow(context, name="security"):
     return base_get_workflow(context, name, context=context)
 
 
@@ -40,7 +40,7 @@ def initialize_workflow(event):
 
 def workflow_callback(context, info):
     wf = info.workflow
-    to_state = info.transition.get('to_state')
+    to_state = info.transition.get("to_state")
 
     if to_state is None:
         if context.state:
@@ -52,13 +52,13 @@ def workflow_callback(context, info):
     acl = []
 
     # This could definitely be cached...
-    special_roles = ('system.Everyone', 'system.Authenticated')
+    special_roles = ("system.Everyone", "system.Authenticated")
     for key, value in state_data.items():
-        if key.startswith('role:') or key in special_roles:
+        if key.startswith("role:") or key in special_roles:
             for perm in value.split():
                 acl.append(("Allow", key, perm))
 
-    if state_data.get('inherit', '0').lower() not in TRUE_VALUES:
+    if state_data.get("inherit", "0").lower() not in TRUE_VALUES:
         acl.append(DENY_ALL)
 
     context.__acl__ = acl
@@ -92,6 +92,5 @@ def reset_workflow_command():
       --purge-existing   Reset all objects to new workflow's initial state.
     """
     return command(
-        lambda args: reset_workflow(purge_existing=args['--purge-existing']),
-        __doc__,
-        )
+        lambda args: reset_workflow(purge_existing=args["--purge-existing"]), __doc__
+    )

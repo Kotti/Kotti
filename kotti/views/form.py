@@ -52,9 +52,8 @@ class ObjectType(colander.SchemaType):
 def deferred_tag_it_widget(node, kw):
     tagit.need()
     all_tags = Tag.query.all()
-    available_tags = [tag.title.encode('utf-8') for tag in all_tags]
-    widget = CommaSeparatedListWidget(template='tag_it',
-                                      available_tags=available_tags)
+    available_tags = [tag.title.encode("utf-8") for tag in all_tags]
+    widget = CommaSeparatedListWidget(template="tag_it", available_tags=available_tags)
     return widget
 
 
@@ -63,7 +62,7 @@ class Form(deform.Form):
 
     def render(self, appstruct=None, readonly=False):
         if appstruct is None:
-            appstruct = getattr(self, 'appstruct', colander.null)
+            appstruct = getattr(self, "appstruct", colander.null)
         return super(Form, self).render(appstruct, readonly=readonly)
 
 
@@ -71,9 +70,7 @@ class BaseFormView(FormView):
     """ A basic view for forms with save and cancel buttons. """
 
     form_class = Form
-    buttons = (
-        deform.Button('save', _('Save')),
-        deform.Button('cancel', _('Cancel')))
+    buttons = (deform.Button("save", _("Save")), deform.Button("cancel", _("Cancel")))
     success_message = _("Your changes have been saved.")
     success_url = None
     schema_factory = None
@@ -88,8 +85,8 @@ class BaseFormView(FormView):
     def __call__(self):
         if self.schema_factory is not None:
             self.schema = self.schema_factory()
-        if self.use_csrf_token and 'csrf_token' not in self.schema:
-            self.schema.children.append(CSRFSchema()['csrf_token'])
+        if self.use_csrf_token and "csrf_token" not in self.schema:
+            self.schema.children.append(CSRFSchema()["csrf_token"])
         result = super(BaseFormView, self).__call__()
         if isinstance(result, dict):
             result.update(self.more_template_vars())
@@ -98,6 +95,7 @@ class BaseFormView(FormView):
     def cancel_success(self, appstruct):
         location = self.request.resource_url(self.context)
         return HTTPFound(location=location)
+
     cancel_failure = cancel_success
 
     def more_template_vars(self):
@@ -132,15 +130,15 @@ class EditFormView(BaseFormView):
             schema_factory = DocumentSchema
     """
 
-    add_template_vars = ('first_heading',)
+    add_template_vars = ("first_heading",)
 
     def before(self, form):
         form.appstruct = get_appstruct(self.context, self.schema)
 
     def save_success(self, appstruct):
-        appstruct.pop('csrf_token', None)
+        appstruct.pop("csrf_token", None)
         self.edit(**appstruct)
-        self.request.session.flash(self.success_message, 'success')
+        self.request.session.flash(self.success_message, "success")
         location = self.success_url or self.request.resource_url(self.context)
         return HTTPFound(location=location)
 
@@ -150,9 +148,7 @@ class EditFormView(BaseFormView):
 
     @reify
     def first_heading(self):
-        return _('Edit ${title}',
-                 mapping=dict(title=self.context.title)
-                 )
+        return _("Edit ${title}", mapping=dict(title=self.context.title))
 
 
 class AddFormView(BaseFormView):
@@ -169,37 +165,36 @@ class AddFormView(BaseFormView):
 
     success_message = _("Item was added.")
     item_type = None
-    add_template_vars = ('first_heading',)
+    add_template_vars = ("first_heading",)
 
     def save_success(self, appstruct):
-        appstruct.pop('csrf_token', None)
+        appstruct.pop("csrf_token", None)
         name = self.find_name(appstruct)
         new_item = self.context[name] = self.add(**appstruct)
-        self.request.session.flash(self.success_message, 'success')
+        self.request.session.flash(self.success_message, "success")
         location = self.success_url or self.request.resource_url(new_item)
         return HTTPFound(location=location)
 
     def find_name(self, appstruct):
-        name = appstruct.get('name')
+        name = appstruct.get("name")
         if name is None:
-            name = title_to_name(
-                appstruct['title'], blacklist=self.context.keys())
+            name = title_to_name(appstruct["title"], blacklist=self.context.keys())
         return name
 
     @reify
     def first_heading(self):
-        context_title = getattr(self.request.context, 'title', None)
+        context_title = getattr(self.request.context, "title", None)
         type_title = self.item_type or self.add.type_info.title
         if context_title:
-            return _('Add ${type} to ${title}.',
-                     mapping=dict(type=translate(type_title),
-                                  title=context_title))
+            return _(
+                "Add ${type} to ${title}.",
+                mapping=dict(type=translate(type_title), title=context_title),
+            )
         else:
-            return _('Add ${type}.', mapping=dict(type=translate(type_title)))
+            return _("Add ${type}.", mapping=dict(type=translate(type_title)))
 
 
 class CommaSeparatedListWidget(deform.widget.Widget):
-
     def __init__(self, template=None, **kw):
         super(CommaSeparatedListWidget, self).__init__(**kw)
         self.template = template
@@ -214,7 +209,7 @@ class CommaSeparatedListWidget(deform.widget.Widget):
     def deserialize(field, pstruct):
         if pstruct is colander.null:
             return colander.null
-        return [item.strip() for item in pstruct.split(',') if item]
+        return [item.strip() for item in pstruct.split(",") if item]
 
 
 class FileUploadTempStore(MutableMapping):
@@ -233,25 +228,25 @@ class FileUploadTempStore(MutableMapping):
         return len(self.session)
 
     def keys(self):
-        return [k for k in self.session.keys() if not k.startswith('_')]
+        return [k for k in self.session.keys() if not k.startswith("_")]
 
     def __setitem__(self, key, value):
         value = value.copy()
-        fp = value.pop('fp')
+        fp = value.pop("fp")
         if fp is not None:
-            value['file_contents'] = fp.read()
+            value["file_contents"] = fp.read()
             fp.seek(0)
         else:
-            value['file_contents'] = b''
+            value["file_contents"] = b""
         self.session[key] = value
 
     def __getitem__(self, key):
         value = self.session[key].copy()
-        content = value.pop('file_contents')
+        content = value.pop("file_contents")
         if content:
-            value['fp'] = BytesIO(content)
+            value["fp"] = BytesIO(content)
         else:
-            value['fp'] = None
+            value["fp"] = None
         return value
 
     def __delitem__(self, key):
@@ -269,9 +264,9 @@ def validate_file_size_limit(node, value):
     option to the maximum number of bytes that you want to allow.
     """
     try:
-        fp = value.get('fp', None)
+        fp = value.get("fp", None)
     except AttributeError:
-        fp = getattr(value, 'fp', None)
+        fp = getattr(value, "fp", None)
     if not fp:
         return
 
@@ -279,8 +274,8 @@ def validate_file_size_limit(node, value):
     size = fp.tell()
     fp.seek(0)
     # unit for ``kotti.max_file_size`` is MB
-    max_mb = get_settings()['kotti.max_file_size']
+    max_mb = get_settings()["kotti.max_file_size"]
     max_size = int(max_mb) * 1024 * 1024
     if size > max_size:
-        msg = _('Maximum file size: ${size}MB', mapping={'size': max_mb})
+        msg = _("Maximum file size: ${size}MB", mapping={"size": max_mb})
         raise colander.Invalid(node, msg)

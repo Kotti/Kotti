@@ -23,7 +23,7 @@ from kotti.views.util import nodes_tree
 from kotti.workflow import get_workflow
 
 
-@view_defaults(permission='edit')
+@view_defaults(permission="edit")
 class NodeActions(object):
     """Actions related to content nodes."""
 
@@ -39,20 +39,18 @@ class NodeActions(object):
         :result: List with select children.
         :rtype: list
         """
-        ids = self.request.session.pop('kotti.selected-children')
+        ids = self.request.session.pop("kotti.selected-children")
         if ids is None and add_context:
             ids = [self.context.id]
         return ids
 
-    def _all_children(self, context, permission='view'):
+    def _all_children(self, context, permission="view"):
         """ Recursively get all children of the given context.
 
         :result: List with all children of a given context.
         :rtype: list
         """
-        tree = nodes_tree(self.request,
-                          context=context,
-                          permission=permission)
+        tree = nodes_tree(self.request, context=context, permission=permission)
         return tree.tolist()[1:]
 
     def back(self, view=None):
@@ -68,20 +66,20 @@ class NodeActions(object):
             url = self.request.referrer
         return HTTPFound(location=url)
 
-    @view_config(name='workflow-change', permission='state_change')
+    @view_config(name="workflow-change", permission="state_change")
     def workflow_change(self):
         """ Handle workflow change requests from workflow dropdown.
 
         :result: Redirect response to the referrer of the request.
         :rtype: pyramid.httpexceptions.HTTPFound
         """
-        new_state = self.request.params['new_state']
+        new_state = self.request.params["new_state"]
         wf = get_workflow(self.context)
         wf.transition_to_state(self.context, self.request, new_state)
-        self.flash(EditFormView.success_message, 'success')
+        self.flash(EditFormView.success_message, "success")
         return self.back()
 
-    @view_config(name='copy')
+    @view_config(name="copy")
     def copy_node(self):
         """ Copy nodes view. Copy the current node or the selected nodes in the
         contents view and save the result in the session of the request.
@@ -89,9 +87,9 @@ class NodeActions(object):
         :result: Redirect response to the referrer of the request.
         :rtype: pyramid.httpexceptions.HTTPFound
         """
-        return self._do_copy_or_cut('copy', 'copied')
+        return self._do_copy_or_cut("copy", "copied")
 
-    @view_config(name='cut')
+    @view_config(name="cut")
     def cut_nodes(self):
         """ Cut nodes view. Cut the current node or the selected nodes in the
         contents view and save the result in the session of the request.
@@ -99,19 +97,21 @@ class NodeActions(object):
         :result: Redirect response to the referrer of the request.
         :rtype: pyramid.httpexceptions.HTTPFound
         """
-        return self._do_copy_or_cut('cut', 'cut')
+        return self._do_copy_or_cut("cut", "cut")
 
     def _do_copy_or_cut(self, action, action_title):
         ids = self._selected_children()
-        self.request.session['kotti.paste'] = (ids, action)
+        self.request.session["kotti.paste"] = (ids, action)
         for id in ids:
             item = DBSession.query(Node).get(id)
-            self.flash(_('${title} was %s.' % action_title,
-                         mapping=dict(title=item.title)), 'success')
+            self.flash(
+                _("${title} was %s." % action_title, mapping=dict(title=item.title)),
+                "success",
+            )
         if not self.request.is_xhr:
             return self.back()
 
-    @view_config(name='paste')
+    @view_config(name="paste")
     def paste_nodes(self):
         """ Paste nodes view.  Paste formerly copied or cutted nodes into the
         current context.  Note that a cutted node can not be pasted into itself.
@@ -119,20 +119,19 @@ class NodeActions(object):
         :result: Redirect response to the referrer of the request.
         :rtype: pyramid.httpexceptions.HTTPFound
         """
-        ids, action = self.request.session['kotti.paste']
+        ids, action = self.request.session["kotti.paste"]
         for count, id in enumerate(ids):
             item = DBSession.query(Node).get(id)
             if item is not None:
-                if action == 'cut':
-                    if not self.request.has_permission('edit', item):
+                if action == "cut":
+                    if not self.request.has_permission("edit", item):
                         raise Forbidden()
                     item.__parent__.children.remove(item)
-                    item.name = title_to_name(item.name,
-                                              blacklist=self.context.keys())
+                    item.name = title_to_name(item.name, blacklist=self.context.keys())
                     self.context[item.name] = item
                     if count is len(ids) - 1:
-                        del self.request.session['kotti.paste']
-                elif action == 'copy':
+                        del self.request.session["kotti.paste"]
+                elif action == "copy":
                     copy = item.copy()
                     name = copy.name
                     if not name:  # for root
@@ -140,11 +139,11 @@ class NodeActions(object):
                     name = title_to_name(name, blacklist=self.context.keys())
                     copy.name = name
                     self.context[name] = copy
-                self.flash(_('${title} was pasted.',
-                             mapping=dict(title=item.title)), 'success')
+                self.flash(
+                    _("${title} was pasted.", mapping=dict(title=item.title)), "success"
+                )
             else:
-                self.flash(_('Could not paste node. It no longer exists.'),
-                           'error')
+                self.flash(_("Could not paste node. It no longer exists."), "error")
         DBSession.flush()
         if not self.request.is_xhr:
             return self.back()
@@ -164,12 +163,13 @@ class NodeActions(object):
             index = self.context.children.index(child)
             self.context.children.pop(index)
             self.context.children.insert(index + move, child)
-            self.flash(_('${title} was moved.',
-                         mapping=dict(title=child.title)), 'success')
+            self.flash(
+                _("${title} was moved.", mapping=dict(title=child.title)), "success"
+            )
         if not self.request.is_xhr:
             return self.back()
 
-    @view_config(name='up')
+    @view_config(name="up")
     def up(self):
         """ Move up nodes view. Move the selected nodes up by 1 position
         and get back to the referrer of the request.
@@ -179,7 +179,7 @@ class NodeActions(object):
         """
         return self.move(-1)
 
-    @view_config(name='down')
+    @view_config(name="down")
     def down(self):
         """ Move down nodes view. Move the selected nodes down by 1 position
         and get back to the referrer of the request.
@@ -203,16 +203,19 @@ class NodeActions(object):
                 child.in_navigation = show
                 mapping = dict(title=child.title)
                 if show:
-                    mg = _('${title} is now visible in the navigation.',
-                           mapping=mapping)
+                    mg = _(
+                        "${title} is now visible in the navigation.", mapping=mapping
+                    )
                 else:
-                    mg = _('${title} is no longer visible in the navigation.',
-                           mapping=mapping)
-                self.flash(mg, 'success')
+                    mg = _(
+                        "${title} is no longer visible in the navigation.",
+                        mapping=mapping,
+                    )
+                self.flash(mg, "success")
         if not self.request.is_xhr:
             return self.back()
 
-    @view_config(name='show')
+    @view_config(name="show")
     def show(self):
         """ Show nodes view.  Switch the in_navigation attribute of selected
         nodes to ``True`` and get back to the referrer of the request.
@@ -222,7 +225,7 @@ class NodeActions(object):
         """
         return self.set_visibility(True)
 
-    @view_config(name='hide')
+    @view_config(name="hide")
     def hide(self):
         """ Hide nodes view. Switch the in_navigation attribute of selected
         nodes to ``False`` and get back to the referrer of the request.
@@ -232,9 +235,9 @@ class NodeActions(object):
         """
         return self.set_visibility(False)
 
-    @view_config(name='delete',
-                 permission='delete',
-                 renderer='kotti:templates/edit/delete.pt')
+    @view_config(
+        name="delete", permission="delete", renderer="kotti:templates/edit/delete.pt"
+    )
     def delete_node(self):
         """ Delete node view. Renders either a view to delete the current node
         or handle the deletion of the current node and get back to the
@@ -245,16 +248,17 @@ class NodeActions(object):
         :rtype: pyramid.httpexceptions.HTTPFound or dict
         """
 
-        action = self.request.POST.get('delete')
+        action = self.request.POST.get("delete")
         if action is not None:
 
             parent = self.context.__parent__
 
-            if action == 'delete':
+            if action == "delete":
                 location = resource_url(parent, self.request)
-                self.flash(_('${title} was deleted.',
-                             mapping=dict(title=self.context.title)),
-                           'success')
+                self.flash(
+                    _("${title} was deleted.", mapping=dict(title=self.context.title)),
+                    "success",
+                )
                 del parent[self.context.name]
             else:
                 location = resource_url(self.context, self.request)
@@ -263,9 +267,11 @@ class NodeActions(object):
 
         return {}
 
-    @view_config(name='delete_nodes',
-                 permission='delete',
-                 renderer='kotti:templates/edit/delete-nodes.pt')
+    @view_config(
+        name="delete_nodes",
+        permission="delete",
+        renderer="kotti:templates/edit/delete-nodes.pt",
+    )
     def delete_nodes(self):
         """ Delete nodes view. Renders either a view to delete multiple nodes or
         delete the selected nodes and get back to the referrer of the request.
@@ -274,31 +280,35 @@ class NodeActions(object):
                  template for rendering.
         :rtype: pyramid.httpexceptions.HTTPFound or dict
         """
-        if 'delete_nodes' in self.request.POST:
-            ids = self.request.POST.getall('children-to-delete')
+        if "delete_nodes" in self.request.POST:
+            ids = self.request.POST.getall("children-to-delete")
             if not ids:
-                self.flash(_("Nothing was deleted."), 'info')
+                self.flash(_("Nothing was deleted."), "info")
             for id in ids:
                 item = DBSession.query(Node).get(id)
-                self.flash(_('${title} was deleted.',
-                             mapping=dict(title=item.title)), 'success')
+                self.flash(
+                    _("${title} was deleted.", mapping=dict(title=item.title)),
+                    "success",
+                )
                 del self.context[item.name]
-            return self.back('@@contents')
+            return self.back("@@contents")
 
-        if 'cancel' in self.request.POST:
-            self.flash(_('No changes were made.'), 'info')
-            return self.back('@@contents')
+        if "cancel" in self.request.POST:
+            self.flash(_("No changes were made."), "info")
+            return self.back("@@contents")
 
         ids = self._selected_children(add_context=False)
         items = []
         if ids is not None:
-            items = DBSession.query(Node).filter(Node.id.in_(ids)).\
-                order_by(Node.position).all()
-        return {'items': items,
-                'states': _states(self.context, self.request)}
+            items = (
+                DBSession.query(Node)
+                .filter(Node.id.in_(ids))
+                .order_by(Node.position)
+                .all()
+            )
+        return {"items": items, "states": _states(self.context, self.request)}
 
-    @view_config(name='rename',
-                 renderer='kotti:templates/edit/rename.pt')
+    @view_config(name="rename", renderer="kotti:templates/edit/rename.pt")
     def rename_node(self):
         """ Rename node view. Renders either a view to change the title and
         name for the current node or handle the changes and get back to the
@@ -308,20 +318,19 @@ class NodeActions(object):
                  template for rendering.
         :rtype: pyramid.httpexceptions.HTTPFound or dict
         """
-        if 'rename' in self.request.POST:
-            name = self.request.POST['name']
-            title = self.request.POST['title']
+        if "rename" in self.request.POST:
+            name = self.request.POST["name"]
+            title = self.request.POST["title"]
             if not name or not title:
-                self.flash(_('Name and title are required.'), 'error')
+                self.flash(_("Name and title are required."), "error")
             else:
-                self.context.name = name.replace('/', '')
+                self.context.name = name.replace("/", "")
                 self.context.title = title
-                self.flash(_('Item was renamed.'), 'success')
-                return self.back('')
+                self.flash(_("Item was renamed."), "success")
+                return self.back("")
         return {}
 
-    @view_config(name='rename_nodes',
-                 renderer='kotti:templates/edit/rename-nodes.pt')
+    @view_config(name="rename_nodes", renderer="kotti:templates/edit/rename-nodes.pt")
     def rename_nodes(self):
         """ Rename nodes view. Renders either a view to change the titles and
         names for multiple nodes or handle the changes and get back to the
@@ -331,36 +340,35 @@ class NodeActions(object):
                  template for rendering.
         :rtype: pyramid.httpexceptions.HTTPFound or dict
         """
-        if 'rename_nodes' in self.request.POST:
-            ids = self.request.POST.getall('children-to-rename')
+        if "rename_nodes" in self.request.POST:
+            ids = self.request.POST.getall("children-to-rename")
             for id in ids:
                 item = DBSession.query(Node).get(id)
-                name = self.request.POST[id + '-name']
-                title = self.request.POST[id + '-title']
+                name = self.request.POST[id + "-name"]
+                title = self.request.POST[id + "-title"]
                 if not name or not title:
-                    self.flash(_('Name and title are required.'), 'error')
-                    location = resource_url(self.context, self.request,
-                                            '@@rename_nodes')
+                    self.flash(_("Name and title are required."), "error")
+                    location = resource_url(
+                        self.context, self.request, "@@rename_nodes"
+                    )
                     return HTTPFound(location=location)
                 else:
-                    item.name = title_to_name(name,
-                                              blacklist=self.context.keys())
+                    item.name = title_to_name(name, blacklist=self.context.keys())
                     item.title = title
-            self.flash(_('Your changes have been saved.'), 'success')
-            return self.back('@@contents')
+            self.flash(_("Your changes have been saved."), "success")
+            return self.back("@@contents")
 
-        if 'cancel' in self.request.POST:
-            self.flash(_('No changes were made.'), 'info')
-            return self.back('@@contents')
+        if "cancel" in self.request.POST:
+            self.flash(_("No changes were made."), "info")
+            return self.back("@@contents")
 
         ids = self._selected_children(add_context=False)
         items = []
         if ids is not None:
             items = DBSession.query(Node).filter(Node.id.in_(ids)).all()
-        return {'items': items}
+        return {"items": items}
 
-    @view_config(name='change_state',
-                 renderer='kotti:templates/edit/change-state.pt')
+    @view_config(name="change_state", renderer="kotti:templates/edit/change-state.pt")
     def change_state(self):
         """ Change state view. Renders either a view to handle workflow changes
         for multiple nodes or handle the selected workflow changes and get
@@ -370,33 +378,30 @@ class NodeActions(object):
                  template for rendering.
         :rtype: pyramid.httpexceptions.HTTPFound or dict
         """
-        if 'change_state' in self.request.POST:
-            ids = self.request.POST.getall('children-to-change-state')
-            to_state = self.request.POST.get('to-state', 'no-change')
-            include_children = self.request.POST.get('include-children')
-            if to_state != 'no-change':
+        if "change_state" in self.request.POST:
+            ids = self.request.POST.getall("children-to-change-state")
+            to_state = self.request.POST.get("to-state", "no-change")
+            include_children = self.request.POST.get("include-children")
+            if to_state != "no-change":
                 items = DBSession.query(Node).filter(Node.id.in_(ids)).all()
                 for item in items:
                     wf = get_workflow(item)
                     if wf is not None:
                         wf.transition_to_state(item, self.request, to_state)
                     if include_children:
-                        childs = self._all_children(item,
-                                                    permission='state_change')
+                        childs = self._all_children(item, permission="state_change")
                         for child in childs:
                             wf = get_workflow(child)
                             if wf is not None:
-                                wf.transition_to_state(child,
-                                                       self.request,
-                                                       to_state, )
-                self.flash(_('Your changes have been saved.'), 'success')
+                                wf.transition_to_state(child, self.request, to_state)
+                self.flash(_("Your changes have been saved."), "success")
             else:
-                self.flash(_('No changes were made.'), 'info')
-            return self.back('@@contents')
+                self.flash(_("No changes were made."), "info")
+            return self.back("@@contents")
 
-        if 'cancel' in self.request.POST:
-            self.flash(_('No changes were made.'), 'info')
-            return self.back('@@contents')
+        if "cancel" in self.request.POST:
+            self.flash(_("No changes were made."), "info")
+            return self.back("@@contents")
 
         ids = self._selected_children(add_context=False)
         items = transitions = []
@@ -405,13 +410,15 @@ class NodeActions(object):
             if wf is not None:
                 items = DBSession.query(Node).filter(Node.id.in_(ids)).all()
                 for item in items:
-                        trans_info = wf.get_transitions(item, self.request)
-                        for tran_info in trans_info:
-                            if tran_info not in transitions:
-                                transitions.append(tran_info)
-        return {'items': items,
-                'states': _states(self.context, self.request),
-                'transitions': transitions, }
+                    trans_info = wf.get_transitions(item, self.request)
+                    for tran_info in trans_info:
+                        if tran_info not in transitions:
+                            transitions.append(tran_info)
+        return {
+            "items": items,
+            "states": _states(self.context, self.request),
+            "transitions": transitions,
+        }
 
 
 def contents_buttons(context, request):
@@ -423,43 +430,46 @@ def contents_buttons(context, request):
     """
     buttons = []
     if get_paste_items(context, request):
-        buttons.append(ActionButton('paste', title=_('Paste'),
-                                    no_children=True))
+        buttons.append(ActionButton("paste", title=_("Paste"), no_children=True))
     if context.children:
-        buttons.append(ActionButton('copy', title=_('Copy')))
-        buttons.append(ActionButton('cut', title=_('Cut')))
-        buttons.append(ActionButton('rename_nodes', title=_('Rename'),
-                                    css_class='btn btn-warning'))
-        buttons.append(ActionButton('delete_nodes', title=_('Delete'),
-                                    css_class='btn btn-danger'))
+        buttons.append(ActionButton("copy", title=_("Copy")))
+        buttons.append(ActionButton("cut", title=_("Cut")))
+        buttons.append(
+            ActionButton("rename_nodes", title=_("Rename"), css_class="btn btn-warning")
+        )
+        buttons.append(
+            ActionButton("delete_nodes", title=_("Delete"), css_class="btn btn-danger")
+        )
         if get_workflow(context) is not None:
-            buttons.append(ActionButton('change_state',
-                                        title=_('Change State')))
-        buttons.append(ActionButton('up', title=_('Move up')))
-        buttons.append(ActionButton('down', title=_('Move down')))
-        buttons.append(ActionButton('show', title=_('Show')))
-        buttons.append(ActionButton('hide', title=_('Hide')))
+            buttons.append(ActionButton("change_state", title=_("Change State")))
+        buttons.append(ActionButton("up", title=_("Move up")))
+        buttons.append(ActionButton("down", title=_("Move down")))
+        buttons.append(ActionButton("show", title=_("Show")))
+        buttons.append(ActionButton("hide", title=_("Hide")))
     return [button for button in buttons if button.permitted(context, request)]
 
 
-@view_config(name='add-dropdown',
-             renderer='kotti:templates/add-dropdown.pt')
+@view_config(name="add-dropdown", renderer="kotti:templates/add-dropdown.pt")
 def content_type_factories(context, request):
     """ Renders the drop down menu for Add button in editor bar.
 
     :result: Dictionary passed to the template for rendering.
     :rtype: pyramid.httpexceptions.HTTPFound or dict
     """
-    all_types = get_settings()['kotti.available_types']
+    all_types = get_settings()["kotti.available_types"]
     factories = []
     for factory in all_types:
         if factory.type_info.addable(context, request):
             factories.append(factory)
-    return {'factories': factories}
+    return {"factories": factories}
 
 
-@view_config(context=IContent, name='contents', permission='view',
-             renderer='kotti:templates/edit/contents.pt')
+@view_config(
+    context=IContent,
+    name="contents",
+    permission="view",
+    renderer="kotti:templates/edit/contents.pt",
+)
 def contents(context, request):
     """ Contents view. Renders either the contents view or handle the action
     button actions of the view.
@@ -472,24 +482,26 @@ def contents(context, request):
     buttons = contents_buttons(context, request)
     for button in buttons:
         if button.name in request.POST:
-            children = request.POST.getall('children')
-            if not children and button.name != 'paste':
+            children = request.POST.getall("children")
+            if not children and button.name != "paste":
                 request.session.flash(
-                    _('You have to select items to perform an action.'),
-                    'info')
-                location = resource_url(context, request) + '@@contents'
+                    _("You have to select items to perform an action."), "info"
+                )
+                location = resource_url(context, request) + "@@contents"
                 return HTTPFound(location=location)
-            request.session['kotti.selected-children'] = children
+            request.session["kotti.selected-children"] = children
             location = button.url(context, request)
             return HTTPFound(location, request=request)
 
-    return {'children': context.children_with_permission(request),
-            'buttons': buttons,
-            }
+    return {"children": context.children_with_permission(request), "buttons": buttons}
 
 
-@view_config(name='move-child-position', permission='edit',
-             request_method="POST", renderer="json")
+@view_config(
+    name="move-child-position",
+    permission="edit",
+    request_method="POST",
+    renderer="json",
+)
 def move_child_position(context, request):
     """ Move the child from one position to another.
 
@@ -508,31 +520,32 @@ def move_child_position(context, request):
 
     data = request.POST or request.json_body
 
-    if ('from' in data) and ('to' in data):
+    if ("from" in data) and ("to" in data):
 
         max_pos = len(context.children) - 1
         try:
-            old_position = int(data['from'])
-            new_position = int(data['to'])
-            if not ((0 <= old_position <= max_pos) and
-                    (0 <= new_position <= max_pos)):
+            old_position = int(data["from"])
+            new_position = int(data["to"])
+            if not ((0 <= old_position <= max_pos) and (0 <= new_position <= max_pos)):
                 raise ValueError
         except ValueError:
-            return {'result': 'error'}
+            return {"result": "error"}
 
         # sqlalchemy.ext.orderinglist takes care of the "right" sequence
         # numbers (immediately consecutive, starting with 0) for us.
-        context.children.insert(new_position,
-                                context.children.pop(old_position))
-        result = 'success'
+        context.children.insert(new_position, context.children.pop(old_position))
+        result = "success"
     else:
-        result = 'error'
+        result = "error"
 
-    return {'result': result}
+    return {"result": result}
 
 
-@view_config(name='workflow-dropdown', permission='view',
-             renderer='kotti:templates/workflow-dropdown.pt')
+@view_config(
+    name="workflow-dropdown",
+    permission="view",
+    renderer="kotti:templates/workflow-dropdown.pt",
+)
 def workflow(context, request):
     """ Renders the drop down menu for workflow actions.
 
@@ -542,23 +555,27 @@ def workflow(context, request):
     wf = get_workflow(context)
     if wf is not None:
         state_info = _state_info(context, request)
-        curr_state = [i for i in state_info if i['current']][0]
-        trans_info = [trans for trans in wf.get_transitions(context, request)
-                      if request.has_permission(trans['permission'], context)]
+        curr_state = [i for i in state_info if i["current"]][0]
+        trans_info = [
+            trans
+            for trans in wf.get_transitions(context, request)
+            if request.has_permission(trans["permission"], context)
+        ]
 
         return {
-            'states': _states(context, request),
-            'transitions': trans_info,
-            'current_state': curr_state,
+            "states": _states(context, request),
+            "transitions": trans_info,
+            "current_state": curr_state,
         }
 
-    return {
-        'current_state': None
-    }
+    return {"current_state": None}
 
 
-@view_config(name='actions-dropdown', permission='edit',
-             renderer='kotti:templates/actions-dropdown.pt')
+@view_config(
+    name="actions-dropdown",
+    permission="edit",
+    renderer="kotti:templates/actions-dropdown.pt",
+)
 def actions(context, request):
     """ Renders the drop down menu for Actions button in editor bar.
 
@@ -566,10 +583,11 @@ def actions(context, request):
     :rtype: dict
     """
     actions = []
-    if hasattr(context, 'type_info'):
-        actions = [a for a in context.type_info.action_links
-                   if a.visible(context, request)]
-    return {'actions': actions}
+    if hasattr(context, "type_info"):
+        actions = [
+            a for a in context.type_info.action_links if a.visible(context, request)
+        ]
+    return {"actions": actions}
 
 
 def includeme(config):
@@ -580,6 +598,7 @@ def includeme(config):
     """
 
     import warnings
+
     with warnings.catch_warnings():
         warnings.simplefilter("ignore")
         config.scan(__name__)

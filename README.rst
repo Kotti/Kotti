@@ -123,9 +123,9 @@ Contributions are always welcome, read our `contribution guidelines`_ and visit 
 .. _coveralls: https://coveralls.io/r/Kotti/Kotti
 .. _high coverage: https://coveralls.io/r/Kotti/Kotti
 
-.. |codacy| image:: https://img.shields.io/codacy/ad44331fcd904d338c074f2ca3e6a810.svg?style=flat-square
-.. _codacy: https://www.codacy.com/public/disko/Kotti
-.. _high quality coding standards: https://www.codacy.com/public/disko/Kotti
+.. |codacy| image:: https://api.codacy.com/project/badge/Grade/fb10cbc3497148d2945d61ce6ad2e4f5
+.. _codacy: https://www.codacy.com/app/disko/Kotti?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=Kotti/Kotti&amp;utm_campaign=Badge_Grade
+.. _high quality coding standards: https://www.codacy.com/app/disko/Kotti?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=Kotti/Kotti&amp;utm_campaign=Badge_Grade
 
 .. |codeclimate| image:: https://api.codeclimate.com/v1/badges/3a4a61548fcc195e4ba1/maintainability
 .. _codeclimate: https://codeclimate.com/github/Kotti/Kotti/maintainability

@@ -77,9 +77,11 @@ class ObjectAfterDelete(ObjectEvent):
     """
 
 
-deprecated('ObjectAfterDelete',
-           "The ObjectAfterDelete event is deprecated and will be no longer "
-           "available starting with Kotti 0.10.")
+deprecated(
+    "ObjectAfterDelete",
+    "The ObjectAfterDelete event is deprecated and will be no longer "
+    "available starting with Kotti 0.10.",
+)
 
 
 class UserDeleted(ObjectEvent):
@@ -108,7 +110,7 @@ class DispatcherDict(OrderedDict):
         if self.default_factory is None:
             args = tuple()
         else:
-            args = self.default_factory,
+            args = (self.default_factory,)
         return type(self), args, None, None, self.items()
 
     def copy(self):
@@ -119,12 +121,14 @@ class DispatcherDict(OrderedDict):
 
     def __deepcopy__(self, memo):
         import copy
-        return type(self)(self.default_factory,
-                          copy.deepcopy(self.items()))
+
+        return type(self)(self.default_factory, copy.deepcopy(self.items()))
 
     def __repr__(self):
-        return 'OrderedDefaultDict(%s, %s)' % (self.default_factory,
-                                               OrderedDict.__repr__(self))
+        return "OrderedDefaultDict(%s, %s)" % (
+            self.default_factory,
+            OrderedDict.__repr__(self),
+        )
 
 
 class Dispatcher(DispatcherDict):
@@ -157,6 +161,7 @@ class Dispatcher(DispatcherDict):
       Called unrelated listener
       [1]
     """
+
     def __call__(self, event):
         results = []
         for event_type, handlers in self.items():
@@ -192,11 +197,13 @@ class ObjectEventDispatcher(DispatcherDict):
       >>> dispatcher(ObjectInsert(SubObject()))
       ['base', 'sub', 'all']
     """
+
     def __call__(self, event):
         results = []
         for (evtype, objtype), handlers in self.items():
-            if (isinstance(event, evtype) and
-                    (objtype is None or isinstance(event.object, objtype))):
+            if isinstance(event, evtype) and (
+                objtype is None or isinstance(event.object, objtype)
+            ):
                 for handler in handlers:
                     results.append(handler(event))
         return results
@@ -214,6 +221,7 @@ objectevent_listeners = ObjectEventDispatcher()
 clear()
 
 
+# noinspection PyUnusedLocal,PyShadowingNames
 def _after_delete(mapper, connection, target):
     """ Trigger the Kotti event :class:``ObjectAfterDelete``.
 
@@ -230,6 +238,7 @@ def _after_delete(mapper, connection, target):
     notify(ObjectAfterDelete(target, get_current_request()))
 
 
+# noinspection PyUnusedLocal
 def _before_flush(session, flush_context, instances):
     """Trigger the following Kotti :class:``ObjectEvent`` events in
     this order:
@@ -264,8 +273,8 @@ def set_owner(event):
             if obj.owner is None:
                 obj.owner = userid
             # Add owner role for userid if it's not inherited already:
-            if 'role:owner' not in list_groups(userid, obj):
-                groups = list_groups_raw(userid, obj) | {'role:owner'}
+            if "role:owner" not in list_groups(userid, obj):
+                groups = list_groups_raw(userid, obj) | {"role:owner"}
                 set_groups(userid, obj, groups)
 
 
@@ -290,7 +299,7 @@ def set_modification_date(event):
 
     exclude = []
 
-    for e in get_settings()['kotti.modification_date_excludes']:
+    for e in get_settings()["kotti.modification_date_excludes"]:
         if isinstance(event.object, e.class_):
             exclude.append(e.key)
 
@@ -298,23 +307,26 @@ def set_modification_date(event):
         event.object.modification_date = datetime.now()
 
 
+# noinspection PyUnusedLocal
 def delete_orphaned_tags(event):
     """Delete Tag instances / records when they are not associated with any
     content.
 
-    :param event: event that trigerred this handler.
+    :param event: event that triggered this handler.
     :type event: :class:`ObjectAfterDelete`
     """
 
+    # noinspection PyUnresolvedReferences
     DBSession.query(Tag).filter(~Tag.content_tags.any()).delete(
-        synchronize_session=False)
+        synchronize_session=False
+    )
 
 
 def cleanup_user_groups(event):
     """Remove a deleted group from the groups of a user/group and remove
        all local group entries of it.
 
-       :param event: event that trigerred this handler.
+       :param event: event that triggered this handler.
        :type event: :class:`UserDeleted`
        """
     name = event.object.name
@@ -325,27 +337,28 @@ def cleanup_user_groups(event):
         for user_or_group in users_groups:
             principals[user_or_group].groups.remove(name)
 
-    DBSession.query(LocalGroup).filter(
-        LocalGroup.principal_name == name).delete()
+    DBSession.query(LocalGroup).filter(LocalGroup.principal_name == name).delete()
 
 
 def reset_content_owner(event):
     """Reset the owner of the content from the deleted owner.
 
-    :param event: event that trigerred this handler.
+    :param event: event that triggered this handler.
     :type event: :class:`UserDeleted`
     """
 
-    contents = DBSession.query(Content).filter(
-        Content.owner == event.object.name).all()
+    contents = DBSession.query(Content).filter(Content.owner == event.object.name).all()
     for content in contents:
         content.owner = None
 
 
 def _update_children_paths(old_parent_path, new_parent_path):
-    for child in DBSession.query(Node).options(
-        load_only('path', 'type')).filter(
-            Node.path.startswith(old_parent_path)).order_by(Node.path):
+    for child in (
+        DBSession.query(Node)
+        .options(load_only("path", "type"))
+        .filter(Node.path.startswith(old_parent_path))
+        .order_by(Node.path)
+    ):
         if child.path == new_parent_path:
             # The child is the node itself and has already be renamed.
             # Nothing to do!
@@ -353,6 +366,7 @@ def _update_children_paths(old_parent_path, new_parent_path):
         child.path = new_parent_path + child.path[len(old_parent_path):]
 
 
+# noinspection PyUnusedLocal,SpellCheckingInspection
 @no_autoflush
 def _set_path_for_new_name(target, value, oldvalue, initiator):
     """Triggered whenever the Node's 'name' attribute is set.
@@ -360,7 +374,7 @@ def _set_path_for_new_name(target, value, oldvalue, initiator):
     Is called with all kind of weird edge cases, e.g. name is 'None',
     parent is 'None' etc.
     """
-    if getattr(target, '_kotti_set_path_for_new_name', False):
+    if getattr(target, "_kotti_set_path_for_new_name", False):
         # we're being called recursively (see below)
         return
 
@@ -368,19 +382,19 @@ def _set_path_for_new_name(target, value, oldvalue, initiator):
         # Our name is about to be set to 'None', so skip.
         return
 
-    if target.__parent__ is None and value != '':
+    if target.__parent__ is None and value != "":
         # Our parent hasn't been set yet.  Skip, unless we're the root
         # object (which always has an empty string as name).
         return
 
     old_path = target.path
     line = tuple(reversed(tuple(lineage(target))))
-    target_path = '/'.join(node.__name__ for node in line[:-1])
-    if target.__parent__ is None and value == '':
+    target_path = "/".join(node.__name__ for node in line[:-1])
+    if target.__parent__ is None and value == "":
         # We're a new root object
-        target_path = '/'
+        target_path = "/"
     else:
-        target_path += '/{0}/'.format(value)
+        target_path += "/{0}/".format(value)
     target.path = target_path
     # We need to set the name to value here so that the subsequent
     # UPDATE in _update_children_paths will include the new 'name'
@@ -391,14 +405,14 @@ def _set_path_for_new_name(target, value, oldvalue, initiator):
     try:
         target.name = value
     finally:
+        # noinspection PyProtectedMember
         del target._kotti_set_path_for_new_name
 
     if old_path and target.id is not None:
         _update_children_paths(old_path, target_path)
     else:
         for child in _all_children(target):
-            child.path = '{0}{1}/'.format(child.__parent__.path,
-                                          child.__name__)
+            child.path = "{0}{1}/".format(child.__parent__.path, child.__name__)
 
 
 def _all_children(item, _all=None):
@@ -412,6 +426,7 @@ def _all_children(item, _all=None):
     return _all
 
 
+# noinspection PyUnusedLocal,PyUnusedLocal,SpellCheckingInspection
 @no_autoflush
 def _set_path_for_new_parent(target, value, oldvalue, initiator):
     """Triggered whenever the Node's 'parent' attribute is set.
@@ -424,7 +439,7 @@ def _set_path_for_new_parent(target, value, oldvalue, initiator):
         # The object's name is still 'None', so skip.
         return
 
-    if value.__parent__ is None and value.__name__ != '':
+    if value.__parent__ is None and value.__name__ != "":
         # Our parent doesn't have a parent, and it's not root either.
         return
 
@@ -435,8 +450,8 @@ def _set_path_for_new_parent(target, value, oldvalue, initiator):
         # If any of our parents don't have a name yet, skip
         return
 
-    target_path = '/'.join(node.__name__ for node in line)
-    target_path += '/{0}/'.format(target.__name__)
+    target_path = "/".join(node.__name__ for node in line)
+    target_path += "/{0}/".format(target.__name__)
     target.path = target_path
 
     if old_path and target.id is not None:
@@ -446,8 +461,7 @@ def _set_path_for_new_parent(target, value, oldvalue, initiator):
         # children.  This is the case when we create an object with
         # children before we assign the object itself to a parent.
         for child in _all_children(target):
-            child.path = '{0}{1}/'.format(child.__parent__.path,
-                                          child.__name__)
+            child.path = "{0}{1}/".format(child.__parent__.path, child.__name__)
 
 
 # noinspection PyPep8Naming
@@ -496,6 +510,7 @@ class subscribe(object):
         self.evttype = evttype
         self.objtype = objtype
 
+    # noinspection PyUnusedLocal
     def register(self, context, name, obj):
         if issubclass(self.evttype, ObjectEvent):
             objectevent_listeners[(self.evttype, self.objtype)].append(obj)
@@ -504,7 +519,7 @@ class subscribe(object):
 
     def __call__(self, wrapped):
 
-        self.venusian.attach(wrapped, self.register, category='kotti')
+        self.venusian.attach(wrapped, self.register, category="kotti")
 
         return wrapped
 
@@ -521,16 +536,17 @@ def wire_sqlalchemy():  # pragma: no cover
         return
     else:
         _WIRED_SQLALCHMEY = True
-    sqlalchemy.event.listen(mapper, 'after_delete', _after_delete)
-    sqlalchemy.event.listen(DBSession, 'before_flush', _before_flush)
+    sqlalchemy.event.listen(mapper, "after_delete", _after_delete)
+    sqlalchemy.event.listen(DBSession, "before_flush", _before_flush)
 
     # Update the 'path' attribute on changes to 'name' or 'parent'
+    sqlalchemy.event.listen(Node.name, "set", _set_path_for_new_name, propagate=True)
     sqlalchemy.event.listen(
-        Node.name, 'set', _set_path_for_new_name, propagate=True)
-    sqlalchemy.event.listen(
-        Node.parent, 'set', _set_path_for_new_parent, propagate=True)
+        Node.parent, "set", _set_path_for_new_parent, propagate=True
+    )
 
 
+# noinspection PyUnusedLocal
 def includeme(config):
     """ Pyramid includeme hook.
 
@@ -544,29 +560,24 @@ def includeme(config):
     wire_sqlalchemy()
 
     # Set content owner on content creation
-    objectevent_listeners[
-        (ObjectInsert, Content)].append(set_owner)
+    objectevent_listeners[(ObjectInsert, Content)].append(set_owner)
 
     # Set content creation date on content creation
-    objectevent_listeners[
-        (ObjectInsert, Content)].append(set_creation_date)
+    objectevent_listeners[(ObjectInsert, Content)].append(set_creation_date)
 
     # Set content modification date on content updates
-    objectevent_listeners[
-        (ObjectUpdate, Content)].append(set_modification_date)
+    objectevent_listeners[(ObjectUpdate, Content)].append(set_modification_date)
 
     # Delete orphaned tags after a tag association has ben deleted
-    objectevent_listeners[
-        (ObjectAfterDelete, TagsToContents)].append(delete_orphaned_tags)
+    objectevent_listeners[(ObjectAfterDelete, TagsToContents)].append(
+        delete_orphaned_tags
+    )
 
     # Initialze the workflow on content creation.
-    objectevent_listeners[
-        (ObjectInsert, Content)].append(initialize_workflow)
+    objectevent_listeners[(ObjectInsert, Content)].append(initialize_workflow)
 
     # Perform some cleanup when a user or group is deleted
-    objectevent_listeners[
-        (UserDeleted, Principal)].append(cleanup_user_groups)
+    objectevent_listeners[(UserDeleted, Principal)].append(cleanup_user_groups)
 
     # Remove the owner from content when the corresponding user is deleted
-    objectevent_listeners[
-        (UserDeleted, Principal)].append(reset_content_owner)
+    objectevent_listeners[(UserDeleted, Principal)].append(reset_content_owner)

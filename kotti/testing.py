@@ -31,7 +31,7 @@ with catch_warnings():
 user = mark.user
 
 
-BASE_URL = 'http://localhost:6543'
+BASE_URL = "http://localhost:6543"
 
 
 class Dummy(dict):
@@ -48,14 +48,15 @@ class DummyRequest(testing.DummyRequest):
 
     @staticmethod
     def is_response(ob):
-        return (hasattr(ob, 'app_iter') and hasattr(ob, 'headerlist') and
-                hasattr(ob, 'status'))
+        return (
+            hasattr(ob, "app_iter")
+            and hasattr(ob, "headerlist")
+            and hasattr(ob, "status")
+        )
 
     # noinspection PyPep8Naming
     @classmethod
-    def blank(cls,
-              path, environ=None, base_url=None, headers=None, POST=None,
-              **kw):
+    def blank(cls, path, environ=None, base_url=None, headers=None, POST=None, **kw):
         """
         ``request.blank`` is used in Kotti only when assigning slots, where
         the POST parameters are faked as a querystring.
@@ -71,14 +72,16 @@ class DummyRequest(testing.DummyRequest):
             POST = POST.decode()
         if POST and isinstance(POST, str):
             POST = _decode(POST)
-        req = testing.DummyRequest(path=path, environ=environ, headers=headers,
-                                   cookies=None, post=POST, **kw)
+        req = testing.DummyRequest(
+            path=path, environ=environ, headers=headers, cookies=None, post=POST, **kw
+        )
         return req
 
 
 def asset(name):
     import kotti
-    return open(join(dirname(kotti.__file__), 'tests', name), 'rb')
+
+    return open(join(dirname(kotti.__file__), "tests", name), "rb")
 
 
 def includeme_login(config):
@@ -88,10 +91,7 @@ def includeme_login(config):
     :type config: :class:`pyramid.config.Configurator`
     """
 
-    config.add_view(
-        login_view,
-        name='login',
-        renderer='kotti:templates/login.pt')
+    config.add_view(login_view, name="login", renderer="kotti:templates/login.pt")
 
 
 def includeme_layout(config):
@@ -104,8 +104,9 @@ def includeme_layout(config):
     # override edit master layout with view master layout
 
     config.override_asset(
-        to_override='kotti:templates/edit/master.pt',
-        override_with='kotti:templates/view/master.pt')
+        to_override="kotti:templates/edit/master.pt",
+        override_with="kotti:templates/view/master.pt",
+    )
 
 
 def login_view(request):
@@ -117,7 +118,7 @@ def dummy_search(search_term, request):
 
 
 def testing_db_url():
-    return os.environ.get('KOTTI_TEST_DB_STRING', 'sqlite://')
+    return os.environ.get("KOTTI_TEST_DB_STRING", "sqlite://")
 
 
 def _init_testing_db():
@@ -126,7 +127,7 @@ def _init_testing_db():
     from kotti.resources import initialize_sql
 
     database_url = testing_db_url()
-    get_settings()['sqlalchemy.url'] = database_url
+    get_settings()["sqlalchemy.url"] = database_url
     session = initialize_sql(create_engine(database_url), drop_all=True)
     return session
 
@@ -146,8 +147,10 @@ def _turn_warnings_into_errors():  # pragma: no cover
     # turn all warnings into errors, but let the `ImportWarning`
     # produced by Babel's `localedata.py` vs `localedata/` show up once...
     from babel import localedata
+
     localedata  # make pyflakes happy... :p
     from warnings import filterwarnings
+
     filterwarnings("error")
 
 
@@ -160,13 +163,13 @@ def setUp(init_db=True, **kwargs):
 
     tearDown()
     settings = conf_defaults.copy()
-    settings['kotti.secret'] = 'secret'
-    settings['kotti.secret2'] = 'secret2'
-    settings['kotti.populators'] = 'kotti.testing._populator'
-    settings['pyramid_deform.tempdir'] = '/tmp'
-    settings.update(kwargs.get('settings', {}))
+    settings["kotti.secret"] = "secret"
+    settings["kotti.secret2"] = "secret2"
+    settings["kotti.populators"] = "kotti.testing._populator"
+    settings["pyramid_deform.tempdir"] = "/tmp"
+    settings.update(kwargs.get("settings", {}))
     settings = _resolve_dotted(settings)
-    kwargs['settings'] = settings
+    kwargs["settings"] = settings
     config = testing.setUp(**kwargs)
     config.add_default_renderers()
 
@@ -206,7 +209,8 @@ class UnitTestBase(TestCase):
 class EventTestBase(TestCase):
     def setUp(self, **kwargs):
         super(EventTestBase, self).setUp(**kwargs)
-        self.config.include('kotti.events')
+        self.config.include("kotti.events")
+
 
 # Functional ----
 
@@ -223,8 +227,8 @@ def _functional_includeme(config):
 
 def _zope_testbrowser_pyquery(self):
     from pyquery import PyQuery
-    return PyQuery(
-        self.contents.replace('xmlns="http://www.w3.org/1999/xhtml', ''))
+
+    return PyQuery(self.contents.replace('xmlns="http://www.w3.org/1999/xhtml', ""))
 
 
 # noinspection PyPep8Naming
@@ -236,28 +240,26 @@ def setUpFunctional(global_config=None, **settings):
     tearDown()
 
     _settings = {
-        'sqlalchemy.url': testing_db_url(),
-        'kotti.secret': 'secret',
-        'kotti.site_title': 'Website des Kottbusser Tors',  # for mailing
-        'kotti.populators': 'kotti.testing._populator',
-        'mail.default_sender': 'kotti@localhost',
-        'pyramid.includes': 'kotti.testing._functional_includeme',
-        }
+        "sqlalchemy.url": testing_db_url(),
+        "kotti.secret": "secret",
+        "kotti.site_title": "Website des Kottbusser Tors",  # for mailing
+        "kotti.populators": "kotti.testing._populator",
+        "mail.default_sender": "kotti@localhost",
+        "pyramid.includes": "kotti.testing._functional_includeme",
+    }
     _settings.update(settings)
 
-    host, port = BASE_URL.split(':')[-2:]
+    host, port = BASE_URL.split(":")[-2:]
     app = main({}, **_settings)
     Browser.pyquery = property(_zope_testbrowser_pyquery)
 
     return dict(
         Browser=lambda: Browser(
-            'http://{}:{}/'.format(host[2:], int(port)),
-            wsgi_app=app),
-        browser=Browser(
-            'http://{}:{}/'.format(host[2:], int(port)),
-            wsgi_app=app),
+            "http://{}:{}/".format(host[2:], int(port)), wsgi_app=app
+        ),
+        browser=Browser("http://{}:{}/".format(host[2:], int(port)), wsgi_app=app),
         test_app=TestApp(app),
-        )
+    )
 
 
 class FunctionalTestBase(TestCase):
@@ -269,19 +271,19 @@ class FunctionalTestBase(TestCase):
     def tearDown(self):
         tearDown()
 
-    def login(self, login='admin', password='secret'):
+    def login(self, login="admin", password="secret"):
         return self.test_app.post(
-            '/@@login',
-            {'login': login, 'password': password, 'submit': 'submit'},
+            "/@@login",
+            {"login": login, "password": password, "submit": "submit"},
             status=302,
-            )
+        )
 
 
 @implementer(ILocation)
 class RootFactory(dict):
-    __name__ = ''  # root is required to have an empty name!
+    __name__ = ""  # root is required to have an empty name!
     __parent__ = None
-    __acl__ = [('Allow', 'role:admin', ALL_PERMISSIONS)]
+    __acl__ = [("Allow", "role:admin", ALL_PERMISSIONS)]
 
     def __init__(self, request):
         super(RootFactory, self).__init__()
@@ -299,33 +301,31 @@ def include_testing_view(config):
     """
 
     config.add_view(
-        dummy_view,
-        context=RootFactory,
-        renderer='kotti:tests/testing_view.pt',
-        )
+        dummy_view, context=RootFactory, renderer="kotti:tests/testing_view.pt"
+    )
 
     config.add_view(
         dummy_view,
-        name='secured',
-        permission='view',
+        name="secured",
+        permission="view",
         context=RootFactory,
-        renderer='kotti:tests/testing_view.pt',
-        )
+        renderer="kotti:tests/testing_view.pt",
+    )
 
 
 # noinspection PyPep8Naming
 def setUpFunctionalStrippedDownApp(global_config=None, **settings):
     # An app that doesn't use Nodes at all
     _settings = {
-        'kotti.base_includes': (
-            'kotti kotti.views kotti.views.login kotti.views.users '
-            'kotti.views.view'),
-        'kotti.use_tables': 'principals',
-        'kotti.populators': 'kotti.populate.populate_users',
-        'pyramid.includes': 'kotti.testing.include_testing_view',
-        'kotti.root_factory': 'kotti.testing.RootFactory',
-        'kotti.site_title': 'My Stripped Down Kotti',
-        }
+        "kotti.base_includes": (
+            "kotti kotti.views kotti.views.login kotti.views.users " "kotti.views.view"
+        ),
+        "kotti.use_tables": "principals",
+        "kotti.populators": "kotti.populate.populate_users",
+        "pyramid.includes": "kotti.testing.include_testing_view",
+        "kotti.root_factory": "kotti.testing.RootFactory",
+        "kotti.site_title": "My Stripped Down Kotti",
+    }
     _settings.update(settings)
 
     return setUpFunctional(global_config, **_settings)
@@ -343,7 +343,11 @@ def registerDummyMailer():
 
 # set up deprecation warnings
 from zope.deprecation.deprecation import deprecated  # noqa
+
 for item in UnitTestBase, EventTestBase, FunctionalTestBase, _init_testing_db:
-    name = getattr(item, '__name__', item)
-    deprecated(name, 'Unittest-style tests are deprecated as of Kotti 0.7. '
-               'Please use pytest function arguments instead.')
+    name = getattr(item, "__name__", item)
+    deprecated(
+        name,
+        "Unittest-style tests are deprecated as of Kotti 0.7. "
+        "Please use pytest function arguments instead.",
+    )
