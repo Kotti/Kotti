@@ -75,7 +75,7 @@ tests_require = [
     'pytest-pep8>=1.0.6',
     'pytest-travis-fold',
     'pytest-virtualenv',
-    'pytest-xdist',
+    # 'pytest-xdist',  # currently causes Travis to fail
     'tox',
     'zope.testbrowser>=5.0.0',
     ]
