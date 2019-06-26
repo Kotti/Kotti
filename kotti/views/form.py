@@ -52,7 +52,7 @@ class ObjectType(colander.SchemaType):
 def deferred_tag_it_widget(node, kw):
     tagit.need()
     all_tags = Tag.query.all()
-    available_tags = [tag.title.encode("utf-8") for tag in all_tags]
+    available_tags = [tag.title for tag in all_tags]
     widget = CommaSeparatedListWidget(template="tag_it", available_tags=available_tags)
     return widget
 

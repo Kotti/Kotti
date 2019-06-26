@@ -1,10 +1,9 @@
 Change History
 ==============
 
-2.0.2.dev0 - unreleased
------------------------
+- Fix broken tags widget (#562).
 
-- No changes yet.
+- Declare Python 3.7 compatibility.
 
 2.0.1 - 2019-01-09
 ------------------
