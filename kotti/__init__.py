@@ -13,12 +13,13 @@ from sqlalchemy import engine_from_config
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import scoped_session
 from sqlalchemy.orm import sessionmaker
-from zope.sqlalchemy import ZopeTransactionExtension
+from zope.sqlalchemy import register 
 
 from kotti.sqla import Base as KottiBase
 
 metadata = MetaData()
-DBSession = scoped_session(sessionmaker(extension=ZopeTransactionExtension()))
+DBSession = scoped_session(sessionmaker(autoflush=False))
+register(DBSession)
 Base = declarative_base(cls=KottiBase)
 Base.metadata = metadata
 Base.query = DBSession.query_property()
