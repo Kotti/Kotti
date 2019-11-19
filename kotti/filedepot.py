@@ -215,7 +215,7 @@ def handle_change_data(
 def set_metadata(event: Union[ObjectUpdate, ObjectInsert]) -> None:
     """Set DBStoredFile metadata based on data
 
-    :param event: event that trigerred this handler.
+    :param event: event that triggered this handler.
     :type event: :class:`ObjectInsert` or :class:`ObjectUpdate`
     """
     obj = event.object
