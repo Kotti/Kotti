@@ -261,7 +261,7 @@ def _before_flush(session, flush_context, instances):
 def set_owner(event):
     """Set ``owner`` of the object that triggered the event.
 
-    :param event: event that trigerred this handler.
+    :param event: event that triggered this handler.
     :type event: :class:`ObjectInsert`
     """
 
@@ -281,7 +281,7 @@ def set_owner(event):
 def set_creation_date(event):
     """Set ``creation_date`` of the object that triggered the event.
 
-    :param event: event that trigerred this handler.
+    :param event: event that triggered this handler.
     :type event: :class:`ObjectInsert`
     """
 
@@ -293,7 +293,7 @@ def set_creation_date(event):
 def set_modification_date(event):
     """Update ``modification_date`` of the object that triggered the event.
 
-    :param event: event that trigerred this handler.
+    :param event: event that triggered this handler.
     :type event: :class:`ObjectUpdate`
     """
 
