@@ -70,7 +70,7 @@ tests_require = [
     'Pillow',  # thumbnail filter in depot tween tests
     'py>=1.4.29',
     'pyquery',
-    'pytest>=4.1.0',
+    'pytest<5',  # see #563
     'pytest-cov',
     'pytest-pep8>=1.0.6',
     'pytest-travis-fold',
