@@ -30,7 +30,7 @@ To run and develop within your clone, do these steps:
 
 .. code-block:: bash
 
-  virtualenv . --no-site-packages
+  virtualenv --python=python3 .
 
   bin/python setup.py develop
 
