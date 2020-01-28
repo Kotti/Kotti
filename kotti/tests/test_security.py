@@ -26,7 +26,7 @@ class TestGroups:
         from kotti.security import list_groups_raw
 
         assert list_groups("admin", root) == ["role:admin"]
-        assert list_groups_raw("admin", root) == set([])
+        assert list_groups_raw("admin", root) == set()
 
     def test_empty(self, db_session, root):
         from kotti.security import list_groups

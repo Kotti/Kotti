@@ -28,7 +28,7 @@ def make_token(user: Principal, seconds: Optional[float] = None) -> str:
     secret = get_settings()["kotti.secret2"]
     if seconds is None:
         seconds = time.time()
-    token = "{}:{}:{}".format(user.name, secret, seconds)
+    token = f"{user.name}:{secret}:{seconds}"
     return "{}:{}".format(hashlib.sha224(token.encode("utf8")).hexdigest(), seconds)
 
 
@@ -120,9 +120,9 @@ def email_set_password(
     set_password_query = {"token": token, "email": user.email}
     if add_query:
         set_password_query.update(add_query)
-    url = "{0}/@@set-password?{1}".format(
+    url = "{}/@@set-password?{}".format(
         request.application_url, urlencode(set_password_query)
     )
     variables = dict(user_title=user.title, site_title=site_title, url=url)
-    recipients = ['"{0}" <{1}>'.format(user.title, user.email)]  # XXX naive?
+    recipients = [f'"{user.title}" <{user.email}>']  # XXX naive?
     send_email(request, recipients, template_name, variables)

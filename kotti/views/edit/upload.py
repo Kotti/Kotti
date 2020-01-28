@@ -17,7 +17,7 @@ log = getLogger(__name__)
 
 
 @view_defaults(name="upload", context="kotti.resources.Content", permission="edit")
-class UploadView(object):
+class UploadView:
     def __init__(self, context, request):
         """ Constructor.
 

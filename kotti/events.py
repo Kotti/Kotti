@@ -38,7 +38,7 @@ from kotti.security import set_groups
 from kotti.sqla import no_autoflush
 
 
-class ObjectEvent(object):
+class ObjectEvent:
     """Event related to an object."""
 
     def __init__(self, obj, request=None):
@@ -125,7 +125,7 @@ class DispatcherDict(OrderedDict):
         return type(self)(self.default_factory, copy.deepcopy(self.items()))
 
     def __repr__(self):
-        return "OrderedDefaultDict(%s, %s)" % (
+        return "OrderedDefaultDict({}, {})".format(
             self.default_factory,
             OrderedDict.__repr__(self),
         )
@@ -394,7 +394,7 @@ def _set_path_for_new_name(target, value, oldvalue, initiator):
         # We're a new root object
         target_path = "/"
     else:
-        target_path += "/{0}/".format(value)
+        target_path += f"/{value}/"
     target.path = target_path
     # We need to set the name to value here so that the subsequent
     # UPDATE in _update_children_paths will include the new 'name'
@@ -412,7 +412,7 @@ def _set_path_for_new_name(target, value, oldvalue, initiator):
         _update_children_paths(old_path, target_path)
     else:
         for child in _all_children(target):
-            child.path = "{0}{1}/".format(child.__parent__.path, child.__name__)
+            child.path = f"{child.__parent__.path}{child.__name__}/"
 
 
 def _all_children(item, _all=None):
@@ -451,7 +451,7 @@ def _set_path_for_new_parent(target, value, oldvalue, initiator):
         return
 
     target_path = "/".join(node.__name__ for node in line)
-    target_path += "/{0}/".format(target.__name__)
+    target_path += f"/{target.__name__}/"
     target.path = target_path
 
     if old_path and target.id is not None:
@@ -461,11 +461,11 @@ def _set_path_for_new_parent(target, value, oldvalue, initiator):
         # children.  This is the case when we create an object with
         # children before we assign the object itself to a parent.
         for child in _all_children(target):
-            child.path = "{0}{1}/".format(child.__parent__.path, child.__name__)
+            child.path = f"{child.__parent__.path}{child.__name__}/"
 
 
 # noinspection PyPep8Naming
-class subscribe(object):
+class subscribe:
     """Function decorator to attach the decorated function as a handler for a
     Kotti event.  Example::
 

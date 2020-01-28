@@ -66,7 +66,7 @@ class DummyRequest(testing.DummyRequest):
         def _decode(body):
             if not body:
                 return {}
-            return dict([(x, y) for x, y in parse_qsl(body)])
+            return {x: y for x, y in parse_qsl(body)}
 
         if POST and isinstance(POST, bytes):
             POST = POST.decode()
@@ -208,7 +208,7 @@ class UnitTestBase(TestCase):
 
 class EventTestBase(TestCase):
     def setUp(self, **kwargs):
-        super(EventTestBase, self).setUp(**kwargs)
+        super().setUp(**kwargs)
         self.config.include("kotti.events")
 
 
@@ -286,7 +286,7 @@ class RootFactory(dict):
     __acl__ = [("Allow", "role:admin", ALL_PERMISSIONS)]
 
     def __init__(self, request):
-        super(RootFactory, self).__init__()
+        super().__init__()
 
 
 def dummy_view(context, request):

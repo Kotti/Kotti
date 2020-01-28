@@ -63,7 +63,7 @@ class Form(deform.Form):
     def render(self, appstruct=None, readonly=False):
         if appstruct is None:
             appstruct = getattr(self, "appstruct", colander.null)
-        return super(Form, self).render(appstruct, readonly=readonly)
+        return super().render(appstruct, readonly=readonly)
 
 
 class BaseFormView(FormView):
@@ -78,7 +78,7 @@ class BaseFormView(FormView):
     add_template_vars = ()
 
     def __init__(self, context, request, **kwargs):
-        super(BaseFormView, self).__init__(request)
+        super().__init__(request)
         self.context = context
         self.__dict__.update(kwargs)
 
@@ -87,7 +87,7 @@ class BaseFormView(FormView):
             self.schema = self.schema_factory()
         if self.use_csrf_token and "csrf_token" not in self.schema:
             self.schema.children.append(CSRFSchema()["csrf_token"])
-        result = super(BaseFormView, self).__call__()
+        result = super().__call__()
         if isinstance(result, dict):
             result.update(self.more_template_vars())
         return result
@@ -196,7 +196,7 @@ class AddFormView(BaseFormView):
 
 class CommaSeparatedListWidget(deform.widget.Widget):
     def __init__(self, template=None, **kw):
-        super(CommaSeparatedListWidget, self).__init__(**kw)
+        super().__init__(**kw)
         self.template = template
 
     def serialize(self, field, cstruct, readonly=False):

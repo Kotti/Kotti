@@ -43,7 +43,7 @@ def upgrade():
         uploaded_file.process_content(
             data, filename=filename, content_type=mimetype)
         _saved.append({'nodeid': id, 'data': uploaded_file.encode()})
-        log.info("Saved data for node id {}".format(id))
+        log.info(f"Saved data for node id {id}")
 
     query = DBSession.query(
         files.c.id, files.c.data, files.c.filename, files.c.mimetype

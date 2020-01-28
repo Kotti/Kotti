@@ -322,7 +322,7 @@ def workflow(config):
 
 class TestStorage(MemoryFileStorage):
     def get(self, file_or_id):
-        f = super(TestStorage, self).get(file_or_id)
+        f = super().get(file_or_id)
         f.last_modified = datetime(2012, 12, 30)
         return f
 

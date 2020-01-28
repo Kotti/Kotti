@@ -1,9 +1,18 @@
 Change History
 ==============
 
+- Remove CircleCI
+
 - Fix broken tags widget (#562).
 
-- Declare Python 3.7 compatibility.
+- Run ``pyupgrade --py36-plus`` on all Python files to use some more modern language
+  features where appropriate (for example f-strings).
+
+- Declare Python 3.7 and 3.8 compatibility.
+
+- Remove Python 3.5 compatibility.
+
+- Remove ``rfc6266-parser`` dependency.
 
 2.0.1 - 2019-01-09
 ------------------

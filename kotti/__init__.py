@@ -6,8 +6,6 @@ from pyramid.events import BeforeRender
 from pyramid.threadlocal import get_current_registry
 from pyramid.util import DottedNameResolver
 from pyramid_beaker import session_factory_from_settings
-from six import binary_type
-from six import string_types
 from sqlalchemy import MetaData
 from sqlalchemy import engine_from_config
 from sqlalchemy.ext.declarative import declarative_base
@@ -174,7 +172,7 @@ def _resolve_dotted(d, keys=conf_dotted):
 
     for key in keys:
         value = resolved[key]
-        if not isinstance(value, string_types):
+        if not isinstance(value, str):
             continue
         new_value = []
         for dottedname in value.split():
@@ -206,7 +204,7 @@ def base_configure(global_config, **settings):
         settings.setdefault(key, value)
 
     for key, value in settings.items():
-        if key.startswith("kotti") and isinstance(value, binary_type):
+        if key.startswith("kotti") and isinstance(value, bytes):
             settings[key] = value.decode("utf8")
 
     # Allow extending packages to change 'settings' w/ Python:

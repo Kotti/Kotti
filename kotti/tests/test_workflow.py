@@ -77,7 +77,7 @@ class TestWorkflow:
 
 
 @patch("kotti.workflow.transaction.commit")
-class TestResetWorkflow(object):
+class TestResetWorkflow:
     @staticmethod
     def call(*args, **kwargs):
         from kotti.workflow import reset_workflow
@@ -118,7 +118,7 @@ class TestResetWorkflowCommand:
                 reset_workflow.assert_called_with(purge_existing=True)
 
 
-class TestDefaultWorkflow(object):
+class TestDefaultWorkflow:
     @staticmethod
     def make_document(root):
         from kotti import DBSession

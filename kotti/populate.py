@@ -45,15 +45,15 @@ def populate():
     localizer = lrm.localizer
 
     if DBSession.query(Node.id).count() == 0:
-        localized_root_attrs = dict(
-            [(k, localizer.translate(v)) for k, v in iteritems(_ROOT_ATTRS)]
-        )
+        localized_root_attrs = {
+            k: localizer.translate(v) for k, v in _ROOT_ATTRS.items()
+        }
         root = Document(**localized_root_attrs)
         root.__acl__ = SITE_ACL
         DBSession.add(root)
-        localized_about_attrs = dict(
-            [(k, localizer.translate(v)) for k, v in iteritems(_ABOUT_ATTRS)]
-        )
+        localized_about_attrs = {
+            k: localizer.translate(v) for k, v in _ABOUT_ATTRS.items()
+        }
         root["about"] = Document(**localized_about_attrs)
 
         wf = get_workflow(root)

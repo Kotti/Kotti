@@ -114,7 +114,7 @@ def _setup_sanitizers(settings: Dict[str, Union[str, bool]]) -> None:
     # step 1: resolve sanitizer functions and make ``kotti.sanitizers`` a
     # dictionary containing resolved functions
 
-    if not isinstance(settings["kotti.sanitizers"], string_types):
+    if not isinstance(settings["kotti.sanitizers"], str):
         return
 
     sanitizers = {}

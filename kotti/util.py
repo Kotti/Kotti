@@ -72,7 +72,7 @@ def render_view(context, request, name="", secure=True):
         return response.ubody
 
 
-class TemplateStructure(object):
+class TemplateStructure:
     def __init__(self, html):
         self.html = html
 
@@ -85,7 +85,7 @@ class TemplateStructure(object):
         return getattr(self.html, key)
 
 
-class LinkBase(object):
+class LinkBase:
     def __call__(self, context, request):
         return TemplateStructure(
             render(
@@ -178,14 +178,14 @@ class Link(LinkBase):
         return isinstance(other, Link) and repr(self) == repr(other)
 
     def __repr__(self):
-        return "Link({0}, {1})".format(self.name, self.title)
+        return f"Link({self.name}, {self.title})"
 
 
 class ActionButton(Link):
     def __init__(
         self, path, title=None, no_children=False, css_class="btn btn-default"
     ):
-        super(ActionButton, self).__init__(path, title)
+        super().__init__(path, title)
         self.no_children = no_children
         self.css_class = css_class
 
@@ -220,7 +220,7 @@ def cache(compute_key, container_factory):
                 key = compute_key(*args, **kwargs)
             except DontCache:
                 return func(*args, **kwargs)
-            key = "{0}.{1}:{2}".format(func.__module__, func.__name__, key)
+            key = f"{func.__module__}.{func.__name__}:{key}"
             cached_value = cache.get(key, marker)
             if cached_value is marker:
                 cached_value = cache[key] = func(*args, **kwargs)

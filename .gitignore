@@ -36,3 +36,4 @@ pyvenv.cfg
 .pytest_cache/v/pep8/mtimes
 
 *.DS_Store
+.venv

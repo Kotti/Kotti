@@ -40,7 +40,7 @@ def _state_info(context, request):
 
 def _states(context, request):
     state_info = _state_info(context, request)
-    return dict([(i["name"], i) for i in state_info])
+    return {i["name"]: i for i in state_info}
 
 
 # noinspection PyUnusedLocal

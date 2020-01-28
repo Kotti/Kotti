@@ -10,9 +10,9 @@ cache:
 before_cache:
   - rm -f $HOME/.cache/pip/log/debug.log
 python:
+  - "3.8"
   - "3.7"
   - "3.6"
-  - "3.5"
 env:
   - KOTTI_TEST_DB_STRING=postgresql://postgres@localhost:5432/kotti_testing
   - KOTTI_TEST_DB_STRING=mysql+mysqldb://root@localhost:3306/kotti_testing

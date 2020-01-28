@@ -37,7 +37,7 @@ class TestFileViews:
         self._test_common_headers(res.headers)
 
         assert res.content_disposition.startswith(
-            "{0}; filename=my".format(disposition)
+            f"{disposition};filename=\"my"
         )
 
         data = asset("logo.png").read()
@@ -280,10 +280,10 @@ class TestUploadedFileResponse:
         assert resp.headers["Expires"] == "Mon, 31 Dec 2012 13:00:10 GMT"
 
     def test_redirect(self, filedepot, dummy_request):
-        class PublicFile(object):
+        class PublicFile:
             public_url = "http://example.com"
 
-        class PublicData(object):
+        class PublicData:
             file = PublicFile()
 
         with pytest.raises(HTTPMovedPermanently) as e:
@@ -351,7 +351,7 @@ class TestStoredFileResponse:
         assert resp.headers["Last-Modified"] == "Sun, 30 Dec 2012 00:00:00 GMT"
 
     def test_redirect(self, filedepot, dummy_request):
-        class PublicFile(object):
+        class PublicFile:
             public_url = "http://example.com"
 
         with pytest.raises(HTTPMovedPermanently) as e:

@@ -36,14 +36,14 @@ from kotti.views.site_setup import CONTROL_PANEL_LINKS
 from kotti.views.slots import slot_events
 
 
-class SettingHasValuePredicate(object):
+class SettingHasValuePredicate:
     def __init__(self, val, config):
         self.name, self.value = val
         if not isinstance(self.value, bool):
             raise ValueError("Only boolean values supported")
 
     def text(self):
-        return "if_setting_has_value = {0} == {1}".format(self.name, self.value)
+        return f"if_setting_has_value = {self.name} == {self.value}"
 
     phash = text
 
@@ -51,12 +51,12 @@ class SettingHasValuePredicate(object):
         return asbool(request.registry.settings[self.name]) == self.value
 
 
-class RootOnlyPredicate(object):
+class RootOnlyPredicate:
     def __init__(self, val, config):
         self.val = val
 
     def text(self):
-        return "root_only = {0}".format(self.val)
+        return f"root_only = {self.val}"
 
     phash = text
 
@@ -77,7 +77,7 @@ def add_renderer_globals(event):
         event["api"] = api
 
 
-class Slots(object):
+class Slots:
     def __init__(self, context, request):
         self.context = context
         self.request = request
@@ -100,7 +100,7 @@ class Slots(object):
         return value
 
 
-class TemplateAPI(object):
+class TemplateAPI:
     """This implements the ``api`` object that's passed to all templates.
 
     Use dict-access as a shortcut to retrieve template macros from templates.
@@ -187,7 +187,7 @@ class TemplateAPI(object):
         if view_title:
             view_title += " "
         view_title += self.context.title
-        return "{0} - {1}".format(view_title, self.site_title)
+        return f"{view_title} - {self.site_title}"
 
     def url(self, context=None, *elements, **kwargs):
         """
@@ -307,7 +307,7 @@ class TemplateAPI(object):
             email = user.name
         h = hashlib.md5(email.encode("utf8")).hexdigest()
         query = {"default": default_image, "size": str(size)}
-        url = "https://secure.gravatar.com/avatar/{0}?{1}".format(h, urlencode(query))
+        url = "https://secure.gravatar.com/avatar/{}?{}".format(h, urlencode(query))
         return url
 
     @reify
@@ -379,7 +379,7 @@ class TemplateAPI(object):
         return sanitize(html, sanitizer)
 
 
-class NodesTree(object):
+class NodesTree:
     def __init__(self, node, request, item_mapping, item_to_children, permission):
         self._node = node
         self._request = request
@@ -410,8 +410,7 @@ class NodesTree(object):
         # noinspection PyProtectedMember
         yield item._node
         for ch in item.children:
-            for item in self._flatten(ch):
-                yield item
+            yield from self._flatten(ch)
 
     def tolist(self):
         return list(self._flatten(self))
@@ -446,7 +445,7 @@ def search_content(search_term, request=None):
 def default_search_content(search_term, request=None):
 
     # noinspection PyUnresolvedReferences
-    searchstring = "%{0}%".format(search_term)
+    searchstring = f"%{search_term}%"
 
     # generic_filter can be applied to all Node (and subclassed) objects
     generic_filter = or_(

@@ -12,7 +12,7 @@ from kotti.util import command
 
 class WorkflowTransition(ObjectEvent):
     def __init__(self, obj, info, **kwargs):
-        super(WorkflowTransition, self).__init__(obj, **kwargs)
+        super().__init__(obj, **kwargs)
         self.info = info
 
 
