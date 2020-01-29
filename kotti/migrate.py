@@ -39,6 +39,8 @@ adding their Alembic 'script directory' location to the
 'stamp_heads' will then include the add-on.
 """
 import os
+from typing import Callable
+from typing import List
 
 import pkg_resources
 from alembic.config import Config
@@ -51,8 +53,6 @@ from kotti import DBSession
 from kotti import conf_defaults
 from kotti import get_settings
 from kotti.util import command
-
-from typing import Callable, List
 
 KOTTI_SCRIPT_DIR = pkg_resources.resource_filename("kotti", "alembic")
 DEFAULT_LOCATION = "kotti:alembic"

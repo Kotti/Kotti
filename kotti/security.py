@@ -14,7 +14,6 @@ import bcrypt
 from pyramid.location import lineage
 from pyramid.security import PermitsResult
 from pyramid.security import view_execution_permitted
-from six import string_types
 from sqlalchemy import Boolean
 from sqlalchemy import Column
 from sqlalchemy import DateTime

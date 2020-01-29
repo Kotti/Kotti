@@ -5,7 +5,6 @@ Populate contains two functions that are called on application startup
 
 from pyramid.i18n import LocalizerRequestMixin
 from pyramid.threadlocal import get_current_registry
-from six import iteritems
 
 from kotti import get_settings
 from kotti.resources import DBSession

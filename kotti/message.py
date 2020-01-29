@@ -1,10 +1,10 @@
+import hashlib
 import time
 from typing import Dict
 from typing import List
 from typing import Optional
 from urllib.parse import urlencode
 
-import hashlib
 from html2text import HTML2Text
 from pyramid.renderers import render
 from pyramid_mailer.mailer import Mailer

@@ -9,10 +9,10 @@ from deform.widget import CheckboxChoiceWidget
 from deform.widget import CheckedPasswordWidget
 from deform.widget import SequenceWidget
 from pyramid.exceptions import Forbidden
-from pyramid.httpexceptions import HTTPFound, HTTPBadRequest
+from pyramid.httpexceptions import HTTPBadRequest
+from pyramid.httpexceptions import HTTPFound
 from pyramid.view import view_config
 from pyramid_deform import FormView
-from six import string_types
 
 from kotti.events import UserDeleted
 from kotti.events import notify

@@ -7,25 +7,25 @@ Inheritance Diagram
 
 .. inheritance-diagram:: kotti.resources
 """
+import abc
 import datetime
+import os
+import warnings
 from cgi import FieldStorage
 from collections.abc import MutableMapping
+from copy import copy
+from fnmatch import fnmatch
+from io import BufferedReader
+from io import BytesIO
 from typing import Any
 from typing import Iterable
 from typing import List
 from typing import Optional
 from typing import Union
 
-import abc
-import os
-import warnings
-from copy import copy
 from depot.fields.sqlalchemy import UploadedFileField
 from depot.fields.sqlalchemy import _SQLAMutationTracker
 from depot.fields.upload import UploadedFile
-from fnmatch import fnmatch
-from io import BufferedReader
-from io import BytesIO
 from pyramid.decorator import reify
 from pyramid.traversal import resource_path
 from sqlalchemy import Boolean

@@ -13,7 +13,6 @@ from bleach_whitelist.bleach_whitelist import print_attrs
 from bleach_whitelist.bleach_whitelist import print_tags
 from pyramid.config import Configurator
 from pyramid.util import DottedNameResolver
-from six import string_types
 
 from kotti import get_settings
 from kotti.events import ObjectInsert

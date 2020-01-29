@@ -23,8 +23,9 @@ from kotti import DBSession
 from kotti import get_settings
 from kotti.events import objectevent_listeners
 from kotti.interfaces import INavigationRoot
-from kotti.resources import Content, Node
+from kotti.resources import Content
 from kotti.resources import Document
+from kotti.resources import Node
 from kotti.resources import Tag
 from kotti.resources import TagsToContents
 from kotti.resources import get_root
