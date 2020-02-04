@@ -65,7 +65,7 @@ translationstring==1.3
 Unidecode==1.1.1
 usersettings==1.0.7
 venusian==3.0.0
-waitress==1.4.2
+waitress==1.4.3
 webencodings==0.5.1
 WebOb==1.8.6
 zope.component==4.6
