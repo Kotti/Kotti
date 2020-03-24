@@ -81,6 +81,7 @@ conf_defaults = {
             "kotti.views.login",
             "kotti.views.navigation",
             "kotti.views.users",
+            "kotti_audit"
         ]
     ),
     "kotti.caching_policy_chooser": (

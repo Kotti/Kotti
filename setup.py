@@ -40,6 +40,7 @@ install_requires = [
     'js.jquery_timepicker_addon',
     'js.jqueryui>=1.8.24',
     'js.jqueryui_tagit',
+    'kotti_audit>=1.1.3',
     'lingua>=1.3',
     'py_bcrypt',
     'pyramid>=1.9',
