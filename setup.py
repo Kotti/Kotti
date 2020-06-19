@@ -69,7 +69,7 @@ tests_require = [
     'Pillow',  # thumbnail filter in depot tween tests
     'py>=1.4.29',
     'pyquery',
-    'pytest<5',  # see #563
+    'pytest>=4.6<5',  # see #563
     'pytest-cov',
     'pytest-pep8>=1.0.6',
     'pytest-travis-fold',
@@ -92,7 +92,7 @@ docs_require = [
     'repoze.sphinx.autointerface',
     'sphinx_rtd_theme',
     'setuptools-git',  # needed to make "python setup.py install" on rtd.
-    'pytest',  # needed for kotti.testing apidocs
+    'pytest>=4.6<5',  # needed for kotti.testing apidocs
     ]
 
 setup_requires = [
