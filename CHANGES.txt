@@ -1,6 +1,8 @@
 Change History
 ==============
 
+- Upgrade ``requirements.txt``.  [fixes #576]
+
 - Remove CircleCI
 
 - Fix broken tags widget (#562).

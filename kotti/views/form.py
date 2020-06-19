@@ -7,7 +7,7 @@ Inheritance Diagram
 .. inheritance-diagram:: kotti.views.form
 """
 
-from collections import MutableMapping
+from collections.abc import MutableMapping
 from io import BytesIO
 
 import colander
