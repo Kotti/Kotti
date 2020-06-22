@@ -54,7 +54,7 @@ upload_css = Resource(
 upload = Group([upload_js, upload_css])
 
 
-class NeededGroup(object):
+class NeededGroup:
     """A collection of fanstatic resources that supports
        dynamic appending of resources after initialization"""
 

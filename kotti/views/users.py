@@ -9,10 +9,10 @@ from deform.widget import CheckboxChoiceWidget
 from deform.widget import CheckedPasswordWidget
 from deform.widget import SequenceWidget
 from pyramid.exceptions import Forbidden
-from pyramid.httpexceptions import HTTPFound, HTTPBadRequest
+from pyramid.httpexceptions import HTTPBadRequest
+from pyramid.httpexceptions import HTTPFound
 from pyramid.view import view_config
 from pyramid_deform import FormView
-from six import string_types
 
 from kotti.events import UserDeleted
 from kotti.events import notify
@@ -47,7 +47,7 @@ def roles_form_handler(context, request, available_role_names, groups_lister):
                     raise Forbidden()
                 new_value = bool(
                     request.params.get(
-                        "role::{0}::{1}".format(principal_name, role_name)
+                        f"role::{principal_name}::{role_name}"
                     )
                 )
                 if principal_name not in p_to_r:
@@ -58,9 +58,9 @@ def roles_form_handler(context, request, available_role_names, groups_lister):
         for principal_name, new_role_names in p_to_r.items():
             # We have to be careful with roles that aren't mutable here:
             orig_role_names = set(groups_lister(principal_name, context))
-            orig_sharing_role_names = set(
+            orig_sharing_role_names = {
                 r for r in orig_role_names if r in available_role_names
-            )
+            }
             if new_role_names != orig_sharing_role_names:
                 final_role_names = orig_role_names - set(available_role_names)
                 final_role_names |= new_role_names
@@ -93,9 +93,9 @@ def search_principals(request, context=None, ignore=None, extra=()):
         postdata = request.json
     if "search" in postdata:
         if request.is_xhr:
-            query = "*{0}*".format(postdata["query"])
+            query = "*{}*".format(postdata["query"])
         else:
-            query = "*{0}*".format(request.params["query"])
+            query = "*{}*".format(request.params["query"])
         found = False
         for p in principals.search(name=query, title=query, email=query):
             found = True
@@ -128,7 +128,7 @@ def share_node(context, request):
         return len([g for g in all_groups if g.startswith("role:")]) > 0
 
     existing = [e for e in filter(with_roles, existing)]
-    seen = set([entry[0].name for entry in existing])
+    seen = {entry[0].name for entry in existing}
 
     # Allow search to take place and add some entries:
     entries = list(existing) + search_principals(request, context, ignore=seen)
@@ -261,7 +261,7 @@ def principal_schema(base=PrincipalFull()):
         all_groups = []
         for p in principals.search(name="group:*"):
             value = p.name.split("group:")[1]
-            label = "{0}, {1}".format(p.title, value)
+            label = f"{p.title}, {value}"
             all_groups.append(dict(value=value, label=label))
         schema["groups"]["group"].widget.values = all_groups
         schema["roles"].widget.values = [
@@ -305,7 +305,7 @@ def _massage_groups_in(appstruct):
     """
     groups = appstruct.get("groups", [])
     all_groups = list(appstruct.get("roles", [])) + [
-        "group:{0}".format(g) for g in groups if g
+        f"group:{g}" for g in groups if g
     ]
     if "roles" in appstruct:
         del appstruct["roles"]
@@ -375,7 +375,7 @@ class GroupAddFormView(UserAddFormView):
         return schema
 
     def add_group_success(self, appstruct):
-        appstruct["name"] = "group:{0}".format(appstruct["name"].lower())
+        appstruct["name"] = "group:{}".format(appstruct["name"].lower())
         return self.add_user_success(appstruct)
 
 
@@ -391,7 +391,7 @@ class UsersManage(FormView):
     GroupAddFormView = GroupAddFormView
 
     def __init__(self, context, request):
-        super(UsersManage, self).__init__(request)
+        super().__init__(request)
         self.context = context
 
     def __call__(self):
@@ -422,7 +422,7 @@ class UsersManage(FormView):
             return HTTPFound(location=location)
 
         extra = self.request.params.get("extra") or ()
-        if isinstance(extra, string_types):
+        if isinstance(extra, str):
             extra = extra.split(",")
         search_entries = search_principals(self.request, extra=extra)
         available_roles = [ROLES[role_name] for role_name in USER_MANAGEMENT_ROLES]
@@ -488,17 +488,17 @@ class UserManageFormView(UserEditFormView):
         else:
             appstruct.pop("password", None)
         _massage_groups_in(appstruct)
-        return super(UserManageFormView, self).save_success(appstruct)
+        return super().save_success(appstruct)
 
     def cancel_success(self, appstruct):
         self.request.session.flash(_("No changes were made."), "info")
-        location = "{0}/@@setup-users".format(self.request.application_url)
+        location = f"{self.request.application_url}/@@setup-users"
         return HTTPFound(location=location)
 
     cancel_failure = cancel_success
 
     def delete_success(self, appstruct):
-        location = "{0}/@@delete-user?name={1}".format(
+        location = "{}/@@delete-user?name={}".format(
             self.request.application_url, self.request.params["name"]
         )
         return HTTPFound(location=location)
@@ -525,7 +525,7 @@ class UserManage(FormView):
     UserManageFormView = UserManageFormView
 
     def __init__(self, context, request):
-        super(UserManage, self).__init__(request)
+        super().__init__(request)
         self.context = context
 
     def __call__(self):
@@ -585,7 +585,7 @@ def user_delete(context, request):
                     ),
                     "info",
                 )
-                location = "{0}/@@setup-users".format(request.application_url)
+                location = f"{request.application_url}/@@setup-users"
                 return HTTPFound(location=location)
 
             api = template_api(
@@ -621,7 +621,7 @@ class Preferences(FormView):
     PreferencesFormView = PreferencesFormView
 
     def __init__(self, context, request):
-        super(Preferences, self).__init__(request)
+        super().__init__(request)
         self.context = context
 
     def __call__(self):

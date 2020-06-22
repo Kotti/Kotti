@@ -34,7 +34,7 @@ def _verify_minimal_html(sanitized):
     from bleach_whitelist.bleach_whitelist import print_tags
 
     for tag in set(all_tags) - set(markdown_tags) - set(print_tags):
-        assert "<{}".format(tag) not in sanitized
+        assert f"<{tag}" not in sanitized
 
     assert 'style=""' in sanitized
     assert '<a href="http://external.com/">' in sanitized

@@ -24,7 +24,7 @@ from kotti.workflow import get_workflow
 
 
 @view_defaults(permission="edit")
-class NodeActions(object):
+class NodeActions:
     """Actions related to content nodes."""
 
     def __init__(self, context, request):

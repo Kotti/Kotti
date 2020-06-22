@@ -94,7 +94,6 @@ Development
 |coveralls|_
 |codacy|_
 |codeclimate|_
-|circleci|_
 |scrutinizer|_
 |requires.io|_
 
@@ -129,9 +128,6 @@ Contributions are always welcome, read our `contribution guidelines`_ and visit 
 
 .. |codeclimate| image:: https://api.codeclimate.com/v1/badges/3a4a61548fcc195e4ba1/maintainability
 .. _codeclimate: https://codeclimate.com/github/Kotti/Kotti/maintainability
-
-.. |circleci| image:: https://circleci.com/gh/Kotti/Kotti/tree/master.svg?style=svg
-.. _circleci: https://circleci.com/gh/Kotti/Kotti/tree/master
 
 .. |scrutinizer| image:: https://scrutinizer-ci.com/g/Kotti/Kotti/badges/quality-score.png?b=master
 .. _scrutinizer: https://scrutinizer-ci.com/g/Kotti/Kotti/

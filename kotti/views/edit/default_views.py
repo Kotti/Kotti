@@ -16,7 +16,7 @@ from kotti.util import _
 
 
 @view_defaults(permission="edit")
-class DefaultViewSelection(object):
+class DefaultViewSelection:
     def __init__(self, context, request):
 
         self.context = context
@@ -77,7 +77,7 @@ class DefaultViewSelection(object):
                 )
             else:
                 warnings.warn(
-                    "No view called '{0}' is registered for {1!r}.".format(
+                    "No view called '{}' is registered for {!r}.".format(
                         name, self.context
                     )
                 )

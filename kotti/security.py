@@ -1,4 +1,4 @@
-from collections import MutableMapping
+from collections.abc import MutableMapping
 from contextlib import contextmanager
 from datetime import datetime
 from typing import Dict
@@ -14,7 +14,6 @@ import bcrypt
 from pyramid.location import lineage
 from pyramid.security import PermitsResult
 from pyramid.security import view_execution_permitted
-from six import string_types
 from sqlalchemy import Boolean
 from sqlalchemy import Column
 from sqlalchemy import DateTime
@@ -87,7 +86,7 @@ class Principal(Base):
     last_login_date = Column(DateTime())
 
     __tablename__ = "principals"
-    __mapper_args__ = dict(order_by=name)
+    # __mapper_args__ = dict(order_by=name)
 
     def __init__(
         self,
@@ -114,10 +113,10 @@ class Principal(Base):
         self.last_login_date = None
 
     def __repr__(self):  # pragma: no cover
-        return "<Principal {0!r}>".format(self.name)
+        return f"<Principal {self.name!r}>"
 
 
-class AbstractPrincipals(object):
+class AbstractPrincipals:
     """This class serves as documentation and defines what methods are
     expected from a Principals database.
 
@@ -243,7 +242,7 @@ def reset() -> None:
     reset_user_management_roles()
 
 
-class PersistentACLMixin(object):
+class PersistentACLMixin:
     def _get_acl(self) -> MutationList:
         if self._acl is None:
             raise AttributeError("__acl__")
@@ -276,9 +275,9 @@ def list_groups_raw(name, context):
     from kotti.resources import Node
 
     if isinstance(context, Node):
-        return set(
+        return {
             r.group_name for r in context.local_groups if r.principal_name == name
-        )
+        }
     return set()
 
 
@@ -447,7 +446,7 @@ def map_principals_with_local_roles(context: "Node"):
 
 
 def is_user(principal: Union[Principal, str]) -> bool:
-    if not isinstance(principal, string_types):
+    if not isinstance(principal, str):
         principal = principal.name
     return ":" not in principal
 
@@ -502,8 +501,7 @@ class Principals(MutableMapping):
             raise KeyError(name)
 
     def __iter__(self) -> Iterator[str]:
-        for k in self.keys():
-            yield k
+        yield from self.keys()
 
     def __len__(self):
         return len(self.keys())
@@ -537,7 +535,7 @@ class Principals(MutableMapping):
 
         for key, value in kwargs.items():
             col = getattr(self.factory, key)
-            if isinstance(value, string_types) and "*" in value:
+            if isinstance(value, str) and "*" in value:
                 value = value.replace("*", "%").lower()
                 filters.append(func.lower(col).like(value))
             else:

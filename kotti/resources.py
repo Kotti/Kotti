@@ -7,25 +7,25 @@ Inheritance Diagram
 
 .. inheritance-diagram:: kotti.resources
 """
+import abc
 import datetime
+import os
+import warnings
 from cgi import FieldStorage
-from collections import MutableMapping
+from collections.abc import MutableMapping
+from copy import copy
+from fnmatch import fnmatch
+from io import BufferedReader
+from io import BytesIO
 from typing import Any
 from typing import Iterable
 from typing import List
 from typing import Optional
 from typing import Union
 
-import abc
-import os
-import warnings
-from copy import copy
 from depot.fields.sqlalchemy import UploadedFileField
 from depot.fields.sqlalchemy import _SQLAMutationTracker
 from depot.fields.upload import UploadedFile
-from fnmatch import fnmatch
-from io import BufferedReader
-from io import BytesIO
 from pyramid.decorator import reify
 from pyramid.traversal import resource_path
 from sqlalchemy import Boolean
@@ -236,7 +236,7 @@ class LocalGroup(Base):
         return self.__class__(**kwargs)
 
     def __repr__(self):
-        return "<{0} {1} => {2} at {3}>".format(
+        return "<{} {} => {} at {}>".format(
             self.__class__.__name__,
             self.principal_name,
             self.group_name,
@@ -311,7 +311,7 @@ class Node(Base, ContainerMixin, PersistentACLMixin, metaclass=NodeMeta):
     ):
         """Constructor"""
 
-        super(Node, self).__init__(**kwargs)
+        super().__init__(**kwargs)
 
         if annotations is None:
             annotations = {}
@@ -333,7 +333,7 @@ class Node(Base, ContainerMixin, PersistentACLMixin, metaclass=NodeMeta):
         self.parent = value
 
     def __repr__(self) -> str:
-        return "<{0} {1} at {2}>".format(
+        return "<{} {} at {}>".format(
             self.__class__.__name__, self.id, resource_path(self)
         )
 
@@ -375,7 +375,7 @@ class Node(Base, ContainerMixin, PersistentACLMixin, metaclass=NodeMeta):
         return copy
 
 
-class TypeInfo(object):
+class TypeInfo:
     """TypeInfo instances contain information about the type of a node.
 
        You can pass arbitrary keyword arguments in the constructor, they
@@ -504,7 +504,7 @@ class Tag(Base):
     title = Column(Unicode(100), unique=True, nullable=False)
 
     def __repr__(self) -> str:
-        return "<Tag ('{0}')>".format(self.title)
+        return f"<Tag ('{self.title}')>"
 
     @property
     def items(self) -> List[Node]:
@@ -661,7 +661,7 @@ class Content(Node):
         **kwargs
     ):
 
-        super(Content, self).__init__(name, parent, title, annotations, **kwargs)
+        super().__init__(name, parent, title, annotations, **kwargs)
 
         self.default_view = default_view
         self.description = description
@@ -676,7 +676,7 @@ class Content(Node):
     def copy(self, **kwargs) -> "Content":
         # Same as `Node.copy` with additional tag support.
         kwargs["tags"] = self.tags
-        return super(Content, self).copy(**kwargs)
+        return super().copy(**kwargs)
 
 
 @implementer(IDocument, IDefaultWorkflow)
@@ -711,14 +711,14 @@ class Document(Content):
         self, body: Optional[str] = "", mime_type: Optional[str] = "text/html", **kwargs
     ):
 
-        super(Document, self).__init__(**kwargs)
+        super().__init__(**kwargs)
 
         self.body = body
         self.mime_type = mime_type
 
 
 # noinspection PyMethodParameters
-class SaveDataMixin(object):
+class SaveDataMixin:
     """ The classmethods must not be implemented on a class that inherits
         from ``Base`` with ``SQLAlchemy>=1.0``, otherwise that class cannot be
         subclassed further.
@@ -811,7 +811,7 @@ class SaveDataMixin(object):
         """
 
         if not cls.type_info.is_uploadable_mimetype(fs.type):
-            raise ValueError("Unsupported MIME type: {0}".format(fs.type))
+            raise ValueError(f"Unsupported MIME type: {fs.type}")
 
         return cls(data=fs)
 
@@ -824,7 +824,7 @@ class SaveDataMixin(object):
         **kwargs
     ) -> None:
 
-        super(SaveDataMixin, self).__init__(**kwargs)
+        super().__init__(**kwargs)
 
         self.filename = filename
         self.mimetype = mimetype
@@ -836,7 +836,7 @@ class SaveDataMixin(object):
         some special attention, because we don't want the same depot file to be
         assigned to multiple content nodes.
         """
-        _copy = super(SaveDataMixin, self).copy(**kwargs)
+        _copy = super().copy(**kwargs)
         _copy.data = self.data.file.read()
         return _copy
 
@@ -874,7 +874,7 @@ def get_root(request: Optional[Request] = None) -> Node:
     return get_settings()["kotti.root_factory"][0](request)
 
 
-class DefaultRootCache(object):
+class DefaultRootCache:
     """ Default implementation for :func:`~kotti.resources.get_root` """
 
     _id = None
@@ -928,9 +928,9 @@ def _adjust_for_engine(engine: Engine) -> None:
         # We disable the Node.path index for Mysql; in some conditions
         # the index can't be created for columns even with 767 bytes,
         # the maximum default size for column indexes
-        Node.__table__.indexes = set(
+        Node.__table__.indexes = {
             index for index in Node.__table__.indexes if index.name != "ix_nodes_path"
-        )
+        }
 
 
 def initialize_sql(engine: Engine, drop_all: bool = False) -> scoped_session:

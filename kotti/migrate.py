@@ -39,6 +39,8 @@ adding their Alembic 'script directory' location to the
 'stamp_heads' will then include the add-on.
 """
 import os
+from typing import Callable
+from typing import List
 
 import pkg_resources
 from alembic.config import Config
@@ -52,8 +54,6 @@ from kotti import conf_defaults
 from kotti import get_settings
 from kotti.util import command
 
-from typing import Callable, List
-
 KOTTI_SCRIPT_DIR = pkg_resources.resource_filename("kotti", "alembic")
 DEFAULT_LOCATION = "kotti:alembic"
 
@@ -61,7 +61,7 @@ DEFAULT_LOCATION = "kotti:alembic"
 class ScriptDirectoryWithDefaultEnvPy(ScriptDirectory):
     @property
     def env_py_location(self) -> str:
-        loc = super(ScriptDirectoryWithDefaultEnvPy, self).env_py_location
+        loc = super().env_py_location
         if not os.path.exists(loc):
             loc = os.path.join(KOTTI_SCRIPT_DIR, "env.py")
         return loc
@@ -71,7 +71,7 @@ class ScriptDirectoryWithDefaultEnvPy(ScriptDirectory):
         load_python_file(dir_, filename)
 
 
-class PackageEnvironment(object):
+class PackageEnvironment:
     def __init__(self, location: str) -> None:
         self.location = location
         self.config = self._make_config(location)
@@ -83,7 +83,7 @@ class PackageEnvironment(object):
 
     @property
     def version_table(self) -> str:
-        return "{0}_alembic_version".format(self.pkg_name)
+        return f"{self.pkg_name}_alembic_version"
 
     def run_env(self, fn: Callable, **kw) -> None:
         with EnvironmentContext(
@@ -145,7 +145,7 @@ def upgrade(location=DEFAULT_LOCATION, revision=None):
 
     if revision is None:
         revision = pkg_env.script_dir.get_current_head()
-    print("Upgrading {0}:".format(pkg_env.location))
+    print(f"Upgrading {pkg_env.location}:")
 
     def upgrade(heads, context):
         # alembic supports multiple heads, we don't.
@@ -156,7 +156,7 @@ def upgrade(location=DEFAULT_LOCATION, revision=None):
             print("  - already up to date.")
             return []
 
-        print("  - upgrading from {0} to {1}...".format(rev, revision))
+        print(f"  - upgrading from {rev} to {revision}...")
 
         return context.script._upgrade_revs(revision, rev)
 
@@ -172,18 +172,18 @@ def upgrade_all():
 def list_all():
     pkg_envs = [PackageEnvironment(l) for l in get_locations()]
     for pkg_env in pkg_envs:
-        print("{0}:".format(pkg_env.pkg_name))
+        print(f"{pkg_env.pkg_name}:")
 
         for script in pkg_env.script_dir.walk_revisions():
             print(
-                "  - {0} -> {1}: {2}".format(
+                "  - {} -> {}: {}".format(
                     script.down_revision, script.revision, script.doc
                 )
             )
 
         def current_revision(rev, context):
             rev = rev[0] if rev else None
-            print("  - current revision: {0}".format(rev))
+            print(f"  - current revision: {rev}")
             return []
 
         pkg_env.run_env(current_revision)

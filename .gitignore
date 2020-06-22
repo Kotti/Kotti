@@ -31,3 +31,4 @@ filestore
 share
 .eggs
 .python-version
+.venv

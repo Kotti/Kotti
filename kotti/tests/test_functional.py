@@ -58,7 +58,6 @@ class TestUploadFile:
 
     @user("admin")
     def test_tempstorage(self, app, filedepot, browser):
-
         # 1. upload a file
         browser.open(BASE_URL + "/@@add_file")
         self.add_file(browser, contents=b"DEF")
@@ -374,97 +373,51 @@ class TestBrowser:
         assert "Grandchild was deleted" in resp.text
         assert resp.request.path == "/second-child/"
 
-        # Copy and paste
-        resp = app.get("/second-child/")
-        resp = resp.click("Cut", index=0).maybe_follow()
-        assert "Second Child was cut" in resp.text
+    @pytest.mark.user("admin")
+    def test_view_actions(self, webtest):
+
+        from kotti.resources import Document
+        from kotti.resources import File
+
+        save_addable_document = Document.type_info.addable_to
+        save_addable_file = File.type_info.addable_to
+
+        app = webtest.app
+
+        def _add_document(resp, title):
+            resp = resp.click("Document", index=0)
+            form = resp.forms["deform"]
+            form["title"] = title
+            resp = form.submit("save").maybe_follow()
+            return resp
+
+        # Add some documents
+
+        resp = app.get("/")
+
+        resp = _add_document(resp, "Child One")
+        assert resp.request.path == "/child-one/"
+
+        resp = _add_document(resp, "Child One One")
+        assert resp.request.path == "/child-one/child-one-one/"
+
         resp = app.get("/child-one/")
-        resp = resp.click("Paste", index=0).maybe_follow()
-        assert "Second Child was pasted" in resp.text
-        app.get("/second-child/", status=404)
-        resp = app.get("/child-one/second-child/")
-        resp = resp.click("Copy", index=0).maybe_follow()
-        assert "Second Child was copied" in resp.text
+
+        resp = _add_document(resp, "Child One Two")
+        assert resp.request.path == "/child-one/child-one-two/"
+
         resp = app.get("/")
-        resp = resp.click("Paste", index=0).maybe_follow()
-        assert "Second Child was pasted" in resp.text
 
-        # We can paste twice since we copied:
-        resp = app.get("/")
-        resp = resp.click("Paste", index=0).maybe_follow()
-        assert "Second Child was pasted" in resp.text
-        resp = app.get("/second-child/")
-        assert "Second Child" in resp.text
-        resp = app.get("/second-child-1/")
-        assert "Second Child" in resp.text
+        resp = _add_document(resp, "Child Two")
+        assert resp.request.path == "/child-two/"
 
-        # We can also copy and paste items that contain children,
-        # like the whole site:
-        resp = app.get("/")
-        resp = resp.click("Copy", index=0).maybe_follow()
-        assert "Welcome to Kotti was copied" in resp.text
-        resp = app.get("/second-child/")
-        resp = resp.click("Paste", index=0).maybe_follow()
-        assert "Welcome to Kotti was pasted" in resp.text
-        resp = app.get("/second-child/welcome-to-kotti/")
-        assert resp.status_code == 200
-        resp = app.get("/second-child/welcome-to-kotti/second-child/")
-        assert resp.status_code == 200
+        resp = _add_document(resp, "Child Two One")
+        assert resp.request.path == "/child-two/child-two-one/"
 
-        # And finally cut and paste a tree:
-        resp = app.get("/second-child/")
-        resp.click("Cut", index=0).maybe_follow()
-        resp = app.get("/child-one/second-child/")
-        resp = resp.click("Paste", index=0).maybe_follow()
-        assert "Second Child was pasted" in resp.text
-        app.get("/second-child/", status=404)
+        resp = app.get("/child-two/")
 
-        # Note how we can't cut and paste an item into itself:
-        resp = app.get("/child-one/")
-        resp.click("Cut", index=0).maybe_follow()
-        with pytest.raises(IndexError):
-            resp.click("Paste", index=0).maybe_follow()
-        resp = app.get("/child-one/second-child/")
-        with pytest.raises(IndexError):
-            resp.click("Paste", index=0).maybe_follow()
-
-        # Whether we can paste or not also depends on the
-        # ``type_info.addable`` property:
-        resp = app.get("/child-one/")
-        resp.click("Copy", index=0).maybe_follow()
-        resp = app.get("/child-one/second-child/")
-        resp.click("Paste", index=0).maybe_follow()
-        try:
-            Document.type_info.addable_to = ()
-            resp = app.get("/child-one/second-child/")
-            with pytest.raises(IndexError):
-                resp.click("Paste", index=0).maybe_follow()
-        finally:
-            Document.type_info.addable_to = save_addable_document
-
-        # You can't cut the root of a site:
-        resp = app.get("/child-one/")
-        resp.click("Cut", index=0)
-        resp = app.get("/")
-        with pytest.raises(IndexError):
-            resp.click("Cut", index=0)
-
-        # We can rename an item. Slashes will be stripped out.:
-        resp = app.get("/child-one/second-child/")
-        resp = resp.click("Rename", index=0)
-        form = resp.forms["form-rename"]
-        assert form["name"].value == "second-child"
-        assert form["title"].value == "Second Child"
-        form["name"] = "thi/rd-ch/ild"
-        form["title"] = "My Third Child"
-        resp = form.submit("rename").maybe_follow()
-        assert "Item was renamed" in resp.text
-        assert resp.request.path == "/child-one/third-child/"
-
-        # We cannot rename the root:
-        resp = app.get("/")
-        with pytest.raises(IndexError):
-            resp.click("Rename", index=0)
+        resp = _add_document(resp, "Child Two Two")
+        assert resp.request.path == "/child-two/child-two-two/"
 
         # On setup pages we can't use the actions:
         resp = app.get("/")
@@ -476,28 +429,40 @@ class TestBrowser:
             resp.click("Copy", index=0)
 
         # Contents view actions
+
+        # copy
+
         resp = app.get("/child-one")
         resp = resp.click("Contents", index=0)
         assert resp.request.path == "/child-one/@@contents"
         resp = resp.forms["form-contents"].submit("copy").maybe_follow()
         assert "You have to select items" in resp.text
+
         form = self._select_children(resp, 0)
         resp = form.submit("copy").maybe_follow()
-        assert "My Third Child was copied." in resp.text
-        resp = app.get("/second-child-1/@@contents")
-        assert "My Third Child" not in resp.text
+        assert "Child One One was copied." in resp.text
+
+        resp = app.get("/child-two/@@contents")
+        assert "Child One One" not in resp.text
         resp = resp.forms["form-contents"].submit("paste").maybe_follow()
-        assert "My Third Child" in resp.text
-        resp = app.get("/second-child-1/@@contents")
+        assert "Child One One" in resp.text
+
+        # cut
+
+        resp = app.get("/child-two/@@contents")
         form = self._select_children(resp, 0)
         resp = form.submit("cut").maybe_follow()
         assert "cut." in resp.text
+
         resp = app.get("/child-one/@@contents")
-        assert "Grandchild" not in resp.text
+        assert "Child Two One" not in resp.text
+
         resp = resp.forms["form-contents"].submit("paste").maybe_follow()
-        assert "Grandchild" in resp.text
+        assert "Child Two One" in resp.text
+
         with pytest.raises(IndexError):
             resp.click("Paste")
+
         resp = app.get("/child-one/@@contents")
         form = self._select_children(resp, 0, 1)
         form.submit("cut").maybe_follow()
@@ -507,37 +472,49 @@ class TestBrowser:
         form["title"] = "Forth child"
         form.submit("save").maybe_follow()
         resp = app.get("/forth-child/@@contents")
-        assert "Grandchild" not in resp.text
-        assert "My Third Child" not in resp.text
+
+        assert "Child One One" not in resp.text
+        assert "Child One Two" not in resp.text
+
         resp.forms["form-contents"].submit("paste").maybe_follow()
         resp = app.get("/forth-child/@@contents")
-        assert "Grandchild" in resp.text
-        assert "My Third Child" in resp.text
+        assert "Child One One" in resp.text
+        assert "Child One Two" in resp.text
+
         resp = app.get("/child-one/@@contents")
-        assert "Grandchild" not in resp.text
+        assert "Child One One" not in resp.text
+        assert "Child One Two" not in resp.text
+
+        # rename
+
         resp = app.get("/forth-child/@@contents")
-        assert "third-child" in resp.text
-        assert "Grandchild" in resp.text
-        assert "child-the-third" not in resp.text
-        assert "Hello Bob" not in resp.text
+        assert "child-one-one" in resp.text
+        assert "Child One One" in resp.text
+        assert "child-one-two" in resp.text
+        assert "Child One Two" in resp.text
         form = self._select_children(resp, 0, 1)
         resp = form.submit("rename_nodes").maybe_follow()
         resp = resp.forms["form-rename-nodes"].submit("cancel").maybe_follow()
         assert "No changes were made." in resp.text
         assert resp.request.path == "/forth-child/@@contents"
+
         form = self._select_children(resp, 0, 1)
         resp = form.submit("rename_nodes").maybe_follow()
         form = resp.forms["form-rename-nodes"]
-        form[form.submit_fields()[1][0]] = "child-the-third"
-        form[form.submit_fields()[2][0]] = "child, the third"
-        form[form.submit_fields()[4][0]] = "hello-bob"
-        form[form.submit_fields()[5][0]] = "Hello Bob"
+        form[form.submit_fields()[1][0]] = "child-one-three"
+        form[form.submit_fields()[2][0]] = "Child One Three"
+        form[form.submit_fields()[4][0]] = "child-one-four"
+        form[form.submit_fields()[5][0]] = "Child One Four"
         resp = form.submit("rename_nodes").maybe_follow()
         assert resp.request.path == "/forth-child/@@contents"
-        assert "third-child" not in resp.text
-        assert "Grandchild" not in resp.text
-        assert "child-the-third" in resp.text
-        assert "Hello Bob" in resp.text
+        assert "child-one-one" not in resp.text
+        assert "Child One One" not in resp.text
+        assert "child-one-two" not in resp.text
+        assert "Child One Two" not in resp.text
+        assert "child-one-three" in resp.text
+        assert "Child One Three" in resp.text
+        assert "child-one-four" in resp.text
+        assert "Child One Four" in resp.text
 
         resp = resp.click("File", index=0)
         form = resp.forms["deform"]
@@ -555,11 +532,11 @@ class TestBrowser:
         assert "Are you sure" in resp.text
         resp = (
             resp.forms["form-delete-nodes"]
-            .submit("delete_nodes", status=302)
-            .maybe_follow()
+                .submit("delete_nodes", status=302)
+                .maybe_follow()
         )
-        assert "child, the third was deleted." in resp.text
-        assert "Hello Bob was deleted." in resp.text
+        assert "Child One Three was deleted." in resp.text
+        assert "Child One Four was deleted." in resp.text
         assert "some.txt was deleted." in resp.text
         resp = app.get("/forth-child/@@contents")
         assert "Welcome to Kotti" in resp.text
@@ -571,8 +548,172 @@ class TestBrowser:
 
         # Navigation
         resp = resp.click("Navigate")
-        resp = resp.click("Second Child", index=0)
-        assert resp.request.path == "/second-child-1/"
+        resp = resp.click("Child Two", index=0)
+        assert resp.request.path == "/child-two/"
+
+    @pytest.mark.user("admin")
+    def test_rename(self, webtest):
+
+        app = webtest.app
+
+        def _add_document(resp, title):
+            resp = resp.click("Document", index=0)
+            form = resp.forms["deform"]
+            form["title"] = title
+            resp = form.submit("save").maybe_follow()
+            return resp
+
+        # Add some documents
+
+        resp = app.get("/")
+
+        resp = _add_document(resp, "Child One")
+        assert resp.request.path == "/child-one/"
+
+        resp = _add_document(resp, "Child One One")
+        assert resp.request.path == "/child-one/child-one-one/"
+
+        # We can rename an item. Slashes will be stripped out.:
+        resp = app.get("/child-one/child-one-one/")
+        resp = resp.click("Rename", index=0)
+        form = resp.forms["form-rename"]
+        assert form["name"].value == "child-one-one"
+        assert form["title"].value == "Child One One"
+        form["name"] = "child/one/two"
+        form["title"] = "Child One Two"
+        resp = form.submit("rename").maybe_follow()
+        assert "Item was renamed" in resp.text
+        assert resp.request.path == "/child-one/childonetwo/"
+
+        # We cannot rename the root:
+        resp = app.get("/")
+        with pytest.raises(IndexError):
+            resp.click("Rename", index=0)
+
+    @pytest.mark.user("admin")
+    def test_clipboard(self, webtest):
+
+        from kotti.resources import Document
+
+        save_addable_document = Document.type_info.addable_to
+
+        app = webtest.app
+
+        def _add_document(resp, title):
+            resp = resp.click("Document", index=0)
+            form = resp.forms["deform"]
+            form["title"] = title
+            resp = form.submit("save").maybe_follow()
+            return resp
+
+        # Add some documents
+
+        resp = app.get("/")
+
+        resp = _add_document(resp, "Child One")
+        assert resp.request.path == "/child-one/"
+
+        resp = _add_document(resp, "Child One One")
+        assert resp.request.path == "/child-one/child-one-one/"
+
+        resp = app.get("/child-one/")
+
+        resp = _add_document(resp, "Child One Two")
+        assert resp.request.path == "/child-one/child-one-two/"
+
+        resp = app.get("/")
+
+        resp = _add_document(resp, "Child Two")
+        assert resp.request.path == "/child-two/"
+
+        resp = _add_document(resp, "Child Two One")
+        assert resp.request.path == "/child-two/child-two-one/"
+
+        resp = app.get("/child-two/")
+
+        resp = _add_document(resp, "Child Two Two")
+        assert resp.request.path == "/child-two/child-two-two/"
+
+        # cut and paste
+        resp = app.get("/child-two/child-two-two/")
+        resp = resp.click("Cut", index=0).maybe_follow()
+        assert "Child Two Two was cut" in resp.text
+
+        resp = app.get("/child-one/")
+        resp = resp.click("Paste", index=0).maybe_follow()
+        assert "Child Two Two was pasted" in resp.text
+
+        # the former location returns 404 now
+        app.get("/child-two/child-two-two/", status=404)
+
+        # copy and paste
+
+        resp = app.get("/child-one/child-two-two/")
+        resp = resp.click("Copy", index=0).maybe_follow()
+        assert "Child Two Two was copied" in resp.text
+
+        resp = app.get("/child-two/")
+        resp = resp.click("Paste", index=0).maybe_follow()
+        assert "Child Two Two was pasted" in resp.text
+
+        # the former location exists again
+        resp = app.get("/child-two/child-two-two/")
+        assert resp.status_code == 200
+
+        # paste again
+        resp = app.get("/child-two/")
+        resp = resp.click("Paste", index=0).maybe_follow()
+        assert "Child Two Two was pasted" in resp.text
+
+        # the pasted item was renamed to satisfy name uniqueness
+        resp = app.get("/child-two/child-two-two-1/")
+        assert resp.status_code == 200
+
+        # We can also copy and paste items that contain children, like the whole site:
+        resp = app.get("/")
+        resp = resp.click("Copy", index=0).maybe_follow()
+        assert "Welcome to Kotti was copied" in resp.text
+
+        resp = app.get("/child-two/")
+        resp = resp.click("Paste", index=0).maybe_follow()
+        assert "Welcome to Kotti was pasted" in resp.text
+        resp = app.get("/child-two/welcome-to-kotti/")
+        assert resp.status_code == 200
+        resp = app.get("/child-two/welcome-to-kotti/child-two/")
+        assert resp.status_code == 200
+
+        # Note how we can't cut and paste an item into itself:
+        resp = app.get("/child-one/")
+        resp = resp.click("Cut", index=0).maybe_follow()
+        assert "Child One was cut" in resp.text
+        with pytest.raises(IndexError):
+            resp.click("Paste", index=0).maybe_follow()
+
+        # And also not into one of its children
+        resp = app.get("/child-one/child-one-one/")
+        with pytest.raises(IndexError):
+            resp.click("Paste", index=0).maybe_follow()
+
+        # Whether we can paste or not also depends on the ``type_info.addable``
+        # property:
+        resp = app.get("/child-one/")
+        resp.click("Copy", index=0).maybe_follow()
+        resp = app.get("/child-one/child-one-two/")
+        resp.click("Paste", index=0).maybe_follow()
+        try:
+            Document.type_info.addable_to = ()
+            resp = app.get("/child-one/child-one-two/")
+            with pytest.raises(IndexError):
+                resp.click("Paste", index=0).maybe_follow()
+        finally:
+            Document.type_info.addable_to = save_addable_document
+
+        # You can't cut the root of a site:
+        resp = app.get("/child-one/")
+        resp.click("Cut", index=0)
+        resp = app.get("/")
+        with pytest.raises(IndexError):
+            resp.click("Cut", index=0)
 
     @pytest.mark.user("admin")
     def test_workflow_actions(self, webtest):
@@ -861,7 +1002,7 @@ class TestBrowser:
 
         # We'll use that link to set our password:
         resp.click("Logout").maybe_follow()
-        path = email.body[email.body.index("http://localhost") :].split()[0][16:]
+        path = email.body[email.body.index("http://localhost"):].split()[0][16:]
         resp = app.get(path)
         form = resp.forms["deform"]
         form["password"] = "newpassword"

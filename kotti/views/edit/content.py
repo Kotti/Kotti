@@ -90,7 +90,7 @@ class FileAddForm(AddFormView):
     def save_success(self, appstruct):
         if not appstruct["title"]:
             appstruct["title"] = appstruct["file"]["filename"]
-        return super(FileAddForm, self).save_success(appstruct)
+        return super().save_success(appstruct)
 
     def add(self, **appstruct):
         filename = appstruct["file"]["filename"]
