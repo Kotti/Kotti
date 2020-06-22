@@ -691,3 +691,10 @@ class TestRootOnlyPredicate:
         root = request.root
         assert predicate(root, request) is True
         assert predicate(object(), request) is False
+
+
+def test_base_view(dummy_request, root):
+    from kotti.views import BaseView
+    bv = BaseView(root, dummy_request)
+    assert bv.context == root
+    assert bv.request == dummy_request

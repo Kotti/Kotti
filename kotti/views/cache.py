@@ -74,7 +74,7 @@ caching_policies = {
 def _safe_get_user(request):
     try:
         return get_user(request)
-    except DetachedInstanceError:  # XXX need to understand what's happening
+    except DetachedInstanceError:  # noqa XXX need to understand what's happening
         return not None
 
 
