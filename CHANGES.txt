@@ -1,6 +1,9 @@
 Change History
 ==============
 
+2.0.2 - 2020-06-22
+------------------
+
 - Upgrade ``requirements.txt``.  [fixes #576]
 
 - Remove CircleCI
