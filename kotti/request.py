@@ -55,4 +55,4 @@ class Request(pyramid.request.Request):
         from kotti.security import authz_context
 
         with authz_context(context, self):
-            return super(Request, self).has_permission(permission, context)
+            return super().has_permission(permission, context)

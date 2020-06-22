@@ -1,4 +1,4 @@
-class BaseView(object):
+class BaseView:
     """ Very basic view class that can be subclassed.  Does nothing more than
     assignment of ``context`` and ``request`` to instance attributes on
     initialization. """

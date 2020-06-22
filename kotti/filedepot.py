@@ -10,12 +10,12 @@ from typing import Optional
 from typing import Tuple
 from typing import Union
 
-import rfc6266_parser
 from depot.fields.sqlalchemy import _SQLAMutationTracker
 from depot.fields.upload import UploadedFile
 from depot.io.interfaces import FileStorage
 from depot.io.memory import MemoryStoredFile
 from depot.manager import DepotManager
+from depot.utils import make_content_disposition
 from pyramid import tweens
 from pyramid.config import Configurator
 from pyramid.httpexceptions import HTTPMovedPermanently
@@ -35,7 +35,6 @@ from sqlalchemy.engine.base import Connection
 from sqlalchemy.orm import deferred
 from sqlalchemy.orm.attributes import Event
 from sqlalchemy.util.langhelpers import _symbol
-from unidecode import unidecode
 
 from kotti import Base
 from kotti import DBSession
@@ -95,7 +94,7 @@ class DBStoredFile(Base):
         content_type=None,
         last_modified=None,
         content_length=None,
-        **kwds
+        **kwds,
     ):
         self.file_id = file_id
         self.filename = filename
@@ -119,9 +118,9 @@ class DBStoredFile(Base):
             )
 
         if n == -1:
-            result = self._data[self._cursor:]
+            result = self._data[self._cursor :]
         else:
-            result = self._data[self._cursor:self._cursor + n]
+            result = self._data[self._cursor : self._cursor + n]
 
         self._cursor += len(result)
 
@@ -215,7 +214,7 @@ def handle_change_data(
 def set_metadata(event: Union[ObjectUpdate, ObjectInsert]) -> None:
     """Set DBStoredFile metadata based on data
 
-    :param event: event that trigerred this handler.
+    :param event: event that triggered this handler.
     :type event: :class:`ObjectInsert` or :class:`ObjectUpdate`
     """
     obj = event.object
@@ -242,7 +241,7 @@ class DBFileStorage(FileStorage):
 
         f = DBSession.query(DBStoredFile).filter_by(file_id=file_id).first()
         if f is None:
-            raise IOError
+            raise OSError
         return f
 
     def create(
@@ -361,7 +360,6 @@ class DBFileStorage(FileStorage):
 
 # noinspection PyUnusedLocal
 def migrate_storage(from_storage: str, to_storage: str) -> None:
-
     log = logging.getLogger(__name__)
 
     old_default = DepotManager._default_depot
@@ -461,7 +459,7 @@ class StoredFileResponse(Response):
             content_encoding, content_type, f
         )
 
-        super(StoredFileResponse, self).__init__(
+        super().__init__(
             conditional_response=True,
             content_type=content_type,
             content_encoding=content_encoding,
@@ -489,12 +487,9 @@ class StoredFileResponse(Response):
 
         self.etag = self.generate_etag(f)
 
-        disposition = rfc6266_parser.build_header(
-            f.filename, disposition=disposition, filename_compat=unidecode(f.filename)
-        )
-        if isinstance(disposition, bytes):
-            disposition = disposition.decode("iso-8859-1")
-        self.content_disposition = disposition
+        content_disposition = make_content_disposition(disposition, f.filename)
+
+        self.content_disposition = content_disposition
 
     @staticmethod
     def _get_type_and_encoding(
@@ -515,7 +510,7 @@ class StoredFileResponse(Response):
 
     @staticmethod
     def generate_etag(f: MemoryStoredFile) -> str:
-        return '"{0}-{1}"'.format(f.last_modified, f.content_length)
+        return f'"{f.last_modified}-{f.content_length}"'
 
 
 def uploaded_file_response(
@@ -534,7 +529,7 @@ def uploaded_file_url(self, uploaded_file, disposition="inline"):
         suffix = "/download"
     else:
         suffix = ""
-    url = "{0}/{1}/{2}{3}".format(
+    url = "{}/{}/{}{}".format(
         self.application_url,
         get_settings()["kotti.depot_mountpoint"][1:],
         uploaded_file.path,
@@ -543,7 +538,7 @@ def uploaded_file_url(self, uploaded_file, disposition="inline"):
     return url
 
 
-class TweenFactory(object):
+class TweenFactory:
     """Factory for a Pyramid tween in charge of serving Depot files.
 
     This is the Pyramid tween version of
@@ -605,7 +600,7 @@ class TweenFactory(object):
 
         try:
             f = depot.get(fileid)
-        except (IOError, ValueError):
+        except (OSError, ValueError):
             response = HTTPNotFound()
             return response
 
@@ -693,7 +688,6 @@ def extract_depot_settings(
 
 
 def configure_filedepot(settings: Dict[str, str]) -> None:
-
     config = extract_depot_settings("kotti.depot.", settings)
     for conf in config:
         name = conf.pop("name")

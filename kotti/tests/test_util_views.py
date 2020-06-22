@@ -37,7 +37,7 @@ def create_contents(root):
 
 
 @implementer(ILocation)
-class MockContext(object):
+class MockContext:
     pass
 
 
@@ -157,7 +157,7 @@ class TestTemplateAPI:
         from kotti.views.edit import content
         from kotti.views.edit.actions import content_type_factories
 
-        class TestContent(object):
+        class TestContent:
             type_info = default_type_info.copy(
                 name="TestContent",
                 title="Test Content",
@@ -303,7 +303,7 @@ class TestTemplateAPI:
 
         def foo(context, request):
             greeting = request.POST["greeting"]
-            return Response("{} world!".format(greeting))
+            return Response(f"{greeting} world!")
 
         config.add_view(foo, name="foo")
         assign_slot("foo", "left", params=dict(greeting="Y\u0153"))
@@ -369,7 +369,7 @@ class TestTemplateAPI:
 
         def foo(context, request):
             bar = request.POST["bar"]
-            return Response("{} world!".format(bar))
+            return Response(f"{bar} world!")
 
         config.add_view(foo, name="foo")
         assign_slot("foo", "left", params=dict(greeting="Y\u0153"))
@@ -384,7 +384,7 @@ class TestTemplateAPI:
 
         def foo(context, request):
             slot = request.kotti_slot
-            return Response("I'm in slot {}.".format(slot))
+            return Response(f"I'm in slot {slot}.")
 
         config.add_view(foo, name="foo")
         assign_slot("foo", "beforebodyend")
@@ -691,3 +691,10 @@ class TestRootOnlyPredicate:
         root = request.root
         assert predicate(root, request) is True
         assert predicate(object(), request) is False
+
+
+def test_base_view(dummy_request, root):
+    from kotti.views import BaseView
+    bv = BaseView(root, dummy_request)
+    assert bv.context == root
+    assert bv.request == dummy_request

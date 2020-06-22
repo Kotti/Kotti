@@ -30,9 +30,9 @@ To run and develop within your clone, do these steps:
 
 .. code-block:: bash
 
-  virtualenv . --no-site-packages
+  python3 -m venv .
 
-  bin/python setup.py develop
+  bin/pip install -e ".[testing]"
 
 This will create a new virtualenv "in place" and do the python develop steps to
 use the Kotti code in the repo.

@@ -2,7 +2,7 @@ from mock import Mock
 from mock import patch
 
 
-class TestRequestCache(object):
+class TestRequestCache:
     @property
     def cache_decorator(self):
         from kotti.util import request_cache

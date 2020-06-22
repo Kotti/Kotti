@@ -48,7 +48,7 @@ def set_max_age(response, delta, cache_ctrl=None):
         if value is None:
             cache_control_header.append(key)
         else:
-            cache_control_header.append("{0}={1}".format(key, value))
+            cache_control_header.append(f"{key}={value}")
     cache_control_header = ",".join(cache_control_header)
     response.headers["cache-control"] = cache_control_header
 
@@ -74,7 +74,7 @@ caching_policies = {
 def _safe_get_user(request):
     try:
         return get_user(request)
-    except DetachedInstanceError:  # XXX need to understand what's happening
+    except DetachedInstanceError:  # noqa XXX need to understand what's happening
         return not None
 
 
@@ -116,7 +116,7 @@ def set_cache_headers(event):
         except:
             # We don't want to screw up the response if the
             # caching_policy_chooser raises an exception.
-            logger.exception("{0} raised an exception.".format(caching_policy_chooser))
+            logger.exception(f"{caching_policy_chooser} raised an exception.")
     if caching_policy is not None:
         response.headers[CACHE_POLICY_HEADER] = caching_policy
 

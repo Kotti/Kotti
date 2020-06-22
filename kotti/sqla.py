@@ -65,10 +65,10 @@ class ACLType(JsonType):
             for ace in value:
                 if ace[2] == ALL_PERMISSIONS:
                     ace[2] = self.ALL_PERMISSIONS_SERIALIZED
-        return super(ACLType, self).process_bind_param(value, dialect)
+        return super().process_bind_param(value, dialect)
 
     def process_result_value(self, value, dialect):
-        acl = super(ACLType, self).process_result_value(value, dialect)
+        acl = super().process_result_value(value, dialect)
         if acl is not None:
             for ace in acl:
                 if ace[2] == self.ALL_PERMISSIONS_SERIALIZED:
@@ -84,7 +84,7 @@ class MutationDict(Mutable):
 
     def __init__(self, data):
         self._d = data
-        super(MutationDict, self).__init__()
+        super().__init__()
 
     @classmethod
     def coerce(cls, key, value):
@@ -112,7 +112,7 @@ class MutationList(Mutable):
 
     def __init__(self, data):
         self._d = data
-        super(MutationList, self).__init__()
+        super().__init__()
 
     @classmethod
     def coerce(cls, key, value):
@@ -178,12 +178,12 @@ for wrapper_class in (MutationDict, MutationList):
             )
 
 
-class NestedMixin(object):
+class NestedMixin:
     __parent__ = None
 
     def __init__(self, *args, **kwargs):
         self.__parent__ = kwargs.pop("__parent__", None)
-        super(NestedMixin, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
     def __getitem__(self, key):
         value = self._d.__getitem__(key)
@@ -193,7 +193,7 @@ class NestedMixin(object):
         if self.__parent__ is not None:
             self.__parent__.changed()
         else:
-            super(NestedMixin, self).changed()
+            super().changed()
 
     def try_wrap(self, value):
         for typ, wrapper in MUTATION_WRAPPERS.items():
@@ -212,7 +212,7 @@ class NestedMutationDict(NestedMixin, MutationDict):
             default = NestedMutationList(default, __parent__=self)
         elif isinstance(default, dict):
             default = NestedMutationDict(default, __parent__=self)
-        return super(NestedMutationDict, self).setdefault(key, default)
+        return super().setdefault(key, default)
 
 
 class NestedMutationList(NestedMixin, MutationList):
@@ -222,9 +222,9 @@ class NestedMutationList(NestedMixin, MutationList):
 MUTATION_WRAPPERS = {dict: NestedMutationDict, list: NestedMutationList}
 
 
-class Base(object):
+class Base:
     @declared_attr
     def __tablename__(cls):
         from kotti.util import camel_case_to_name  # prevent circ import
 
-        return "{0}s".format(camel_case_to_name(cls.__name__))
+        return "{}s".format(camel_case_to_name(cls.__name__))

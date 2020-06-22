@@ -54,7 +54,7 @@ REQUEST_ATTRS_TO_COPY = ("context", "registry", "user", "cookies", "session")
 def _encode(params):
     if not params:
         return ""
-    return urlencode(dict((k, v.encode("utf-8")) for k, v in params.items()))
+    return urlencode({k: v.encode("utf-8") for k, v in params.items()})
 
 
 def _render_view_on_slot_event(view_name, event, params):
@@ -62,7 +62,7 @@ def _render_view_on_slot_event(view_name, event, params):
     request = event.request
 
     view_request = request.__class__.blank(
-        "{0}/{1}".format(request.path.rstrip("/"), view_name),
+        "{}/{}".format(request.path.rstrip("/"), view_name),
         base_url=request.application_url,
         POST=_encode(params),
     )
@@ -101,7 +101,7 @@ def assign_slot(view_name, slot, params=None):
 
     event = [e for e in slot_events if e.name == slot]
     if not event:
-        raise KeyError("Unknown slot '{0}'".format(slot))
+        raise KeyError(f"Unknown slot '{slot}'")
     objectevent_listeners[(event[0], None)].append(
         lambda ev: _render_view_on_slot_event(view_name, ev, params)
     )

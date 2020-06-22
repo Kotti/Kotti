@@ -13,7 +13,6 @@ from bleach_whitelist.bleach_whitelist import print_attrs
 from bleach_whitelist.bleach_whitelist import print_tags
 from pyramid.config import Configurator
 from pyramid.util import DottedNameResolver
-from six import string_types
 
 from kotti import get_settings
 from kotti.events import ObjectInsert
@@ -114,7 +113,7 @@ def _setup_sanitizers(settings: Dict[str, Union[str, bool]]) -> None:
     # step 1: resolve sanitizer functions and make ``kotti.sanitizers`` a
     # dictionary containing resolved functions
 
-    if not isinstance(settings["kotti.sanitizers"], string_types):
+    if not isinstance(settings["kotti.sanitizers"], str):
         return
 
     sanitizers = {}

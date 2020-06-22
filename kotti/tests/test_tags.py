@@ -4,7 +4,7 @@ from mock import Mock
 from kotti.testing import DummyRequest
 
 
-class DummyContext(object):
+class DummyContext:
     view_name = "view_name"
     tags = ["tag 1", "tag 2", "tag 3"]
 

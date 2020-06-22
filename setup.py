@@ -4,7 +4,7 @@ import os
 from setuptools import find_packages
 from setuptools import setup
 
-version = '2.0.1'
+version = '2.0.2'
 description = "A high-level, Pythonic web application framework based on " \
               "Pyramid and SQLAlchemy.  It includes an extensible Content " \
               "Management System called the Kotti CMS."
@@ -19,7 +19,7 @@ install_requires = [
     'Babel',
     'Chameleon>=2.7.4',  # Fixes error when raising HTTPFound
     'alembic>=0.8.0',
-    'bleach>=2.1.4',  # https://nvd.nist.gov/vuln/detail/CVE-2018-7753
+    'bleach>=3.1.4',
     'bleach-whitelist',
     'colander>=1.3.2',
     'deform>=2.0.5',  # fixes file upload on py3 - uncomment after 2.0.5 is released  # noqa
@@ -52,7 +52,6 @@ install_requires = [
     'repoze.lru',
     'repoze.workflow>=1.0b1',
     'repoze.zcml>=1.0b1',
-    'rfc6266-parser',
     'sqlalchemy>=1.0.0',
     'sqlalchemy-utils',
     'transaction>=1.1.0',
@@ -70,12 +69,12 @@ tests_require = [
     'Pillow',  # thumbnail filter in depot tween tests
     'py>=1.4.29',
     'pyquery',
-    'pytest>=4.1.0',
+    'pytest>=4.6,<5',  # see #563
     'pytest-cov',
     'pytest-pep8>=1.0.6',
     'pytest-travis-fold',
     'pytest-virtualenv',
-    'pytest-xdist',
+    # 'pytest-xdist',  # currently causes Travis to fail
     'tox',
     'zope.testbrowser>=5.0.0',
     ]
@@ -93,7 +92,7 @@ docs_require = [
     'repoze.sphinx.autointerface',
     'sphinx_rtd_theme',
     'setuptools-git',  # needed to make "python setup.py install" on rtd.
-    'pytest',  # needed for kotti.testing apidocs
+    'pytest>=4.6,<5',  # needed for kotti.testing apidocs
     ]
 
 setup_requires = [
@@ -143,8 +142,9 @@ setup(name='Kotti',
           'Programming Language :: Python',
           'Programming Language :: Python :: 3',
           'Programming Language :: Python :: 3 :: Only',
-          'Programming Language :: Python :: 3.5',
           'Programming Language :: Python :: 3.6',
+          'Programming Language :: Python :: 3.7',
+          'Programming Language :: Python :: 3.8',
           'Programming Language :: Python :: Implementation',
           'Programming Language :: Python :: Implementation :: CPython',
           # 'Programming Language :: Python :: Implementation :: PyPy',

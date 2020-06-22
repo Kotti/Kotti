@@ -3,7 +3,7 @@ import warnings
 from pytest import mark
 
 
-class DummyVenusian(object):
+class DummyVenusian:
     def __init__(self):
         self.attached = []
 

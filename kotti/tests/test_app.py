@@ -29,7 +29,7 @@ class TestApp:
         from kotti import main
         from kotti import get_settings
 
-        class MyType(object):
+        class MyType:
             pass
 
         def my_configurator(conf):
