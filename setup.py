@@ -71,7 +71,6 @@ tests_require = [
     'pytest>=6',
     'pytest-cov',
     'pytest-flake8',
-    'pytest-travis-fold',
     'pytest-virtualenv',
     'tox',
     'zope.testbrowser>=5.0.0',
