@@ -25,7 +25,7 @@ def run_migrations_online():
     try:
         context.run_migrations()
         mark_changed(DBSession())
-    except:
+    except:  # noqa: E722
         traceback.print_exc()
         transaction.abort()
     else:
