@@ -46,7 +46,6 @@ jobs:
         python -m pip install --upgrade pip
         pip install -e ".[testing]"
         pip install psycopg2-binary
-        psql -U postgres -c 'CREATE DATABASE kotti_testing;'
     # - name: Lint with flake8
     #   run: |
     #     # stop the build if there are Python syntax errors or undefined names
