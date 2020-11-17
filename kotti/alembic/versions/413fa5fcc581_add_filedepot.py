@@ -75,7 +75,7 @@ def upgrade():
     update = files.update().where(files.c.id == bindparam('nodeid')).\
         values({files.c.data: bindparam('data')})
 
-    def chunks(l, n):
+    def chunks(l, n):  # noqa: E741
         for i in range(0, len(l), n):
             yield l[i:i + n]
 
