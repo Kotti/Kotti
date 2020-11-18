@@ -107,7 +107,7 @@ class PackageEnvironment:
 
 def get_locations() -> List[str]:
     conf_str = get_settings()["kotti.alembic_dirs"]
-    return [l.strip() for l in conf_str.split() if l.strip()]
+    return [line.strip() for line in conf_str.split() if line.strip()]
 
 
 def stamp_head(location: str = DEFAULT_LOCATION, revision: None = None) -> None:
@@ -170,7 +170,7 @@ def upgrade_all():
 
 
 def list_all():
-    pkg_envs = [PackageEnvironment(l) for l in get_locations()]
+    pkg_envs = [PackageEnvironment(location) for location in get_locations()]
     for pkg_env in pkg_envs:
         print(f"{pkg_env.pkg_name}:")
 

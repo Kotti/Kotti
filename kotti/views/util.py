@@ -354,14 +354,15 @@ class TemplateAPI:
         if not hasattr(self.context, "type_info"):
             return []
         return [
-            l
-            for l in self.context.type_info.edit_links
-            if l.visible(self.context, self.request)
+            link
+            for link in self.context.type_info.edit_links
+            if link.visible(self.context, self.request)
         ]
 
     @reify
     def site_setup_links(self):
-        return [l for l in CONTROL_PANEL_LINKS if l.visible(self.root, self.request)]
+        return [link for link in CONTROL_PANEL_LINKS
+                if link.visible(self.root, self.request)]
 
     @staticmethod
     def sanitize(html, sanitizer="default"):

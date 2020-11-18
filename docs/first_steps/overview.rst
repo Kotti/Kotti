@@ -67,12 +67,16 @@ Use this command:
 
   git clone git@github.com:Kotti/Kotti
 
-`Continuous testing`_ against different versions of Python and with *PostgreSQL*, *MySQL* and *SQLite* and a complete test coverage make Kotti a **stable** platform to work with.  |build_status|_
+`Continuous testing`_ against different versions of Python and with *PostgreSQL*, *MySQL* and *SQLite* and a complete test coverage make Kotti a **stable** platform to work with.
+
+|build_status_stable_postgresql|_
+|build_status_stable_mysql|_
+|build_status_stable_sqlite|_
 
 Support
 -------
 
-- Python 3.5-3.7
+- Python 3.6-3.9
 - Support for PostgreSQL, MySQL and SQLite (tested regularly), and a list of `other SQL databases`_
 - Support for WSGI and a `variety of web servers`_, including Apache
 
@@ -80,11 +84,15 @@ Support
 .. _repoze.workflow: http://docs.repoze.org/workflow/
 .. _Chameleon: https://chameleon.readthedocs.io/
 .. _Colander: http://docs.pylonsproject.org/projects/colander/en/latest/
-.. _continuous testing: http://travis-ci.org/Kotti/Kotti
+.. _continuous testing: https://github.com/Kotti/Kotti/actions
 .. _Deform: http://docs.pylonsproject.org/projects/deform/en/latest/
 .. _developed on Github: https://github.com/Kotti/Kotti
-.. |build_status| image:: https://secure.travis-ci.org/Kotti/Kotti.png?branch=master
-.. _build_status: http://travis-ci.org/Kotti/Kotti
+.. |build_status_stable_postgresql| image:: https://github.com/Kotti/Kotti/workflows/PostgreSQL/badge.svg?branch=stable
+.. _build_status_stable_postgresql: https://github.com/Kotti/Kotti/actions?query=workflow%3APostgreSQL+branch%3Astable
+.. |build_status_stable_mysql| image:: https://github.com/Kotti/Kotti/workflows/MySQL/badge.svg?branch=stable
+.. _build_status_stable_mysql: https://github.com/Kotti/Kotti/actions?query=workflow%3AMySQL+branch%3Astable
+.. |build_status_stable_sqlite| image:: https://github.com/Kotti/Kotti/workflows/SQLite/badge.svg?branch=stable
+.. _build_status_stable_sqlite: https://github.com/Kotti/Kotti/actions?query=workflow%3ASQLite+branch%3Astable
 .. _installation:
 .. _other SQL databases: http://www.sqlalchemy.org/docs/core/engines.html#supported-databases
 .. _variety of web servers: http://wsgi.org/wsgi/Servers

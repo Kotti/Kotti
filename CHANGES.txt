@@ -1,6 +1,13 @@
 Change History
 ==============
 
+2.0.3 - 2020-11-18
+------------------
+
+- Upgrade to ``pytest>=6``.
+- Replace ``pytest-pep8`` with ``pytest-flake8``; fix or silence flake8 warnings/errors
+  in existing code (mostly tests and migrations).
+
 2.0.2 - 2020-06-22
 ------------------
 
