@@ -67,14 +67,11 @@ tests_require = [
     'WebTest',
     'mock',
     'Pillow',  # thumbnail filter in depot tween tests
-    'py>=1.4.29',
     'pyquery',
-    'pytest>=4.6,<5',  # see #563
+    'pytest>=6',
     'pytest-cov',
-    'pytest-pep8>=1.0.6',
-    'pytest-travis-fold',
+    'pytest-flake8',
     'pytest-virtualenv',
-    # 'pytest-xdist',  # currently causes Travis to fail
     'tox',
     'zope.testbrowser>=5.0.0',
     ]

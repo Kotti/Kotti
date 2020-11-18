@@ -8,7 +8,7 @@ def test_404_anon(webtest, root):
 
 
 @pytest.mark.user("admin")
-def test_404_anon(webtest, root):
+def test_404_admin(webtest, root):
 
     resp = webtest.app.get("/non-existent", status=404)
     assert "Not Found" in resp.text
