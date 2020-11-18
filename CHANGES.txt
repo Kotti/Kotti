@@ -1,7 +1,7 @@
 Change History
 ==============
 
-2.0.3 - unreleased
+2.0.3 - 2020-11-18
 ------------------
 
 - Upgrade to ``pytest>=6``.
