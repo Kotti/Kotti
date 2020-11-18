@@ -49,5 +49,5 @@ jobs:
       run: |
         pytest
       env:
-        KOTTI_TEST_DB_STRING: mysql://kotti:kotti@mysql:3306/kotti
+        KOTTI_TEST_DB_STRING: mysql://kotti:kotti@localhost:3306/kotti
 
