@@ -118,6 +118,8 @@ We adhere to `high quality coding standards`_, have an extensive test suite with
 
 Contributions are always welcome, read our `contribution guidelines`_ and visit our `Github repository`_.
 
+.. _continuous integration: http://travis-ci.org/Kotti/Kotti
+
 .. |build_status_master_postgresql| image:: https://github.com/Kotti/Kotti/workflows/PostgreSQL/badge.svg?branch=master
 .. _build_status_master_postgresql: https://github.com/Kotti/Kotti/actions?query=workflow%3APostgreSQL+branch%3Amaster
 

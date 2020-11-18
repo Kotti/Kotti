@@ -118,7 +118,9 @@ setup(name='Kotti',
       long_description='\n\n'.join([read('README.rst'),
                                     read('AUTHORS.txt'),
                                     read('CHANGES.txt'), ]),
-      classifiers=[
+      long_description_content_type="text/x-rst",
+
+classifiers=[
           'Development Status :: 5 - Production/Stable',
           'Environment :: Web Environment',
           'Framework :: Pylons',
