@@ -1,3 +1,5 @@
+import os.path
+
 import pkg_resources
 from pyramid.authentication import AuthTktAuthenticationPolicy
 from pyramid.authorization import ACLAuthorizationPolicy
@@ -167,7 +169,6 @@ def get_settings():
 
 
 def _resolve_dotted(d, keys=conf_dotted):
-
     resolved = d.copy()
 
     for key in keys:
@@ -281,7 +282,10 @@ def includeme(config):
     ]:
         config.override_asset(to_override="kotti", override_with=override)
 
-    config.add_translation_dirs("kotti:locale")
+    config.add_translation_dirs(f"{os.path.dirname(__file__)}/locale")
+    # used to be
+    # config.add_translation_dirs("kotti:locale")
+    # which fails with recent pytest (works in non testing though)
 
     workflow = settings["kotti.use_workflow"]
     if workflow.lower() not in FALSE_VALUES:

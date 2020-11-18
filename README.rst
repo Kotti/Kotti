@@ -4,7 +4,10 @@ Kotti
 
 |pypi|_
 |license|_
-|build_status_stable|_
+
+|build_status_stable_postgresql|_
+|build_status_stable_mysql|_
+|build_status_stable_sqlite|_
 
 .. |pypi| image:: https://img.shields.io/pypi/v/Kotti.svg?style=flat-square
 .. _pypi: https://pypi.python.org/pypi/Kotti/
@@ -12,8 +15,15 @@ Kotti
 .. |license| image:: https://img.shields.io/pypi/l/Kotti.svg?style=flat-square
 .. _license: http://www.repoze.org/LICENSE.txt
 
-.. |build_status_stable| image:: https://img.shields.io/travis/Kotti/Kotti/stable.svg?style=flat-square
-.. _build_status_stable: http://travis-ci.org/Kotti/Kotti
+.. |build_status_stable_postgresql| image:: https://github.com/Kotti/Kotti/workflows/PostgreSQL/badge.svg?branch=stable
+.. _build_status_stable_postgresql: https://github.com/Kotti/Kotti/actions?query=workflow%3APostgreSQL+branch%3Astable
+
+.. |build_status_stable_mysql| image:: https://github.com/Kotti/Kotti/workflows/MySQL/badge.svg?branch=stable
+.. _build_status_stable_mysql: https://github.com/Kotti/Kotti/actions?query=workflow%3AMySQL+branch%3Astable
+
+.. |build_status_stable_sqlite| image:: https://github.com/Kotti/Kotti/workflows/SQLite/badge.svg?branch=stable
+.. _build_status_stable_sqlite: https://github.com/Kotti/Kotti/actions?query=workflow%3ASQLite+branch%3Astable
+
 
 Kotti is a high-level, Pythonic web application framework based on Pyramid_ and SQLAlchemy_.
 It includes an extensible Content Management System called the Kotti CMS (see below).
@@ -90,7 +100,10 @@ If you think you found a bug, open an issue on our `Github bugtracker <https://g
 Development
 ===========
 
-|build_status_master|_
+|build_status_master_postgresql|_
+|build_status_master_mysql|_
+|build_status_master_sqlite|_
+
 |coveralls|_
 |codacy|_
 |codeclimate|_
@@ -105,9 +118,14 @@ We adhere to `high quality coding standards`_, have an extensive test suite with
 
 Contributions are always welcome, read our `contribution guidelines`_ and visit our `Github repository`_.
 
-.. |build_status_master| image:: https://img.shields.io/travis/Kotti/Kotti/master.svg?style=flat-square
-.. _build_status_master: http://travis-ci.org/Kotti/Kotti
-.. _continuous integration: http://travis-ci.org/Kotti/Kotti
+.. |build_status_master_postgresql| image:: https://github.com/Kotti/Kotti/workflows/PostgreSQL/badge.svg?branch=master
+.. _build_status_master_postgresql: https://github.com/Kotti/Kotti/actions?query=workflow%3APostgreSQL+branch%3Amaster
+
+.. |build_status_master_mysql| image:: https://github.com/Kotti/Kotti/workflows/MySQL/badge.svg?branch=master
+.. _build_status_master_mysql: https://github.com/Kotti/Kotti/actions?query=workflow%3AMySQL+branch%3Amaster
+
+.. |build_status_master_sqlite| image:: https://github.com/Kotti/Kotti/workflows/SQLite/badge.svg?branch=master
+.. _build_status_master_sqlite: https://github.com/Kotti/Kotti/actions?query=workflow%3ASQLite+branch%3Amaster
 
 .. |requires.io| image:: https://img.shields.io/requires/github/Kotti/Kotti.svg?style=flat-square
 .. _requires.io: https://requires.io/github/Kotti/Kotti/requirements/?branch=master

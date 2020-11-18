@@ -4,7 +4,7 @@ import os
 from setuptools import find_packages
 from setuptools import setup
 
-version = '2.0.2'
+version = '2.0.3'
 description = "A high-level, Pythonic web application framework based on " \
               "Pyramid and SQLAlchemy.  It includes an extensible Content " \
               "Management System called the Kotti CMS."
@@ -67,14 +67,11 @@ tests_require = [
     'WebTest',
     'mock',
     'Pillow',  # thumbnail filter in depot tween tests
-    'py>=1.4.29',
     'pyquery',
-    'pytest>=4.6,<5',  # see #563
+    'pytest>=6',
     'pytest-cov',
-    'pytest-pep8>=1.0.6',
-    'pytest-travis-fold',
+    'pytest-flake8',
     'pytest-virtualenv',
-    # 'pytest-xdist',  # currently causes Travis to fail
     'tox',
     'zope.testbrowser>=5.0.0',
     ]
