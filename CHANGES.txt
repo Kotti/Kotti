@@ -1,6 +1,9 @@
 Change History
 ==============
 
+- Replace deprecated ``bleach_whitelist`` with its successor ``bleach-allowlist``.
+- Upgrade ``iso8601``.
+
 2.0.3 - 2020-11-18
 ------------------
 

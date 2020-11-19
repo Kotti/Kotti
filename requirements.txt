@@ -4,7 +4,7 @@ appdirs==1.4.4
 Babel==2.9.0
 Beaker==1.11.0
 bleach==3.2.1
-bleach-whitelist==0.0.11
+bleach-allowlist==1.0.3
 Chameleon==3.8.1
 click==7.1.2
 colander==1.8.2
@@ -15,7 +15,7 @@ filedepot==0.8.0
 FormEncode==2.0.0
 html2text==2020.1.16
 hupper==1.10.2
-iso8601==0.1.11
+iso8601==0.1.13
 js.angular==1.1.4
 js.bootstrap==3.3.4
 js.deform==2.0.14
