@@ -4,7 +4,7 @@ import os
 from setuptools import find_packages
 from setuptools import setup
 
-version = '2.0.3'
+version = '2.0.4'
 description = "A high-level, Pythonic web application framework based on " \
               "Pyramid and SQLAlchemy.  It includes an extensible Content " \
               "Management System called the Kotti CMS."
@@ -20,7 +20,7 @@ install_requires = [
     'Chameleon>=2.7.4',  # Fixes error when raising HTTPFound
     'alembic>=0.8.0',
     'bleach>=3.1.4',
-    'bleach-whitelist',
+    'bleach-allowlist',
     'colander>=1.3.2',
     'deform>=2.0.5',  # fixes file upload on py3 - uncomment after 2.0.5 is released  # noqa
     'docopt',
@@ -28,7 +28,7 @@ install_requires = [
     'filedepot',
     'formencode>=2.0.0a',
     'html2text',
-    'iso8601==0.1.11',  # rq.filter: !=0.1.12
+    'iso8601>=0.1.13',
     'js.angular',
     'js.bootstrap>=3.0.0',
     'js.deform>=2.0.3',
@@ -118,7 +118,9 @@ setup(name='Kotti',
       long_description='\n\n'.join([read('README.rst'),
                                     read('AUTHORS.txt'),
                                     read('CHANGES.txt'), ]),
-      classifiers=[
+      long_description_content_type="text/x-rst",
+
+classifiers=[
           'Development Status :: 5 - Production/Stable',
           'Environment :: Web Environment',
           'Framework :: Pylons',

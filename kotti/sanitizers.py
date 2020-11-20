@@ -5,12 +5,12 @@ from typing import Dict
 from typing import Union
 
 from bleach import clean
-from bleach_whitelist.bleach_whitelist import all_styles
-from bleach_whitelist.bleach_whitelist import generally_xss_safe
-from bleach_whitelist.bleach_whitelist import markdown_attrs
-from bleach_whitelist.bleach_whitelist import markdown_tags
-from bleach_whitelist.bleach_whitelist import print_attrs
-from bleach_whitelist.bleach_whitelist import print_tags
+from bleach_allowlist import all_styles
+from bleach_allowlist import generally_xss_safe
+from bleach_allowlist import markdown_attrs
+from bleach_allowlist import markdown_tags
+from bleach_allowlist import print_attrs
+from bleach_allowlist import print_tags
 from pyramid.config import Configurator
 from pyramid.util import DottedNameResolver
 
