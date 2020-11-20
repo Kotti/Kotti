@@ -29,9 +29,9 @@ def test_no_html():
 
 def _verify_minimal_html(sanitized):
 
-    from bleach_whitelist.bleach_whitelist import all_tags
-    from bleach_whitelist.bleach_whitelist import markdown_tags
-    from bleach_whitelist.bleach_whitelist import print_tags
+    from bleach_allowlist import all_tags
+    from bleach_allowlist import markdown_tags
+    from bleach_allowlist import print_tags
 
     for tag in set(all_tags) - set(markdown_tags) - set(print_tags):
         assert f"<{tag}" not in sanitized

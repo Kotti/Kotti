@@ -77,7 +77,7 @@ def allwarnings(request):
 
 @fixture(scope="session")
 def custom_settings():
-    """ This is a dummy fixture meant to be overriden in add on package's
+    """This is a dummy fixture meant to be overriden in add on package's
     ``conftest.py``.  It can be used to inject arbitrary settings for third
     party test suites.  The default settings dictionary will be updated
     with the dictionary returned by this fixture.
@@ -116,8 +116,8 @@ def settings(unresolved_settings):
 
 @yield_fixture
 def config(settings):
-    """ returns a Pyramid `Configurator` object initialized
-        with Kotti's default (test) settings.
+    """returns a Pyramid `Configurator` object initialized
+    with Kotti's default (test) settings.
     """
     from pyramid import testing
     from kotti import security
@@ -132,7 +132,7 @@ def config(settings):
 
 @fixture(scope="session")
 def connection(custom_settings):
-    """ sets up a SQLAlchemy engine and returns a connection to the database.
+    """sets up a SQLAlchemy engine and returns a connection to the database.
     The connection string used for testing can be specified via the
     ``KOTTI_TEST_DB_STRING`` environment variable.  The ``custom_settings``
     fixture is needed to allow users to import their models easily instead of
@@ -159,8 +159,7 @@ def connection(custom_settings):
 
 @fixture
 def content(connection, settings):
-    """ sets up some default content using Kotti's testing populator.
-    """
+    """sets up some default content using Kotti's testing populator."""
     import transaction
     from kotti import DBSession
     from kotti import metadata
@@ -193,8 +192,8 @@ def content(connection, settings):
 
 @yield_fixture
 def db_session(config, content, connection):
-    """ returns a db session object and sets up a db transaction
-        savepoint, which will be rolled back after the test.
+    """returns a db session object and sets up a db transaction
+    savepoint, which will be rolled back after the test.
     """
 
     import transaction
@@ -209,9 +208,9 @@ def db_session(config, content, connection):
 
 @fixture
 def dummy_request(config, request, monkeypatch):
-    """ returns a dummy request object after registering it as
-        the currently active request.  This is needed when
-        `pyramid.threadlocal.get_current_request` is used.
+    """returns a dummy request object after registering it as
+    the currently active request.  This is needed when
+    `pyramid.threadlocal.get_current_request` is used.
     """
 
     from kotti.testing import DummyRequest
@@ -236,8 +235,7 @@ def dummy_mailer(monkeypatch):
 
 @yield_fixture
 def events(config):
-    """ sets up Kotti's default event handlers.
-    """
+    """sets up Kotti's default event handlers."""
     from kotti.events import clear
 
     config.include("kotti.events")
@@ -260,9 +258,9 @@ def app(workflow, db_session, dummy_mailer, events, setup_app):
 
 @fixture
 def browser(db_session, request, setup_app):
-    """ returns an instance of `zope.testbrowser`.  The `kotti.testing.user`
-        pytest marker (or `pytest.mark.user`) can be used to pre-authenticate
-        the browser with the given login name: `@user('admin')`.
+    """returns an instance of `zope.testbrowser`.  The `kotti.testing.user`
+    pytest marker (or `pytest.mark.user`) can be used to pre-authenticate
+    the browser with the given login name: `@user('admin')`.
     """
     from zope.testbrowser.wsgi import Browser
     from kotti.testing import BASE_URL
@@ -288,8 +286,7 @@ def browser(db_session, request, setup_app):
 
 @fixture
 def root(db_session):
-    """ returns Kotti's 'root' node.
-    """
+    """returns Kotti's 'root' node."""
     from kotti.resources import get_root
 
     return get_root()
@@ -312,8 +309,7 @@ def webtest(app, monkeypatch, request, filedepot, dummy_mailer):
 
 @fixture
 def workflow(config):
-    """ loads and activates Kotti's default workflow rules.
-    """
+    """loads and activates Kotti's default workflow rules."""
     from zope.configuration import xmlconfig
     import kotti
 
@@ -321,6 +317,10 @@ def workflow(config):
 
 
 class TestStorage(MemoryFileStorage):
+    def __bool__(self):
+        # required for test mocking
+        return True
+
     def get(self, file_or_id):
         f = super().get(file_or_id)
         f.last_modified = datetime(2012, 12, 30)
@@ -329,8 +329,8 @@ class TestStorage(MemoryFileStorage):
 
 @yield_fixture
 def depot_tween(config, dummy_request):
-    """ Sets up the Depot tween and patches Depot's ``set_middleware`` to
-    suppress exceptions on subsequent calls. Yields the ``DepotManager``. """
+    """Sets up the Depot tween and patches Depot's ``set_middleware`` to
+    suppress exceptions on subsequent calls. Yields the ``DepotManager``."""
 
     from depot.manager import DepotManager
     from kotti.filedepot import TweenFactory
@@ -357,7 +357,7 @@ def depot_tween(config, dummy_request):
 
 @yield_fixture
 def mock_filedepot(depot_tween):
-    """ Configures a mock depot store for :class:`depot.manager.DepotManager`
+    """Configures a mock depot store for :class:`depot.manager.DepotManager`
 
     This filedepot is not integrated with dbsession.
     Can be used in simple, standalone unit tests.
@@ -374,7 +374,7 @@ def mock_filedepot(depot_tween):
 
 @yield_fixture
 def filedepot(db_session, depot_tween):
-    """ Configures a dbsession integrated mock depot store for
+    """Configures a dbsession integrated mock depot store for
     :class:`depot.manager.DepotManager`
     """
     from depot.manager import DepotManager
@@ -390,8 +390,7 @@ def filedepot(db_session, depot_tween):
 
 @yield_fixture
 def no_filedepots(db_session, depot_tween):
-    """ A filedepot fixture to empty and then restore DepotManager configuration
-    """
+    """A filedepot fixture to empty and then restore DepotManager configuration"""
     from depot.manager import DepotManager
 
     DepotManager._depots = {}
