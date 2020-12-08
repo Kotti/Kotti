@@ -56,7 +56,6 @@ install_requires = [
     'sqlalchemy-utils',
     'transaction>=1.1.0',
     'unidecode',
-    'usersettings',
     'waitress',
     'zope.deprecation',
     'zope.interface',
