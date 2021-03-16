@@ -4,7 +4,7 @@ import os
 from setuptools import find_packages
 from setuptools import setup
 
-version = '2.0.4'
+version = '2.0.5'
 description = "A high-level, Pythonic web application framework based on " \
               "Pyramid and SQLAlchemy.  It includes an extensible Content " \
               "Management System called the Kotti CMS."
@@ -22,7 +22,7 @@ install_requires = [
     'bleach>=3.1.4',
     'bleach-allowlist',
     'colander>=1.3.2',
-    'deform>=2.0.5',  # fixes file upload on py3 - uncomment after 2.0.5 is released  # noqa
+    'deform==2.0.14',  # 2.0.15 breaks js.deform
     'docopt',
     'fanstatic>=1.0.0',
     'filedepot',
@@ -31,7 +31,7 @@ install_requires = [
     'iso8601>=0.1.13',
     'js.angular',
     'js.bootstrap>=3.0.0',
-    'js.deform>=2.0.3',
+    'js.deform==2.0.14',  # deform 2.0.15 breaks js.deform
     'js.fineuploader',
     'js.html5shiv',
     'js.jquery<2.0.0.dev',  # rq.filter: <2.0
@@ -42,7 +42,7 @@ install_requires = [
     'js.jqueryui_tagit',
     'lingua>=1.3',
     'py_bcrypt',
-    'pyramid>=1.9',
+    'pyramid>=1.9,<2',
     'pyramid_beaker',
     'pyramid_chameleon',
     'pyramid_deform>=0.2a3',  # language and template path config includeme
@@ -52,11 +52,10 @@ install_requires = [
     'repoze.lru',
     'repoze.workflow>=1.0b1',
     'repoze.zcml>=1.0b1',
-    'sqlalchemy>=1.0.0',
+    'sqlalchemy>=1.0.0,<1.4',  # https://github.com/kvesteri/sqlalchemy-utils/blob/master/sqlalchemy_utils/functions/orm.py#L14 fails on 1.4
     'sqlalchemy-utils',
     'transaction>=1.1.0',
     'unidecode',
-    'usersettings',
     'waitress',
     'zope.deprecation',
     'zope.interface',

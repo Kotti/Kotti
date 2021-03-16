@@ -112,6 +112,13 @@ def test_listeners(app, root, db_session):
     _verify_no_html(doc.description)
     _verify_xss_protection(doc.body)
 
+    # Test None title
+    root["e"] = doc = Document(
+        name="test", title=None, description=unsanitized, body=unsanitized
+    )
+    db_session.flush()
+    assert doc.title == None
+
 
 def test_sanitize(app, dummy_request):
 

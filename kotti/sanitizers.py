@@ -138,6 +138,8 @@ def _setup_listeners(settings):
         def _create_handler(attributename, sanitizers):
             def handler(event):
                 value = getattr(event.object, attributename)
+                if value is None:
+                    return
                 for sanitizer_name in sanitizers.split(","):
                     value = settings["kotti.sanitizers"][sanitizer_name](value)
                 setattr(event.object, attributename, value)
