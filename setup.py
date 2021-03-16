@@ -22,7 +22,7 @@ install_requires = [
     'bleach>=3.1.4',
     'bleach-allowlist',
     'colander>=1.3.2',
-    'deform>=2.0.5',  # fixes file upload on py3 - uncomment after 2.0.5 is released  # noqa
+    'deform==2.0.14',  # 2.0.15 breaks js.deform
     'docopt',
     'fanstatic>=1.0.0',
     'filedepot',
@@ -31,7 +31,7 @@ install_requires = [
     'iso8601>=0.1.13',
     'js.angular',
     'js.bootstrap>=3.0.0',
-    'js.deform>=2.0.3',
+    'js.deform==2.0.14',  # deform 2.0.15 breaks js.deform
     'js.fineuploader',
     'js.html5shiv',
     'js.jquery<2.0.0.dev',  # rq.filter: <2.0
