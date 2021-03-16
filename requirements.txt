@@ -3,7 +3,7 @@ anyascii==0.1.7
 appdirs==1.4.4
 Babel==2.9.0
 Beaker==1.11.0
-bleach==3.2.1
+bleach==3.3.0
 bleach-allowlist==1.0.3
 Chameleon==3.8.1
 click==7.1.2
@@ -65,7 +65,6 @@ SQLAlchemy-Utils==0.36.8
 transaction==3.0.0
 translationstring==1.4
 Unidecode==1.1.1
-usersettings==1.0.7
 venusian==3.0.0
 waitress==1.4.4
 webencodings==0.5.1
