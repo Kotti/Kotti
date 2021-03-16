@@ -2,6 +2,7 @@ Change History
 ==============
 
 - Fix sanitizer error when values are None (ie nothing to sanitize at all).
+- Pin Pyramid to < 2 (for now).
 
 2.0.4 - 2020-11-20
 ------------------

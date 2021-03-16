@@ -42,7 +42,7 @@ install_requires = [
     'js.jqueryui_tagit',
     'lingua>=1.3',
     'py_bcrypt',
-    'pyramid>=1.9',
+    'pyramid>=1.9,<2',
     'pyramid_beaker',
     'pyramid_chameleon',
     'pyramid_deform>=0.2a3',  # language and template path config includeme
