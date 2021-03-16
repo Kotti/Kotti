@@ -52,7 +52,7 @@ install_requires = [
     'repoze.lru',
     'repoze.workflow>=1.0b1',
     'repoze.zcml>=1.0b1',
-    'sqlalchemy>=1.0.0',
+    'sqlalchemy>=1.0.0,<1.4',  # https://github.com/kvesteri/sqlalchemy-utils/blob/master/sqlalchemy_utils/functions/orm.py#L14 fails on 1.4
     'sqlalchemy-utils',
     'transaction>=1.1.0',
     'unidecode',

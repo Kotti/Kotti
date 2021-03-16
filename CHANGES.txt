@@ -3,6 +3,7 @@ Change History
 
 - Fix sanitizer error when values are None (ie nothing to sanitize at all).
 - Pin Pyramid to < 2 (for now).
+- Pin SQLAlchemy to < 1.4 to prevent no longer working private import in sqlalchemy-utils.
 
 2.0.4 - 2020-11-20
 ------------------
