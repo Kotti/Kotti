@@ -632,7 +632,6 @@ class Content(Node):
     _tags = relation(
         TagsToContents,
         backref=backref("item"),
-        lazy="joined",
         order_by=[TagsToContents.position],
         collection_class=ordering_list("position"),
         cascade="all, delete-orphan",

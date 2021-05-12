@@ -1,6 +1,13 @@
 Change History
 ==============
 
+2.0.6 - 2021-05-12
+------------------
+
+- Fix performance issue: ``Content._tags`` is configured with ``lazy="select"`` now.
+  This doesn't cause any change in API usage, however it speeds up selects on ``Node`` and descendants by 1-2 orders of magnitude in some cases at the price of a slight performance degradation in scenarios with few tables and heavy tag usage.
+- Update dependencies to their most recent compatible versions.
+
 2.0.5 - 2021-03-16
 ------------------
 
