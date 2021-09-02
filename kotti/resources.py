@@ -354,7 +354,8 @@ class Node(Base, ContainerMixin, PersistentACLMixin, metaclass=NodeMeta):
 
     def clear(self) -> None:
 
-        DBSession.query(Node).filter(Node.parent == self).delete()
+        for node in DBSession.query(Node).filter(Node.parent == self):
+            DBSession.delete(node)
 
     def copy(self, **kwargs) -> "Node":
         """
