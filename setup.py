@@ -4,7 +4,7 @@ import os
 from setuptools import find_packages
 from setuptools import setup
 
-version = '2.0.6'
+version = '2.0.7'
 description = "A high-level, Pythonic web application framework based on " \
               "Pyramid and SQLAlchemy.  It includes an extensible Content " \
               "Management System called the Kotti CMS."
@@ -52,8 +52,8 @@ install_requires = [
     'repoze.lru',
     'repoze.workflow>=1.0b1',
     'repoze.zcml>=1.0b1',
-    'sqlalchemy>=1.0.0,<1.4',  # https://github.com/kvesteri/sqlalchemy-utils/blob/master/sqlalchemy_utils/functions/orm.py#L14 fails on 1.4
-    'sqlalchemy-utils',
+    'sqlalchemy>=1.4.16',
+    'sqlalchemy-utils>=0.37.6',
     'transaction>=1.1.0',
     'unidecode',
     'waitress',
@@ -143,7 +143,6 @@ classifiers=[
           'Programming Language :: Python :: 3.6',
           'Programming Language :: Python :: 3.7',
           'Programming Language :: Python :: 3.8',
-          'Programming Language :: Python :: 3.9',
           'Programming Language :: Python :: Implementation',
           'Programming Language :: Python :: Implementation :: CPython',
           # 'Programming Language :: Python :: Implementation :: PyPy',
