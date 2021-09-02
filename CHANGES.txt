@@ -6,6 +6,7 @@ Change History
 
 - Add compatibility for (and require) SQLAlchemy 1.4.
 - Fix ``url_normalizer`` tests (not picked up before).
+- Optimize traversal for applications with large ``Node`` subclass hierarchies.
 
 2.0.6 - 2021-05-12
 ------------------
