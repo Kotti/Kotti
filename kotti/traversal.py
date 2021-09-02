@@ -50,12 +50,12 @@ from kotti.resources import Node
 
 @implementer(ITraverser)
 class NodeTreeTraverser(ResourceTreeTraverser):
-    """ An optimized resource tree traverser for :class:`kotti.resources.Node`
-    based resource trees. """
+    """An optimized resource tree traverser for :class:`kotti.resources.Node`
+    based resource trees."""
 
     @staticmethod
     def _extract_from_request(request):  # pragma: no cover
-        """ Extract subpath, vpath and vroot_tuple from the request.  The
+        """Extract subpath, vpath and vroot_tuple from the request.  The
         contents of this method is just a copy from the base class'
         implementation.
 
@@ -93,7 +93,7 @@ class NodeTreeTraverser(ResourceTreeTraverser):
         return subpath, vpath, vroot_tuple
 
     def __call__(self, request):
-        """ The first part of this function is copied without changes from
+        """The first part of this function is copied without changes from
         :meth:`pyramid.traversal.ResourceTreeTraverser.__call__`.
 
         :param request: Current request
@@ -171,7 +171,12 @@ class NodeTreeTraverser(ResourceTreeTraverser):
             for idx, item in enumerate(vpath_tuple)
         ]
         nodes = (
-            DBSession().query(Node).order_by(Node.path).filter(or_(*conditions)).all()
+            DBSession()
+            .query(Node)
+            .with_polymorphic(Node)
+            .order_by(Node.path)
+            .filter(or_(*conditions))
+            .all()
         )
         for i, node in enumerate(nodes):
             if i == 0:
@@ -183,7 +188,7 @@ class NodeTreeTraverser(ResourceTreeTraverser):
 
     @staticmethod
     def _traverse_cte(root, vpath_tuple):  # pragma: no cover
-        """ Version of the traverse method, that uses a CTE instead of the
+        """Version of the traverse method, that uses a CTE instead of the
         Node.path attribute.  Unfortunately this is **much** slower and works
         only on PostgreSQL.
 
@@ -236,7 +241,7 @@ class NodeTreeTraverser(ResourceTreeTraverser):
 
 
 def includeme(config):
-    """ Pyramid includeme hook.
+    """Pyramid includeme hook.
 
     :param config: app config
     :type config: :class:`pyramid.config.Configurator`
