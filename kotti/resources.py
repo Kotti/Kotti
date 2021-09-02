@@ -39,6 +39,7 @@ from sqlalchemy import UnicodeText
 from sqlalchemy import UniqueConstraint
 from sqlalchemy import bindparam
 from sqlalchemy import event
+from sqlalchemy import inspect
 from sqlalchemy.engine.base import Engine
 from sqlalchemy.ext.associationproxy import association_proxy
 from sqlalchemy.ext.declarative import DeclarativeMeta
@@ -89,7 +90,7 @@ from kotti.util import get_paste_items
 
 
 class ContainerMixin(MutableMapping):
-    """ Containers form the API of a Node that's used for subitem
+    """Containers form the API of a Node that's used for subitem
     access and in traversal.
     """
 
@@ -184,7 +185,7 @@ class ContainerMixin(MutableMapping):
     def children_with_permission(
         self, request: Request, permission: str = "view"
     ) -> "List[Node]":
-        """ Return only those children for which the user initiating the
+        """Return only those children for which the user initiating the
         request has the asked permission.
 
         :param request: current request
@@ -202,7 +203,7 @@ class ContainerMixin(MutableMapping):
 
 
 class LocalGroup(Base):
-    """ Local groups allow the assignment of groups or roles to principals
+    """Local groups allow the assignment of groups or roles to principals
     (users or groups) **for a certain context** (i.e. a :class:`Node` in the
     content tree).
     """
@@ -250,8 +251,7 @@ class NodeMeta(DeclarativeMeta, abc.ABCMeta):
 
 @implementer(INode)
 class Node(Base, ContainerMixin, PersistentACLMixin, metaclass=NodeMeta):
-    """Basic node in the persistance hierarchy.
-    """
+    """Basic node in the persistance hierarchy."""
 
     __table_args__ = (UniqueConstraint("parent_id", "name"),)
     __mapper_args__ = dict(
@@ -307,7 +307,7 @@ class Node(Base, ContainerMixin, PersistentACLMixin, metaclass=NodeMeta):
         parent: "Node" = None,
         title: str = "",
         annotations: dict = None,
-        **kwargs
+        **kwargs,
     ):
         """Constructor"""
 
@@ -379,17 +379,17 @@ class Node(Base, ContainerMixin, PersistentACLMixin, metaclass=NodeMeta):
 class TypeInfo:
     """TypeInfo instances contain information about the type of a node.
 
-       You can pass arbitrary keyword arguments in the constructor, they
-       will become instance attributes.  The most common are:
+    You can pass arbitrary keyword arguments in the constructor, they
+    will become instance attributes.  The most common are:
 
-            -   name
-            -   title
-            -   add_view
-            -   addable_to
-            -   edit_links
-            -   selectable_default_views
-            -   uploadable_mimetypes
-            -   add_permission
+         -   name
+         -   title
+         -   add_view
+         -   addable_to
+         -   edit_links
+         -   selectable_default_views
+         -   uploadable_mimetypes
+         -   add_permission
     """
 
     addable_to = ()
@@ -469,7 +469,7 @@ class TypeInfo:
         self.selectable_default_views.append((name, title))
 
     def is_uploadable_mimetype(self, mimetype: str) -> int:
-        """ Check if uploads of the given MIME type are allowed.
+        """Check if uploads of the given MIME type are allowed.
 
         :param mimetype: MIME type
         :type mimetype: str
@@ -519,8 +519,7 @@ class Tag(Base):
 
 
 class TagsToContents(Base):
-    """Tags to contents mapping
-    """
+    """Tags to contents mapping"""
 
     __tablename__ = "tags_to_contents"
 
@@ -574,7 +573,6 @@ default_actions = [
     LinkRenderer("default-view-selector"),
 ]
 
-
 default_type_info = TypeInfo(
     name="Content",
     title="type_info title missing",  # BBB
@@ -593,7 +591,7 @@ default_type_info = TypeInfo(
 @implementer(IContent)
 class Content(Node):
     """Content adds some attributes to :class:`~kotti.resources.Node` that are
-       useful for content objects in a CMS.
+    useful for content objects in a CMS.
     """
 
     @classproperty
@@ -658,9 +656,8 @@ class Content(Node):
         modification_date: Optional[datetime.datetime] = None,
         in_navigation: Optional[bool] = True,
         tags: Optional[List[str]] = None,
-        **kwargs
+        **kwargs,
     ):
-
         super().__init__(name, parent, title, annotations, **kwargs)
 
         self.default_view = default_view
@@ -682,10 +679,10 @@ class Content(Node):
 @implementer(IDocument, IDefaultWorkflow)
 class Document(Content):
     """Document extends :class:`~kotti.resources.Content` with a body and its
-       mime_type.  In addition Document and its descendants implement
-       :class:`~kotti.interfaces.IDefaultWorkflow` and therefore
-       are associated with the default workflow (at least in
-       unmodified Kotti installations).
+    mime_type.  In addition Document and its descendants implement
+    :class:`~kotti.interfaces.IDefaultWorkflow` and therefore
+    are associated with the default workflow (at least in
+    unmodified Kotti installations).
     """
 
     #: Primary key column in the DB
@@ -710,7 +707,6 @@ class Document(Content):
     def __init__(
         self, body: Optional[str] = "", mime_type: Optional[str] = "text/html", **kwargs
     ):
-
         super().__init__(**kwargs)
 
         self.body = body
@@ -719,11 +715,11 @@ class Document(Content):
 
 # noinspection PyMethodParameters
 class SaveDataMixin:
-    """ The classmethods must not be implemented on a class that inherits
-        from ``Base`` with ``SQLAlchemy>=1.0``, otherwise that class cannot be
-        subclassed further.
+    """The classmethods must not be implemented on a class that inherits
+    from ``Base`` with ``SQLAlchemy>=1.0``, otherwise that class cannot be
+    subclassed further.
 
-        See http://stackoverflow.com/questions/30433960/how-to-use-declare-last-in-sqlalchemy-1-0  # noqa
+    See http://stackoverflow.com/questions/30433960/how-to-use-declare-last-in-sqlalchemy-1-0  # noqa
     """
 
     #: The filename is used in the attachment view to give downloads
@@ -747,8 +743,8 @@ class SaveDataMixin:
 
     @classmethod
     def __declare_last__(cls) -> None:
-        """ Unconfigure the event set in _SQLAMutationTracker,
-        we have _save_data """
+        """Unconfigure the event set in _SQLAMutationTracker,
+        we have _save_data"""
 
         mapper = cls._sa_class_manager.mapper
         args = (mapper.attrs["data"], "set", _SQLAMutationTracker._field_set)
@@ -768,7 +764,7 @@ class SaveDataMixin:
         oldvalue: Optional[Union[UploadedFile, _symbol]],
         initiator: Event,
     ) -> Optional[UploadedFile]:
-        """ Refresh metadata and save the binary data to the data field.
+        """Refresh metadata and save the binary data to the data field.
 
         :param target: The File instance
         :type target: :class:`kotti.resources.File` or subclass
@@ -799,7 +795,7 @@ class SaveDataMixin:
 
     @classmethod
     def from_field_storage(cls, fs):
-        """ Create and return an instance of this class from a file upload
+        """Create and return an instance of this class from a file upload
             through a webbrowser.
 
         :param fs: FieldStorage instance as found in a
@@ -821,7 +817,7 @@ class SaveDataMixin:
         filename: Optional[str] = None,
         mimetype: Optional[str] = None,
         size: Optional[int] = None,
-        **kwargs
+        **kwargs,
     ) -> None:
 
         super().__init__(**kwargs)
@@ -832,7 +828,7 @@ class SaveDataMixin:
         self.data = data
 
     def copy(self, **kwargs) -> "File":
-        """ Same as `Content.copy` with additional data support.  ``data`` needs
+        """Same as `Content.copy` with additional data support.  ``data`` needs
         some special attention, because we don't want the same depot file to be
         assigned to multiple content nodes.
         """
@@ -844,7 +840,7 @@ class SaveDataMixin:
 @implementer(IFile)
 class File(SaveDataMixin, Content):
     """File adds some attributes to :class:`~kotti.resources.Content` that are
-       useful for storing binary data.
+    useful for storing binary data.
     """
 
     #: Primary key column in the DB
@@ -877,12 +873,12 @@ def get_root(request: Optional[Request] = None) -> Node:
 class DefaultRootCache:
     """ Default implementation for :func:`~kotti.resources.get_root` """
 
-    _id = None
+    _root = None
 
     # noinspection PyComparisonWithNone,PyPep8
     @reify
     def root_id(self) -> int:
-        """ Query for the one node without a parent and return its id.
+        """Query for the one node without a parent and return its id.
         :result: The root node's id.
         :rtype: int
         """
@@ -898,16 +894,26 @@ class DefaultRootCache:
         return query(DBSession()).one().id
 
     def get_root(self) -> Node:
-        """ Query for the root node by its id.  This enables SQLAlchemy's
+        """Query for the root node by its id.  This enables SQLAlchemy's
         session cache (query is executed only once per session).
         :result: The root node.
         :rtype: :class:`Node`.
         """
 
-        return Node.query.get(self.root_id)
+        if self._root is None or inspect(self._root).detached:
+            self._root = (
+                DBSession.query(Node)
+                .with_polymorphic(Node)
+                .enable_eagerloads(False)
+                .enable_eagerloads("local_groups")
+                .filter(Node.id == self.root_id)
+                .one()
+            )
+
+        return self._root
 
     def __call__(self, request: Optional[Request] = None) -> Node:
-        """ Default implementation for :func:`~kotti.resources.get_root`
+        """Default implementation for :func:`~kotti.resources.get_root`
         :param request: Current request (optional)
         :type request: :class:`kotti.request.Request`
         :result: Node in the object tree that has no parent.
