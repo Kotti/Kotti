@@ -375,6 +375,27 @@ class Node(Base, ContainerMixin, PersistentACLMixin, metaclass=NodeMeta):
 
         return copy
 
+    def __json__(self, request):
+        d = {
+            'id': self.id,
+            'type': self.type,
+            'position': self.position,
+            'name': self.name,
+            'title': self.title,
+            'annotations': self.annotations,
+            'path': self.path,
+        }
+        if self.parent_id:
+            d['parent_id'] = self.parent_id
+        if self.parent:
+            d['parent'] = request.resource_url(self.parent, 'json')
+        children = dict([
+            (child.title, request.resource_url(child, 'json'))
+            for child in self.children
+        ])
+        d['children'] = children
+        return d
+
 
 class TypeInfo:
     """TypeInfo instances contain information about the type of a node.
@@ -488,6 +509,13 @@ class TypeInfo:
 
         return match_score
 
+    def __json__(self, request):
+        return {
+            'name': self.name,
+            'title': self.title,
+            'addable_to': self.addable_to,
+            'add_view': self.add_view,
+        }
 
 class Tag(Base):
     """Basic tag implementation.  Instances of this class are just the tag
@@ -674,6 +702,22 @@ class Content(Node):
         # Same as `Node.copy` with additional tag support.
         kwargs["tags"] = self.tags
         return super().copy(**kwargs)
+
+    def __json__(self, request):
+        d = super(Content, self).__json__(request)
+        d.update({
+            'default_view': self.default_view,
+            'description': self.description,
+            'language': self.language,
+            'owner': self.owner,
+            'state': self.state,
+            'creation_date': self.creation_date,
+            'modification_date': self.modification_date,
+            'in_navigation': self.in_navigation,
+            'tags': [tag.encode('utf-8') for tag in self.tags],
+            'type_info': self.type_info,
+        })
+        return d
 
 
 @implementer(IDocument, IDefaultWorkflow)
