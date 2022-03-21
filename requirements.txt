@@ -64,7 +64,7 @@ transaction==3.0.1
 translationstring==1.4
 Unidecode==1.2.0
 venusian==3.0.0
-waitress==2.0.0
+waitress==2.1.1
 webencodings==0.5.1
 WebOb==1.8.7
 zope.component==5.0.1
