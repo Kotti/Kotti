@@ -19,7 +19,7 @@ install_requires = [
     'Babel',
     'Chameleon>=2.7.4',  # Fixes error when raising HTTPFound
     'alembic>=0.8.0',
-    'bleach>=3.1.4',
+    'bleach>=4,<5',
     'bleach-allowlist',
     'colander>=1.3.2',
     'deform==2.0.14',  # 2.0.15 breaks js.deform
