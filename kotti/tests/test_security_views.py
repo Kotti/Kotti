@@ -298,7 +298,7 @@ class TestUserManageForm:
         view = UserManageFormView(user, request)
         appstruct = {"password": "foo"}
         view.save_success(appstruct)
-        assert user.password.startswith("$2a$10$")
+        assert user.password.startswith("$2b$10$")
 
     def test_hashed_password_empty(self, root):
         from kotti.views.users import UserManageFormView

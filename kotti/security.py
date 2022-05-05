@@ -554,10 +554,14 @@ class Principals(MutableMapping):
 
     log_rounds = 10
 
-    def hash_password(self, password: str, hashed: Optional[str] = None) -> str:
-        if hashed is None:
-            hashed = bcrypt.gensalt(self.log_rounds)
-        return bcrypt.hashpw(password.encode("utf-8"), hashed.encode("utf-8"))
+    def hash_password(self, password: str, salt: Optional[str] = None) -> str:
+        if salt is None:
+            salt = bcrypt.gensalt(self.log_rounds)
+        if isinstance(password, str):
+            password = password.encode("utf-8")
+        if isinstance(salt, str):
+            salt = salt.encode("utf-8")
+        return bcrypt.hashpw(password, salt).decode("utf-8")
 
     def validate_password(self, clear: str, hashed: str) -> bool:
         try:
