@@ -4,7 +4,8 @@ Change History
 2.0.8dev0 - unreleased
 ----------------------
 
-- No changes yet.
+- Replace ``py-bcrypt`` (unmaintained, last release in 2013) with ``bcrypt``.
+- Pin bleach to ``<5`` (incompatible API changes).
 
 2.0.7 - 2021-09-02
 ------------------

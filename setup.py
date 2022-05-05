@@ -19,6 +19,7 @@ install_requires = [
     'Babel',
     'Chameleon>=2.7.4',  # Fixes error when raising HTTPFound
     'alembic>=0.8.0',
+    'bcrypt',
     'bleach>=4,<5',
     'bleach-allowlist',
     'colander>=1.3.2',
@@ -41,7 +42,6 @@ install_requires = [
     'js.jqueryui>=1.8.24',
     'js.jqueryui_tagit',
     'lingua>=1.3',
-    'py_bcrypt',
     'pyramid>=1.9,<2',
     'pyramid_beaker',
     'pyramid_chameleon',
