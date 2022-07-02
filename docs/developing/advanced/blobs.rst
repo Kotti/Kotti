@@ -106,7 +106,7 @@ Method 2
 ~~~~~~~~
 
 Often these permission checks do not need to be enforced strictly.
-For such cases Kotti provides a "shortcut" in form of a Pyramid tween, that directly processes all requests under a certain path befor they even reach Kotti.
+For such cases Kotti provides a "shortcut" in form of a Pyramid tween, that directly processes all requests under a certain path before they even reach Kotti.
 This means: no traversal, no view lookup, no permission checks.
 The URL for this method can be created very similarily::
 

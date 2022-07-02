@@ -630,7 +630,7 @@ def adjust_for_engine(conn: Connection, branch: bool) -> None:
 
     # sqlite's Unicode columns return a buffer which can't be encoded by
     # a json encoder. We have to convert to a unicode string so that the value
-    # can be saved corectly by
+    # can be saved correctly by
     # :class:`depot.fields.sqlalchemy.upload.UploadedFile`
 
     # noinspection PyUnusedLocal

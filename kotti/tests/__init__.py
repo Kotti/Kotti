@@ -77,7 +77,7 @@ def allwarnings(request):
 
 @fixture(scope="session")
 def custom_settings():
-    """This is a dummy fixture meant to be overriden in add on package's
+    """This is a dummy fixture meant to be overridden in add on package's
     ``conftest.py``.  It can be used to inject arbitrary settings for third
     party test suites.  The default settings dictionary will be updated
     with the dictionary returned by this fixture.
