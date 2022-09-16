@@ -35,7 +35,7 @@ js.modernizr==2.5.3.1
 js.select2==4.0.4.post1
 js.tinymce==4.5.4
 lingua==4.15.0
-Mako==1.2.0
+Mako==1.2.2
 MarkupSafe==2.1.1
 packaging==21.3
 PasteDeploy==2.1.1
