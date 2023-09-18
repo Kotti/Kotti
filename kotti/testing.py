@@ -156,7 +156,7 @@ def _turn_warnings_into_errors():  # pragma: no cover
 
 # noinspection PyPep8Naming
 def setUp(init_db=True, **kwargs):
-    # _turn_warnings_into_errors()
+    _turn_warnings_into_errors()
 
     from kotti import _resolve_dotted
     from kotti import conf_defaults

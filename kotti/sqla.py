@@ -4,9 +4,10 @@ Inheritance Diagram
 
 .. inheritance-diagram:: kotti.sqla
 """
-from pyramid.compat import json
-from pyramid.security import ALL_PERMISSIONS
-from pyramid.security import Allow
+import json
+
+from pyramid.authorization import ALL_PERMISSIONS
+from pyramid.authorization import Allow
 from sqlalchemy.ext import baked
 from sqlalchemy.ext.declarative import declared_attr
 from sqlalchemy.ext.mutable import Mutable

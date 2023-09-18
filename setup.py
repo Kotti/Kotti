@@ -42,7 +42,7 @@ install_requires = [
     'js.jqueryui>=1.8.24',
     'js.jqueryui_tagit',
     'lingua>=1.3',
-    'pyramid>=1.9,<2',
+    'pyramid>=2.0',
     'pyramid_beaker',
     'pyramid_chameleon',
     'pyramid_deform>=0.2a3',  # language and template path config includeme

@@ -32,14 +32,10 @@ request.path          Pyramid traverser (rps) Kotti traverser (rps)
 
 """
 
-from pyramid.compat import decode_path_info
-from pyramid.compat import is_nonstr_iter
 from pyramid.exceptions import URLDecodeError
 from pyramid.interfaces import ITraverser
 from pyramid.interfaces import VH_ROOT_KEY
 from pyramid.traversal import ResourceTreeTraverser
-from pyramid.traversal import empty
-from pyramid.traversal import slash
 from pyramid.traversal import split_path_info
 from sqlalchemy import or_
 from zope.interface import implementer
@@ -69,22 +65,22 @@ class NodeTreeTraverser(ResourceTreeTraverser):
         environ = request.environ
         matchdict = request.matchdict
         if matchdict is not None:
-            path = matchdict.get("traverse", slash) or slash
-            if is_nonstr_iter(path):
-                path = "/" + slash.join(path) or slash
+            path = matchdict.get("traverse", "/") or "/"
+            if not isinstance(path, str) and hasattr(path, "__iter__"):
+                path = "/" + "/".join(path) or "/"
             subpath = matchdict.get("subpath", ())
-            if not is_nonstr_iter(subpath):
+            if isinstance(subpath, str) or not hasattr(path, "__iter__"):
                 subpath = split_path_info(subpath)
         else:
             subpath = ()
             try:
-                path = request.path_info or slash
+                path = request.path_info or "/"
             except KeyError:
-                path = slash
+                path = "/"
             except UnicodeDecodeError as e:
                 raise URLDecodeError(e.encoding, e.object, e.start, e.end, e.reason)
         if VH_ROOT_KEY in environ:
-            vroot_path = decode_path_info(environ[VH_ROOT_KEY])
+            vroot_path = environ[VH_ROOT_KEY].encode('latin-1').decode('utf-8')
             vroot_tuple = split_path_info(vroot_path)
             vpath = vroot_path + path
         else:
@@ -112,7 +108,7 @@ class NodeTreeTraverser(ResourceTreeTraverser):
         lvs = len(vs)
         result = {
             "context": root,
-            "view_name": empty,
+            "view_name": "",
             "subpath": subpath,
             "traversed": (),
             "virtual_root": root,
@@ -120,7 +116,7 @@ class NodeTreeTraverser(ResourceTreeTraverser):
             "root": root,
         }
 
-        if vpath == slash:
+        if vpath == "/":
             return result
         else:
             vpath_tuple = split_path_info(vpath)
@@ -139,7 +135,7 @@ class NodeTreeTraverser(ResourceTreeTraverser):
                 if view_name[:lvs] == vs:
                     view_name = view_name[lvs:]
             else:
-                view_name = empty
+                view_name = ""
             return {
                 "context": traversed_nodes[-1],
                 "view_name": view_name,

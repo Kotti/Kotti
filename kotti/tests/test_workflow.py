@@ -1,5 +1,5 @@
 from mock import patch
-from pyramid.security import ALL_PERMISSIONS
+from pyramid.authorization import ALL_PERMISSIONS
 
 from kotti.testing import Dummy
 

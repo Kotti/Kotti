@@ -3,7 +3,6 @@
 """
 import warnings
 
-from pyramid.compat import map_
 from pyramid.httpexceptions import HTTPFound
 from pyramid.interfaces import IView
 from pyramid.interfaces import IViewClassifier
@@ -28,7 +27,7 @@ class DefaultViewSelection:
 
            Returns True if a view with name view_name is registered for context.
         """
-        provides = [IViewClassifier] + map_(providedBy, (self.request, self.context))
+        provides = [IViewClassifier] + list(map(providedBy, (self.request, self.context)))
 
         try:
             reg = self.request.registry

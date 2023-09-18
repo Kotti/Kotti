@@ -1,7 +1,7 @@
 import json
 
 from mock import MagicMock
-from pyramid.security import ALL_PERMISSIONS
+from pyramid.authorization import ALL_PERMISSIONS
 
 
 class TestNestedMutationDict:

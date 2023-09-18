@@ -1,11 +1,9 @@
 from typing import Optional
-from typing import Union
 
 import pyramid.request
 from pyramid.decorator import reify
 from pyramid.interfaces import IRequest
-from pyramid.security import Allowed
-from pyramid.security import Denied
+from pyramid.security import PermitsResult
 from zope.interface import implementer
 
 from kotti.security import Principal
@@ -34,7 +32,7 @@ class Request(pyramid.request.Request):
 
     def has_permission(
         self, permission: str, context: object = None
-    ) -> Union[Allowed, Denied]:
+    ) -> PermitsResult:
         """ Check if the current request has the given permission on the
         current or explicitly passed context.  This is different from
         :meth:`pyramid.request.Request.has_permission`` in that a context other

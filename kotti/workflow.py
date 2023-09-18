@@ -1,5 +1,5 @@
 import transaction
-from pyramid.security import DENY_ALL
+from pyramid.authorization import DENY_ALL
 from repoze.workflow import get_workflow as base_get_workflow
 
 from kotti import DBSession
