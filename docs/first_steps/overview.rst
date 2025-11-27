@@ -76,7 +76,7 @@ Use this command:
 Support
 -------
 
-- Python 3.6-3.9
+- Python 3.9-3.13
 - Support for PostgreSQL, MySQL and SQLite (tested regularly), and a list of `other SQL databases`_
 - Support for WSGI and a `variety of web servers`_, including Apache
 

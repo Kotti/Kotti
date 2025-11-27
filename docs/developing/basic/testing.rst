@@ -39,11 +39,10 @@ Available fixtures
 Continuous Integration
 ----------------------
 
-Kotti itself is tested against Python versions 3.5 and 3.6 as well as SQLite, mySQL and PostgreSQL (in every possible combination of those) on every commit (and pull request) via the excellent `GitHub`_ / `Travis CI`_ hook.
+Kotti itself is tested against Python versions 3.9, 3.10, 3.11, 3.12, and 3.13 as well as SQLite, MySQL and PostgreSQL (in every possible combination of those) on every commit (and pull request) via `GitHub Actions`_.
 
-If you want your add-on packages' to be tested the same way with additional testing against multiple versions of Kotti (including the current master), you can add a ``.travis.yml`` file to your repo that looks similar to this:
-https://raw.github.com/Kotti/kotti_media/master/.travis.yml.
+If you want your add-on packages to be tested the same way with additional testing against multiple versions of Kotti (including the current master), you can set up GitHub Actions workflows similar to those in the Kotti repository.
 
 .. _GitHub: https://github.com/
-.. _Travis CI: https://travis-ci.org/
+.. _GitHub Actions: https://github.com/Kotti/Kotti/actions
 .. _PyPI: http://pypi.python.org/pypi

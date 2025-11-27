@@ -4,7 +4,10 @@ Change History
 2.0.10 - unreleased
 -------------------
 
-- No changes yet.
+- **BREAKING:** Drop support for Python 3.6, 3.7, and 3.8 (all EOL).
+- Add support for Python 3.11, 3.12, and 3.13.
+- Update CI/CD to test against Python 3.9-3.13.
+- Add ``python_requires='>=3.9'`` to package metadata.
 
 2.0.9 - 2022-05-05
 ------------------

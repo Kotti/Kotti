@@ -1,6 +1,6 @@
 build:
   environment:
-    python: 3.6.3
+    python: 3.11
   dependencies:
     before:
       - pip install -U pip wheel setuptools
