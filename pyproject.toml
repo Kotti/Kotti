@@ -1,0 +1,203 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "Kotti"
+version = "2.1.0.dev0"
+description = "A high-level, Pythonic web application framework based on Pyramid and SQLAlchemy. It includes an extensible Content Management System called the Kotti CMS."
+readme = {file = "README.rst", content-type = "text/x-rst"}
+requires-python = ">=3.10"
+license = "BSD-derived (http://www.repoze.org/LICENSE.txt)"
+authors = [
+    {name = "Kotti Developers", email = "kotti@googlegroups.com"},
+]
+keywords = ["kotti", "web", "cms", "wcms", "pylons", "pyramid", "sqlalchemy", "bootstrap"]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Environment :: Web Environment",
+    "Framework :: Pylons",
+    "Framework :: Pyramid",
+    "License :: Repoze Public License",
+    "Natural Language :: Dutch",
+    "Natural Language :: English",
+    "Natural Language :: French",
+    "Natural Language :: German",
+    "Natural Language :: Italian",
+    "Natural Language :: Japanese",
+    "Natural Language :: Polish",
+    "Natural Language :: Portuguese",
+    "Natural Language :: Swedish",
+    "Operating System :: POSIX",
+    "Operating System :: Unix",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: Implementation",
+    "Programming Language :: Python :: Implementation :: CPython",
+    "Programming Language :: SQL",
+    "Topic :: Internet",
+    "Topic :: Internet :: WWW/HTTP",
+    "Topic :: Internet :: WWW/HTTP :: Dynamic Content",
+    "Topic :: Internet :: WWW/HTTP :: Dynamic Content :: CGI Tools/Libraries",
+    "Topic :: Internet :: WWW/HTTP :: WSGI",
+    "Topic :: Internet :: WWW/HTTP :: WSGI :: Application",
+    "Topic :: Software Development",
+    "Topic :: Software Development :: Libraries :: Application Frameworks",
+]
+dependencies = [
+    "Babel",
+    "Chameleon>=2.7.4",
+    "alembic>=0.8.0",
+    "bcrypt",
+    "bleach>=4,<5",
+    "bleach-allowlist",
+    "colander>=1.3.2",
+    "deform==2.0.14",
+    "docopt",
+    "fanstatic>=1.0.0",
+    "filedepot",
+    "formencode>=2.0.0a",
+    "html2text",
+    "iso8601>=0.1.13",
+    "js.angular",
+    "js.bootstrap>=3.0.0",
+    "js.deform==2.0.14",
+    "js.fineuploader",
+    "js.html5shiv",
+    "js.jquery<2.0.0.dev",
+    "js.jquery_form",
+    "js.jquery_tablednd",
+    "js.jquery_timepicker_addon",
+    "js.jqueryui>=1.8.24",
+    "js.jqueryui_tagit",
+    "lingua>=1.3",
+    "pyramid>=1.9,<2",
+    "pyramid_beaker",
+    "pyramid_chameleon",
+    "pyramid_deform>=0.2a3",
+    "pyramid_mailer",
+    "pyramid_tm",
+    "pyramid_zcml>=1.1.0",
+    "repoze.lru",
+    "repoze.workflow>=1.0b1",
+    "repoze.zcml>=1.0b1",
+    "sqlalchemy>=1.4.16,<2",
+    "sqlalchemy-utils>=0.37.6",
+    "transaction>=1.1.0",
+    "unidecode",
+    "waitress",
+    "zope.deprecation",
+    "zope.interface",
+    "zope.sqlalchemy",
+]
+
+[project.urls]
+Homepage = "http://kotti.pylonsproject.org/"
+Repository = "https://github.com/Kotti/Kotti"
+Changelog = "https://github.com/Kotti/Kotti/blob/master/CHANGES.txt"
+
+[project.scripts]
+kotti-migrate = "kotti.migrate:kotti_migrate_command"
+kotti-reset-workflow = "kotti.workflow:reset_workflow_command"
+kotti-migrate-storage = "kotti.filedepot:migrate_storages_command"
+
+[project.entry-points."paste.app_factory"]
+main = "kotti:main"
+
+[project.entry-points."fanstatic.libraries"]
+kotti = "kotti.fanstatic:lib_kotti"
+
+[project.entry-points."pytest11"]
+kotti = "kotti.tests"
+
+[project.optional-dependencies]
+# New canonical names
+test = [
+    "WebTest",
+    "Pillow",
+    "pyquery",
+    "pytest>=8",
+    "pytest-cov",
+    "zope.testbrowser>=5.0.0",
+]
+docs = [
+    "Sphinx",
+    "docutils",
+    "repoze.sphinx.autointerface",
+    "sphinx_rtd_theme",
+]
+dev = [
+    "kotti[test]",
+    "kotti[docs]",
+    "kotti-tinymce>=0.7.0",
+    "pipdeptree",
+    "pyramid_debugtoolbar",
+]
+# Deprecated aliases — preserved for backward compatibility
+testing = ["kotti[test]"]
+development = ["kotti[dev]"]
+
+[dependency-groups]
+test = [
+    "WebTest",
+    "Pillow",
+    "pyquery",
+    "pytest>=8",
+    "pytest-cov",
+    "zope.testbrowser>=5.0.0",
+]
+docs = [
+    "Sphinx",
+    "docutils",
+    "repoze.sphinx.autointerface",
+    "sphinx_rtd_theme",
+]
+dev = [
+    {include-group = "test"},
+    {include-group = "docs"},
+    "pipdeptree",
+    "pyramid_debugtoolbar",
+]
+
+# --- Build ---
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/kotti"]
+# Hatchling includes ALL files under src/kotti/ by default (templates, locale, static, alembic, zcml)
+# No additional include patterns needed.
+
+[tool.hatch.build.targets.sdist]
+include = [
+    "/src",
+    "/AUTHORS.txt",
+    "/CHANGES.txt",
+    "/CONTRIBUTORS.txt",
+    "/README.rst",
+    "/LICENSE.txt",
+    "/COPYRIGHT.txt",
+    "/app.ini",
+    "/development.ini",
+]
+
+# --- pytest ---
+
+[tool.pytest.ini_options]
+addopts = [
+    "--ignore=src/kotti/templates/",
+    "--capture=no",
+    "--strict-markers",
+    "--tb=native",
+    "--cov=kotti",
+    "--cov-report=term-missing",
+]
+testpaths = ["src/kotti"]
+python_files = ["test_*.py"]
+markers = [
+    "user: mark test to be run as the given user",
+    "slow: mark test to be run only with --runslow option",
+]
