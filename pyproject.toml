@@ -8,7 +8,7 @@ version = "2.1.0.dev0"
 description = "A high-level, Pythonic web application framework based on Pyramid and SQLAlchemy. It includes an extensible Content Management System called the Kotti CMS."
 readme = {file = "README.rst", content-type = "text/x-rst"}
 requires-python = ">=3.10"
-license = "BSD-derived (http://www.repoze.org/LICENSE.txt)"
+license = {text = "BSD-derived (http://www.repoze.org/LICENSE.txt)"}
 authors = [
     {name = "Kotti Developers", email = "kotti@googlegroups.com"},
 ]
@@ -91,6 +91,7 @@ dependencies = [
     "transaction>=1.1.0",
     "unidecode",
     "waitress",
+    "setuptools<79",  # provides pkg_resources; replaced in Phase 2 (DEP-04/DEP-05)
     "zope.deprecation",
     "zope.interface",
     "zope.sqlalchemy",

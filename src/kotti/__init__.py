@@ -1,4 +1,11 @@
 import os.path
+from importlib.metadata import PackageNotFoundError as _PNF
+from importlib.metadata import version as _version
+
+try:
+    __version__ = _version("Kotti")
+except _PNF:
+    __version__ = "unknown"
 
 import pkg_resources
 from pyramid.authentication import AuthTktAuthenticationPolicy
