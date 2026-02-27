@@ -3,12 +3,12 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: unknown
-last_updated: "2026-02-27T21:52:43.490Z"
+last_updated: "2026-02-27T22:26:20Z"
 progress:
-  total_phases: 2
+  total_phases: 5
   completed_phases: 2
-  total_plans: 4
-  completed_plans: 4
+  total_plans: 5
+  completed_plans: 5
 ---
 
 # Project State
@@ -18,16 +18,16 @@ progress:
 See: .planning/PROJECT.md (updated 2026-02-27)
 
 **Core value:** Keep Kotti installable, functional, and maintainable on modern Python (3.10-3.13) without breaking existing users
-**Current focus:** Phase 2 — Runtime Dependency Updates
+**Current focus:** Phase 3 — Python Version and CI Modernization
 
 ## Current Position
 
-Phase: 2 of 5 (Runtime Dependency Updates)
-Plan: 2 of 3 in current phase
-Status: Phase 2, Plan 2 complete
-Last activity: 2026-02-27 — Completed 02-02: bleach replaced with nh3, deprecation shims, deps cleaned
+Phase: 3 of 5 (Python Version and CI Modernization)
+Plan: 1 of 1 in current phase
+Status: Phase 3, Plan 1 complete
+Last activity: 2026-02-27 — Completed 03-01: ruff linting, consolidated CI matrix, Dependabot config
 
-Progress: [████░░░░░░] 40%
+Progress: [█████░░░░░] 50%
 
 ## Performance Metrics
 
@@ -41,10 +41,11 @@ Progress: [████░░░░░░] 40%
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
 | Phase 1 | 2 | 22m 12s | 11m 6s |
-| Phase 2 | 1 (of 3) | ~15m | ~15m |
+| Phase 2 | 2 | ~30m | ~15m |
+| Phase 3 | 1 | 1m 26s | 1m 26s |
 
 **Recent Trend:**
-- Last 5 plans: 01-01 (16m 12s), 01-02 (6m), 02-01 (~15m)
+- Last 5 plans: 01-01 (16m 12s), 01-02 (6m), 02-01 (~15m), 02-02 (~15m), 03-01 (1m 26s)
 - Trend: Stable
 
 *Updated after each plan completion*
@@ -74,6 +75,10 @@ Recent decisions affecting current work:
 - [02-02]: _XSS_SAFE_TAGS derived from actual bleach_allowlist.generally_xss_safe (inspected before removal) minus style/script
 - [02-02]: conf_defaults updated to _nh3 function names — fresh installs get no DeprecationWarning; old plugin configs still work via shims
 - [02-02]: bleach, bleach-allowlist, setuptools<79 all removed atomically in same uv lock run
+- [03-01]: actions/checkout@v6 and astral-sh/setup-uv@v7 used — no actions/setup-python
+- [03-01]: PyMySQL (pure Python) chosen over mysqlclient — no C build deps needed
+- [03-01]: E711, E721, F821, F841 rules ignored in ruff — deferred to Phase 4 code quality work
+- [03-01]: Branch triggers limited to master only (drop testing/stable from old workflows)
 
 ### Pending Todos
 
@@ -86,6 +91,6 @@ None.
 
 ## Session Continuity
 
-Last session: 2026-02-27T21:48:05Z
-Stopped at: Completed 02-02-PLAN.md — bleach replaced with nh3, deprecation shims, deps cleaned
+Last session: 2026-02-27T22:26:20Z
+Stopped at: Completed 03-01-PLAN.md — ruff linting, consolidated CI matrix, Dependabot config
 Resume file: None

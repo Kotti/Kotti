@@ -31,10 +31,10 @@ Requirements for this modernization milestone. Each maps to roadmap phases.
 
 ### Python Version
 
-- [ ] **PYV-01**: Python 3.6-3.9 classifiers and support dropped
-- [ ] **PYV-02**: Python 3.10-3.13 classifiers declared
-- [ ] **PYV-03**: CI test matrix covers Python 3.10, 3.11, 3.12, 3.13
-- [ ] **PYV-04**: All tests pass on Python 3.10-3.13
+- [x] **PYV-01**: Python 3.6-3.9 classifiers and support dropped
+- [x] **PYV-02**: Python 3.10-3.13 classifiers declared
+- [x] **PYV-03**: CI test matrix covers Python 3.10, 3.11, 3.12, 3.13
+- [x] **PYV-04**: All tests pass on Python 3.10-3.13
 
 ### Linting & Formatting
 
@@ -47,11 +47,11 @@ Requirements for this modernization milestone. Each maps to roadmap phases.
 
 ### CI/CD
 
-- [ ] **CI-01**: GitHub Actions updated to current versions (checkout@v4, setup-python@v5)
-- [ ] **CI-02**: CI uses uv for package installation (astral-sh/setup-uv action)
-- [ ] **CI-03**: Separate ruff lint/format check job in CI
-- [ ] **CI-04**: 3 separate workflow files consolidated into 1 matrix workflow (Python version x DB backend)
-- [ ] **CI-05**: Dependabot configured for automated dependency PRs
+- [x] **CI-01**: GitHub Actions updated to current versions (checkout@v4, setup-python@v5)
+- [x] **CI-02**: CI uses uv for package installation (astral-sh/setup-uv action)
+- [x] **CI-03**: Separate ruff lint/format check job in CI
+- [x] **CI-04**: 3 separate workflow files consolidated into 1 matrix workflow (Python version x DB backend)
+- [x] **CI-05**: Dependabot configured for automated dependency PRs
 
 ### Code Quality
 
@@ -119,21 +119,21 @@ Which phases cover which requirements. Updated during roadmap creation.
 | DEP-06 | Phase 2 | Complete |
 | DEP-07 | Phase 2 | Complete |
 | DEP-08 | Phase 2 | Complete |
-| PYV-01 | Phase 3 | Pending |
-| PYV-02 | Phase 3 | Pending |
-| PYV-03 | Phase 3 | Pending |
-| PYV-04 | Phase 3 | Pending |
+| PYV-01 | Phase 3 | Complete |
+| PYV-02 | Phase 3 | Complete |
+| PYV-03 | Phase 3 | Complete |
+| PYV-04 | Phase 3 | Complete |
 | LNT-01 | Phase 4 | Pending |
 | LNT-02 | Phase 4 | Pending |
 | LNT-03 | Phase 3 | Pending |
 | LNT-04 | Phase 4 | Pending |
 | LNT-05 | Phase 4 | Pending |
 | LNT-06 | Phase 4 | Pending |
-| CI-01 | Phase 3 | Pending |
-| CI-02 | Phase 3 | Pending |
-| CI-03 | Phase 3 | Pending |
-| CI-04 | Phase 3 | Pending |
-| CI-05 | Phase 3 | Pending |
+| CI-01 | Phase 3 | Complete |
+| CI-02 | Phase 3 | Complete |
+| CI-03 | Phase 3 | Complete |
+| CI-04 | Phase 3 | Complete |
+| CI-05 | Phase 3 | Complete |
 | CQ-01 | Phase 4 | Pending |
 | CQ-02 | Phase 4 | Pending |
 | CQ-03 | Phase 4 | Pending |
