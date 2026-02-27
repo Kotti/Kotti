@@ -116,9 +116,9 @@ conf_defaults = {
     "kotti.root_factory": "kotti.resources.default_get_root",
     "kotti.sanitizers": " ".join(
         [
-            "xss_protection:kotti.sanitizers.xss_protection",
-            "minimal_html:kotti.sanitizers.minimal_html",
-            "no_html:kotti.sanitizers.no_html",
+            "xss_protection:kotti.sanitizers.xss_protection_nh3",
+            "minimal_html:kotti.sanitizers.minimal_html_nh3",
+            "no_html:kotti.sanitizers.no_html_nh3",
         ]
     ),
     "kotti.sanitize_on_write": " ".join(
