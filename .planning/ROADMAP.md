@@ -12,7 +12,7 @@ Kotti is a mature Pyramid-based CMS framework running on deprecated tooling and 
 
 Decimal phases appear between their surrounding integers in numeric order.
 
-- [ ] **Phase 1: Packaging Foundation** - Replace setup.py/setup.cfg with pyproject.toml, adopt src layout, and commit uv.lock
+- [x] **Phase 1: Packaging Foundation** - Replace setup.py/setup.cfg with pyproject.toml, adopt src layout, and commit uv.lock (completed 2026-02-27)
 - [ ] **Phase 2: Runtime Dependency Updates** - Replace bleach with nh3, pkg_resources with importlib, and mock with unittest.mock
 - [ ] **Phase 3: Python Version and CI Modernization** - Update GitHub Actions, add Python 3.10-3.13 matrix, replace pytest-flake8 with ruff
 - [ ] **Phase 4: Code Quality and Formatting** - Apply ruff formatting, fix bare excepts, modernize type annotations, add pre-commit hooks
@@ -84,7 +84,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Packaging Foundation | 1/2 | In Progress|  |
+| 1. Packaging Foundation | 2/2 | Complete   | 2026-02-27 |
 | 2. Runtime Dependency Updates | 0/? | Not started | - |
 | 3. Python Version and CI Modernization | 0/? | Not started | - |
 | 4. Code Quality and Formatting | 0/? | Not started | - |

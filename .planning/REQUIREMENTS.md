@@ -16,7 +16,7 @@ Requirements for this modernization milestone. Each maps to roadmap phases.
 - [x] **PKG-05**: Non-Python package data (.pt templates, .po/.mo locale files, .zcml, alembic scripts, static assets) included in sdist/wheel
 - [x] **PKG-06**: setuptools_git and check-manifest removed
 - [x] **PKG-07**: setup.py and setup.cfg deleted (not coexisting with pyproject.toml)
-- [ ] **PKG-08**: uv used as package manager with committed uv.lock
+- [x] **PKG-08**: uv used as package manager with committed uv.lock
 
 ### Dependencies
 
@@ -110,7 +110,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | PKG-05 | Phase 1 | Complete |
 | PKG-06 | Phase 1 | Complete |
 | PKG-07 | Phase 1 | Complete |
-| PKG-08 | Phase 1 | Pending |
+| PKG-08 | Phase 1 | Complete |
 | DEP-01 | Phase 2 | Pending |
 | DEP-02 | Phase 2 | Pending |
 | DEP-03 | Phase 2 | Pending |
