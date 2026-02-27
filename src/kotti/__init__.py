@@ -7,7 +7,6 @@ try:
 except _PNF:
     __version__ = "unknown"
 
-import pkg_resources
 from pyramid.authentication import AuthTktAuthenticationPolicy
 from pyramid.authorization import ACLAuthorizationPolicy
 from pyramid.config import Configurator
@@ -168,7 +167,7 @@ conf_dotted = {
 
 
 def get_version():
-    return pkg_resources.require("Kotti")[0].version
+    return __version__
 
 
 def get_settings():

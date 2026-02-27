@@ -42,7 +42,7 @@ import os
 from typing import Callable
 from typing import List
 
-import pkg_resources
+import importlib.resources as importlib_resources
 from alembic.config import Config
 from alembic.environment import EnvironmentContext
 from alembic.script import ScriptDirectory
@@ -54,7 +54,7 @@ from kotti import conf_defaults
 from kotti import get_settings
 from kotti.util import command
 
-KOTTI_SCRIPT_DIR = pkg_resources.resource_filename("kotti", "alembic")
+KOTTI_SCRIPT_DIR = str(importlib_resources.files("kotti") / "alembic")
 DEFAULT_LOCATION = "kotti:alembic"
 
 

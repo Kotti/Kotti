@@ -12,8 +12,8 @@
 # serve to show the default.
 
 import os
-import pkg_resources
 from datetime import date
+from importlib.metadata import version as _pkg_version
 
 # -- General configuration -----------------------------------------------------
 
@@ -36,7 +36,7 @@ source_suffix = '.rst'
 templates_path = ['_templates']
 today_fmt = '%Y-%m-%d'
 # The full version, including alpha/beta/rc tags.
-version = pkg_resources.get_distribution("Kotti").version
+version = _pkg_version("Kotti")
 release = version
 
 # add_function_parentheses = True
