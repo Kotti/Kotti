@@ -1,3 +1,5 @@
+import pytest
+
 unsanitized = """
 <h1>Title</h1>
 <div class="teaser umlaut">Descrüptiön</div>
@@ -24,44 +26,64 @@ def test_no_html():
 
     from kotti.sanitizers import no_html
 
-    _verify_no_html(no_html(unsanitized))
+    import warnings
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore", DeprecationWarning)
+        _verify_no_html(no_html(unsanitized))
 
 
 def _verify_minimal_html(sanitized):
 
-    from bleach_allowlist import all_tags
-    from bleach_allowlist import markdown_tags
-    from bleach_allowlist import print_tags
+    # Tags not in _MINIMAL_TAGS should be stripped (their content preserved)
+    assert "<marquee" not in sanitized
+    assert "<script" not in sanitized
 
-    for tag in set(all_tags) - set(markdown_tags) - set(print_tags):
-        assert f"<{tag}" not in sanitized
+    # style attribute is NOT in _MINIMAL_ATTRS — style values stripped entirely
+    assert 'style=' not in sanitized.lower()
 
-    assert 'style=""' in sanitized
-    assert '<a href="http://external.com/">' in sanitized
+    # <a> links preserved with rel added; target stripped (not in _MINIMAL_ATTRS)
+    assert '<a href="http://external.com/"' in sanitized
+
+    # size attribute not in _MINIMAL_ATTRS — stripped
     assert "size" not in sanitized.lower()
 
 
 def test_minmal_html():
 
-    from kotti.sanitizers import minimal_html
+    from kotti.sanitizers import minimal_html_nh3
 
-    _verify_minimal_html(minimal_html(unsanitized))
+    _verify_minimal_html(minimal_html_nh3(unsanitized))
 
 
 def _verify_xss_protection(sanitized):
 
+    # Script tag stripped AND content removed entirely by nh3
     assert "<script>" not in sanitized
+    assert "alert('XSS!')" not in sanitized
+
     assert "<h1>Title</h1>" in sanitized
-    assert '<a href="internal.html" target="_blank">internal</a>' in sanitized
-    assert 'b size="17"' in sanitized
-    assert "<p>Unclosed paragraph\n</p>" in sanitized
+
+    # nh3 adds rel="noopener noreferrer" to <a> tags
+    assert '<a href="internal.html" target="_blank" rel="noopener noreferrer">internal</a>' in sanitized
+
+    # size attribute is NOT in _XSS_SAFE_ATTRS — stripped from <b>
+    assert 'size=' not in sanitized.lower()
+
+    # <b> tag itself IS in _XSS_SAFE_TAGS — preserved
+    assert '<b' in sanitized
+
+    # style="color: red" IS preserved (style in wildcard attrs)
+    assert 'style="color: red"' in sanitized
+
+    # Unclosed <p> gets closed by nh3
+    assert "Unclosed paragraph" in sanitized
 
 
 def test_xss_protection():
 
-    from kotti.sanitizers import xss_protection
+    from kotti.sanitizers import xss_protection_nh3
 
-    _verify_xss_protection(xss_protection(unsanitized))
+    _verify_xss_protection(xss_protection_nh3(unsanitized))
 
 
 def test_default_config(unresolved_settings):
@@ -71,7 +93,7 @@ def test_default_config(unresolved_settings):
 
     assert (
         unresolved_settings["kotti.sanitizers"]
-        == "xss_protection:kotti.sanitizers.xss_protection minimal_html:kotti.sanitizers.minimal_html no_html:kotti.sanitizers.no_html"
+        == "xss_protection:kotti.sanitizers.xss_protection_nh3 minimal_html:kotti.sanitizers.minimal_html_nh3 no_html:kotti.sanitizers.no_html_nh3"
     )  # noqa
     assert (
         unresolved_settings["kotti.sanitize_on_write"]
@@ -81,9 +103,9 @@ def test_default_config(unresolved_settings):
 
 def test_setup_sanitizers(unresolved_settings):
     from kotti.sanitizers import _setup_sanitizers
-    from kotti.sanitizers import minimal_html
-    from kotti.sanitizers import no_html
-    from kotti.sanitizers import xss_protection
+    from kotti.sanitizers import minimal_html_nh3
+    from kotti.sanitizers import no_html_nh3
+    from kotti.sanitizers import xss_protection_nh3
 
     _setup_sanitizers(unresolved_settings)
 
@@ -93,11 +115,12 @@ def test_setup_sanitizers(unresolved_settings):
     assert "no_html" in settings
     assert "xss_protection" in settings
 
-    assert settings["minimal_html"] == minimal_html
-    assert settings["no_html"] == no_html
-    assert settings["xss_protection"] == xss_protection
+    assert settings["minimal_html"] == minimal_html_nh3
+    assert settings["no_html"] == no_html_nh3
+    assert settings["xss_protection"] == xss_protection_nh3
 
 
+@pytest.mark.filterwarnings("ignore::DeprecationWarning")
 def test_listeners(app, root, db_session):
 
     from kotti.resources import Document
@@ -120,6 +143,7 @@ def test_listeners(app, root, db_session):
     assert doc.title == None
 
 
+@pytest.mark.filterwarnings("ignore::DeprecationWarning")
 def test_sanitize(app, dummy_request):
 
     from kotti.sanitizers import sanitize
@@ -136,56 +160,83 @@ def test_sanitize(app, dummy_request):
     _verify_xss_protection(api.sanitize(unsanitized, "xss_protection"))
 
 
+def test_deprecation_warnings():
+    import warnings
+    from kotti.sanitizers import xss_protection, minimal_html, no_html
+
+    with warnings.catch_warnings(record=True) as w:
+        warnings.simplefilter("always")
+        xss_protection("<p>test</p>")
+        assert len(w) == 1
+        assert issubclass(w[0].category, DeprecationWarning)
+        assert "xss_protection_nh3" in str(w[0].message)
+        assert "Kotti 3.0" in str(w[0].message)
+
+    with warnings.catch_warnings(record=True) as w:
+        warnings.simplefilter("always")
+        minimal_html("<p>test</p>")
+        assert len(w) == 1
+        assert "minimal_html_nh3" in str(w[0].message)
+
+    with warnings.catch_warnings(record=True) as w:
+        warnings.simplefilter("always")
+        no_html("<p>test</p>")
+        assert len(w) == 1
+        assert "no_html_nh3" in str(w[0].message)
+
+
 # ---------------------------------------------------------------------------
-# Bleach characterization tests — baseline capture before nh3 migration
-# These tests document EXACT bleach behavior. Plan 02-02 will update them
-# to match nh3 output (DOM-equivalence approach applies there, not here).
+# nh3 characterization tests — updated from bleach baseline (Plan 02-01)
+# These tests document EXACT nh3 behavior. The bleach characterization tests
+# have been replaced by these after the nh3 migration in Plan 02-02.
 # ---------------------------------------------------------------------------
 
 
-def test_bleach_characterization_xss_protection():
-    """Capture exact bleach xss_protection() output as regression baseline."""
-    from kotti.sanitizers import xss_protection
+def test_nh3_characterization_xss_protection():
+    """Capture exact nh3 xss_protection_nh3() behavior as regression baseline."""
+    from kotti.sanitizers import xss_protection_nh3
 
-    sanitized = xss_protection(unsanitized)
+    sanitized = xss_protection_nh3(unsanitized)
 
-    # Script tags: bleach strips <script> tags but PRESERVES content
-    assert "alert('XSS!')" in sanitized
+    # Script tags: nh3 strips <script> tags AND REMOVES content (unlike bleach)
+    assert "alert('XSS!')" not in sanitized
     assert "<script>" not in sanitized
 
-    # Attribute handling: bleach with lambda attributes=True preserves ALL attrs
-    assert 'size="17"' in sanitized
+    # Attribute handling: nh3 uses explicit allowlist — size NOT allowed on <b>
+    assert 'size=' not in sanitized.lower()
 
-    # Style preservation: bleach with all_styles preserves style values
-    # Note: bleach normalizes CSS and adds trailing semicolon
-    assert 'style="color: red;"' in sanitized
+    # Style preservation: style is in wildcard attrs — preserved (no trailing semicolon)
+    assert 'style="color: red"' in sanitized
 
-    # Link handling: bleach does NOT add rel attributes to links
+    # Link handling: nh3 adds rel="noopener noreferrer" to <a> tags
     assert 'target="_blank"' in sanitized
-    assert "rel=" not in sanitized
+    assert 'rel="noopener noreferrer"' in sanitized
 
-    # Tag handling: <marquee> IS in generally_xss_safe, so it is preserved
+    # Tag handling: <marquee> IS in _XSS_SAFE_TAGS, so it is preserved
     assert "<marquee>" in sanitized
 
 
-def test_bleach_characterization_minimal_html():
-    """Capture exact bleach minimal_html() output as regression baseline."""
-    from kotti.sanitizers import minimal_html
+def test_nh3_characterization_minimal_html():
+    """Capture exact nh3 minimal_html_nh3() behavior as regression baseline."""
+    from kotti.sanitizers import minimal_html_nh3
 
-    sanitized = minimal_html(unsanitized)
+    sanitized = minimal_html_nh3(unsanitized)
 
-    # Style handling: bleach with styles=[] strips CSS values but leaves empty attr
-    assert 'style=""' in sanitized
+    # Style handling: nh3 with no style in attrs — NO style attribute at all
+    assert 'style=' not in sanitized.lower()
 
-    # Attribute stripping: size on <b> is NOT in markdown_attrs or print_attrs
+    # Attribute stripping: size on <b> is NOT in _MINIMAL_ATTRS
     assert "size" not in sanitized.lower()
 
+    # <a> links preserved with rel added
+    assert 'rel="noopener noreferrer"' in sanitized
 
-def test_bleach_characterization_no_html():
-    """Capture exact bleach no_html() output as regression baseline."""
-    from kotti.sanitizers import no_html
 
-    sanitized = no_html(unsanitized)
+def test_nh3_characterization_no_html():
+    """Capture exact nh3 no_html_nh3() behavior as regression baseline."""
+    from kotti.sanitizers import no_html_nh3
+
+    sanitized = no_html_nh3(unsanitized)
 
     # All tags removed, text content preserved
     assert "<" not in sanitized

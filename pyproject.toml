@@ -54,8 +54,7 @@ dependencies = [
     "Chameleon>=2.7.4",
     "alembic>=0.8.0",
     "bcrypt",
-    "bleach>=4,<5",
-    "bleach-allowlist",
+    "nh3>=0.2.14",
     "colander>=1.3.2",
     "deform==2.0.14",
     "docopt",
@@ -91,7 +90,6 @@ dependencies = [
     "transaction>=1.1.0",
     "unidecode",
     "waitress",
-    "setuptools<79",  # provides pkg_resources; replaced in Phase 2 (DEP-04/DEP-05)
     "zope.deprecation",
     "zope.interface",
     "zope.sqlalchemy",
