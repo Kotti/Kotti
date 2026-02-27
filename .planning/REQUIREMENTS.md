@@ -21,13 +21,13 @@ Requirements for this modernization milestone. Each maps to roadmap phases.
 ### Dependencies
 
 - [ ] **DEP-01**: bleach + bleach-allowlist replaced with nh3 for HTML sanitization
-- [ ] **DEP-02**: Sanitization behavior preserved (characterization tests pass before and after switch)
-- [ ] **DEP-03**: mock PyPI package replaced with stdlib unittest.mock in all test files
-- [ ] **DEP-04**: pkg_resources replaced with importlib.metadata for version lookup
-- [ ] **DEP-05**: pkg_resources.resource_filename replaced with importlib.resources for Alembic directory discovery
-- [ ] **DEP-06**: kotti-migrate CLI works correctly after importlib migration (tested in fresh virtualenv)
-- [ ] **DEP-07**: pyramid>=1.9,<2 pin maintained (pyramid.compat dependency)
-- [ ] **DEP-08**: sqlalchemy>=1.4,<2 pin maintained (declarative_base/baked queries dependency)
+- [x] **DEP-02**: Sanitization behavior preserved (characterization tests pass before and after switch)
+- [x] **DEP-03**: mock PyPI package replaced with stdlib unittest.mock in all test files
+- [x] **DEP-04**: pkg_resources replaced with importlib.metadata for version lookup
+- [x] **DEP-05**: pkg_resources.resource_filename replaced with importlib.resources for Alembic directory discovery
+- [x] **DEP-06**: kotti-migrate CLI works correctly after importlib migration (tested in fresh virtualenv)
+- [x] **DEP-07**: pyramid>=1.9,<2 pin maintained (pyramid.compat dependency)
+- [x] **DEP-08**: sqlalchemy>=1.4,<2 pin maintained (declarative_base/baked queries dependency)
 
 ### Python Version
 
@@ -112,13 +112,13 @@ Which phases cover which requirements. Updated during roadmap creation.
 | PKG-07 | Phase 1 | Complete |
 | PKG-08 | Phase 1 | Complete |
 | DEP-01 | Phase 2 | Pending |
-| DEP-02 | Phase 2 | Pending |
-| DEP-03 | Phase 2 | Pending |
-| DEP-04 | Phase 2 | Pending |
-| DEP-05 | Phase 2 | Pending |
-| DEP-06 | Phase 2 | Pending |
-| DEP-07 | Phase 2 | Pending |
-| DEP-08 | Phase 2 | Pending |
+| DEP-02 | Phase 2 | Complete |
+| DEP-03 | Phase 2 | Complete |
+| DEP-04 | Phase 2 | Complete |
+| DEP-05 | Phase 2 | Complete |
+| DEP-06 | Phase 2 | Complete |
+| DEP-07 | Phase 2 | Complete |
+| DEP-08 | Phase 2 | Complete |
 | PYV-01 | Phase 3 | Pending |
 | PYV-02 | Phase 3 | Pending |
 | PYV-03 | Phase 3 | Pending |
