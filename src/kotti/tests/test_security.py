@@ -1,4 +1,4 @@
-from mock import patch
+from unittest.mock import patch
 from pyramid.authentication import CallbackAuthenticationPolicy
 from pytest import raises
 
@@ -7,7 +7,7 @@ from kotti.testing import DummyRequest
 
 class HasPermissionTests:
     def test_has_permission(self):
-        import mock
+        import unittest.mock as mock
         from kotti.security import has_permission
 
         permission = "edit"

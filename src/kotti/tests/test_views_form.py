@@ -1,6 +1,6 @@
 import colander
-from mock import MagicMock
-from mock import patch
+from unittest.mock import MagicMock
+from unittest.mock import patch
 
 from kotti.testing import Dummy
 from kotti.testing import DummyRequest

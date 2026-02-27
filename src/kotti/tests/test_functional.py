@@ -1,5 +1,5 @@
 import pytest
-from mock import patch
+from unittest.mock import patch
 from webtest.forms import Upload
 
 from kotti.testing import BASE_URL

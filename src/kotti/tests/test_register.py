@@ -1,4 +1,4 @@
-import mock  # must not ``from mock import call``, causes memory error.
+import unittest.mock as mock  # must not ``from mock import call``, causes memory error.
 
 from kotti.testing import DummyRequest
 

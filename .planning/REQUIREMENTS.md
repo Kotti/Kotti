@@ -9,14 +9,14 @@ Requirements for this modernization milestone. Each maps to roadmap phases.
 
 ### Packaging
 
-- [ ] **PKG-01**: Project uses pyproject.toml as single source of truth (replaces setup.py, setup.cfg, pytest.ini, tox.ini)
-- [ ] **PKG-02**: Project uses hatchling as build backend
-- [ ] **PKG-03**: Project uses src layout (src/kotti/)
-- [ ] **PKG-04**: All six entry points (paste.app_factory, fanstatic.libraries, 3 console_scripts, pytest11) work correctly from pyproject.toml
-- [ ] **PKG-05**: Non-Python package data (.pt templates, .po/.mo locale files, .zcml, alembic scripts, static assets) included in sdist/wheel
-- [ ] **PKG-06**: setuptools_git and check-manifest removed
-- [ ] **PKG-07**: setup.py and setup.cfg deleted (not coexisting with pyproject.toml)
-- [ ] **PKG-08**: uv used as package manager with committed uv.lock
+- [x] **PKG-01**: Project uses pyproject.toml as single source of truth (replaces setup.py, setup.cfg, pytest.ini, tox.ini)
+- [x] **PKG-02**: Project uses hatchling as build backend
+- [x] **PKG-03**: Project uses src layout (src/kotti/)
+- [x] **PKG-04**: All six entry points (paste.app_factory, fanstatic.libraries, 3 console_scripts, pytest11) work correctly from pyproject.toml
+- [x] **PKG-05**: Non-Python package data (.pt templates, .po/.mo locale files, .zcml, alembic scripts, static assets) included in sdist/wheel
+- [x] **PKG-06**: setuptools_git and check-manifest removed
+- [x] **PKG-07**: setup.py and setup.cfg deleted (not coexisting with pyproject.toml)
+- [x] **PKG-08**: uv used as package manager with committed uv.lock
 
 ### Dependencies
 
@@ -103,14 +103,14 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| PKG-01 | Phase 1 | Pending |
-| PKG-02 | Phase 1 | Pending |
-| PKG-03 | Phase 1 | Pending |
-| PKG-04 | Phase 1 | Pending |
-| PKG-05 | Phase 1 | Pending |
-| PKG-06 | Phase 1 | Pending |
-| PKG-07 | Phase 1 | Pending |
-| PKG-08 | Phase 1 | Pending |
+| PKG-01 | Phase 1 | Complete |
+| PKG-02 | Phase 1 | Complete |
+| PKG-03 | Phase 1 | Complete |
+| PKG-04 | Phase 1 | Complete |
+| PKG-05 | Phase 1 | Complete |
+| PKG-06 | Phase 1 | Complete |
+| PKG-07 | Phase 1 | Complete |
+| PKG-08 | Phase 1 | Complete |
 | DEP-01 | Phase 2 | Pending |
 | DEP-02 | Phase 2 | Pending |
 | DEP-03 | Phase 2 | Pending |

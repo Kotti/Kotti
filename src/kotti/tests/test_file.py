@@ -2,8 +2,8 @@ from io import BytesIO
 
 import pytest
 from colander import null
-from mock import MagicMock
-from mock import patch
+from unittest.mock import MagicMock
+from unittest.mock import patch
 from pyramid.httpexceptions import HTTPMovedPermanently
 
 from kotti.filedepot import StoredFileResponse

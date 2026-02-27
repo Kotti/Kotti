@@ -1,3 +1,16 @@
+---
+gsd_state_version: 1.0
+milestone: v1.0
+milestone_name: milestone
+status: unknown
+last_updated: "2026-02-27T16:34:02.572Z"
+progress:
+  total_phases: 1
+  completed_phases: 1
+  total_plans: 2
+  completed_plans: 2
+---
+
 # Project State
 
 ## Project Reference
@@ -10,28 +23,28 @@ See: .planning/PROJECT.md (updated 2026-02-27)
 ## Current Position
 
 Phase: 1 of 5 (Packaging Foundation)
-Plan: 0 of ? in current phase
-Status: Ready to plan
-Last activity: 2026-02-27 — Roadmap created, all 39 requirements mapped across 5 phases
+Plan: 2 of 2 in current phase
+Status: Phase 1 complete
+Last activity: 2026-02-27 — Completed 01-02: uv.lock verification + wheel build + test suite validation
 
-Progress: [░░░░░░░░░░] 0%
+Progress: [██░░░░░░░░] 20%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 0
-- Average duration: —
-- Total execution time: —
+- Total plans completed: 2
+- Average duration: 11m 6s
+- Total execution time: 22m 12s
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
-| - | - | - | - |
+| Phase 1 | 2 | 22m 12s | 11m 6s |
 
 **Recent Trend:**
-- Last 5 plans: —
-- Trend: —
+- Last 5 plans: 01-01 (16m 12s), 01-02 (6m)
+- Trend: Faster (verification-only plan)
 
 *Updated after each plan completion*
 
@@ -48,18 +61,25 @@ Recent decisions affecting current work:
 - [Roadmap]: Formatting must land as isolated first commit in Phase 4 (preserves git blame)
 - [Roadmap]: Documentation migrating to MkDocs + Material for MkDocs (not updating Sphinx)
 - [Roadmap]: pyramid>=1.9,<2 and sqlalchemy>=1.4,<2 pins maintained throughout this milestone
+- [01-01]: hatchling license field requires dict form `{text = "..."}` not bare string
+- [01-01]: setuptools<79 pinned as dependency to preserve pkg_resources until Phase 2 (DEP-04/DEP-05)
+- [01-01]: mock -> unittest.mock completed in Phase 1 (removed from test deps, imports updated)
+- [01-01]: yield_fixture -> fixture replacement completed (pytest 4.0 compatibility)
+- [01-02]: 3 test_file.py failures are pre-existing (cgi.FieldStorage filename=None not fieldstorage-like in depot 0.11.0) — not caused by packaging changes
 
 ### Pending Todos
 
-None yet.
+None.
 
 ### Blockers/Concerns
 
 - [Phase 2]: nh3 attribute allowlist implementation needs design at implementation time — write characterization tests first
 - [Phase 3]: Pyramid 1.x compatibility with Python 3.12/3.13 is uncertain — CI matrix may surface pin issues
+- [Phase 2]: setuptools<79 pin must be lifted when pkg_resources usage replaced with importlib.resources
+- [Phase 2]: 3 pre-existing test_file.py failures (depot/cgi FieldStorage filename=None issue) need fixing
 
 ## Session Continuity
 
-Last session: 2026-02-27
-Stopped at: Roadmap created, STATE.md initialized, REQUIREMENTS.md traceability updated
+Last session: 2026-02-27T16:30:00Z
+Stopped at: Completed 01-02-PLAN.md — uv.lock verification, wheel build, asset inspection, test suite
 Resume file: None

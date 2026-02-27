@@ -1,6 +1,6 @@
 import json
 
-from mock import MagicMock
+from unittest.mock import MagicMock
 from pyramid.security import ALL_PERMISSIONS
 
 
