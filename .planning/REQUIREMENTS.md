@@ -103,51 +103,51 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| PKG-01 | — | Pending |
-| PKG-02 | — | Pending |
-| PKG-03 | — | Pending |
-| PKG-04 | — | Pending |
-| PKG-05 | — | Pending |
-| PKG-06 | — | Pending |
-| PKG-07 | — | Pending |
-| PKG-08 | — | Pending |
-| DEP-01 | — | Pending |
-| DEP-02 | — | Pending |
-| DEP-03 | — | Pending |
-| DEP-04 | — | Pending |
-| DEP-05 | — | Pending |
-| DEP-06 | — | Pending |
-| DEP-07 | — | Pending |
-| DEP-08 | — | Pending |
-| PYV-01 | — | Pending |
-| PYV-02 | — | Pending |
-| PYV-03 | — | Pending |
-| PYV-04 | — | Pending |
-| LNT-01 | — | Pending |
-| LNT-02 | — | Pending |
-| LNT-03 | — | Pending |
-| LNT-04 | — | Pending |
-| LNT-05 | — | Pending |
-| LNT-06 | — | Pending |
-| CI-01 | — | Pending |
-| CI-02 | — | Pending |
-| CI-03 | — | Pending |
-| CI-04 | — | Pending |
-| CI-05 | — | Pending |
-| CQ-01 | — | Pending |
-| CQ-02 | — | Pending |
-| CQ-03 | — | Pending |
-| CQ-04 | — | Pending |
-| DOC-01 | — | Pending |
-| DOC-02 | — | Pending |
-| DOC-03 | — | Pending |
-| DOC-04 | — | Pending |
+| PKG-01 | Phase 1 | Pending |
+| PKG-02 | Phase 1 | Pending |
+| PKG-03 | Phase 1 | Pending |
+| PKG-04 | Phase 1 | Pending |
+| PKG-05 | Phase 1 | Pending |
+| PKG-06 | Phase 1 | Pending |
+| PKG-07 | Phase 1 | Pending |
+| PKG-08 | Phase 1 | Pending |
+| DEP-01 | Phase 2 | Pending |
+| DEP-02 | Phase 2 | Pending |
+| DEP-03 | Phase 2 | Pending |
+| DEP-04 | Phase 2 | Pending |
+| DEP-05 | Phase 2 | Pending |
+| DEP-06 | Phase 2 | Pending |
+| DEP-07 | Phase 2 | Pending |
+| DEP-08 | Phase 2 | Pending |
+| PYV-01 | Phase 3 | Pending |
+| PYV-02 | Phase 3 | Pending |
+| PYV-03 | Phase 3 | Pending |
+| PYV-04 | Phase 3 | Pending |
+| LNT-01 | Phase 4 | Pending |
+| LNT-02 | Phase 4 | Pending |
+| LNT-03 | Phase 3 | Pending |
+| LNT-04 | Phase 4 | Pending |
+| LNT-05 | Phase 4 | Pending |
+| LNT-06 | Phase 4 | Pending |
+| CI-01 | Phase 3 | Pending |
+| CI-02 | Phase 3 | Pending |
+| CI-03 | Phase 3 | Pending |
+| CI-04 | Phase 3 | Pending |
+| CI-05 | Phase 3 | Pending |
+| CQ-01 | Phase 4 | Pending |
+| CQ-02 | Phase 4 | Pending |
+| CQ-03 | Phase 4 | Pending |
+| CQ-04 | Phase 4 | Pending |
+| DOC-01 | Phase 5 | Pending |
+| DOC-02 | Phase 5 | Pending |
+| DOC-03 | Phase 5 | Pending |
+| DOC-04 | Phase 5 | Pending |
 
 **Coverage:**
 - v1 requirements: 39 total
-- Mapped to phases: 0
-- Unmapped: 39 ⚠️
+- Mapped to phases: 39
+- Unmapped: 0 ✓
 
 ---
 *Requirements defined: 2026-02-27*
-*Last updated: 2026-02-27 after initial definition*
+*Last updated: 2026-02-27 after roadmap creation*
