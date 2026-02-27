@@ -134,3 +134,59 @@ def test_sanitize(app, dummy_request):
     _verify_no_html(api.sanitize(unsanitized, "no_html"))
     _verify_minimal_html(api.sanitize(unsanitized, "minimal_html"))
     _verify_xss_protection(api.sanitize(unsanitized, "xss_protection"))
+
+
+# ---------------------------------------------------------------------------
+# Bleach characterization tests — baseline capture before nh3 migration
+# These tests document EXACT bleach behavior. Plan 02-02 will update them
+# to match nh3 output (DOM-equivalence approach applies there, not here).
+# ---------------------------------------------------------------------------
+
+
+def test_bleach_characterization_xss_protection():
+    """Capture exact bleach xss_protection() output as regression baseline."""
+    from kotti.sanitizers import xss_protection
+
+    sanitized = xss_protection(unsanitized)
+
+    # Script tags: bleach strips <script> tags but PRESERVES content
+    assert "alert('XSS!')" in sanitized
+    assert "<script>" not in sanitized
+
+    # Attribute handling: bleach with lambda attributes=True preserves ALL attrs
+    assert 'size="17"' in sanitized
+
+    # Style preservation: bleach with all_styles preserves style values
+    # Note: bleach normalizes CSS and adds trailing semicolon
+    assert 'style="color: red;"' in sanitized
+
+    # Link handling: bleach does NOT add rel attributes to links
+    assert 'target="_blank"' in sanitized
+    assert "rel=" not in sanitized
+
+    # Tag handling: <marquee> IS in generally_xss_safe, so it is preserved
+    assert "<marquee>" in sanitized
+
+
+def test_bleach_characterization_minimal_html():
+    """Capture exact bleach minimal_html() output as regression baseline."""
+    from kotti.sanitizers import minimal_html
+
+    sanitized = minimal_html(unsanitized)
+
+    # Style handling: bleach with styles=[] strips CSS values but leaves empty attr
+    assert 'style=""' in sanitized
+
+    # Attribute stripping: size on <b> is NOT in markdown_attrs or print_attrs
+    assert "size" not in sanitized.lower()
+
+
+def test_bleach_characterization_no_html():
+    """Capture exact bleach no_html() output as regression baseline."""
+    from kotti.sanitizers import no_html
+
+    sanitized = no_html(unsanitized)
+
+    # All tags removed, text content preserved
+    assert "<" not in sanitized
+    assert "external links" in sanitized
