@@ -41,7 +41,9 @@ Decimal phases appear between their surrounding integers in numeric order.
   2. Sanitizer characterization tests pass before and after the bleach-to-nh3 switch — output is identical
   3. `pip show mock` returns "not installed" and all test imports resolve from `unittest.mock`
   4. `pyramid>=1.9,<2` and `sqlalchemy>=1.4,<2` pins are maintained — no version relaxation
-**Plans**: TBD
+**Plans:** 2 plans
+- [ ] 02-01-PLAN.md -- Characterization tests, importlib migrations, mock/pin verification
+- [ ] 02-02-PLAN.md -- bleach-to-nh3 sanitizer migration, dependency cleanup
 
 ### Phase 3: Python Version and CI Modernization
 **Goal**: CI runs on Python 3.10-3.13 with current action versions and a consolidated matrix workflow, and ruff is the linting gate
@@ -85,7 +87,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Packaging Foundation | 2/2 | Complete   | 2026-02-27 |
-| 2. Runtime Dependency Updates | 0/? | Not started | - |
+| 2. Runtime Dependency Updates | 0/2 | Planned | - |
 | 3. Python Version and CI Modernization | 0/? | Not started | - |
 | 4. Code Quality and Formatting | 0/? | Not started | - |
 | 5. Documentation Migration | 0/? | Not started | - |
