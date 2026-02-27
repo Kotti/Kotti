@@ -55,7 +55,8 @@ Decimal phases appear between their surrounding integers in numeric order.
   3. CI uses `uv sync` and `uv run pytest` — no pip or tox invocations remain in workflow files
   4. Three separate workflow files are consolidated into one matrix workflow covering Python version × DB backend
   5. Dependabot is configured and opens automated dependency PRs
-**Plans**: TBD
+**Plans:** 1 plan
+- [ ] 03-01-PLAN.md -- Ruff config, consolidated CI matrix workflow, Dependabot
 
 ### Phase 4: Code Quality and Formatting
 **Goal**: The codebase passes ruff with no violations, type annotation anti-patterns are corrected, and developer tooling is configured for ongoing hygiene
@@ -88,6 +89,6 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 |-------|----------------|--------|-----------|
 | 1. Packaging Foundation | 2/2 | Complete   | 2026-02-27 |
 | 2. Runtime Dependency Updates | 2/2 | Complete   | 2026-02-27 |
-| 3. Python Version and CI Modernization | 0/? | Not started | - |
+| 3. Python Version and CI Modernization | 0/1 | Not started | - |
 | 4. Code Quality and Formatting | 0/? | Not started | - |
 | 5. Documentation Migration | 0/? | Not started | - |
