@@ -20,7 +20,7 @@ Requirements for this modernization milestone. Each maps to roadmap phases.
 
 ### Dependencies
 
-- [ ] **DEP-01**: bleach + bleach-allowlist replaced with nh3 for HTML sanitization
+- [x] **DEP-01**: bleach + bleach-allowlist replaced with nh3 for HTML sanitization
 - [x] **DEP-02**: Sanitization behavior preserved (characterization tests pass before and after switch)
 - [x] **DEP-03**: mock PyPI package replaced with stdlib unittest.mock in all test files
 - [x] **DEP-04**: pkg_resources replaced with importlib.metadata for version lookup
@@ -111,7 +111,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | PKG-06 | Phase 1 | Complete |
 | PKG-07 | Phase 1 | Complete |
 | PKG-08 | Phase 1 | Complete |
-| DEP-01 | Phase 2 | Pending |
+| DEP-01 | Phase 2 | Complete |
 | DEP-02 | Phase 2 | Complete |
 | DEP-03 | Phase 2 | Complete |
 | DEP-04 | Phase 2 | Complete |

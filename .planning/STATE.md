@@ -8,7 +8,7 @@ progress:
   total_phases: 5
   completed_phases: 1
   total_plans: 10
-  completed_plans: 3
+  completed_plans: 4
 ---
 
 # Project State
@@ -23,11 +23,11 @@ See: .planning/PROJECT.md (updated 2026-02-27)
 ## Current Position
 
 Phase: 2 of 5 (Runtime Dependency Updates)
-Plan: 1 of 3 in current phase
-Status: Phase 2, Plan 1 complete
-Last activity: 2026-02-27 — Completed 02-01: bleach characterization tests + pkg_resources migration to importlib
+Plan: 2 of 3 in current phase
+Status: Phase 2, Plan 2 complete
+Last activity: 2026-02-27 — Completed 02-02: bleach replaced with nh3, deprecation shims, deps cleaned
 
-Progress: [███░░░░░░░] 30%
+Progress: [████░░░░░░] 40%
 
 ## Performance Metrics
 
@@ -71,6 +71,9 @@ Recent decisions affecting current work:
 - [02-01]: <marquee> IS in generally_xss_safe (bleach_allowlist) — xss_protection preserves it (plan comment was wrong)
 - [02-01]: importlib.resources.files() returns real path for hatchling builds — no as_file() context manager needed
 - [02-01]: get_version() simplified to return __version__ directly — already set via importlib.metadata at top of __init__.py
+- [02-02]: _XSS_SAFE_TAGS derived from actual bleach_allowlist.generally_xss_safe (inspected before removal) minus style/script
+- [02-02]: conf_defaults updated to _nh3 function names — fresh installs get no DeprecationWarning; old plugin configs still work via shims
+- [02-02]: bleach, bleach-allowlist, setuptools<79 all removed atomically in same uv lock run
 
 ### Pending Todos
 
@@ -78,13 +81,11 @@ None.
 
 ### Blockers/Concerns
 
-- [Phase 2]: nh3 attribute allowlist implementation needs design at implementation time — characterization tests now ready
 - [Phase 3]: Pyramid 1.x compatibility with Python 3.12/3.13 is uncertain — CI matrix may surface pin issues
-- [Phase 2]: setuptools<79 pin must be lifted in Plan 02-02 when bleach is swapped for nh3 (atomic lockfile update)
 - [Phase 2]: 3 pre-existing test_file.py failures (depot/cgi FieldStorage filename=None issue) need fixing
 
 ## Session Continuity
 
-Last session: 2026-02-27T17:00:00Z
-Stopped at: Completed 02-01-PLAN.md — bleach characterization tests + pkg_resources migration to importlib
+Last session: 2026-02-27T21:48:05Z
+Stopped at: Completed 02-02-PLAN.md — bleach replaced with nh3, deprecation shims, deps cleaned
 Resume file: None

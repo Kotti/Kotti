@@ -13,7 +13,7 @@ Kotti is a mature Pyramid-based CMS framework running on deprecated tooling and 
 Decimal phases appear between their surrounding integers in numeric order.
 
 - [x] **Phase 1: Packaging Foundation** - Replace setup.py/setup.cfg with pyproject.toml, adopt src layout, and commit uv.lock (completed 2026-02-27)
-- [ ] **Phase 2: Runtime Dependency Updates** - Replace bleach with nh3, pkg_resources with importlib, and mock with unittest.mock
+- [x] **Phase 2: Runtime Dependency Updates** - Replace bleach with nh3, pkg_resources with importlib, and mock with unittest.mock (completed 2026-02-27)
 - [ ] **Phase 3: Python Version and CI Modernization** - Update GitHub Actions, add Python 3.10-3.13 matrix, replace pytest-flake8 with ruff
 - [ ] **Phase 4: Code Quality and Formatting** - Apply ruff formatting, fix bare excepts, modernize type annotations, add pre-commit hooks
 - [ ] **Phase 5: Documentation Migration** - Migrate from Sphinx/RST to MkDocs with Material for MkDocs theme
@@ -41,7 +41,7 @@ Decimal phases appear between their surrounding integers in numeric order.
   2. Sanitizer characterization tests pass before and after the bleach-to-nh3 switch — output is identical
   3. `pip show mock` returns "not installed" and all test imports resolve from `unittest.mock`
   4. `pyramid>=1.9,<2` and `sqlalchemy>=1.4,<2` pins are maintained — no version relaxation
-**Plans:** 1/2 plans executed
+**Plans:** 2/2 plans complete
 - [ ] 02-01-PLAN.md -- Characterization tests, importlib migrations, mock/pin verification
 - [ ] 02-02-PLAN.md -- bleach-to-nh3 sanitizer migration, dependency cleanup
 
@@ -87,7 +87,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Packaging Foundation | 2/2 | Complete   | 2026-02-27 |
-| 2. Runtime Dependency Updates | 1/2 | In Progress|  |
+| 2. Runtime Dependency Updates | 2/2 | Complete   | 2026-02-27 |
 | 3. Python Version and CI Modernization | 0/? | Not started | - |
 | 4. Code Quality and Formatting | 0/? | Not started | - |
 | 5. Documentation Migration | 0/? | Not started | - |
