@@ -123,6 +123,7 @@ test = [
     "pytest>=8",
     "pytest-cov",
     "zope.testbrowser>=5.0.0",
+    "ruff>=0.11",
 ]
 docs = [
     "Sphinx",
@@ -149,6 +150,7 @@ test = [
     "pytest>=8",
     "pytest-cov",
     "zope.testbrowser>=5.0.0",
+    "ruff>=0.11",
 ]
 docs = [
     "Sphinx",
@@ -199,4 +201,18 @@ python_files = ["test_*.py"]
 markers = [
     "user: mark test to be run as the given user",
     "slow: mark test to be run only with --runslow option",
+]
+
+# --- ruff ---
+
+[tool.ruff]
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E4", "E7", "E9", "F"]
+ignore = [
+    "E711",  # Comparison to None (== None) — deferred to Phase 4
+    "E721",  # Type comparison with == — deferred to Phase 4
+    "F821",  # Undefined name — false positives on string annotations in security.py
+    "F841",  # Local variable assigned but never used — deferred to Phase 4
 ]
