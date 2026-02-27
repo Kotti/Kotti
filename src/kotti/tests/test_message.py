@@ -1,6 +1,6 @@
 from warnings import filterwarnings
 
-from mock import patch
+from unittest.mock import patch
 from pytest import raises
 
 from kotti.testing import Dummy

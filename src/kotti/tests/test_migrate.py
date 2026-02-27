@@ -1,5 +1,5 @@
 from alembic.migration import MigrationContext
-from mock import patch
+from unittest.mock import patch
 
 
 class TestScriptDirectoryWithDefaultEnvPy:

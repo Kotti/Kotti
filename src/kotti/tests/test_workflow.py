@@ -1,4 +1,4 @@
-from mock import patch
+from unittest.mock import patch
 from pyramid.security import ALL_PERMISSIONS
 
 from kotti.testing import Dummy

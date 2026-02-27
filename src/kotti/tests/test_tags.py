@@ -1,5 +1,5 @@
 import colander
-from mock import Mock
+from unittest.mock import Mock
 
 from kotti.testing import DummyRequest
 

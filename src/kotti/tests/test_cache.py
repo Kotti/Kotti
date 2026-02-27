@@ -2,8 +2,8 @@ import datetime
 import time
 
 import pytest
-from mock import MagicMock
-from mock import patch
+from unittest.mock import MagicMock
+from unittest.mock import patch
 
 from kotti.resources import File
 from kotti.testing import Dummy

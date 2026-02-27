@@ -1,7 +1,7 @@
 from warnings import filterwarnings
 
-from mock import Mock
-from mock import patch
+from unittest.mock import Mock
+from unittest.mock import patch
 from pyramid.interfaces import IAuthenticationPolicy
 from pyramid.interfaces import IAuthorizationPolicy
 from pyramid.interfaces import IView

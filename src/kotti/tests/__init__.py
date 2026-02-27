@@ -46,9 +46,8 @@ import warnings
 from datetime import datetime
 
 from depot.io.memory import MemoryFileStorage
-from mock import MagicMock
+from unittest.mock import MagicMock
 from pytest import fixture
-from pytest import yield_fixture
 
 from kotti import testing
 
@@ -67,7 +66,7 @@ def image_asset2():
     return testing.asset("logo.png")
 
 
-@yield_fixture
+@fixture
 def allwarnings(request):
     save_filters = warnings.filters[:]
     warnings.filters[:] = []
@@ -114,7 +113,7 @@ def settings(unresolved_settings):
     return _resolve_dotted(unresolved_settings)
 
 
-@yield_fixture
+@fixture
 def config(settings):
     """returns a Pyramid `Configurator` object initialized
     with Kotti's default (test) settings.
@@ -190,7 +189,7 @@ def content(connection, settings):
     transaction.commit()
 
 
-@yield_fixture
+@fixture
 def db_session(config, content, connection):
     """returns a db session object and sets up a db transaction
     savepoint, which will be rolled back after the test.
@@ -233,7 +232,7 @@ def dummy_mailer(monkeypatch):
     return mailer
 
 
-@yield_fixture
+@fixture
 def events(config):
     """sets up Kotti's default event handlers."""
     from kotti.events import clear
@@ -327,7 +326,7 @@ class TestStorage(MemoryFileStorage):
         return f
 
 
-@yield_fixture
+@fixture
 def depot_tween(config, dummy_request):
     """Sets up the Depot tween and patches Depot's ``set_middleware`` to
     suppress exceptions on subsequent calls. Yields the ``DepotManager``."""
@@ -355,7 +354,7 @@ def depot_tween(config, dummy_request):
     DepotManager.set_middleware = _set_middleware
 
 
-@yield_fixture
+@fixture
 def mock_filedepot(depot_tween):
     """Configures a mock depot store for :class:`depot.manager.DepotManager`
 
@@ -372,7 +371,7 @@ def mock_filedepot(depot_tween):
     DepotManager._clear()
 
 
-@yield_fixture
+@fixture
 def filedepot(db_session, depot_tween):
     """Configures a dbsession integrated mock depot store for
     :class:`depot.manager.DepotManager`
@@ -388,7 +387,7 @@ def filedepot(db_session, depot_tween):
     DepotManager._clear()
 
 
-@yield_fixture
+@fixture
 def no_filedepots(db_session, depot_tween):
     """A filedepot fixture to empty and then restore DepotManager configuration"""
     from depot.manager import DepotManager
